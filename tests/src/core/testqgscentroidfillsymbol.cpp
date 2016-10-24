@@ -91,7 +91,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
@@ -113,7 +113,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Centroid Fill Symbol Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Centroid Fill Symbol Tests</h1>\n" );
 
 }
 void TestQgsCentroidFillSymbol::cleanupTestCase()
@@ -132,7 +132,7 @@ void TestQgsCentroidFillSymbol::cleanupTestCase()
 
 void TestQgsCentroidFillSymbol::centroidFillSymbol()
 {
-  mReport += "<h2>Line fill symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
 
   QVERIFY( imageCheck( "symbol_centroidfill" ) );
 }
@@ -156,7 +156,7 @@ bool TestQgsCentroidFillSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_centroidfill" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_centroidfill" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );

@@ -71,7 +71,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri = "" );
+    explicit QgsSpatiaLiteProvider( QString const &uri = QLatin1String( "" ) );
 
     //! Destructor
     virtual ~ QgsSpatiaLiteProvider();
@@ -239,7 +239,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
       QString errorMessage() const
       {
-        return errMsg ? QString::fromUtf8( errMsg ) : "unknown cause";
+        return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
       }
 
     private:

@@ -64,7 +64,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     return nullptr;
   }
 
-  QString dpi = parameterMap.value( "DPI" );
+  QString dpi = parameterMap.value( QStringLiteral( "DPI" ) );
   if ( !dpi.isEmpty() )
   {
     c->setPrintResolution( dpi.toInt() );
@@ -89,7 +89,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
       continue;
     }
 
-    QStringList coordList = extent.split( "," );
+    QStringList coordList = extent.split( QStringLiteral( "," ) );
     if ( coordList.size() < 4 )
     {
       c->removeItem( currentMap );
@@ -112,8 +112,8 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     QgsRectangle r( xmin, ymin, xmax, ymax );
 
     //Change x- and y- of extent for WMS 1.3.0 if axis inverted
-    QString version = parameterMap.value( "VERSION" );
-    if ( version == "1.3.0" && mapRenderer && mapRenderer->destinationCrs().hasAxisInverted() )
+    QString version = parameterMap.value( QStringLiteral( "VERSION" ) );
+    if ( version == QLatin1String( "1.3.0" ) && mapRenderer && mapRenderer->destinationCrs().hasAxisInverted() )
     {
       r.invert();
     }
@@ -157,16 +157,16 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 
       if ( layers.isEmpty() )
       {
-        layers = parameterMap.value( "LAYERS" );
-        styles = parameterMap.value( "STYLES" );
+        layers = parameterMap.value( QStringLiteral( "LAYERS" ) );
+        styles = parameterMap.value( QStringLiteral( "STYLES" ) );
       }
 
-      QStringList wmsLayerList = layers.split( "," );
+      QStringList wmsLayerList = layers.split( QStringLiteral( "," ) );
       QStringList wmsStyleList;
 
       if ( !styles.isEmpty() )
       {
-        wmsStyleList = styles.split( "," );
+        wmsStyleList = styles.split( QStringLiteral( "," ) );
       }
 
       for ( int i = 0; i < wmsLayerList.size(); ++i )
@@ -301,7 +301,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     return highlightLayers;
   }
 
-  QString crsString = parameterMap.contains( "CRS" ) ? parameterMap.value( "CRS" ) : parameterMap.value( "SRS" );
+  QString crsString = parameterMap.contains( QStringLiteral( "CRS" ) ) ? parameterMap.value( QStringLiteral( "CRS" ) ) : parameterMap.value( QStringLiteral( "SRS" ) );
 
   int nHighlights = qMin( geomSplit.size(), symbolSplit.size() );
   for ( int i = 0; i < nHighlights; ++i )
@@ -359,18 +359,18 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
   }
 
   QgsWkbTypes::GeometryType geomType = geom->type();
-  QString typeName = QString( QgsWkbTypes::displayString( geom->wkbType() ) ).replace( "WKB", "" );
+  QString typeName = QString( QgsWkbTypes::displayString( geom->wkbType() ) ).replace( QLatin1String( "WKB" ), QLatin1String( "" ) );
   QString url = typeName + "?crs=" + crsString;
   if ( !labelString.isEmpty() )
   {
-    url += "&field=label:string";
+    url += QLatin1String( "&field=label:string" );
     if ( geomType == QgsWkbTypes::PolygonGeometry )
     {
-      url += "&field=x:double&field=y:double&field=hali:string&field=vali:string";
+      url += QLatin1String( "&field=x:double&field=y:double&field=hali:string&field=vali:string" );
     }
   }
 
-  QgsVectorLayer* layer = new QgsVectorLayer( url, "highlight_" + QString::number( i ), "memory" );
+  QgsVectorLayer* layer = new QgsVectorLayer( url, "highlight_" + QString::number( i ), QStringLiteral( "memory" ) );
   if ( !layer->isValid() )
   {
     delete layer;
@@ -394,51 +394,51 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
       }
     }
 
-    layer->setCustomProperty( "labeling/fieldName", "label" );
-    layer->setCustomProperty( "labeling/enabled", "true" );
-    layer->setCustomProperty( "labeling", "pal" );
+    layer->setCustomProperty( QStringLiteral( "labeling/fieldName" ), "label" );
+    layer->setCustomProperty( QStringLiteral( "labeling/enabled" ), "true" );
+    layer->setCustomProperty( QStringLiteral( "labeling" ), "pal" );
     //give highest priority to highlight layers and make sure the labels are always drawn
-    layer->setCustomProperty( "labeling/priority", "10" );
-    layer->setCustomProperty( "labeling/displayAll", "true" );
+    layer->setCustomProperty( QStringLiteral( "labeling/priority" ), "10" );
+    layer->setCustomProperty( QStringLiteral( "labeling/displayAll" ), "true" );
 
     //fontsize?
     if ( i < labelSizeSplit.size() )
     {
-      layer->setCustomProperty( "labeling/fontSize", labelSizeSplit.at( i ) );
+      layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), labelSizeSplit.at( i ) );
     }
     //font color
     if ( i < labelColorSplit.size() )
     {
       QColor c( labelColorSplit.at( i ) );
-      layer->setCustomProperty( "labeling/textColorR", c.red() );
-      layer->setCustomProperty( "labeling/textColorG", c.green() );
-      layer->setCustomProperty( "labeling/textColorB", c.blue() );
+      layer->setCustomProperty( QStringLiteral( "labeling/textColorR" ), c.red() );
+      layer->setCustomProperty( QStringLiteral( "labeling/textColorG" ), c.green() );
+      layer->setCustomProperty( QStringLiteral( "labeling/textColorB" ), c.blue() );
     }
     //font weight
     if ( i < labelWeightSplit.size() )
     {
-      layer->setCustomProperty( "labeling/fontWeight", labelWeightSplit.at( i ) );
+      layer->setCustomProperty( QStringLiteral( "labeling/fontWeight" ), labelWeightSplit.at( i ) );
     }
 
     //font family list
     if ( i < labelFontSplit.size() )
     {
-      layer->setCustomProperty( "labeling/fontFamily", labelFontSplit.at( i ) );
+      layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), labelFontSplit.at( i ) );
     }
 
     //buffer
     if ( i < labelBufferSizeSplit.size() )
     {
-      layer->setCustomProperty( "labeling/bufferSize", labelBufferSizeSplit.at( i ) );
+      layer->setCustomProperty( QStringLiteral( "labeling/bufferSize" ), labelBufferSizeSplit.at( i ) );
     }
 
     //buffer color
     if ( i <  labelBufferColorSplit.size() )
     {
       QColor c( labelBufferColorSplit.at( i ) );
-      layer->setCustomProperty( "labeling/bufferColorR", c.red() );
-      layer->setCustomProperty( "labeling/bufferColorG", c.green() );
-      layer->setCustomProperty( "labeling/bufferColorB", c.blue() );
+      layer->setCustomProperty( QStringLiteral( "labeling/bufferColorR" ), c.red() );
+      layer->setCustomProperty( QStringLiteral( "labeling/bufferColorG" ), c.green() );
+      layer->setCustomProperty( QStringLiteral( "labeling/bufferColorB" ), c.blue() );
     }
 
     //placement
@@ -447,21 +447,21 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     {
       case QgsWkbTypes::PointGeometry:
         placement = 0;
-        layer->setCustomProperty( "labeling/dist", 2 );
-        layer->setCustomProperty( "labeling/placementFlags", 0 );
+        layer->setCustomProperty( QStringLiteral( "labeling/dist" ), 2 );
+        layer->setCustomProperty( QStringLiteral( "labeling/placementFlags" ), 0 );
         break;
       case QgsWkbTypes::PolygonGeometry:
-        layer->setCustomProperty( "labeling/dataDefinedProperty9", 1 );
-        layer->setCustomProperty( "labeling/dataDefinedProperty10", 2 );
-        layer->setCustomProperty( "labeling/dataDefinedProperty11", 3 );
-        layer->setCustomProperty( "labeling/dataDefinedProperty12", 4 );
+        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty9" ), 1 );
+        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty10" ), 2 );
+        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty11" ), 3 );
+        layer->setCustomProperty( QStringLiteral( "labeling/dataDefinedProperty12" ), 4 );
         break;
       default:
         placement = 2; //parallel placement for line
-        layer->setCustomProperty( "labeling/dist", 2 );
-        layer->setCustomProperty( "labeling/placementFlags", 10 );
+        layer->setCustomProperty( QStringLiteral( "labeling/dist" ), 2 );
+        layer->setCustomProperty( QStringLiteral( "labeling/placementFlags" ), 10 );
     }
-    layer->setCustomProperty( "labeling/placement", placement );
+    layer->setCustomProperty( QStringLiteral( "labeling/placement" ), placement );
   }
 
   fet.setGeometry( *geom );
@@ -488,8 +488,8 @@ void QgsWmsConfigParser::highlightParameters( const QMap<QString, QString>& para
   QString labelBufferColorParam = parameterMap.value( parameterPrefix + "HIGHLIGHT_LABELBUFFERCOLOR" );
   QString labelBufferSizeParam = parameterMap.value( parameterPrefix + "HIGHLIGHT_LABELBUFFERSIZE" );
 
-  geom = geomParam.split( ";" );
-  symbol = symbolParam.split( ";" );
+  geom = geomParam.split( QStringLiteral( ";" ) );
+  symbol = symbolParam.split( QStringLiteral( ";" ) );
 
   label.clear();
   labelFont.clear();
@@ -501,31 +501,31 @@ void QgsWmsConfigParser::highlightParameters( const QMap<QString, QString>& para
 
   if ( !labelParam.isEmpty() )
   {
-    label = labelParam.split( ";" );
+    label = labelParam.split( QStringLiteral( ";" ) );
   }
   if ( !labelFontParam.isEmpty() )
   {
-    labelFont = labelFontParam.split( ";" );
+    labelFont = labelFontParam.split( QStringLiteral( ";" ) );
   }
   if ( !labelSizeParam.isEmpty() )
   {
-    labelSize = labelSizeParam.split( ";" );
+    labelSize = labelSizeParam.split( QStringLiteral( ";" ) );
   }
   if ( !labelWeightParam.isEmpty() )
   {
-    labelWeight = labelWeightParam.split( ";" );
+    labelWeight = labelWeightParam.split( QStringLiteral( ";" ) );
   }
   if ( !labelColorParam.isEmpty() )
   {
-    labelColor = labelColorParam.split( ";" );
+    labelColor = labelColorParam.split( QStringLiteral( ";" ) );
   }
   if ( !labelBufferColorParam.isEmpty() )
   {
-    labelBufferColor =  labelBufferColorParam.split( ";" );
+    labelBufferColor =  labelBufferColorParam.split( QStringLiteral( ";" ) );
   }
   if ( !labelBufferSizeParam.isEmpty() )
   {
-    labelBufferSize = labelBufferSizeParam.split( ";" );
+    labelBufferSize = labelBufferSizeParam.split( QStringLiteral( ";" ) );
   }
 }
 

@@ -26,7 +26,7 @@ static const QString name_ = QObject::tr( "Interpolation plugin" );
 static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
 static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.001" );
-static const QString icon_ = ":/raster-interpolate.png";
+static const QString icon_ = QStringLiteral( ":/raster-interpolate.png" );
 
 QgsInterpolationPlugin::QgsInterpolationPlugin( QgisInterface* iface ): mIface( iface ), mInterpolationAction( nullptr )
 {
@@ -43,7 +43,7 @@ void QgsInterpolationPlugin::initGui()
   if ( mIface )
   {
     mInterpolationAction = new QAction( QIcon( ":/raster-interpolate.png" ), tr( "&Interpolation" ), nullptr );
-    mInterpolationAction->setObjectName( "mInterpolationAction" );
+    mInterpolationAction->setObjectName( QStringLiteral( "mInterpolationAction" ) );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addRasterToolBarIcon( mInterpolationAction );
     mIface->addPluginToRasterMenu( tr( "&Interpolation" ), mInterpolationAction );

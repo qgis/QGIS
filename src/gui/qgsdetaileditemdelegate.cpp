@@ -336,8 +336,8 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString& theString,
   //qDebug(myDebug.toLocal8Bit());
   //iterate the string
   QStringList myList;
-  QString myCumulativeLine = "";
-  QString myStringToPreviousSpace = "";
+  QString myCumulativeLine = QLatin1String( "" );
+  QString myStringToPreviousSpace = QLatin1String( "" );
   int myPreviousSpacePos = 0;
   for ( int i = 0; i < theString.count(); ++i )
   {
@@ -355,8 +355,8 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString& theString,
       //forcing a break at current pos...
       myList << myStringToPreviousSpace.trimmed();
       i = myPreviousSpacePos;
-      myStringToPreviousSpace = "";
-      myCumulativeLine = "";
+      myStringToPreviousSpace = QLatin1String( "" );
+      myCumulativeLine = QLatin1String( "" );
     }
   }//end of i loop
   //add whatever is left in the string to the list

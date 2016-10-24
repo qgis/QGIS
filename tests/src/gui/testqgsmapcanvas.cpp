@@ -111,12 +111,12 @@ void TestQgsMapCanvas::testPanByKeyboard()
 void TestQgsMapCanvas::testMagnification()
 {
   // test directory
-  QString testDataDir = QString( TEST_DATA_DIR ) + '/';
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   QString controlImageDir = testDataDir + "control_images/expected_map_magnification/";
 
   // prepare spy and unit testing stuff
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( "mapcanvas" );
+  checker.setControlPathPrefix( QStringLiteral( "mapcanvas" ) );
   checker.setColorTolerance( 5 );
 
   QSignalSpy spy( mCanvas, SIGNAL( mapCanvasRefreshed() ) );
@@ -137,7 +137,7 @@ void TestQgsMapCanvas::testMagnification()
   QString myPointsFileName = testDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
-      myPointFileInfo.completeBaseName(), "ogr" );
+      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
   QList<QgsMapCanvasLayer> layers;
@@ -157,7 +157,7 @@ void TestQgsMapCanvas::testMagnification()
   // control image with magnification factor 1.0
   mCanvas->saveAsImage( tmpName );
 
-  checker.setControlName( "expected_map_magnification" );
+  checker.setControlName( QStringLiteral( "expected_map_magnification" ) );
   checker.setRenderedImage( tmpName );
   checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
@@ -176,7 +176,7 @@ void TestQgsMapCanvas::testMagnification()
   mCanvas->saveAsImage( tmpName );
 
   checker.setRenderedImage( tmpName );
-  checker.setControlName( "expected_map_magnification_6_5" );
+  checker.setControlName( QStringLiteral( "expected_map_magnification_6_5" ) );
   controlImageDir = testDataDir + "control_images/";
   checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification_6_5", 100 ), true );
@@ -194,7 +194,7 @@ void TestQgsMapCanvas::testMagnification()
   // control image with magnification factor 1.0
   mCanvas->saveAsImage( tmpName );
 
-  checker.setControlName( "expected_map_magnification" );
+  checker.setControlName( QStringLiteral( "expected_map_magnification" ) );
   checker.setRenderedImage( tmpName );
   checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
@@ -212,11 +212,11 @@ void compareExtent( const QgsRectangle &initialExtent,
 void TestQgsMapCanvas::testMagnificationExtent()
 {
   // build vector layer
-  QString testDataDir = QString( TEST_DATA_DIR ) + '/';
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   QString myPointsFileName = testDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
-      myPointFileInfo.completeBaseName(), "ogr" );
+      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
   QList<QgsMapCanvasLayer> layers;

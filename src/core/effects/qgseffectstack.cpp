@@ -88,7 +88,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     }
 
     QPicture* pic;
-    if ( effect->type() == "drawSource" )
+    if ( effect->type() == QLatin1String( "drawSource" ) )
     {
       //draw source is always the original source, regardless of previous effect results
       pic = sourcePic;
@@ -152,9 +152,9 @@ bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) c
     return false;
   }
 
-  QDomElement effectElement = doc.createElement( "effect" );
-  effectElement.setAttribute( QString( "type" ), type() );
-  effectElement.setAttribute( QString( "enabled" ), mEnabled );
+  QDomElement effectElement = doc.createElement( QStringLiteral( "effect" ) );
+  effectElement.setAttribute( QStringLiteral( "type" ), type() );
+  effectElement.setAttribute( QStringLiteral( "enabled" ), mEnabled );
 
   bool ok = true;
   Q_FOREACH ( QgsPaintEffect* effect, mEffectList )
@@ -174,7 +174,7 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
     return false;
   }
 
-  mEnabled = ( element.attribute( "enabled", "0" ) != "0" );
+  mEnabled = ( element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 
   clearStack();
 

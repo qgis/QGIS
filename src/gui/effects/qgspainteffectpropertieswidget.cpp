@@ -53,14 +53,14 @@ static void _initWidgetFunctions()
   if ( initialized )
     return;
 
-  _initWidgetFunction( "blur", QgsBlurWidget::create );
-  _initWidgetFunction( "dropShadow", QgsShadowEffectWidget::create );
-  _initWidgetFunction( "innerShadow", QgsShadowEffectWidget::create );
-  _initWidgetFunction( "drawSource", QgsDrawSourceWidget::create );
-  _initWidgetFunction( "outerGlow", QgsGlowWidget::create );
-  _initWidgetFunction( "innerGlow", QgsGlowWidget::create );
-  _initWidgetFunction( "transform", QgsTransformWidget::create );
-  _initWidgetFunction( "color", QgsColorEffectWidget::create );
+  _initWidgetFunction( QStringLiteral( "blur" ), QgsBlurWidget::create );
+  _initWidgetFunction( QStringLiteral( "dropShadow" ), QgsShadowEffectWidget::create );
+  _initWidgetFunction( QStringLiteral( "innerShadow" ), QgsShadowEffectWidget::create );
+  _initWidgetFunction( QStringLiteral( "drawSource" ), QgsDrawSourceWidget::create );
+  _initWidgetFunction( QStringLiteral( "outerGlow" ), QgsGlowWidget::create );
+  _initWidgetFunction( QStringLiteral( "innerGlow" ), QgsGlowWidget::create );
+  _initWidgetFunction( QStringLiteral( "transform" ), QgsTransformWidget::create );
+  _initWidgetFunction( QStringLiteral( "color" ), QgsColorEffectWidget::create );
 
   initialized = true;
 }
@@ -94,7 +94,7 @@ void QgsPaintEffectPropertiesWidget::populateEffectTypes()
   Q_FOREACH ( const QString& type, types )
   {
     //don't show stack effect
-    if ( type == "effectStack" )
+    if ( type == QLatin1String( "effectStack" ) )
       continue;
 
     mEffectTypeCombo->addItem( registry->effectMetadata( type )->visibleName(), type );

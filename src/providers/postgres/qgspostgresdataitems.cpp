@@ -38,7 +38,7 @@ QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceUri& uri
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QgsPGConnectionItem::~QgsPGConnectionItem()
@@ -170,7 +170,7 @@ void QgsPGConnectionItem::createSchema()
   }
 
   //create the schema
-  QString sql = QString( "CREATE SCHEMA %1" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+  QString sql = QStringLiteral( "CREATE SCHEMA %1" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -212,7 +212,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
-    if ( u.layerType != "vector" )
+    if ( u.layerType != QLatin1String( "vector" ) )
     {
       importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
       hasError = true; // only vectors can be imported
@@ -224,7 +224,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? "geom" : QString() );
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + uri.uri( false ) );
 
       if ( !toSchema.isNull() )
@@ -234,14 +234,14 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri( false ), "postgres", srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else if ( err == QgsVectorLayerImport::ErrUserCancelled )
         cancelled = true;
       else
       {
-        importResults.append( QString( "%1: %2" ).arg( u.name, importError ) );
+        importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, importError ) );
         hasError = true;
       }
     }
@@ -267,7 +267,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to PostGIS database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
   else
@@ -281,7 +281,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
-    : QgsLayerItem( parent, name, path, QString(), layerType, "postgres" )
+    : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "postgres" ) )
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
@@ -375,12 +375,12 @@ void QgsPGLayerItem::renameLayer()
   QString sql;
   if ( mLayerProperty.isView )
   {
-    sql = QString( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( mLayerProperty.relKind == "m" ? QString( "MATERIALIZED" ) : QString(),
+    sql = QStringLiteral( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( mLayerProperty.relKind == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED" ) : QString(),
           oldName, newName );
   }
   else
   {
-    sql = QString( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName, newName );
+    sql = QStringLiteral( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName, newName );
   }
 
   QgsPostgresResult result( conn->PQexec( sql ) );
@@ -421,7 +421,7 @@ void QgsPGLayerItem::truncateTable()
   }
   QString tableRef = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
 
-  QString sql = QString( "TRUNCATE TABLE %1" ).arg( tableRef );
+  QString sql = QStringLiteral( "TRUNCATE TABLE %1" ).arg( tableRef );
 
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -461,7 +461,7 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString connectionName, Q
     : QgsDataCollectionItem( parent, name, path )
     , mConnectionName( connectionName )
 {
-  mIconName = "mIconDbSchema.png";
+  mIconName = QStringLiteral( "mIconDbSchema.png" );
 }
 
 QgsPGSchemaItem::~QgsPGSchemaItem()
@@ -560,7 +560,7 @@ void QgsPGSchemaItem::deleteSchema()
     return;
   }
 
-  QString sql = QString( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( mName );
+  QString sql = QStringLiteral( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( mName );
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
@@ -582,10 +582,10 @@ void QgsPGSchemaItem::deleteSchema()
   int count = result.PQntuples();
   if ( count > 0 )
   {
-    QString objects = childObjects.join( "\n" );
+    QString objects = childObjects.join( QStringLiteral( "\n" ) );
     if ( count > maxListed )
     {
-      objects += QString( "\n[%1 additional objects not listed]" ).arg( count - maxListed );
+      objects += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( count - maxListed );
     }
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ),
                                 QObject::tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( mName, objects ),
@@ -634,7 +634,7 @@ void QgsPGSchemaItem::renameSchema()
   }
 
   //rename the schema
-  QString sql = QString( "ALTER SCHEMA %1 RENAME TO %2" )
+  QString sql = QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
                 .arg( schemaName, QgsPostgresConn::quotedIdentifier( dlg.name() ) );
 
   QgsPostgresResult result( conn->PQexec( sql ) );
@@ -706,7 +706,7 @@ QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconPostgis.svg";
+  mIconName = QStringLiteral( "mIconPostgis.svg" );
   populate();
 }
 

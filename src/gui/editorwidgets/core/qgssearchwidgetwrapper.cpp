@@ -103,6 +103,6 @@ void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
 
 void QgsSearchWidgetWrapper::clearExpression()
 {
-  mExpression = QString( "TRUE" );
+  mExpression = QStringLiteral( "TRUE" );
 }
 

@@ -154,7 +154,7 @@ bool QgsCompoundCurve::fromWkt( const QString& wkt )
     return false;
   mWkbType = parts.first;
 
-  QString defaultChildWkbType = QString( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
+  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
 
   Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
@@ -256,9 +256,9 @@ QDomElement QgsCompoundCurve::asGML2( QDomDocument& doc, int precision, const QS
 
 QDomElement QgsCompoundCurve::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
+  QDomElement elemCurve = doc.createElementNS( ns, QStringLiteral( "Curve" ) );
 
-  QDomElement elemSegments = doc.createElementNS( ns, "segments" );
+  QDomElement elemSegments = doc.createElementNS( ns, QStringLiteral( "segments" ) );
 
   Q_FOREACH ( const QgsCurve* curve, mCurves )
   {
@@ -267,7 +267,7 @@ QDomElement QgsCompoundCurve::asGML3( QDomDocument& doc, int precision, const QS
       QgsPointSequence pts;
       curve->points( pts );
 
-      QDomElement elemLineStringSegment = doc.createElementNS( ns, "LineStringSegment" );
+      QDomElement elemLineStringSegment = doc.createElementNS( ns, QStringLiteral( "LineStringSegment" ) );
       elemLineStringSegment.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
       elemSegments.appendChild( elemLineStringSegment );
     }
@@ -276,7 +276,7 @@ QDomElement QgsCompoundCurve::asGML3( QDomDocument& doc, int precision, const QS
       QgsPointSequence pts;
       curve->points( pts );
 
-      QDomElement elemArcString = doc.createElementNS( ns, "ArcString" );
+      QDomElement elemArcString = doc.createElementNS( ns, QStringLiteral( "ArcString" ) );
       elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
       elemSegments.appendChild( elemArcString );
     }

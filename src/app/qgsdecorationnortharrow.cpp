@@ -75,19 +75,19 @@ QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
 void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, "/Rotation", 0 );
-  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, "/Automatic", true );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginH", 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginV", 0 );
+  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Rotation" ), 0 );
+  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Automatic" ), true );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 }
 
 void QgsDecorationNorthArrow::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, "/Rotation", mRotationInt );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Automatic", mAutomatic );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MarginH", mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MarginV", mMarginVertical );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Rotation" ), mRotationInt );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -105,7 +105,7 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
   {
     QPixmap myQPixmap; //to store the north arrow image in
 
-    QString myFileNameQString = ":/images/north_arrows/default.png";
+    QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
 
     if ( myQPixmap.load( myFileNameQString ) )
     {
@@ -200,7 +200,7 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
     }
     else
     {
-      QFont myQFont( "time", 12, QFont::Bold );
+      QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
       theQPainter->setFont( myQFont );
       theQPainter->setPen( Qt::black );
       theQPainter->drawText( 10, 20, tr( "North arrow pixmap not found" ) );

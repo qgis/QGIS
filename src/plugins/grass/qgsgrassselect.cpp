@@ -56,14 +56,14 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
     else
     {
       QSettings settings;
-      lastGisdbase = settings.value( "/GRASS/lastGisdbase" ).toString();
+      lastGisdbase = settings.value( QStringLiteral( "/GRASS/lastGisdbase" ) ).toString();
       //check we got something from qsettings otherwise default to users home dir
       if ( lastGisdbase.isEmpty() )
       {
         QDir home = QDir::home();
         lastGisdbase = QString( home.path() );
       }
-      lastMapset = settings.value( "/GRASS/lastMapset" ).toString();
+      lastMapset = settings.value( QStringLiteral( "/GRASS/lastMapset" ) ).toString();
     }
     first = false;
   }
@@ -131,7 +131,7 @@ void QgsGrassSelect::setLocations()
   // Add all subdirs containing PERMANENT/DEFAULT_WIND
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
-    if ( d[i] == "." || d[i] == ".." )
+    if ( d[i] == QLatin1String( "." ) || d[i] == QLatin1String( ".." ) )
       continue;
 
     QString ldpath = egisdbase->text() + "/" + d[i];
@@ -287,7 +287,7 @@ void QgsGrassSelect::setMaps()
 
     for ( unsigned int j = 0; j < md.count(); j++ )
     {
-      if ( md[j] == "." || md[j] == ".." )
+      if ( md[j] == QLatin1String( "." ) || md[j] == QLatin1String( ".." ) )
         continue;
 
       QString m = QString( md[j] + " (GROUP)" );
@@ -425,7 +425,7 @@ void QgsGrassSelect::accept()
 
   //write to qgsettings as gisdbase seems to be valid
   QSettings settings;
-  settings.setValue( "/GRASS/lastGisdbase", lastGisdbase );
+  settings.setValue( QStringLiteral( "/GRASS/lastGisdbase" ), lastGisdbase );
 
   location = elocation->currentText();
   lastLocation = location;
@@ -433,7 +433,7 @@ void QgsGrassSelect::accept()
   mapset = emapset->currentText();
   lastMapset = mapset;
 
-  settings.setValue( "/GRASS/lastMapset", lastMapset );
+  settings.setValue( QStringLiteral( "/GRASS/lastMapset" ), lastMapset );
 
   map = emap->currentText().trimmed();
 
@@ -459,9 +459,9 @@ void QgsGrassSelect::accept()
   else if ( type == QgsGrassSelect::RASTER )
   {
     lastRasterMap = map;
-    if ( map.indexOf( " (GROUP)" ) != -1 )
+    if ( map.indexOf( QLatin1String( " (GROUP)" ) ) != -1 )
     {
-      map.remove( " (GROUP)" );
+      map.remove( QStringLiteral( " (GROUP)" ) );
       selectedType = QgsGrassSelect::GROUP;
     }
     else

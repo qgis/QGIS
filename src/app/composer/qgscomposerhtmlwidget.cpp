@@ -122,15 +122,15 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastHtmlDir", QDir::homePath() ).toString();
-  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html *.htm);;All files (*.*)" );
+  QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
+  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   if ( !file.isEmpty() )
   {
     QUrl url = QUrl::fromLocalFile( file );
     mUrlLineEdit->setText( url.toString() );
     on_mUrlLineEdit_editingFinished();
     mHtml->update();
-    s.setValue( "/UI/lastHtmlDir", QFileInfo( file ).absolutePath() );
+    s.setValue( QStringLiteral( "/UI/lastHtmlDir" ), QFileInfo( file ).absolutePath() );
   }
 }
 
@@ -348,7 +348,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
     selText = mHtmlEditor->selectedText();
 
     // edit the selected expression if there's one
-    if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+    if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
       selText = selText.mid( 2, selText.size() - 4 );
   }
   else
@@ -359,7 +359,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
   QgsExpressionContext context = mHtml->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", context );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

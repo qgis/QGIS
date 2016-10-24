@@ -93,7 +93,7 @@ class QgsGeometryGapCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Gap" ); }
-    QString errorName() const override { return "QgsGeometryGapCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryGapCheck" ); }
 
   private:
     enum ResolutionMethod { MergeLongestEdge, NoChange };

@@ -27,7 +27,7 @@ static const QString name_ = QObject::tr( "Zonal statistics plugin" );
 static const QString description_ = QObject::tr( "A plugin to calculate count, sum, mean of rasters for each polygon of a vector layer" );
 static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.1" );
-static const QString pluginIcon_ = ":/zonal_statistics/raster-stats.png";
+static const QString pluginIcon_ = QStringLiteral( ":/zonal_statistics/raster-stats.png" );
 
 QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface )
     : mIface( iface )
@@ -44,7 +44,7 @@ void QgsZonalStatisticsPlugin::initGui()
   delete mAction;
 
   mAction = new QAction( QIcon( ":/zonal_statistics/raster-stats.png" ), tr( "&Zonal statistics" ), nullptr );
-  mAction->setObjectName( "ZonalStatistics" );
+  mAction->setObjectName( QStringLiteral( "ZonalStatistics" ) );
   QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
   mIface->addRasterToolBarIcon( mAction );
   mIface->addPluginToRasterMenu( tr( "&Zonal statistics" ), mAction );

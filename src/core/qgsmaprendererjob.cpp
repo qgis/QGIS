@@ -379,7 +379,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings& settings, const La
 void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
 {
   QSettings settings;
-  if ( !settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() )
+  if ( !settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
     return;
 
   QMultiMap<int, QString> elapsed;
@@ -390,7 +390,7 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
   qSort( tt.begin(), tt.end(), qGreater<int>() );
   Q_FOREACH ( int t, tt )
   {
-    QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( ", " ) ), tr( "Rendering" ) );
+    QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QStringLiteral( ", " ) ) ), tr( "Rendering" ) );
   }
-  QgsMessageLog::logMessage( "---", tr( "Rendering" ) );
+  QgsMessageLog::logMessage( QStringLiteral( "---" ), tr( "Rendering" ) );
 }

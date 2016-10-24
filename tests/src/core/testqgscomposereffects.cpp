@@ -72,7 +72,7 @@ void TestQgsComposerEffects::initTestCase()
   mComposerRect2->setShapeType( QgsComposerShape::Rectangle );
   mComposition->addComposerShape( mComposerRect2 );
 
-  mReport = "<h1>Composer Effects Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Effects Tests</h1>\n" );
 }
 
 void TestQgsComposerEffects::cleanupTestCase()
@@ -106,8 +106,8 @@ void TestQgsComposerEffects::blend_modes()
 {
   mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  QgsCompositionChecker checker( "composereffects_blend", mComposition );
-  checker.setControlPathPrefix( "composer_effects" );
+  QgsCompositionChecker checker( QStringLiteral( "composereffects_blend" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testComposition( mReport ) );
   // reset blending
   mComposerRect2->setBlendMode( QPainter::CompositionMode_SourceOver );
@@ -117,8 +117,8 @@ void TestQgsComposerEffects::transparency()
 {
   mComposerRect2->setTransparency( 50 );
 
-  QgsCompositionChecker checker( "composereffects_transparency", mComposition );
-  checker.setControlPathPrefix( "composer_effects" );
+  QgsCompositionChecker checker( QStringLiteral( "composereffects_transparency" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 

@@ -54,15 +54,15 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
 
   setupUi( this );
 
-  mSplitter->restoreState( QSettings().value( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ).toByteArray() );
+  mSplitter->restoreState( QSettings().value( QStringLiteral( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ) ).toByteArray() );
 
   // Init as hidden by default, it will be enabled if project is set to
   mAttributeEditorOptionsWidget->setVisible( false );
 
-  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ) );
-  mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.svg" ) );
-  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
-  mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.svg" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
+  mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
+  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
 
   connect( mToggleEditingButton, SIGNAL( clicked() ), this, SIGNAL( toggleEditing() ) );
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
@@ -91,8 +91,8 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mFieldsList->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   mFieldsList->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
   mFieldsList->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
-  mFieldsList->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( "WMS" ) );
-  mFieldsList->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
+  mFieldsList->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( QStringLiteral( "WMS" ) ) );
+  mFieldsList->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( QStringLiteral( "WFS" ) ) );
   mFieldsList->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
@@ -131,7 +131,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
 
 QgsFieldsProperties::~QgsFieldsProperties()
 {
-  QSettings().setValue( "/Windows/VectorLayerProperties/FieldsProperties/SplitState", mSplitter->saveState() );
+  QSettings().setValue( QStringLiteral( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ), mSplitter->saveState() );
 }
 
 void QgsFieldsProperties::init()
@@ -286,11 +286,11 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   switch ( mLayer->fields().fieldOrigin( idx ) )
   {
     case QgsFields::OriginExpression:
-      dataItem->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       break;
 
     case QgsFields::OriginJoin:
-      dataItem->setIcon( QgsApplication::getThemeIcon( "/propertyicons/join.png" ) );
+      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
       break;
 
     default:
@@ -310,7 +310,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     expressionWidget->setLayout( new QHBoxLayout );
     QToolButton* editExpressionButton = new QToolButton;
     editExpressionButton->setProperty( "Index", idx );
-    editExpressionButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+    editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
     connect( editExpressionButton, SIGNAL( clicked() ), this, SLOT( updateExpression() ) );
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
@@ -376,7 +376,7 @@ void QgsFieldsProperties::loadRelations()
 
     QTableWidgetItem* item = new QTableWidgetItem( relation.name() );
     item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    DesignerTreeItemData itemData( DesignerTreeItemData::Relation, QString( "%1" ).arg( relation.id() ) );
+    DesignerTreeItemData itemData( DesignerTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) );
     item->setData( DesignerTreeRole, itemData.asQVariant() );
     mRelationsList->setItem( idx, RelNameCol, item );
 
@@ -397,11 +397,11 @@ void QgsFieldsProperties::loadRelations()
     Q_FOREACH ( const QgsRelation& nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
     {
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
-        nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+        nmCombo->addItem( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
       const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
 
-      const QVariant nmrelcfg = setup.config().value( "nm-rel" );
+      const QVariant nmrelcfg = setup.config().value( QStringLiteral( "nm-rel" ) );
 
       int idx =  nmCombo->findData( nmrelcfg.toString() );
 
@@ -808,7 +808,7 @@ void QgsFieldsProperties::updateExpression()
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope();
 
-  QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, QStringLiteral( "generic" ), context );
 
   if ( dlg.exec() )
   {
@@ -896,14 +896,14 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 void QgsFieldsProperties::on_pbtnSelectInitFilePath_clicked()
 {
   QSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( "style/lastInitFilePathDir", "." ).toString();
+  QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString();
   QString pyfilename = QFileDialog::getOpenFileName( this, tr( "Select Python file" ), lastUsedDir, tr( "Python file" )  + " (*.py)" );
 
   if ( pyfilename.isNull() )
     return;
 
   QFileInfo fi( pyfilename );
-  myQSettings.setValue( "style/lastInitFilePathDir", fi.path() );
+  myQSettings.setValue( QStringLiteral( "style/lastInitFilePathDir" ), fi.path() );
   mInitFilePathLineEdit->setText( pyfilename );
 }
 
@@ -911,14 +911,14 @@ void QgsFieldsProperties::on_pbtnSelectInitFilePath_clicked()
 void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
 {
   QSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( "style/lastUIDir", QDir::homePath() ).toString();
+  QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastUIDir" ), QDir::homePath() ).toString();
   QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
 
   if ( uifilename.isNull() )
     return;
 
   QFileInfo fi( uifilename );
-  myQSettings.setValue( "style/lastUIDir", fi.path() );
+  myQSettings.setValue( QStringLiteral( "style/lastUIDir" ), fi.path() );
   mEditFormLineEdit->setText( uifilename );
 }
 
@@ -1006,7 +1006,7 @@ void QgsFieldsProperties::apply()
 
     if ( otherRelation.isValid() )
     {
-      cfg["nm-rel"] = otherRelation.toString();
+      cfg[QStringLiteral( "nm-rel" )] = otherRelation.toString();
     }
 
     DesignerTreeItemData itemData = mRelationsList->item( i, RelNameCol )->data( DesignerTreeRole ).value<DesignerTreeItemData>();
@@ -1053,7 +1053,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
 
 QStringList DragList::mimeTypes() const
 {
-  return QStringList() << QLatin1String( "application/x-qgsattributetabledesignerelement" );
+  return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
 }
 
 QMimeData* DragList::mimeData( const QList<QTableWidgetItem *> items ) const
@@ -1151,11 +1151,11 @@ void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
 {
   const QMimeData* data = event->mimeData();
 
-  if ( data->hasFormat( "application/x-qgsattributetabledesignerelement" ) )
+  if ( data->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
   {
     QgsFieldsProperties::DesignerTreeItemData itemElement;
 
-    QByteArray itemData = data->data( "application/x-qgsattributetabledesignerelement" );
+    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
     stream >> itemElement;
 
@@ -1183,9 +1183,9 @@ bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMime
   {
     bDropSuccessful = true;
   }
-  else if ( data->hasFormat( "application/x-qgsattributetabledesignerelement" ) )
+  else if ( data->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
   {
-    QByteArray itemData = data->data( "application/x-qgsattributetabledesignerelement" );
+    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
     QgsFieldsProperties::DesignerTreeItemData itemElement;
 
@@ -1211,7 +1211,7 @@ bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMime
 
 void DesignerTree::dropEvent( QDropEvent* event )
 {
-  if ( !event->mimeData()->hasFormat( "application/x-qgsattributetabledesignerelement" ) )
+  if ( !event->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
     return;
 
   if ( event->source() == this )
@@ -1224,7 +1224,7 @@ void DesignerTree::dropEvent( QDropEvent* event )
 
 QStringList DesignerTree::mimeTypes() const
 {
-  return QStringList() << QLatin1String( "application/x-qgsattributetabledesignerelement" );
+  return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
 }
 
 QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
@@ -1266,7 +1266,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
 
   QFormLayout* baseLayout = new QFormLayout();
   baseData->setLayout( baseLayout );
-  QCheckBox* showLabelCheckbox = new QCheckBox( "Show label" );
+  QCheckBox* showLabelCheckbox = new QCheckBox( QStringLiteral( "Show label" ) );
   showLabelCheckbox->setChecked( itemData.showLabel() );
   baseLayout->addWidget( showLabelCheckbox );
   QWidget* baseWidget = new QWidget();

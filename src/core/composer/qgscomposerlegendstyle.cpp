@@ -30,7 +30,7 @@ QgsComposerLegendStyle::QgsComposerLegendStyle()
 {
   //get default composer font from settings
   QSettings settings;
-  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -49,16 +49,16 @@ void QgsComposerLegendStyle::writeXml( const QString& name, QDomElement& elem, Q
 {
   if ( elem.isNull() ) return;
 
-  QDomElement styleElem = doc.createElement( "style" );
+  QDomElement styleElem = doc.createElement( QStringLiteral( "style" ) );
 
-  styleElem.setAttribute( "name", name );
+  styleElem.setAttribute( QStringLiteral( "name" ), name );
 
-  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) ) styleElem.setAttribute( "marginTop", QString::number( mMarginMap[Top] ) );
-  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) ) styleElem.setAttribute( "marginBottom", QString::number( mMarginMap[Bottom] ) );
-  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) ) styleElem.setAttribute( "marginLeft", QString::number( mMarginMap[Left] ) );
-  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) ) styleElem.setAttribute( "marginRight", QString::number( mMarginMap[Right] ) );
+  if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginTop" ), QString::number( mMarginMap[Top] ) );
+  if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginBottom" ), QString::number( mMarginMap[Bottom] ) );
+  if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginLeft" ), QString::number( mMarginMap[Left] ) );
+  if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) ) styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
 
-  styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, "styleFont" ) );
+  styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "styleFont" ) ) );
 
   elem.appendChild( styleElem );
 }
@@ -68,15 +68,15 @@ void QgsComposerLegendStyle::readXml( const QDomElement& elem, const QDomDocumen
   Q_UNUSED( doc );
   if ( elem.isNull() ) return;
 
-  if ( !QgsFontUtils::setFromXmlChildNode( mFont, elem, "styleFont" ) )
+  if ( !QgsFontUtils::setFromXmlChildNode( mFont, elem, QStringLiteral( "styleFont" ) ) )
   {
-    mFont.fromString( elem.attribute( "font" ) );
+    mFont.fromString( elem.attribute( QStringLiteral( "font" ) ) );
   }
 
-  mMarginMap[Top] = elem.attribute( "marginTop", "0" ).toDouble();
-  mMarginMap[Bottom] = elem.attribute( "marginBottom", "0" ).toDouble();
-  mMarginMap[Left] = elem.attribute( "marginLeft", "0" ).toDouble();
-  mMarginMap[Right] = elem.attribute( "marginRight", "0" ).toDouble();
+  mMarginMap[Top] = elem.attribute( QStringLiteral( "marginTop" ), QStringLiteral( "0" ) ).toDouble();
+  mMarginMap[Bottom] = elem.attribute( QStringLiteral( "marginBottom" ), QStringLiteral( "0" ) ).toDouble();
+  mMarginMap[Left] = elem.attribute( QStringLiteral( "marginLeft" ), QStringLiteral( "0" ) ).toDouble();
+  mMarginMap[Right] = elem.attribute( QStringLiteral( "marginRight" ), QStringLiteral( "0" ) ).toDouble();
 }
 
 QString QgsComposerLegendStyle::styleName( Style s )
@@ -84,31 +84,31 @@ QString QgsComposerLegendStyle::styleName( Style s )
   switch ( s )
   {
     case Undefined:
-      return "";
+      return QLatin1String( "" );
     case Hidden:
-      return "hidden";
+      return QStringLiteral( "hidden" );
     case Title:
-      return "title";
+      return QStringLiteral( "title" );
     case Group:
-      return "group";
+      return QStringLiteral( "group" );
     case Subgroup:
-      return "subgroup";
+      return QStringLiteral( "subgroup" );
     case Symbol:
-      return "symbol";
+      return QStringLiteral( "symbol" );
     case SymbolLabel:
-      return "symbolLabel";
+      return QStringLiteral( "symbolLabel" );
   }
-  return "";
+  return QLatin1String( "" );
 }
 
 QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName( const QString& styleName )
 {
-  if ( styleName == "hidden" ) return Hidden;
-  else if ( styleName == "title" ) return Title;
-  else if ( styleName == "group" ) return Group;
-  else if ( styleName == "subgroup" ) return Subgroup;
-  else if ( styleName == "symbol" ) return Symbol;
-  else if ( styleName == "symbolLabel" ) return SymbolLabel;
+  if ( styleName == QLatin1String( "hidden" ) ) return Hidden;
+  else if ( styleName == QLatin1String( "title" ) ) return Title;
+  else if ( styleName == QLatin1String( "group" ) ) return Group;
+  else if ( styleName == QLatin1String( "subgroup" ) ) return Subgroup;
+  else if ( styleName == QLatin1String( "symbol" ) ) return Symbol;
+  else if ( styleName == QLatin1String( "symbolLabel" ) ) return SymbolLabel;
   return Undefined;
 }
 
@@ -131,5 +131,5 @@ QString QgsComposerLegendStyle::styleLabel( Style s )
     case SymbolLabel:
       return QObject::tr( "Symbol label" );
   }
-  return "";
+  return QLatin1String( "" );
 }

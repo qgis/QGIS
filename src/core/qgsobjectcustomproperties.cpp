@@ -48,7 +48,7 @@ void QgsObjectCustomProperties::remove( const QString& key )
 
 void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QString& keyStartsWith )
 {
-  QDomNode propsNode = parentNode.namedItem( "customproperties" );
+  QDomNode propsNode = parentNode.namedItem( QStringLiteral( "customproperties" ) );
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
@@ -81,25 +81,25 @@ void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QStri
   for ( int i = 0; i < nodes.size(); i++ )
   {
     QDomNode propNode = nodes.at( i );
-    if ( propNode.isNull() || propNode.nodeName() != "property" )
+    if ( propNode.isNull() || propNode.nodeName() != QLatin1String( "property" ) )
       continue;
     QDomElement propElement = propNode.toElement();
 
-    QString key = propElement.attribute( "key" );
+    QString key = propElement.attribute( QStringLiteral( "key" ) );
     if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
     {
-      if ( propElement.hasAttribute( "value" ) )
+      if ( propElement.hasAttribute( QStringLiteral( "value" ) ) )
       {
-        QString value = propElement.attribute( "value" );
+        QString value = propElement.attribute( QStringLiteral( "value" ) );
         mMap[key] = QVariant( value );
       }
       else
       {
         QStringList list;
 
-        for ( QDomElement itemElement = propElement.firstChildElement( "value" );
+        for ( QDomElement itemElement = propElement.firstChildElement( QStringLiteral( "value" ) );
               !itemElement.isNull();
-              itemElement = itemElement.nextSiblingElement( "value" ) )
+              itemElement = itemElement.nextSiblingElement( QStringLiteral( "value" ) ) )
         {
           list << itemElement.text();
         }
@@ -114,27 +114,27 @@ void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QStri
 void QgsObjectCustomProperties::writeXml( QDomNode& parentNode, QDomDocument& doc ) const
 {
   //remove already existing <customproperties> tags
-  QDomNodeList propertyList = parentNode.toElement().elementsByTagName( "customproperties" );
+  QDomNodeList propertyList = parentNode.toElement().elementsByTagName( QStringLiteral( "customproperties" ) );
   for ( int i = 0; i < propertyList.size(); ++i )
   {
     parentNode.removeChild( propertyList.at( i ) );
   }
 
-  QDomElement propsElement = doc.createElement( "customproperties" );
+  QDomElement propsElement = doc.createElement( QStringLiteral( "customproperties" ) );
 
   for ( QMap<QString, QVariant>::const_iterator it = mMap.constBegin(); it != mMap.constEnd(); ++it )
   {
-    QDomElement propElement = doc.createElement( "property" );
-    propElement.setAttribute( "key", it.key() );
+    QDomElement propElement = doc.createElement( QStringLiteral( "property" ) );
+    propElement.setAttribute( QStringLiteral( "key" ), it.key() );
     if ( it.value().canConvert<QString>() )
     {
-      propElement.setAttribute( "value", it.value().toString() );
+      propElement.setAttribute( QStringLiteral( "value" ), it.value().toString() );
     }
     else if ( it.value().canConvert<QStringList>() )
     {
       Q_FOREACH ( const QString& value, it.value().toStringList() )
       {
-        QDomElement itemElement = doc.createElement( "value" );
+        QDomElement itemElement = doc.createElement( QStringLiteral( "value" ) );
         itemElement.appendChild( doc.createTextNode( value ) );
         propElement.appendChild( itemElement );
       }

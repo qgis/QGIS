@@ -261,7 +261,7 @@ void QgsAnnotationItem::drawSelectionBoxes( QPainter* p ) const
   }
 
   //no selection boxes for composer mode
-  if ( data( 1 ).toString() == "composer" )
+  if ( data( 1 ).toString() == QLatin1String( "composer" ) )
   {
     return;
   }
@@ -412,28 +412,28 @@ void QgsAnnotationItem::_writeXml( QDomDocument& doc, QDomElement& itemElem ) co
   {
     return;
   }
-  QDomElement annotationElem = doc.createElement( "AnnotationItem" );
-  annotationElem.setAttribute( "mapPositionFixed", mMapPositionFixed );
-  annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
-  annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
+  QDomElement annotationElem = doc.createElement( QStringLiteral( "AnnotationItem" ) );
+  annotationElem.setAttribute( QStringLiteral( "mapPositionFixed" ), mMapPositionFixed );
+  annotationElem.setAttribute( QStringLiteral( "mapPosX" ), qgsDoubleToString( mMapPosition.x() ) );
+  annotationElem.setAttribute( QStringLiteral( "mapPosY" ), qgsDoubleToString( mMapPosition.y() ) );
   if ( mMapPositionCrs.isValid() )
     mMapPositionCrs.writeXml( annotationElem, doc );
-  annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
-  annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
-  annotationElem.setAttribute( "frameWidth", qgsDoubleToString( mFrameSize.width() ) );
-  annotationElem.setAttribute( "frameHeight", qgsDoubleToString( mFrameSize.height() ) );
+  annotationElem.setAttribute( QStringLiteral( "offsetX" ), qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
+  annotationElem.setAttribute( QStringLiteral( "offsetY" ), qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
+  annotationElem.setAttribute( QStringLiteral( "frameWidth" ), qgsDoubleToString( mFrameSize.width() ) );
+  annotationElem.setAttribute( QStringLiteral( "frameHeight" ), qgsDoubleToString( mFrameSize.height() ) );
   QPointF canvasPos = pos();
-  annotationElem.setAttribute( "canvasPosX", qgsDoubleToString( canvasPos.x() ) );
-  annotationElem.setAttribute( "canvasPosY", qgsDoubleToString( canvasPos.y() ) );
-  annotationElem.setAttribute( "frameBorderWidth", qgsDoubleToString( mFrameBorderWidth ) );
-  annotationElem.setAttribute( "frameColor", mFrameColor.name() );
-  annotationElem.setAttribute( "frameColorAlpha", mFrameColor.alpha() );
-  annotationElem.setAttribute( "frameBackgroundColor", mFrameBackgroundColor.name() );
-  annotationElem.setAttribute( "frameBackgroundColorAlpha", mFrameBackgroundColor.alpha() );
-  annotationElem.setAttribute( "visible", isVisible() );
+  annotationElem.setAttribute( QStringLiteral( "canvasPosX" ), qgsDoubleToString( canvasPos.x() ) );
+  annotationElem.setAttribute( QStringLiteral( "canvasPosY" ), qgsDoubleToString( canvasPos.y() ) );
+  annotationElem.setAttribute( QStringLiteral( "frameBorderWidth" ), qgsDoubleToString( mFrameBorderWidth ) );
+  annotationElem.setAttribute( QStringLiteral( "frameColor" ), mFrameColor.name() );
+  annotationElem.setAttribute( QStringLiteral( "frameColorAlpha" ), mFrameColor.alpha() );
+  annotationElem.setAttribute( QStringLiteral( "frameBackgroundColor" ), mFrameBackgroundColor.name() );
+  annotationElem.setAttribute( QStringLiteral( "frameBackgroundColorAlpha" ), mFrameBackgroundColor.alpha() );
+  annotationElem.setAttribute( QStringLiteral( "visible" ), isVisible() );
   if ( mMarkerSymbol )
   {
-    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol, doc );
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
@@ -450,12 +450,12 @@ void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& an
     return;
   }
   QPointF pos;
-  pos.setX( annotationElem.attribute( "canvasPosX", "0" ).toDouble() );
-  pos.setY( annotationElem.attribute( "canvasPosY", "0" ).toDouble() );
+  pos.setX( annotationElem.attribute( QStringLiteral( "canvasPosX" ), QStringLiteral( "0" ) ).toDouble() );
+  pos.setY( annotationElem.attribute( QStringLiteral( "canvasPosY" ), QStringLiteral( "0" ) ).toDouble() );
   setPos( pos );
   QgsPoint mapPos;
-  mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
-  mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
+  mapPos.setX( annotationElem.attribute( QStringLiteral( "mapPosX" ), QStringLiteral( "0" ) ).toDouble() );
+  mapPos.setY( annotationElem.attribute( QStringLiteral( "mapPosY" ), QStringLiteral( "0" ) ).toDouble() );
   mMapPosition = mapPos;
 
   if ( !mMapPositionCrs.readXml( annotationElem ) )
@@ -463,20 +463,20 @@ void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& an
     mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
   }
 
-  mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
-  mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
-  mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );
-  mFrameBackgroundColor.setNamedColor( annotationElem.attribute( "frameBackgroundColor" ) );
-  mFrameBackgroundColor.setAlpha( annotationElem.attribute( "frameBackgroundColorAlpha", "255" ).toInt() );
-  mFrameSize.setWidth( annotationElem.attribute( "frameWidth", "50" ).toDouble() );
-  mFrameSize.setHeight( annotationElem.attribute( "frameHeight", "50" ).toDouble() );
-  mOffsetFromReferencePoint.setX( annotationElem.attribute( "offsetX", "0" ).toDouble() );
-  mOffsetFromReferencePoint.setY( annotationElem.attribute( "offsetY", "0" ).toDouble() );
-  mMapPositionFixed = annotationElem.attribute( "mapPositionFixed", "1" ).toInt();
-  setVisible( annotationElem.attribute( "visible", "1" ).toInt() );
+  mFrameBorderWidth = annotationElem.attribute( QStringLiteral( "frameBorderWidth" ), QStringLiteral( "0.5" ) ).toDouble();
+  mFrameColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameColor" ), QStringLiteral( "#000000" ) ) );
+  mFrameColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
+  mFrameBackgroundColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameBackgroundColor" ) ) );
+  mFrameBackgroundColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameBackgroundColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
+  mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidth" ), QStringLiteral( "50" ) ).toDouble() );
+  mFrameSize.setHeight( annotationElem.attribute( QStringLiteral( "frameHeight" ), QStringLiteral( "50" ) ).toDouble() );
+  mOffsetFromReferencePoint.setX( annotationElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble() );
+  mOffsetFromReferencePoint.setY( annotationElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble() );
+  mMapPositionFixed = annotationElem.attribute( QStringLiteral( "mapPositionFixed" ), QStringLiteral( "1" ) ).toInt();
+  setVisible( annotationElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt() );
 
   //marker symbol
-  QDomElement symbolElem = annotationElem.firstChildElement( "symbol" );
+  QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
   {
     QgsMarkerSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );

@@ -240,7 +240,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param defaultType default geometry type for childen
      * @returns list of WKT child block strings, eg List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      */
-    static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = "" );
+    static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = QLatin1String( "" ) );
 
     enum componentType
     {

@@ -50,9 +50,9 @@ class TestQgsField: public QObject
 void TestQgsField::initTestCase()
 {
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 }
 
 void TestQgsField::cleanupTestCase()
@@ -72,7 +72,7 @@ void TestQgsField::cleanup()
 
 void TestQgsField::create()
 {
-  QScopedPointer<QgsField> field( new QgsField( "name", QVariant::Double, "double", 5, 2, "comment" ) );
+  QScopedPointer<QgsField> field( new QgsField( QStringLiteral( "name" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) ) );
   QCOMPARE( field->name(), QString( "name" ) );
   QCOMPARE( field->type(), QVariant::Double );
   QCOMPARE( field->typeName(), QString( "double" ) );
@@ -83,23 +83,23 @@ void TestQgsField::create()
 
 void TestQgsField::copy()
 {
-  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
   QgsField copy( original );
   QVERIFY( copy == original );
 
-  copy.setName( "copy" );
+  copy.setName( QStringLiteral( "copy" ) );
   QCOMPARE( original.name(), QString( "original" ) );
   QVERIFY( copy != original );
 }
 
 void TestQgsField::assignment()
 {
-  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
 
-  copy.setName( "copy" );
+  copy.setName( QStringLiteral( "copy" ) );
   QCOMPARE( original.name(), QString( "original" ) );
   QVERIFY( copy != original );
 }
@@ -107,21 +107,21 @@ void TestQgsField::assignment()
 void TestQgsField::gettersSetters()
 {
   QgsField field;
-  field.setName( "name" );
+  field.setName( QStringLiteral( "name" ) );
   QCOMPARE( field.name(), QString( "name" ) );
   field.setType( QVariant::Int );
   QCOMPARE( field.type(), QVariant::Int );
-  field.setTypeName( "typeName" );
+  field.setTypeName( QStringLiteral( "typeName" ) );
   QCOMPARE( field.typeName(), QString( "typeName" ) );
   field.setLength( 5 );
   QCOMPARE( field.length(), 5 );
   field.setPrecision( 2 );
   QCOMPARE( field.precision(), 2 );
-  field.setComment( "comment" );
+  field.setComment( QStringLiteral( "comment" ) );
   QCOMPARE( field.comment(), QString( "comment" ) );
-  field.setAlias( "alias" );
+  field.setAlias( QStringLiteral( "alias" ) );
   QCOMPARE( field.alias(), QString( "alias" ) );
-  field.setDefaultValueExpression( "1+2" );
+  field.setDefaultValueExpression( QStringLiteral( "1+2" ) );
   QCOMPARE( field.defaultValueExpression(), QString( "1+2" ) );
 }
 
@@ -151,27 +151,27 @@ void TestQgsField::isNumeric()
 void TestQgsField::equality()
 {
   QgsField field1;
-  field1.setName( "name" );
+  field1.setName( QStringLiteral( "name" ) );
   field1.setType( QVariant::Int );
   field1.setLength( 5 );
   field1.setPrecision( 2 );
-  field1.setTypeName( "typename1" ); //typename is NOT required for equality
-  field1.setComment( "comment1" ); //comment is NOT required for equality
+  field1.setTypeName( QStringLiteral( "typename1" ) ); //typename is NOT required for equality
+  field1.setComment( QStringLiteral( "comment1" ) ); //comment is NOT required for equality
   QgsField field2;
-  field2.setName( "name" );
+  field2.setName( QStringLiteral( "name" ) );
   field2.setType( QVariant::Int );
   field2.setLength( 5 );
   field2.setPrecision( 2 );
-  field2.setTypeName( "typename2" ); //typename is NOT required for equality
-  field2.setComment( "comment2" ); //comment is NOT required for equality
+  field2.setTypeName( QStringLiteral( "typename2" ) ); //typename is NOT required for equality
+  field2.setComment( QStringLiteral( "comment2" ) ); //comment is NOT required for equality
   QVERIFY( field1 == field2 );
   QVERIFY( !( field1 != field2 ) );
 
   //test that all applicable components contribute to equality
-  field2.setName( "name2" );
+  field2.setName( QStringLiteral( "name2" ) );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  field2.setName( "name" );
+  field2.setName( QStringLiteral( "name" ) );
   field2.setType( QVariant::Double );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
@@ -184,11 +184,11 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setPrecision( 2 );
-  field2.setAlias( "alias " );
+  field2.setAlias( QStringLiteral( "alias " ) );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setAlias( QString() );
-  field2.setDefaultValueExpression( "1+2" );
+  field2.setDefaultValueExpression( QStringLiteral( "1+2" ) );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setDefaultValueExpression( QString() );
@@ -196,7 +196,7 @@ void TestQgsField::equality()
 
 void TestQgsField::asVariant()
 {
-  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
@@ -208,27 +208,27 @@ void TestQgsField::asVariant()
 
 void TestQgsField::displayString()
 {
-  QgsField stringField( "string", QVariant::String, "string" );
+  QgsField stringField( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
 
   //test string value
-  QString test( "test string" );
+  QString test( QStringLiteral( "test string" ) );
   QCOMPARE( stringField.displayString( test ), test );
 
   //test NULL
   QSettings s;
-  s.setValue( "qgis/nullValue", "TEST NULL" );
+  s.setValue( QStringLiteral( "qgis/nullValue" ), "TEST NULL" );
   QVariant nullString = QVariant( QVariant::String );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 
   //test int value
-  QgsField intField( "int", QVariant::String, "int" );
+  QgsField intField( QStringLiteral( "int" ), QVariant::String, QStringLiteral( "int" ) );
   QCOMPARE( intField.displayString( 5 ), QString( "5" ) );
   //test NULL int
   QVariant nullInt = QVariant( QVariant::Int );
   QCOMPARE( intField.displayString( nullInt ), QString( "TEST NULL" ) );
 
   //test double value
-  QgsField doubleField( "double", QVariant::Double, "double", 10, 3 );
+  QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
   //test NULL double
   QVariant nullDouble = QVariant( QVariant::Double );
@@ -239,7 +239,7 @@ void TestQgsField::displayString()
 void TestQgsField::convertCompatible()
 {
   //test string field
-  QgsField stringField( "string", QVariant::String, "string" );
+  QgsField stringField( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
 
   QVariant stringVar( "test string" );
   QVERIFY( stringField.convertCompatible( stringVar ) );
@@ -266,7 +266,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( nullDouble.isNull() );
 
   //test double
-  QgsField doubleField( "double", QVariant::Double, "double" );
+  QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ) );
 
   stringVar = QVariant( "test string" );
   QVERIFY( !doubleField.convertCompatible( stringVar ) );
@@ -296,7 +296,7 @@ void TestQgsField::convertCompatible()
   //test special rules
 
   //conversion of double to int
-  QgsField intField( "int", QVariant::Int, "int" );
+  QgsField intField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "int" ) );
   //small double, should be rounded
   QVariant smallDouble( 45.7 );
   QVERIFY( intField.convertCompatible( smallDouble ) );
@@ -342,14 +342,14 @@ void TestQgsField::convertCompatible()
   QCOMPARE( smallLonglong.type(), QVariant::Int );
   QCOMPARE( smallLonglong, QVariant( 99 ) );
   //conversion of longlong to longlong field
-  QgsField longlongField( "long", QVariant::LongLong, "longlong" );
+  QgsField longlongField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
   longlong = QVariant( 99999999999999999LL );
   QVERIFY( longlongField.convertCompatible( longlong ) );
   QCOMPARE( longlong.type(), QVariant::LongLong );
   QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
 
   //double with precision
-  QgsField doubleWithPrecField( "double", QVariant::Double, "double", 10, 3 );
+  QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   doubleVar = QVariant( 10.12345678 );
   //note - this returns true!
   QVERIFY( doubleWithPrecField.convertCompatible( doubleVar ) );
@@ -357,7 +357,7 @@ void TestQgsField::convertCompatible()
   QCOMPARE( doubleVar.toDouble(), 10.123 );
 
   //truncating string length
-  QgsField stringWithLen( "string", QVariant::String, "string", 3 );
+  QgsField stringWithLen( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ), 3 );
   stringVar = QVariant( "longstring" );
   QVERIFY( !stringWithLen.convertCompatible( stringVar ) );
   QCOMPARE( stringVar.type(), QVariant::String );
@@ -367,14 +367,14 @@ void TestQgsField::convertCompatible()
 void TestQgsField::dataStream()
 {
   QgsField original;
-  original.setName( "name" );
+  original.setName( QStringLiteral( "name" ) );
   original.setType( QVariant::Int );
   original.setLength( 5 );
   original.setPrecision( 2 );
-  original.setTypeName( "typename1" );
-  original.setComment( "comment1" );
-  original.setAlias( "alias" );
-  original.setDefaultValueExpression( "default" );
+  original.setTypeName( QStringLiteral( "typename1" ) );
+  original.setComment( QStringLiteral( "comment1" ) );
+  original.setAlias( QStringLiteral( "alias" ) );
+  original.setDefaultValueExpression( QStringLiteral( "default" ) );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
@@ -392,9 +392,9 @@ void TestQgsField::dataStream()
 void TestQgsField::displayName()
 {
   QgsField field;
-  field.setName( "name" );
+  field.setName( QStringLiteral( "name" ) );
   QCOMPARE( field.displayName(), QString( "name" ) );
-  field.setAlias( "alias" );
+  field.setAlias( QStringLiteral( "alias" ) );
   QCOMPARE( field.displayName(), QString( "alias" ) );
   field.setAlias( QString() );
   QCOMPARE( field.displayName(), QString( "name" ) );
@@ -404,8 +404,8 @@ void TestQgsField::editorWidgetSetup()
 {
   QgsField field;
   QgsEditorWidgetConfig config;
-  config.insert( "a", "value_a" );
-  const QgsEditorWidgetSetup setup( "test", config );
+  config.insert( QStringLiteral( "a" ), "value_a" );
+  const QgsEditorWidgetSetup setup( QStringLiteral( "test" ), config );
   field.setEditorWidgetSetup( setup );
 
   QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
@@ -414,7 +414,7 @@ void TestQgsField::editorWidgetSetup()
 
 void TestQgsField::collection()
 {
-  QgsField field( "collection", QVariant::List, "_int32", 0, 0, QString(), QVariant::Int );
+  QgsField field( QStringLiteral( "collection" ), QVariant::List, QStringLiteral( "_int32" ), 0, 0, QString(), QVariant::Int );
   QCOMPARE( field.subType(), QVariant::Int );
   field.setSubType( QVariant::Double );
   QCOMPARE( field.subType(), QVariant::Double );

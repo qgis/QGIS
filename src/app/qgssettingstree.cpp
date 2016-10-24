@@ -192,8 +192,8 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     if ( childIndex != -1 )
     {
       child = childAt( parent, childIndex );
-      child->setText( 1, "" );
-      child->setText( 2, "" );
+      child->setText( 1, QLatin1String( "" ) );
+      child->setText( 2, QLatin1String( "" ) );
       child->setData( 2, Qt::UserRole, QVariant() );
       moveItemForward( parent, childIndex, dividerIndex );
     }
@@ -238,7 +238,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     QVariant value = settings->value( key );
     if ( value.type() == QVariant::Invalid )
     {
-      child->setText( 1, "Invalid" );
+      child->setText( 1, QStringLiteral( "Invalid" ) );
     }
     else
     {

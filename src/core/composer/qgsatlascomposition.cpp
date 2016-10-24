@@ -36,7 +36,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
     : mComposition( composition )
     , mEnabled( false )
     , mHideCoverage( false )
-    , mFilenamePattern( "'output_'||@atlas_featurenumber" )
+    , mFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
     , mCoverageLayer( nullptr )
     , mSingleFile( false )
     , mSortFeatures( false )
@@ -582,8 +582,8 @@ QString QgsAtlasComposition::currentFilename() const
 
 void QgsAtlasComposition::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
-  QDomElement atlasElem = doc.createElement( "Atlas" );
-  atlasElem.setAttribute( "enabled", mEnabled ? "true" : "false" );
+  QDomElement atlasElem = doc.createElement( QStringLiteral( "Atlas" ) );
+  atlasElem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? "true" : "false" );
   if ( !mEnabled )
   {
     return;
@@ -591,28 +591,28 @@ void QgsAtlasComposition::writeXml( QDomElement& elem, QDomDocument& doc ) const
 
   if ( mCoverageLayer )
   {
-    atlasElem.setAttribute( "coverageLayer", mCoverageLayer->id() );
+    atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), mCoverageLayer->id() );
   }
   else
   {
-    atlasElem.setAttribute( "coverageLayer", "" );
+    atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), QLatin1String( "" ) );
   }
 
-  atlasElem.setAttribute( "hideCoverage", mHideCoverage ? "true" : "false" );
-  atlasElem.setAttribute( "singleFile", mSingleFile ? "true" : "false" );
-  atlasElem.setAttribute( "filenamePattern", mFilenamePattern );
-  atlasElem.setAttribute( "pageNameExpression", mPageNameExpression );
+  atlasElem.setAttribute( QStringLiteral( "hideCoverage" ), mHideCoverage ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "singleFile" ), mSingleFile ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "filenamePattern" ), mFilenamePattern );
+  atlasElem.setAttribute( QStringLiteral( "pageNameExpression" ), mPageNameExpression );
 
-  atlasElem.setAttribute( "sortFeatures", mSortFeatures ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "sortFeatures" ), mSortFeatures ? "true" : "false" );
   if ( mSortFeatures )
   {
-    atlasElem.setAttribute( "sortKey", mSortKeyAttributeName );
-    atlasElem.setAttribute( "sortAscending", mSortAscending ? "true" : "false" );
+    atlasElem.setAttribute( QStringLiteral( "sortKey" ), mSortKeyAttributeName );
+    atlasElem.setAttribute( QStringLiteral( "sortAscending" ), mSortAscending ? "true" : "false" );
   }
-  atlasElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? "true" : "false" );
   if ( mFilterFeatures )
   {
-    atlasElem.setAttribute( "featureFilter", mFeatureFilter );
+    atlasElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
   }
 
   elem.appendChild( atlasElem );
@@ -620,7 +620,7 @@ void QgsAtlasComposition::writeXml( QDomElement& elem, QDomDocument& doc ) const
 
 void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocument& )
 {
-  mEnabled = atlasElem.attribute( "enabled", "false" ) == "true" ? true : false;
+  mEnabled = atlasElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
   emit toggled( mEnabled );
   if ( !mEnabled )
   {
@@ -633,21 +633,21 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( it.key() == atlasElem.attribute( "coverageLayer" ) )
+    if ( it.key() == atlasElem.attribute( QStringLiteral( "coverageLayer" ) ) )
     {
       mCoverageLayer = dynamic_cast<QgsVectorLayer*>( it.value() );
       break;
     }
   }
 
-  mPageNameExpression = atlasElem.attribute( "pageNameExpression", QString() );
-  mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
-  mFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
+  mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
+  mSingleFile = atlasElem.attribute( QStringLiteral( "singleFile" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mFilenamePattern = atlasElem.attribute( QStringLiteral( "filenamePattern" ), QLatin1String( "" ) );
 
-  mSortFeatures = atlasElem.attribute( "sortFeatures", "false" ) == "true" ? true : false;
+  mSortFeatures = atlasElem.attribute( QStringLiteral( "sortFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
   if ( mSortFeatures )
   {
-    mSortKeyAttributeName = atlasElem.attribute( "sortKey", "" );
+    mSortKeyAttributeName = atlasElem.attribute( QStringLiteral( "sortKey" ), QLatin1String( "" ) );
     // since 2.3, the field name is saved instead of the field index
     // following code keeps compatibility with version 2.2 projects
     // to be removed in QGIS 3.0
@@ -661,15 +661,15 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
         mSortKeyAttributeName = fields.at( idx ).name();
       }
     }
-    mSortAscending = atlasElem.attribute( "sortAscending", "true" ) == "true" ? true : false;
+    mSortAscending = atlasElem.attribute( QStringLiteral( "sortAscending" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) ? true : false;
   }
-  mFilterFeatures = atlasElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
+  mFilterFeatures = atlasElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
   if ( mFilterFeatures )
   {
-    mFeatureFilter = atlasElem.attribute( "featureFilter", "" );
+    mFeatureFilter = atlasElem.attribute( QStringLiteral( "featureFilter" ), QLatin1String( "" ) );
   }
 
-  mHideCoverage = atlasElem.attribute( "hideCoverage", "false" ) == "true" ? true : false;
+  mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
 
   emit parameterChanged();
 }
@@ -678,7 +678,7 @@ void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDo
 {
   Q_UNUSED( doc );
   //look for stored composer map, to upgrade pre 2.1 projects
-  int composerMapNo = elem.attribute( "composerMap", "-1" ).toInt();
+  int composerMapNo = elem.attribute( QStringLiteral( "composerMap" ), QStringLiteral( "-1" ) ).toInt();
   QgsComposerMap * composerMap = nullptr;
   if ( composerMapNo != -1 )
   {
@@ -696,12 +696,12 @@ void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDo
   }
 
   //upgrade pre 2.1 projects
-  double margin = elem.attribute( "margin", "0.0" ).toDouble();
+  double margin = elem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.0" ) ).toDouble();
   if ( composerMap && !qgsDoubleNear( margin, 0.0 ) )
   {
     composerMap->setAtlasMargin( margin );
   }
-  bool fixedScale = elem.attribute( "fixedScale", "false" ) == "true" ? true : false;
+  bool fixedScale = elem.attribute( QStringLiteral( "fixedScale" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
   if ( composerMap && fixedScale )
   {
     composerMap->setAtlasScalingMode( QgsComposerMap::Fixed );

@@ -142,13 +142,25 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
 
     ItemType itemType() const override { return LayerItem; }
 
+    /**
+     * Sets the associated layer ID.
+     * @see layerId()
+     */
     void setLayerId( const QString& id ) { mLayerID = id; }
+
+    /**
+     * Returns the ID of the associated layer.
+     * @see setLayerId()
+     */
     QString layerId() const { return mLayerID; }
 
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
     bool showFeatureCount() const { return mShowFeatureCount; }
 
-    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = "" );
+    /**
+     * Sets the legend layer item to the appropriate default style for the specified legend rule.
+     */
+    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) );
 
   private:
     QString mLayerID;

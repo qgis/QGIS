@@ -70,17 +70,17 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
   mHeaderFontColorButton->setAllowAlpha( true );
-  mHeaderFontColorButton->setContext( "composer" );
+  mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
   mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
   mContentFontColorButton->setAllowAlpha( true );
-  mContentFontColorButton->setContext( "composer" );
+  mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
   mGridColorButton->setAllowAlpha( true );
-  mGridColorButton->setContext( "composer" );
+  mGridColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setDefaultColor( Qt::black );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
-  mBackgroundColorButton->setContext( "composer" );
+  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No background" ) );
 
@@ -785,7 +785,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
   }
 
   QgsExpressionContext context = mComposerTable->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, "generic", context );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

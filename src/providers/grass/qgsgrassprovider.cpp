@@ -104,7 +104,7 @@ typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
 Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = ( Vect_rewrite_line_function_type * )Vect_rewrite_line;
 Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delete_line_function_type * )Vect_delete_line;
 
-static QString GRASS_KEY = "grass";
+static QString GRASS_KEY = QStringLiteral( "grass" );
 
 int QgsGrassProvider::LAST_TYPE = -9999;
 int QgsGrassProvider::mEditedCount = 0;
@@ -161,27 +161,27 @@ QgsGrassProvider::QgsGrassProvider( const QString& uri )
   /* Parse Layer, supported layers <field>_point, <field>_line, <field>_area
   *  Layer is opened even if it is empty (has no features)
   */
-  if ( mLayerName.compare( "boundary" ) == 0 ) // currently not used
+  if ( mLayerName.compare( QLatin1String( "boundary" ) ) == 0 ) // currently not used
   {
     mLayerType = BOUNDARY;
     mGrassType = GV_BOUNDARY;
   }
-  else if ( mLayerName.compare( "centroid" ) == 0 ) // currently not used
+  else if ( mLayerName.compare( QLatin1String( "centroid" ) ) == 0 ) // currently not used
   {
     mLayerType = CENTROID;
     mGrassType = GV_CENTROID;
   }
-  else if ( mLayerName == "topo_point" )
+  else if ( mLayerName == QLatin1String( "topo_point" ) )
   {
     mLayerType = TOPO_POINT;
     mGrassType = GV_POINTS;
   }
-  else if ( mLayerName == "topo_line" )
+  else if ( mLayerName == QLatin1String( "topo_line" ) )
   {
     mLayerType = TOPO_LINE;
     mGrassType = GV_LINES;
   }
-  else if ( mLayerName == "topo_node" )
+  else if ( mLayerName == QLatin1String( "topo_node" ) )
   {
     mLayerType = TOPO_NODE;
     mGrassType = 0;
@@ -262,12 +262,12 @@ QgsGrassProvider::QgsGrassProvider( const QString& uri )
 
   // TODO: types according to database
   setNativeTypes( QList<NativeType>()
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
 #if GRASS_VERSION_MAJOR < 7
                   << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 )
 #else
-                  << QgsVectorDataProvider::NativeType( tr( "Text" ), "text", QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "text" ), QVariant::String )
 #endif
                   // TODO:
                   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
@@ -410,7 +410,7 @@ QgsAbstractFeatureSource* QgsGrassProvider::featureSource() const
 
 QString QgsGrassProvider::storageType() const
 {
-  return "GRASS (Geographic Resources Analysis and Support System) file";
+  return QStringLiteral( "GRASS (Geographic Resources Analysis and Support System) file" );
 }
 
 
@@ -539,19 +539,19 @@ int QgsGrassProvider::grassLayerType( const QString& name )
   }
 
   QString ts = name.right( name.length() - pos - 1 );
-  if ( ts.compare( "point" ) == 0 )
+  if ( ts.compare( QLatin1String( "point" ) ) == 0 )
   {
     return GV_POINT; // ?! centroids may be points
   }
-  else if ( ts.compare( "line" ) == 0 )
+  else if ( ts.compare( QLatin1String( "line" ) ) == 0 )
   {
     return GV_LINES;
   }
-  else if ( ts.compare( "face" ) == 0 )
+  else if ( ts.compare( QLatin1String( "face" ) ) == 0 )
   {
     return GV_FACE;
   }
-  else if ( ts.compare( "polygon" ) == 0 )
+  else if ( ts.compare( QLatin1String( "polygon" ) ) == 0 )
   {
     return GV_AREA;
   }
@@ -1064,24 +1064,24 @@ bool QgsGrassProvider::isTopoType( int layerType )
 
 void QgsGrassProvider::setTopoFields()
 {
-  mTopoFields.append( QgsField( "id", QVariant::Int ) );
+  mTopoFields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
 
   if ( mLayerType == TOPO_POINT )
   {
-    mTopoFields.append( QgsField( "type", QVariant::String ) );
-    mTopoFields.append( QgsField( "node", QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
+    mTopoFields.append( QgsField( QStringLiteral( "node" ), QVariant::Int ) );
   }
   else if ( mLayerType == TOPO_LINE )
   {
-    mTopoFields.append( QgsField( "type", QVariant::String ) );
-    mTopoFields.append( QgsField( "node1", QVariant::Int ) );
-    mTopoFields.append( QgsField( "node2", QVariant::Int ) );
-    mTopoFields.append( QgsField( "left", QVariant::Int ) );
-    mTopoFields.append( QgsField( "right", QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
+    mTopoFields.append( QgsField( QStringLiteral( "node1" ), QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "node2" ), QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "left" ), QVariant::Int ) );
+    mTopoFields.append( QgsField( QStringLiteral( "right" ), QVariant::Int ) );
   }
   else if ( mLayerType == TOPO_NODE )
   {
-    mTopoFields.append( QgsField( "lines", QVariant::String ) );
+    mTopoFields.append( QgsField( QStringLiteral( "lines" ), QVariant::String ) );
   }
 }
 

@@ -39,20 +39,20 @@ bool QgsMultiPointV2::fromWkt( const QString& wkt )
   if ( regex.indexIn( collectionWkt ) >= 0 )
   {
     //alternate style without extra brackets, upgrade to standard
-    collectionWkt.replace( '(', "((" ).replace( ')', "))" ).replace( ',', "),(" );
+    collectionWkt.replace( '(', QLatin1String( "((" ) ).replace( ')', QLatin1String( "))" ) ).replace( ',', QLatin1String( "),(" ) );
   }
 
-  return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometry*>() << new QgsPointV2, "Point" );
+  return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometry*>() << new QgsPointV2, QStringLiteral( "Point" ) );
 }
 
 QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiPoint = doc.createElementNS( ns, "MultiPoint" );
+  QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
-      QDomElement elemPointMember = doc.createElementNS( ns, "pointMember" );
+      QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML2( doc, precision, ns ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
@@ -63,12 +63,12 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QSt
 
 QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiPoint = doc.createElementNS( ns, "MultiPoint" );
+  QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
-      QDomElement elemPointMember = doc.createElementNS( ns, "pointMember" );
+      QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML3( doc, precision, ns ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
@@ -79,7 +79,7 @@ QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QSt
 
 QString QgsMultiPointV2::asJSON( int precision ) const
 {
-  QString json = "{\"type\": \"MultiPoint\", \"coordinates\": ";
+  QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
 
   QgsPointSequence pts;
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
@@ -91,7 +91,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
     }
   }
   json += QgsGeometryUtils::pointsToJSON( pts, precision );
-  json += " }";
+  json += QLatin1String( " }" );
   return json;
 }
 

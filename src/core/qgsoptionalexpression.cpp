@@ -37,12 +37,12 @@ QgsOptionalExpression::QgsOptionalExpression( const QgsExpression& expression, b
 void QgsOptionalExpression::writeXml( QDomElement& element )
 {
   QDomText exp = element.ownerDocument().createTextNode( data().expression() );
-  element.setAttribute( "enabled", enabled() );
+  element.setAttribute( QStringLiteral( "enabled" ), enabled() );
   element.appendChild( exp );
 }
 
 void QgsOptionalExpression::readXml( const QDomElement& element )
 {
-  setEnabled( element.attribute( "enabled" ).toInt() );
+  setEnabled( element.attribute( QStringLiteral( "enabled" ) ).toInt() );
   setData( element.text() );
 }

@@ -142,7 +142,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    QgsDataItem *item = pr->createDataItem( "", nullptr );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
@@ -438,7 +438,7 @@ QStringList QgsBrowserModel::mimeTypes() const
   QStringList types;
   // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
   // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
-  types << "application/x-vnd.qgis.qgis.uri";
+  types << QStringLiteral( "application/x-vnd.qgis.qgis.uri" );
   return types;
 }
 
@@ -548,7 +548,7 @@ void QgsBrowserModel::removeFavourite( const QModelIndex &index )
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QSettings settings;
-  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+  QStringList hiddenItems = settings.value( QStringLiteral( "/browser/hiddenPaths" ),
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
@@ -559,7 +559,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( "/browser/hiddenPaths", hiddenItems );
+  settings.setValue( QStringLiteral( "/browser/hiddenPaths" ), hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );

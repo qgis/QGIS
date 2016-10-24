@@ -31,11 +31,11 @@
 static int renderCounter = 0;
 
 QgsRenderChecker::QgsRenderChecker()
-    : mReport( "" )
+    : mReport( QLatin1String( "" ) )
     , mMatchTarget( 0 )
     , mElapsedTime( 0 )
-    , mRenderedImageFile( "" )
-    , mExpectedImageFile( "" )
+    , mRenderedImageFile( QLatin1String( "" ) )
+    , mExpectedImageFile( QLatin1String( "" ) )
     , mMismatchCount( 0 )
     , mColorTolerance( 0 )
     , mMaxSizeDifferenceX( 0 )
@@ -110,7 +110,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
   QString myControlImageDir = controlImagePath() + mControlName + '/';
   QDir myDirectory = QDir( myControlImageDir );
   QStringList myList;
-  QString myFilename = "*";
+  QString myFilename = QStringLiteral( "*" );
   myList = myDirectory.entryList( QStringList( myFilename ),
                                   QDir::Files | QDir::NoSymLinks );
   //remove the control file from the list as the anomalies are
@@ -125,30 +125,30 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
     QString myFile = myList.at( i );
     mReport += "<tr><td colspan=3>"
                "Checking if " + myFile + " is a known anomaly.";
-    mReport += "</td></tr>";
+    mReport += QLatin1String( "</td></tr>" );
     QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + '/' + myFile );
-    QString myHashMessage = QString(
+    QString myHashMessage = QStringLiteral(
                               "Checking if anomaly %1 (hash %2)<br>" )
                             .arg( myFile,
                                   myAnomalyHash );
-    myHashMessage += QString( "&nbsp; matches %1 (hash %2)" )
+    myHashMessage += QStringLiteral( "&nbsp; matches %1 (hash %2)" )
                      .arg( theDiffImageFile,
                            myImageHash );
     //foo CDash
-    emitDashMessage( "Anomaly check", QgsDartMeasurement::Text, myHashMessage );
+    emitDashMessage( QStringLiteral( "Anomaly check" ), QgsDartMeasurement::Text, myHashMessage );
 
     mReport += "<tr><td colspan=3>" + myHashMessage + "</td></tr>";
     if ( myImageHash == myAnomalyHash )
     {
       mReport += "<tr><td colspan=3>"
                  "Anomaly found! " + myFile;
-      mReport += "</td></tr>";
+      mReport += QLatin1String( "</td></tr>" );
       return true;
     }
   }
   mReport += "<tr><td colspan=3>"
              "No anomaly found! ";
-  mReport += "</td></tr>";
+  mReport += QLatin1String( "</td></tr>" );
   return false;
 }
 
@@ -235,7 +235,7 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
     QgsRectangle r = mMapSettings.extent();
 
     QTextStream stream( &wldFile );
-    stream << QString( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
+    stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
     .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
           qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
           qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
@@ -300,7 +300,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   //check for mask
   QString maskImagePath = mExpectedImageFile;
   maskImagePath.chop( 4 ); //remove .png extension
-  maskImagePath += "_mask.png";
+  maskImagePath += QLatin1String( "_mask.png" );
   QImage* maskImage = new QImage( maskImagePath );
   bool hasMask = !maskImage->isNull();
   if ( hasMask )
@@ -316,9 +316,9 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   //
   // Set the report with the result
   //
-  mReport = QString( "<script src=\"file://%1/../renderchecker.js\"></script>\n" ).arg( TEST_DATA_DIR );
-  mReport += "<table>";
-  mReport += "<tr><td colspan=2>";
+  mReport = QStringLiteral( "<script src=\"file://%1/../renderchecker.js\"></script>\n" ).arg( TEST_DATA_DIR );
+  mReport += QLatin1String( "<table>" );
+  mReport += QLatin1String( "<tr><td colspan=2>" );
   mReport += QString( "<tr><td colspan=2>"
                       "Test image and result image for %1<br>"
                       "Expected size: %2 w x %3 h (%4 pixels)<br>"
@@ -362,7 +362,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   QString prefix;
   if ( !mControlPathPrefix.isNull() )
   {
-    prefix = QString( " (prefix %1)" ).arg( mControlPathPrefix );
+    prefix = QStringLiteral( " (prefix %1)" ).arg( mControlPathPrefix );
   }
   //
   // To get the images into CDash
@@ -384,18 +384,18 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
     if ( qAbs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
          qAbs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
     {
-      mReport += "<tr><td colspan=3>";
+      mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
-      mReport += "</td></tr>";
+      mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
       delete maskImage;
       return false;
     }
     else
     {
-      mReport += "<tr><td colspan=3>";
+      mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "Expected image and result image for " + theTestName + " are different dimensions, but within tolerance";
-      mReport += "</td></tr>";
+      mReport += QLatin1String( "</td></tr>" );
     }
   }
 
@@ -464,26 +464,26 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   //
   // Send match result to report
   //
-  mReport += QString( "<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>" )
+  mReport += QStringLiteral( "<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>" )
              .arg( mMismatchCount ).arg( mMatchTarget ).arg( theMismatchCount ).arg( mColorTolerance );
 
   //
   // And send it to CDash
   //
-  emitDashMessage( "Mismatch Count", QgsDartMeasurement::Integer, QString( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
+  emitDashMessage( QStringLiteral( "Mismatch Count" ), QgsDartMeasurement::Integer, QStringLiteral( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
 
   if ( mMismatchCount <= theMismatchCount )
   {
-    mReport += "<tr><td colspan = 3>\n";
+    mReport += QLatin1String( "<tr><td colspan = 3>\n" );
     mReport += "Test image and result image for " + theTestName + " are matched<br>";
-    mReport += "</td></tr>";
+    mReport += QLatin1String( "</td></tr>" );
     if ( mElapsedTimeTarget != 0 && mElapsedTimeTarget < mElapsedTime )
     {
       //test failed because it took too long...
       qDebug( "Test failed because render step took too long" );
-      mReport += "<tr><td colspan = 3>\n";
-      mReport += "<font color=red>Test failed because render step took too long</font>";
-      mReport += "</td></tr>";
+      mReport += QLatin1String( "<tr><td colspan = 3>\n" );
+      mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );
+      mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
       return false;
     }
@@ -503,17 +503,17 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
     return true;
   }
 
-  mReport += "<tr><td colspan=3></td></tr>";
-  emitDashMessage( "Image mismatch", QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
+  mReport += QLatin1String( "<tr><td colspan=3></td></tr>" );
+  emitDashMessage( QStringLiteral( "Image mismatch" ), QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
                    " If you feel the difference image should be considered an anomaly "
                    "you can do something like this\n"
                    "cp '" + myDiffImageFile + "' " + controlImagePath() + mControlName +
                    "/\nIf it should be included in the mask run\n"
                    "scripts/generate_test_mask_image.py '" + mExpectedImageFile + "' '" + mRenderedImageFile + "'\n" );
 
-  mReport += "<tr><td colspan = 3>\n";
+  mReport += QLatin1String( "<tr><td colspan = 3>\n" );
   mReport += "<font color=red>Test image and result image for " + theTestName + " are mismatched</font><br>";
-  mReport += "</td></tr>";
+  mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
   return false;
 }

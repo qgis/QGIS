@@ -183,7 +183,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * @param sortOrder sort ranking for item
       */
     void registerItem( const QString& group, const QString& label, const QString& expressionText,
-                       const QString& helpText = "",
+                       const QString& helpText = QLatin1String( "" ),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 
@@ -193,17 +193,17 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Adds the current expression to the given collection.
      * By default it is saved to the collection "generic".
      */
-    void saveToRecent( const QString& collection = "generic" );
+    void saveToRecent( const QString& collection = QStringLiteral( "generic" ) );
 
     /**
      * Loads the recent expressions from the given collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString& collection = "generic" );
+    void loadRecent( const QString& collection = QStringLiteral( "generic" ) );
 
     /** Create a new file in the function editor
      */
-    void newFunctionFile( const QString& fileName = "scratch" );
+    void newFunctionFile( const QString& fileName = QStringLiteral( "scratch" ) );
 
     /** Save the current function editor text to the given file.
      */
@@ -291,7 +291,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * @param sortOrder sort ranking for item
       */
     void registerItemForAllGroups( const QStringList& groups, const QString& label, const QString& expressionText,
-                                   const QString& helpText = "",
+                                   const QString& helpText = QLatin1String( "" ),
                                    QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                                    bool highlightedItem = false, int sortOrder = 1 );
 

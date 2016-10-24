@@ -26,7 +26,7 @@ class QString;
 class QgsBabelFormat
 {
   public:
-    explicit QgsBabelFormat( const QString& name = "" );
+    explicit QgsBabelFormat( const QString& name = QStringLiteral( "" ) );
     virtual ~QgsBabelFormat() { }
 
     const QString& name() const;

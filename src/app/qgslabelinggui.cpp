@@ -551,7 +551,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 void QgsLabelingGui::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr )
 {
   const QMap< QString, QString >& map = ddBtn->definedProperty();
-  lyr.setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+  lyr.setDataDefinedProperty( p, map.value( QStringLiteral( "active" ) ).toInt(), map.value( QStringLiteral( "useexpr" ) ).toInt(), map.value( QStringLiteral( "expression" ) ), map.value( QStringLiteral( "field" ) ) );
 }
 
 void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
@@ -604,8 +604,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 
   mFontCaseDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::FontCase ),
                         QgsDataDefinedButton::String,
-                        trString + QLatin1String( "[<b>NoChange</b>|<b>Upper</b>|<br>"
-                                                  "<b>Lower</b>|<b>Capitalize</b>]" ) );
+                        trString + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br>"
+                                                   "<b>Lower</b>|<b>Capitalize</b>]" ) );
 
   mFontLetterSpacingDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::FontLetterSpacing ),
                                  QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
@@ -668,8 +668,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mShapeDrawDDBtn->registerCheckedWidget( mShapeDrawChkBx );
   mShapeTypeDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShapeKind ),
                          QgsDataDefinedButton::String,
-                         trString + QLatin1String( "[<b>Rectangle</b>|<b>Square</b>|<br>"
-                                                   "<b>Ellipse</b>|<b>Circle</b>|<b>SVG</b>]" ) );
+                         trString + QStringLiteral( "[<b>Rectangle</b>|<b>Square</b>|<br>"
+                                                    "<b>Ellipse</b>|<b>Circle</b>|<b>SVG</b>]" ) );
   mShapeSVGPathDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShapeSVGFile ),
                             QgsDataDefinedButton::String, QgsDataDefinedButton::svgPathDesc() );
   mShapeSizeTypeDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShapeSizeType ),
@@ -715,8 +715,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mShadowDrawDDBtn->registerCheckedWidget( mShadowDrawChkBx );
   mShadowUnderDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShadowUnder ),
                            QgsDataDefinedButton::String,
-                           trString + QLatin1String( "[<b>Lowest</b>|<b>Text</b>|<br>"
-                                                     "<b>Buffer</b>|<b>Background</b>]" ) );
+                           trString + QStringLiteral( "[<b>Lowest</b>|<b>Text</b>|<br>"
+                                                      "<b>Buffer</b>|<b>Background</b>]" ) );
   mShadowOffsetAngleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShadowOffsetAngle ),
                                  QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
   mShadowOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ShadowOffsetDist ),
@@ -742,17 +742,17 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                         trString + "[<b>Visible</b>|<b>Whole</b>]" );
   mPointQuadOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetQuad ),
                                QgsDataDefinedButton::AnyType,
-                               tr( "int<br>" ) + QLatin1String( "[<b>0</b>=Above Left|<b>1</b>=Above|<b>2</b>=Above Right|<br>"
-                                                                "<b>3</b>=Left|<b>4</b>=Over|<b>5</b>=Right|<br>"
-                                                                "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) );
+                               tr( "int<br>" ) + QStringLiteral( "[<b>0</b>=Above Left|<b>1</b>=Above|<b>2</b>=Above Right|<br>"
+                                                                 "<b>3</b>=Left|<b>4</b>=Over|<b>5</b>=Right|<br>"
+                                                                 "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) );
   mPointPositionOrderDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PredefinedPositionOrder ),
                                   QgsDataDefinedButton::String,
                                   tr( "Comma separated list of placements in order of priority<br>" )
-                                  + QLatin1String( "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
-                                                   "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
-                                                   "<b>L</b>=Left|<b>R</b>=Right|<br>"
-                                                   "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
-                                                   "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ) );
+                                  + QStringLiteral( "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
+                                                    "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
+                                                    "<b>L</b>=Left|<b>R</b>=Right|<br>"
+                                                    "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
+                                                    "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ) );
   mPointOffsetDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetXY ),
                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleXYDesc() );
   mPointOffsetUnitsDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetUnits ),
@@ -790,8 +790,8 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordAlignmentVDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Vali ),
                                QgsDataDefinedButton::String,
-                               trString + QLatin1String( "[<b>Bottom</b>|<b>Base</b>|<br>"
-                                                         "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) );
+                               trString + QStringLiteral( "[<b>Bottom</b>|<b>Base</b>|<br>"
+                                                          "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) );
   mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordRotationDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Rotation ),
                              QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );

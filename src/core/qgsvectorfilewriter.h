@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorFileWriter
     {
       public:
         BoolOption( const QString& docString, bool defaultValue )
-            : SetOption( docString, QStringList() << "YES" << "NO", defaultValue ? "YES" : "NO" )
+            : SetOption( docString, QStringList() << QStringLiteral( "YES" ) << QStringLiteral( "NO" ), defaultValue ? "YES" : "NO" )
         {}
     };
 
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsVectorFileWriter
     {
       public:
         explicit HiddenOption( const QString& value )
-            : Option( "", Hidden )
+            : Option( QLatin1String( "" ), Hidden )
             , mValue( value )
         {}
 
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QString& fileName,
                                             const QString& fileEncoding,
                                             const QgsCoordinateReferenceSystem& destCRS = QgsCoordinateReferenceSystem(),
-                                            const QString& driverName = "ESRI Shapefile",
+                                            const QString& driverName = QStringLiteral( "ESRI Shapefile" ),
                                             bool onlySelected = false,
                                             QString *errorMessage = nullptr,
                                             const QStringList &datasourceOptions = QStringList(),
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QString& fileName,
                                             const QString& fileEncoding,
                                             const QgsCoordinateTransform& ct,
-                                            const QString& driverName = "ESRI Shapefile",
+                                            const QString& driverName = QStringLiteral( "ESRI Shapefile" ),
                                             bool onlySelected = false,
                                             QString *errorMessage = nullptr,
                                             const QStringList &datasourceOptions = QStringList(),
@@ -414,7 +414,7 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QgsFields& fields,
                          QgsWkbTypes::Type geometryType,
                          const QgsCoordinateReferenceSystem& srs = QgsCoordinateReferenceSystem(),
-                         const QString& driverName = "ESRI Shapefile",
+                         const QString& driverName = QStringLiteral( "ESRI Shapefile" ),
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = nullptr,

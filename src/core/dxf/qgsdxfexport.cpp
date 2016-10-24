@@ -461,19 +461,19 @@ void QgsDxfExport::writeGroup( const QColor& color, int exactMatchCode, int rgbC
 
 void QgsDxfExport::writeGroupCode( int code )
 {
-  mTextStream << QString( "%1\n" ).arg( code, 3, 10, QChar( ' ' ) );
+  mTextStream << QStringLiteral( "%1\n" ).arg( code, 3, 10, QChar( ' ' ) );
 }
 
 void QgsDxfExport::writeInt( int i )
 {
-  mTextStream << QString( "%1\n" ).arg( i, 6, 10, QChar( ' ' ) );
+  mTextStream << QStringLiteral( "%1\n" ).arg( i, 6, 10, QChar( ' ' ) );
 }
 
 void QgsDxfExport::writeDouble( double d )
 {
   QString s( qgsDoubleToString( d ) );
   if ( !s.contains( '.' ) )
-    s += ".0";
+    s += QLatin1String( ".0" );
   mTextStream << s << '\n';
 }
 
@@ -541,43 +541,43 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
 
 void QgsDxfExport::writeHeader( const QString& codepage )
 {
-  writeGroup( 999, "DXF created from QGIS" );
+  writeGroup( 999, QStringLiteral( "DXF created from QGIS" ) );
 
   startSection();
-  writeGroup( 2, "HEADER" );
+  writeGroup( 2, QStringLiteral( "HEADER" ) );
 
   // ACADVER
-  writeGroup( 9, "$ACADVER" );
-  writeGroup( 1, "AC1015" );
+  writeGroup( 9, QStringLiteral( "$ACADVER" ) );
+  writeGroup( 1, QStringLiteral( "AC1015" ) );
 
   // EXTMIN
-  writeGroup( 9, "$EXTMIN" );
+  writeGroup( 9, QStringLiteral( "$EXTMIN" ) );
   writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, mExtent.xMinimum(), mExtent.yMinimum() ) );
 
   // EXTMAX
-  writeGroup( 9, "$EXTMAX" );
+  writeGroup( 9, QStringLiteral( "$EXTMAX" ) );
   writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, mExtent.xMaximum(), mExtent.yMaximum() ) );
 
   // Global linetype scale
-  writeGroup( 9, "$LTSCALE" );
+  writeGroup( 9, QStringLiteral( "$LTSCALE" ) );
   writeGroup( 40, 1.0 );
 
   // Point display mode (33 = circle)
-  writeGroup( 9, "$PDMODE" );
+  writeGroup( 9, QStringLiteral( "$PDMODE" ) );
   writeGroup( 70, 33 );
 
   // Point display size
-  writeGroup( 9, "$PDSIZE" );
+  writeGroup( 9, QStringLiteral( "$PDSIZE" ) );
   writeGroup( 40, 1 );
 
   // Controls paper space linetype scaling (1 = No special linetype scaling, 0 = Viewport scaling governs linetype scaling)
-  writeGroup( 9, "$PSLTSCALE" );
+  writeGroup( 9, QStringLiteral( "$PSLTSCALE" ) );
   writeGroup( 70, 0 );
 
-  writeGroup( 9, "$HANDSEED" );
+  writeGroup( 9, QStringLiteral( "$HANDSEED" ) );
   writeGroup( 5, DXF_HANDMAX );
 
-  writeGroup( 9, "$DWGCODEPAGE" );
+  writeGroup( 9, QStringLiteral( "$DWGCODEPAGE" ) );
   writeGroup( 3, codepage );
 
   endSection();
@@ -590,14 +590,14 @@ int QgsDxfExport::writeHandle( int code, int handle )
 
   Q_ASSERT_X( handle < DXF_HANDMAX, "QgsDxfExport::writeHandle(int, int)", "DXF handle too large" );
 
-  writeGroup( code, QString( "%1" ).arg( handle, 0, 16 ) );
+  writeGroup( code, QStringLiteral( "%1" ).arg( handle, 0, 16 ) );
   return handle;
 }
 
 void QgsDxfExport::writeTables()
 {
   startSection();
-  writeGroup( 2, "TABLES" );
+  writeGroup( 2, QStringLiteral( "TABLES" ) );
 
   // Iterate through all layers and get symbol layer pointers
   QgsRenderContext context = renderContext();
@@ -609,10 +609,10 @@ void QgsDxfExport::writeTables()
 
   // Line types
   mLineStyles.clear();
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "LTYPE" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "LTYPE" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, nLineTypes( slList ) + 5 );
 
   writeDefaultLinetypes();
@@ -624,22 +624,22 @@ void QgsDxfExport::writeTables()
     writeSymbolLayerLinetype( slIt->first );
   }
 
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // BLOCK_RECORD
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "BLOCK_RECORD" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "BLOCK_RECORD" ) );
   writeHandle();
 
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 0 );
 
   Q_FOREACH ( const QString& block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
   {
-    writeGroup( 0, "BLOCK_RECORD" );
+    writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
     mBlockHandles.insert( block, writeHandle() );
-    writeGroup( 100, "AcDbSymbolTableRecord" );
-    writeGroup( 100, "AcDbBlockTableRecord" );
+    writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockTableRecord" ) );
     writeGroup( 2, block );
   }
 
@@ -654,57 +654,57 @@ void QgsDxfExport::writeTables()
     if ( hasDataDefinedProperties( ml, slIt->second ) )
       continue;
 
-    QString name = QString( "symbolLayer%1" ).arg( i++ );
-    writeGroup( 0, "BLOCK_RECORD" );
+    QString name = QStringLiteral( "symbolLayer%1" ).arg( i++ );
+    writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
     mBlockHandles.insert( name, writeHandle() );
-    writeGroup( 100, "AcDbSymbolTableRecord" );
-    writeGroup( 100, "AcDbBlockTableRecord" );
+    writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockTableRecord" ) );
     writeGroup( 2, name );
   }
 
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // APPID
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "APPID" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "APPID" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 1 );
-  writeGroup( 0, "APPID" );
+  writeGroup( 0, QStringLiteral( "APPID" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbRegAppTableRecord" );
-  writeGroup( 2, "ACAD" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+  writeGroup( 100, QStringLiteral( "AcDbRegAppTableRecord" ) );
+  writeGroup( 2, QStringLiteral( "ACAD" ) );
   writeGroup( 70, 0 );
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // VIEW
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "VIEW" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "VIEW" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 0 );
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // UCS
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "UCS" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "UCS" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 0 );
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // VPORT
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "VPORT" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "VPORT" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
 
-  writeGroup( 0, "VPORT" );
+  writeGroup( 0, QStringLiteral( "VPORT" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbViewportTableRecord" );
-  writeGroup( 2, "*ACTIVE" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+  writeGroup( 100, QStringLiteral( "AcDbViewportTableRecord" ) );
+  writeGroup( 2, QStringLiteral( "*ACTIVE" ) );
   writeGroup( 70, 0 );  // flags
   writeGroup( 0, QgsPointV2( 0.0, 0.0 ) );                            // lower left
   writeGroup( 1, QgsPointV2( 1.0, 1.0 ) );                            // upper right
@@ -738,16 +738,16 @@ void QgsDxfExport::writeTables()
   writeGroup( 146, 0.0 );                                             // Elevation
 
   writeGroup( 70, 0 );
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // DIMSTYLE
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "DIMSTYLE" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "DIMSTYLE" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
-  writeGroup( 100, "AcDbDimStyleTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
+  writeGroup( 100, QStringLiteral( "AcDbDimStyleTable" ) );
   writeGroup( 70, 0 );
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   QList< QPair<QgsVectorLayer*, int> >::const_iterator layerIt = mLayers.constBegin();
   QSet<QString> layerNames;
@@ -776,59 +776,59 @@ void QgsDxfExport::writeTables()
 
   // Layers
   // TODO: iterate features of all layer to produce a data-defined layer list
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "LAYER" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "LAYER" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, layerNames.size() + 1 );
 
-  writeGroup( 0, "LAYER" );
+  writeGroup( 0, QStringLiteral( "LAYER" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbLayerTableRecord" );
-  writeGroup( 2, "0" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+  writeGroup( 100, QStringLiteral( "AcDbLayerTableRecord" ) );
+  writeGroup( 2, QStringLiteral( "0" ) );
   writeGroup( 70, 64 );
   writeGroup( 62, 1 );
-  writeGroup( 6, "CONTINUOUS" );
+  writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
   Q_FOREACH ( const QString& layerName, layerNames )
   {
-    writeGroup( 0, "LAYER" );
+    writeGroup( 0, QStringLiteral( "LAYER" ) );
     writeHandle();
-    writeGroup( 100, "AcDbSymbolTableRecord" );
-    writeGroup( 100, "AcDbLayerTableRecord" );
+    writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+    writeGroup( 100, QStringLiteral( "AcDbLayerTableRecord" ) );
     writeGroup( 2, layerName );
     writeGroup( 70, 64 );
     writeGroup( 62, 1 );
-    writeGroup( 6, "CONTINUOUS" );
+    writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
     writeHandle( 390, DXF_HANDPLOTSTYLE );
   }
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   // Text styles
-  writeGroup( 0, "TABLE" );
-  writeGroup( 2, "STYLE" );
+  writeGroup( 0, QStringLiteral( "TABLE" ) );
+  writeGroup( 2, QStringLiteral( "STYLE" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTable" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 1 );
 
   // Provide only standard font for the moment
-  writeGroup( 0, "STYLE" );
+  writeGroup( 0, QStringLiteral( "STYLE" ) );
   writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbTextStyleTableRecord" );
-  writeGroup( 2, "STANDARD" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+  writeGroup( 100, QStringLiteral( "AcDbTextStyleTableRecord" ) );
+  writeGroup( 2, QStringLiteral( "STANDARD" ) );
   writeGroup( 70, 64 );
   writeGroup( 40, 0.0 );
   writeGroup( 41, 1.0 );
   writeGroup( 50, 0.0 );
   writeGroup( 71, 0 );
   writeGroup( 42, 5.0 );
-  writeGroup( 3, "romans.shx" );
-  writeGroup( 4, "" );
+  writeGroup( 3, QStringLiteral( "romans.shx" ) );
+  writeGroup( 4, QLatin1String( "" ) );
 
-  writeGroup( 0, "ENDTAB" );
+  writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   endSection();
 }
@@ -836,26 +836,26 @@ void QgsDxfExport::writeTables()
 void QgsDxfExport::writeBlocks()
 {
   startSection();
-  writeGroup( 2, "BLOCKS" );
+  writeGroup( 2, QStringLiteral( "BLOCKS" ) );
 
   Q_FOREACH ( const QString& block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
   {
-    writeGroup( 0, "BLOCK" );
+    writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
-    writeGroup( 330, QString( "%1" ).arg( mBlockHandles[ block ], 0, 16 ) );
-    writeGroup( 100, "AcDbEntity" );
-    writeGroup( 8, "0" );
-    writeGroup( 100, "AcDbBlockBegin" );
+    writeGroup( 330, QStringLiteral( "%1" ).arg( mBlockHandles[ block ], 0, 16 ) );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+    writeGroup( 8, QStringLiteral( "0" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
     writeGroup( 2, block );
     writeGroup( 70, 0 );
     writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
-    writeGroup( 1, "" );
-    writeGroup( 0, "ENDBLK" );
+    writeGroup( 1, QLatin1String( "" ) );
+    writeGroup( 0, QStringLiteral( "ENDBLK" ) );
     writeHandle();
-    writeGroup( 100, "AcDbEntity" );
-    writeGroup( 8, "0" );
-    writeGroup( 100, "AcDbBlockEnd" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+    writeGroup( 8, QStringLiteral( "0" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
   }
 
   QgsRenderContext ct = renderContext();
@@ -885,15 +885,15 @@ void QgsDxfExport::writeBlocks()
       // ml->stopRender( ctx );
     }
 
-    QString block( QString( "symbolLayer%1" ).arg( mBlockCounter++ ) );
-    mBlockHandle = QString( "%1" ).arg( mBlockHandles[ block ], 0, 16 );
+    QString block( QStringLiteral( "symbolLayer%1" ).arg( mBlockCounter++ ) );
+    mBlockHandle = QStringLiteral( "%1" ).arg( mBlockHandles[ block ], 0, 16 );
 
-    writeGroup( 0, "BLOCK" );
+    writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
     writeGroup( 330, mBlockHandle );
-    writeGroup( 100, "AcDbEntity" );
-    writeGroup( 8, "0" );
-    writeGroup( 100, "AcDbBlockBegin" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+    writeGroup( 8, QStringLiteral( "0" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
     writeGroup( 2, block );
     writeGroup( 70, 0 );
 
@@ -903,16 +903,16 @@ void QgsDxfExport::writeBlocks()
     // size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
     writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
-    writeGroup( 1, "" );
+    writeGroup( 1, QLatin1String( "" ) );
 
     // maplayer 0 -> block receives layer from INSERT statement
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", ctx );
+    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), QStringLiteral( "0" ), ctx );
 
-    writeGroup( 0, "ENDBLK" );
+    writeGroup( 0, QStringLiteral( "ENDBLK" ) );
     writeHandle();
-    writeGroup( 100, "AcDbEntity" );
-    writeGroup( 8, "0" );
-    writeGroup( 100, "AcDbBlockEnd" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+    writeGroup( 8, QStringLiteral( "0" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
 
     mPointSymbolBlocks.insert( ml, block );
     ml->stopRender( ctx );
@@ -924,9 +924,9 @@ void QgsDxfExport::writeBlocks()
 void QgsDxfExport::writeEntities()
 {
   startSection();
-  writeGroup( 2, "ENTITIES" );
+  writeGroup( 2, QStringLiteral( "ENTITIES" ) );
 
-  mBlockHandle = QString( "%1" ).arg( mBlockHandles[ "*Model_Space" ], 0, 16 );
+  mBlockHandle = QStringLiteral( "%1" ).arg( mBlockHandles[ QStringLiteral( "*Model_Space" )], 0, 16 );
 
   QImage image( 10, 10, QImage::Format_ARGB32_Premultiplied );
   image.setDotsPerMeterX( 96 / 25.4 * 1000 );
@@ -3341,17 +3341,17 @@ AcDbSavedByObjectVersion\n\
 ENDSEC\n\
 ";
 
-  writeGroup( 0, "EOF" );
+  writeGroup( 0, QStringLiteral( "EOF" ) );
 }
 
 void QgsDxfExport::startSection()
 {
-  writeGroup( 0, "SECTION" );
+  writeGroup( 0, QStringLiteral( "SECTION" ) );
 }
 
 void QgsDxfExport::endSection()
 {
-  writeGroup( 0, "ENDSEC" );
+  writeGroup( 0, QStringLiteral( "ENDSEC" ) );
 }
 
 void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const QColor& color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol, double angle )
@@ -3391,10 +3391,10 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
   else
   {
     // insert block reference
-    writeGroup( 0, "INSERT" );
+    writeGroup( 0, QStringLiteral( "INSERT" ) );
     writeHandle();
-    writeGroup( 100, "AcDbEntity" );
-    writeGroup( 100, "AcDbBlockReference" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+    writeGroup( 100, QStringLiteral( "AcDbBlockReference" ) );
     writeGroup( 8, layer );
     writeGroup( 2, blockIt.value() ); // Block name
     writeGroup( 50, angle ); // angle
@@ -3422,11 +3422,11 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& l
 
   if ( !line.at( 0 ).is3D() )
   {
-    writeGroup( 0, "LWPOLYLINE" );
+    writeGroup( 0, QStringLiteral( "LWPOLYLINE" ) );
     writeHandle();
     writeGroup( 8, layer );
-    writeGroup( 100, "AcDbEntity" );
-    writeGroup( 100, "AcDbPolyline" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+    writeGroup( 100, QStringLiteral( "AcDbPolyline" ) );
     writeGroup( 6, lineStyleName );
     writeGroup( color );
 
@@ -3439,35 +3439,35 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& l
   }
   else
   {
-    writeGroup( 0, "POLYLINE" );
+    writeGroup( 0, QStringLiteral( "POLYLINE" ) );
     int plHandle = writeHandle();
     writeGroup( 330, mBlockHandle );
-    writeGroup( 100, "AcDbEntity" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
     writeGroup( 8, layer );
     writeGroup( 6, lineStyleName );
     writeGroup( color );
-    writeGroup( 100, "AcDb3dPolyline" );
+    writeGroup( 100, QStringLiteral( "AcDb3dPolyline" ) );
     writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( 70, 8 );
 
     for ( int i = 0; i < n; i++ )
     {
-      writeGroup( 0, "VERTEX" );
+      writeGroup( 0, QStringLiteral( "VERTEX" ) );
       writeHandle();
       writeGroup( 330, plHandle );
-      writeGroup( 100, "AcDbEntity" );
+      writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
       writeGroup( 8, layer );
       writeGroup( color );
-      writeGroup( 100, "AcDbVertex" );
-      writeGroup( 100, "AcDb3dPolylineVertex" );
+      writeGroup( 100, QStringLiteral( "AcDbVertex" ) );
+      writeGroup( 100, QStringLiteral( "AcDb3dPolylineVertex" ) );
       writeGroup( 0, line[i] );
       writeGroup( 70, 32 );
     }
 
-    writeGroup( 0, "SEQEND" );
+    writeGroup( 0, QStringLiteral( "SEQEND" ) );
     writeHandle();
     writeGroup( 330, plHandle );
-    writeGroup( 100, "AcDbEntity" );
+    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
     writeGroup( 8, layer );
     writeGroup( color );
   }
@@ -3475,19 +3475,19 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& l
 
 void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString& layer, const QString& hatchPattern, const QColor& color )
 {
-  writeGroup( 0, "HATCH" );         // Entity type
+  writeGroup( 0, QStringLiteral( "HATCH" ) );       // Entity type
   writeHandle();
   writeGroup( 330, mBlockHandle );
-  writeGroup( 100, "AcDbEntity" );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
   writeGroup( 8, layer );           // Layer name
   writeGroup( color );              // Color
-  writeGroup( 100, "AcDbHatch" );
+  writeGroup( 100, QStringLiteral( "AcDbHatch" ) );
 
   writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
   writeGroup( 200, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
-  writeGroup( 70, hatchPattern == "SOLID" ); // Solid fill flag (solid fill = 1; pattern fill = 0)
+  writeGroup( 70, hatchPattern == QLatin1String( "SOLID" ) ); // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );    // Associativity flag (associative = 1; non-associative = 0)
 
   writeGroup( 91, polygon.size() );  // Number of boundary paths (loops)
@@ -3519,10 +3519,10 @@ void QgsDxfExport::writeLine( const QgsPointV2& pt1, const QgsPointV2& pt2, cons
 
 void QgsDxfExport::writePoint( const QString& layer, const QColor& color, const QgsPointV2 &pt )
 {
-  writeGroup( 0, "POINT" );
+  writeGroup( 0, QStringLiteral( "POINT" ) );
   writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 100, "AcDbPoint" );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 100, QStringLiteral( "AcDbPoint" ) );
   writeGroup( 8, layer );
   writeGroup( color );
   writeGroup( 0, pt );
@@ -3530,18 +3530,18 @@ void QgsDxfExport::writePoint( const QString& layer, const QColor& color, const 
 
 void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius )
 {
-  writeGroup( 0, "HATCH" );  // Entity type
+  writeGroup( 0, QStringLiteral( "HATCH" ) );  // Entity type
   writeHandle();
   writeGroup( 330, mBlockHandle );
-  writeGroup( 100, "AcDbEntity" );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
   writeGroup( 8, layer );    // Layer name
   writeGroup( color );       // Color (0 by block, 256 by layer)
-  writeGroup( 100, "AcDbHatch" );
+  writeGroup( 100, QStringLiteral( "AcDbHatch" ) );
 
   writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
   writeGroup( 200, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
-  writeGroup( 2, "SOLID" );  // Hatch pattern name
+  writeGroup( 2, QStringLiteral( "SOLID" ) );  // Hatch pattern name
   writeGroup( 70, 1 );       // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );       // Associativity flag (associative = 1; non-associative = 0)
 
@@ -3567,12 +3567,12 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color,
 
 void QgsDxfExport::writeCircle( const QString& layer, const QColor& color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width )
 {
-  writeGroup( 0, "LWPOLYLINE" );
+  writeGroup( 0, QStringLiteral( "LWPOLYLINE" ) );
   writeHandle();
   writeGroup( 330, mBlockHandle );
   writeGroup( 8, layer );
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 100, "AcDbPolyline" );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 100, QStringLiteral( "AcDbPolyline" ) );
   writeGroup( 6, lineStyleName );
   writeGroup( color );
 
@@ -3589,17 +3589,17 @@ void QgsDxfExport::writeCircle( const QString& layer, const QColor& color, const
 
 void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPointV2 &pt, double size, double angle, const QColor& color )
 {
-  writeGroup( 0, "TEXT" );
+  writeGroup( 0, QStringLiteral( "TEXT" ) );
   writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 100, "AcDbText" );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 100, QStringLiteral( "AcDbText" ) );
   writeGroup( 8, layer );
   writeGroup( color );
   writeGroup( 0, pt );
   writeGroup( 40, size );
   writeGroup( 1, text );
   writeGroup( 50, angle );
-  writeGroup( 7, "STANDARD" ); // so far only support for standard font
+  writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font
 }
 
 void QgsDxfExport::writeMText( const QString& layer, const QString& text, const QgsPointV2 &pt, double width, double angle, const QColor& color )
@@ -3611,10 +3611,10 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
     return;
   }
 
-  writeGroup( 0, "MTEXT" );
+  writeGroup( 0, QStringLiteral( "MTEXT" ) );
   writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 100, "AcDbMText" );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 100, QStringLiteral( "AcDbMText" ) );
   writeGroup( 8, layer );
   writeGroup( color );
 
@@ -3637,7 +3637,7 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
   // 7 8 9
   writeGroup( 71, 7 );
 
-  writeGroup( 7, "STANDARD" );    // so far only support for standard font
+  writeGroup( 7, QStringLiteral( "STANDARD" ) );  // so far only support for standard font
 }
 
 void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateTransform& ct, const QString& layer, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol )
@@ -3682,7 +3682,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
       offset = 0.0;
   }
 
-  QString lineStyleName = "CONTINUOUS";
+  QString lineStyleName = QStringLiteral( "CONTINUOUS" );
   if ( mSymbologyExport != NoSymbology )
   {
     lineStyleName = lineStyleFromSymbolLayer( symbolLayer );
@@ -3816,7 +3816,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         tempGeom = tempGeom->segmentize();
         FALLTHROUGH;
       case QgsWkbTypes::Polygon:
-        writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, "SOLID", brushColor );
+        writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, QStringLiteral( "SOLID" ), brushColor );
         break;
 
       case QgsWkbTypes::MultiPolygon:
@@ -3824,7 +3824,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
         const QgsCoordinateSequence &cs = geom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
-          writePolygon( cs.at( i ), layer, "SOLID", brushColor );
+          writePolygon( cs.at( i ), layer, QStringLiteral( "SOLID" ), brushColor );
         }
         break;
       }
@@ -3849,7 +3849,7 @@ QColor QgsDxfExport::colorFromSymbolLayer( const QgsSymbolLayer* symbolLayer, Qg
 
 QString QgsDxfExport::lineStyleFromSymbolLayer( const QgsSymbolLayer* symbolLayer )
 {
-  QString lineStyleName = "CONTINUOUS";
+  QString lineStyleName = QStringLiteral( "CONTINUOUS" );
   if ( !symbolLayer )
   {
     return lineStyleName;
@@ -3975,13 +3975,13 @@ void QgsDxfExport::writeDefaultLinetypes()
   // continuous (Qt solid line)
   Q_FOREACH ( const QString& ltype, QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS" )
   {
-    writeGroup( 0, "LTYPE" );
+    writeGroup( 0, QStringLiteral( "LTYPE" ) );
     writeHandle();
-    writeGroup( 100, "AcDbSymbolTableRecord" );
-    writeGroup( 100, "AcDbLinetypeTableRecord" );
+    writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+    writeGroup( 100, QStringLiteral( "AcDbLinetypeTableRecord" ) );
     writeGroup( 2, ltype );
     writeGroup( 70, 64 );
-    writeGroup( 3, "Defaultstyle" );
+    writeGroup( 3, QStringLiteral( "Defaultstyle" ) );
     writeGroup( 72, 65 );
     writeGroup( 73, 0 );
     writeGroup( 40, 0.0 );
@@ -3994,19 +3994,19 @@ void QgsDxfExport::writeDefaultLinetypes()
   QVector<qreal> dashVector( 2 );
   dashVector[0] = das;
   dashVector[1] = dss;
-  writeLinetype( "DASH", dashVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DASH" ), dashVector, QgsUnitTypes::RenderMapUnits );
 
   QVector<qreal> dotVector( 2 );
   dotVector[0] = dos;
   dotVector[1] = dss;
-  writeLinetype( "DOT", dotVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DOT" ), dotVector, QgsUnitTypes::RenderMapUnits );
 
   QVector<qreal> dashDotVector( 4 );
   dashDotVector[0] = das;
   dashDotVector[1] = dss;
   dashDotVector[2] = dos;
   dashDotVector[3] = dss;
-  writeLinetype( "DASHDOT", dashDotVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DASHDOT" ), dashDotVector, QgsUnitTypes::RenderMapUnits );
 
   QVector<qreal> dashDotDotVector( 6 );
   dashDotDotVector[0] = das;
@@ -4015,7 +4015,7 @@ void QgsDxfExport::writeDefaultLinetypes()
   dashDotDotVector[3] = dss;
   dashDotDotVector[4] = dos;
   dashDotDotVector[5] = dss;
-  writeLinetype( "DASHDOTDOT", dashDotDotVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DASHDOTDOT" ), dashDotDotVector, QgsUnitTypes::RenderMapUnits );
 }
 
 void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayer* symbolLayer )
@@ -4029,7 +4029,7 @@ void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayer* symbolLayer )
   QVector<qreal> customLinestyle = symbolLayer->dxfCustomDashPattern( unit );
   if ( !customLinestyle.isEmpty() )
   {
-    QString name = QString( "symbolLayer%1" ).arg( mSymbolLayerCounter++ );
+    QString name = QStringLiteral( "symbolLayer%1" ).arg( mSymbolLayerCounter++ );
     writeLinetype( name, customLinestyle, unit );
     mLineStyles.insert( symbolLayer, name );
   }
@@ -4062,14 +4062,14 @@ void QgsDxfExport::writeLinetype( const QString& styleName, const QVector<qreal>
     length += ( *dashIt * mapUnitScaleFactor( mSymbologyScaleDenominator, u, mMapUnits ) );
   }
 
-  writeGroup( 0, "LTYPE" );
+  writeGroup( 0, QStringLiteral( "LTYPE" ) );
   writeHandle();
   // 330 5
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbLinetypeTableRecord" );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+  writeGroup( 100, QStringLiteral( "AcDbLinetypeTableRecord" ) );
   writeGroup( 2, styleName );
   writeGroup( 70, 64 ); // 0?
-  writeGroup( 3, "" );
+  writeGroup( 3, QLatin1String( "" ) );
   writeGroup( 72, 65 );
   writeGroup( 73, pattern.size() );
   writeGroup( 40, length );
@@ -4131,23 +4131,23 @@ QString QgsDxfExport::lineNameFromPenStyle( Qt::PenStyle style )
   switch ( style )
   {
     case Qt::DashLine:
-      return "DASH";
+      return QStringLiteral( "DASH" );
     case Qt::DotLine:
-      return "DOT";
+      return QStringLiteral( "DOT" );
     case Qt::DashDotLine:
-      return "DASHDOT";
+      return QStringLiteral( "DASHDOT" );
     case Qt::DashDotDotLine:
-      return "DASHDOTDOT";
+      return QStringLiteral( "DASHDOTDOT" );
     case Qt::SolidLine:
     default:
-      return "CONTINUOUS";
+      return QStringLiteral( "CONTINUOUS" );
   }
 }
 
 QString QgsDxfExport::dxfLayerName( const QString& name )
 {
   if ( name.isEmpty() )
-    return "0";
+    return QStringLiteral( "0" );
 
   // dxf layers can be max 255 characters long
   QString layerName = name.left( 255 );
@@ -4169,7 +4169,7 @@ QString QgsDxfExport::dxfLayerName( const QString& name )
   layerName.replace( '\'', '_' );
 
   // also remove newline characters (#15067)
-  layerName.replace( "\r\n", "_" );
+  layerName.replace( QLatin1String( "\r\n" ), QLatin1String( "_" ) );
   layerName.replace( '\r', '_' );
   layerName.replace( '\n', '_' );
 
@@ -4198,7 +4198,7 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
     }
   }
 
-  return "0";
+  return QStringLiteral( "0" );
 }
 
 QString QgsDxfExport::dxfEncoding( const QString &name )
@@ -4306,7 +4306,7 @@ void QgsDxfExport::drawLabel( const QString& layerId, QgsRenderContext& context,
   QgsFeatureId fid = label->getFeaturePart()->featureId();
   QString dxfLayer = mDxfLayerNames[layerId][fid];
 
-  QString wrapchr = tmpLyr.wrapChar.isEmpty() ? "\n" : tmpLyr.wrapChar;
+  QString wrapchr = tmpLyr.wrapChar.isEmpty() ? QStringLiteral( "\n" ) : tmpLyr.wrapChar;
 
   //add the direction symbol if needed
   if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.addDirectionSymbol )
@@ -4355,7 +4355,7 @@ void QgsDxfExport::drawLabel( const QString& layerId, QgsRenderContext& context,
     }
   }
 
-  txt = txt.replace( wrapchr, "\\P" );
+  txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
 
   if ( tmpLyr.format().font().underline() )
   {
@@ -4372,11 +4372,11 @@ void QgsDxfExport::drawLabel( const QString& layerId, QgsRenderContext& context,
     txt.prepend( "\\K" ).append( "\\k" );
   }
 
-  txt.prepend( QString( "\\f%1|i%2|b%3;\\H%4;" )
+  txt.prepend( QStringLiteral( "\\f%1|i%2|b%3;\\H%4;" )
                .arg( tmpLyr.format().font().family() )
                .arg( tmpLyr.format().font().italic() ? 1 : 0 )
                .arg( tmpLyr.format().font().bold() ? 1 : 0 )
-               .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
+               .arg( label->getHeight() / ( 1 + txt.count( QStringLiteral( "\\P" ) ) ) * 0.75 ) );
 
   writeMText( dxfLayer, txt, QgsPointV2( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
 }

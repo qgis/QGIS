@@ -60,7 +60,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, Q
   connect( mPasteAction, SIGNAL( triggered( bool ) ), this, SLOT( paste() ) );
   connect( mDeleteAction, SIGNAL( triggered( bool ) ), this, SLOT( removeRule() ) );
 
-  if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
+  if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
     const QgsRuleBasedLabeling* rl = static_cast<const QgsRuleBasedLabeling*>( mLayer->labeling() );
     mRootRule = rl->rootRule()->clone();
@@ -86,7 +86,7 @@ QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
 void QgsRuleBasedLabelingWidget::writeSettingsToLayer()
 {
   // also clear old-style labeling config
-  mLayer->removeCustomProperty( "labeling" );
+  mLayer->removeCustomProperty( QStringLiteral( "labeling" ) );
 
   mLayer->setLabeling( new QgsRuleBasedLabeling( mRootRule->clone() ) );
 }
@@ -202,7 +202,7 @@ static QString _formatScale( int denom )
 {
   if ( denom != 0 )
   {
-    QString txt = QString( "1:%L1" ).arg( denom );
+    QString txt = QStringLiteral( "1:%L1" ).arg( denom );
     return txt;
   }
   else
@@ -418,7 +418,7 @@ Qt::DropActions QgsRuleBasedLabelingModel::supportedDropActions() const
 QStringList QgsRuleBasedLabelingModel::mimeTypes() const
 {
   QStringList types;
-  types << "application/vnd.text.list";
+  types << QStringLiteral( "application/vnd.text.list" );
   return types;
 }
 
@@ -426,15 +426,15 @@ QStringList QgsRuleBasedLabelingModel::mimeTypes() const
 void _renderer2labelingRules( QDomElement& ruleElem )
 {
   // labeling rules recognize only "description"
-  if ( ruleElem.hasAttribute( "label" ) )
-    ruleElem.setAttribute( "description", ruleElem.attribute( "label" ) );
+  if ( ruleElem.hasAttribute( QStringLiteral( "label" ) ) )
+    ruleElem.setAttribute( QStringLiteral( "description" ), ruleElem.attribute( QStringLiteral( "label" ) ) );
 
   // run recursively
-  QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
+  QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
   while ( !childRuleElem.isNull() )
   {
     _renderer2labelingRules( childRuleElem );
-    childRuleElem = childRuleElem.nextSiblingElement( "rule" );
+    childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }
 }
 
@@ -456,8 +456,8 @@ QMimeData*QgsRuleBasedLabelingModel::mimeData( const QModelIndexList& indexes ) 
     QgsRuleBasedLabeling::Rule* rule = ruleForIndex( index )->clone();
     QDomDocument doc;
 
-    QDomElement rootElem = doc.createElement( "rule_mime" );
-    rootElem.setAttribute( "type", "labeling" ); // for determining whether rules are from renderer or labeling
+    QDomElement rootElem = doc.createElement( QStringLiteral( "rule_mime" ) );
+    rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "labeling" ) ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
@@ -467,7 +467,7 @@ QMimeData*QgsRuleBasedLabelingModel::mimeData( const QModelIndexList& indexes ) 
     stream << doc.toString( -1 );
   }
 
-  mimeData->setData( "application/vnd.text.list", encodedData );
+  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
   return mimeData;
 }
 
@@ -478,13 +478,13 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData* data, Qt::DropAct
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( "application/vnd.text.list" ) )
+  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
     return false;
 
   if ( parent.column() > 0 )
     return false;
 
-  QByteArray encodedData = data->data( "application/vnd.text.list" );
+  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -503,10 +503,10 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData* data, Qt::DropAct
     if ( !doc.setContent( text ) )
       continue;
     QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != "rule_mime" )
+    if ( rootElem.tagName() != QLatin1String( "rule_mime" ) )
       continue;
-    QDomElement ruleElem = rootElem.firstChildElement( "rule" );
-    if ( rootElem.attribute( "type" ) == "renderer" )
+    QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
+    if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "renderer" ) )
       _renderer2labelingRules( ruleElem ); // do some modifications so that we load the rules more nicely
     QgsRuleBasedLabeling::Rule* rule = QgsRuleBasedLabeling::Rule::create( ruleElem );
 
@@ -704,7 +704,7 @@ void QgsLabelingRulePropsWidget::buildExpression()
   }
   context << QgsExpressionContextUtils::layerScope( mLayer );
 
-  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 
   if ( dlg.exec() )
     editFilter->setText( dlg.expressionText() );

@@ -447,11 +447,11 @@ void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer* layer )
 
 QString QgsSnappingUtils::dump()
 {
-  QString msg = "--- SNAPPING UTILS DUMP ---\n";
+  QString msg = QStringLiteral( "--- SNAPPING UTILS DUMP ---\n" );
 
   if ( !mMapSettings.hasValidSettings() )
   {
-    msg += "invalid map settings!";
+    msg += QLatin1String( "invalid map settings!" );
     return msg;
   }
 
@@ -461,7 +461,7 @@ QString QgsSnappingUtils::dump()
   {
     if ( mSnappingConfig.mode() == QgsSnappingConfig::ActiveLayer && !mCurrentLayer )
     {
-      msg += "no current layer!";
+      msg += QLatin1String( "no current layer!" );
       return msg;
     }
 
@@ -491,36 +491,36 @@ QString QgsSnappingUtils::dump()
     {
       if ( QgsPointLocator* loc = locatorForLayer( layer.layer ) )
       {
-        QString extentStr, cachedGeoms, limit( "no max area" );
+        QString extentStr, cachedGeoms, limit( QStringLiteral( "no max area" ) );
         if ( const QgsRectangle* r = loc->extent() )
         {
-          extentStr = QString( " extent %1" ).arg( r->toString() );
+          extentStr = QStringLiteral( " extent %1" ).arg( r->toString() );
         }
         else
-          extentStr = "full extent";
+          extentStr = QStringLiteral( "full extent" );
         if ( loc->hasIndex() )
-          cachedGeoms = QString( "%1 feats" ).arg( loc->cachedGeometryCount() );
+          cachedGeoms = QStringLiteral( "%1 feats" ).arg( loc->cachedGeometryCount() );
         else
-          cachedGeoms = "not initialized";
+          cachedGeoms = QStringLiteral( "not initialized" );
         if ( mStrategy == IndexHybrid )
         {
           if ( mHybridMaxAreaPerLayer.contains( layer.layer->id() ) )
           {
             double maxArea = mStrategy == IndexHybrid ? mHybridMaxAreaPerLayer[layer.layer->id()] : -1;
             if ( maxArea != -1 )
-              limit = QString( "max area %1" ).arg( maxArea );
+              limit = QStringLiteral( "max area %1" ).arg( maxArea );
           }
           else
-            limit = "not evaluated";
+            limit = QStringLiteral( "not evaluated" );
         }
-        msg += QString( "index : YES | %1 | %2 | %3\n" ).arg( cachedGeoms, extentStr, limit );
+        msg += QStringLiteral( "index : YES | %1 | %2 | %3\n" ).arg( cachedGeoms, extentStr, limit );
       }
       else
-        msg += QString( "index : ???\n" ); // should not happen
+        msg += QStringLiteral( "index : ???\n" ); // should not happen
     }
     else
-      msg += "index : NO\n";
-    msg += "-\n";
+      msg += QLatin1String( "index : NO\n" );
+    msg += QLatin1String( "-\n" );
   }
 
   return msg;

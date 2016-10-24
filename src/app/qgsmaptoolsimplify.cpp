@@ -72,8 +72,8 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     , mReducedHasErrors( false )
 {
   QSettings settings;
-  mTolerance = settings.value( "/digitizing/simplify_tolerance", 1 ).toDouble();
-  mToleranceUnits = ( QgsTolerance::UnitType ) settings.value( "/digitizing/simplify_tolerance_units", 0 ).toInt();
+  mTolerance = settings.value( QStringLiteral( "/digitizing/simplify_tolerance" ), 1 ).toDouble();
+  mToleranceUnits = ( QgsTolerance::UnitType ) settings.value( QStringLiteral( "/digitizing/simplify_tolerance_units" ), 0 ).toInt();
 
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
@@ -90,7 +90,7 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
   mTolerance = tolerance;
 
   QSettings settings;
-  settings.setValue( "/digitizing/simplify_tolerance", tolerance );
+  settings.setValue( QStringLiteral( "/digitizing/simplify_tolerance" ), tolerance );
 
   if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();
@@ -101,7 +101,7 @@ void QgsMapToolSimplify::setToleranceUnits( int units )
   mToleranceUnits = ( QgsTolerance::UnitType ) units;
 
   QSettings settings;
-  settings.setValue( "/digitizing/simplify_tolerance_units", units );
+  settings.setValue( QStringLiteral( "/digitizing/simplify_tolerance_units" ), units );
 
   if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();

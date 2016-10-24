@@ -51,7 +51,7 @@ static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
-static const QString sPluginIcon = ":/coordinate_capture/coordinate_capture.png";
+static const QString sPluginIcon = QStringLiteral( ":/coordinate_capture/coordinate_capture.png" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -101,13 +101,13 @@ void CoordinateCapture::initGui()
 
   //create the dock widget
   mpDockWidget = new QgsDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
-  mpDockWidget->setObjectName( "CoordinateCapture" );
+  mpDockWidget->setObjectName( QStringLiteral( "CoordinateCapture" ) );
   mpDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mpDockWidget );
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   mQActionPointer->setCheckable( true );
   mQActionPointer->setChecked( mpDockWidget->isVisible() );
   // Set the what's this text
@@ -161,7 +161,7 @@ void CoordinateCapture::initGui()
   connect( mpCaptureButton, SIGNAL( clicked() ), this, SLOT( run() ) );
 
   // Set the icons
-  setCurrentTheme( "" );
+  setCurrentTheme( QLatin1String( "" ) );
 
   mypLayout->addWidget( mypUserCrsToolButton, 0, 0 );
   mypLayout->addWidget( mpUserCrsEdit, 0, 1 );
@@ -289,7 +289,7 @@ void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
     mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.svg" ) ) );
     mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
     mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
-    mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.svg" ) ) );
+    mypCRSLabel->setPixmap( QPixmap( getIconPath( QStringLiteral( "transformed.svg" ) ) ) );
   }
 }
 
@@ -313,7 +313,7 @@ QString CoordinateCapture::getIconPath( const QString& theName )
   }
   else
   {
-    return "";
+    return QLatin1String( "" );
   }
 }
 

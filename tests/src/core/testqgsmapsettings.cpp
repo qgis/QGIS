@@ -50,7 +50,7 @@ QString TestQgsMapSettings::toString( const QPolygonF& p, int dec ) const
   double r = pow( 10.0, dec );
   for ( int i = 0; i < p.size(); ++i )
   {
-    s += QString( "%1%2 %3" ).arg( sep )
+    s += QStringLiteral( "%1%2 %3" ).arg( sep )
          .arg( int( p[i].x() * r ) / r )
          .arg( int( p[i].y() * r ) / r );
     sep = ",";

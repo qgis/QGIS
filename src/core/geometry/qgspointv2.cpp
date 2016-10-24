@@ -211,8 +211,8 @@ QString QgsPointV2::asWkt( int precision ) const
 
 QDomElement QgsPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemPoint = doc.createElementNS( ns, "Point" );
-  QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
+  QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
+  QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
   QString strCoordinates = qgsDoubleToString( mX, precision ) + ',' + qgsDoubleToString( mY, precision );
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
   elemPoint.appendChild( elemCoordinates );
@@ -221,9 +221,9 @@ QDomElement QgsPointV2::asGML2( QDomDocument& doc, int precision, const QString&
 
 QDomElement QgsPointV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemPoint = doc.createElementNS( ns, "Point" );
-  QDomElement elemPosList = doc.createElementNS( ns, "pos" );
-  elemPosList.setAttribute( "srsDimension", is3D() ? 3 : 2 );
+  QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
+  QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );
+  elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D() ? 3 : 2 );
   QString strCoordinates = qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
   if ( is3D() )
     strCoordinates += ' ' + qgsDoubleToString( mZ, precision );

@@ -37,21 +37,21 @@ int main( int argc, char ** argv )
 
   QgsApplication a( argc, argv, true );
   // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
-  QString theme = settings.value( "/Themes", "default" ).toString();
-  if ( theme == "gis"
-       || theme == "classic"
-       || theme == "nkids" )
+  QString theme = settings.value( QStringLiteral( "/Themes" ), "default" ).toString();
+  if ( theme == QLatin1String( "gis" )
+       || theme == QLatin1String( "classic" )
+       || theme == QLatin1String( "nkids" ) )
   {
-    theme = QLatin1String( "default" );
+    theme = QStringLiteral( "default" );
   }
   a.setThemeName( theme );
   a.initQgis();
   a.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qbrowser-icon-60x60.png" ) );
 
   // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS3" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
 
 #ifdef Q_OS_MACX
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
@@ -82,21 +82,21 @@ int main( int argc, char ** argv )
 #endif
 
   QString i18nPath = QgsApplication::i18nPath();
-  bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
-  QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
+  bool myLocaleOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+  QString myUserLocale = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
   QString myTranslationCode = !myLocaleOverrideFlag || myUserLocale.isEmpty() ? QLocale::system().name() : myUserLocale;
 
   QTranslator qgistor( nullptr );
   QTranslator qttor( nullptr );
-  if ( myTranslationCode != "C" )
+  if ( myTranslationCode != QLatin1String( "C" ) )
   {
-    if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
+    if ( qgistor.load( QStringLiteral( "qgis_" ) + myTranslationCode, i18nPath ) )
     {
       a.installTranslator( &qgistor );
     }
     else
     {
-      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath, myTranslationCode ).toLocal8Bit().constData() );
+      qWarning( "loading of qgis translation failed [%s]", QStringLiteral( "%1/qgis_%2" ).arg( i18nPath, myTranslationCode ).toLocal8Bit().constData() );
     }
 
     /* Translation file for Qt.
@@ -104,13 +104,13 @@ int main( int argc, char ** argv )
      * the About, Preferences and Quit items to the Mac Application menu.
      * These items must be translated identically in both qt_ and qgis_ files.
      */
-    if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    if ( qttor.load( QStringLiteral( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
     {
       a.installTranslator( &qttor );
     }
     else
     {
-      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ).toLocal8Bit().constData() );
+      qWarning( "loading of qt translation failed [%s]", QStringLiteral( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ).toLocal8Bit().constData() );
     }
   }
 

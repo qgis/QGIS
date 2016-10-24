@@ -45,16 +45,16 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 
   if ( !input.contains( ' ' ) )
   {
-    rx.setPattern( "-?\\d*(\\.|,)(\\d+)?" );
+    rx.setPattern( QStringLiteral( "-?\\d*(\\.|,)(\\d+)?" ) );
     if ( rx.exactMatch( input ) )
       return Acceptable;
   }
   else
   {
-    rx.setPattern( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" );
+    rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" ) );
     if ( rx.exactMatch( input ) )
     {
-      rx.setPattern( "-?\\d{1,3}\\s60" );
+      rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s60" ) );
       if ( rx.exactMatch( input ) )
       {
         int in = input.leftRef( input.indexOf( ' ' ) ).toInt();
@@ -65,7 +65,7 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
         return Acceptable;
       }
 
-      rx.setPattern( "-?\\d{1,3}\\s\\d{1,2}\\s60" );
+      rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s\\d{1,2}\\s60" ) );
       if ( rx.exactMatch( input ) )
       {
         int min = input.split( ' ' ).at( 1 ).toInt() + 1;

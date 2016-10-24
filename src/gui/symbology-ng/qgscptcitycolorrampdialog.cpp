@@ -46,9 +46,9 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/CptCityColorRampV2Dialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 250 << 550 );
-  mSplitter->restoreState( settings.value( "/Windows/CptCityColorRampV2Dialog/splitter" ).toByteArray() );
+  mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/splitter" ) ).toByteArray() );
 
   mModel = mAuthorsModel = mSelectionsModel = nullptr; //mListModel = 0;
   mTreeFilter = nullptr;
@@ -74,8 +74,8 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
                            "and unzip it to your QGIS settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath(),
-                                "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/",
-                                "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" );
+                                QStringLiteral( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/" ),
+                                QStringLiteral( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" ) );
     edit->setText( helpText );
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );
@@ -226,26 +226,26 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   {
     if ( resetRamp )
     {
-      mRamp.setName( "", "" );
+      mRamp.setName( QLatin1String( "" ), QLatin1String( "" ) );
       QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
-      lblSchemeName->setText( "" );
+      lblSchemeName->setText( QLatin1String( "" ) );
       populateVariants();
     }
     updateListWidget( item );
     lblSchemePath->setText( item->path() );
-    lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
+    lblCollectionInfo->setText( QStringLiteral( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
     updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
   }
   else if ( item->type() == QgsCptCityDataItem::Selection )
   {
-    lblSchemePath->setText( "" );
+    lblSchemePath->setText( QLatin1String( "" ) );
     clearCopyingInfo();
     updateListWidget( item );
-    lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
+    lblCollectionInfo->setText( QStringLiteral( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
   }
   else if ( item->type() == QgsCptCityDataItem::AllRamps )
   {
-    lblSchemePath->setText( "" );
+    lblSchemePath->setText( QLatin1String( "" ) );
     clearCopyingInfo();
     updateListWidget( item );
     lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->leafCount() ) );
@@ -277,7 +277,7 @@ void QgsCptCityColorRampDialog::on_mListWidget_itemSelectionChanged()
 {
   if ( mListWidget->selectedItems().isEmpty() )
   {
-    mRamp.setName( "", "" );
+    mRamp.setName( QLatin1String( "" ), QLatin1String( "" ) );
   }
 }
 
@@ -361,14 +361,14 @@ void QgsCptCityColorRampDialog::on_pbtnLicenseDetails_pressed()
     }
   }
   textEdit->insertPlainText( title + "\n\n" );
-  textEdit->insertPlainText( "===================" );
-  textEdit->insertPlainText( " copying " );
-  textEdit->insertPlainText( "===================\n" );
+  textEdit->insertPlainText( QStringLiteral( "===================" ) );
+  textEdit->insertPlainText( QStringLiteral( " copying " ) );
+  textEdit->insertPlainText( QStringLiteral( "===================\n" ) );
   textEdit->insertPlainText( copyText );
-  textEdit->insertPlainText( "\n" );
-  textEdit->insertPlainText( "==================" );
-  textEdit->insertPlainText( " description " );
-  textEdit->insertPlainText( "==================\n" );
+  textEdit->insertPlainText( QStringLiteral( "\n" ) );
+  textEdit->insertPlainText( QStringLiteral( "==================" ) );
+  textEdit->insertPlainText( QStringLiteral( " description " ) );
+  textEdit->insertPlainText( QStringLiteral( "==================\n" ) );
   textEdit->insertPlainText( descText );
   textEdit->moveCursor( QTextCursor::Start );
 
@@ -380,11 +380,11 @@ void QgsCptCityColorRampDialog::updatePreview( bool clear )
 {
   QSize size = lblPreview->size();
 
-  if ( clear || mRamp.schemeName() == "" )
+  if ( clear || mRamp.schemeName() == QLatin1String( "" ) )
   {
-    lblSchemeName->setText( "" );
-    lblSchemePath->setText( "" );
-    lblLicensePreview->setText( "" );
+    lblSchemeName->setText( QLatin1String( "" ) );
+    lblSchemePath->setText( QLatin1String( "" ) );
+    lblLicensePreview->setText( QLatin1String( "" ) );
     QPixmap blankPixmap( size );
     blankPixmap.fill( Qt::transparent );
     lblPreview->setPixmap( blankPixmap );
@@ -412,27 +412,27 @@ void QgsCptCityColorRampDialog::clearCopyingInfo()
 
 void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString >& copyingMap )
 {
-  QString authorStr = copyingMap.value( "authors" );
+  QString authorStr = copyingMap.value( QStringLiteral( "authors" ) );
   if ( authorStr.length() > 80 )
-    authorStr.replace( authorStr.indexOf( ' ', 80 ), 1, "\n" );
+    authorStr.replace( authorStr.indexOf( ' ', 80 ), 1, QStringLiteral( "\n" ) );
   lblAuthorName->setText( authorStr );
-  QString licenseStr = copyingMap.value( "license/informal" );
-  if ( copyingMap.contains( "license/year" ) )
-    licenseStr += " (" + copyingMap.value( "license/year" ) + ')';
+  QString licenseStr = copyingMap.value( QStringLiteral( "license/informal" ) );
+  if ( copyingMap.contains( QStringLiteral( "license/year" ) ) )
+    licenseStr += " (" + copyingMap.value( QStringLiteral( "license/year" ) ) + ')';
   if ( licenseStr.length() > 80 )
-    licenseStr.replace( licenseStr.indexOf( ' ', 80 ), 1, "\n" );
-  if ( copyingMap.contains( "license/url" ) )
-    licenseStr += "\n[ " + copyingMap.value( "license/url" ) + " ]";
+    licenseStr.replace( licenseStr.indexOf( ' ', 80 ), 1, QStringLiteral( "\n" ) );
+  if ( copyingMap.contains( QStringLiteral( "license/url" ) ) )
+    licenseStr += "\n[ " + copyingMap.value( QStringLiteral( "license/url" ) ) + " ]";
   else
     licenseStr += '\n';
   lblLicenseName->setText( licenseStr );
-  licenseStr.replace( '\n', "  " );
+  licenseStr.replace( '\n', QLatin1String( "  " ) );
   lblLicensePreview->setText( licenseStr );
   lblLicensePreview->setCursorPosition( 0 );
-  if ( copyingMap.contains( "src/link" ) )
-    lblSrcLink->setText( copyingMap.value( "src/link" ) );
+  if ( copyingMap.contains( QStringLiteral( "src/link" ) ) )
+    lblSrcLink->setText( copyingMap.value( QStringLiteral( "src/link" ) ) );
   else
-    lblSrcLink->setText( "" );
+    lblSrcLink->setText( QLatin1String( "" ) );
 }
 
 void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index )
@@ -449,8 +449,8 @@ void QgsCptCityColorRampDialog::onFinished()
 {
   // save settings
   QSettings settings;
-  settings.setValue( "/Windows/CptCityColorRampV2Dialog/geometry", saveGeometry() );
-  settings.setValue( "/Windows/CptCityColorRampV2Dialog/splitter", mSplitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/CptCityColorRampV2Dialog/splitter" ), mSplitter->saveState() );
 }
 
 void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()
@@ -469,7 +469,7 @@ void QgsCptCityColorRampDialog::updateUi()
 {
   // look for item, if not found in selections archive, look for in authors
   QgsDebugMsg( "looking for ramp " + mRamp.schemeName() );
-  if ( mRamp.schemeName() != "" )
+  if ( mRamp.schemeName() != QLatin1String( "" ) )
   {
     bool found = updateRamp();
     if ( ! found )
@@ -576,7 +576,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
   updatePreview( true );
 
   QgsDebugMsg( "schemeName= " + mRamp.schemeName() );
-  if ( mRamp.schemeName() == "" )
+  if ( mRamp.schemeName() == QLatin1String( "" ) )
   {
     showAll();
     return false;
@@ -634,7 +634,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
 
 void QgsCptCityColorRampDialog::showAll()
 {
-  QModelIndex modelIndex = mModel->findPath( "" );
+  QModelIndex modelIndex = mModel->findPath( QLatin1String( "" ) );
   if ( modelIndex != QModelIndex() )
   {
     QModelIndex selIndex = mTreeFilter->mapFromSource( modelIndex );

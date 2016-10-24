@@ -85,7 +85,7 @@ QgsEditorWidgetAutoConf::QgsEditorWidgetAutoConf()
 
 QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName ) const
 {
-  QgsEditorWidgetSetup result( "TextEdit", QgsEditorWidgetConfig() );
+  QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QgsEditorWidgetConfig() );
 
   if ( vl->fields().indexFromName( fieldName ) >= 0 )
   {

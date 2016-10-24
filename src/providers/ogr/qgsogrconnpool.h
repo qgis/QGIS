@@ -36,7 +36,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn* c )
 inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsOgrConn*& c )
 {
   c = new QgsOgrConn;
-  QString filePath = connInfo.left( connInfo.indexOf( "|" ) );
+  QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
   c->ds = OGROpen( filePath.toUtf8().constData(), false, nullptr );
   c->path = connInfo;
   c->valid = true;

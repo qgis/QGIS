@@ -55,7 +55,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   if ( tb )
   {
     mDisplayMode = ToolBar;
-    setObjectName( "SnappingOptionToolBar" );
+    setObjectName( QStringLiteral( "SnappingOptionToolBar" ) );
   }
   else
   {
@@ -63,12 +63,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
     if ( sb )
     {
       mDisplayMode = StatusBar;
-      setObjectName( "SnappingOptionStatusBar" );
+      setObjectName( QStringLiteral( "SnappingOptionStatusBar" ) );
     }
     else
     {
       mDisplayMode = Widget;
-      setObjectName( "SnappingOptionDialog" );
+      setObjectName( QStringLiteral( "SnappingOptionDialog" ) );
     }
   }
 
@@ -77,7 +77,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mEnabledAction->setCheckable( true );
   mEnabledAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) ) );
   mEnabledAction->setToolTip( tr( "Enable snapping" ) );
-  mEnabledAction->setObjectName( "EnableSnappingAction" );
+  mEnabledAction->setObjectName( QStringLiteral( "EnableSnappingAction" ) );
   connect( mEnabledAction, SIGNAL( toggled( bool ) ) , this, SLOT( enableSnapping( bool ) ) );
 
   // mode button
@@ -85,14 +85,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mModeButton->setToolTip( tr( "Snapping mode" ) );
   mModeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *modeMenu = new QMenu( tr( "Set snapping mode" ), this );
-  mAllLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAllLayers.svg" ) ), "All layers", modeMenu );
-  mActiveLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingActiveLayer.svg" ) ), "Active layer", modeMenu );
-  mAdvancedModeAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAdvanced.svg" ) ), "Advanced configuration", modeMenu );
+  mAllLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAllLayers.svg" ) ), QStringLiteral( "All layers" ), modeMenu );
+  mActiveLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingActiveLayer.svg" ) ), QStringLiteral( "Active layer" ), modeMenu );
+  mAdvancedModeAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAdvanced.svg" ) ), QStringLiteral( "Advanced configuration" ), modeMenu );
   modeMenu->addAction( mAllLayersAction );
   modeMenu->addAction( mActiveLayerAction );
   modeMenu->addAction( mAdvancedModeAction );
   mModeButton->setMenu( modeMenu );
-  mModeButton->setObjectName( "SnappingModeButton" );
+  mModeButton->setObjectName( QStringLiteral( "SnappingModeButton" ) );
   if ( mDisplayMode == Widget )
   {
     mModeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -104,14 +104,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mTypeButton->setToolTip( tr( "Snapping type" ) );
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *typeMenu = new QMenu( tr( "Set snapping mode" ), this );
-  mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), "Vertex", typeMenu );
-  mVertexAndSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), "Vertex and segment", typeMenu );
-  mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), "Segment", typeMenu );
+  mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), QStringLiteral( "Vertex" ), typeMenu );
+  mVertexAndSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), QStringLiteral( "Vertex and segment" ), typeMenu );
+  mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), QStringLiteral( "Segment" ), typeMenu );
   typeMenu->addAction( mVertexAction );
   typeMenu->addAction( mVertexAndSegmentAction );
   typeMenu->addAction( mSegmentAction );
   mTypeButton->setMenu( typeMenu );
-  mTypeButton->setObjectName( "SnappingTypeButton" );
+  mTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
   if ( mDisplayMode == Widget )
   {
     mTypeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -121,7 +121,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   // tolerance
   mToleranceSpinBox = new QDoubleSpinBox();
   mToleranceSpinBox->setToolTip( tr( "Snapping tolerance in defined units" ) );
-  mToleranceSpinBox->setObjectName( "SnappingToleranceSpinBox" );
+  mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
   connect( mToleranceSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( changeTolerance( double ) ) );
 
   // units
@@ -129,7 +129,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mUnitsComboBox->addItem( tr( "px" ), QgsTolerance::Pixels );
   mUnitsComboBox->addItem( QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() ), QgsTolerance::ProjectUnits );
   mUnitsComboBox->setToolTip( tr( "Snapping unit type: pixels (px) or map units (mu)" ) );
-  mUnitsComboBox->setObjectName( "SnappingUnitComboBox" );
+  mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
   connect( mUnitsComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( changeUnit( int ) ) );
 
   // topological editing button
@@ -137,7 +137,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mTopologicalEditingAction->setCheckable( true );
   mTopologicalEditingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconTopologicalEditing.svg" ) ) );
   mTopologicalEditingAction->setToolTip( tr( "Enable topological editing" ) );
-  mTopologicalEditingAction->setObjectName( "TopologicalEditingAction" );
+  mTopologicalEditingAction->setObjectName( QStringLiteral( "TopologicalEditingAction" ) );
   connect( mTopologicalEditingAction, SIGNAL( toggled( bool ) ) , this, SLOT( enableTopologicalEditing( bool ) ) );
 
   // snapping on intersection button
@@ -145,7 +145,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mIntersectionSnappingAction->setCheckable( true );
   mIntersectionSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingIntersection.svg" ) ) );
   mIntersectionSnappingAction->setToolTip( tr( "Enable snapping on intersection" ) );
-  mIntersectionSnappingAction->setObjectName( "IntersectionSnappingAction" );
+  mIntersectionSnappingAction->setObjectName( QStringLiteral( "IntersectionSnappingAction" ) );
   connect( mIntersectionSnappingAction, SIGNAL( toggled( bool ) ) , this, SLOT( enableIntersectionSnapping( bool ) ) );
 
   // layout
@@ -239,7 +239,7 @@ QgsSnappingWidget::~QgsSnappingWidget()
 {
   if ( mDisplayMode == Widget )
   {
-    QSettings().setValue( "/Windows/SnappingWidget/geometry", saveGeometry() );
+    QSettings().setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
   }
 }
 

@@ -143,8 +143,8 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       << QgsExpressionContextUtils::projectScope()
       << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
       QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
-      actionScope->setVariable( "click_x", point.x() );
-      actionScope->setVariable( "click_y", point.y() );
+      actionScope->setVariable( QStringLiteral( "click_x" ), point.x() );
+      actionScope->setVariable( QStringLiteral( "click_y" ), point.y() );
       context << actionScope;
 
       int actionIdx = layer->actions()->defaultAction();

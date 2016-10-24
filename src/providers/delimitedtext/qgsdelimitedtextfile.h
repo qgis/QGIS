@@ -147,7 +147,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param escape The escape character used to escape quote or delim
      *                characters.
      */
-    void setTypeCSV( const QString& delim = QString( "," ), const QString& quote = QString( "\"" ), const QString& escape = QString( "\"" ) );
+    void setTypeCSV( const QString& delim = QStringLiteral( "," ), const QString& quote = QStringLiteral( "\"" ), const QString& escape = QStringLiteral( "\"" ) );
 
     /** Set the number of header lines to skip
      * @param skiplines The maximum lines to skip

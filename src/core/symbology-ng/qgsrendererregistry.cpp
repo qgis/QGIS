@@ -30,50 +30,50 @@
 QgsRendererRegistry::QgsRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsRendererMetadata( "nullSymbol",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "nullSymbol" ),
                                         QObject::tr( "No symbols" ),
                                         QgsNullSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererMetadata( "singleSymbol",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "singleSymbol" ),
                                         QObject::tr( "Single symbol" ),
                                         QgsSingleSymbolRenderer::create,
                                         QgsSingleSymbolRenderer::createFromSld ) );
 
-  addRenderer( new QgsRendererMetadata( "categorizedSymbol",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "categorizedSymbol" ),
                                         QObject::tr( "Categorized" ),
                                         QgsCategorizedSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererMetadata( "graduatedSymbol",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "graduatedSymbol" ),
                                         QObject::tr( "Graduated" ),
                                         QgsGraduatedSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererMetadata( "RuleRenderer",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "RuleRenderer" ),
                                         QObject::tr( "Rule-based" ),
                                         QgsRuleBasedRenderer::create,
                                         QgsRuleBasedRenderer::createFromSld ) );
 
-  addRenderer( new QgsRendererMetadata( "pointDisplacement",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "pointDisplacement" ),
                                         QObject::tr( "Point displacement" ),
                                         QgsPointDisplacementRenderer::create,
                                         QIcon(),
                                         nullptr,
                                         QgsRendererAbstractMetadata::PointLayer ) );
 
-  addRenderer( new QgsRendererMetadata( "pointCluster",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "pointCluster" ),
                                         QObject::tr( "Point cluster" ),
                                         QgsPointClusterRenderer::create,
                                         QIcon(),
                                         nullptr,
                                         QgsRendererAbstractMetadata::PointLayer ) );
 
-  addRenderer( new QgsRendererMetadata( "invertedPolygonRenderer",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "invertedPolygonRenderer" ),
                                         QObject::tr( "Inverted polygons" ),
                                         QgsInvertedPolygonRenderer::create,
                                         QIcon(),
                                         nullptr,
                                         QgsRendererAbstractMetadata::PolygonLayer ) );
 
-  addRenderer( new QgsRendererMetadata( "heatmapRenderer",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "heatmapRenderer" ),
                                         QObject::tr( "Heatmap" ),
                                         QgsHeatmapRenderer::create,
                                         QIcon(),
@@ -81,7 +81,7 @@ QgsRendererRegistry::QgsRendererRegistry()
                                         QgsRendererAbstractMetadata::PointLayer ) );
 
 
-  addRenderer( new QgsRendererMetadata( "25dRenderer",
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "25dRenderer" ),
                                         QObject::tr( "2.5 D" ),
                                         Qgs25DRenderer::create,
                                         QIcon(),

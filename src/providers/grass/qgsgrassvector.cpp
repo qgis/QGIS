@@ -163,19 +163,19 @@ QgsFields QgsGrassVectorLayer::fields()
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
-              type = "int";
+              type = QStringLiteral( "int" );
               qtype = QVariant::Int;
               break;
             case DB_C_TYPE_DOUBLE:
-              type = "double";
+              type = QStringLiteral( "double" );
               qtype = QVariant::Double;
               break;
             case DB_C_TYPE_STRING:
-              type = "string";
+              type = QStringLiteral( "string" );
               qtype = QVariant::String;
               break;
             case DB_C_TYPE_DATETIME:
-              type = "datetime";
+              type = QStringLiteral( "datetime" );
               qtype = QVariant::String;
               break;
           }

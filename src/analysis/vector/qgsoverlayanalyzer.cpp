@@ -179,7 +179,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
     int count = 0;
     while ( names.contains( field.name() ) )
     {
-      QString name = QString( "%1_%2" ).arg( field.name() ).arg( count );
+      QString name = QStringLiteral( "%1_%2" ).arg( field.name() ).arg( count );
       field = QgsField( name, field.type() );
       ++count;
     }

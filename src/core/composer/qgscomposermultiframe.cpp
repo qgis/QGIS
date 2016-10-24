@@ -342,7 +342,7 @@ int QgsComposerMultiFrame::frameIndex( QgsComposerFrame *frame ) const
 
 bool QgsComposerMultiFrame::_writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
 {
-  elem.setAttribute( "resizeMode", mResizeMode );
+  elem.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
   if ( !ignoreFrames )
   {
     QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
@@ -359,10 +359,10 @@ bool QgsComposerMultiFrame::_readXml( const QDomElement& itemElem, const QDomDoc
 {
   QgsComposerObject::readXml( itemElem, doc );
 
-  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( "resizeMode", "0" ).toInt() );
+  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
   if ( !ignoreFrames )
   {
-    QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );
+    QDomNodeList frameList = itemElem.elementsByTagName( QStringLiteral( "ComposerFrame" ) );
     for ( int i = 0; i < frameList.size(); ++i )
     {
       QDomElement frameElem = frameList.at( i ).toElement();

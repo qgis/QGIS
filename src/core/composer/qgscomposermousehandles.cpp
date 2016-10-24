@@ -623,7 +623,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
         //don't move locked items
         continue;
       }
-      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
+      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, QLatin1String( "" ), parentCommand );
       subcommand->savePreviousState();
       ( *itemIter )->move( mEndHandleMovePos.x() - mBeginHandlePos.x(), mEndHandleMovePos.y() - mBeginHandlePos.y() );
       subcommand->saveAfterState();
@@ -646,7 +646,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent* event
         //don't resize locked items or unselectable items (eg, items which make up an item group)
         continue;
       }
-      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, "", parentCommand );
+      QgsComposerItemCommand* subcommand = new QgsComposerItemCommand( *itemIter, QLatin1String( "" ), parentCommand );
       subcommand->savePreviousState();
 
       QRectF itemRect;

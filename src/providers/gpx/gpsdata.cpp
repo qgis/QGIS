@@ -33,11 +33,11 @@
 QString QgsGPSObject::xmlify( const QString& str )
 {
   QString tmp = str;
-  tmp.replace( '&', "&amp;" );
-  tmp.replace( '<', "&lt;" );
-  tmp.replace( '>', "&gt;" );
-  tmp.replace( '\"', "&quot;" );
-  tmp.replace( '\'', "&apos;" );
+  tmp.replace( '&', QLatin1String( "&amp;" ) );
+  tmp.replace( '<', QLatin1String( "&lt;" ) );
+  tmp.replace( '>', QLatin1String( "&gt;" ) );
+  tmp.replace( '\"', QLatin1String( "&quot;" ) );
+  tmp.replace( '\'', QLatin1String( "&apos;" ) );
   return tmp;
 }
 
@@ -494,7 +494,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->name;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -507,7 +507,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->cmt;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -520,7 +520,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->desc;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -533,7 +533,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->src;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -546,7 +546,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->url;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -559,7 +559,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->urlname;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -572,7 +572,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingWaypoint )
     {
       mDouble = &mWpt.ele;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingDouble );
     }
     else
@@ -583,7 +583,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingWaypoint )
     {
       mString = &mWpt.sym;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingString );
     }
     else
@@ -596,7 +596,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mInt = &mRte.number;
-      mCharBuffer = "";
+      mCharBuffer = QLatin1String( "" );
       parseModes.push( ParsingInt );
     }
     else if ( parseModes.top() == ParsingTrack )
@@ -715,17 +715,17 @@ bool QgsGPXHandler::endElement( const std::string& qName )
   else if ( parseModes.top() == ParsingDouble )
   {
     *mDouble = QString( mCharBuffer ).toDouble();
-    mCharBuffer = "";
+    mCharBuffer = QLatin1String( "" );
   }
   else if ( parseModes.top() == ParsingInt )
   {
     *mInt = QString( mCharBuffer ).toInt();
-    mCharBuffer = "";
+    mCharBuffer = QLatin1String( "" );
   }
   else if ( parseModes.top() == ParsingString )
   {
     *mString = mCharBuffer;
-    mCharBuffer = "";
+    mCharBuffer = QLatin1String( "" );
   }
   parseModes.pop();
 

@@ -37,7 +37,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ComposerManager/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerManager/geometry" ) ).toByteArray() );
 
   mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
 
@@ -77,7 +77,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   this->addTemplates( defaultTemplateMap );
   this->addTemplates( this->otherTemplates() );
 
-  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString() ).toString() );
+  mTemplatePathLineEdit->setText( settings.value( QStringLiteral( "/UI/ComposerManager/templatePath" ), QString() ).toString() );
 
   refreshComposers();
 }
@@ -85,7 +85,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
 QgsComposerManager::~QgsComposerManager()
 {
   QSettings settings;
-  settings.setValue( "/Windows/ComposerManager/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ComposerManager/geometry" ), saveGeometry() );
 }
 
 void QgsComposerManager::refreshComposers()
@@ -229,7 +229,7 @@ QMap<QString, QString> QgsComposerManager::templatesFromPath( const QString& pat
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
-    if ( infoIt->suffix().toLower() == "qpt" )
+    if ( infoIt->suffix().toLower() == QLatin1String( "qpt" ) )
     {
       templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
     }
@@ -313,7 +313,7 @@ void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
 void QgsComposerManager::on_mTemplatePathBtn_pressed()
 {
   QSettings settings;
-  QString lastTmplDir = settings.value( "/UI/lastComposerTemplateDir", QDir::homePath() ).toString();
+  QString lastTmplDir = settings.value( QStringLiteral( "/UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
   QString tmplPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose template" ),
                      lastTmplDir,
@@ -321,9 +321,9 @@ void QgsComposerManager::on_mTemplatePathBtn_pressed()
   if ( !tmplPath.isEmpty() )
   {
     mTemplatePathLineEdit->setText( tmplPath );
-    settings.setValue( "UI/ComposerManager/templatePath", tmplPath );
+    settings.setValue( QStringLiteral( "UI/ComposerManager/templatePath" ), tmplPath );
     QFileInfo tmplFileInfo( tmplPath );
-    settings.setValue( "UI/lastComposerTemplateDir", tmplFileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "UI/lastComposerTemplateDir" ), tmplFileInfo.absolutePath() );
   }
 }
 

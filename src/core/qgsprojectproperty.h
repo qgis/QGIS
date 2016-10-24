@@ -282,7 +282,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// reset the QgsProperty key to prestine state
     virtual void clear()
     {
-      mName = "";
+      mName = QLatin1String( "" );
       clearKeys();
     }
 

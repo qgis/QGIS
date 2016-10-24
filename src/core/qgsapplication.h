@@ -38,7 +38,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
-    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
+
+    /**
+     * Constructor for QgsApplication.
+     */
+    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = QStringLiteral( "desktop" ) );
     virtual ~QgsApplication();
 
     /** This method initialises paths etc for QGIS. Called by the ctor or call it manually

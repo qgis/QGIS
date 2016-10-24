@@ -28,7 +28,11 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     Q_OBJECT
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = "generic",
+
+    /**
+     * Constructor for QgsExpressionBuilderDialog.
+     */
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = QStringLiteral( "generic" ),
                                 const QgsExpressionContext& context = QgsExpressionContext() );
 
     /** The builder widget that is used by the dialog */

@@ -691,7 +691,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence &poin
 
 QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure )
 {
-  QString wkt = "(";
+  QString wkt = QStringLiteral( "(" );
   Q_FOREACH ( const QgsPointV2& p, points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
@@ -700,9 +700,9 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
       wkt += ' ' + qgsDoubleToString( p.z(), precision );
     if ( isMeasure )
       wkt += ' ' + qgsDoubleToString( p.m(), precision );
-    wkt += ", ";
+    wkt += QLatin1String( ", " );
   }
-  if ( wkt.endsWith( ", " ) )
+  if ( wkt.endsWith( QLatin1String( ", " ) ) )
     wkt.chop( 2 ); // Remove last ", "
   wkt += ')';
   return wkt;
@@ -710,7 +710,7 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
 
 QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument& doc, int precision, const QString &ns )
 {
-  QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
+  QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   QString strCoordinates;
 
@@ -726,8 +726,8 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 
 QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument& doc, int precision, const QString &ns, bool is3D )
 {
-  QDomElement elemPosList = doc.createElementNS( ns, "posList" );
-  elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
+  QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
+  elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
 
   QString strCoordinates;
   Q_FOREACH ( const QgsPointV2& p, points )
@@ -745,12 +745,12 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
 
 QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int precision )
 {
-  QString json = "[ ";
+  QString json = QStringLiteral( "[ " );
   Q_FOREACH ( const QgsPointV2& p, points )
   {
     json += '[' + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }
-  if ( json.endsWith( ", " ) )
+  if ( json.endsWith( QLatin1String( ", " ) ) )
   {
     json.chop( 2 ); // Remove last ", "
   }

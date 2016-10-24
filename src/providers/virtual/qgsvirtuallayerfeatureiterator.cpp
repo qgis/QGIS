@@ -23,7 +23,7 @@ email                : hugo dot mercier at oslandia dot com
 
 static QString quotedColumn( QString name )
 {
-  return "\"" + name.replace( "\"", "\"\"" ) + "\"";
+  return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
 QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
@@ -47,16 +47,16 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     {
       bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
       QgsRectangle rect( request.filterRect() );
-      QString mbr = QString( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
+      QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
       wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
-      wheres <<  QString( "%1Intersects(%2,BuildMbr(%3))" )
+      wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
       .arg( do_exact ? "" : "Mbr",
             quotedColumn( mDefinition.geometryField() ),
             mbr );
     }
     else if ( !mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFid )
     {
-      wheres << QString( "%1=%2" )
+      wheres << QStringLiteral( "%1=%2" )
       .arg( quotedColumn( mDefinition.uid() ) )
       .arg( request.filterFid() );
     }
@@ -68,12 +68,12 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         if ( !first )
         {
-          values += ",";
+          values += QLatin1String( "," );
         }
         first = false;
         values += QString::number( v );
       }
-      values += ")";
+      values += QLatin1String( ")" );
       wheres << values;
     }
 
@@ -111,11 +111,11 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
       else
       {
-        columns = "0";
+        columns = QStringLiteral( "0" );
       }
       Q_FOREACH ( int i, mAttributes )
       {
-        columns += ",";
+        columns += QLatin1String( "," );
         QString cname = mFields.at( i ).name().toLower();
         columns += quotedColumn( cname );
       }
@@ -123,7 +123,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     // the last column is the geometry, if any
     if (( !( request.flags() & QgsFeatureRequest::NoGeometry )
           || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
-        && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != "*no*" )
+        && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != QLatin1String( "*no*" ) )
     {
       columns += "," + quotedColumn( mDefinition.geometryField() );
     }
@@ -131,7 +131,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     mSqlQuery = "SELECT " + columns + " FROM " + tableName;
     if ( !wheres.isEmpty() )
     {
-      mSqlQuery += " WHERE " + wheres.join( " AND " );
+      mSqlQuery += " WHERE " + wheres.join( QStringLiteral( " AND " ) );
     }
 
     mQuery.reset( new Sqlite::Query( mSqlite, mSqlQuery ) );

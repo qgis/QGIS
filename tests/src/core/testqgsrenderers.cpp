@@ -94,7 +94,7 @@ void TestQgsRenderers::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
@@ -105,7 +105,7 @@ void TestQgsRenderers::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
@@ -117,7 +117,7 @@ void TestQgsRenderers::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
@@ -128,7 +128,7 @@ void TestQgsRenderers::initTestCase()
   //
   mMapSettings->setLayers(
     QStringList() << mpPointsLayer->id() << mpPolysLayer->id() << mpLinesLayer->id() );
-  mReport += "<h1>Vector Renderer Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()
 {
@@ -147,7 +147,7 @@ void TestQgsRenderers::cleanupTestCase()
 
 void TestQgsRenderers::singleSymbol()
 {
-  mReport += "<h2>Single symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Single symbol renderer test</h2>\n" );
   QVERIFY( setQml( "single" ) );
   QVERIFY( imageCheck( "single" ) );
 }

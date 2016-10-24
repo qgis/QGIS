@@ -172,33 +172,33 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
 
   // Restore state
   QSettings mySettings;
-  mGroupShowMarker->setChecked( mySettings.value( "/gps/showMarker", "true" ).toBool() );
-  mSliderMarkerSize->setValue( mySettings.value( "/gps/markerSize", "12" ).toInt() );
-  mSpinTrackWidth->setValue( mySettings.value( "/gps/trackWidth", "2" ).toInt() );
-  mTrackColor = mySettings.value( "/gps/trackColor", QColor( Qt::red ) ).value<QColor>();
-  QString myPortMode = mySettings.value( "/gps/portMode", "scanPorts" ).toString();
+  mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "/gps/showMarker" ), "true" ).toBool() );
+  mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "/gps/markerSize" ), "12" ).toInt() );
+  mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "/gps/trackWidth" ), "2" ).toInt() );
+  mTrackColor = mySettings.value( QStringLiteral( "/gps/trackColor" ), QColor( Qt::red ) ).value<QColor>();
+  QString myPortMode = mySettings.value( QStringLiteral( "/gps/portMode" ), "scanPorts" ).toString();
 
-  mSpinMapExtentMultiplier->setValue( mySettings.value( "/gps/mapExtentMultiplier", "50" ).toInt() );
-  mDateTimeFormat = mySettings.value( "/gps/dateTimeFormat", "" ).toString(); // zero-length string signifies default format
+  mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "/gps/mapExtentMultiplier" ), "50" ).toInt() );
+  mDateTimeFormat = mySettings.value( QStringLiteral( "/gps/dateTimeFormat" ), "" ).toString(); // zero-length string signifies default format
 
-  mGpsdHost->setText( mySettings.value( "/gps/gpsdHost", "localhost" ).toString() );
-  mGpsdPort->setText( mySettings.value( "/gps/gpsdPort", 2947 ).toString() );
-  mGpsdDevice->setText( mySettings.value( "/gps/gpsdDevice" ).toString() );
+  mGpsdHost->setText( mySettings.value( QStringLiteral( "/gps/gpsdHost" ), "localhost" ).toString() );
+  mGpsdPort->setText( mySettings.value( QStringLiteral( "/gps/gpsdPort" ), 2947 ).toString() );
+  mGpsdDevice->setText( mySettings.value( QStringLiteral( "/gps/gpsdDevice" ) ).toString() );
 
   //port mode
-  if ( myPortMode == "scanPorts" )
+  if ( myPortMode == QLatin1String( "scanPorts" ) )
   {
     mRadAutodetect->setChecked( true );
   }
-  else if ( myPortMode == "internalGPS" )
+  else if ( myPortMode == QLatin1String( "internalGPS" ) )
   {
     mRadInternal->setChecked( true );
   }
-  else if ( myPortMode == "explicitPort" )
+  else if ( myPortMode == QLatin1String( "explicitPort" ) )
   {
     mRadUserPath->setChecked( true );
   }
-  else if ( myPortMode == "gpsd" )
+  else if ( myPortMode == QLatin1String( "gpsd" ) )
   {
     mRadGpsd->setChecked( true );
   }
@@ -209,17 +209,17 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
 #endif
 
   //auto digitising behaviour
-  mCbxAutoAddVertices->setChecked( mySettings.value( "/gps/autoAddVertices", "false" ).toBool() );
+  mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "/gps/autoAddVertices" ), "false" ).toBool() );
 
-  mCbxAutoCommit->setChecked( mySettings.value( "/gps/autoCommit", "false" ).toBool() );
+  mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "/gps/autoCommit" ), "false" ).toBool() );
 
   //pan mode
-  QString myPanMode = mySettings.value( "/gps/panMode", "recenterWhenNeeded" ).toString();
-  if ( myPanMode == "none" )
+  QString myPanMode = mySettings.value( QStringLiteral( "/gps/panMode" ), "recenterWhenNeeded" ).toString();
+  if ( myPanMode == QLatin1String( "none" ) )
   {
     radNeverRecenter->setChecked( true );
   }
-  else if ( myPanMode == "recenterAlways" )
+  else if ( myPanMode == QLatin1String( "recenterAlways" ) )
   {
     radRecenterMap->setChecked( true );
   }
@@ -228,9 +228,9 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
     radRecenterWhenNeeded->setChecked( true );
   }
 
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
-  mBtnDebug->setVisible( mySettings.value( "/gps/showDebug", "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
+  mBtnDebug->setVisible( mySettings.value( QStringLiteral( "/gps/showDebug" ), "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
 
   // status = unknown
   setStatusIndicator( NoData );
@@ -260,50 +260,50 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
 #endif
 
   QSettings mySettings;
-  mySettings.setValue( "/gps/lastPort", mCboDevices->currentData().toString() );
-  mySettings.setValue( "/gps/trackWidth", mSpinTrackWidth->value() );
-  mySettings.setValue( "/gps/trackColor", mTrackColor );
-  mySettings.setValue( "/gps/markerSize", mSliderMarkerSize->value() );
-  mySettings.setValue( "/gps/showMarker", mGroupShowMarker->isChecked() );
-  mySettings.setValue( "/gps/autoAddVertices", mCbxAutoAddVertices->isChecked() );
-  mySettings.setValue( "/gps/autoCommit", mCbxAutoCommit->isChecked() );
+  mySettings.setValue( QStringLiteral( "/gps/lastPort" ), mCboDevices->currentData().toString() );
+  mySettings.setValue( QStringLiteral( "/gps/trackWidth" ), mSpinTrackWidth->value() );
+  mySettings.setValue( QStringLiteral( "/gps/trackColor" ), mTrackColor );
+  mySettings.setValue( QStringLiteral( "/gps/markerSize" ), mSliderMarkerSize->value() );
+  mySettings.setValue( QStringLiteral( "/gps/showMarker" ), mGroupShowMarker->isChecked() );
+  mySettings.setValue( QStringLiteral( "/gps/autoAddVertices" ), mCbxAutoAddVertices->isChecked() );
+  mySettings.setValue( QStringLiteral( "/gps/autoCommit" ), mCbxAutoCommit->isChecked() );
 
-  mySettings.setValue( "/gps/mapExtentMultiplier", mSpinMapExtentMultiplier->value() );
+  mySettings.setValue( QStringLiteral( "/gps/mapExtentMultiplier" ), mSpinMapExtentMultiplier->value() );
 
   // scan, explicit port or gpsd
   if ( mRadAutodetect->isChecked() )
   {
-    mySettings.setValue( "/gps/portMode", "scanPorts" );
+    mySettings.setValue( QStringLiteral( "/gps/portMode" ), "scanPorts" );
   }
   else if ( mRadInternal->isChecked() )
   {
-    mySettings.setValue( "/gps/portMode", "internalGPS" );
+    mySettings.setValue( QStringLiteral( "/gps/portMode" ), "internalGPS" );
   }
   else if ( mRadUserPath->isChecked() )
   {
-    mySettings.setValue( "/gps/portMode", "explicitPort" );
+    mySettings.setValue( QStringLiteral( "/gps/portMode" ), "explicitPort" );
   }
   else
   {
-    mySettings.setValue( "/gps/portMode", "gpsd" );
+    mySettings.setValue( QStringLiteral( "/gps/portMode" ), "gpsd" );
   }
 
-  mySettings.setValue( "/gps/gpsdHost", mGpsdHost->text() );
-  mySettings.setValue( "/gps/gpsdPort", mGpsdPort->text().toInt() );
-  mySettings.setValue( "/gps/gpsdDevice", mGpsdDevice->text() );
+  mySettings.setValue( QStringLiteral( "/gps/gpsdHost" ), mGpsdHost->text() );
+  mySettings.setValue( QStringLiteral( "/gps/gpsdPort" ), mGpsdPort->text().toInt() );
+  mySettings.setValue( QStringLiteral( "/gps/gpsdDevice" ), mGpsdDevice->text() );
 
   // pan mode
   if ( radRecenterMap->isChecked() )
   {
-    mySettings.setValue( "/gps/panMode", "recenterAlways" );
+    mySettings.setValue( QStringLiteral( "/gps/panMode" ), "recenterAlways" );
   }
   else if ( radRecenterWhenNeeded->isChecked() )
   {
-    mySettings.setValue( "/gps/panMode", "recenterWhenNeeded" );
+    mySettings.setValue( QStringLiteral( "/gps/panMode" ), "recenterWhenNeeded" );
   }
   else
   {
-    mySettings.setValue( "/gps/panMode", "none" );
+    mySettings.setValue( QStringLiteral( "/gps/panMode" ), "none" );
   }
 
 }
@@ -409,11 +409,11 @@ void QgsGPSInformationWidget::connectGps()
   }
   else if ( mRadGpsd->isChecked() )
   {
-    port = QString( "%1:%2:%3" ).arg( mGpsdHost->text(), mGpsdPort->text(), mGpsdDevice->text() );
+    port = QStringLiteral( "%1:%2:%3" ).arg( mGpsdHost->text(), mGpsdPort->text(), mGpsdDevice->text() );
   }
   else if ( mRadInternal->isChecked() )
   {
-    port = QLatin1String( "internalGPS" );
+    port = QStringLiteral( "internalGPS" );
   }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );
@@ -670,17 +670,17 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
       mTxtDateTime->setText( info.utcDateTime.toString( mDateTimeFormat ) );  //user specified format string for testing the millisecond part of time
     }
     mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
-    mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QString::fromUtf8( "°" ) );
+    mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
     mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
     mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
     mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
     mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
     mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
-    mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : "" ); // A=automatic 2d/3d, M=manual; allowing for anything else
+    mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QLatin1String( "" ) ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
-    mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : "" ); // allowing for anything else
+    mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : QLatin1String( "" ) ); // allowing for anything else
     mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
-    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : "" );
+    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QLatin1String( "" ) );
   } //position
 
   // Avoid refreshing / panning if we havent moved
@@ -843,7 +843,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
                                     tr( "Error" ),
                                     tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                                     .arg( vlayer->name(),
-                                          vlayer->commitErrors().join( "\n  " ) ) );
+                                          vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
         }
 
         vlayer->startEditing();
@@ -952,7 +952,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
                                     tr( "Error" ),
                                     tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                                     .arg( vlayer->name(),
-                                          vlayer->commitErrors().join( "\n  " ) ) );
+                                          vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
         }
 
         vlayer->startEditing();
@@ -1000,7 +1000,7 @@ void QgsGPSInformationWidget::populateDevices()
 
   // remember the last ports used
   QSettings settings;
-  QString lastPort = settings.value( "/gps/lastPort", "" ).toString();
+  QString lastPort = settings.value( QStringLiteral( "/gps/lastPort" ), "" ).toString();
 
   int idx = mCboDevices->findData( lastPort );
   mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
@@ -1024,7 +1024,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
   // This does not allow for an extension other than ".nmea"
   // Retrieve last used log file dir from persistent settings
   QSettings settings;
-  QString settingPath( "/gps/lastLogFileDir" );
+  QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
   QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
   QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled

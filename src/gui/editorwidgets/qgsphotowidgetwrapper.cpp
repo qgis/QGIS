@@ -84,7 +84,7 @@ void QgsPhotoWidgetWrapper::loadPixmap( const QString& fileName )
   QPixmap pm( filePath );
   if ( !pm.isNull() && mPhotoLabel )
   {
-    QSize size( config( "Width" ).toInt(), config( "Height" ).toInt() );
+    QSize size( config( QStringLiteral( "Width" ) ).toInt(), config( QStringLiteral( "Height" ) ).toInt() );
     if ( size.width() == 0 && size.height() > 0 )
     {
       size.setWidth( size.height() * pm.size().width() / pm.size().height() );
@@ -137,7 +137,7 @@ QVariant QgsPhotoWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    if ( mLineEdit->text() == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
       v = QVariant( QVariant::String );
     else
       v = mLineEdit->text();
@@ -164,9 +164,9 @@ QWidget* QgsPhotoWidgetWrapper::createWidget( QWidget* parent )
   QGridLayout* layout = new QGridLayout();
   QgsFilterLineEdit* le = new QgsFilterLineEdit();
   QgsPixmapLabel* label = new QgsPixmapLabel();
-  label->setObjectName( "PhotoLabel" );
+  label->setObjectName( QStringLiteral( "PhotoLabel" ) );
   QPushButton* pb = new QPushButton( tr( "..." ) );
-  pb->setObjectName( "FileChooserButton" );
+  pb->setObjectName( QStringLiteral( "FileChooserButton" ) );
 
   layout->addWidget( label, 0, 0, 1, 2 );
   layout->addWidget( le, 1, 0 );
@@ -205,11 +205,11 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
     mLineEdit = container->findChild<QLineEdit*>();
   }
 
-  mButton = container->findChild<QPushButton*>( "FileChooserButton" );
+  mButton = container->findChild<QPushButton*>( QStringLiteral( "FileChooserButton" ) );
   if ( !mButton )
     mButton = container->findChild<QPushButton*>();
 
-  mPhotoLabel = container->findChild<QLabel*>( "PhotoLabel" );
+  mPhotoLabel = container->findChild<QLabel*>( QStringLiteral( "PhotoLabel" ) );
   if ( !mPhotoLabel )
     mPhotoLabel = container->findChild<QLabel*>();
 
@@ -223,7 +223,7 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
@@ -246,7 +246,7 @@ void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      whileBlocking( mLineEdit )->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      whileBlocking( mLineEdit )->setText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
       clearPicture();
     }
     else
@@ -275,7 +275,7 @@ void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
       mLineEdit->setStyleSheet( QString() );
     else
     {
-      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+      mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
     }
   }
 }

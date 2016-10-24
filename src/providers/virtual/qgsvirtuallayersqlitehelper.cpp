@@ -39,7 +39,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
 
   if ( r )
   {
-    QString err = QString( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
+    QString err = QStringLiteral( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
     QgsDebugMsg( err );
     throw std::runtime_error( err.toLocal8Bit().constData() );
   }
@@ -96,7 +96,7 @@ namespace Sqlite
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      QString err = QString( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
+      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
       throw std::runtime_error( err.toLocal8Bit().constData() );
     }
   }
@@ -130,7 +130,7 @@ namespace Sqlite
     int r = sqlite3_exec( db, sql.toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
-      QString err = QString( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
+      QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
       throw std::runtime_error( err.toLocal8Bit().constData() );
     }
   }

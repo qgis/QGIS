@@ -104,9 +104,9 @@ void QgsRasterRenderer::_writeXml( QDomDocument& doc, QDomElement& rasterRendere
     return;
   }
 
-  rasterRendererElem.setAttribute( "type", mType );
-  rasterRendererElem.setAttribute( "opacity", QString::number( mOpacity ) );
-  rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "type" ), mType );
+  rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), mAlphaBand );
 
   if ( mRasterTransparency )
   {
@@ -121,11 +121,11 @@ void QgsRasterRenderer::readXml( const QDomElement& rendererElem )
     return;
   }
 
-  mType = rendererElem.attribute( "type" );
-  mOpacity = rendererElem.attribute( "opacity", "1.0" ).toDouble();
-  mAlphaBand = rendererElem.attribute( "alphaBand", "-1" ).toInt();
+  mType = rendererElem.attribute( QStringLiteral( "type" ) );
+  mOpacity = rendererElem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
+  mAlphaBand = rendererElem.attribute( QStringLiteral( "alphaBand" ), QStringLiteral( "-1" ) ).toInt();
 
-  QDomElement rasterTransparencyElem = rendererElem.firstChildElement( "rasterTransparency" );
+  QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
     delete mRasterTransparency;
@@ -148,43 +148,43 @@ QString QgsRasterRenderer::minMaxOriginName( int theOrigin )
 {
   if ( theOrigin == MinMaxUnknown )
   {
-    return "Unknown";
+    return QStringLiteral( "Unknown" );
   }
   else if ( theOrigin == MinMaxUser )
   {
-    return "User";
+    return QStringLiteral( "User" );
   }
 
   QString name;
   if ( theOrigin & MinMaxMinMax )
   {
-    name += "MinMax";
+    name += QLatin1String( "MinMax" );
   }
   else if ( theOrigin & MinMaxCumulativeCut )
   {
-    name += "CumulativeCut";
+    name += QLatin1String( "CumulativeCut" );
   }
   else if ( theOrigin & MinMaxStdDev )
   {
-    name += "StdDev";
+    name += QLatin1String( "StdDev" );
   }
 
   if ( theOrigin & MinMaxFullExtent )
   {
-    name += "FullExtent";
+    name += QLatin1String( "FullExtent" );
   }
   else if ( theOrigin & MinMaxSubExtent )
   {
-    name += "SubExtent";
+    name += QLatin1String( "SubExtent" );
   }
 
   if ( theOrigin & MinMaxEstimated )
   {
-    name += "Estimated";
+    name += QLatin1String( "Estimated" );
   }
   else if ( theOrigin & MinMaxExact )
   {
-    name += "Exact";
+    name += QLatin1String( "Exact" );
   }
   return name;
 }
@@ -246,44 +246,44 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
 
 int QgsRasterRenderer::minMaxOriginFromName( const QString& theName )
 {
-  if ( theName.contains( "Unknown" ) )
+  if ( theName.contains( QLatin1String( "Unknown" ) ) )
   {
     return MinMaxUnknown;
   }
-  else if ( theName.contains( "User" ) )
+  else if ( theName.contains( QLatin1String( "User" ) ) )
   {
     return MinMaxUser;
   }
 
   int origin = 0;
 
-  if ( theName.contains( "MinMax" ) )
+  if ( theName.contains( QLatin1String( "MinMax" ) ) )
   {
     origin |= MinMaxMinMax;
   }
-  else if ( theName.contains( "CumulativeCut" ) )
+  else if ( theName.contains( QLatin1String( "CumulativeCut" ) ) )
   {
     origin |= MinMaxCumulativeCut;
   }
-  else if ( theName.contains( "StdDev" ) )
+  else if ( theName.contains( QLatin1String( "StdDev" ) ) )
   {
     origin |= MinMaxStdDev;
   }
 
-  if ( theName.contains( "FullExtent" ) )
+  if ( theName.contains( QLatin1String( "FullExtent" ) ) )
   {
     origin |= MinMaxFullExtent;
   }
-  else if ( theName.contains( "SubExtent" ) )
+  else if ( theName.contains( QLatin1String( "SubExtent" ) ) )
   {
     origin |= MinMaxSubExtent;
   }
 
-  if ( theName.contains( "Estimated" ) )
+  if ( theName.contains( QLatin1String( "Estimated" ) ) )
   {
     origin |= MinMaxEstimated;
   }
-  else if ( theName.contains( "Exact" ) )
+  else if ( theName.contains( QLatin1String( "Exact" ) ) )
   {
     origin |= MinMaxExact;
   }

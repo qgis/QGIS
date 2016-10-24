@@ -57,18 +57,18 @@ class TestQgsFeature: public QObject
 void TestQgsFeature::initTestCase()
 {
   //add fields
-  QgsField field( "field1" );
+  QgsField field( QStringLiteral( "field1" ) );
   mFields.append( field );
-  QgsField field2( "field2" );
+  QgsField field2( QStringLiteral( "field2" ) );
   mFields.append( field2 );
-  QgsField field3( "field3" );
+  QgsField field3( QStringLiteral( "field3" ) );
   mFields.append( field3 );
 
   //test attributes
   mAttrs << QVariant( 5 ) << QVariant( 7 ) << QVariant( "val" );
 
-  mGeometry = QgsGeometry::fromWkt( "MULTILINESTRING((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" );
-  mGeometry2 = QgsGeometry::fromWkt( "MULTILINESTRING((0 5, 15 0, 15 10, 25 10))" );
+  mGeometry = QgsGeometry::fromWkt( QStringLiteral( "MULTILINESTRING((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" ) );
+  mGeometry2 = QgsGeometry::fromWkt( QStringLiteral( "MULTILINESTRING((0 5, 15 0, 15 10, 25 10))" ) );
 }
 
 void TestQgsFeature::cleanupTestCase()
@@ -365,9 +365,9 @@ void TestQgsFeature::equality()
 
   QgsFeature feature;
   feature.setFields( mFields, true );
-  feature.setAttribute( 0, QString( "attr1" ) );
-  feature.setAttribute( 1, QString( "attr2" ) );
-  feature.setAttribute( 2, QString( "attr3" ) );
+  feature.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature.setValid( true );
   feature.setId( 1 );
   feature.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
@@ -383,9 +383,9 @@ void TestQgsFeature::equality()
 
   QgsFeature feature3;
   feature3.setFields( mFields, true );
-  feature3.setAttribute( 0, QString( "attr1" ) );
-  feature3.setAttribute( 1, QString( "attr2" ) );
-  feature3.setAttribute( 2, QString( "attr3" ) );
+  feature3.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature3.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature3.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature3.setValid( true );
   feature3.setId( 1 );
   feature3.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
@@ -403,9 +403,9 @@ void TestQgsFeature::equality()
 
   QgsFeature feature5;
   feature5.setFields( mFields, true );
-  feature5.setAttribute( 0, QString( "attr1" ) );
-  feature5.setAttribute( 1, QString( "attr2" ) );
-  feature5.setAttribute( 2, QString( "attr3" ) );
+  feature5.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature5.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature5.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature5.setValid( false );
   feature5.setId( 1 );
   feature5.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
@@ -414,9 +414,9 @@ void TestQgsFeature::equality()
 
   QgsFeature feature6;
   feature6.setFields( mFields, true );
-  feature6.setAttribute( 0, QString( "attr1" ) );
-  feature6.setAttribute( 1, QString( "attr2" ) );
-  feature6.setAttribute( 2, QString( "attr3" ) );
+  feature6.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature6.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature6.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature6.setValid( true );
   feature6.setId( 2 );
   feature6.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
@@ -425,9 +425,9 @@ void TestQgsFeature::equality()
 
   QgsFeature feature7;
   feature7.setFields( mFields, true );
-  feature7.setAttribute( 0, QString( "attr1" ) );
-  feature7.setAttribute( 1, QString( "attr2" ) );
-  feature7.setAttribute( 2, QString( "attr3" ) );
+  feature7.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature7.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature7.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature7.setValid( true );
   feature7.setId( 1 );
   feature7.setGeometry( QgsGeometry( new QgsPointV2( 1, 3 ) ) );
@@ -439,9 +439,9 @@ void TestQgsFeature::attributeUsingField()
 {
   QgsFeature feature;
   feature.setFields( mFields, true );
-  feature.setAttribute( 0, QString( "attr1" ) );
-  feature.setAttribute( 1, QString( "attr2" ) );
-  feature.setAttribute( 2, QString( "attr3" ) );
+  feature.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature.setAttribute( 2, QStringLiteral( "attr3" ) );
 
   QVERIFY( !feature.attribute( "bad" ).isValid() );
   QCOMPARE( feature.attribute( "field1" ).toString(), QString( "attr1" ) );

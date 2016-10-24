@@ -71,7 +71,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // build sql statement
 
   // note: 'SELECT ' is added later, to account for 'SELECT TOP...' type queries
-  mStatement += QString( "[%1]" ).arg( mSource->mFidColName );
+  mStatement += QStringLiteral( "[%1]" ).arg( mSource->mFidColName );
   mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
   mAttributesToFetch.append( mFidCol );
 
@@ -93,7 +93,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     if ( mSource->mFidColName == fieldname )
       continue;
 
-    mStatement += QString( ",[%1]" ).arg( fieldname );
+    mStatement += QStringLiteral( ",[%1]" ).arg( fieldname );
 
     mAttributesToFetch.append( i );
   }
@@ -104,10 +104,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       )
       && mSource->isSpatial() )
   {
-    mStatement += QString( ",[%1]" ).arg( mSource->mGeometryColName );
+    mStatement += QStringLiteral( ",[%1]" ).arg( mSource->mGeometryColName );
   }
 
-  mStatement += QString( "FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  mStatement += QStringLiteral( "FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
 
   bool filterAdded = false;
   // set spatial filter
@@ -125,7 +125,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
     <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
 
-    mStatement += QString( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
+    mStatement += QStringLiteral( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
     filterAdded = true;
   }
@@ -133,12 +133,12 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // set fid filter
   if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColName.isEmpty() )
   {
-    QString fidfilter = QString( " [%1] = %2" ).arg( mSource->mFidColName, FID_TO_STRING( request.filterFid() ) );
+    QString fidfilter = QStringLiteral( " [%1] = %2" ).arg( mSource->mFidColName, FID_TO_STRING( request.filterFid() ) );
     // set attribute filter
     if ( !filterAdded )
-      mStatement += " WHERE ";
+      mStatement += QLatin1String( " WHERE " );
     else
-      mStatement += " AND ";
+      mStatement += QLatin1String( " AND " );
 
     mStatement += fidfilter;
     filterAdded = true;
@@ -147,7 +147,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
             && !mRequest.filterFids().isEmpty() )
   {
     QString delim;
-    QString inClause = QString( "%1 IN (" ).arg( mSource->mFidColName );
+    QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
     Q_FOREACH ( QgsFeatureId featureId, mRequest.filterFids() )
     {
       inClause += delim + FID_TO_STRING( featureId );
@@ -156,9 +156,9 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     inClause.append( ')' );
 
     if ( !filterAdded )
-      mStatement += " WHERE ";
+      mStatement += QLatin1String( " WHERE " );
     else
-      mStatement += " AND ";
+      mStatement += QLatin1String( " AND " );
 
     mStatement += inClause;
     filterAdded = true;
@@ -178,7 +178,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+    if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
     {
       QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
@@ -209,7 +209,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   QStringList orderByParts;
   mOrderByCompiled = true;
 
-  if ( QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
     {
@@ -250,9 +250,9 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   if ( request.limit() >= 0 && limitAtProvider )
   {
-    mStatement.prepend( QString( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
+    mStatement.prepend( QStringLiteral( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
     if ( !mFallbackStatement.isEmpty() )
-      mFallbackStatement.prepend( QString( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
+      mFallbackStatement.prepend( QStringLiteral( "SELECT TOP %1 " ).arg( mRequest.limit() ) );
   }
   else
   {
@@ -263,7 +263,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   if ( !orderByParts.isEmpty() )
   {
-    mOrderByClause = QString( " ORDER BY %1" ).arg( orderByParts.join( "," ) );
+    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QStringLiteral( "," ) ) );
   }
 
   QgsDebugMsg( mStatement );

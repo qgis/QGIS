@@ -168,10 +168,10 @@ void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
 void QgsTextBufferSettings::readFromLayer( QgsVectorLayer* layer )
 {
   // text buffer
-  double bufSize = layer->customProperty( "labeling/bufferSize", QVariant( 0.0 ) ).toDouble();
+  double bufSize = layer->customProperty( QStringLiteral( "labeling/bufferSize" ), QVariant( 0.0 ) ).toDouble();
 
   // fix for buffer being keyed off of just its size in the past (<2.0)
-  QVariant drawBuffer = layer->customProperty( "labeling/bufferDraw", QVariant() );
+  QVariant drawBuffer = layer->customProperty( QStringLiteral( "labeling/bufferDraw" ), QVariant() );
   if ( drawBuffer.isValid() )
   {
     d->enabled = drawBuffer.toBool();
@@ -188,62 +188,62 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer* layer )
     d->enabled = false;
   }
 
-  if ( layer->customProperty( "labeling/bufferSizeUnits" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeUnits" ) ).toString().isEmpty() )
   {
-    bool bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
+    bool bufferSizeInMapUnits = layer->customProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ) ).toBool();
     d->sizeUnit = bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
   {
-    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/bufferSizeUnits" ).toString() );
+    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/bufferSizeUnits" ) ).toString() );
   }
 
-  if ( layer->customProperty( "labeling/bufferSizeMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->sizeMapUnitScale.minScale = layer->customProperty( "labeling/bufferSizeMapUnitMinScale", 0.0 ).toDouble();
-    d->sizeMapUnitScale.maxScale = layer->customProperty( "labeling/bufferSizeMapUnitMaxScale", 0.0 ).toDouble();
+    d->sizeMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMinScale" ), 0.0 ).toDouble();
+    d->sizeMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/bufferSizeMapUnitScale" ).toString() );
+    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ) ).toString() );
   }
-  d->color = _readColor( layer, "labeling/bufferColor", Qt::white, false );
-  if ( layer->customProperty( "labeling/bufferOpacity" ).toString().isEmpty() )
+  d->color = _readColor( layer, QStringLiteral( "labeling/bufferColor" ), Qt::white, false );
+  if ( layer->customProperty( QStringLiteral( "labeling/bufferOpacity" ) ).toString().isEmpty() )
   {
-    d->opacity = ( 1 - layer->customProperty( "labeling/bufferTransp" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - layer->customProperty( QStringLiteral( "labeling/bufferTransp" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( layer->customProperty( "labeling/bufferOpacity" ).toDouble() );
+    d->opacity = ( layer->customProperty( QStringLiteral( "labeling/bufferOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/bufferBlendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::RoundJoin ) ).toUInt() );
+                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/bufferBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/bufferJoinStyle" ), QVariant( Qt::RoundJoin ) ).toUInt() );
 
-  d->fillBufferInterior = !layer->customProperty( "labeling/bufferNoFill", QVariant( false ) ).toBool();
+  d->fillBufferInterior = !layer->customProperty( QStringLiteral( "labeling/bufferNoFill" ), QVariant( false ) ).toBool();
 }
 
 void QgsTextBufferSettings::writeToLayer( QgsVectorLayer* layer ) const
 {
-  layer->setCustomProperty( "labeling/bufferDraw", d->enabled );
-  layer->setCustomProperty( "labeling/bufferSize", d->size );
-  layer->setCustomProperty( "labeling/bufferSizeUnits", QgsUnitTypes::encodeUnit( d->sizeUnit ) );
-  layer->setCustomProperty( "labeling/bufferSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  _writeColor( layer, "labeling/bufferColor", d->color );
-  layer->setCustomProperty( "labeling/bufferNoFill", !d->fillBufferInterior );
-  layer->setCustomProperty( "labeling/bufferOpacity", d->opacity );
-  layer->setCustomProperty( "labeling/bufferJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
-  layer->setCustomProperty( "labeling/bufferBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), d->enabled );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferSize" ), d->size );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
+  _writeColor( layer, QStringLiteral( "labeling/bufferColor" ), d->color );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferNoFill" ), !d->fillBufferInterior );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferOpacity" ), d->opacity );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
 void QgsTextBufferSettings::readXml( const QDomElement& elem )
 {
-  QDomElement textBufferElem = elem.firstChildElement( "text-buffer" );
-  double bufSize = textBufferElem.attribute( "bufferSize", "0" ).toDouble();
+  QDomElement textBufferElem = elem.firstChildElement( QStringLiteral( "text-buffer" ) );
+  double bufSize = textBufferElem.attribute( QStringLiteral( "bufferSize" ), QStringLiteral( "0" ) ).toDouble();
 
   // fix for buffer being keyed off of just its size in the past (<2.0)
-  QVariant drawBuffer = textBufferElem.attribute( "bufferDraw" );
+  QVariant drawBuffer = textBufferElem.attribute( QStringLiteral( "bufferDraw" ) );
   if ( drawBuffer.isValid() )
   {
     d->enabled = drawBuffer.toBool();
@@ -260,56 +260,56 @@ void QgsTextBufferSettings::readXml( const QDomElement& elem )
     d->enabled = false;
   }
 
-  if ( !textBufferElem.hasAttribute( "bufferSizeUnits" ) )
+  if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeUnits" ) ) )
   {
-    bool bufferSizeInMapUnits = textBufferElem.attribute( "bufferSizeInMapUnits" ).toInt();
+    bool bufferSizeInMapUnits = textBufferElem.attribute( QStringLiteral( "bufferSizeInMapUnits" ) ).toInt();
     d->sizeUnit = bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
   {
-    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textBufferElem.attribute( "bufferSizeUnits" ) );
+    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textBufferElem.attribute( QStringLiteral( "bufferSizeUnits" ) ) );
   }
 
-  if ( !textBufferElem.hasAttribute( "bufferSizeMapUnitScale" ) )
+  if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->sizeMapUnitScale.minScale = textBufferElem.attribute( "bufferSizeMapUnitMinScale", "0" ).toDouble();
-    d->sizeMapUnitScale.maxScale = textBufferElem.attribute( "bufferSizeMapUnitMaxScale", "0" ).toDouble();
+    d->sizeMapUnitScale.minScale = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->sizeMapUnitScale.maxScale = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textBufferElem.attribute( "bufferSizeMapUnitScale" ) );
+    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitScale" ) ) );
   }
-  d->color = QgsSymbolLayerUtils::decodeColor( textBufferElem.attribute( "bufferColor", QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
+  d->color = QgsSymbolLayerUtils::decodeColor( textBufferElem.attribute( QStringLiteral( "bufferColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
 
-  if ( !textBufferElem.hasAttribute( "bufferOpacity" ) )
+  if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferOpacity" ) ) )
   {
-    d->opacity = ( 1 - textBufferElem.attribute( "bufferTransp" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - textBufferElem.attribute( QStringLiteral( "bufferTransp" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( textBufferElem.attribute( "bufferOpacity" ).toDouble() );
+    d->opacity = ( textBufferElem.attribute( QStringLiteral( "bufferOpacity" ) ).toDouble() );
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( textBufferElem.attribute( "bufferBlendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( "bufferJoinStyle", QString::number( Qt::RoundJoin ) ).toUInt() );
-  d->fillBufferInterior = !textBufferElem.attribute( "bufferNoFill", "0" ).toInt();
+                   static_cast< QgsPainting::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
+  d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
 }
 
 QDomElement QgsTextBufferSettings::writeXml( QDomDocument& doc ) const
 {
   // text buffer
-  QDomElement textBufferElem = doc.createElement( "text-buffer" );
-  textBufferElem.setAttribute( "bufferDraw", d->enabled );
-  textBufferElem.setAttribute( "bufferSize", d->size );
-  textBufferElem.setAttribute( "bufferSizeUnits", QgsUnitTypes::encodeUnit( d->sizeUnit ) );
-  textBufferElem.setAttribute( "bufferSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  textBufferElem.setAttribute( "bufferColor", QgsSymbolLayerUtils::encodeColor( d->color ) );
-  textBufferElem.setAttribute( "bufferNoFill", !d->fillBufferInterior );
-  textBufferElem.setAttribute( "bufferOpacity", d->opacity );
-  textBufferElem.setAttribute( "bufferJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
-  textBufferElem.setAttribute( "bufferBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
+  QDomElement textBufferElem = doc.createElement( QStringLiteral( "text-buffer" ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferDraw" ), d->enabled );
+  textBufferElem.setAttribute( QStringLiteral( "bufferSize" ), d->size );
+  textBufferElem.setAttribute( QStringLiteral( "bufferSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferColor" ), QgsSymbolLayerUtils::encodeColor( d->color ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferNoFill" ), !d->fillBufferInterior );
+  textBufferElem.setAttribute( QStringLiteral( "bufferOpacity" ), d->opacity );
+  textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   return textBufferElem;
 }
 
@@ -572,293 +572,293 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
 
 void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
 {
-  d->enabled = layer->customProperty( "labeling/shapeDraw", QVariant( false ) ).toBool();
-  d->type = static_cast< ShapeType >( layer->customProperty( "labeling/shapeType", QVariant( ShapeRectangle ) ).toUInt() );
-  d->svgFile = layer->customProperty( "labeling/shapeSVGFile", QVariant( "" ) ).toString();
-  d->sizeType = static_cast< SizeType >( layer->customProperty( "labeling/shapeSizeType", QVariant( SizeBuffer ) ).toUInt() );
-  d->size = QSizeF( layer->customProperty( "labeling/shapeSizeX", QVariant( 0.0 ) ).toDouble(),
-                    layer->customProperty( "labeling/shapeSizeY", QVariant( 0.0 ) ).toDouble() );
+  d->enabled = layer->customProperty( QStringLiteral( "labeling/shapeDraw" ), QVariant( false ) ).toBool();
+  d->type = static_cast< ShapeType >( layer->customProperty( QStringLiteral( "labeling/shapeType" ), QVariant( ShapeRectangle ) ).toUInt() );
+  d->svgFile = layer->customProperty( QStringLiteral( "labeling/shapeSVGFile" ), QVariant( "" ) ).toString();
+  d->sizeType = static_cast< SizeType >( layer->customProperty( QStringLiteral( "labeling/shapeSizeType" ), QVariant( SizeBuffer ) ).toUInt() );
+  d->size = QSizeF( layer->customProperty( QStringLiteral( "labeling/shapeSizeX" ), QVariant( 0.0 ) ).toDouble(),
+                    layer->customProperty( QStringLiteral( "labeling/shapeSizeY" ), QVariant( 0.0 ) ).toDouble() );
 
-  if ( layer->customProperty( "labeling/shapeSizeUnit" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeSizeUnit" ) ).toString().isEmpty() )
   {
-    d->sizeUnits = layer->customProperty( "labeling/shapeSizeUnits", 0 ).toUInt() == 0 ?
+    d->sizeUnits = layer->customProperty( QStringLiteral( "labeling/shapeSizeUnits" ), 0 ).toUInt() == 0 ?
                    QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->sizeUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/shapeSizeUnit" ).toString() );
+    d->sizeUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shapeSizeUnit" ) ).toString() );
   }
 
-  if ( layer->customProperty( "labeling/shapeSizeMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeSizeMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->sizeMapUnitScale.minScale = layer->customProperty( "labeling/shapeSizeMapUnitMinScale", 0.0 ).toDouble();
-    d->sizeMapUnitScale.maxScale = layer->customProperty( "labeling/shapeSizeMapUnitMaxScale", 0.0 ).toDouble();
+    d->sizeMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shapeSizeMapUnitMinScale" ), 0.0 ).toDouble();
+    d->sizeMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shapeSizeMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/shapeSizeMapUnitScale" ).toString() );
+    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeSizeMapUnitScale" ) ).toString() );
   }
-  d->rotationType = static_cast< RotationType >( layer->customProperty( "labeling/shapeRotationType", QVariant( RotationSync ) ).toUInt() );
-  d->rotation = layer->customProperty( "labeling/shapeRotation", QVariant( 0.0 ) ).toDouble();
-  d->offset = QPointF( layer->customProperty( "labeling/shapeOffsetX", QVariant( 0.0 ) ).toDouble(),
-                       layer->customProperty( "labeling/shapeOffsetY", QVariant( 0.0 ) ).toDouble() );
+  d->rotationType = static_cast< RotationType >( layer->customProperty( QStringLiteral( "labeling/shapeRotationType" ), QVariant( RotationSync ) ).toUInt() );
+  d->rotation = layer->customProperty( QStringLiteral( "labeling/shapeRotation" ), QVariant( 0.0 ) ).toDouble();
+  d->offset = QPointF( layer->customProperty( QStringLiteral( "labeling/shapeOffsetX" ), QVariant( 0.0 ) ).toDouble(),
+                       layer->customProperty( QStringLiteral( "labeling/shapeOffsetY" ), QVariant( 0.0 ) ).toDouble() );
 
-  if ( layer->customProperty( "labeling/shapeOffsetUnit" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeOffsetUnit" ) ).toString().isEmpty() )
   {
-    d->offsetUnits = layer->customProperty( "labeling/shapeOffsetUnits", 0 ).toUInt() == 0 ?
+    d->offsetUnits = layer->customProperty( QStringLiteral( "labeling/shapeOffsetUnits" ), 0 ).toUInt() == 0 ?
                      QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/shapeOffsetUnit" ).toString() );
+    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shapeOffsetUnit" ) ).toString() );
   }
 
-  if ( layer->customProperty( "labeling/shapeOffsetMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeOffsetMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->offsetMapUnitScale.minScale = layer->customProperty( "labeling/shapeOffsetMapUnitMinScale", 0.0 ).toDouble();
-    d->offsetMapUnitScale.maxScale = layer->customProperty( "labeling/shapeOffsetMapUnitMaxScale", 0.0 ).toDouble();
+    d->offsetMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shapeOffsetMapUnitMinScale" ), 0.0 ).toDouble();
+    d->offsetMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shapeOffsetMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/shapeOffsetMapUnitScale" ).toString() );
+    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeOffsetMapUnitScale" ) ).toString() );
   }
-  d->radii = QSizeF( layer->customProperty( "labeling/shapeRadiiX", QVariant( 0.0 ) ).toDouble(),
-                     layer->customProperty( "labeling/shapeRadiiY", QVariant( 0.0 ) ).toDouble() );
+  d->radii = QSizeF( layer->customProperty( QStringLiteral( "labeling/shapeRadiiX" ), QVariant( 0.0 ) ).toDouble(),
+                     layer->customProperty( QStringLiteral( "labeling/shapeRadiiY" ), QVariant( 0.0 ) ).toDouble() );
 
 
-  if ( layer->customProperty( "labeling/shapeRadiiUnit" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnit" ) ).toString().isEmpty() )
   {
-    d->radiiUnits = layer->customProperty( "labeling/shapeRadiiUnits", 0 ).toUInt() == 0 ?
+    d->radiiUnits = layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnits" ), 0 ).toUInt() == 0 ?
                     QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->radiiUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/shapeRadiiUnit" ).toString() );
+    d->radiiUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnit" ) ).toString() );
   }
 
-  if ( layer->customProperty( "labeling/shapeRadiiMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeRadiiMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->radiiMapUnitScale.minScale = layer->customProperty( "labeling/shapeRadiiMapUnitMinScale", 0.0 ).toDouble();
-    d->radiiMapUnitScale.maxScale = layer->customProperty( "labeling/shapeRadiiMapUnitMaxScale", 0.0 ).toDouble();
+    d->radiiMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shapeRadiiMapUnitMinScale" ), 0.0 ).toDouble();
+    d->radiiMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shapeRadiiMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/shapeRadiiMapUnitScale" ).toString() );
+    d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeRadiiMapUnitScale" ) ).toString() );
   }
-  d->fillColor = _readColor( layer, "labeling/shapeFillColor", Qt::white, true );
-  d->borderColor = _readColor( layer, "labeling/shapeBorderColor", Qt::darkGray, true );
-  d->borderWidth = layer->customProperty( "labeling/shapeBorderWidth", QVariant( .0 ) ).toDouble();
-  if ( layer->customProperty( "labeling/shapeBorderWidthUnit" ).toString().isEmpty() )
+  d->fillColor = _readColor( layer, QStringLiteral( "labeling/shapeFillColor" ), Qt::white, true );
+  d->borderColor = _readColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), Qt::darkGray, true );
+  d->borderWidth = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidth" ), QVariant( .0 ) ).toDouble();
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ) ).toString().isEmpty() )
   {
-    d->borderWidthUnits = layer->customProperty( "labeling/shapeBorderWidthUnits", 0 ).toUInt() == 0 ?
+    d->borderWidthUnits = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnits" ), 0 ).toUInt() == 0 ?
                           QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->borderWidthUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/shapeBorderWidthUnit" ).toString() );
+    d->borderWidthUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ) ).toString() );
   }
-  if ( layer->customProperty( "labeling/shapeBorderWidthMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->borderWidthMapUnitScale.minScale = layer->customProperty( "labeling/shapeBorderWidthMapUnitMinScale", 0.0 ).toDouble();
-    d->borderWidthMapUnitScale.maxScale = layer->customProperty( "labeling/shapeBorderWidthMapUnitMaxScale", 0.0 ).toDouble();
+    d->borderWidthMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitMinScale" ), 0.0 ).toDouble();
+    d->borderWidthMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->borderWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/shapeBorderWidthMapUnitScale" ).toString() );
+    d->borderWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ) ).toString() );
   }
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/shapeJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt() );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/shapeJoinStyle" ), QVariant( Qt::BevelJoin ) ).toUInt() );
 
-  if ( layer->customProperty( "labeling/shapeOpacity" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shapeOpacity" ) ).toString().isEmpty() )
   {
-    d->opacity = ( 1 - layer->customProperty( "labeling/shapeTransparency" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - layer->customProperty( QStringLiteral( "labeling/shapeTransparency" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( layer->customProperty( "labeling/shapeOpacity" ).toDouble() );
+    d->opacity = ( layer->customProperty( QStringLiteral( "labeling/shapeOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/shapeBlendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
 }
 
 void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer* layer ) const
 {
-  layer->setCustomProperty( "labeling/shapeDraw", d->enabled );
-  layer->setCustomProperty( "labeling/shapeType", static_cast< unsigned int >( d->type ) );
-  layer->setCustomProperty( "labeling/shapeSVGFile", d->svgFile );
-  layer->setCustomProperty( "labeling/shapeSizeType", static_cast< unsigned int >( d->sizeType ) );
-  layer->setCustomProperty( "labeling/shapeSizeX", d->size.width() );
-  layer->setCustomProperty( "labeling/shapeSizeY", d->size.height() );
-  layer->setCustomProperty( "labeling/shapeSizeUnit", QgsUnitTypes::encodeUnit( d->sizeUnits ) );
-  layer->setCustomProperty( "labeling/shapeSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  layer->setCustomProperty( "labeling/shapeRotationType", static_cast< unsigned int >( d->rotationType ) );
-  layer->setCustomProperty( "labeling/shapeRotation", d->rotation );
-  layer->setCustomProperty( "labeling/shapeOffsetX", d->offset.x() );
-  layer->setCustomProperty( "labeling/shapeOffsetY", d->offset.y() );
-  layer->setCustomProperty( "labeling/shapeOffsetUnit", QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  layer->setCustomProperty( "labeling/shapeOffsetMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  layer->setCustomProperty( "labeling/shapeRadiiX", d->radii.width() );
-  layer->setCustomProperty( "labeling/shapeRadiiY", d->radii.height() );
-  layer->setCustomProperty( "labeling/shapeRadiiUnit", QgsUnitTypes::encodeUnit( d->radiiUnits ) );
-  layer->setCustomProperty( "labeling/shapeRadiiMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
-  _writeColor( layer, "labeling/shapeFillColor", d->fillColor, true );
-  _writeColor( layer, "labeling/shapeBorderColor", d->borderColor, true );
-  layer->setCustomProperty( "labeling/shapeBorderWidth", d->borderWidth );
-  layer->setCustomProperty( "labeling/shapeBorderWidthUnit", QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
-  layer->setCustomProperty( "labeling/shapeBorderWidthMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
-  layer->setCustomProperty( "labeling/shapeJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
-  layer->setCustomProperty( "labeling/shapeOpacity", d->opacity );
-  layer->setCustomProperty( "labeling/shapeBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeDraw" ), d->enabled );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeType" ), static_cast< unsigned int >( d->type ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeSVGFile" ), d->svgFile );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeType" ), static_cast< unsigned int >( d->sizeType ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeX" ), d->size.width() );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeY" ), d->size.height() );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeUnit" ), QgsUnitTypes::encodeUnit( d->sizeUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeRotationType" ), static_cast< unsigned int >( d->rotationType ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeRotation" ), d->rotation );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetX" ), d->offset.x() );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetY" ), d->offset.y() );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiX" ), d->radii.width() );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiY" ), d->radii.height() );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiUnit" ), QgsUnitTypes::encodeUnit( d->radiiUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
+  _writeColor( layer, QStringLiteral( "labeling/shapeFillColor" ), d->fillColor, true );
+  _writeColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), d->borderColor, true );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidth" ), d->borderWidth );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeOpacity" ), d->opacity );
+  layer->setCustomProperty( QStringLiteral( "labeling/shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
 void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 {
-  QDomElement backgroundElem = elem.firstChildElement( "background" );
-  d->enabled = backgroundElem.attribute( "shapeDraw", "0" ).toInt();
-  d->type = static_cast< ShapeType >( backgroundElem.attribute( "shapeType", QString::number( ShapeRectangle ) ).toUInt() );
-  d->svgFile = backgroundElem.attribute( "shapeSVGFile" );
-  d->sizeType = static_cast< SizeType >( backgroundElem.attribute( "shapeSizeType", QString::number( SizeBuffer ) ).toUInt() );
-  d->size = QSizeF( backgroundElem.attribute( "shapeSizeX", "0" ).toDouble(),
-                    backgroundElem.attribute( "shapeSizeY", "0" ).toDouble() );
+  QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
+  d->enabled = backgroundElem.attribute( QStringLiteral( "shapeDraw" ), QStringLiteral( "0" ) ).toInt();
+  d->type = static_cast< ShapeType >( backgroundElem.attribute( QStringLiteral( "shapeType" ), QString::number( ShapeRectangle ) ).toUInt() );
+  d->svgFile = backgroundElem.attribute( QStringLiteral( "shapeSVGFile" ) );
+  d->sizeType = static_cast< SizeType >( backgroundElem.attribute( QStringLiteral( "shapeSizeType" ), QString::number( SizeBuffer ) ).toUInt() );
+  d->size = QSizeF( backgroundElem.attribute( QStringLiteral( "shapeSizeX" ), QStringLiteral( "0" ) ).toDouble(),
+                    backgroundElem.attribute( QStringLiteral( "shapeSizeY" ), QStringLiteral( "0" ) ).toDouble() );
 
-  if ( !backgroundElem.hasAttribute( "shapeSizeUnit" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeSizeUnit" ) ) )
   {
-    d->sizeUnits = backgroundElem.attribute( "shapeSizeUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
+    d->sizeUnits = backgroundElem.attribute( QStringLiteral( "shapeSizeUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
                    : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->sizeUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( "shapeSizeUnit" ) );
+    d->sizeUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( QStringLiteral( "shapeSizeUnit" ) ) );
   }
 
-  if ( !backgroundElem.hasAttribute( "shapeSizeMapUnitScale" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeSizeMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->sizeMapUnitScale.minScale = backgroundElem.attribute( "shapeSizeMapUnitMinScale", "0" ).toDouble();
-    d->sizeMapUnitScale.maxScale = backgroundElem.attribute( "shapeSizeMapUnitMaxScale", "0" ).toDouble();
+    d->sizeMapUnitScale.minScale = backgroundElem.attribute( QStringLiteral( "shapeSizeMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->sizeMapUnitScale.maxScale = backgroundElem.attribute( QStringLiteral( "shapeSizeMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( "shapeSizeMapUnitScale" ) );
+    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeSizeMapUnitScale" ) ) );
   }
-  d->rotationType = static_cast< RotationType >( backgroundElem.attribute( "shapeRotationType", QString::number( RotationSync ) ).toUInt() );
-  d->rotation = backgroundElem.attribute( "shapeRotation", "0" ).toDouble();
-  d->offset = QPointF( backgroundElem.attribute( "shapeOffsetX", "0" ).toDouble(),
-                       backgroundElem.attribute( "shapeOffsetY", "0" ).toDouble() );
+  d->rotationType = static_cast< RotationType >( backgroundElem.attribute( QStringLiteral( "shapeRotationType" ), QString::number( RotationSync ) ).toUInt() );
+  d->rotation = backgroundElem.attribute( QStringLiteral( "shapeRotation" ), QStringLiteral( "0" ) ).toDouble();
+  d->offset = QPointF( backgroundElem.attribute( QStringLiteral( "shapeOffsetX" ), QStringLiteral( "0" ) ).toDouble(),
+                       backgroundElem.attribute( QStringLiteral( "shapeOffsetY" ), QStringLiteral( "0" ) ).toDouble() );
 
-  if ( !backgroundElem.hasAttribute( "shapeOffsetUnit" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeOffsetUnit" ) ) )
   {
-    d->offsetUnits = backgroundElem.attribute( "shapeOffsetUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
+    d->offsetUnits = backgroundElem.attribute( QStringLiteral( "shapeOffsetUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
                      : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( "shapeOffsetUnit" ) );
+    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( QStringLiteral( "shapeOffsetUnit" ) ) );
   }
 
-  if ( !backgroundElem.hasAttribute( "shapeOffsetMapUnitScale" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeOffsetMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->offsetMapUnitScale.minScale = backgroundElem.attribute( "shapeOffsetMapUnitMinScale", "0" ).toDouble();
-    d->offsetMapUnitScale.maxScale = backgroundElem.attribute( "shapeOffsetMapUnitMaxScale", "0" ).toDouble();
+    d->offsetMapUnitScale.minScale = backgroundElem.attribute( QStringLiteral( "shapeOffsetMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->offsetMapUnitScale.maxScale = backgroundElem.attribute( QStringLiteral( "shapeOffsetMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( "shapeOffsetMapUnitScale" ) );
+    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeOffsetMapUnitScale" ) ) );
   }
-  d->radii = QSizeF( backgroundElem.attribute( "shapeRadiiX", "0" ).toDouble(),
-                     backgroundElem.attribute( "shapeRadiiY", "0" ).toDouble() );
+  d->radii = QSizeF( backgroundElem.attribute( QStringLiteral( "shapeRadiiX" ), QStringLiteral( "0" ) ).toDouble(),
+                     backgroundElem.attribute( QStringLiteral( "shapeRadiiY" ), QStringLiteral( "0" ) ).toDouble() );
 
-  if ( !backgroundElem.hasAttribute( "shapeRadiiUnit" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeRadiiUnit" ) ) )
   {
-    d->radiiUnits = backgroundElem.attribute( "shapeRadiiUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
+    d->radiiUnits = backgroundElem.attribute( QStringLiteral( "shapeRadiiUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
                     : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->radiiUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( "shapeRadiiUnit" ) );
+    d->radiiUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( QStringLiteral( "shapeRadiiUnit" ) ) );
   }
-  if ( !backgroundElem.hasAttribute( "shapeRadiiMapUnitScale" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeRadiiMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->radiiMapUnitScale.minScale = backgroundElem.attribute( "shapeRadiiMapUnitMinScale", "0" ).toDouble();
-    d->radiiMapUnitScale.maxScale = backgroundElem.attribute( "shapeRadiiMapUnitMaxScale", "0" ).toDouble();
+    d->radiiMapUnitScale.minScale = backgroundElem.attribute( QStringLiteral( "shapeRadiiMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->radiiMapUnitScale.maxScale = backgroundElem.attribute( QStringLiteral( "shapeRadiiMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( "shapeRadiiMapUnitScale" ) );
+    d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeRadiiMapUnitScale" ) ) );
   }
-  d->fillColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( "shapeFillColor", QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
-  d->borderColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( "shapeBorderColor", QgsSymbolLayerUtils::encodeColor( Qt::darkGray ) ) );
-  d->borderWidth = backgroundElem.attribute( "shapeBorderWidth", "0" ).toDouble();
+  d->fillColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeFillColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
+  d->borderColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( Qt::darkGray ) ) );
+  d->borderWidth = backgroundElem.attribute( QStringLiteral( "shapeBorderWidth" ), QStringLiteral( "0" ) ).toDouble();
 
-  if ( !backgroundElem.hasAttribute( "shapeBorderWidthUnit" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeBorderWidthUnit" ) ) )
   {
-    d->borderWidthUnits = backgroundElem.attribute( "shapeBorderWidthUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
+    d->borderWidthUnits = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
                           : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->borderWidthUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( "shapeBorderWidthUnit" ) );
+    d->borderWidthUnits = QgsUnitTypes::decodeRenderUnit( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthUnit" ) ) );
   }
-  if ( !backgroundElem.hasAttribute( "shapeBorderWidthMapUnitScale" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->borderWidthMapUnitScale.minScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMinScale", "0" ).toDouble();
-    d->borderWidthMapUnitScale.maxScale = backgroundElem.attribute( "shapeBorderWidthMapUnitMaxScale", "0" ).toDouble();
+    d->borderWidthMapUnitScale.minScale = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->borderWidthMapUnitScale.maxScale = backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->borderWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( "shapeBorderWidthMapUnitScale" ) );
+    d->borderWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ) ) );
   }
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( backgroundElem.attribute( "shapeJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt() );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( backgroundElem.attribute( QStringLiteral( "shapeJoinStyle" ), QString::number( Qt::BevelJoin ) ).toUInt() );
 
-  if ( !backgroundElem.hasAttribute( "shapeOpacity" ) )
+  if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeOpacity" ) ) )
   {
-    d->opacity = ( 1 - backgroundElem.attribute( "shapeTransparency" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - backgroundElem.attribute( QStringLiteral( "shapeTransparency" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( backgroundElem.attribute( "shapeOpacity" ).toDouble() );
+    d->opacity = ( backgroundElem.attribute( QStringLiteral( "shapeOpacity" ) ).toDouble() );
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( backgroundElem.attribute( "shapeBlendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< QgsPainting::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
 
 }
 
 QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument& doc ) const
 {
-  QDomElement backgroundElem = doc.createElement( "background" );
-  backgroundElem.setAttribute( "shapeDraw", d->enabled );
-  backgroundElem.setAttribute( "shapeType", static_cast< unsigned int >( d->type ) );
-  backgroundElem.setAttribute( "shapeSVGFile", d->svgFile );
-  backgroundElem.setAttribute( "shapeSizeType", static_cast< unsigned int >( d->sizeType ) );
-  backgroundElem.setAttribute( "shapeSizeX", d->size.width() );
-  backgroundElem.setAttribute( "shapeSizeY", d->size.height() );
-  backgroundElem.setAttribute( "shapeSizeUnit", QgsUnitTypes::encodeUnit( d->sizeUnits ) );
-  backgroundElem.setAttribute( "shapeSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  backgroundElem.setAttribute( "shapeRotationType", static_cast< unsigned int >( d->rotationType ) );
-  backgroundElem.setAttribute( "shapeRotation", d->rotation );
-  backgroundElem.setAttribute( "shapeOffsetX", d->offset.x() );
-  backgroundElem.setAttribute( "shapeOffsetY", d->offset.y() );
-  backgroundElem.setAttribute( "shapeOffsetUnit", QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  backgroundElem.setAttribute( "shapeOffsetMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  backgroundElem.setAttribute( "shapeRadiiX", d->radii.width() );
-  backgroundElem.setAttribute( "shapeRadiiY", d->radii.height() );
-  backgroundElem.setAttribute( "shapeRadiiUnit", QgsUnitTypes::encodeUnit( d->radiiUnits ) );
-  backgroundElem.setAttribute( "shapeRadiiMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
-  backgroundElem.setAttribute( "shapeFillColor", QgsSymbolLayerUtils::encodeColor( d->fillColor ) );
-  backgroundElem.setAttribute( "shapeBorderColor", QgsSymbolLayerUtils::encodeColor( d->borderColor ) );
-  backgroundElem.setAttribute( "shapeBorderWidth", d->borderWidth );
-  backgroundElem.setAttribute( "shapeBorderWidthUnit", QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
-  backgroundElem.setAttribute( "shapeBorderWidthMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
-  backgroundElem.setAttribute( "shapeJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
-  backgroundElem.setAttribute( "shapeOpacity", d->opacity );
-  backgroundElem.setAttribute( "shapeBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
+  QDomElement backgroundElem = doc.createElement( QStringLiteral( "background" ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeDraw" ), d->enabled );
+  backgroundElem.setAttribute( QStringLiteral( "shapeType" ), static_cast< unsigned int >( d->type ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSVGFile" ), d->svgFile );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSizeType" ), static_cast< unsigned int >( d->sizeType ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSizeX" ), d->size.width() );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSizeY" ), d->size.height() );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSizeUnit" ), QgsUnitTypes::encodeUnit( d->sizeUnits ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRotationType" ), static_cast< unsigned int >( d->rotationType ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRotation" ), d->rotation );
+  backgroundElem.setAttribute( QStringLiteral( "shapeOffsetX" ), d->offset.x() );
+  backgroundElem.setAttribute( QStringLiteral( "shapeOffsetY" ), d->offset.y() );
+  backgroundElem.setAttribute( QStringLiteral( "shapeOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRadiiX" ), d->radii.width() );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRadiiY" ), d->radii.height() );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRadiiUnit" ), QgsUnitTypes::encodeUnit( d->radiiUnits ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRadiiMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeFillColor" ), QgsSymbolLayerUtils::encodeColor( d->fillColor ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( d->borderColor ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidth" ), d->borderWidth );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeOpacity" ), d->opacity );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   return backgroundElem;
 }
 
@@ -1041,171 +1041,171 @@ void QgsTextShadowSettings::setBlendMode( QPainter::CompositionMode mode )
 
 void QgsTextShadowSettings::readFromLayer( QgsVectorLayer* layer )
 {
-  d->enabled = layer->customProperty( "labeling/shadowDraw", QVariant( false ) ).toBool();
-  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( "labeling/shadowUnder", QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
-  d->offsetAngle = layer->customProperty( "labeling/shadowOffsetAngle", QVariant( 135 ) ).toInt();
-  d->offsetDist = layer->customProperty( "labeling/shadowOffsetDist", QVariant( 1.0 ) ).toDouble();
+  d->enabled = layer->customProperty( QStringLiteral( "labeling/shadowDraw" ), QVariant( false ) ).toBool();
+  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( QStringLiteral( "labeling/shadowUnder" ), QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->offsetAngle = layer->customProperty( QStringLiteral( "labeling/shadowOffsetAngle" ), QVariant( 135 ) ).toInt();
+  d->offsetDist = layer->customProperty( QStringLiteral( "labeling/shadowOffsetDist" ), QVariant( 1.0 ) ).toDouble();
 
-  if ( layer->customProperty( "labeling/shadowOffsetUnit" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnit" ) ).toString().isEmpty() )
   {
-    d->offsetUnits = layer->customProperty( "labeling/shadowOffsetUnits", 0 ).toUInt() == 0 ?
+    d->offsetUnits = layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnits" ), 0 ).toUInt() == 0 ?
                      QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/shadowOffsetUnit" ).toString() );
+    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnit" ) ).toString() );
   }
-  if ( layer->customProperty( "labeling/shadowOffsetMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->offsetMapUnitScale.minScale = layer->customProperty( "labeling/shadowOffsetMapUnitMinScale", 0.0 ).toDouble();
-    d->offsetMapUnitScale.maxScale = layer->customProperty( "labeling/shadowOffsetMapUnitMaxScale", 0.0 ).toDouble();
+    d->offsetMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitMinScale" ), 0.0 ).toDouble();
+    d->offsetMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/shadowOffsetMapUnitScale" ).toString() );
+    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitScale" ) ).toString() );
   }
-  d->offsetGlobal = layer->customProperty( "labeling/shadowOffsetGlobal", QVariant( true ) ).toBool();
-  d->radius = layer->customProperty( "labeling/shadowRadius", QVariant( 1.5 ) ).toDouble();
+  d->offsetGlobal = layer->customProperty( QStringLiteral( "labeling/shadowOffsetGlobal" ), QVariant( true ) ).toBool();
+  d->radius = layer->customProperty( QStringLiteral( "labeling/shadowRadius" ), QVariant( 1.5 ) ).toDouble();
 
-  if ( layer->customProperty( "labeling/shadowRadiusUnit" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnit" ) ).toString().isEmpty() )
   {
-    d->radiusUnits = layer->customProperty( "labeling/shadowRadiusUnits", 0 ).toUInt() == 0 ?
+    d->radiusUnits = layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnits" ), 0 ).toUInt() == 0 ?
                      QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/shadowRadiusUnit" ).toString() );
+    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnit" ) ).toString() );
   }
-  if ( layer->customProperty( "labeling/shadowRadiusMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->radiusMapUnitScale.minScale = layer->customProperty( "labeling/shadowRadiusMapUnitMinScale", 0.0 ).toDouble();
-    d->radiusMapUnitScale.maxScale = layer->customProperty( "labeling/shadowRadiusMapUnitMaxScale", 0.0 ).toDouble();
+    d->radiusMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitMinScale" ), 0.0 ).toDouble();
+    d->radiusMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/shadowRadiusMapUnitScale" ).toString() );
+    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitScale" ) ).toString() );
   }
-  d->radiusAlphaOnly = layer->customProperty( "labeling/shadowRadiusAlphaOnly", QVariant( false ) ).toBool();
+  d->radiusAlphaOnly = layer->customProperty( QStringLiteral( "labeling/shadowRadiusAlphaOnly" ), QVariant( false ) ).toBool();
 
-  if ( layer->customProperty( "labeling/shadowOpacity" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/shadowOpacity" ) ).toString().isEmpty() )
   {
-    d->opacity = ( 1 - layer->customProperty( "labeling/shadowTransparency" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - layer->customProperty( QStringLiteral( "labeling/shadowTransparency" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( layer->customProperty( "labeling/shadowOpacity" ).toDouble() );
+    d->opacity = ( layer->customProperty( QStringLiteral( "labeling/shadowOpacity" ) ).toDouble() );
   }
-  d->scale = layer->customProperty( "labeling/shadowScale", QVariant( 100 ) ).toInt();
-  d->color = _readColor( layer, "labeling/shadowColor", Qt::black, false );
+  d->scale = layer->customProperty( QStringLiteral( "labeling/shadowScale" ), QVariant( 100 ) ).toInt();
+  d->color = _readColor( layer, QStringLiteral( "labeling/shadowColor" ), Qt::black, false );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/shadowBlendMode", QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
+                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
 }
 
 void QgsTextShadowSettings::writeToLayer( QgsVectorLayer* layer ) const
 {
-  layer->setCustomProperty( "labeling/shadowDraw", d->enabled );
-  layer->setCustomProperty( "labeling/shadowUnder", static_cast< unsigned int >( d->shadowUnder ) );
-  layer->setCustomProperty( "labeling/shadowOffsetAngle", d->offsetAngle );
-  layer->setCustomProperty( "labeling/shadowOffsetDist", d->offsetDist );
-  layer->setCustomProperty( "labeling/shadowOffsetUnit", QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  layer->setCustomProperty( "labeling/shadowOffsetMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  layer->setCustomProperty( "labeling/shadowOffsetGlobal", d->offsetGlobal );
-  layer->setCustomProperty( "labeling/shadowRadius", d->radius );
-  layer->setCustomProperty( "labeling/shadowRadiusUnit", QgsUnitTypes::encodeUnit( d->radiusUnits ) );
-  layer->setCustomProperty( "labeling/shadowRadiusMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
-  layer->setCustomProperty( "labeling/shadowRadiusAlphaOnly", d->radiusAlphaOnly );
-  layer->setCustomProperty( "labeling/shadowOpacity", d->opacity );
-  layer->setCustomProperty( "labeling/shadowScale", d->scale );
-  _writeColor( layer, "labeling/shadowColor", d->color, false );
-  layer->setCustomProperty( "labeling/shadowBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowDraw" ), d->enabled );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowUnder" ), static_cast< unsigned int >( d->shadowUnder ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetAngle" ), d->offsetAngle );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetDist" ), d->offsetDist );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetGlobal" ), d->offsetGlobal );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadius" ), d->radius );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadiusUnit" ), QgsUnitTypes::encodeUnit( d->radiusUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadiusMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadiusAlphaOnly" ), d->radiusAlphaOnly );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowOpacity" ), d->opacity );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowScale" ), d->scale );
+  _writeColor( layer, QStringLiteral( "labeling/shadowColor" ), d->color, false );
+  layer->setCustomProperty( QStringLiteral( "labeling/shadowBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
 void QgsTextShadowSettings::readXml( const QDomElement& elem )
 {
-  QDomElement shadowElem = elem.firstChildElement( "shadow" );
-  d->enabled = shadowElem.attribute( "shadowDraw", "0" ).toInt();
-  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( "shadowUnder", QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest ;
-  d->offsetAngle = shadowElem.attribute( "shadowOffsetAngle", "135" ).toInt();
-  d->offsetDist = shadowElem.attribute( "shadowOffsetDist", "1" ).toDouble();
+  QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
+  d->enabled = shadowElem.attribute( QStringLiteral( "shadowDraw" ), QStringLiteral( "0" ) ).toInt();
+  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest ;
+  d->offsetAngle = shadowElem.attribute( QStringLiteral( "shadowOffsetAngle" ), QStringLiteral( "135" ) ).toInt();
+  d->offsetDist = shadowElem.attribute( QStringLiteral( "shadowOffsetDist" ), QStringLiteral( "1" ) ).toDouble();
 
-  if ( !shadowElem.hasAttribute( "shadowOffsetUnit" ) )
+  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOffsetUnit" ) ) )
   {
-    d->offsetUnits = shadowElem.attribute( "shadowOffsetUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
+    d->offsetUnits = shadowElem.attribute( QStringLiteral( "shadowOffsetUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
                      : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( "shadowOffsetUnit" ) );
+    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( QStringLiteral( "shadowOffsetUnit" ) ) );
   }
 
-  if ( !shadowElem.hasAttribute( "shadowOffsetMapUnitScale" ) )
+  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOffsetMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->offsetMapUnitScale.minScale = shadowElem.attribute( "shadowOffsetMapUnitMinScale", "0" ).toDouble();
-    d->offsetMapUnitScale.maxScale = shadowElem.attribute( "shadowOffsetMapUnitMaxScale", "0" ).toDouble();
+    d->offsetMapUnitScale.minScale = shadowElem.attribute( QStringLiteral( "shadowOffsetMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->offsetMapUnitScale.maxScale = shadowElem.attribute( QStringLiteral( "shadowOffsetMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( "shadowOffsetMapUnitScale" ) );
+    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( QStringLiteral( "shadowOffsetMapUnitScale" ) ) );
   }
-  d->offsetGlobal = shadowElem.attribute( "shadowOffsetGlobal", "1" ).toInt();
-  d->radius = shadowElem.attribute( "shadowRadius", "1.5" ).toDouble();
+  d->offsetGlobal = shadowElem.attribute( QStringLiteral( "shadowOffsetGlobal" ), QStringLiteral( "1" ) ).toInt();
+  d->radius = shadowElem.attribute( QStringLiteral( "shadowRadius" ), QStringLiteral( "1.5" ) ).toDouble();
 
-  if ( !shadowElem.hasAttribute( "shadowRadiusUnit" ) )
+  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowRadiusUnit" ) ) )
   {
-    d->radiusUnits = shadowElem.attribute( "shadowRadiusUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
+    d->radiusUnits = shadowElem.attribute( QStringLiteral( "shadowRadiusUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderMillimeters
                      : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( "shadowRadiusUnit" ) );
+    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( QStringLiteral( "shadowRadiusUnit" ) ) );
   }
-  if ( !shadowElem.hasAttribute( "shadowRadiusMapUnitScale" ) )
+  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowRadiusMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->radiusMapUnitScale.minScale = shadowElem.attribute( "shadowRadiusMapUnitMinScale", "0" ).toDouble();
-    d->radiusMapUnitScale.maxScale = shadowElem.attribute( "shadowRadiusMapUnitMaxScale", "0" ).toDouble();
+    d->radiusMapUnitScale.minScale = shadowElem.attribute( QStringLiteral( "shadowRadiusMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->radiusMapUnitScale.maxScale = shadowElem.attribute( QStringLiteral( "shadowRadiusMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( "shadowRadiusMapUnitScale" ) );
+    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( QStringLiteral( "shadowRadiusMapUnitScale" ) ) );
   }
-  d->radiusAlphaOnly = shadowElem.attribute( "shadowRadiusAlphaOnly", "0" ).toInt();
+  d->radiusAlphaOnly = shadowElem.attribute( QStringLiteral( "shadowRadiusAlphaOnly" ), QStringLiteral( "0" ) ).toInt();
 
-  if ( !shadowElem.hasAttribute( "shadowOpacity" ) )
+  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOpacity" ) ) )
   {
-    d->opacity = ( 1 - shadowElem.attribute( "shadowTransparency" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - shadowElem.attribute( QStringLiteral( "shadowTransparency" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( shadowElem.attribute( "shadowOpacity" ).toDouble() );
+    d->opacity = ( shadowElem.attribute( QStringLiteral( "shadowOpacity" ) ).toDouble() );
   }
-  d->scale = shadowElem.attribute( "shadowScale", "100" ).toInt();
-  d->color = QgsSymbolLayerUtils::decodeColor( shadowElem.attribute( "shadowColor", QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
+  d->scale = shadowElem.attribute( QStringLiteral( "shadowScale" ), QStringLiteral( "100" ) ).toInt();
+  d->color = QgsSymbolLayerUtils::decodeColor( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( shadowElem.attribute( "shadowBlendMode", QString::number( QgsPainting::BlendMultiply ) ).toUInt() ) );
+                   static_cast< QgsPainting::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( QgsPainting::BlendMultiply ) ).toUInt() ) );
 }
 
 QDomElement QgsTextShadowSettings::writeXml( QDomDocument& doc ) const
 {
-  QDomElement shadowElem = doc.createElement( "shadow" );
-  shadowElem.setAttribute( "shadowDraw", d->enabled );
-  shadowElem.setAttribute( "shadowUnder", static_cast< unsigned int >( d->shadowUnder ) );
-  shadowElem.setAttribute( "shadowOffsetAngle", d->offsetAngle );
-  shadowElem.setAttribute( "shadowOffsetDist", d->offsetDist );
-  shadowElem.setAttribute( "shadowOffsetUnit", QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  shadowElem.setAttribute( "shadowOffsetMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  shadowElem.setAttribute( "shadowOffsetGlobal", d->offsetGlobal );
-  shadowElem.setAttribute( "shadowRadius", d->radius );
-  shadowElem.setAttribute( "shadowRadiusUnit", QgsUnitTypes::encodeUnit( d->radiusUnits ) );
-  shadowElem.setAttribute( "shadowRadiusMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
-  shadowElem.setAttribute( "shadowRadiusAlphaOnly", d->radiusAlphaOnly );
-  shadowElem.setAttribute( "shadowOpacity", d->opacity );
-  shadowElem.setAttribute( "shadowScale", d->scale );
-  shadowElem.setAttribute( "shadowColor", QgsSymbolLayerUtils::encodeColor( d->color ) );
-  shadowElem.setAttribute( "shadowBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
+  QDomElement shadowElem = doc.createElement( QStringLiteral( "shadow" ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowDraw" ), d->enabled );
+  shadowElem.setAttribute( QStringLiteral( "shadowUnder" ), static_cast< unsigned int >( d->shadowUnder ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowOffsetAngle" ), d->offsetAngle );
+  shadowElem.setAttribute( QStringLiteral( "shadowOffsetDist" ), d->offsetDist );
+  shadowElem.setAttribute( QStringLiteral( "shadowOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowOffsetGlobal" ), d->offsetGlobal );
+  shadowElem.setAttribute( QStringLiteral( "shadowRadius" ), d->radius );
+  shadowElem.setAttribute( QStringLiteral( "shadowRadiusUnit" ), QgsUnitTypes::encodeUnit( d->radiusUnits ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowRadiusMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowRadiusAlphaOnly" ), d->radiusAlphaOnly );
+  shadowElem.setAttribute( QStringLiteral( "shadowOpacity" ), d->opacity );
+  shadowElem.setAttribute( QStringLiteral( "shadowScale" ), d->scale );
+  shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( d->color ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   return shadowElem;
 }
 
@@ -1353,7 +1353,7 @@ void QgsTextFormat::setLineHeight( double height )
 void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
 {
   QFont appFont = QApplication::font();
-  mTextFontFamily = layer->customProperty( "labeling/fontFamily", QVariant( appFont.family() ) ).toString();
+  mTextFontFamily = layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString();
   QString fontFamily = mTextFontFamily;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
@@ -1371,59 +1371,59 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
     mTextFontFound = true;
   }
 
-  if ( !layer->customProperty( "labeling/fontSize" ).isValid() )
+  if ( !layer->customProperty( QStringLiteral( "labeling/fontSize" ) ).isValid() )
   {
     d->fontSize = appFont.pointSizeF();
   }
   else
   {
-    d->fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
+    d->fontSize = layer->customProperty( QStringLiteral( "labeling/fontSize" ) ).toDouble();
   }
 
-  if ( layer->customProperty( "labeling/fontSizeUnit" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/fontSizeUnit" ) ).toString().isEmpty() )
   {
-    d->fontSizeUnits = layer->customProperty( "labeling/fontSizeInMapUnits", 0 ).toUInt() == 0 ?
+    d->fontSizeUnits = layer->customProperty( QStringLiteral( "labeling/fontSizeInMapUnits" ), 0 ).toUInt() == 0 ?
                        QgsUnitTypes::RenderPoints : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
     bool ok = false;
-    d->fontSizeUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/fontSizeUnit" ).toString(), &ok );
+    d->fontSizeUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/fontSizeUnit" ) ).toString(), &ok );
     if ( !ok )
       d->fontSizeUnits = QgsUnitTypes::RenderPoints;
   }
-  if ( layer->customProperty( "labeling/fontSizeMapUnitScale" ).toString().isEmpty() )
+  if ( layer->customProperty( QStringLiteral( "labeling/fontSizeMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    d->fontSizeMapUnitScale.minScale = layer->customProperty( "labeling/fontSizeMapUnitMinScale", 0.0 ).toDouble();
-    d->fontSizeMapUnitScale.maxScale = layer->customProperty( "labeling/fontSizeMapUnitMaxScale", 0.0 ).toDouble();
+    d->fontSizeMapUnitScale.minScale = layer->customProperty( QStringLiteral( "labeling/fontSizeMapUnitMinScale" ), 0.0 ).toDouble();
+    d->fontSizeMapUnitScale.maxScale = layer->customProperty( QStringLiteral( "labeling/fontSizeMapUnitMaxScale" ), 0.0 ).toDouble();
   }
   else
   {
-    d->fontSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( "labeling/fontSizeMapUnitScale" ).toString() );
+    d->fontSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/fontSizeMapUnitScale" ) ).toString() );
   }
-  int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
-  bool fontItalic = layer->customProperty( "labeling/fontItalic" ).toBool();
+  int fontWeight = layer->customProperty( QStringLiteral( "labeling/fontWeight" ) ).toInt();
+  bool fontItalic = layer->customProperty( QStringLiteral( "labeling/fontItalic" ) ).toBool();
   d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
-  d->textNamedStyle = QgsFontUtils::translateNamedStyle( layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString() );
+  d->textNamedStyle = QgsFontUtils::translateNamedStyle( layer->customProperty( QStringLiteral( "labeling/namedStyle" ), QVariant( "" ) ).toString() );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
-  d->textFont.setCapitalization( static_cast< QFont::Capitalization >( layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() ) );
-  d->textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
-  d->textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
-  d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( "labeling/fontLetterSpacing", QVariant( 0.0 ) ).toDouble() );
-  d->textFont.setWordSpacing( layer->customProperty( "labeling/fontWordSpacing", QVariant( 0.0 ) ).toDouble() );
-  d->textColor = _readColor( layer, "labeling/textColor", Qt::black, false );
-  if ( layer->customProperty( "labeling/textOpacity" ).toString().isEmpty() )
+  d->textFont.setCapitalization( static_cast< QFont::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() ) );
+  d->textFont.setUnderline( layer->customProperty( QStringLiteral( "labeling/fontUnderline" ) ).toBool() );
+  d->textFont.setStrikeOut( layer->customProperty( QStringLiteral( "labeling/fontStrikeout" ) ).toBool() );
+  d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( QStringLiteral( "labeling/fontLetterSpacing" ), QVariant( 0.0 ) ).toDouble() );
+  d->textFont.setWordSpacing( layer->customProperty( QStringLiteral( "labeling/fontWordSpacing" ), QVariant( 0.0 ) ).toDouble() );
+  d->textColor = _readColor( layer, QStringLiteral( "labeling/textColor" ), Qt::black, false );
+  if ( layer->customProperty( QStringLiteral( "labeling/textOpacity" ) ).toString().isEmpty() )
   {
-    d->opacity = ( 1 - layer->customProperty( "labeling/textTransp" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - layer->customProperty( QStringLiteral( "labeling/textTransp" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( layer->customProperty( "labeling/textOpacity" ).toDouble() );
+    d->opacity = ( layer->customProperty( QStringLiteral( "labeling/textOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/blendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
-  d->multilineHeight = layer->customProperty( "labeling/multilineHeight", QVariant( 1.0 ) ).toDouble();
+                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/blendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+  d->multilineHeight = layer->customProperty( QStringLiteral( "labeling/multilineHeight" ), QVariant( 1.0 ) ).toDouble();
 
   mBufferSettings.readFromLayer( layer );
   mShadowSettings.readFromLayer( layer );
@@ -1432,23 +1432,23 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
 
 void QgsTextFormat::writeToLayer( QgsVectorLayer* layer ) const
 {
-  layer->setCustomProperty( "labeling/fontFamily", d->textFont.family() );
-  layer->setCustomProperty( "labeling/namedStyle", QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
-  layer->setCustomProperty( "labeling/fontSize", d->fontSize );
-  layer->setCustomProperty( "labeling/fontSizeUnit", QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
-  layer->setCustomProperty( "labeling/fontSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->fontSizeMapUnitScale ) );
-  layer->setCustomProperty( "labeling/fontWeight", d->textFont.weight() );
-  layer->setCustomProperty( "labeling/fontItalic", d->textFont.italic() );
-  layer->setCustomProperty( "labeling/fontStrikeout", d->textFont.strikeOut() );
-  layer->setCustomProperty( "labeling/fontUnderline", d->textFont.underline() );
-  _writeColor( layer, "labeling/textColor", d->textColor );
-  layer->setCustomProperty( "labeling/textOpacity", d->opacity );
-  layer->setCustomProperty( "labeling/fontCapitals", static_cast< unsigned int >( d->textFont.capitalization() ) );
-  layer->setCustomProperty( "labeling/fontLetterSpacing", d->textFont.letterSpacing() );
-  layer->setCustomProperty( "labeling/fontWordSpacing", d->textFont.wordSpacing() );
-  layer->setCustomProperty( "labeling/textOpacity", d->opacity );
-  layer->setCustomProperty( "labeling/blendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
-  layer->setCustomProperty( "labeling/multilineHeight", d->multilineHeight );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), d->textFont.family() );
+  layer->setCustomProperty( QStringLiteral( "labeling/namedStyle" ), QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), d->fontSize );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontSizeUnit" ), QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->fontSizeMapUnitScale ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontWeight" ), d->textFont.weight() );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontItalic" ), d->textFont.italic() );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontStrikeout" ), d->textFont.strikeOut() );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontUnderline" ), d->textFont.underline() );
+  _writeColor( layer, QStringLiteral( "labeling/textColor" ), d->textColor );
+  layer->setCustomProperty( QStringLiteral( "labeling/textOpacity" ), d->opacity );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontCapitals" ), static_cast< unsigned int >( d->textFont.capitalization() ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontLetterSpacing" ), d->textFont.letterSpacing() );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontWordSpacing" ), d->textFont.wordSpacing() );
+  layer->setCustomProperty( QStringLiteral( "labeling/textOpacity" ), d->opacity );
+  layer->setCustomProperty( QStringLiteral( "labeling/blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  layer->setCustomProperty( QStringLiteral( "labeling/multilineHeight" ), d->multilineHeight );
 
   mBufferSettings.writeToLayer( layer );
   mShadowSettings.writeToLayer( layer );
@@ -1457,9 +1457,9 @@ void QgsTextFormat::writeToLayer( QgsVectorLayer* layer ) const
 
 void QgsTextFormat::readXml( const QDomElement& elem )
 {
-  QDomElement textStyleElem = elem.firstChildElement( "text-style" );
+  QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
-  mTextFontFamily = textStyleElem.attribute( "fontFamily", appFont.family() );
+  mTextFontFamily = textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() );
   QString fontFamily = mTextFontFamily;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
@@ -1477,69 +1477,69 @@ void QgsTextFormat::readXml( const QDomElement& elem )
     mTextFontFound = true;
   }
 
-  if ( textStyleElem.hasAttribute( "fontSize" ) )
+  if ( textStyleElem.hasAttribute( QStringLiteral( "fontSize" ) ) )
   {
-    d->fontSize = textStyleElem.attribute( "fontSize" ).toDouble();
+    d->fontSize = textStyleElem.attribute( QStringLiteral( "fontSize" ) ).toDouble();
   }
   else
   {
     d->fontSize = appFont.pointSizeF();
   }
 
-  if ( !textStyleElem.hasAttribute( "fontSizeUnit" ) )
+  if ( !textStyleElem.hasAttribute( QStringLiteral( "fontSizeUnit" ) ) )
   {
-    d->fontSizeUnits = textStyleElem.attribute( "fontSizeInMapUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderPoints
+    d->fontSizeUnits = textStyleElem.attribute( QStringLiteral( "fontSizeInMapUnits" ) ).toUInt() == 0 ? QgsUnitTypes::RenderPoints
                        : QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    d->fontSizeUnits = QgsUnitTypes::decodeRenderUnit( textStyleElem.attribute( "fontSizeUnit" ) );
+    d->fontSizeUnits = QgsUnitTypes::decodeRenderUnit( textStyleElem.attribute( QStringLiteral( "fontSizeUnit" ) ) );
   }
 
-  if ( !textStyleElem.hasAttribute( "fontSizeMapUnitScale" ) )
+  if ( !textStyleElem.hasAttribute( QStringLiteral( "fontSizeMapUnitScale" ) ) )
   {
     //fallback to older property
-    d->fontSizeMapUnitScale.minScale = textStyleElem.attribute( "fontSizeMapUnitMinScale", "0" ).toDouble();
-    d->fontSizeMapUnitScale.maxScale = textStyleElem.attribute( "fontSizeMapUnitMaxScale", "0" ).toDouble();
+    d->fontSizeMapUnitScale.minScale = textStyleElem.attribute( QStringLiteral( "fontSizeMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    d->fontSizeMapUnitScale.maxScale = textStyleElem.attribute( QStringLiteral( "fontSizeMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
   }
   else
   {
-    d->fontSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textStyleElem.attribute( "fontSizeMapUnitScale" ) );
+    d->fontSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textStyleElem.attribute( QStringLiteral( "fontSizeMapUnitScale" ) ) );
   }
-  int fontWeight = textStyleElem.attribute( "fontWeight" ).toInt();
-  bool fontItalic = textStyleElem.attribute( "fontItalic" ).toInt();
+  int fontWeight = textStyleElem.attribute( QStringLiteral( "fontWeight" ) ).toInt();
+  bool fontItalic = textStyleElem.attribute( QStringLiteral( "fontItalic" ) ).toInt();
   d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
   d->textFont.setPointSizeF( d->fontSize ); //double precision needed because of map units
-  d->textNamedStyle = QgsFontUtils::translateNamedStyle( textStyleElem.attribute( "namedStyle" ) );
+  d->textNamedStyle = QgsFontUtils::translateNamedStyle( textStyleElem.attribute( QStringLiteral( "namedStyle" ) ) );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
-  d->textFont.setCapitalization( static_cast< QFont::Capitalization >( textStyleElem.attribute( "fontCapitals", "0" ).toUInt() ) );
-  d->textFont.setUnderline( textStyleElem.attribute( "fontUnderline" ).toInt() );
-  d->textFont.setStrikeOut( textStyleElem.attribute( "fontStrikeout" ).toInt() );
-  d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, textStyleElem.attribute( "fontLetterSpacing", "0" ).toDouble() );
-  d->textFont.setWordSpacing( textStyleElem.attribute( "fontWordSpacing", "0" ).toDouble() );
-  d->textColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( "textColor", QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
-  if ( !textStyleElem.hasAttribute( "textOpacity" ) )
+  d->textFont.setCapitalization( static_cast< QFont::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() ) );
+  d->textFont.setUnderline( textStyleElem.attribute( QStringLiteral( "fontUnderline" ) ).toInt() );
+  d->textFont.setStrikeOut( textStyleElem.attribute( QStringLiteral( "fontStrikeout" ) ).toInt() );
+  d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, textStyleElem.attribute( QStringLiteral( "fontLetterSpacing" ), QStringLiteral( "0" ) ).toDouble() );
+  d->textFont.setWordSpacing( textStyleElem.attribute( QStringLiteral( "fontWordSpacing" ), QStringLiteral( "0" ) ).toDouble() );
+  d->textColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
+  if ( !textStyleElem.hasAttribute( QStringLiteral( "textOpacity" ) ) )
   {
-    d->opacity = ( 1 - textStyleElem.attribute( "textTransp" ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - textStyleElem.attribute( QStringLiteral( "textTransp" ) ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( textStyleElem.attribute( "textOpacity" ).toDouble() );
+    d->opacity = ( textStyleElem.attribute( QStringLiteral( "textOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( textStyleElem.attribute( "blendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< QgsPainting::BlendMode >( textStyleElem.attribute( QStringLiteral( "blendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
 
-  if ( !textStyleElem.hasAttribute( "multilineHeight" ) )
+  if ( !textStyleElem.hasAttribute( QStringLiteral( "multilineHeight" ) ) )
   {
-    QDomElement textFormatElem = elem.firstChildElement( "text-format" );
-    d->multilineHeight = textFormatElem.attribute( "multilineHeight", "1" ).toDouble();
+    QDomElement textFormatElem = elem.firstChildElement( QStringLiteral( "text-format" ) );
+    d->multilineHeight = textFormatElem.attribute( QStringLiteral( "multilineHeight" ), QStringLiteral( "1" ) ).toDouble();
   }
   else
   {
-    d->multilineHeight = textStyleElem.attribute( "multilineHeight", "1" ).toDouble();
+    d->multilineHeight = textStyleElem.attribute( QStringLiteral( "multilineHeight" ), QStringLiteral( "1" ) ).toDouble();
   }
 
-  if ( textStyleElem.firstChildElement( "text-buffer" ).isNull() )
+  if ( textStyleElem.firstChildElement( QStringLiteral( "text-buffer" ) ).isNull() )
   {
     mBufferSettings.readXml( elem );
   }
@@ -1547,7 +1547,7 @@ void QgsTextFormat::readXml( const QDomElement& elem )
   {
     mBufferSettings.readXml( textStyleElem );
   }
-  if ( textStyleElem.firstChildElement( "shadow" ).isNull() )
+  if ( textStyleElem.firstChildElement( QStringLiteral( "shadow" ) ).isNull() )
   {
     mShadowSettings.readXml( elem );
   }
@@ -1555,7 +1555,7 @@ void QgsTextFormat::readXml( const QDomElement& elem )
   {
     mShadowSettings.readXml( textStyleElem );
   }
-  if ( textStyleElem.firstChildElement( "background" ).isNull() )
+  if ( textStyleElem.firstChildElement( QStringLiteral( "background" ) ).isNull() )
   {
     mBackgroundSettings.readXml( elem );
   }
@@ -1568,23 +1568,23 @@ void QgsTextFormat::readXml( const QDomElement& elem )
 QDomElement QgsTextFormat::writeXml( QDomDocument& doc ) const
 {
   // text style
-  QDomElement textStyleElem = doc.createElement( "text-style" );
-  textStyleElem.setAttribute( "fontFamily", d->textFont.family() );
-  textStyleElem.setAttribute( "namedStyle", QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
-  textStyleElem.setAttribute( "fontSize", d->fontSize );
-  textStyleElem.setAttribute( "fontSizeUnit", QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
-  textStyleElem.setAttribute( "fontSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->fontSizeMapUnitScale ) );
-  textStyleElem.setAttribute( "fontWeight", d->textFont.weight() );
-  textStyleElem.setAttribute( "fontItalic", d->textFont.italic() );
-  textStyleElem.setAttribute( "fontStrikeout", d->textFont.strikeOut() );
-  textStyleElem.setAttribute( "fontUnderline", d->textFont.underline() );
-  textStyleElem.setAttribute( "textColor", QgsSymbolLayerUtils::encodeColor( d->textColor ) );
-  textStyleElem.setAttribute( "fontCapitals", static_cast< unsigned int >( d->textFont.capitalization() ) );
-  textStyleElem.setAttribute( "fontLetterSpacing", d->textFont.letterSpacing() );
-  textStyleElem.setAttribute( "fontWordSpacing", d->textFont.wordSpacing() );
-  textStyleElem.setAttribute( "textOpacity", d->opacity );
-  textStyleElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
-  textStyleElem.setAttribute( "multilineHeight", d->multilineHeight );
+  QDomElement textStyleElem = doc.createElement( QStringLiteral( "text-style" ) );
+  textStyleElem.setAttribute( QStringLiteral( "fontFamily" ), d->textFont.family() );
+  textStyleElem.setAttribute( QStringLiteral( "namedStyle" ), QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
+  textStyleElem.setAttribute( QStringLiteral( "fontSize" ), d->fontSize );
+  textStyleElem.setAttribute( QStringLiteral( "fontSizeUnit" ), QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
+  textStyleElem.setAttribute( QStringLiteral( "fontSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->fontSizeMapUnitScale ) );
+  textStyleElem.setAttribute( QStringLiteral( "fontWeight" ), d->textFont.weight() );
+  textStyleElem.setAttribute( QStringLiteral( "fontItalic" ), d->textFont.italic() );
+  textStyleElem.setAttribute( QStringLiteral( "fontStrikeout" ), d->textFont.strikeOut() );
+  textStyleElem.setAttribute( QStringLiteral( "fontUnderline" ), d->textFont.underline() );
+  textStyleElem.setAttribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( d->textColor ) );
+  textStyleElem.setAttribute( QStringLiteral( "fontCapitals" ), static_cast< unsigned int >( d->textFont.capitalization() ) );
+  textStyleElem.setAttribute( QStringLiteral( "fontLetterSpacing" ), d->textFont.letterSpacing() );
+  textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
+  textStyleElem.setAttribute( QStringLiteral( "textOpacity" ), d->opacity );
+  textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
 
   textStyleElem.appendChild( mBufferSettings.writeXml( doc ) );
   textStyleElem.appendChild( mBackgroundSettings.writeXml( doc ) );
@@ -2042,10 +2042,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       return;
 
     QgsStringMap map; // for SVG symbology marker
-    map["name"] = QgsSymbolLayerUtils::symbolNameToPath( background.svgFile().trimmed() );
-    map["size"] = QString::number( sizeOut );
-    map["size_unit"] = QgsUnitTypes::encodeUnit( QgsUnitTypes::RenderPixels );
-    map["angle"] = QString::number( 0.0 ); // angle is handled by this local painter
+    map[QStringLiteral( "name" )] = QgsSymbolLayerUtils::symbolNameToPath( background.svgFile().trimmed() );
+    map[QStringLiteral( "size" )] = QString::number( sizeOut );
+    map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( QgsUnitTypes::RenderPixels );
+    map[QStringLiteral( "angle" )] = QString::number( 0.0 ); // angle is handled by this local painter
 
     // offset is handled by this local painter
     // TODO: see why the marker renderer doesn't seem to translate offset *after* applying rotation
@@ -2053,19 +2053,19 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     //map["offset_unit"] = QgsUnitTypes::encodeUnit(
     //                       tmpLyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::MapUnit : QgsUnitTypes::MM );
 
-    map["fill"] = background.fillColor().name();
-    map["outline"] = background.borderColor().name();
-    map["outline-width"] = QString::number( background.borderWidth() );
-    map["outline_width_unit"] = QgsUnitTypes::encodeUnit( background.borderWidthUnit() );
+    map[QStringLiteral( "fill" )] = background.fillColor().name();
+    map[QStringLiteral( "outline" )] = background.borderColor().name();
+    map[QStringLiteral( "outline-width" )] = QString::number( background.borderWidth() );
+    map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( background.borderWidthUnit() );
 
     if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowShape )
     {
       QgsTextShadowSettings shadow = format.shadow();
       // configure SVG shadow specs
       QgsStringMap shdwmap( map );
-      shdwmap["fill"] = shadow.color().name();
-      shdwmap["outline"] = shadow.color().name();
-      shdwmap["size"] = QString::number( sizeOut * context.rasterScaleFactor() );
+      shdwmap[QStringLiteral( "fill" )] = shadow.color().name();
+      shdwmap[QStringLiteral( "outline" )] = shadow.color().name();
+      shdwmap[QStringLiteral( "size" )] = QString::number( sizeOut * context.rasterScaleFactor() );
 
       // store SVG's drawing in QPicture for drop shadow call
       QPicture svgPict;

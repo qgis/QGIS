@@ -47,15 +47,15 @@ QStringList &QgsServerPlugins::serverPlugins()
 bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 {
 
-  QString pythonlibName( "qgispython" );
+  QString pythonlibName( QStringLiteral( "qgispython" ) );
 #if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QString version = QString( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
-  QgsMessageLog::logMessage( QString( "load library %1 (%2)" ).arg( pythonlibName, version ), __FILE__, QgsMessageLog::INFO );
+  QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
+  QgsMessageLog::logMessage( QStringLiteral( "load library %1 (%2)" ).arg( pythonlibName, version ), __FILE__, QgsMessageLog::INFO );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -65,12 +65,12 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      QgsMessageLog::logMessage( QString( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
       return false;
     }
   }
 
-  QgsMessageLog::logMessage( "Python support library loaded successfully.", __FILE__, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "Python support library loaded successfully." ), __FILE__, QgsMessageLog::INFO );
   typedef QgsPythonUtils*( *inst )();
   inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
   if ( !pythonlib_inst )
@@ -101,8 +101,8 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   while ( plugins.hasNext() )
   {
     QString pluginName = plugins.next();
-    QString pluginService = sPythonUtils->getPluginMetadata( pluginName, "server" );
-    if ( pluginService == "True" )
+    QString pluginService = sPythonUtils->getPluginMetadata( pluginName, QStringLiteral( "server" ) );
+    if ( pluginService == QLatin1String( "True" ) )
     {
       if ( sPythonUtils->loadPlugin( pluginName ) )
       {
@@ -110,16 +110,16 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
         {
           atLeastOneEnabled = true;
           serverPlugins().append( pluginName );
-          QgsMessageLog::logMessage( QString( "Server plugin %1 loaded!" ).arg( pluginName ), "Server", QgsMessageLog::INFO );
+          QgsMessageLog::logMessage( QStringLiteral( "Server plugin %1 loaded!" ).arg( pluginName ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
         }
         else
         {
-          QgsMessageLog::logMessage( QString( "Error loading server plugin %1" ).arg( pluginName ), "Server", QgsMessageLog::CRITICAL );
+          QgsMessageLog::logMessage( QStringLiteral( "Error loading server plugin %1" ).arg( pluginName ), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QString( "Error starting server plugin %1" ).arg( pluginName ), "Server", QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( QStringLiteral( "Error starting server plugin %1" ).arg( pluginName ), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
       }
     }
   }

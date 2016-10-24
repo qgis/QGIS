@@ -134,13 +134,13 @@ struct QgsPostgresLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
+    return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
            .arg( schemaName,
                  tableName,
                  geometryColName,
                  typeString,
                  sridString,
-                 pkCols.join( "|" ),
+                 pkCols.join( QStringLiteral( "|" ) ),
                  sql )
            .arg( nSpCols )
            .arg( force2d ? "yes" : "no" );
@@ -306,7 +306,7 @@ class QgsPostgresConn : public QObject
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
-    QString fieldExpression( const QgsField &fld, QString expr = "%1" );
+    QString fieldExpression( const QgsField &fld, QString expr = QStringLiteral( "%1" ) );
 
     QString connInfo() const { return mConnInfo; }
 

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     QgsTransformEffect();
     virtual ~QgsTransformEffect();
 
-    virtual QString type() const override { return QString( "transform" ); }
+    virtual QString type() const override { return QStringLiteral( "transform" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
     virtual QgsTransformEffect* clone() const override;

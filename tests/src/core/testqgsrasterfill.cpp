@@ -94,7 +94,7 @@ void TestQgsRasterFill::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
@@ -116,7 +116,7 @@ void TestQgsRasterFill::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Raster Fill Renderer Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Raster Fill Renderer Tests</h1>\n" );
 
 }
 void TestQgsRasterFill::cleanupTestCase()
@@ -135,7 +135,7 @@ void TestQgsRasterFill::cleanupTestCase()
 
 void TestQgsRasterFill::init()
 {
-  mRasterFill->setImageFilePath( mTestDataDir + QLatin1String( "sample_image.png" ) );
+  mRasterFill->setImageFilePath( mTestDataDir + QStringLiteral( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
@@ -150,41 +150,41 @@ void TestQgsRasterFill::cleanup()
 
 void TestQgsRasterFill::rasterFillSymbol()
 {
-  mReport += "<h2>Raster fill symbol renderer test</h2>\n";
-  bool result = imageCheck( "rasterfill" );
+  mReport += QLatin1String( "<h2>Raster fill symbol renderer test</h2>\n" );
+  bool result = imageCheck( QStringLiteral( "rasterfill" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::coordinateMode()
 {
-  mReport += "<h2>Raster fill viewport mode</h2>\n";
+  mReport += QLatin1String( "<h2>Raster fill viewport mode</h2>\n" );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
-  bool result = imageCheck( "rasterfill_viewport" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_viewport" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::alpha()
 {
-  mReport += "<h2>Raster fill alpha</h2>\n";
+  mReport += QLatin1String( "<h2>Raster fill alpha</h2>\n" );
   mRasterFill->setAlpha( 0.5 );
-  bool result = imageCheck( "rasterfill_alpha" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_alpha" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::offset()
 {
-  mReport += "<h2>Raster fill offset</h2>\n";
+  mReport += QLatin1String( "<h2>Raster fill offset</h2>\n" );
   mRasterFill->setOffset( QPointF( 5, 10 ) );
-  bool result = imageCheck( "rasterfill_offset" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_offset" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::width()
 {
-  mReport += "<h2>Raster fill width</h2>\n";
+  mReport += QLatin1String( "<h2>Raster fill width</h2>\n" );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderMillimeters );
   mRasterFill->setWidth( 5.0 );
-  bool result = imageCheck( "rasterfill_width" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_width" ) );
   QVERIFY( result );
 }
 
@@ -214,7 +214,7 @@ bool TestQgsRasterFill::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_rasterfill" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_rasterfill" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

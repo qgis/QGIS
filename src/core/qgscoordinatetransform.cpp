@@ -508,11 +508,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     {
       if ( direction == ForwardTransform )
       {
-        points += QString( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
+        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
       }
       else
       {
-        points += QString( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
+        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
       }
     }
 
@@ -573,14 +573,14 @@ bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
 
   QgsDebugMsg( "Reading Coordinate Transform from xml ------------------------!" );
 
-  QDomNode mySrcNode = theNode.namedItem( "sourcesrs" );
+  QDomNode mySrcNode = theNode.namedItem( QStringLiteral( "sourcesrs" ) );
   d->mSourceCRS.readXml( mySrcNode );
 
-  QDomNode myDestNode = theNode.namedItem( "destinationsrs" );
+  QDomNode myDestNode = theNode.namedItem( QStringLiteral( "destinationsrs" ) );
   d->mDestCRS.readXml( myDestNode );
 
-  d->mSourceDatumTransform = theNode.toElement().attribute( "sourceDatumTransform", "-1" ).toInt();
-  d->mDestinationDatumTransform = theNode.toElement().attribute( "destinationDatumTransform", "-1" ).toInt();
+  d->mSourceDatumTransform = theNode.toElement().attribute( QStringLiteral( "sourceDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
+  d->mDestinationDatumTransform = theNode.toElement().attribute( QStringLiteral( "destinationDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
 
   return d->initialise();
 }
@@ -588,15 +588,15 @@ bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
 bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
 {
   QDomElement myNodeElement = theNode.toElement();
-  QDomElement myTransformElement = theDoc.createElement( "coordinatetransform" );
-  myTransformElement.setAttribute( "sourceDatumTransform", QString::number( d->mSourceDatumTransform ) );
-  myTransformElement.setAttribute( "destinationDatumTransform", QString::number( d->mDestinationDatumTransform ) );
+  QDomElement myTransformElement = theDoc.createElement( QStringLiteral( "coordinatetransform" ) );
+  myTransformElement.setAttribute( QStringLiteral( "sourceDatumTransform" ), QString::number( d->mSourceDatumTransform ) );
+  myTransformElement.setAttribute( QStringLiteral( "destinationDatumTransform" ), QString::number( d->mDestinationDatumTransform ) );
 
-  QDomElement mySourceElement = theDoc.createElement( "sourcesrs" );
+  QDomElement mySourceElement = theDoc.createElement( QStringLiteral( "sourcesrs" ) );
   d->mSourceCRS.writeXml( mySourceElement, theDoc );
   myTransformElement.appendChild( mySourceElement );
 
-  QDomElement myDestElement = theDoc.createElement( "destinationsrs" );
+  QDomElement myDestElement = theDoc.createElement( QStringLiteral( "destinationsrs" ) );
   d->mDestCRS.writeXml( myDestElement, theDoc );
   myTransformElement.appendChild( myDestElement );
 
@@ -648,16 +648,16 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   }
 
   QList<int> directTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
   QList<int> reverseDirectTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
                         reverseDirectTransforms );
   QList<int> srcToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
                         srcToWgs84 );
   QList<int> destToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
                         destToWgs84 );
 
   //add direct datum transformations
@@ -732,7 +732,7 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   }
 
   sqlite3_stmt* stmt;
-  QString sql = QString( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
+  QString sql = QStringLiteral( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
   int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
   if ( prepareRes != SQLITE_OK )
   {
@@ -757,9 +757,9 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 
-  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
+  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( srcCrsId ) );
   srcProjection = srcCrs.description();
-  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
+  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
   sqlite3_finalize( stmt );

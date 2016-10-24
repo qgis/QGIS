@@ -111,10 +111,10 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
 {
   QgsEditorWidgetConfig myConfig;
 
-  myConfig.insert( "field_format", mFieldFormatEdit->text() );
-  myConfig.insert( "display_format", mDisplayFormatEdit->text() );
-  myConfig.insert( "calendar_popup", mCalendarPopupCheckBox->isChecked() );
-  myConfig.insert( "allow_null", mAllowNullCheckBox->isChecked() );
+  myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
+  myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
+  myConfig.insert( QStringLiteral( "calendar_popup" ), mCalendarPopupCheckBox->isChecked() );
+  myConfig.insert( QStringLiteral( "allow_null" ), mAllowNullCheckBox->isChecked() );
 
   return myConfig;
 }
@@ -139,7 +139,7 @@ QString QgsDateTimeEditConfig::defaultFormat( const QVariant::Type type )
 void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
 {
   const QgsField fieldDef = layer()->fields().at( field() );
-  const QString fieldFormat = config.value( "field_format", defaultFormat( fieldDef.type() ) ).toString();
+  const QString fieldFormat = config.value( QStringLiteral( "field_format" ), defaultFormat( fieldDef.type() ) ).toString();
   mFieldFormatEdit->setText( fieldFormat );
 
   if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
@@ -151,7 +151,7 @@ void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
   else
     mFieldFormatComboBox->setCurrentIndex( 3 );
 
-  QString displayFormat = config.value( "display_format", defaultFormat( fieldDef.type() ) ).toString();
+  QString displayFormat = config.value( QStringLiteral( "display_format" ), defaultFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );
   if ( displayFormat == mFieldFormatEdit->text() )
   {
@@ -162,6 +162,6 @@ void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
     mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  mCalendarPopupCheckBox->setChecked( config.value( "calendar_popup" , false ).toBool() );
-  mAllowNullCheckBox->setChecked( config.value( "allow_null", true ).toBool() );
+  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ) , false ).toBool() );
+  mAllowNullCheckBox->setChecked( config.value( QStringLiteral( "allow_null" ), true ).toBool() );
 }

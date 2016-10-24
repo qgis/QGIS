@@ -51,8 +51,8 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
                               " image: url(:/images/themes/default/%1) }"
                               "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
-  mCountProgress->setObjectName( "mCountdown" );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.png" ) ) );
+  mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
   mCountProgress->setFixedSize( 25, 14 );
   mCountProgress->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
   mCountProgress->setTextVisible( false );
@@ -61,26 +61,26 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->addWidget( mCountProgress, 0, 0, 1, 1 );
 
   mItemCount = new QLabel( this );
-  mItemCount->setObjectName( "mItemCount" );
+  mItemCount->setObjectName( QStringLiteral( "mItemCount" ) );
   mItemCount->setToolTip( tr( "Remaining messages" ) );
   mItemCount->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   mLayout->addWidget( mItemCount, 0, 2, 1, 1 );
 
   mCloseMenu = new QMenu( this );
-  mCloseMenu->setObjectName( "mCloseMenu" );
+  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mActionCloseAll = new QAction( tr( "Close all" ), this );
   mCloseMenu->addAction( mActionCloseAll );
   connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
 
   mCloseBtn = new QToolButton( this );
-  mCloseMenu->setObjectName( "mCloseMenu" );
+  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setMinimumWidth( 40 );
   mCloseBtn->setStyleSheet(
     "QToolButton { background-color: rgba(0, 0, 0, 0); }"
     "QToolButton::menu-button { background-color: rgba(0, 0, 0, 0); }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
-  mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.svg" ) );
+  mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
   mCloseBtn->setIconSize( QSize( 18, 18 ) );
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
@@ -110,12 +110,12 @@ void QgsMessageBar::mousePressEvent( QMouseEvent * e )
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerContinue.png" ) ) );
     }
     else
     {
       mCountdownTimer->start();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.png" ) ) );
     }
   }
 }
@@ -334,7 +334,7 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.png" ) ) );
   mCountProgress->setVisible( false );
 }
 

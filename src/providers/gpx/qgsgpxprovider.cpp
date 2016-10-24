@@ -62,7 +62,7 @@ QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
 
 const int QgsGPXProvider::attrCount = sizeof( QgsGPXProvider::attr ) / sizeof( const char* );
 
-const QString GPX_KEY = "gpx";
+const QString GPX_KEY = QStringLiteral( "gpx" );
 
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
@@ -74,18 +74,18 @@ QgsGPXProvider::QgsGPXProvider( const QString& uri )
     , mValid( false ) // assume that it won't work
 {
   // we always use UTF-8
-  setEncoding( "utf8" );
+  setEncoding( QStringLiteral( "utf8" ) );
 
   // get the file name and the type parameter from the URI
   int fileNameEnd = uri.indexOf( '?' );
-  if ( fileNameEnd == -1 || uri.mid( fileNameEnd + 1, 5 ) != "type=" )
+  if ( fileNameEnd == -1 || uri.mid( fileNameEnd + 1, 5 ) != QLatin1String( "type=" ) )
   {
     QgsLogger::warning( tr( "Bad URI - you need to specify the feature type." ) );
     return;
   }
   QString typeStr = uri.mid( fileNameEnd + 6 );
-  mFeatureType = ( typeStr == "waypoint" ? WaypointType :
-                   ( typeStr == "route" ? RouteType : TrackType ) );
+  mFeatureType = ( typeStr == QLatin1String( "waypoint" ) ? WaypointType :
+                   ( typeStr == QLatin1String( "route" ) ? RouteType : TrackType ) );
 
   // set up the attributes and the geometry type depending on the feature type
   for ( int i = 0; i < attrCount; ++i )

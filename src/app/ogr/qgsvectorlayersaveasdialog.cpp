@@ -72,7 +72,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/VectorLayerSaveAs/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
@@ -81,7 +81,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     mFormatComboBox->addItem( it.key(), it.value() );
   }
 
-  QString format = settings.value( "/UI/lastVectorFormat", "ESRI Shapefile" ).toString();
+  QString format = settings.value( QStringLiteral( "/UI/lastVectorFormat" ), "ESRI Shapefile" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
 
@@ -96,7 +96,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
-  QString enc = settings.value( "/UI/encoding", "System" ).toString();
+  QString enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
   int idx = mEncodingComboBox->findText( enc );
   if ( idx < 0 )
   {
@@ -195,8 +195,8 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
     if ( control )
     {
       // Pack the tooltip in some html element, so it gets linebreaks.
-      label->setToolTip( QString( "<p>%1</p>" ).arg( option->docString ) );
-      control->setToolTip( QString( "<p>%1</p>" ).arg( option->docString ) );
+      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString ) );
+      control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString ) );
 
       controls << QPair<QLabel*, QWidget*>( label, control );
     }
@@ -208,7 +208,7 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/VectorLayerSaveAs/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/VectorLayerSaveAs/geometry" ), saveGeometry() );
 }
 
 void QgsVectorLayerSaveAsDialog::accept()
@@ -329,9 +329,9 @@ void QgsVectorLayerSaveAsDialog::accept()
   }
 
   QSettings settings;
-  settings.setValue( "/UI/lastVectorFileFilterDir", QFileInfo( filename() ).absolutePath() );
-  settings.setValue( "/UI/lastVectorFormat", format() );
-  settings.setValue( "/UI/encoding", encoding() );
+  settings.setValue( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
+  settings.setValue( QStringLiteral( "/UI/lastVectorFormat" ), format() );
+  settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
   QDialog::accept();
 }
 
@@ -345,12 +345,12 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   bool fieldsAsDisplayedValues = false;
 
   const QString sFormat( format() );
-  if ( sFormat == "KML" )
+  if ( sFormat == QLatin1String( "KML" ) )
   {
     mAttributesSelection->setEnabled( true );
     selectAllFields = false;
   }
-  else if ( sFormat == "DXF" )
+  else if ( sFormat == QLatin1String( "DXF" ) )
   {
     mAttributesSelection->setEnabled( false );
     selectAllFields = false;
@@ -358,16 +358,16 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   else
   {
     mAttributesSelection->setEnabled( true );
-    fieldsAsDisplayedValues = ( sFormat == "CSV" || sFormat == "XLS" || sFormat == "XLSX" || sFormat == "ODS" );
+    fieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) || sFormat == QLatin1String( "XLS" ) || sFormat == QLatin1String( "XLSX" ) || sFormat == QLatin1String( "ODS" ) );
   }
 
-  leLayername->setEnabled( sFormat == "KML" ||
-                           sFormat == "GPKG" ||
-                           sFormat == "XLSX" ||
-                           sFormat == "ODS" ||
-                           sFormat == "FileGDB" ||
-                           sFormat == "SQLite" ||
-                           sFormat == "SpatiaLite" );
+  leLayername->setEnabled( sFormat == QLatin1String( "KML" ) ||
+                           sFormat == QLatin1String( "GPKG" ) ||
+                           sFormat == QLatin1String( "XLSX" ) ||
+                           sFormat == QLatin1String( "ODS" ) ||
+                           sFormat == QLatin1String( "FileGDB" ) ||
+                           sFormat == QLatin1String( "SQLite" ) ||
+                           sFormat == QLatin1String( "SpatiaLite" ) );
   if ( !leLayername->isEnabled() )
     leLayername->setText( QString() );
   else if ( leLayername->text().isEmpty() &&
@@ -385,7 +385,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
       const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields()[i].name() );
-      if ( setup.type() != "TextEdit" &&
+      if ( setup.type() != QLatin1String( "TextEdit" ) &&
            QgsEditorWidgetRegistry::instance()->factory( setup.type() ) )
       {
         foundFieldThatCanBeExportedAsDisplayedValue = true;
@@ -408,7 +408,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
       QgsField fld = mLayer->fields().at( i );
-      Qt::ItemFlags flags = mLayer->providerType() != "oracle" || !fld.typeName().contains( "SDO_GEOMETRY" ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
+      Qt::ItemFlags flags = mLayer->providerType() != QLatin1String( "oracle" ) || !fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
       QTableWidgetItem *item;
       item = new QTableWidgetItem( fld.name() );
       item->setFlags( flags | Qt::ItemIsUserCheckable );
@@ -424,7 +424,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
         const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields()[i].name() );
         QgsEditorWidgetFactory *factory = nullptr;
         if ( flags == Qt::ItemIsEnabled &&
-             setup.type() != "TextEdit" &&
+             setup.type() != QLatin1String( "TextEdit" ) &&
              ( factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() ) ) )
         {
           item = new QTableWidgetItem( tr( "Use %1" ).arg( factory->name() ) );
@@ -633,7 +633,7 @@ void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString& text 
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 {
   QSettings settings;
-  QString dirName = leFilename->text().isEmpty() ? settings.value( "/UI/lastVectorFileFilterDir", QDir::homePath() ).toString() : leFilename->text();
+  QString dirName = leFilename->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() : leFilename->text();
   QString filterString = QgsVectorFileWriter::filterForDriver( format() );
   QString outputFile = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), dirName, filterString, nullptr, QFileDialog::DontConfirmOverwrite );
   if ( !outputFile.isNull() )
@@ -691,7 +691,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QSpinBox* sb = mDatasourceOptionsGroupBox->findChild<QSpinBox*>( it.key() );
           if ( sb )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
+            options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
           break;
         }
 
@@ -699,7 +699,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QComboBox* cb = mDatasourceOptionsGroupBox->findChild<QComboBox*>( it.key() );
           if ( cb && !cb->currentData().isNull() )
-            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
@@ -707,7 +707,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QLineEdit* le = mDatasourceOptionsGroupBox->findChild<QLineEdit*>( it.key() );
           if ( le )
-            options << QString( "%1=%2" ).arg( it.key(), le->text() );
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
@@ -715,7 +715,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
+          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -743,7 +743,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QSpinBox* sb = mLayerOptionsGroupBox->findChild<QSpinBox*>( it.key() );
           if ( sb )
-            options << QString( "%1=%2" ).arg( it.key() ).arg( sb->value() );
+            options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
           break;
         }
 
@@ -751,7 +751,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QComboBox* cb = mLayerOptionsGroupBox->findChild<QComboBox*>( it.key() );
           if ( cb && !cb->currentData().isNull() )
-            options << QString( "%1=%2" ).arg( it.key(), cb->currentText() );
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
@@ -759,7 +759,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QLineEdit* le = mLayerOptionsGroupBox->findChild<QLineEdit*>( it.key() );
           if ( le && !le->text().isEmpty() )
-            options << QString( "%1=%2" ).arg( it.key(), le->text() );
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
 
@@ -767,7 +767,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
-          options << QString( "%1=%2" ).arg( it.key(), opt->mValue );
+          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }

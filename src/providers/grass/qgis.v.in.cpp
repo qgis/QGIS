@@ -149,7 +149,7 @@ int main( int argc, char **argv )
   // global finalName, tmpName are used by checkStream()
   finalName = QString( mapOption->answer );
   QDateTime now = QDateTime::currentDateTime();
-  tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( "yyyyMMddhhmmss" ) );
+  tmpName = QStringLiteral( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( QStringLiteral( "yyyyMMddhhmmss" ) ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;
@@ -178,7 +178,7 @@ int main( int argc, char **argv )
   QString key;
   while ( true )
   {
-    key = "cat" + ( keyNum == 1 ? "" : QString::number( keyNum ) );
+    key = "cat" + ( keyNum == 1 ? QLatin1String( "" ) : QString::number( keyNum ) );
     if ( srcFields.indexFromName( key ) == -1 )
     {
       break;

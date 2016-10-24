@@ -29,15 +29,15 @@
 bool QgsComposerTableStyle::writeXml( QDomElement& styleElem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
-  styleElem.setAttribute( "cellBackgroundColor", QgsSymbolLayerUtils::encodeColor( cellBackgroundColor ) );
-  styleElem.setAttribute( "enabled", enabled );
+  styleElem.setAttribute( QStringLiteral( "cellBackgroundColor" ), QgsSymbolLayerUtils::encodeColor( cellBackgroundColor ) );
+  styleElem.setAttribute( QStringLiteral( "enabled" ), enabled );
   return true;
 }
 
 bool QgsComposerTableStyle::readXml( const QDomElement& styleElem )
 {
-  cellBackgroundColor = QgsSymbolLayerUtils::decodeColor( styleElem.attribute( "cellBackgroundColor", "255,255,255,255" ) );
-  enabled = ( styleElem.attribute( "enabled", "0" ) != "0" );
+  cellBackgroundColor = QgsSymbolLayerUtils::decodeColor( styleElem.attribute( QStringLiteral( "cellBackgroundColor" ), QStringLiteral( "255,255,255,255" ) ) );
+  enabled = ( styleElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   return true;
 }
 
@@ -71,7 +71,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 
   //get default composer font from settings
   QSettings settings;
-  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mHeaderFont.setFamily( defaultFontString );
@@ -110,37 +110,37 @@ QgsComposerTableV2::~QgsComposerTableV2()
 
 bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
-  elem.setAttribute( "cellMargin", QString::number( mCellMargin ) );
-  elem.setAttribute( "emptyTableMode", QString::number( static_cast< int >( mEmptyTableMode ) ) );
-  elem.setAttribute( "emptyTableMessage", mEmptyTableMessage );
-  elem.setAttribute( "showEmptyRows", mShowEmptyRows );
-  elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
-  elem.setAttribute( "headerFontColor", QgsSymbolLayerUtils::encodeColor( mHeaderFontColor ) );
-  elem.setAttribute( "headerHAlignment", QString::number( static_cast< int >( mHeaderHAlignment ) ) );
-  elem.setAttribute( "headerMode", QString::number( static_cast< int >( mHeaderMode ) ) );
-  elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
-  elem.setAttribute( "contentFontColor", QgsSymbolLayerUtils::encodeColor( mContentFontColor ) );
-  elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
-  elem.setAttribute( "gridColor", QgsSymbolLayerUtils::encodeColor( mGridColor ) );
-  elem.setAttribute( "horizontalGrid", mHorizontalGrid );
-  elem.setAttribute( "verticalGrid", mVerticalGrid );
-  elem.setAttribute( "showGrid", mShowGrid );
-  elem.setAttribute( "backgroundColor", QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
-  elem.setAttribute( "wrapBehaviour", QString::number( static_cast< int >( mWrapBehaviour ) ) );
+  elem.setAttribute( QStringLiteral( "cellMargin" ), QString::number( mCellMargin ) );
+  elem.setAttribute( QStringLiteral( "emptyTableMode" ), QString::number( static_cast< int >( mEmptyTableMode ) ) );
+  elem.setAttribute( QStringLiteral( "emptyTableMessage" ), mEmptyTableMessage );
+  elem.setAttribute( QStringLiteral( "showEmptyRows" ), mShowEmptyRows );
+  elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, QStringLiteral( "headerFontProperties" ) ) );
+  elem.setAttribute( QStringLiteral( "headerFontColor" ), QgsSymbolLayerUtils::encodeColor( mHeaderFontColor ) );
+  elem.setAttribute( QStringLiteral( "headerHAlignment" ), QString::number( static_cast< int >( mHeaderHAlignment ) ) );
+  elem.setAttribute( QStringLiteral( "headerMode" ), QString::number( static_cast< int >( mHeaderMode ) ) );
+  elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, QStringLiteral( "contentFontProperties" ) ) );
+  elem.setAttribute( QStringLiteral( "contentFontColor" ), QgsSymbolLayerUtils::encodeColor( mContentFontColor ) );
+  elem.setAttribute( QStringLiteral( "gridStrokeWidth" ), QString::number( mGridStrokeWidth ) );
+  elem.setAttribute( QStringLiteral( "gridColor" ), QgsSymbolLayerUtils::encodeColor( mGridColor ) );
+  elem.setAttribute( QStringLiteral( "horizontalGrid" ), mHorizontalGrid );
+  elem.setAttribute( QStringLiteral( "verticalGrid" ), mVerticalGrid );
+  elem.setAttribute( QStringLiteral( "showGrid" ), mShowGrid );
+  elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
+  elem.setAttribute( QStringLiteral( "wrapBehaviour" ), QString::number( static_cast< int >( mWrapBehaviour ) ) );
 
   //columns
-  QDomElement displayColumnsElem = doc.createElement( "displayColumns" );
+  QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    QDomElement columnElem = doc.createElement( "column" );
+    QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
     ( *columnIt )->writeXml( columnElem, doc );
     displayColumnsElem.appendChild( columnElem );
   }
   elem.appendChild( displayColumnsElem );
 
   //cell styles
-  QDomElement stylesElem = doc.createElement( "cellStyles" );
+  QDomElement stylesElem = doc.createElement( QStringLiteral( "cellStyles" ) );
   QMap< CellStyleGroup, QString >::const_iterator it = mCellStyleNames.constBegin();
   for ( ; it != mCellStyleNames.constEnd(); ++it )
   {
@@ -174,38 +174,38 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
     return false;
   }
 
-  mEmptyTableMode = QgsComposerTableV2::EmptyTableMode( itemElem.attribute( "emptyTableMode", "0" ).toInt() );
-  mEmptyTableMessage = itemElem.attribute( "emptyTableMessage", tr( "No matching records" ) );
-  mShowEmptyRows = itemElem.attribute( "showEmptyRows", "0" ).toInt();
-  if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, "headerFontProperties" ) )
+  mEmptyTableMode = QgsComposerTableV2::EmptyTableMode( itemElem.attribute( QStringLiteral( "emptyTableMode" ), QStringLiteral( "0" ) ).toInt() );
+  mEmptyTableMessage = itemElem.attribute( QStringLiteral( "emptyTableMessage" ), tr( "No matching records" ) );
+  mShowEmptyRows = itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt();
+  if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
   {
-    mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+    mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QLatin1String( "" ) ) );
   }
-  mHeaderFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
-  mHeaderHAlignment = QgsComposerTableV2::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
-  mHeaderMode = QgsComposerTableV2::HeaderMode( itemElem.attribute( "headerMode", "0" ).toInt() );
-  if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, "contentFontProperties" ) )
+  mHeaderFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mHeaderHAlignment = QgsComposerTableV2::HeaderHAlignment( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() );
+  mHeaderMode = QgsComposerTableV2::HeaderMode( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() );
+  if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
   {
-    mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+    mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QLatin1String( "" ) ) );
   }
-  mContentFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
-  mCellMargin = itemElem.attribute( "cellMargin", "1.0" ).toDouble();
-  mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
-  mHorizontalGrid = itemElem.attribute( "horizontalGrid", "1" ).toInt();
-  mVerticalGrid = itemElem.attribute( "verticalGrid", "1" ).toInt();
-  mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
-  mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
-  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "backgroundColor", "255,255,255,0" ) );
-  mWrapBehaviour = QgsComposerTableV2::WrapBehaviour( itemElem.attribute( "wrapBehaviour", "0" ).toInt() );
+  mContentFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mCellMargin = itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble();
+  mGridStrokeWidth = itemElem.attribute( QStringLiteral( "gridStrokeWidth" ), QStringLiteral( "0.5" ) ).toDouble();
+  mHorizontalGrid = itemElem.attribute( QStringLiteral( "horizontalGrid" ), QStringLiteral( "1" ) ).toInt();
+  mVerticalGrid = itemElem.attribute( QStringLiteral( "verticalGrid" ), QStringLiteral( "1" ) ).toInt();
+  mShowGrid = itemElem.attribute( QStringLiteral( "showGrid" ), QStringLiteral( "1" ) ).toInt();
+  mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
+  mWrapBehaviour = QgsComposerTableV2::WrapBehaviour( itemElem.attribute( QStringLiteral( "wrapBehaviour" ), QStringLiteral( "0" ) ).toInt() );
 
   //restore column specifications
   qDeleteAll( mColumns );
   mColumns.clear();
-  QDomNodeList columnsList = itemElem.elementsByTagName( "displayColumns" );
+  QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
   if ( !columnsList.isEmpty() )
   {
     QDomElement columnsElem =  columnsList.at( 0 ).toElement();
-    QDomNodeList columnEntryList = columnsElem.elementsByTagName( "column" );
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
@@ -216,7 +216,7 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
   }
 
   //restore cell styles
-  QDomNodeList stylesList = itemElem.elementsByTagName( "cellStyles" );
+  QDomNodeList stylesList = itemElem.elementsByTagName( QStringLiteral( "cellStyles" ) );
   if ( !stylesList.isEmpty() )
   {
     QDomElement stylesElem = stylesList.at( 0 ).toElement();
@@ -884,15 +884,15 @@ void QgsComposerTableV2::initStyles()
   mCellStyles.insert( FirstRow, new QgsComposerTableStyle() );
   mCellStyles.insert( LastRow, new QgsComposerTableStyle() );
 
-  mCellStyleNames.insert( OddColumns, "oddColumns" );
-  mCellStyleNames.insert( EvenColumns, "evenColumns" );
-  mCellStyleNames.insert( OddRows, "oddRows" );
-  mCellStyleNames.insert( EvenRows, "evenRows" );
-  mCellStyleNames.insert( FirstColumn, "firstColumn" );
-  mCellStyleNames.insert( LastColumn, "lastColumn" );
-  mCellStyleNames.insert( HeaderRow, "headerRow" );
-  mCellStyleNames.insert( FirstRow, "firstRow" );
-  mCellStyleNames.insert( LastRow, "lastRow" );
+  mCellStyleNames.insert( OddColumns, QStringLiteral( "oddColumns" ) );
+  mCellStyleNames.insert( EvenColumns, QStringLiteral( "evenColumns" ) );
+  mCellStyleNames.insert( OddRows, QStringLiteral( "oddRows" ) );
+  mCellStyleNames.insert( EvenRows, QStringLiteral( "evenRows" ) );
+  mCellStyleNames.insert( FirstColumn, QStringLiteral( "firstColumn" ) );
+  mCellStyleNames.insert( LastColumn, QStringLiteral( "lastColumn" ) );
+  mCellStyleNames.insert( HeaderRow, QStringLiteral( "headerRow" ) );
+  mCellStyleNames.insert( FirstRow, QStringLiteral( "firstRow" ) );
+  mCellStyleNames.insert( LastRow, QStringLiteral( "lastRow" ) );
 }
 
 bool QgsComposerTableV2::calculateMaxColumnWidths()
@@ -1217,7 +1217,7 @@ QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidt
     }
   }
 
-  return outLines.join( "\n" );
+  return outLines.join( QStringLiteral( "\n" ) );
 }
 
 QColor QgsComposerTableV2::backgroundColor( int row, int column ) const

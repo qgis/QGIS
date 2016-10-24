@@ -58,16 +58,16 @@ QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
   // insert items in a particular order, which is returned in renderersList()
-  insert( QgsRasterRendererRegistryEntry( "multibandcolor", QObject::tr( "Multiband color" ),
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "multibandcolor" ), QObject::tr( "Multiband color" ),
                                           QgsMultiBandColorRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( "paletted", QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( "singlebandgray", QObject::tr( "Singleband gray" ),
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "paletted" ), QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandgray" ), QObject::tr( "Singleband gray" ),
                                           QgsSingleBandGrayRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( "singlebandpseudocolor", QObject::tr( "Singleband pseudocolor" ),
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandpseudocolor" ), QObject::tr( "Singleband pseudocolor" ),
                                           QgsSingleBandPseudoColorRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( "singlebandcolordata", QObject::tr( "Singleband color data" ),
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandcolordata" ), QObject::tr( "Singleband color data" ),
                                           QgsSingleBandColorDataRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( "hillshade", QObject::tr( "Hillshade" ),
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "hillshade" ), QObject::tr( "Hillshade" ),
                                           QgsHillshadeRenderer::create, nullptr ) );
 }
 
@@ -191,17 +191,17 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     {
       QSettings s;
 
-      int redBand = s.value( "/Raster/defaultRedBand", 1 ).toInt();
+      int redBand = s.value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt();
       if ( redBand < 0 || redBand > provider->bandCount() )
       {
         redBand = -1;
       }
-      int greenBand = s.value( "/Raster/defaultGreenBand", 2 ).toInt();
+      int greenBand = s.value( QStringLiteral( "/Raster/defaultGreenBand" ), 2 ).toInt();
       if ( greenBand < 0 || greenBand > provider->bandCount() )
       {
         greenBand = -1;
       }
-      int blueBand = s.value( "/Raster/defaultBlueBand", 3 ).toInt();
+      int blueBand = s.value( QStringLiteral( "/Raster/defaultBlueBand" ), 3 ).toInt();
       if ( blueBand < 0 || blueBand > provider->bandCount() )
       {
         blueBand = -1;
@@ -246,11 +246,11 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   maxValue = 0;
 
   QSettings s;
-  if ( s.value( "/Raster/useStandardDeviation", false ).toBool() )
+  if ( s.value( QStringLiteral( "/Raster/useStandardDeviation" ), false ).toBool() )
   {
     QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
 
-    double stdDevFactor = s.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
+    double stdDevFactor = s.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), 2.0 ).toDouble();
     double diff = stdDevFactor * stats.stdDev;
     minValue = stats.mean - diff;
     maxValue = stats.mean + diff;

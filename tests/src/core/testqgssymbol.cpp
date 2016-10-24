@@ -85,15 +85,15 @@ void TestQgsSymbol::initTestCase()
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
   QgsApplication::createDB();
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   // initialize with a clean style
   QFile styleFile( QgsApplication::userStylePath() );
@@ -111,7 +111,7 @@ void TestQgsSymbol::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
@@ -122,7 +122,7 @@ void TestQgsSymbol::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
@@ -134,12 +134,12 @@ void TestQgsSymbol::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
 
-  mReport += "<h1>StyleV2 Tests</h1>\n";
+  mReport += QLatin1String( "<h1>StyleV2 Tests</h1>\n" );
 }
 
 void TestQgsSymbol::cleanupTestCase()
@@ -177,7 +177,7 @@ void TestQgsSymbol::testCanvasClip()
   ms.setFlag( QgsMapSettings::ForceVectorOutput );
 
   //line
-  mReport += "<h2>Line canvas clip</h2>\n";
+  mReport += QLatin1String( "<h2>Line canvas clip</h2>\n" );
   ms.setLayers( QStringList() << mpLinesLayer->id() );
 
   QgsMarkerLineSymbolLayer* markerLine = new QgsMarkerLineSymbolLayer();
@@ -189,15 +189,15 @@ void TestQgsSymbol::testCanvasClip()
   bool result;
 
   lineSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "style_linecanvasclip" );
+  result = imageCheck( ms, QStringLiteral( "style_linecanvasclip" ) );
   QVERIFY( result );
 
   lineSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "style_linecanvasclip_off" );
+  result = imageCheck( ms, QStringLiteral( "style_linecanvasclip_off" ) );
   QVERIFY( result );
 
   //poly
-  mReport += "<h2>Polygon canvas clip</h2>\n";
+  mReport += QLatin1String( "<h2>Polygon canvas clip</h2>\n" );
   ms.setLayers( QStringList() << mpPolysLayer->id() );
 
   QgsCentroidFillSymbolLayer* centroidFill = new QgsCentroidFillSymbolLayer();
@@ -210,11 +210,11 @@ void TestQgsSymbol::testCanvasClip()
   ms.setExtent( extent );
 
   fillSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "style_polycanvasclip" );
+  result = imageCheck( ms, QStringLiteral( "style_polycanvasclip" ) );
   QVERIFY( result );
 
   fillSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "style_polycanvasclip_off" );
+  result = imageCheck( ms, QStringLiteral( "style_polycanvasclip_off" ) );
   QVERIFY( result );
 }
 
@@ -223,69 +223,69 @@ void TestQgsSymbol::testParseColor()
 {
   // values for color tests
   QMap< QString, QPair< QColor, bool> > colorTests;
-  colorTests.insert( "bad color", qMakePair( QColor(), false ) );
-  colorTests.insert( "red", qMakePair( QColor( 255, 0, 0 ), false ) );
-  colorTests.insert( "#ff00ff", qMakePair( QColor( 255, 0, 255 ), false ) );
-  colorTests.insert( "#99AA00", qMakePair( QColor( 153, 170, 0 ), false ) );
-  colorTests.insert( "#GG0000", qMakePair( QColor(), false ) );
-  colorTests.insert( "000000", qMakePair( QColor( 0, 0, 0 ), false ) );
-  colorTests.insert( "00ff00", qMakePair( QColor( 0, 255, 0 ), false ) );
-  colorTests.insert( "00gg00", qMakePair( QColor(), false ) );
-  colorTests.insert( "00ff000", qMakePair( QColor(), false ) );
-  colorTests.insert( "fff", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "fff0", qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "bad color" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "red" ), qMakePair( QColor( 255, 0, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "#ff00ff" ), qMakePair( QColor( 255, 0, 255 ), false ) );
+  colorTests.insert( QStringLiteral( "#99AA00" ), qMakePair( QColor( 153, 170, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "#GG0000" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "000000" ), qMakePair( QColor( 0, 0, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "00ff00" ), qMakePair( QColor( 0, 255, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "00gg00" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "00ff000" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "fff" ), qMakePair( QColor( 255, 255, 255 ), false ) );
+  colorTests.insert( QStringLiteral( "fff0" ), qMakePair( QColor(), false ) );
 
   // hex rrggbbaa colors
-  colorTests.insert( "#ff00ffaa", qMakePair( QColor( 255, 0, 255, 170 ), true ) );
-  colorTests.insert( "#99AA0099", qMakePair( QColor( 153, 170, 0, 153 ), true ) );
-  colorTests.insert( "#GG0000aa", qMakePair( QColor(), false ) );
-  colorTests.insert( "00000000", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
-  colorTests.insert( "00ff0011", qMakePair( QColor( 0, 255, 0, 17 ), true ) );
-  colorTests.insert( "00gg0011", qMakePair( QColor(), false ) );
-  colorTests.insert( "00ff00000", qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "#ff00ffaa" ), qMakePair( QColor( 255, 0, 255, 170 ), true ) );
+  colorTests.insert( QStringLiteral( "#99AA0099" ), qMakePair( QColor( 153, 170, 0, 153 ), true ) );
+  colorTests.insert( QStringLiteral( "#GG0000aa" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "00000000" ), qMakePair( QColor( 0, 0, 0, 0 ), true ) );
+  colorTests.insert( QStringLiteral( "00ff0011" ), qMakePair( QColor( 0, 255, 0, 17 ), true ) );
+  colorTests.insert( QStringLiteral( "00gg0011" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "00ff00000" ), qMakePair( QColor(), false ) );
 
-  colorTests.insert( "0,0,0", qMakePair( QColor( 0, 0, 0 ), false ) );
-  colorTests.insert( "127,60,0", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "255,255,255", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "256,60,0", qMakePair( QColor(), false ) );
-  colorTests.insert( "rgb(127,60,0)", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "rgb(255,255,255)", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "rgb(256,60,0)", qMakePair( QColor(), false ) );
-  colorTests.insert( " rgb(  127, 60 ,  0 ) ", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "rgb(127,60,0);", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "(127,60,0);", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "(127,60,0)", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "127,060,000", qMakePair( QColor( 127, 60, 0 ), false ) );
-  colorTests.insert( "0,0,0,0", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
-  colorTests.insert( "127,60,0,0.5", qMakePair( QColor( 127, 60, 0, 128 ), true ) );
-  colorTests.insert( "255,255,255,0.1", qMakePair( QColor( 255, 255, 255, 26 ), true ) );
-  colorTests.insert( "rgba(127,60,0,1.0)", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "rgba(255,255,255,0.0)", qMakePair( QColor( 255, 255, 255, 0 ), true ) );
-  colorTests.insert( " rgba(  127, 60 ,  0  , 0.2 ) ", qMakePair( QColor( 127, 60, 0, 51 ), true ) );
-  colorTests.insert( "rgba(127,60,0,0.1);", qMakePair( QColor( 127, 60, 0, 26 ), true ) );
-  colorTests.insert( "(127,60,0,1);", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "(127,60,0,1.0)", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "127,060,000,1", qMakePair( QColor( 127, 60, 0, 255 ), true ) );
-  colorTests.insert( "0%,0%,0%", qMakePair( QColor( 0, 0, 0 ), false ) );
-  colorTests.insert( "50 %,60 %,0 %", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "100%, 100%, 100%", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( "rgb(50%,60%,0%)", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "rgb(100%, 100%, 100%)", qMakePair( QColor( 255, 255, 255 ), false ) );
-  colorTests.insert( " rgb(  50 % , 60 % ,  0  % ) ", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "rgb(50%,60%,0%);", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "(50%,60%,0%);", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "(50%,60%,0%)", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "050%,060%,000%", qMakePair( QColor( 127, 153, 0 ), false ) );
-  colorTests.insert( "0%,0%,0%,0", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
-  colorTests.insert( "50 %,60 %,0 %,0.5", qMakePair( QColor( 127, 153, 0, 128 ), true ) );
-  colorTests.insert( "100%, 100%, 100%, 1.0", qMakePair( QColor( 255, 255, 255, 255 ), true ) );
-  colorTests.insert( "rgba(50%,60%,0%, 1.0)", qMakePair( QColor( 127, 153, 0, 255 ), true ) );
-  colorTests.insert( "rgba(100%, 100%, 100%, 0.0)", qMakePair( QColor( 255, 255, 255, 0 ), true ) );
-  colorTests.insert( " rgba(  50 % , 60 % ,  0  %, 0.5 ) ", qMakePair( QColor( 127, 153, 0, 128 ), true ) );
-  colorTests.insert( "rgba(50%,60%,0%,0);", qMakePair( QColor( 127, 153, 0, 0 ), true ) );
-  colorTests.insert( "(50%,60%,0%,1);", qMakePair( QColor( 127, 153, 0, 255 ), true ) );
-  colorTests.insert( "(50%,60%,0%,1.0)", qMakePair( QColor( 127, 153, 0, 255 ), true ) );
-  colorTests.insert( "050%,060%,000%,0", qMakePair( QColor( 127, 153, 0, 0 ), true ) );
+  colorTests.insert( QStringLiteral( "0,0,0" ), qMakePair( QColor( 0, 0, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "127,60,0" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "255,255,255" ), qMakePair( QColor( 255, 255, 255 ), false ) );
+  colorTests.insert( QStringLiteral( "256,60,0" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( "rgb(127,60,0)" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "rgb(255,255,255)" ), qMakePair( QColor( 255, 255, 255 ), false ) );
+  colorTests.insert( QStringLiteral( "rgb(256,60,0)" ), qMakePair( QColor(), false ) );
+  colorTests.insert( QStringLiteral( " rgb(  127, 60 ,  0 ) " ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "rgb(127,60,0);" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "(127,60,0);" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "(127,60,0)" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "127,060,000" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "0,0,0,0" ), qMakePair( QColor( 0, 0, 0, 0 ), true ) );
+  colorTests.insert( QStringLiteral( "127,60,0,0.5" ), qMakePair( QColor( 127, 60, 0, 128 ), true ) );
+  colorTests.insert( QStringLiteral( "255,255,255,0.1" ), qMakePair( QColor( 255, 255, 255, 26 ), true ) );
+  colorTests.insert( QStringLiteral( "rgba(127,60,0,1.0)" ), qMakePair( QColor( 127, 60, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "rgba(255,255,255,0.0)" ), qMakePair( QColor( 255, 255, 255, 0 ), true ) );
+  colorTests.insert( QStringLiteral( " rgba(  127, 60 ,  0  , 0.2 ) " ), qMakePair( QColor( 127, 60, 0, 51 ), true ) );
+  colorTests.insert( QStringLiteral( "rgba(127,60,0,0.1);" ), qMakePair( QColor( 127, 60, 0, 26 ), true ) );
+  colorTests.insert( QStringLiteral( "(127,60,0,1);" ), qMakePair( QColor( 127, 60, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "(127,60,0,1.0)" ), qMakePair( QColor( 127, 60, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "127,060,000,1" ), qMakePair( QColor( 127, 60, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "0%,0%,0%" ), qMakePair( QColor( 0, 0, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "50 %,60 %,0 %" ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "100%, 100%, 100%" ), qMakePair( QColor( 255, 255, 255 ), false ) );
+  colorTests.insert( QStringLiteral( "rgb(50%,60%,0%)" ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "rgb(100%, 100%, 100%)" ), qMakePair( QColor( 255, 255, 255 ), false ) );
+  colorTests.insert( QStringLiteral( " rgb(  50 % , 60 % ,  0  % ) " ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "rgb(50%,60%,0%);" ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%);" ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%)" ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "050%,060%,000%" ), qMakePair( QColor( 127, 153, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "0%,0%,0%,0" ), qMakePair( QColor( 0, 0, 0, 0 ), true ) );
+  colorTests.insert( QStringLiteral( "50 %,60 %,0 %,0.5" ), qMakePair( QColor( 127, 153, 0, 128 ), true ) );
+  colorTests.insert( QStringLiteral( "100%, 100%, 100%, 1.0" ), qMakePair( QColor( 255, 255, 255, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "rgba(50%,60%,0%, 1.0)" ), qMakePair( QColor( 127, 153, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "rgba(100%, 100%, 100%, 0.0)" ), qMakePair( QColor( 255, 255, 255, 0 ), true ) );
+  colorTests.insert( QStringLiteral( " rgba(  50 % , 60 % ,  0  %, 0.5 ) " ), qMakePair( QColor( 127, 153, 0, 128 ), true ) );
+  colorTests.insert( QStringLiteral( "rgba(50%,60%,0%,0);" ), qMakePair( QColor( 127, 153, 0, 0 ), true ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%,1);" ), qMakePair( QColor( 127, 153, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%,1.0)" ), qMakePair( QColor( 127, 153, 0, 255 ), true ) );
+  colorTests.insert( QStringLiteral( "050%,060%,000%,0" ), qMakePair( QColor( 127, 153, 0, 0 ), true ) );
 
   QMap<QString, QPair< QColor, bool> >::const_iterator i = colorTests.constBegin();
   while ( i != colorTests.constEnd() )
@@ -304,69 +304,69 @@ void TestQgsSymbol::testParseColorList()
   //ensure that majority of single parseColor tests work for lists
   //note that some are not possible, as the colors may be ambiguous when treated as a list
   QMap< QString, QColor > colorTests;
-  colorTests.insert( "bad color", QColor() );
-  colorTests.insert( "red", QColor( 255, 0, 0 ) );
-  colorTests.insert( "#ff00ff", QColor( 255, 0, 255 ) );
-  colorTests.insert( "#99AA00", QColor( 153, 170, 0 ) );
-  colorTests.insert( "#GG0000", QColor() );
+  colorTests.insert( QStringLiteral( "bad color" ), QColor() );
+  colorTests.insert( QStringLiteral( "red" ), QColor( 255, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "#ff00ff" ), QColor( 255, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "#99AA00" ), QColor( 153, 170, 0 ) );
+  colorTests.insert( QStringLiteral( "#GG0000" ), QColor() );
   //colorTests.insert( "000000", QColor( 0, 0, 0 ) );
   //colorTests.insert( "00ff00", QColor( 0, 255, 0 ) );
   //colorTests.insert( "00gg00", QColor() );
-  colorTests.insert( "00ff000", QColor() );
+  colorTests.insert( QStringLiteral( "00ff000" ), QColor() );
   //colorTests.insert( "fff", QColor( 255, 255, 255 ) );
-  colorTests.insert( "fff0", QColor() );
+  colorTests.insert( QStringLiteral( "fff0" ), QColor() );
 
   // hex rrggbbaa colors
-  colorTests.insert( "#ff00ffaa", QColor( 255, 0, 255, 170 ) );
-  colorTests.insert( "#99AA0099", QColor( 153, 170, 0, 153 ) );
-  colorTests.insert( "#GG0000aa", QColor() );
-  colorTests.insert( "00000000", QColor( 0, 0, 0, 0 ) );
-  colorTests.insert( "00ff0011", QColor( 0, 255, 0, 17 ) );
-  colorTests.insert( "00gg0011", QColor() );
-  colorTests.insert( "00ff00000",  QColor() );
+  colorTests.insert( QStringLiteral( "#ff00ffaa" ), QColor( 255, 0, 255, 170 ) );
+  colorTests.insert( QStringLiteral( "#99AA0099" ), QColor( 153, 170, 0, 153 ) );
+  colorTests.insert( QStringLiteral( "#GG0000aa" ), QColor() );
+  colorTests.insert( QStringLiteral( "00000000" ), QColor( 0, 0, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "00ff0011" ), QColor( 0, 255, 0, 17 ) );
+  colorTests.insert( QStringLiteral( "00gg0011" ), QColor() );
+  colorTests.insert( QStringLiteral( "00ff00000" ),  QColor() );
 
-  colorTests.insert( "0,0,0", QColor( 0, 0, 0 ) );
-  colorTests.insert( "127,60,0", QColor( 127, 60, 0 ) );
-  colorTests.insert( "255,255,255", QColor( 255, 255, 255 ) );
+  colorTests.insert( QStringLiteral( "0,0,0" ), QColor( 0, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "127,60,0" ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "255,255,255" ), QColor( 255, 255, 255 ) );
   //colorTests.insert( "256,60,0", QColor() );
-  colorTests.insert( "rgb(127,60,0)", QColor( 127, 60, 0 ) );
-  colorTests.insert( "rgb(255,255,255)", QColor( 255, 255, 255 ) );
-  colorTests.insert( "rgb(256,60,0)", QColor() );
-  colorTests.insert( " rgb(  127, 60 ,  0 ) ", QColor( 127, 60, 0 ) );
-  colorTests.insert( "rgb(127,60,0);", QColor( 127, 60, 0 ) );
-  colorTests.insert( "(127,60,0);", QColor( 127, 60, 0 ) );
-  colorTests.insert( "(127,60,0)", QColor( 127, 60, 0 ) );
-  colorTests.insert( "127,060,000", QColor( 127, 60, 0 ) );
-  colorTests.insert( "0,0,0,0", QColor( 0, 0, 0, 0 ) );
-  colorTests.insert( "127,60,0,0.5", QColor( 127, 60, 0, 128 ) );
-  colorTests.insert( "255,255,255,0.1", QColor( 255, 255, 255, 26 ) );
-  colorTests.insert( "rgba(127,60,0,1.0)", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "rgba(255,255,255,0.0)", QColor( 255, 255, 255, 0 ) );
-  colorTests.insert( " rgba(  127, 60 ,  0  , 0.2 ) ", QColor( 127, 60, 0, 51 ) );
-  colorTests.insert( "rgba(127,60,0,0.1);", QColor( 127, 60, 0, 26 ) );
-  colorTests.insert( "(127,60,0,1);", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "(127,60,0,1.0)", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "127,060,000,1", QColor( 127, 60, 0, 255 ) );
-  colorTests.insert( "0%,0%,0%", QColor( 0, 0, 0 ) );
-  colorTests.insert( "50 %,60 %,0 %", QColor( 127, 153, 0 ) );
-  colorTests.insert( "100%, 100%, 100%", QColor( 255, 255, 255 ) );
-  colorTests.insert( "rgb(50%,60%,0%)", QColor( 127, 153, 0 ) );
-  colorTests.insert( "rgb(100%, 100%, 100%)", QColor( 255, 255, 255 ) );
-  colorTests.insert( " rgb(  50 % , 60 % ,  0  % ) ", QColor( 127, 153, 0 ) );
-  colorTests.insert( "rgb(50%,60%,0%);", QColor( 127, 153, 0 ) );
-  colorTests.insert( "(50%,60%,0%);", QColor( 127, 153, 0 ) );
-  colorTests.insert( "(50%,60%,0%)", QColor( 127, 153, 0 ) );
-  colorTests.insert( "050%,060%,000%", QColor( 127, 153, 0 ) );
-  colorTests.insert( "0%,0%,0%,0", QColor( 0, 0, 0, 0 ) );
-  colorTests.insert( "50 %,60 %,0 %,0.5", QColor( 127, 153, 0, 128 ) );
-  colorTests.insert( "100%, 100%, 100%, 1.0", QColor( 255, 255, 255, 255 ) );
-  colorTests.insert( "rgba(50%,60%,0%, 1.0)", QColor( 127, 153, 0, 255 ) );
-  colorTests.insert( "rgba(100%, 100%, 100%, 0.0)", QColor( 255, 255, 255, 0 ) );
-  colorTests.insert( " rgba(  50 % , 60 % ,  0  %, 0.5 ) ", QColor( 127, 153, 0, 128 ) );
-  colorTests.insert( "rgba(50%,60%,0%,0);", QColor( 127, 153, 0, 0 ) );
-  colorTests.insert( "(50%,60%,0%,1);", QColor( 127, 153, 0, 255 ) );
-  colorTests.insert( "(50%,60%,0%,1.0)", QColor( 127, 153, 0, 255 ) );
-  colorTests.insert( "050%,060%,000%,0", QColor( 127, 153, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "rgb(127,60,0)" ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "rgb(255,255,255)" ), QColor( 255, 255, 255 ) );
+  colorTests.insert( QStringLiteral( "rgb(256,60,0)" ), QColor() );
+  colorTests.insert( QStringLiteral( " rgb(  127, 60 ,  0 ) " ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "rgb(127,60,0);" ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "(127,60,0);" ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "(127,60,0)" ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "127,060,000" ), QColor( 127, 60, 0 ) );
+  colorTests.insert( QStringLiteral( "0,0,0,0" ), QColor( 0, 0, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "127,60,0,0.5" ), QColor( 127, 60, 0, 128 ) );
+  colorTests.insert( QStringLiteral( "255,255,255,0.1" ), QColor( 255, 255, 255, 26 ) );
+  colorTests.insert( QStringLiteral( "rgba(127,60,0,1.0)" ), QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "rgba(255,255,255,0.0)" ), QColor( 255, 255, 255, 0 ) );
+  colorTests.insert( QStringLiteral( " rgba(  127, 60 ,  0  , 0.2 ) " ), QColor( 127, 60, 0, 51 ) );
+  colorTests.insert( QStringLiteral( "rgba(127,60,0,0.1);" ), QColor( 127, 60, 0, 26 ) );
+  colorTests.insert( QStringLiteral( "(127,60,0,1);" ), QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "(127,60,0,1.0)" ), QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "127,060,000,1" ), QColor( 127, 60, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "0%,0%,0%" ), QColor( 0, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "50 %,60 %,0 %" ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "100%, 100%, 100%" ), QColor( 255, 255, 255 ) );
+  colorTests.insert( QStringLiteral( "rgb(50%,60%,0%)" ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "rgb(100%, 100%, 100%)" ), QColor( 255, 255, 255 ) );
+  colorTests.insert( QStringLiteral( " rgb(  50 % , 60 % ,  0  % ) " ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "rgb(50%,60%,0%);" ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%);" ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%)" ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "050%,060%,000%" ), QColor( 127, 153, 0 ) );
+  colorTests.insert( QStringLiteral( "0%,0%,0%,0" ), QColor( 0, 0, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "50 %,60 %,0 %,0.5" ), QColor( 127, 153, 0, 128 ) );
+  colorTests.insert( QStringLiteral( "100%, 100%, 100%, 1.0" ), QColor( 255, 255, 255, 255 ) );
+  colorTests.insert( QStringLiteral( "rgba(50%,60%,0%, 1.0)" ), QColor( 127, 153, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "rgba(100%, 100%, 100%, 0.0)" ), QColor( 255, 255, 255, 0 ) );
+  colorTests.insert( QStringLiteral( " rgba(  50 % , 60 % ,  0  %, 0.5 ) " ), QColor( 127, 153, 0, 128 ) );
+  colorTests.insert( QStringLiteral( "rgba(50%,60%,0%,0);" ), QColor( 127, 153, 0, 0 ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%,1);" ), QColor( 127, 153, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "(50%,60%,0%,1.0)" ), QColor( 127, 153, 0, 255 ) );
+  colorTests.insert( QStringLiteral( "050%,060%,000%,0" ), QColor( 127, 153, 0, 0 ) );
 
   QMap<QString, QColor >::const_iterator i = colorTests.constBegin();
   while ( i != colorTests.constEnd() )
@@ -387,24 +387,24 @@ void TestQgsSymbol::testParseColorList()
 
   QVector< QPair< QString, QList<QColor> > > colorListTests;
   QList<QColor> list1;
-  list1 << QColor( QString( "blue" ) ) << QColor( QString( "red" ) ) << QColor( QString( "green" ) );
-  colorListTests.append( qMakePair( QString( "blue red green" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue,red,green" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue\nred\ngreen" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue\nred green" ), list1 ) );
-  colorListTests.append( qMakePair( QString( "blue\nred,green" ), list1 ) );
+  list1 << QColor( QStringLiteral( "blue" ) ) << QColor( QStringLiteral( "red" ) ) << QColor( QStringLiteral( "green" ) );
+  colorListTests.append( qMakePair( QStringLiteral( "blue red green" ), list1 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "blue,red,green" ), list1 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "blue\nred\ngreen" ), list1 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "blue\nred green" ), list1 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "blue\nred,green" ), list1 ) );
   QList<QColor> list2;
-  list2 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
-  colorListTests.append( qMakePair( QString( "#ff0000 #00ff00 #0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000,#00ff00,#0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00\n#0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00 #0000ff" ), list2 ) );
-  colorListTests.append( qMakePair( QString( "#ff0000\n#00ff00,#0000ff" ), list2 ) );
+  list2 << QColor( QStringLiteral( "#ff0000" ) ) << QColor( QStringLiteral( "#00ff00" ) ) << QColor( QStringLiteral( "#0000ff" ) );
+  colorListTests.append( qMakePair( QStringLiteral( "#ff0000 #00ff00 #0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "#ff0000,#00ff00,#0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "#ff0000\n#00ff00\n#0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "#ff0000\n#00ff00 #0000ff" ), list2 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "#ff0000\n#00ff00,#0000ff" ), list2 ) );
   QList<QColor> list3;
-  list3 << QColor( QString( "#ff0000" ) ) << QColor( QString( "#00ff00" ) ) << QColor( QString( "#0000ff" ) );
-  colorListTests.append( qMakePair( QString( "rgb(255,0,0) rgb(0,255,0) rgb(0,0,255)" ), list3 ) );
-  colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)" ), list3 ) );
-  colorListTests.append( qMakePair( QString( "rgb(255,0,0)\nrgb(0,255,0) rgb(0,0,255)" ), list3 ) );
+  list3 << QColor( QStringLiteral( "#ff0000" ) ) << QColor( QStringLiteral( "#00ff00" ) ) << QColor( QStringLiteral( "#0000ff" ) );
+  colorListTests.append( qMakePair( QStringLiteral( "rgb(255,0,0) rgb(0,255,0) rgb(0,0,255)" ), list3 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "rgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)" ), list3 ) );
+  colorListTests.append( qMakePair( QStringLiteral( "rgb(255,0,0)\nrgb(0,255,0) rgb(0,0,255)" ), list3 ) );
 
   QVector< QPair< QString, QList<QColor> > >::const_iterator it = colorListTests.constBegin();
   while ( it != colorListTests.constEnd() )

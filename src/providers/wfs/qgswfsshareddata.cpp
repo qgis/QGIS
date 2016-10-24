@@ -70,8 +70,8 @@ QString QgsWFSSharedData::srsName() const
   QString srsName;
   if ( !mSourceCRS.authid().isEmpty() )
   {
-    if ( mWFSVersion.startsWith( "1.0" ) ||
-         !mSourceCRS.authid().startsWith( "EPSG:" ) ||
+    if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ||
+         !mSourceCRS.authid().startsWith( QLatin1String( "EPSG:" ) ) ||
          // For servers like Geomedia that advertize EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
          mCaps.useEPSGColumnFormat )
     {
@@ -80,7 +80,7 @@ QString QgsWFSSharedData::srsName() const
     else
     {
       QStringList list = mSourceCRS.authid().split( ':' );
-      srsName = QString( "urn:ogc:def:crs:EPSG::%1" ).arg( list.last() );
+      srsName = QStringLiteral( "urn:ogc:def:crs:EPSG::%1" ).arg( list.last() );
     }
   }
   return srsName;
@@ -95,12 +95,12 @@ bool QgsWFSSharedData::computeFilter( QString& errorMsg )
   QgsOgcUtils::GMLVersion gmlVersion;
   QgsOgcUtils::FilterVersion filterVersion;
   bool honourAxisOrientation = false;
-  if ( mWFSVersion.startsWith( "1.0" ) )
+  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
   {
     gmlVersion = QgsOgcUtils::GML_2_1_2;
     filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
   }
-  else if ( mWFSVersion.startsWith( "1.1" ) )
+  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
   {
     honourAxisOrientation = !mURI.ignoreAxisOrientation();
     gmlVersion = QgsOgcUtils::GML_3_1_0;
@@ -128,14 +128,14 @@ bool QgsWFSSharedData::computeFilter( QString& errorMsg )
     Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* columnSorted, orderBy )
     {
       if ( !mSortBy.isEmpty() )
-        mSortBy += ",";
+        mSortBy += QLatin1String( "," );
       mSortBy += columnSorted->column()->name();
       if ( !columnSorted->ascending() )
       {
-        if ( mWFSVersion.startsWith( "2.0" ) )
-          mSortBy += " DESC";
+        if ( mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+          mSortBy += QLatin1String( " DESC" );
         else
-          mSortBy += " D";
+          mSortBy += QLatin1String( " D" );
       }
     }
 
@@ -208,7 +208,7 @@ bool QgsWFSSharedData::computeFilter( QString& errorMsg )
 
 static QString quotedIdentifier( QString id )
 {
-  id.replace( '\"', "\"\"" );
+  id.replace( '\"', QLatin1String( "\"\"" ) );
   return id.prepend( '\"' ).append( '\"' );
 }
 
@@ -218,7 +218,7 @@ bool QgsWFSSharedData::createCache()
 
   static int tmpCounter = 0;
   ++tmpCounter;
-  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "wfs_cache_%1.sqlite" ).arg( tmpCounter ) );
+  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( tmpCounter ) );
 
   QgsFields cacheFields;
   Q_FOREACH ( const QgsField& field, mFields )
@@ -234,29 +234,29 @@ bool QgsWFSSharedData::createCache()
     cacheFields.append( QgsField( field.name(), type, field.typeName() ) );
   }
   // Add some field for our internal use
-  cacheFields.append( QgsField( QgsWFSConstants::FIELD_GEN_COUNTER, QVariant::Int, "int" ) );
-  cacheFields.append( QgsField( QgsWFSConstants::FIELD_GMLID, QVariant::String, "string" ) );
-  cacheFields.append( QgsField( QgsWFSConstants::FIELD_HEXWKB_GEOM, QVariant::String, "string" ) );
+  cacheFields.append( QgsField( QgsWFSConstants::FIELD_GEN_COUNTER, QVariant::Int, QStringLiteral( "int" ) ) );
+  cacheFields.append( QgsField( QgsWFSConstants::FIELD_GMLID, QVariant::String, QStringLiteral( "string" ) ) );
+  cacheFields.append( QgsField( QgsWFSConstants::FIELD_HEXWKB_GEOM, QVariant::String, QStringLiteral( "string" ) ) );
   if ( mDistinctSelect )
-    cacheFields.append( QgsField( QgsWFSConstants::FIELD_MD5, QVariant::String, "string" ) );
+    cacheFields.append( QgsField( QgsWFSConstants::FIELD_MD5, QVariant::String, QStringLiteral( "string" ) ) );
 
   bool ogrWaySuccessful = false;
-  QString fidName( "__ogc_fid" );
-  QString geometryFieldname( "__spatialite_geometry" );
+  QString fidName( QStringLiteral( "__ogc_fid" ) );
+  QString geometryFieldname( QStringLiteral( "__spatialite_geometry" ) );
 #ifdef USE_OGR_FOR_DB_CREATION
   // Only GDAL >= 2.0 can use an alternate geometry or FID field name
   // but QgsVectorFileWriter will refuse anyway to create a ogc_fid, so we will
   // do it manually
-  bool useReservedNames = cacheFields.lookupField( "ogc_fid" ) >= 0;
+  bool useReservedNames = cacheFields.lookupField( QStringLiteral( "ogc_fid" ) ) >= 0;
 #if GDAL_VERSION_MAJOR < 2
-  if ( cacheFields.lookupField( "geometry" ) >= 0 )
+  if ( cacheFields.lookupField( QStringLiteral( "geometry" ) ) >= 0 )
     useReservedNames = true;
 #endif
   if ( !useReservedNames )
   {
 #if GDAL_VERSION_MAJOR < 2
-    fidName = "ogc_fid";
-    geometryFieldname = "GEOMETRY";
+    fidName = QStringLiteral( "ogc_fid" );
+    geometryFieldname = QStringLiteral( "GEOMETRY" );
 #endif
     // Creating a spatialite database can be quite slow on some file systems
     // so we create a GDAL in-memory file, and then copy it on
@@ -264,8 +264,8 @@ bool QgsWFSSharedData::createCache()
     QString vsimemFilename;
     QStringList datasourceOptions;
     QStringList layerOptions;
-    datasourceOptions.push_back( "INIT_WITH_EPSG=NO" );
-    layerOptions.push_back( "LAUNDER=NO" ); // to get exact matches for field names, especially regarding case
+    datasourceOptions.push_back( QStringLiteral( "INIT_WITH_EPSG=NO" ) );
+    layerOptions.push_back( QStringLiteral( "LAUNDER=NO" ) ); // to get exact matches for field names, especially regarding case
 #if GDAL_VERSION_MAJOR >= 2
     layerOptions.push_back( "FID=__ogc_fid" );
     layerOptions.push_back( "GEOMETRY_NAME=__spatialite_geometry" );
@@ -273,8 +273,8 @@ bool QgsWFSSharedData::createCache()
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
-    QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, "",
-        cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), "SpatiaLite", datasourceOptions, layerOptions );
+    QgsVectorFileWriter* writer = new QgsVectorFileWriter( vsimemFilename, QLatin1String( "" ),
+        cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), QStringLiteral( "SpatiaLite" ), datasourceOptions, layerOptions );
     if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
       delete writer;
@@ -321,7 +321,7 @@ bool QgsWFSSharedData::createCache()
       tempFile.open();
       tempFile.setAutoRemove( false );
       tempFile.close();
-      QString spatialite_lib = QgsProviderRegistry::instance()->library( "spatialite" );
+      QString spatialite_lib = QgsProviderRegistry::instance()->library( QStringLiteral( "spatialite" ) );
       QLibrary* myLib = new QLibrary( spatialite_lib );
       bool loaded = myLib->load();
       bool created = false;
@@ -381,20 +381,20 @@ bool QgsWFSSharedData::createCache()
 
     if ( !ogrWaySuccessful )
     {
-      mCacheTablename = "features";
-      sql = QString( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
+      mCacheTablename = QStringLiteral( "features" );
+      sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
       Q_FOREACH ( const QgsField& field, cacheFields )
       {
-        QString type( "VARCHAR" );
+        QString type( QStringLiteral( "VARCHAR" ) );
         if ( field.type() == QVariant::Int )
-          type = "INTEGER";
+          type = QStringLiteral( "INTEGER" );
         else if ( field.type() == QVariant::LongLong )
-          type = "BIGINT";
+          type = QStringLiteral( "BIGINT" );
         else if ( field.type() == QVariant::Double )
-          type = "REAL";
-        sql += QString( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
+          type = QStringLiteral( "REAL" );
+        sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
       }
-      sql += ")";
+      sql += QLatin1String( ")" );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
@@ -402,7 +402,7 @@ bool QgsWFSSharedData::createCache()
         ret = false;
       }
 
-      sql = QString( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
+      sql = QStringLiteral( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
@@ -410,7 +410,7 @@ bool QgsWFSSharedData::createCache()
         ret = false;
       }
 
-      sql = QString( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
+      sql = QStringLiteral( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
@@ -421,7 +421,7 @@ bool QgsWFSSharedData::createCache()
 
     // We need an index on the gmlid, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
-    sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_GMLID );
+    sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_GMLID );
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
@@ -431,7 +431,7 @@ bool QgsWFSSharedData::createCache()
 
     if ( mDistinctSelect )
     {
-      sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_MD5 );
+      sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_MD5 );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
@@ -458,13 +458,13 @@ bool QgsWFSSharedData::createCache()
   // regarding crashes, since this is a temporary DB
   QgsDataSourceUri dsURI;
   dsURI.setDatabase( mCacheDbname );
-  dsURI.setDataSource( "", mCacheTablename, geometryFieldname, "", fidName );
+  dsURI.setDataSource( QLatin1String( "" ), mCacheTablename, geometryFieldname, QLatin1String( "" ), fidName );
   QStringList pragmas;
-  pragmas << "synchronous=OFF";
-  pragmas << "journal_mode=WAL"; // WAL is needed to avoid reader to block writers
-  dsURI.setParam( "pragma", pragmas );
+  pragmas << QStringLiteral( "synchronous=OFF" );
+  pragmas << QStringLiteral( "journal_mode=WAL" ); // WAL is needed to avoid reader to block writers
+  dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
   mCacheDataProvider = ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider(
-                         "spatialite", dsURI.uri() ) );
+                         QStringLiteral( "spatialite" ), dsURI.uri() ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     delete mCacheDataProvider;
@@ -590,19 +590,19 @@ QSet<QString> QgsWFSSharedData::getExistingCachedGmlIds( const QVector<QgsWFSFea
   for ( int i = 0; i < featureList.size(); i ++ )
   {
     if ( !first )
-      expr += ",";
+      expr += QLatin1String( "," );
     else
     {
       expr = QgsWFSConstants::FIELD_GMLID + " IN (";
       first = false;
     }
-    expr += "'";
+    expr += QLatin1String( "'" );
     expr += featureList[i].second;
-    expr += "'";
+    expr += QLatin1String( "'" );
 
     if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
     {
-      expr += ")";
+      expr += QLatin1String( ")" );
 
       QgsFeatureRequest request;
       request.setFilterExpression( expr );
@@ -641,19 +641,19 @@ QSet<QString> QgsWFSSharedData::getExistingCachedMD5( const QVector<QgsWFSFeatur
   for ( int i = 0; i < featureList.size(); i ++ )
   {
     if ( !first )
-      expr += ",";
+      expr += QLatin1String( "," );
     else
     {
       expr = QgsWFSConstants::FIELD_MD5 + " IN (";
       first = false;
     }
-    expr += "'";
+    expr += QLatin1String( "'" );
     expr += QgsWFSUtils::getMD5( featureList[i].first );
-    expr += "'";
+    expr += QLatin1String( "'" );
 
     if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
     {
-      expr += ")";
+      expr += QLatin1String( ")" );
 
       QgsFeatureRequest request;
       request.setFilterExpression( expr );
@@ -1067,7 +1067,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       msg += " " + tr( "Zoom in to fetch all data." );
     else
       msg += " " + tr( "You may want to check the 'Only request features overlapping the view extent' option to be able to zoom in to fetch all data." );
-    QgsMessageLog::logMessage( msg, "WFS" );
+    QgsMessageLog::logMessage( msg, QStringLiteral( "WFS" ) );
   }
 }
 
@@ -1206,17 +1206,17 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString& WFSVersion,
     const QString& filter )
 {
   QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( "REQUEST", "GetFeature" );
-  getFeatureUrl.addQueryItem( "VERSION",  WFSVersion );
-  if ( WFSVersion.startsWith( "2.0" ) )
-    getFeatureUrl.addQueryItem( "TYPENAMES", mUri.typeName() );
+  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
+  if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
   else
-    getFeatureUrl.addQueryItem( "TYPENAME", mUri.typeName() );
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
   if ( !filter.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( "FILTER", filter );
+    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), filter );
   }
-  getFeatureUrl.addQueryItem( "RESULTTYPE", "hits" );
+  getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
 
   if ( !sendGET( getFeatureUrl, true ) )
     return -1;
@@ -1236,8 +1236,8 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString& WFSVersion,
 
   QDomElement doc = domDoc.documentElement();
   QString numberOfFeatures =
-    ( WFSVersion.startsWith( "1.1" ) ) ? doc.attribute( "numberOfFeatures" ) :
-    /* 2.0 */                         doc.attribute( "numberMatched" ) ;
+    ( WFSVersion.startsWith( QLatin1String( "1.1" ) ) ) ? doc.attribute( QStringLiteral( "numberOfFeatures" ) ) :
+    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) ) ;
   if ( !numberOfFeatures.isEmpty() )
   {
     bool isValid;
@@ -1271,16 +1271,16 @@ QgsWFSSingleFeatureRequest::~QgsWFSSingleFeatureRequest()
 QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {
   QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( "REQUEST", "GetFeature" );
-  getFeatureUrl.addQueryItem( "VERSION",  mShared->mWFSVersion );
-  if ( mShared->mWFSVersion .startsWith( "2.0" ) )
-    getFeatureUrl.addQueryItem( "TYPENAMES", mUri.typeName() );
+  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
+  if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
   else
-    getFeatureUrl.addQueryItem( "TYPENAME", mUri.typeName() );
-  if ( mShared->mWFSVersion .startsWith( "2.0" ) )
-    getFeatureUrl.addQueryItem( "COUNT", QString::number( 1 ) );
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
+    getFeatureUrl.addQueryItem( QStringLiteral( "COUNT" ), QString::number( 1 ) );
   else
-    getFeatureUrl.addQueryItem( "MAXFEATURES", QString::number( 1 ) );
+    getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
 
   if ( !sendGET( getFeatureUrl, true ) )
     return -1;

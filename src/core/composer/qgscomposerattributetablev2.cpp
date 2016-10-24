@@ -60,7 +60,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* compos
     , mShowOnlyVisibleFeatures( false )
     , mFilterToAtlasIntersection( false )
     , mFilterFeatures( false )
-    , mFeatureFilter( "" )
+    , mFeatureFilter( QLatin1String( "" ) )
 {
   //set first vector layer from layer registry as default one
   QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
@@ -508,7 +508,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context.lastScope()->setVariable( QString( "row_number" ), counter + 1 );
+        context.lastScope()->setVariable( QStringLiteral( "row_number" ), counter + 1 );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
         currentRow << value;
@@ -555,7 +555,7 @@ QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant )
     return variant;
 
   QString replaced = variant.toString();
-  replaced.replace( mWrapString, "\n" );
+  replaced.replace( mWrapString, QLatin1String( "\n" ) );
   return replaced;
 }
 
@@ -639,28 +639,28 @@ void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
 
 bool QgsComposerAttributeTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
-  QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
-  composerTableElem.setAttribute( "source", QString::number( static_cast< int >( mSource ) ) );
-  composerTableElem.setAttribute( "relationId", mRelationId );
-  composerTableElem.setAttribute( "showUniqueRowsOnly", mShowUniqueRowsOnly );
-  composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
-  composerTableElem.setAttribute( "filterToAtlasIntersection", mFilterToAtlasIntersection );
-  composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
-  composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
-  composerTableElem.setAttribute( "featureFilter", mFeatureFilter );
-  composerTableElem.setAttribute( "wrapString", mWrapString );
+  QDomElement composerTableElem = doc.createElement( QStringLiteral( "ComposerAttributeTableV2" ) );
+  composerTableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
+  composerTableElem.setAttribute( QStringLiteral( "relationId" ), mRelationId );
+  composerTableElem.setAttribute( QStringLiteral( "showUniqueRowsOnly" ), mShowUniqueRowsOnly );
+  composerTableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );
+  composerTableElem.setAttribute( QStringLiteral( "filterToAtlasIntersection" ), mFilterToAtlasIntersection );
+  composerTableElem.setAttribute( QStringLiteral( "maxFeatures" ), mMaximumNumberOfFeatures );
+  composerTableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? "true" : "false" );
+  composerTableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
+  composerTableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
 
   if ( mComposerMap )
   {
-    composerTableElem.setAttribute( "composerMap", mComposerMap->id() );
+    composerTableElem.setAttribute( QStringLiteral( "composerMap" ), mComposerMap->id() );
   }
   else
   {
-    composerTableElem.setAttribute( "composerMap", -1 );
+    composerTableElem.setAttribute( QStringLiteral( "composerMap" ), -1 );
   }
   if ( mVectorLayer )
   {
-    composerTableElem.setAttribute( "vectorLayer", mVectorLayer->id() );
+    composerTableElem.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer->id() );
   }
 
   bool ok = QgsComposerTableV2::writeXml( composerTableElem, doc, ignoreFrames );
@@ -690,24 +690,24 @@ bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QD
     disconnect( prevLayer, SIGNAL( layerModified() ), this, SLOT( refreshAttributes() ) );
   }
 
-  mSource = QgsComposerAttributeTableV2::ContentSource( itemElem.attribute( "source", "0" ).toInt() );
-  mRelationId = itemElem.attribute( "relationId", "" );
+  mSource = QgsComposerAttributeTableV2::ContentSource( itemElem.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt() );
+  mRelationId = itemElem.attribute( QStringLiteral( "relationId" ), QLatin1String( "" ) );
 
   if ( mSource == QgsComposerAttributeTableV2::AtlasFeature )
   {
     mCurrentAtlasLayer = mComposition->atlasComposition().coverageLayer();
   }
 
-  mShowUniqueRowsOnly = itemElem.attribute( "showUniqueRowsOnly", "0" ).toInt();
-  mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
-  mFilterToAtlasIntersection = itemElem.attribute( "filterToAtlasIntersection", "0" ).toInt();
-  mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
-  mFeatureFilter = itemElem.attribute( "featureFilter", "" );
-  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
-  mWrapString = itemElem.attribute( "wrapString" );
+  mShowUniqueRowsOnly = itemElem.attribute( QStringLiteral( "showUniqueRowsOnly" ), QStringLiteral( "0" ) ).toInt();
+  mShowOnlyVisibleFeatures = itemElem.attribute( QStringLiteral( "showOnlyVisibleFeatures" ), QStringLiteral( "1" ) ).toInt();
+  mFilterToAtlasIntersection = itemElem.attribute( QStringLiteral( "filterToAtlasIntersection" ), QStringLiteral( "0" ) ).toInt();
+  mFilterFeatures = itemElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
+  mFeatureFilter = itemElem.attribute( QStringLiteral( "featureFilter" ), QLatin1String( "" ) );
+  mMaximumNumberOfFeatures = itemElem.attribute( QStringLiteral( "maxFeatures" ), QStringLiteral( "5" ) ).toInt();
+  mWrapString = itemElem.attribute( QStringLiteral( "wrapString" ) );
 
   //composer map
-  int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();
+  int composerMapId = itemElem.attribute( QStringLiteral( "composerMap" ), QStringLiteral( "-1" ) ).toInt();
   if ( composerMapId == -1 )
   {
     mComposerMap = nullptr;
@@ -729,8 +729,8 @@ bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QD
   }
 
   //vector layer
-  QString layerId = itemElem.attribute( "vectorLayer", "not_existing" );
-  if ( layerId == "not_existing" )
+  QString layerId = itemElem.attribute( QStringLiteral( "vectorLayer" ), QStringLiteral( "not_existing" ) );
+  if ( layerId == QLatin1String( "not_existing" ) )
   {
     mVectorLayer = nullptr;
   }

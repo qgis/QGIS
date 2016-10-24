@@ -42,13 +42,13 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QS
   init( layerId, providerId, featureId, labelText );
 
   QSettings settings;
-  restoreGeometry( settings.value( QString( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QSettings settings;
-  settings.setValue( QString( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 
   qDeleteAll( mDataDefinedProperties );
 }
@@ -95,7 +95,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
   }
   else
   {
-    QString labelFieldName = vlayer->customProperty( "labeling/fieldName" ).toString();
+    QString labelFieldName = vlayer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
     if ( !labelFieldName.isEmpty() )
     {
       mCurLabelField = vlayer->fields().lookupField( labelFieldName );

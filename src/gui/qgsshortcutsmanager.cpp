@@ -89,7 +89,7 @@ bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaul
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate actions
   if ( actionByName( action->text() ) || shortcutByName( action->text() ) )
-    QgsLogger::warning( QString( "Duplicate shortcut registered: %1" ).arg( action->text() ) );
+    QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( action->text() ) );
 #endif
 
   mActions.insert( action, defaultSequence );
@@ -112,7 +112,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut* shortcut, const QString& 
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate actions
   if ( actionByName( shortcut->objectName() ) || shortcutByName( shortcut->objectName() ) )
-    QgsLogger::warning( QString( "Duplicate shortcut registered: %1" ).arg( shortcut->objectName() ) );
+    QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( shortcut->objectName() ) );
 #endif
 
   mShortcuts.insert( shortcut, defaultSequence );

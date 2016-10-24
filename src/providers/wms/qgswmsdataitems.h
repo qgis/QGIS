@@ -111,7 +111,7 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return "WMS"; }
+    virtual QString name() override { return QStringLiteral( "WMS" ); }
 
     virtual int capabilities() override { return QgsDataProvider::Net; }
 
@@ -152,14 +152,14 @@ class QgsXyzLayerItem : public QgsLayerItem
 class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return "XYZ Tiles"; }
+    virtual QString name() override { return QStringLiteral( "XYZ Tiles" ); }
 
     virtual int capabilities() override { return QgsDataProvider::Net; }
 
     virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override
     {
       if ( path.isEmpty() )
-        return new QgsXyzTileRootItem( parentItem, "Tile Server (XYZ)", "xyz:" );
+        return new QgsXyzTileRootItem( parentItem, QStringLiteral( "Tile Server (XYZ)" ), QStringLiteral( "xyz:" ) );
       return nullptr;
     }
 };

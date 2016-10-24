@@ -53,28 +53,28 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   Q_UNUSED( fieldIdx );
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "AllowNULL", configElement.attribute( "AllowNULL" ) == "1" );
-  cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) == "1" );
-  cfg.insert( "ShowForm", configElement.attribute( "ShowForm" ) == "1" );
-  cfg.insert( "Relation", configElement.attribute( "Relation" ) );
-  cfg.insert( "MapIdentification", configElement.attribute( "MapIdentification" ) == "1" );
-  cfg.insert( "ReadOnly", configElement.attribute( "ReadOnly" ) == "1" );
-  cfg.insert( "AllowAddFeatures", configElement.attribute( "AllowAddFeatures" ) == "1" );
+  cfg.insert( QStringLiteral( "AllowNULL" ), configElement.attribute( QStringLiteral( "AllowNULL" ) ) == QLatin1String( "1" ) );
+  cfg.insert( QStringLiteral( "OrderByValue" ), configElement.attribute( QStringLiteral( "OrderByValue" ) ) == QLatin1String( "1" ) );
+  cfg.insert( QStringLiteral( "ShowForm" ), configElement.attribute( QStringLiteral( "ShowForm" ) ) == QLatin1String( "1" ) );
+  cfg.insert( QStringLiteral( "Relation" ), configElement.attribute( QStringLiteral( "Relation" ) ) );
+  cfg.insert( QStringLiteral( "MapIdentification" ), configElement.attribute( QStringLiteral( "MapIdentification" ) ) == QLatin1String( "1" ) );
+  cfg.insert( QStringLiteral( "ReadOnly" ), configElement.attribute( QStringLiteral( "ReadOnly" ) ) == QLatin1String( "1" ) );
+  cfg.insert( QStringLiteral( "AllowAddFeatures" ), configElement.attribute( QStringLiteral( "AllowAddFeatures" ) ) == QLatin1String( "1" ) );
 
-  QDomNode filterNode = configElement.elementsByTagName( "FilterFields" ).at( 0 );
+  QDomNode filterNode = configElement.elementsByTagName( QStringLiteral( "FilterFields" ) ).at( 0 );
   if ( !filterNode.isNull() )
   {
     QStringList filterFields;
-    QDomNodeList fieldNodes = filterNode.toElement().elementsByTagName( "field" );
+    QDomNodeList fieldNodes = filterNode.toElement().elementsByTagName( QStringLiteral( "field" ) );
     filterFields.reserve( fieldNodes.size() );
     for ( int i = 0; i < fieldNodes.size(); i++ )
     {
       QDomElement fieldElement = fieldNodes.at( i ).toElement();
-      filterFields << fieldElement.attribute( "name" );
+      filterFields << fieldElement.attribute( QStringLiteral( "name" ) );
     }
-    cfg.insert( "FilterFields", filterFields );
+    cfg.insert( QStringLiteral( "FilterFields" ), filterFields );
 
-    cfg.insert( "ChainFilters", filterNode.toElement().attribute( "ChainFilters" ) == "1" );
+    cfg.insert( QStringLiteral( "ChainFilters" ), filterNode.toElement().attribute( QStringLiteral( "ChainFilters" ) ) == QLatin1String( "1" ) );
   }
   return cfg;
 }
@@ -85,27 +85,27 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
 
-  configElement.setAttribute( "AllowNULL", config["AllowNULL"].toBool() );
-  configElement.setAttribute( "OrderByValue", config["OrderByValue"].toBool() );
-  configElement.setAttribute( "ShowForm", config["ShowForm"].toBool() );
-  configElement.setAttribute( "Relation", config["Relation"].toString() );
-  configElement.setAttribute( "MapIdentification", config["MapIdentification"].toBool() );
-  configElement.setAttribute( "ReadOnly", config["ReadOnly"].toBool() );
-  configElement.setAttribute( "AllowAddFeatures", config["AllowAddFeatures"].toBool() );
+  configElement.setAttribute( QStringLiteral( "AllowNULL" ), config[QStringLiteral( "AllowNULL" )].toBool() );
+  configElement.setAttribute( QStringLiteral( "OrderByValue" ), config[QStringLiteral( "OrderByValue" )].toBool() );
+  configElement.setAttribute( QStringLiteral( "ShowForm" ), config[QStringLiteral( "ShowForm" )].toBool() );
+  configElement.setAttribute( QStringLiteral( "Relation" ), config[QStringLiteral( "Relation" )].toString() );
+  configElement.setAttribute( QStringLiteral( "MapIdentification" ), config[QStringLiteral( "MapIdentification" )].toBool() );
+  configElement.setAttribute( QStringLiteral( "ReadOnly" ), config[QStringLiteral( "ReadOnly" )].toBool() );
+  configElement.setAttribute( QStringLiteral( "AllowAddFeatures" ), config[QStringLiteral( "AllowAddFeatures" )].toBool() );
 
-  if ( config.contains( "FilterFields" ) )
+  if ( config.contains( QStringLiteral( "FilterFields" ) ) )
   {
-    QDomElement filterFields = doc.createElement( "FilterFields" );
+    QDomElement filterFields = doc.createElement( QStringLiteral( "FilterFields" ) );
 
     Q_FOREACH ( const QString& field, config["FilterFields"].toStringList() )
     {
-      QDomElement fieldElem = doc.createElement( "field" );
-      fieldElem.setAttribute( "name", field );
+      QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
+      fieldElem.setAttribute( QStringLiteral( "name" ), field );
       filterFields.appendChild( fieldElem );
     }
     configElement.appendChild( filterFields );
 
-    filterFields.setAttribute( "ChainFilters", config["ChainFilters"].toBool() );
+    filterFields.setAttribute( QStringLiteral( "ChainFilters" ), config[QStringLiteral( "ChainFilters" )].toBool() );
   }
 }
 
@@ -121,12 +121,12 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
   Q_UNUSED( cache );
 
   // Some sanity checks
-  if ( !config.contains( "Relation" ) )
+  if ( !config.contains( QStringLiteral( "Relation" ) ) )
   {
     QgsDebugMsg( "Missing Relation in configuration" );
     return value.toString();
   }
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config["Relation"].toString() );
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
   if ( !relation.isValid() )
   {
     QgsDebugMsg( "Invalid relation" );

@@ -112,7 +112,7 @@ class TestQgsGeometry : public QObject
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
-    bool renderCheck( const QString& theTestName, const QString& theComment = "", int mismatchCount = 0 );
+    bool renderCheck( const QString& theTestName, const QString& theComment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
     /** A helper method to dump to qdebug the geometry of a multipolygon */
     void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
     /** A helper method to dump to qdebug the geometry of a polygon */
@@ -188,10 +188,10 @@ void TestQgsGeometry::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  mReport += "<h1>Geometry Tests</h1>\n";
-  mReport += "<p><font color=\"green\">Green = polygonA</font></p>\n";
-  mReport += "<p><font color=\"red\">Red = polygonB</font></p>\n";
-  mReport += "<p><font color=\"blue\">Blue = polygonC</font></p>\n";
+  mReport += QLatin1String( "<h1>Geometry Tests</h1>\n" );
+  mReport += QLatin1String( "<p><font color=\"green\">Green = polygonA</font></p>\n" );
+  mReport += QLatin1String( "<p><font color=\"red\">Red = polygonB</font></p>\n" );
+  mReport += QLatin1String( "<p><font color=\"blue\">Blue = polygonC</font></p>\n" );
 }
 
 
@@ -229,7 +229,7 @@ void TestQgsGeometry::init()
   mPointY = QgsPoint( 240.0, 240.0 );
   mPointZ = QgsPoint( 200.0, 240.0 );
 
-  mWktLine = QString( "LINESTRING(117.623198 35.198654, 117.581274 35.198654, 117.078178 35.324427, 116.868555 35.534051, 116.617007 35.869448, 116.491233 35.953297, 116.155836 36.288694, 116.071987 36.372544, 115.443117 36.749865, 114.814247 37.043338, 114.311152 37.169112, 113.388810 37.378735, 113.095337 37.378735, 112.592241 37.378735, 111.753748 37.294886, 111.502201 37.252961, 111.082954 37.127187, 110.747557 37.127187, 110.160612 36.917564, 110.034838 36.833715, 109.741366 36.749865, 109.573667 36.666016, 109.238270 36.498317, 109.070571 36.414468, 108.819023 36.288694, 108.693250 36.246770, 108.483626 36.162920, 107.645134 35.911372, 106.597017 35.869448, 106.051997 35.701749, 105.800449 35.617900, 105.590826 35.575975, 105.297354 35.575975, 104.961956 35.575975, 104.710409 35.534051, 104.458861 35.492126, 103.871916 35.492126, 103.788066 35.492126, 103.326895 35.408277, 102.949574 35.408277, 102.488402 35.450201, 102.069156 35.450201, 101.482211 35.450201, 100.937191 35.659825, 100.308321 35.869448, 100.056773 36.037146, 99.050582 36.079071, 97.667069 35.743674, 97.163973 35.617900, 96.115857 35.534051, 95.612761 35.534051, 94.396947 35.911372, 93.684228 36.288694, 92.929584 36.833715, 92.258790 37.169112, 91.629920 37.504509, 90.414105 37.881831, 90.414105 37.881831, 90.246407 37.923755, 89.491763 37.839906, 89.156366 37.672207, 88.485572 37.504509, 87.814778 37.252961, 87.563230 37.169112, 87.143983 37.043338, 85.970093 36.875639, 85.802395 36.875639, 84.083484 36.959489, 84.041560 37.043338, 82.951519 37.546433, 82.699971 37.630283)" );
+  mWktLine = QStringLiteral( "LINESTRING(117.623198 35.198654, 117.581274 35.198654, 117.078178 35.324427, 116.868555 35.534051, 116.617007 35.869448, 116.491233 35.953297, 116.155836 36.288694, 116.071987 36.372544, 115.443117 36.749865, 114.814247 37.043338, 114.311152 37.169112, 113.388810 37.378735, 113.095337 37.378735, 112.592241 37.378735, 111.753748 37.294886, 111.502201 37.252961, 111.082954 37.127187, 110.747557 37.127187, 110.160612 36.917564, 110.034838 36.833715, 109.741366 36.749865, 109.573667 36.666016, 109.238270 36.498317, 109.070571 36.414468, 108.819023 36.288694, 108.693250 36.246770, 108.483626 36.162920, 107.645134 35.911372, 106.597017 35.869448, 106.051997 35.701749, 105.800449 35.617900, 105.590826 35.575975, 105.297354 35.575975, 104.961956 35.575975, 104.710409 35.534051, 104.458861 35.492126, 103.871916 35.492126, 103.788066 35.492126, 103.326895 35.408277, 102.949574 35.408277, 102.488402 35.450201, 102.069156 35.450201, 101.482211 35.450201, 100.937191 35.659825, 100.308321 35.869448, 100.056773 36.037146, 99.050582 36.079071, 97.667069 35.743674, 97.163973 35.617900, 96.115857 35.534051, 95.612761 35.534051, 94.396947 35.911372, 93.684228 36.288694, 92.929584 36.833715, 92.258790 37.169112, 91.629920 37.504509, 90.414105 37.881831, 90.414105 37.881831, 90.246407 37.923755, 89.491763 37.839906, 89.156366 37.672207, 88.485572 37.504509, 87.814778 37.252961, 87.563230 37.169112, 87.143983 37.043338, 85.970093 36.875639, 85.802395 36.875639, 84.083484 36.959489, 84.041560 37.043338, 82.951519 37.546433, 82.699971 37.630283)" );
 
   mPolygonA.clear();
   mPolygonB.clear();
@@ -582,22 +582,22 @@ void TestQgsGeometry::point()
   //asGML2
   QgsPointV2 exportPoint( 1, 2 );
   QgsPointV2 exportPointFloat( 1 / 3.0, 2 / 3.0 );
-  QDomDocument doc( "gml" );
-  QString expectedGML2( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\">1,2</coordinates></Point>" );
+  QDomDocument doc( QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\">1,2</coordinates></Point>" ) );
   QCOMPARE( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
-  QString expectedGML2prec3( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\">0.333,0.667</coordinates></Point>" );
+  QString expectedGML2prec3( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\">0.333,0.667</coordinates></Point>" ) );
   QCOMPARE( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
-  QString expectedGML3( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" );
+  QString expectedGML3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" ) );
   QCOMPARE( elemToString( exportPoint.asGML3( doc ) ), expectedGML3 );
-  QString expectedGML3prec3( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>" );
+  QString expectedGML3prec3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>" ) );
   QCOMPARE( elemToString( exportPointFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
 
   //asJSON
-  QString expectedJson( "{\"type\": \"Point\", \"coordinates\": [1, 2]}" );
+  QString expectedJson( QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [1, 2]}" ) );
   QCOMPARE( exportPoint.asJSON(), expectedJson );
-  QString expectedJsonPrec3( "{\"type\": \"Point\", \"coordinates\": [0.333, 0.667]}" );
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [0.333, 0.667]}" ) );
   QCOMPARE( exportPointFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   //bounding box
@@ -1428,22 +1428,22 @@ void TestQgsGeometry::lineString()
   exportLineFloat.setPoints( QgsPointSequence() << QgsPointV2( 1 / 3.0, 2 / 3.0 )
                              << QgsPointV2( 1 + 1 / 3.0, 1 + 2 / 3.0 )
                              << QgsPointV2( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
-  QDomDocument doc( "gml" );
-  QString expectedGML2( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\">31,32 41,42 51,52</coordinates></LineString>" );
+  QDomDocument doc( QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\">31,32 41,42 51,52</coordinates></LineString>" ) );
   QCOMPARE( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
-  QString expectedGML2prec3( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" );
+  QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" ) );
   QCOMPARE( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
-  QString expectedGML3( "<Curve xmlns=\"gml\"><segments xmlns=\"gml\"><LineStringSegment xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></LineStringSegment></segments></Curve>" );
+  QString expectedGML3( QStringLiteral( "<Curve xmlns=\"gml\"><segments xmlns=\"gml\"><LineStringSegment xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></LineStringSegment></segments></Curve>" ) );
   QCOMPARE( elemToString( exportLine.asGML3( doc ) ), expectedGML3 );
-  QString expectedGML3prec3( "<Curve xmlns=\"gml\"><segments xmlns=\"gml\"><LineStringSegment xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></LineStringSegment></segments></Curve>" );
+  QString expectedGML3prec3( QStringLiteral( "<Curve xmlns=\"gml\"><segments xmlns=\"gml\"><LineStringSegment xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></LineStringSegment></segments></Curve>" ) );
   QCOMPARE( elemToString( exportLineFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
 
   //asJSON
-  QString expectedJson( "{\"type\": \"LineString\", \"coordinates\": [ [31, 32], [41, 42], [51, 52]]}" );
+  QString expectedJson( QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [31, 32], [41, 42], [51, 52]]}" ) );
   QCOMPARE( exportLine.asJSON(), expectedJson );
-  QString expectedJsonPrec3( "{\"type\": \"LineString\", \"coordinates\": [ [0.333, 0.667], [1.333, 1.667], [2.333, 2.667]]}" );
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [0.333, 0.667], [1.333, 1.667], [2.333, 2.667]]}" ) );
   QCOMPARE( exportLineFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   //length
@@ -2123,7 +2123,7 @@ void TestQgsGeometry::lineString()
   delete[] wkb;
   wkb = 0;
   QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 0, 4, 2 ) );
-  l37.fromWkt( QString( "LineString( 1 5, 3 4, 6 3 )" ) );
+  l37.fromWkt( QStringLiteral( "LineString( 1 5, 3 4, 6 3 )" ) );
   QCOMPARE( l37.boundingBox(), QgsRectangle( 1, 3, 6, 5 ) );
   l37.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPointV2( -1, 7 ) );
   QCOMPARE( l37.boundingBox(), QgsRectangle( -1, 3, 6, 7 ) );
@@ -2889,7 +2889,7 @@ void TestQgsGeometry::polygon()
                    << QgsPointV2( QgsWkbTypes::Point, 9, 1 ) << QgsPointV2( QgsWkbTypes::Point, 1, 1 ) );
   exportPolygon.addInteriorRing( ring );
 
-  QString expectedJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]], [ [1, 1], [1, 9], [9, 9], [9, 1], [1, 1]]] }" );
+  QString expectedJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]], [ [1, 1], [1, 9], [9, 9], [9, 1], [1, 1]]] }" ) );
   QCOMPARE( exportPolygon.asJSON(), expectedJson );
 
   QgsPolygonV2 exportPolygonFloat;
@@ -2904,24 +2904,24 @@ void TestQgsGeometry::polygon()
                    << QgsPointV2( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) << QgsPointV2( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 ) );
   exportPolygonFloat.addInteriorRing( ring );
 
-  QString expectedJsonPrec3( "{\"type\": \"Polygon\", \"coordinates\": [[ [1.111, 1.111], [1.111, 11.111], [11.111, 11.111], [11.111, 1.111], [1.111, 1.111]], [ [0.667, 0.667], [0.667, 1.333], [1.333, 1.333], [1.333, 0.667], [0.667, 0.667]]] }" );
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [1.111, 1.111], [1.111, 11.111], [11.111, 11.111], [11.111, 1.111], [1.111, 1.111]], [ [0.667, 0.667], [0.667, 1.333], [1.333, 1.333], [1.333, 0.667], [0.667, 0.667]]] }" ) );
   QCOMPARE( exportPolygonFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   // as GML2
-  QDomDocument doc( "gml" );
-  QString expectedGML2( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" );
-  expectedGML2 += QString( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
+  QDomDocument doc( QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
+  expectedGML2 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
   QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
-  QString expectedGML2prec3( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" );
-  expectedGML2prec3 += QString( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
+  QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" ) );
+  expectedGML2prec3 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
   QCOMPARE( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></exterior>" );
-  expectedGML3 += QString( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></interior></Polygon>" );
+  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></exterior>" ) );
+  expectedGML3 += QStringLiteral( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></interior></Polygon>" );
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedGML3 );
-  QString expectedGML3prec3( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></exterior>" );
-  expectedGML3prec3 += QString( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></interior></Polygon>" );
+  QString expectedGML3prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></exterior>" ) );
+  expectedGML3prec3 += QStringLiteral( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></interior></Polygon>" );
   QCOMPARE( elemToString( exportPolygonFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
 
   //removing the fourth to last vertex removes the whole ring
@@ -3388,31 +3388,31 @@ void TestQgsGeometry::intersectionCheck2()
 
 void TestQgsGeometry::translateCheck1()
 {
-  QString wkt = "LineString (0 0, 10 0, 10 10)";
+  QString wkt = QStringLiteral( "LineString (0 0, 10 0, 10 10)" );
   QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
   geom.translate( 10, -5 );
   QString obtained = geom.exportToWkt();
-  QString expected = "LineString (10 -5, 20 -5, 20 5)";
+  QString expected = QStringLiteral( "LineString (10 -5, 20 -5, 20 5)" );
   QCOMPARE( obtained, expected );
   geom.translate( -10, 5 );
   obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))";
+  wkt = QStringLiteral( "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))" );
   geom = QgsGeometry::fromWkt( wkt );
   geom.translate( -2, 10 );
   obtained = geom.exportToWkt();
-  expected = "Polygon ((-4 14, -4 0, 0 13, -4 14),(-1 11, -3 11, -3 9, -1 11))";
+  expected = QStringLiteral( "Polygon ((-4 14, -4 0, 0 13, -4 14),(-1 11, -3 11, -3 9, -1 11))" );
   QCOMPARE( obtained, expected );
   geom.translate( 2, -10 );
   obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "Point (40 50)";
+  wkt = QStringLiteral( "Point (40 50)" );
   geom = QgsGeometry::fromWkt( wkt );
   geom.translate( -2, 10 );
   obtained = geom.exportToWkt();
-  expected = "Point (38 60)";
+  expected = QStringLiteral( "Point (38 60)" );
   QCOMPARE( obtained, expected );
   geom.translate( 2, -10 );
   obtained = geom.exportToWkt();
@@ -3422,37 +3422,37 @@ void TestQgsGeometry::translateCheck1()
 
 void TestQgsGeometry::rotateCheck1()
 {
-  QString wkt = "LineString (0 0, 10 0, 10 10)";
+  QString wkt = QStringLiteral( "LineString (0 0, 10 0, 10 10)" );
   QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
   geom.rotate( 90, QgsPoint( 0, 0 ) );
   QString obtained = geom.exportToWkt();
-  QString expected = "LineString (0 0, 0 -10, 10 -10)";
+  QString expected = QStringLiteral( "LineString (0 0, 0 -10, 10 -10)" );
   QCOMPARE( obtained, expected );
   geom.rotate( -90, QgsPoint( 0, 0 ) );
   obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))";
+  wkt = QStringLiteral( "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))" );
   geom = QgsGeometry::fromWkt( wkt );
   geom.rotate( 90, QgsPoint( 0, 0 ) );
   obtained = geom.exportToWkt();
-  expected = "Polygon ((4 2, -10 2, 3 -2, 4 2),(1 -1, 1 1, -1 1, 1 -1))";
+  expected = QStringLiteral( "Polygon ((4 2, -10 2, 3 -2, 4 2),(1 -1, 1 1, -1 1, 1 -1))" );
   QCOMPARE( obtained, expected );
   geom.rotate( -90, QgsPoint( 0, 0 ) );
   obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "Point (40 50)";
+  wkt = QStringLiteral( "Point (40 50)" );
   geom = QgsGeometry::fromWkt( wkt );
   geom.rotate( 90, QgsPoint( 0, 0 ) );
   obtained = geom.exportToWkt();
-  expected = "Point (50 -40)";
+  expected = QStringLiteral( "Point (50 -40)" );
   QCOMPARE( obtained, expected );
   geom.rotate( -90, QgsPoint( 0, 0 ) );
   obtained = geom.exportToWkt();
   QCOMPARE( obtained, wkt );
   geom.rotate( 180, QgsPoint( 40, 0 ) );
-  expected = "Point (40 -50)";
+  expected = QStringLiteral( "Point (40 -50)" );
   obtained = geom.exportToWkt();
   QCOMPARE( obtained, expected );
   geom.rotate( 180, QgsPoint( 40, 0 ) ); // round-trip
@@ -3523,14 +3523,14 @@ void TestQgsGeometry::bufferCheck()
 void TestQgsGeometry::smoothCheck()
 {
   //can't smooth a point
-  QString wkt = "Point (40 50)";
+  QString wkt = QStringLiteral( "Point (40 50)" );
   QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
   QgsGeometry result = geom.smooth( 1, 0.25 );
   QString obtained = result.exportToWkt();
   QCOMPARE( obtained, wkt );
 
   //linestring
-  wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
+  wkt = QStringLiteral( "LineString(0 0, 10 0, 10 10, 20 10)" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
   QgsPolyline line = result.asPolyline();
@@ -3540,7 +3540,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, with min distance
-  wkt = "LineString(0 0, 10 0, 10 10, 15 10, 15 20)";
+  wkt = QStringLiteral( "LineString(0 0, 10 0, 10 10, 15 10, 15 20)" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25, 6 );
   line = result.asPolyline();
@@ -3550,7 +3550,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, with max angle
-  wkt = "LineString(0 0, 10 0, 15 5, 25 -5, 30 -5 )";
+  wkt = QStringLiteral( "LineString(0 0, 10 0, 15 5, 25 -5, 30 -5 )" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25, 0, 50 );
   line = result.asPolyline();
@@ -3560,7 +3560,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, with max angle, other direction
-  wkt = "LineString( 30 -5, 25 -5, 15 5, 10 0, 0 0 )";
+  wkt = QStringLiteral( "LineString( 30 -5, 25 -5, 15 5, 10 0, 0 0 )" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25, 0, 50 );
   line = result.asPolyline();
@@ -3570,7 +3570,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, max angle, first corner sharp
-  wkt = "LineString(0 0, 10 0, 10 10 )";
+  wkt = QStringLiteral( "LineString(0 0, 10 0, 10 10 )" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25, 0, 50 );
   line = result.asPolyline();
@@ -3578,7 +3578,7 @@ void TestQgsGeometry::smoothCheck()
   expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 ) << QgsPoint( 10, 10 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
-  wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
+  wkt = QStringLiteral( "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
   QgsMultiPolyline multiLine = result.asMultiPolyline();
@@ -3590,7 +3590,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( multiLine, expectedMultiline ) );
 
   //polygon
-  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
+  wkt = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
   QgsPolygon poly = result.asPolygon();
@@ -3604,7 +3604,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
 
   //polygon with max angle - should be unchanged
-  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))";
+  wkt = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25, -1, 50 );
   poly = result.asPolygon();
@@ -3614,7 +3614,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
 
   //multipolygon)
-  wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
+  wkt = QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.1 );
   QgsMultiPolygon multipoly = result.asMultiPolygon();
@@ -3632,8 +3632,8 @@ void TestQgsGeometry::smoothCheck()
 void TestQgsGeometry::unaryUnion()
 {
   //test QgsGeometry::unaryUnion with null geometry
-  QString wkt1 = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))";
-  QString wkt2 = "Polygon ((2 2, 4 2, 4 4, 2 4, 2 2))";
+  QString wkt1 = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))" );
+  QString wkt2 = QStringLiteral( "Polygon ((2 2, 4 2, 4 4, 2 4, 2 2))" );
   QgsGeometry geom1( QgsGeometry::fromWkt( wkt1 ) );
   QgsGeometry geom2( QgsGeometry::fromWkt( wkt2 ) );
   QgsGeometry empty;
@@ -3646,7 +3646,7 @@ void TestQgsGeometry::unaryUnion()
 
 void TestQgsGeometry::dataStream()
 {
-  QString wkt = "Point (40 50)";
+  QString wkt = QStringLiteral( "Point (40 50)" );
   QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
 
   QByteArray ba;
@@ -3675,51 +3675,51 @@ void TestQgsGeometry::dataStream()
 void TestQgsGeometry::exportToGeoJSON()
 {
   //Point
-  QString wkt = "Point (40 50)";
+  QString wkt = QStringLiteral( "Point (40 50)" );
   QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
   QString obtained = geom.exportToGeoJSON();
-  QString geojson = "{\"type\": \"Point\", \"coordinates\": [40, 50]}";
+  QString geojson = QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [40, 50]}" );
   QCOMPARE( obtained, geojson );
 
   //MultiPoint
-  wkt = "MultiPoint (0 0, 10 0, 10 10, 20 10)";
+  wkt = QStringLiteral( "MultiPoint (0 0, 10 0, 10 10, 20 10)" );
   geom = QgsGeometry::fromWkt( wkt );
   obtained = geom.exportToGeoJSON();
-  geojson = "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]] }";
+  geojson = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]] }" );
   QCOMPARE( obtained, geojson );
 
   //Linestring
-  wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
+  wkt = QStringLiteral( "LineString(0 0, 10 0, 10 10, 20 10)" );
   geom = QgsGeometry::fromWkt( wkt );
   obtained = geom.exportToGeoJSON();
-  geojson = "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]]}";
+  geojson = QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [10, 0], [10, 10], [20, 10]]}" );
   QCOMPARE( obtained, geojson );
 
   //MultiLineString
-  wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
+  wkt = QStringLiteral( "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" );
   geom = QgsGeometry::fromWkt( wkt );
   obtained = geom.exportToGeoJSON();
-  geojson = "{\"type\": \"MultiLineString\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [20, 10]], [ [30, 30], [40, 30], [40, 40], [50, 40]]] }";
+  geojson = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [20, 10]], [ [30, 30], [40, 30], [40, 40], [50, 40]]] }" );
   QCOMPARE( obtained, geojson );
 
   //Polygon
-  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
+  wkt = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))" );
   geom = QgsGeometry::fromWkt( wkt );
   obtained = geom.exportToGeoJSON();
-  geojson = "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], [ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]] }";
+  geojson = QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]], [ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]] }" );
   QCOMPARE( obtained, geojson );
 
   //MultiPolygon
-  wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
+  wkt = QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))" );
   geom = QgsGeometry::fromWkt( wkt );
   obtained = geom.exportToGeoJSON();
-  geojson = "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }";
+  geojson = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]], [[ [2, 2], [4, 2], [4, 4], [2, 4], [2, 2]]]] }" );
   QCOMPARE( obtained, geojson );
 
   // no geometry
   QgsGeometry nullGeom( nullptr );
   obtained = nullGeom.exportToGeoJSON();
-  geojson = "null";
+  geojson = QStringLiteral( "null" );
   QCOMPARE( obtained, geojson );
 }
 
@@ -3825,7 +3825,7 @@ void TestQgsGeometry::wkbInOut()
 
 void TestQgsGeometry::segmentizeCircularString()
 {
-  QString wkt( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" );
+  QString wkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" ) );
   QgsCircularString* circularString = dynamic_cast<QgsCircularString*>( QgsGeometryFactory::geomFromWkt( wkt ) );
   QVERIFY( circularString );
   QgsLineString* lineString = circularString->curveToLine();

@@ -78,25 +78,25 @@ void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
 {
   clear();
 
-  QDomElement layerCoordTransformInfoElem = parentNode.firstChildElement( "layer_coordinate_transform_info" );
+  QDomElement layerCoordTransformInfoElem = parentNode.firstChildElement( QStringLiteral( "layer_coordinate_transform_info" ) );
   if ( !layerCoordTransformInfoElem.isNull() )
   {
-    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( QStringLiteral( "layer_coordinate_transform" ) );
     QDomElement layerCoordTransformElem;
     for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
     {
       layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
-      QString layerId = layerCoordTransformElem.attribute( "layerid" );
+      QString layerId = layerCoordTransformElem.attribute( QStringLiteral( "layerid" ) );
       if ( layerId.isEmpty() )
       {
         continue;
       }
 
       addEntry( layerId,
-                layerCoordTransformElem.attribute( "srcAuthId" ),
-                layerCoordTransformElem.attribute( "destAuthId" ),
-                layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt(),
-                layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt()
+                layerCoordTransformElem.attribute( QStringLiteral( "srcAuthId" ) ),
+                layerCoordTransformElem.attribute( QStringLiteral( "destAuthId" ) ),
+                layerCoordTransformElem.attribute( QStringLiteral( "srcDatumTransform" ), QStringLiteral( "-1" ) ).toInt(),
+                layerCoordTransformElem.attribute( QStringLiteral( "destDatumTransform" ), QStringLiteral( "-1" ) ).toInt()
               );
     }
   }
@@ -105,16 +105,16 @@ void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
 void QgsDatumTransformStore::writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const
 {
   // layer coordinate transform infos
-  QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
+  QDomElement layerCoordTransformInfo = theDoc.createElement( QStringLiteral( "layer_coordinate_transform_info" ) );
 
   for ( QHash< QString, Entry >::const_iterator coordIt = mEntries.constBegin(); coordIt != mEntries.constEnd(); ++coordIt )
   {
-    QDomElement layerCoordTransformElem = theDoc.createElement( "layer_coordinate_transform" );
-    layerCoordTransformElem.setAttribute( "layerid", coordIt.key() );
-    layerCoordTransformElem.setAttribute( "srcAuthId", coordIt->srcAuthId );
-    layerCoordTransformElem.setAttribute( "destAuthId", coordIt->destAuthId );
-    layerCoordTransformElem.setAttribute( "srcDatumTransform", QString::number( coordIt->srcDatumTransform ) );
-    layerCoordTransformElem.setAttribute( "destDatumTransform", QString::number( coordIt->destDatumTransform ) );
+    QDomElement layerCoordTransformElem = theDoc.createElement( QStringLiteral( "layer_coordinate_transform" ) );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "layerid" ), coordIt.key() );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "srcAuthId" ), coordIt->srcAuthId );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "destAuthId" ), coordIt->destAuthId );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "srcDatumTransform" ), QString::number( coordIt->srcDatumTransform ) );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "destDatumTransform" ), QString::number( coordIt->destDatumTransform ) );
     layerCoordTransformInfo.appendChild( layerCoordTransformElem );
   }
   parentNode.appendChild( layerCoordTransformInfo );

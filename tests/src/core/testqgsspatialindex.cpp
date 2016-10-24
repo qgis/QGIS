@@ -143,7 +143,7 @@ class TestQgsSpatialIndex : public QObject
 
     void benchmarkBulkLoad()
     {
-      QgsVectorLayer* vl = new QgsVectorLayer( "Point", "x", "memory" );
+      QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       for ( int i = 0; i < 100; ++i )
       {
         QgsFeatureList flist;

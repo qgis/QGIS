@@ -137,11 +137,11 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
     QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( parentNode );
     if ( QgsMapLayer* layer = nodeLayer->layer() )
     {
-      int widgetsCount = layer->customProperty( "embeddedWidgets/count", 0 ).toInt();
+      int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
       QList<QgsLayerTreeModelLegendNode*> legendNodes = layerTreeModel()->layerLegendNodes( nodeLayer );
       for ( int i = 0; i < widgetsCount; ++i )
       {
-        QString providerId = layer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+        QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
         if ( QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
@@ -155,7 +155,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
   if ( QgsLayerTree::isLayer( parentNode ) )
   {
     // if ShowLegendAsTree flag is enabled in model, we may need to expand some legend nodes
-    QStringList expandedNodeKeys = parentNode->customProperty( "expandedLegendNodes" ).toStringList();
+    QStringList expandedNodeKeys = parentNode->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
     if ( expandedNodeKeys.isEmpty() )
       return;
 
@@ -193,18 +193,18 @@ void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex& index )
   else if ( QgsLayerTreeModelLegendNode* node = layerTreeModel()->index2legendNode( index ) )
   {
     QString ruleKey = node->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
-    QStringList lst = node->layerNode()->customProperty( "expandedLegendNodes" ).toStringList();
+    QStringList lst = node->layerNode()->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
     bool expanded = isExpanded( index );
     bool isInList = lst.contains( ruleKey );
     if ( expanded && !isInList )
     {
       lst.append( ruleKey );
-      node->layerNode()->setCustomProperty( "expandedLegendNodes", lst );
+      node->layerNode()->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
     }
     else if ( !expanded && isInList )
     {
       lst.removeAll( ruleKey );
-      node->layerNode()->setCustomProperty( "expandedLegendNodes", lst );
+      node->layerNode()->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
     }
   }
 }

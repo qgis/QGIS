@@ -61,7 +61,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
-        item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/action.svg" ) );
+        item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) ) );
       }
       else
       {
@@ -71,15 +71,15 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
         switch ( vl->fields().fieldOrigin( idx ) )
         {
           case QgsFields::OriginExpression:
-            item->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
             break;
 
           case QgsFields::OriginJoin:
-            item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/join.png" ) );
+            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
             break;
 
           default:
-            item->setIcon( QgsApplication::getThemeIcon( "/propertyicons/attributes.png" ) );
+            item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.png" ) ) );
             break;
         }
       }
@@ -97,13 +97,13 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/QgsOrganizeTableColumnsDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
 }
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const

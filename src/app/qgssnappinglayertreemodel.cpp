@@ -40,9 +40,9 @@ QWidget* QgsSnappingLayerDelegate::createEditor( QWidget* parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
     QComboBox* w = new QComboBox( parent );
-    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), "Vertex", QgsSnappingConfig::Vertex );
-    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), "Vertex and segment", QgsSnappingConfig::VertexAndSegment );
-    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), "Segment", QgsSnappingConfig::Segment );
+    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), QStringLiteral( "Vertex" ), QgsSnappingConfig::Vertex );
+    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), QStringLiteral( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
+    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), QStringLiteral( "Segment" ), QgsSnappingConfig::Segment );
     return w;
   }
 

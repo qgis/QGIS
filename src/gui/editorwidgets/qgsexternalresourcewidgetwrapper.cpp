@@ -41,7 +41,7 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
     {
       return QVariant( field().type() );
     }
@@ -93,7 +93,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     }
   }
   else
@@ -102,41 +102,41 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
   if ( mQgsWidget )
   {
     mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
-    if ( config().contains( "UseLink" ) )
+    if ( config().contains( QStringLiteral( "UseLink" ) ) )
     {
-      mQgsWidget->fileWidget()->setUseLink( config( "UseLink" ).toBool() );
+      mQgsWidget->fileWidget()->setUseLink( config( QStringLiteral( "UseLink" ) ).toBool() );
     }
-    if ( config().contains( "FullUrl" ) )
+    if ( config().contains( QStringLiteral( "FullUrl" ) ) )
     {
-      mQgsWidget->fileWidget()->setFullUrl( config( "FullUrl" ).toBool() );
+      mQgsWidget->fileWidget()->setFullUrl( config( QStringLiteral( "FullUrl" ) ).toBool() );
     }
-    if ( config().contains( "DefaultRoot" ) )
+    if ( config().contains( QStringLiteral( "DefaultRoot" ) ) )
     {
-      mQgsWidget->setDefaultRoot( config( "DefaultRoot" ).toString() );
+      mQgsWidget->setDefaultRoot( config( QStringLiteral( "DefaultRoot" ) ).toString() );
     }
-    if ( config().contains( "StorageMode" ) )
+    if ( config().contains( QStringLiteral( "StorageMode" ) ) )
     {
-      mQgsWidget->fileWidget()->setStorageMode(( QgsFileWidget::StorageMode )config( "StorageMode" ).toInt() );
+      mQgsWidget->fileWidget()->setStorageMode(( QgsFileWidget::StorageMode )config( QStringLiteral( "StorageMode" ) ).toInt() );
     }
-    if ( config().contains( "RelativeStorage" ) )
+    if ( config().contains( QStringLiteral( "RelativeStorage" ) ) )
     {
-      mQgsWidget->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
+      mQgsWidget->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( QStringLiteral( "RelativeStorage" ) ).toInt() );
     }
-    if ( config().contains( "FileWidget" ) )
+    if ( config().contains( QStringLiteral( "FileWidget" ) ) )
     {
-      mQgsWidget->setFileWidgetVisible( config( "FileWidget" ).toBool() );
+      mQgsWidget->setFileWidgetVisible( config( QStringLiteral( "FileWidget" ) ).toBool() );
     }
-    if ( config().contains( "FileWidgetButton" ) )
+    if ( config().contains( QStringLiteral( "FileWidgetButton" ) ) )
     {
-      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( config( "FileWidgetButton" ).toBool() );
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( config( QStringLiteral( "FileWidgetButton" ) ).toBool() );
     }
-    if ( config().contains( "DocumentViewer" ) )
+    if ( config().contains( QStringLiteral( "DocumentViewer" ) ) )
     {
-      mQgsWidget->setDocumentViewerContent(( QgsExternalResourceWidget::DocumentViewerContent )config( "DocumentViewer" ).toInt() );
+      mQgsWidget->setDocumentViewerContent(( QgsExternalResourceWidget::DocumentViewerContent )config( QStringLiteral( "DocumentViewer" ) ).toInt() );
     }
-    if ( config().contains( "FileWidgetFilter" ) )
+    if ( config().contains( QStringLiteral( "FileWidgetFilter" ) ) )
     {
-      mQgsWidget->fileWidget()->setFilter( config( "FileWidgetFilter" ).toString() );
+      mQgsWidget->fileWidget()->setFilter( config( QStringLiteral( "FileWidgetFilter" ) ).toString() );
     }
   }
 
@@ -151,7 +151,7 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->setText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     }
     else
     {
@@ -169,7 +169,7 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      mQgsWidget->setDocumentPath( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mQgsWidget->setDocumentPath( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     }
     else
     {
@@ -195,6 +195,6 @@ void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus( bool constr
     if ( constraintValid )
       mLineEdit->setStyleSheet( QString() );
     else
-      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+      mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
   }
 }

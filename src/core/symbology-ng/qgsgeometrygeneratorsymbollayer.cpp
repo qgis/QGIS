@@ -25,18 +25,18 @@ QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer()
 
 QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap& properties )
 {
-  QString expression = properties.value( "geometryModifier" );
+  QString expression = properties.value( QStringLiteral( "geometryModifier" ) );
   if ( expression.isEmpty() )
   {
-    expression = "$geometry";
+    expression = QStringLiteral( "$geometry" );
   }
   QgsGeometryGeneratorSymbolLayer* symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
 
-  if ( properties.value( "SymbolType" ) == "Marker" )
+  if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Marker" ) )
   {
     symbolLayer->setSubSymbol( QgsMarkerSymbol::createSimple( properties ) );
   }
-  else if ( properties.value( "SymbolType" ) == "Line" )
+  else if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Line" ) )
   {
     symbolLayer->setSubSymbol( QgsLineSymbol::createSimple( properties ) );
   }
@@ -63,7 +63,7 @@ QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString&
 
 QString QgsGeometryGeneratorSymbolLayer::layerType() const
 {
-  return "GeometryGenerator";
+  return QStringLiteral( "GeometryGenerator" );
 }
 
 void QgsGeometryGeneratorSymbolLayer::setSymbolType( QgsSymbol::SymbolType symbolType )
@@ -127,17 +127,17 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::clone() const
 QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
 {
   QgsStringMap props;
-  props.insert( "geometryModifier" , mExpression->expression() );
+  props.insert( QStringLiteral( "geometryModifier" ) , mExpression->expression() );
   switch ( mSymbolType )
   {
     case QgsSymbol::Marker:
-      props.insert( "SymbolType", "Marker" );
+      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Marker" ) );
       break;
     case QgsSymbol::Line:
-      props.insert( "SymbolType", "Line" );
+      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Line" ) );
       break;
     default:
-      props.insert( "SymbolType", "Fill" );
+      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
       break;
   }
   saveDataDefinedProperties( props );

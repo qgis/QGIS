@@ -37,7 +37,7 @@ dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WindowFlags fl ):
 dxf2shpConverterGui::~dxf2shpConverterGui()
 {
   QSettings settings;
-  settings.setValue( "/Plugin-DXF/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Plugin-DXF/geometry" ), saveGeometry() );
 }
 
 void dxf2shpConverterGui::on_buttonBox_accepted()
@@ -87,16 +87,16 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
 
   parser->print_shpObjects();
 
-  emit createLayer( parser->outputShp(), "Data layer" );
+  emit createLayer( parser->outputShp(), QStringLiteral( "Data layer" ) );
 
   if ( convertTextCheck->isChecked() && parser->textObjectsSize() > 0 )
   {
-    emit createLayer( parser->outputTShp(), "Text layer" );
+    emit createLayer( parser->outputTShp(), QStringLiteral( "Text layer" ) );
   }
 
   if ( convertInsertCheck->isChecked() && parser->insertObjectsSize() > 0 )
   {
-    emit createLayer( parser->outputIShp(), "Insert layer" );
+    emit createLayer( parser->outputIShp(), QStringLiteral( "Insert layer" ) );
   }
 
   delete parser;
@@ -125,7 +125,7 @@ void dxf2shpConverterGui::on_buttonBox_helpRequested()
                   "CNR, Milan Unit (Information Technology), Construction Technologies Institute.\n"
                   "For support send a mail to scala@itc.cnr.it\n" );
 
-  QMessageBox::information( this, "Help", s );
+  QMessageBox::information( this, QStringLiteral( "Help" ), s );
 }
 
 void dxf2shpConverterGui::on_btnBrowseForFile_clicked()
@@ -143,13 +143,13 @@ void dxf2shpConverterGui::getInputFileName()
   QSettings settings;
   QString s = QFileDialog::getOpenFileName( this,
               tr( "Choose a DXF file to open" ),
-              settings.value( "/Plugin-DXF/text_path", QDir::homePath() ).toString(),
+              settings.value( QStringLiteral( "/Plugin-DXF/text_path" ), QDir::homePath() ).toString(),
               tr( "DXF files" ) + " (*.dxf)" );
 
   if ( !s.isEmpty() )
   {
     name->setText( s );
-    settings.setValue( "/Plugin-DXF/text_path", QFileInfo( s ).absolutePath() );
+    settings.setValue( QStringLiteral( "/Plugin-DXF/text_path" ), QFileInfo( s ).absolutePath() );
   }
 }
 
@@ -158,22 +158,22 @@ void dxf2shpConverterGui::getOutputDir()
   QSettings settings;
   QString s = QFileDialog::getSaveFileName( this,
               tr( "Choose a file name to save to" ),
-              settings.value( "/UI/lastShapefileDir", QDir::homePath() ).toString(),
+              settings.value( QStringLiteral( "/UI/lastShapefileDir" ), QDir::homePath() ).toString(),
               tr( "Shapefile" ) + " (*.shp)" );
 
   if ( !s.isEmpty() )
   {
-    if ( !s.endsWith( ".shp", Qt::CaseInsensitive ) )
+    if ( !s.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     {
-      s += ".shp";
+      s += QLatin1String( ".shp" );
     }
     dirout->setText( s );
-    settings.setValue( "/UI/lastShapefileDir", QFileInfo( s ).absolutePath() );
+    settings.setValue( QStringLiteral( "/UI/lastShapefileDir" ), QFileInfo( s ).absolutePath() );
   }
 }
 
 void dxf2shpConverterGui::restoreState()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/Plugin-DXF/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Plugin-DXF/geometry" ) ).toByteArray() );
 }

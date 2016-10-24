@@ -28,26 +28,26 @@ QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource* source 
 
 QString nodeType( const QgsExpression::Node* node )
 {
-  QString opString = "?";
-  if ( node->nodeType() == QgsExpression::ntUnaryOperator ) opString =  "ntUnaryOperator";
-  if ( node->nodeType() == QgsExpression::ntBinaryOperator ) opString =  "ntBinaryOperator";
-  if ( node->nodeType() == QgsExpression::ntInOperator ) opString =  "ntInOperator";
-  if ( node->nodeType() == QgsExpression::ntFunction ) opString =  "ntFunction";
-  if ( node->nodeType() == QgsExpression::ntLiteral ) opString =  "ntLiteral";
-  if ( node->nodeType() == QgsExpression::ntColumnRef ) opString =  "ntColumnRef";
-  if ( node->nodeType() == QgsExpression::ntCondition ) opString =  "ntCondition";
-  QString result = QString( "%1 - " ).arg( node->nodeType() ) + opString;
+  QString opString = QStringLiteral( "?" );
+  if ( node->nodeType() == QgsExpression::ntUnaryOperator ) opString =  QStringLiteral( "ntUnaryOperator" );
+  if ( node->nodeType() == QgsExpression::ntBinaryOperator ) opString =  QStringLiteral( "ntBinaryOperator" );
+  if ( node->nodeType() == QgsExpression::ntInOperator ) opString =  QStringLiteral( "ntInOperator" );
+  if ( node->nodeType() == QgsExpression::ntFunction ) opString =  QStringLiteral( "ntFunction" );
+  if ( node->nodeType() == QgsExpression::ntLiteral ) opString =  QStringLiteral( "ntLiteral" );
+  if ( node->nodeType() == QgsExpression::ntColumnRef ) opString =  QStringLiteral( "ntColumnRef" );
+  if ( node->nodeType() == QgsExpression::ntCondition ) opString =  QStringLiteral( "ntCondition" );
+  QString result = QStringLiteral( "%1 - " ).arg( node->nodeType() ) + opString;
   return result;
 
 }
 
 QString resultType( QgsSqlExpressionCompiler::Result result )
 {
-  if ( result == QgsSqlExpressionCompiler::None ) return "None";
-  if ( result == QgsSqlExpressionCompiler::Complete ) return "Complete";
-  if ( result == QgsSqlExpressionCompiler::Partial ) return "Partial";
-  if ( result == QgsSqlExpressionCompiler::Fail ) return "Fail";
-  return "Other result";
+  if ( result == QgsSqlExpressionCompiler::None ) return QStringLiteral( "None" );
+  if ( result == QgsSqlExpressionCompiler::Complete ) return QStringLiteral( "Complete" );
+  if ( result == QgsSqlExpressionCompiler::Partial ) return QStringLiteral( "Partial" );
+  if ( result == QgsSqlExpressionCompiler::Fail ) return QStringLiteral( "Fail" );
+  return QStringLiteral( "Other result" );
 
 }
 
@@ -113,7 +113,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         rr = compileNode( n->operand(), result );
         if ( "NULL" == result.toUpper() )
         {
-          result = "";
+          result = QLatin1String( "" );
           return Fail;
         }
 
@@ -147,13 +147,13 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     switch ( bin->op() )
     {
       case QgsExpression::boMod:
-        result = QString( "MOD(%1,%2)" ).arg( left, right );
+        result = QStringLiteral( "MOD(%1,%2)" ).arg( left, right );
         compileResult = ( lr == Partial || rr == Partial ) ? Partial : Complete;
         QgsDebugMsg( QString( "MOD compile status:  %1" ).arg( compileResult ) + "; " + result );
         return compileResult;
 
       case QgsExpression::boPow:
-        result = QString( "power(%1,%2)" ).arg( left, right );
+        result = QStringLiteral( "power(%1,%2)" ).arg( left, right );
         compileResult = ( lr == Partial || rr == Partial ) ? Partial : Complete;
         QgsDebugMsg( QString( "POWER compile status:  %1" ).arg( compileResult ) + "; " + result );
         return compileResult;
@@ -162,7 +162,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         return Fail; //not supported, regexp syntax is too different to Qt
 
       case QgsExpression::boConcat:
-        result = QString( "%1 || %2" ).arg( left, right );
+        result = QStringLiteral( "%1 || %2" ).arg( left, right );
         compileResult = ( lr == Partial || rr == Partial ) ? Partial : Complete;
         QgsDebugMsg( QString( "CONCAT compile status:  %1" ).arg( compileResult ) + "; " + result );
         return compileResult;

@@ -56,7 +56,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
     return nullptr;
   }
 
-  QDomNodeList interpolationList = elem.elementsByTagName( "Interpolation" );
+  QDomNodeList interpolationList = elem.elementsByTagName( QStringLiteral( "Interpolation" ) );
   if ( interpolationList.size() < 1 )
   {
     QgsDebugMsg( "No Interpolation element found" );
@@ -65,14 +65,14 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QDomElement interpolationElem = interpolationList.at( 0 ).toElement();
 
   //create QgsInterpolator object from XML
-  QDomNodeList tinList = interpolationElem.elementsByTagName( "TINMethod" );
-  QDomNodeList idwList = interpolationElem.elementsByTagName( "IDWMethod" );
+  QDomNodeList tinList = interpolationElem.elementsByTagName( QStringLiteral( "TINMethod" ) );
+  QDomNodeList idwList = interpolationElem.elementsByTagName( QStringLiteral( "IDWMethod" ) );
 
   QgsInterpolator* theInterpolator = nullptr;
   QList<QgsInterpolator::LayerData> layerDataList;
   QgsInterpolator::LayerData currentLayerData;
   currentLayerData.vectorLayer = mVectorLayer;
-  QDomNodeList propertyNameList = interpolationElem.elementsByTagName( "PropertyName" );
+  QDomNodeList propertyNameList = interpolationElem.elementsByTagName( QStringLiteral( "PropertyName" ) );
   if ( propertyNameList.size() < 1 )
   {
     currentLayerData.zCoordInterpolation = true;
@@ -114,7 +114,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   //Resolution
   int nCols, nRows;
 
-  QDomNodeList resolutionNodeList = elem.elementsByTagName( "Resolution" );
+  QDomNodeList resolutionNodeList = elem.elementsByTagName( QStringLiteral( "Resolution" ) );
   if ( resolutionNodeList.size() < 1 )
   {
     //use default values...
@@ -124,8 +124,8 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   else
   {
     QDomElement resolutionElem = resolutionNodeList.at( 0 ).toElement();
-    nCols = resolutionElem.attribute( "ncols" ).toInt();
-    nRows = resolutionElem.attribute( "nrows" ).toInt();
+    nCols = resolutionElem.attribute( QStringLiteral( "ncols" ) ).toInt();
+    nRows = resolutionElem.attribute( QStringLiteral( "nrows" ) ).toInt();
     if ( nCols == 0 || nRows == 0 )
     {
       QgsDebugMsg( "Reading of resolution failed" );

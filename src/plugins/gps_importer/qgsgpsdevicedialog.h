@@ -29,7 +29,7 @@ class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase
     void on_pbnDeleteDevice_clicked();
     void on_pbnUpdateDevice_clicked();
     void on_pbnClose_clicked();
-    void slotUpdateDeviceList( const QString& selection = "" );
+    void slotUpdateDeviceList( const QString& selection = QLatin1String( "" ) );
     void slotSelectionChanged( QListWidgetItem *current );
 
   signals:

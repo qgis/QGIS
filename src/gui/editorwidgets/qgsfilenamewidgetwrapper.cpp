@@ -36,7 +36,7 @@ QVariant QgsFileNameWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    if ( mLineEdit->text() == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
       value = QVariant( field().type() );
     else
       value = mLineEdit->text();
@@ -103,7 +103,7 @@ void QgsFileNameWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
@@ -115,7 +115,7 @@ void QgsFileNameWidgetWrapper::setValue( const QVariant& value )
   if ( mLineEdit )
   {
     if ( value.isNull() )
-      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->setText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     else
       mLineEdit->setText( value.toString() );
   }
@@ -160,7 +160,7 @@ void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus( bool constraintVali
       mLineEdit->setStyleSheet( QString() );
     else
     {
-      mLineEdit->setStyleSheet( "QgsFilterLineEdit { background-color: #dd7777; }" );
+      mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
     }
   }
 }

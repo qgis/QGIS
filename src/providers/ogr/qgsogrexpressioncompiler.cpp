@@ -29,17 +29,17 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
   //for certain driver types, OGR forwards SQL through to the underlying provider. In these cases
   //the syntax may differ from OGR SQL, so we don't support compilation for these drivers
   //see http://www.gdal.org/ogr_sql.html
-  if ( mSource->mDriverName == "MySQL" )
+  if ( mSource->mDriverName == QLatin1String( "MySQL" ) )
     return Fail;
-  else if ( mSource->mDriverName == "PostgreSQL" )
+  else if ( mSource->mDriverName == QLatin1String( "PostgreSQL" ) )
     return Fail;
-  else if ( mSource->mDriverName == "OCI" )
+  else if ( mSource->mDriverName == QLatin1String( "OCI" ) )
     return Fail;
-  else if ( mSource->mDriverName == "ODBC" )
+  else if ( mSource->mDriverName == QLatin1String( "ODBC" ) )
     return Fail;
-  else if ( mSource->mDriverName == "PGeo" )
+  else if ( mSource->mDriverName == QLatin1String( "PGeo" ) )
     return Fail;
-  else if ( mSource->mDriverName == "MSSQLSpatial" )
+  else if ( mSource->mDriverName == QLatin1String( "MSSQLSpatial" ) )
     return Fail;
 
   return QgsSqlExpressionCompiler::compile( exp );

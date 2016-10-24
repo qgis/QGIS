@@ -34,7 +34,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
 
   Q_FOREACH ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
   {
-    mComboRelation->addItem( QString( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
+    mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     if ( relation.referencedLayer() )
     {
       mExpressionWidget->setField( relation.referencedLayer()->displayExpression() );
@@ -56,21 +56,21 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
 
 void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  mCbxAllowNull->setChecked( config.value( "AllowNULL", false ).toBool() );
-  mCbxOrderByValue->setChecked( config.value( "OrderByValue", false ).toBool() );
-  mCbxShowForm->setChecked( config.value( "ShowForm", true ).toBool() );
+  mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
+  mCbxOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ), false ).toBool() );
+  mCbxShowForm->setChecked( config.value( QStringLiteral( "ShowForm" ), true ).toBool() );
 
-  if ( config.contains( "Relation" ) )
+  if ( config.contains( QStringLiteral( "Relation" ) ) )
   {
-    mComboRelation->setCurrentIndex( mComboRelation->findData( config.value( "Relation" ).toString() ) );
+    mComboRelation->setCurrentIndex( mComboRelation->findData( config.value( QStringLiteral( "Relation" ) ).toString() ) );
     relationChanged( mComboRelation->currentIndex() );
   }
 
-  mCbxMapIdentification->setChecked( config.value( "MapIdentification", false ).toBool() );
-  mCbxAllowAddFeatures->setChecked( config.value( "AllowAddFeatures", false ).toBool() );
-  mCbxReadOnly->setChecked( config.value( "ReadOnly", false ).toBool() );
+  mCbxMapIdentification->setChecked( config.value( QStringLiteral( "MapIdentification" ), false ).toBool() );
+  mCbxAllowAddFeatures->setChecked( config.value( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
+  mCbxReadOnly->setChecked( config.value( QStringLiteral( "ReadOnly" ), false ).toBool() );
 
-  if ( config.contains( "FilterFields" ) )
+  if ( config.contains( QStringLiteral( "FilterFields" ) ) )
   {
     mFilterGroupBox->setChecked( true );
     Q_FOREACH ( const QString& fld, config.value( "FilterFields" ).toStringList() )
@@ -78,7 +78,7 @@ void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& conf
       addFilterField( fld );
     }
 
-    mCbxChainFilters->setChecked( config.value( "ChainFilters" ).toBool() );
+    mCbxChainFilters->setChecked( config.value( QStringLiteral( "ChainFilters" ) ).toBool() );
   }
 }
 
@@ -118,13 +118,13 @@ void QgsRelationReferenceConfigDlg::on_mRemoveFilterButton_clicked()
 QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
 {
   QgsEditorWidgetConfig myConfig;
-  myConfig.insert( "AllowNULL", mCbxAllowNull->isChecked() );
-  myConfig.insert( "OrderByValue", mCbxOrderByValue->isChecked() );
-  myConfig.insert( "ShowForm", mCbxShowForm->isChecked() );
-  myConfig.insert( "MapIdentification", mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
-  myConfig.insert( "ReadOnly", mCbxReadOnly->isChecked() );
-  myConfig.insert( "Relation", mComboRelation->currentData() );
-  myConfig.insert( "AllowAddFeatures", mCbxAllowAddFeatures->isChecked() );
+  myConfig.insert( QStringLiteral( "AllowNULL" ), mCbxAllowNull->isChecked() );
+  myConfig.insert( QStringLiteral( "OrderByValue" ), mCbxOrderByValue->isChecked() );
+  myConfig.insert( QStringLiteral( "ShowForm" ), mCbxShowForm->isChecked() );
+  myConfig.insert( QStringLiteral( "MapIdentification" ), mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
+  myConfig.insert( QStringLiteral( "ReadOnly" ), mCbxReadOnly->isChecked() );
+  myConfig.insert( QStringLiteral( "Relation" ), mComboRelation->currentData() );
+  myConfig.insert( QStringLiteral( "AllowAddFeatures" ), mCbxAllowAddFeatures->isChecked() );
 
   if ( mFilterGroupBox->isChecked() )
   {
@@ -134,9 +134,9 @@ QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
     {
       filterFields << mFilterFieldsList->item( i )->data( Qt::UserRole ).toString();
     }
-    myConfig.insert( "FilterFields", filterFields );
+    myConfig.insert( QStringLiteral( "FilterFields" ), filterFields );
 
-    myConfig.insert( "ChainFilters", mCbxChainFilters->isChecked() );
+    myConfig.insert( QStringLiteral( "ChainFilters" ), mCbxChainFilters->isChecked() );
   }
 
   if ( mReferencedLayer )

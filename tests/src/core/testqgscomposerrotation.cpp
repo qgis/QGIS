@@ -74,7 +74,7 @@ void TestQgsComposerRotation::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
@@ -93,14 +93,14 @@ void TestQgsComposerRotation::initTestCase()
   mComposerRect->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
 
   mComposerLabel = new QgsComposerLabel( mComposition );
-  mComposerLabel->setText( "test label" );
+  mComposerLabel->setText( QStringLiteral( "test label" ) );
   mComposerLabel->setFont( QgsFontUtils::getStandardTestFont() );
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposerLabel->setBackgroundEnabled( true );
 
-  mReport = "<h1>Composer Rotation Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Rotation Tests</h1>\n" );
 }
 
 void TestQgsComposerRotation::cleanupTestCase()
@@ -144,8 +144,8 @@ void TestQgsComposerRotation::shapeRotation()
 
   mComposerRect->setItemRotation( 45, true );
 
-  QgsCompositionChecker checker( "composerrotation_shape", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_shape" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerRect );
@@ -157,8 +157,8 @@ void TestQgsComposerRotation::labelRotation()
   mComposition->addComposerLabel( mComposerLabel );
   mComposerLabel->setItemRotation( 135, true );
 
-  QgsCompositionChecker checker( "composerrotation_label", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_label" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -175,8 +175,8 @@ void TestQgsComposerRotation::mapRotation()
   mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   mComposerMap->setMapRotation( 90 );
 
-  QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_maprotation" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport, 0, 200 ) );
 }
 
@@ -193,8 +193,8 @@ void TestQgsComposerRotation::mapItemRotation()
   mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   mComposerMap->setItemRotation( 90, true );
 
-  QgsCompositionChecker checker( "composerrotation_mapitemrotation", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_mapitemrotation" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 

@@ -747,7 +747,7 @@ class CORE_EXPORT QgsGeometry
         QgsPoint location;
         bool hasLocation;
       public:
-        Error() : message( "none" ), hasLocation( false ) {}
+        Error() : message( QStringLiteral( "none" ) ), hasLocation( false ) {}
         explicit Error( const QString& m ) : message( m ), hasLocation( false ) {}
         Error( const QString& m, const QgsPoint& p ) : message( m ), location( p ), hasLocation( true ) {}
 

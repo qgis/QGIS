@@ -79,7 +79,7 @@ int QgsGml::getFeatures( const QString& uri, QgsWkbTypes::Type* wkbType, QgsRect
   }
   else if ( !userName.isNull() || !password.isNull() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName, password ).toLatin1().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( userName, password ).toLatin1().toBase64() );
   }
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
@@ -106,7 +106,7 @@ int QgsGml::getFeatures( const QString& uri, QgsWkbTypes::Type* wkbType, QgsRect
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
   for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
   {
-    if (( *it )->objectName() == "QgisApp" )
+    if (( *it )->objectName() == QLatin1String( "QgisApp" ) )
     {
       mainWindow = *it;
       break;
@@ -264,7 +264,7 @@ QgsCoordinateReferenceSystem QgsGml::crs() const
   QgsCoordinateReferenceSystem crs;
   if ( mParser.getEPSGCode() != 0 )
   {
-    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
+    crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( mParser.getEPSGCode() ) );
   }
   return crs;
 }
@@ -518,12 +518,12 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     mParseModeStack.push( coordinate );
     mCoorMode = QgsGmlStreamingParser::coordinate;
     mStringCash.clear();
-    mCoordinateSeparator = readAttribute( "cs", attr );
+    mCoordinateSeparator = readAttribute( QStringLiteral( "cs" ), attr );
     if ( mCoordinateSeparator.isEmpty() )
     {
       mCoordinateSeparator = ',';
     }
-    mTupleSeparator = readAttribute( "ts", attr );
+    mTupleSeparator = readAttribute( QStringLiteral( "ts" ), attr );
     if ( mTupleSeparator.isEmpty() )
     {
       mTupleSeparator = ' ';
@@ -537,7 +537,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     mStringCash.clear();
     if ( mDimension == 0 )
     {
-      QString srsDimension = readAttribute( "srsDimension", attr );
+      QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
       bool ok;
       int dimension = srsDimension.toInt( &ok );
       if ( ok )
@@ -646,7 +646,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
     mCurrentFeature->setAttributes( attributes );
     mParseModeStack.push( QgsGmlStreamingParser::feature );
-    mCurrentFeatureId = readAttribute( "fid", attr );
+    mCurrentFeatureId = readAttribute( QStringLiteral( "fid" ), attr );
     if ( mCurrentFeatureId.isEmpty() )
     {
       // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
@@ -735,12 +735,12 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     {
       // QGIS server (2.2) is using:
       // <Attribute value="My description" name="desc"/>
-      if ( localName.compare( "attribute", Qt::CaseInsensitive ) == 0 )
+      if ( localName.compare( QLatin1String( "attribute" ), Qt::CaseInsensitive ) == 0 )
       {
-        QString name = readAttribute( "name", attr );
+        QString name = readAttribute( QStringLiteral( "name" ), attr );
         if ( mThematicAttributes.contains( name ) )
         {
-          QString value = readAttribute( "value", attr );
+          QString value = readAttribute( QStringLiteral( "value" ), attr );
           setAttribute( name, value );
         }
       }
@@ -748,15 +748,15 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   }
   else if ( mParseDepth == 0 && LOCALNAME_EQUALS( "FeatureCollection" ) )
   {
-    QString numberReturned = readAttribute( "numberReturned", attr ); // WFS 2.0
+    QString numberReturned = readAttribute( QStringLiteral( "numberReturned" ), attr ); // WFS 2.0
     if ( numberReturned.isEmpty() )
-      numberReturned = readAttribute( "numberOfFeatures", attr ); // WFS 1.1
+      numberReturned = readAttribute( QStringLiteral( "numberOfFeatures" ), attr ); // WFS 1.1
     bool conversionOk;
     mNumberReturned = numberReturned.toInt( &conversionOk );
     if ( !conversionOk )
       mNumberReturned = -1;
 
-    QString numberMatched = readAttribute( "numberMatched", attr ); // WFS 2.0
+    QString numberMatched = readAttribute( QStringLiteral( "numberMatched" ), attr ); // WFS 2.0
     mNumberMatched = numberMatched.toInt( &conversionOk );
     if ( !conversionOk ) // likely since numberMatched="unknown" is legal
       mNumberMatched = -1;
@@ -802,7 +802,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
   {
     // srsDimension can also be set on the top geometry element
     // e.g. https://data.linz.govt.nz/services;key=XXXXXXXX/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=data.linz.govt.nz:layer-524
-    QString srsDimension = readAttribute( "srsDimension", attr );
+    QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
     bool ok;
     int dimension = srsDimension.toInt( &ok );
     if ( ok )
@@ -1194,13 +1194,13 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int& epsgNr, const XML_Char** 
       QString epsgString( attr[i+1] );
       QString epsgNrString;
       bool bIsUrn = false;
-      if ( epsgString.startsWith( "http" ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
+      if ( epsgString.startsWith( QLatin1String( "http" ) ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
       {
         epsgNrString = epsgString.section( '#', 1, 1 );
       }
       // WFS >= 1.1
-      else if ( epsgString.startsWith( "urn:ogc:def:crs:EPSG:" ) ||
-                epsgString.startsWith( "urn:x-ogc:def:crs:EPSG:" ) )
+      else if ( epsgString.startsWith( QLatin1String( "urn:ogc:def:crs:EPSG:" ) ) ||
+                epsgString.startsWith( QLatin1String( "urn:x-ogc:def:crs:EPSG:" ) ) )
       {
         bIsUrn = true;
         epsgNrString = epsgString.split( ':' ).last();
@@ -1218,7 +1218,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int& epsgNr, const XML_Char** 
       epsgNr = eNr;
       mSrsName = epsgString;
 
-      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) );
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
       if ( crs.isValid() )
       {
         if ((( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||

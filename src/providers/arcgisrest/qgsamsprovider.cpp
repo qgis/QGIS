@@ -45,8 +45,8 @@ void QgsAmsLegendFetcher::start()
   // http://resources.arcgis.com/en/help/rest/apiref/mslegend.html
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
-  QUrl queryUrl( dataSource.param( "url" ) + "/legend" );
-  queryUrl.addQueryItem( "f", "json" );
+  QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
+  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   mQuery->start( queryUrl, &mQueryReply );
 }
 
@@ -62,7 +62,7 @@ void QgsAmsLegendFetcher::handleFinished()
   QJsonDocument doc = QJsonDocument::fromJson( mQueryReply, &err );
   if ( doc.isNull() )
   {
-    emit error( QString( "Parsing error:" ).arg( err.errorString() ) );
+    emit error( QStringLiteral( "Parsing error:" ).arg( err.errorString() ) );
   }
   QVariantMap queryResults = doc.object().toVariantMap();
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
@@ -70,19 +70,19 @@ void QgsAmsLegendFetcher::handleFinished()
   foreach ( const QVariant& result, queryResults["layers"].toList() )
   {
     QVariantMap queryResultMap = result.toMap();
-    QString layerId = queryResultMap["layerId"].toString();
-    if ( layerId != dataSource.param( "layer" ) && !mProvider->subLayers().contains( layerId ) )
+    QString layerId = queryResultMap[QStringLiteral( "layerId" )].toString();
+    if ( layerId != dataSource.param( QStringLiteral( "layer" ) ) && !mProvider->subLayers().contains( layerId ) )
     {
       continue;
     }
-    QVariantList legendSymbols = queryResultMap["legend"].toList();
+    QVariantList legendSymbols = queryResultMap[QStringLiteral( "legend" )].toList();
     foreach ( const QVariant& legendEntry, legendSymbols )
     {
       QVariantMap legendEntryMap = legendEntry.toMap();
-      QString label = legendEntryMap["label"].toString();
+      QString label = legendEntryMap[QStringLiteral( "label" )].toString();
       if ( label.isEmpty() && legendSymbols.size() == 1 )
-        label = queryResultMap["layerName"].toString();
-      QByteArray imageData = QByteArray::fromBase64( legendEntryMap["imageData"].toByteArray() );
+        label = queryResultMap[QStringLiteral( "layerName" )].toString();
+      QByteArray imageData = QByteArray::fromBase64( legendEntryMap[QStringLiteral( "imageData" )].toByteArray() );
       legendEntries.append( qMakePair( label, QImage::fromData( imageData ) ) );
     }
   }
@@ -126,23 +126,23 @@ QgsAmsProvider::QgsAmsProvider( const QString & uri )
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
   QgsDataSourceUri dataSource( dataSourceUri() );
-  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( "url" ), mErrorTitle, mError );
-  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( "url" ) + "/" + dataSource.param( "layer" ), mErrorTitle, mError );
+  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( QStringLiteral( "url" ) ), mErrorTitle, mError );
+  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) ), mErrorTitle, mError );
 
-  QVariantMap extentData = mLayerInfo["extent"].toMap();
-  mExtent.setXMinimum( extentData["xmin"].toDouble() );
-  mExtent.setYMinimum( extentData["ymin"].toDouble() );
-  mExtent.setXMaximum( extentData["xmax"].toDouble() );
-  mExtent.setYMaximum( extentData["ymax"].toDouble() );
-  mCrs = QgsArcGisRestUtils::parseSpatialReference( extentData["spatialReference"].toMap() );
+  QVariantMap extentData = mLayerInfo[QStringLiteral( "extent" )].toMap();
+  mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
+  mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
+  mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
+  mExtent.setYMaximum( extentData[QStringLiteral( "ymax" )].toDouble() );
+  mCrs = QgsArcGisRestUtils::parseSpatialReference( extentData[QStringLiteral( "spatialReference" )].toMap() );
   if ( !mCrs.isValid() )
   {
-    appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), "AMSProvider" ) );
+    appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AMSProvider" ) ) );
     return;
   }
   foreach ( const QVariant& sublayer, mLayerInfo["subLayers"].toList() )
   {
-    mSubLayers.append( sublayer.toMap()["id"].toString() );
+    mSubLayers.append( sublayer.toMap()[QStringLiteral( "id" )].toString() );
     mSubLayerVisibilities.append( true );
   }
 
@@ -212,24 +212,24 @@ QgsRasterInterface * QgsAmsProvider::clone() const
 
 static inline QString dumpVariantMap( const QVariantMap& variantMap, const QString& title = QString() )
 {
-  QString result = "<table>";
+  QString result = QStringLiteral( "<table>" );
   if ( !title.isEmpty() )
   {
-    result += QString( "<tr><td class=\"glossy\" colspan=\"2\">%1</td></tr>" ).arg( title );
+    result += QStringLiteral( "<tr><td class=\"glossy\" colspan=\"2\">%1</td></tr>" ).arg( title );
   }
   foreach ( const QString& key, variantMap.keys() )
   {
     QVariantMap childMap = variantMap[key].toMap();
     if ( childMap.isEmpty() )
     {
-      result += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, variantMap[key].toString() );
+      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, variantMap[key].toString() );
     }
     else
     {
-      result += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, dumpVariantMap( childMap ) );
+      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, dumpVariantMap( childMap ) );
     }
   }
-  result += "</table>";
+  result += QLatin1String( "</table>" );
   return result;
 }
 
@@ -247,7 +247,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
   QgsDataSourceUri dataSource( dataSourceUri() );
 
   // Use of tiles currently only implemented if service CRS is meter based
-  if ( mServiceInfo["singleFusedMapCache"].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
+  if ( mServiceInfo[QStringLiteral( "singleFusedMapCache" )].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
     // Compute ideal resolution
     // - Measure distance in meters along lower and upper edge of bounding box
@@ -256,15 +256,15 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
     double targetRes = width / ( pixelWidth );
 
     // Tiles available, assemble image from tiles
-    QVariantMap tileInfo = mServiceInfo["tileInfo"].toMap();
-    int tileWidth = tileInfo["cols"].toInt();
-    int tileHeight = tileInfo["rows"].toInt();
-    QVariantMap origin = tileInfo["origin"].toMap();
-    double ox = origin["x"].toDouble();
-    double oy = origin["y"].toDouble();
+    QVariantMap tileInfo = mServiceInfo[QStringLiteral( "tileInfo" )].toMap();
+    int tileWidth = tileInfo[QStringLiteral( "cols" )].toInt();
+    int tileHeight = tileInfo[QStringLiteral( "rows" )].toInt();
+    QVariantMap origin = tileInfo[QStringLiteral( "origin" )].toMap();
+    double ox = origin[QStringLiteral( "x" )].toDouble();
+    double oy = origin[QStringLiteral( "y" )].toDouble();
 
     // Search matching resolution (tile resolution <= targetRes)
-    QList<QVariant> lodEntries = tileInfo["lods"].toList();
+    QList<QVariant> lodEntries = tileInfo[QStringLiteral( "lods" )].toList();
     if ( lodEntries.isEmpty() )
     {
       mCachedImage = QImage();
@@ -272,13 +272,13 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
       return &mCachedImage;
     }
     int level = 0;
-    double resolution = lodEntries.front().toMap()["resolution"].toDouble();
+    double resolution = lodEntries.front().toMap()[QStringLiteral( "resolution" )].toDouble();
     foreach ( const QVariant& lodEntry, lodEntries )
     {
       QVariantMap lodEntryMap = lodEntry.toMap();
-      level = lodEntryMap["level"].toInt();
-      resolution = lodEntryMap["resolution"].toDouble();
-      if ( lodEntryMap["resolution"].toDouble() <= 1.5*targetRes )
+      level = lodEntryMap[QStringLiteral( "level" )].toInt();
+      resolution = lodEntryMap[QStringLiteral( "resolution" )].toDouble();
+      if ( lodEntryMap[QStringLiteral( "resolution" )].toDouble() <= 1.5*targetRes )
       {
         break;
       }
@@ -302,7 +302,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
     {
       for ( int ix = ixStart; ix <= ixEnd; ++ix )
       {
-        queries[( iy - iyStart ) * ixCount + ( ix - ixStart )] = QUrl( dataSource.param( "url" ) + QString( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
+        queries[( iy - iyStart ) * ixCount + ( ix - ixStart )] = QUrl( dataSource.param( QStringLiteral( "url" ) ) + QStringLiteral( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
       }
     }
     QgsArcGisAsyncParallelQuery query;
@@ -322,22 +322,22 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
     {
       for ( int ix = ixStart; ix <= ixEnd; ++ix )
       {
-        QImage image = QImage::fromData( results[( iy - iyStart ) * ixCount + ( ix - ixStart )], tileInfo["format"].toByteArray() );
+        QImage image = QImage::fromData( results[( iy - iyStart ) * ixCount + ( ix - ixStart )], tileInfo[QStringLiteral( "format" )].toByteArray() );
         painter.drawImage( QPointF( ix * tileWidth - imX, iy * tileHeight - imY ), image );
       }
     }
   }
   else
   {
-    QUrl requestUrl( dataSource.param( "url" ) + "/export" );
-    requestUrl.addQueryItem( "bbox", QString( "%1,%2,%3,%4" ).arg( viewExtent.xMinimum(), 0, 'f', -1 ).arg( viewExtent.yMinimum(), 0, 'f', -1 ).arg( viewExtent.xMaximum(), 0, 'f', -1 ).arg( viewExtent.yMaximum(), 0, 'f', -1 ) );
-    requestUrl.addQueryItem( "size", QString( "%1,%2" ).arg( pixelWidth ).arg( pixelHeight ) );
-    requestUrl.addQueryItem( "format", dataSource.param( "format" ) );
-    requestUrl.addQueryItem( "layers", QString( "show:%1" ).arg( dataSource.param( "layer" ) ) );
-    requestUrl.addQueryItem( "transparent", "true" );
-    requestUrl.addQueryItem( "f", "image" );
+    QUrl requestUrl( dataSource.param( QStringLiteral( "url" ) ) + "/export" );
+    requestUrl.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( viewExtent.xMinimum(), 0, 'f', -1 ).arg( viewExtent.yMinimum(), 0, 'f', -1 ).arg( viewExtent.xMaximum(), 0, 'f', -1 ).arg( viewExtent.yMaximum(), 0, 'f', -1 ) );
+    requestUrl.addQueryItem( QStringLiteral( "size" ), QStringLiteral( "%1,%2" ).arg( pixelWidth ).arg( pixelHeight ) );
+    requestUrl.addQueryItem( QStringLiteral( "format" ), dataSource.param( QStringLiteral( "format" ) ) );
+    requestUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "show:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
+    requestUrl.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
+    requestUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "image" ) );
     QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, mErrorTitle, mError );
-    mCachedImage = QImage::fromData( reply, dataSource.param( "format" ).toLatin1() );
+    mCachedImage = QImage::fromData( reply, dataSource.param( QStringLiteral( "format" ) ).toLatin1() );
     if ( mCachedImage.format() != QImage::Format_ARGB32 )
     {
       mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
@@ -378,16 +378,16 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
 {
   // http://resources.arcgis.com/en/help/rest/apiref/identify.html
   QgsDataSourceUri dataSource( dataSourceUri() );
-  QUrl queryUrl( dataSource.param( "url" ) + "/identify" );
-  queryUrl.addQueryItem( "f", "json" );
-  queryUrl.addQueryItem( "geometryType", "esriGeometryPoint" );
-  queryUrl.addQueryItem( "geometry", QString( "{x: %1, y: %2}" ).arg( thePoint.x(), 0, 'f' ).arg( thePoint.y(), 0, 'f' ) );
+  QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/identify" );
+  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+  queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryPoint" ) );
+  queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "{x: %1, y: %2}" ).arg( thePoint.x(), 0, 'f' ).arg( thePoint.y(), 0, 'f' ) );
 //  queryUrl.addQueryItem( "sr", mCrs.postgisSrid() );
-  queryUrl.addQueryItem( "layers", QString( "all:%1" ).arg( dataSource.param( "layer" ) ) );
-  queryUrl.addQueryItem( "imageDisplay", QString( "%1,%2,%3" ).arg( theWidth ).arg( theHeight ).arg( theDpi ) );
-  queryUrl.addQueryItem( "mapExtent", QString( "%1,%2,%3,%4" ).arg( theExtent.xMinimum(), 0, 'f' ).arg( theExtent.yMinimum(), 0, 'f' ).arg( theExtent.xMaximum(), 0, 'f' ).arg( theExtent.yMaximum(), 0, 'f' ) );
-  queryUrl.addQueryItem( "tolerance", "10" );
-  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( "results" ).toList();
+  queryUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "all:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
+  queryUrl.addQueryItem( QStringLiteral( "imageDisplay" ), QStringLiteral( "%1,%2,%3" ).arg( theWidth ).arg( theHeight ).arg( theDpi ) );
+  queryUrl.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( theExtent.xMinimum(), 0, 'f' ).arg( theExtent.yMinimum(), 0, 'f' ).arg( theExtent.xMaximum(), 0, 'f' ).arg( theExtent.yMaximum(), 0, 'f' ) );
+  queryUrl.addQueryItem( QStringLiteral( "tolerance" ), QStringLiteral( "10" ) );
+  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
 
   QMap<int, QVariant> entries;
 
@@ -396,11 +396,11 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
     foreach ( const QVariant& result, queryResults )
     {
       QVariantMap resultMap = result.toMap();
-      QVariantMap attributesMap = resultMap["attributes"].toMap();
+      QVariantMap attributesMap = resultMap[QStringLiteral( "attributes" )].toMap();
       QString valueStr;
       foreach ( const QString& attribute, attributesMap.keys() )
       {
-        valueStr += QString( "%1 = %2\n" ).arg( attribute, attributesMap[attribute].toString() );
+        valueStr += QStringLiteral( "%1 = %2\n" ).arg( attribute, attributesMap[attribute].toString() );
       }
       entries.insert( entries.size(), valueStr );
     }
@@ -412,23 +412,23 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
       QVariantMap resultMap = result.toMap();
 
       QgsFields fields;
-      QVariantMap attributesMap = resultMap["attributes"].toMap();
+      QVariantMap attributesMap = resultMap[QStringLiteral( "attributes" )].toMap();
       QgsAttributes featureAttributes;
       foreach ( const QString& attribute, attributesMap.keys() )
       {
-        fields.append( QgsField( attribute, QVariant::String, "string" ) );
+        fields.append( QgsField( attribute, QVariant::String, QStringLiteral( "string" ) ) );
         featureAttributes.append( attributesMap[attribute].toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      QgsAbstractGeometry* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap["geometry"].toMap(), resultMap["geometryType"].toString(), false, false, &crs );
+      QgsAbstractGeometry* geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
       QgsFeature feature( fields );
       feature.setGeometry( QgsGeometry( geometry ) );
       feature.setAttributes( featureAttributes );
       feature.setValid( true );
       QgsFeatureStore store( fields, crs );
       QMap<QString, QVariant> params;
-      params["sublayer"] = resultMap["layerName"].toString();
-      params["featureType"] = attributesMap[resultMap["displayFieldName"].toString()].toString();
+      params[QStringLiteral( "sublayer" )] = resultMap[QStringLiteral( "layerName" )].toString();
+      params[QStringLiteral( "featureType" )] = attributesMap[resultMap[QStringLiteral( "displayFieldName" )].toString()].toString();
       store.setParams( params );
       store.features().append( feature );
       entries.insert( entries.size(), qVariantFromValue( QList<QgsFeatureStore>() << store ) );

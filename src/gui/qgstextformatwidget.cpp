@@ -132,20 +132,20 @@ void QgsTextFormatWidget::initWidget()
 
   // color buttons
   mPreviewBackgroundBtn->setColorDialogTitle( tr( "Select fill color" ) );
-  mPreviewBackgroundBtn->setContext( "labelling" );
+  mPreviewBackgroundBtn->setContext( QStringLiteral( "labelling" ) );
   mPreviewBackgroundBtn->setColor( QColor( 255, 255, 255 ) );
   btnTextColor->setColorDialogTitle( tr( "Select text color" ) );
-  btnTextColor->setContext( "labelling" );
+  btnTextColor->setContext( QStringLiteral( "labelling" ) );
   btnTextColor->setDefaultColor( Qt::black );
   btnBufferColor->setColorDialogTitle( tr( "Select buffer color" ) );
-  btnBufferColor->setContext( "labelling" );
+  btnBufferColor->setContext( QStringLiteral( "labelling" ) );
   btnBufferColor->setDefaultColor( Qt::white );
   mShapeBorderColorBtn->setColorDialogTitle( tr( "Select border color" ) );
-  mShapeBorderColorBtn->setContext( "labelling" );
+  mShapeBorderColorBtn->setContext( QStringLiteral( "labelling" ) );
   mShapeFillColorBtn->setColorDialogTitle( tr( "Select fill color" ) );
-  mShapeFillColorBtn->setContext( "labelling" );
+  mShapeFillColorBtn->setContext( QStringLiteral( "labelling" ) );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
-  mShadowColorBtn->setContext( "labelling" );
+  mShadowColorBtn->setContext( QStringLiteral( "labelling" ) );
   mShadowColorBtn->setDefaultColor( Qt::black );
 
   // set up quadrant offset button group
@@ -215,7 +215,7 @@ void QgsTextFormatWidget::initWidget()
   // maintains state across different dialogs
   Q_FOREACH ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
   {
-    grpbox->setSettingGroup( QString( "mAdvLabelingDlg" ) );
+    grpbox->setSettingGroup( QStringLiteral( "mAdvLabelingDlg" ) );
   }
 
   connect( groupBox_mPreview,
@@ -232,7 +232,7 @@ void QgsTextFormatWidget::initWidget()
   QSizePolicy policy( mLabelingOptionsListFrame->sizePolicy() );
   policy.setHorizontalStretch( 0 );
   mLabelingOptionsListFrame->setSizePolicy( policy );
-  if ( !settings.contains( QString( "/Windows/Labeling/OptionsSplitState" ) ) )
+  if ( !settings.contains( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ) ) )
   {
     // set left list widget width on intial showing
     QList<int> splitsizes;
@@ -244,10 +244,10 @@ void QgsTextFormatWidget::initWidget()
   connect( mLabelStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
 
   // restore dialog, splitters and current tab
-  mFontPreviewSplitter->restoreState( settings.value( QString( "/Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
-  mLabelingOptionsSplitter->restoreState( settings.value( QString( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
+  mFontPreviewSplitter->restoreState( settings.value( QStringLiteral( "/Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
+  mLabelingOptionsSplitter->restoreState( settings.value( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
 
-  mLabelingOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Labeling/Tab" ), 0 ).toInt() );
+  mLabelingOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "/Windows/Labeling/Tab" ), 0 ).toInt() );
 
   setDockMode( false );
 
@@ -581,7 +581,7 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *>& widgets, 
     }
     else
     {
-      QgsLogger::warning( QString( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
+      QgsLogger::warning( QStringLiteral( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
     }
   }
 }
@@ -626,7 +626,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat& format )
     QString txtPrepend = tr( "Chosen font" );
     if ( !format.resolvedFontFamily().isEmpty() )
     {
-      txtPrepend = QString( "'%1'" ).arg( format.resolvedFontFamily() );
+      txtPrepend = QStringLiteral( "'%1'" ).arg( format.resolvedFontFamily() );
     }
     mFontMissingLabel->setText( missingTxt.arg( txtPrepend ) );
 
@@ -697,9 +697,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat& format )
 QgsTextFormatWidget::~QgsTextFormatWidget()
 {
   QSettings settings;
-  settings.setValue( QString( "/Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
-  settings.setValue( QString( "/Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
-  settings.setValue( QString( "/Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
+  settings.setValue( QStringLiteral( "/Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
 }
 
 QgsTextFormat QgsTextFormatWidget::format() const
@@ -869,7 +869,7 @@ void QgsTextFormatWidget::scrollPreview()
 
 void QgsTextFormatWidget::setPreviewBackground( const QColor& color )
 {
-  scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
+  scrollArea_mPreview->widget()->setStyleSheet( QStringLiteral( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
       QString::number( color.green() ),
       QString::number( color.blue() ) ) );
 }
@@ -1116,7 +1116,7 @@ void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
   mShapeSizeYLabel->setVisible( !isSVG );
   mShapeSizeYSpnBx->setVisible( !isSVG );
   mShapeSizeYDDBtn->setVisible( !isSVG );
-  mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : "" ) );
+  mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QLatin1String( "" ) ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
   mShapeFillColorBtn->setAllowAlpha( !isSVG );
@@ -1273,7 +1273,7 @@ void QgsTextFormatWidget::on_mPreviewTextEdit_textChanged( const QString & text 
 
 void QgsTextFormatWidget::on_mPreviewTextBtn_clicked()
 {
-  mPreviewTextEdit->setText( QString( "Lorem Ipsum" ) );
+  mPreviewTextEdit->setText( QStringLiteral( "Lorem Ipsum" ) );
   updatePreview();
 }
 
@@ -1397,7 +1397,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCan
   setLayout( layout );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/TextFormatDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/TextFormatDialog/geometry" ) ).toByteArray() );
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( accept() ) );
   connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
@@ -1406,7 +1406,7 @@ QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCan
 QgsTextFormatDialog::~QgsTextFormatDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/TextFormatDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/TextFormatDialog/geometry" ), saveGeometry() );
 }
 
 QgsTextFormat QgsTextFormatDialog::format() const

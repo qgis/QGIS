@@ -131,7 +131,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList tags() const;
 
     //! return a map of groupid and names for the given parent group
-    QgsSymbolGroupMap childGroupNames( const QString& parent = "" );
+    QgsSymbolGroupMap childGroupNames( const QString& parent = QStringLiteral( "" ) );
 
     //! remove all contents of the style
     void clear();

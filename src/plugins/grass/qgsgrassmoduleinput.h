@@ -87,7 +87,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     void watch( const QString & path );
     QString mLocationPath;
     // mapset watched dirs
-    QStringList watchedDirs() { QStringList l; l << "cellhd" << "vector" << "tgis"; return l; }
+    QStringList watchedDirs() { QStringList l; l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" ); return l; }
     // names of
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher;

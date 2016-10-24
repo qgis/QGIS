@@ -56,7 +56,7 @@ void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
   if ( mErrorCode == NoError )
   {
     QByteArray data = response();
-    QgsGmlStreamingParser gmlParser( "", "", QgsFields() );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
     QString errorMsg;
     if ( gmlParser.processData( data, true, errorMsg ) )
     {
@@ -179,18 +179,18 @@ void QgsWFSFeatureDownloader::createProgressDialog()
 
 QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
 {
-  filter = filter.replace( "<fes:ValueReference xmlns:fes=\"http://www.opengis.net/fes/2.0\">", "<fes:ValueReference>" );
+  filter = filter.replace( QLatin1String( "<fes:ValueReference xmlns:fes=\"http://www.opengis.net/fes/2.0\">" ), QLatin1String( "<fes:ValueReference>" ) );
   QString nsPrefix( QgsWFSUtils::nameSpacePrefix( mShared->mURI.typeName() ) );
   if ( mRemoveNSPrefix && !nsPrefix.isEmpty() )
-    filter = filter.replace( "<fes:ValueReference>" + nsPrefix + ":", "<fes:ValueReference>" );
+    filter = filter.replace( "<fes:ValueReference>" + nsPrefix + ":", QLatin1String( "<fes:ValueReference>" ) );
   return filter;
 }
 
 QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool forHits )
 {
   QUrl getFeatureUrl( mShared->mURI.baseURL() );
-  getFeatureUrl.addQueryItem( "REQUEST", "GetFeature" );
-  getFeatureUrl.addQueryItem( "VERSION",  mShared->mWFSVersion );
+  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
 
   QString typenames;
   if ( mShared->mLayerPropertiesList.isEmpty() )
@@ -202,17 +202,17 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     Q_FOREACH ( const QgsOgcUtils::LayerProperties layerProperties, mShared->mLayerPropertiesList )
     {
       if ( !typenames.isEmpty() )
-        typenames += ",";
+        typenames += QLatin1String( "," );
       typenames += layerProperties.mName;
     }
   }
-  if ( mShared->mWFSVersion.startsWith( "2.0" ) )
-    getFeatureUrl.addQueryItem( "TYPENAMES",  typenames );
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
   else
-    getFeatureUrl.addQueryItem( "TYPENAME",  typenames );
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
   if ( forHits )
   {
-    getFeatureUrl.addQueryItem( "RESULTTYPE", "hits" );
+    getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
   }
   else if ( maxFeatures > 0 )
   {
@@ -224,17 +224,17 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
       // For example http://demo.opengeo.org/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ne:ne_10m_admin_0_countries&STARTINDEX=0&COUNT=253
       // doesn't include ne_10m_admin_0_countries.99, as expected since it is
       // at index 254.
-      getFeatureUrl.addQueryItem( "STARTINDEX", QString::number( startIndex ) );
+      getFeatureUrl.addQueryItem( QStringLiteral( "STARTINDEX" ), QString::number( startIndex ) );
     }
-    if ( mShared->mWFSVersion.startsWith( "2.0" ) )
-      getFeatureUrl.addQueryItem( "COUNT", QString::number( maxFeatures ) );
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "COUNT" ), QString::number( maxFeatures ) );
     else
-      getFeatureUrl.addQueryItem( "MAXFEATURES", QString::number( maxFeatures ) );
+      getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( maxFeatures ) );
   }
   QString srsName( mShared->srsName() );
   if ( !srsName.isEmpty() && !forHits )
   {
-    getFeatureUrl.addQueryItem( "SRSNAME", srsName );
+    getFeatureUrl.addQueryItem( QStringLiteral( "SRSNAME" ), srsName );
   }
 
   // In case we must issue a BBOX and we have a filter, we must combine
@@ -245,18 +245,18 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     double miny = mShared->mRect.yMinimum();
     double maxx = mShared->mRect.xMaximum();
     double maxy = mShared->mRect.yMaximum();
-    QString filterBbox( QString( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
+    QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
                         arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
     QgsExpression bboxExp( filterBbox );
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
     bool honourAxisOrientation = false;
-    if ( mShared->mWFSVersion.startsWith( "1.0" ) )
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
     {
       gmlVersion = QgsOgcUtils::GML_2_1_2;
       filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
     }
-    else if ( mShared->mWFSVersion.startsWith( "1.1" ) )
+    else if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
     {
       honourAxisOrientation = !mShared->mURI.ignoreAxisOrientation();
       gmlVersion = QgsOgcUtils::GML_3_1_0;
@@ -289,12 +289,12 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     andElem.appendChild( filterNode );
     doc.firstChildElement().appendChild( andElem );
 
-    getFeatureUrl.addQueryItem( "FILTER", sanitizeFilter( doc.toString() ) );
+    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }
   else if ( !mShared->mRect.isNull() )
   {
     bool invertAxis = false;
-    if ( !mShared->mWFSVersion.startsWith( "1.0" ) && !mShared->mURI.ignoreAxisOrientation() &&
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && !mShared->mURI.ignoreAxisOrientation() &&
          mShared->mSourceCRS.hasAxisInverted() )
     {
       invertAxis = true;
@@ -310,22 +310,22 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
                         qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
     // Some servers like Geomedia need the srsname to be explictly appended
     // otherwise they are confused and do not interpret it properly
-    if ( !mShared->mWFSVersion.startsWith( "1.0" ) )
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
     {
       // but it is illegal in WFS 1.0 and some servers definitely not like
       // it. See #15464
       bbox += "," + mShared->srsName();
     }
-    getFeatureUrl.addQueryItem( "BBOX",  bbox );
+    getFeatureUrl.addQueryItem( QStringLiteral( "BBOX" ),  bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( "FILTER", sanitizeFilter( mShared->mWFSFilter ) );
+    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mWFSFilter ) );
   }
 
   if ( !mShared->mSortBy.isEmpty() && !forHits )
   {
-    getFeatureUrl.addQueryItem( "SORTBY", mShared->mSortBy );
+    getFeatureUrl.addQueryItem( QStringLiteral( "SORTBY" ), mShared->mSortBy );
   }
 
   return getFeatureUrl;
@@ -379,7 +379,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   {
     Q_FOREACH ( QWidget* widget, qApp->topLevelWidgets() )
     {
-      if ( widget->objectName() == "QgisApp" )
+      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
       {
         mMainWindow = widget;
         break;
@@ -402,7 +402,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   bool interrupted = false;
   bool truncatedResponse = false;
   QSettings s;
-  const int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
+  const int maxRetry = s.value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt();
   int retryIter = 0;
   int lastValidTotalDownloadedFeatureCount = 0;
   int pagingIter = 1;
@@ -417,9 +417,9 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
                         maxFeatures ? maxFeatures : mShared->mMaxFeatures, false ) );
 
     // Small hack for testing purposes
-    if ( retryIter > 0 && url.toString().contains( "fake_qgis_http_endpoint" ) )
+    if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
     {
-      url.addQueryItem( "RETRY", QString::number( retryIter ) );
+      url.addQueryItem( QStringLiteral( "RETRY" ), QString::number( retryIter ) );
     }
 
     sendGET( url,
@@ -471,14 +471,14 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         // e.g. http://ows.region-bretagne.fr/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rb:etudes&STARTINDEX=0&COUNT=1
         // Disabling paging helps in those cases
         if ( mSupportsPaging && mTotalDownloadedFeatureCount == 0 &&
-             parser->exceptionText().contains( "Cannot do natural order without a primary key" ) )
+             parser->exceptionText().contains( QLatin1String( "Cannot do natural order without a primary key" ) ) )
         {
           QgsDebugMsg( QString( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
           mSupportsPaging = false;
         }
         // GeoServer doesn't like typenames prefixed by namespace prefix, despite
         // the examples in the WFS 2.0 spec showing that
-        else if ( !mRemoveNSPrefix && parser->exceptionText().contains( "more than one feature type" ) )
+        else if ( !mRemoveNSPrefix && parser->exceptionText().contains( QLatin1String( "more than one feature type" ) ) )
         {
           QgsDebugMsg( QString( "Got exception %1. Re-trying by removing namespace prefix" ).arg( parser->exceptionText() ) );
           mRemoveNSPrefix = true;
@@ -549,8 +549,8 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         // Heuristics to try to detect MapServer WFS 1.1 that honours EPSG axis order, but returns
         // EPSG:XXXX srsName and not EPSG urns
         if ( pagingIter == 1 && featureCountForThisResponse == 0 &&
-             mShared->mWFSVersion.startsWith( "1.1" ) &&
-             parser->srsName().startsWith( "EPSG:" ) &&
+             mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) &&
+             parser->srsName().startsWith( QLatin1String( "EPSG:" ) ) &&
              !parser->layerExtent().isNull() &&
              !mShared->mURI.ignoreAxisOrientation() &&
              !mShared->mURI.invertAxisOrientation() )
@@ -906,7 +906,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
     QString thisStr;
     thisStr.sprintf( "%p", this );
     ++ mCounter;
-    mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
+    mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsg( QString( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ) );
     mWriterFile = new QFile( mWriterFilename );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )

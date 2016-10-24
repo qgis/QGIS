@@ -142,7 +142,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   QgsAttributeList pkAttrList = mLayer->pkAttributeList();
 
   QSettings settings;
-  bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
+  bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   QgsExpressionContext context = mLayer->createExpressionContext();
@@ -177,7 +177,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
 
   //show the dialog to enter attribute values
   //only show if enabled in settings and layer has fields
-  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
+  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
 
   // override application-wide setting with any layer setting
   switch ( mLayer->editFormConfig().suppress() )
@@ -238,7 +238,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
   mFeatureSaved = true;
 
   QSettings settings;
-  bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
+  bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   if ( reuseLastValues )

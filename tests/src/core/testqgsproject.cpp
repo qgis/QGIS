@@ -48,9 +48,9 @@ void TestQgsProject::initTestCase()
   // Runs once before any tests are run
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 }
 
 
@@ -69,7 +69,7 @@ void TestQgsProject::testReadPath()
 #endif
   prj->setFileName( prefix + "/home/qgis/a-project-file.qgs" ); // not expected to exist
   // make sure we work with relative paths!
-  prj->writeEntry( "Paths", "Absolute", false );
+  prj->writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "Absolute" ), false );
 
   QCOMPARE( prj->readPath( "./x.shp" ), QString( prefix + "/home/qgis/x.shp" ) );
   QCOMPARE( prj->readPath( "../x.shp" ), QString( prefix + "/home/x.shp" ) );
@@ -92,7 +92,7 @@ void TestQgsProject::testProjectUnits()
 
   //first set a default QGIS distance unit
   QSettings s;
-  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
+  s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
 
   QgsProject* prj = QgsProject::instance();
   // new project should inherit QGIS default distance unit
@@ -100,7 +100,7 @@ void TestQgsProject::testProjectUnits()
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( "/qgis/measure/displayunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceNauticalMiles ) );
+  s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceNauticalMiles ) );
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
 
   //test setting new units for project
@@ -110,14 +110,14 @@ void TestQgsProject::testProjectUnits()
   // AREA
 
   //first set a default QGIS area unit
-  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareYards ) );
+  s.setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareYards ) );
 
   // new project should inherit QGIS default area unit
   prj->clear();
   QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( "/qgis/measure/areaunits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaAcres ) );
+  s.setValue( QStringLiteral( "/qgis/measure/areaunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaAcres ) );
   QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
 
   //test setting new units for project
@@ -129,7 +129,7 @@ void TestQgsProject::variablesChanged()
 {
   QSignalSpy spyVariablesChanged( QgsProject::instance(), SIGNAL( variablesChanged() ) );
   QgsStringMap vars;
-  vars.insert( "variable", "1" );
+  vars.insert( QStringLiteral( "variable" ), QStringLiteral( "1" ) );
   QgsProject::instance()->setVariables( vars );
   QVERIFY( spyVariablesChanged.count() == 1 );
 }

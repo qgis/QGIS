@@ -73,28 +73,28 @@ QString QgsUnitTypes::encodeUnit( DistanceUnit unit )
   switch ( unit )
   {
     case DistanceMeters:
-      return "meters";
+      return QStringLiteral( "meters" );
 
     case DistanceKilometers:
-      return "km";
+      return QStringLiteral( "km" );
 
     case DistanceFeet:
-      return "feet";
+      return QStringLiteral( "feet" );
 
     case DistanceYards:
-      return "yd";
+      return QStringLiteral( "yd" );
 
     case DistanceMiles:
-      return "mi";
+      return QStringLiteral( "mi" );
 
     case DistanceDegrees:
-      return "degrees";
+      return QStringLiteral( "degrees" );
 
     case DistanceUnknownUnit:
-      return "<unknown>";
+      return QStringLiteral( "<unknown>" );
 
     case DistanceNauticalMiles:
-      return "nautical miles";
+      return QStringLiteral( "nautical miles" );
   }
   return QString();
 }
@@ -400,25 +400,25 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaUnit unit )
   switch ( unit )
   {
     case AreaSquareMeters:
-      return "m2";
+      return QStringLiteral( "m2" );
     case AreaSquareKilometers:
-      return "km2";
+      return QStringLiteral( "km2" );
     case AreaSquareFeet:
-      return "ft2";
+      return QStringLiteral( "ft2" );
     case AreaSquareYards:
-      return "y2";
+      return QStringLiteral( "y2" );
     case AreaSquareMiles:
-      return "mi2";
+      return QStringLiteral( "mi2" );
     case AreaHectares:
-      return "ha";
+      return QStringLiteral( "ha" );
     case AreaAcres:
-      return "ac";
+      return QStringLiteral( "ac" );
     case AreaSquareNauticalMiles:
-      return "nm2";
+      return QStringLiteral( "nm2" );
     case AreaSquareDegrees:
-      return "deg2";
+      return QStringLiteral( "deg2" );
     case AreaUnknownUnit:
-      return "<unknown>";
+      return QStringLiteral( "<unknown>" );
   }
   return QString();
 }
@@ -833,19 +833,19 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
   switch ( unit )
   {
     case AngleDegrees:
-      return "degrees";
+      return QStringLiteral( "degrees" );
     case AngleRadians:
-      return "radians";
+      return QStringLiteral( "radians" );
     case AngleGon:
-      return "gon";
+      return QStringLiteral( "gon" );
     case AngleMinutesOfArc:
-      return "moa";
+      return QStringLiteral( "moa" );
     case AngleSecondsOfArc:
-      return "soa";
+      return QStringLiteral( "soa" );
     case AngleTurn:
-      return "tr";
+      return QStringLiteral( "tr" );
     case AngleUnknownUnit:
-      return "<unknown>";
+      return QStringLiteral( "<unknown>" );
   }
   return QString();
 }
@@ -1064,7 +1064,7 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
       break;
   }
 
-  return QString( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
+  return QStringLiteral( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
 }
 
 QString QgsUnitTypes::encodeUnit( RenderUnit unit )
@@ -1072,17 +1072,17 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
   switch ( unit )
   {
     case RenderMillimeters:
-      return "MM";
+      return QStringLiteral( "MM" );
     case RenderMapUnits:
-      return "MapUnit";
+      return QStringLiteral( "MapUnit" );
     case RenderPixels:
-      return "Pixel";
+      return QStringLiteral( "Pixel" );
     case RenderPercentage:
-      return "Percentage";
+      return QStringLiteral( "Percentage" );
     case RenderPoints:
-      return "Point";
+      return QStringLiteral( "Point" );
     default:
-      return "MM";
+      return QStringLiteral( "MM" );
   }
 }
 
@@ -1097,17 +1097,17 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString& string, 
     return RenderMillimeters;
   if ( normalized == encodeUnit( RenderMapUnits ).toLower() )
     return RenderMapUnits;
-  if ( normalized == "mapunits" )
+  if ( normalized == QLatin1String( "mapunits" ) )
     return RenderMapUnits;
   if ( normalized == encodeUnit( RenderPixels ).toLower() )
     return RenderPixels;
   if ( normalized == encodeUnit( RenderPercentage ).toLower() )
     return RenderPercentage;
-  if ( normalized == "percent" )
+  if ( normalized == QLatin1String( "percent" ) )
     return RenderPercentage;
   if ( normalized == encodeUnit( RenderPoints ).toLower() )
     return RenderPoints;
-  if ( normalized == "points" )
+  if ( normalized == QLatin1String( "points" ) )
     return RenderPoints;
 
   if ( ok )

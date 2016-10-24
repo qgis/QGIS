@@ -159,7 +159,7 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &g
 void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
 {
   QSettings settings;
-  if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
+  if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
     return;
 
   if ( !g )

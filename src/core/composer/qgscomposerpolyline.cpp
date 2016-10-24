@@ -23,14 +23,14 @@
 #include <limits>
 
 QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
-    : QgsComposerNodesItem( "ComposerPolyline", c )
+    : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), c )
     , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
 
 QgsComposerPolyline::QgsComposerPolyline( const QPolygonF& polyline, QgsComposition* c )
-    : QgsComposerNodesItem( "ComposerPolyline", polyline, c )
+    : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), polyline, c )
     , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
@@ -83,9 +83,9 @@ bool QgsComposerPolyline::_removeNode( const int index )
 void QgsComposerPolyline::createDefaultPolylineStyleSymbol()
 {
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "square" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
 
   mPolylineStyleSymbol.reset( QgsLineSymbol::createSimple( properties ) );
 

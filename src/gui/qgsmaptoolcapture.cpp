@@ -103,7 +103,7 @@ void QgsMapToolCapture::validationFinished()
   QString msgFinished = tr( "Validation finished" );
   if ( !mValidationWarnings.isEmpty() )
   {
-    emit messageEmitted( mValidationWarnings.join( "\n" ).append( "\n" ).append( msgFinished ), QgsMessageBar::WARNING );
+    emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ).append( "\n" ).append( msgFinished ), QgsMessageBar::WARNING );
   }
 }
 
@@ -619,7 +619,7 @@ void QgsMapToolCapture::closePolygon()
 void QgsMapToolCapture::validateGeometry()
 {
   QSettings settings;
-  if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
+  if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
     return;
 
   if ( mValidator )
@@ -691,7 +691,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
   }
 
   emit messageDiscarded();
-  emit messageEmitted( mValidationWarnings.join( "\n" ), QgsMessageBar::WARNING );
+  emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ), QgsMessageBar::WARNING );
 }
 
 int QgsMapToolCapture::size()

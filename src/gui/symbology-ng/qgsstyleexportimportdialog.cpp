@@ -57,7 +57,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
 
   mTempStyle = new QgsStyle();
   // TODO validate
-  mFileName = "";
+  mFileName = QLatin1String( "" );
   mProgressDlg = nullptr;
   mGroupSelectionDlg = nullptr;
   mTempFile = nullptr;
@@ -74,13 +74,13 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
     connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
 
     QStringList groups = mQgisStyle->groupNames();
-    groupCombo->addItem( "imported", QVariant( "new" ) );
+    groupCombo->addItem( QStringLiteral( "imported" ), QVariant( "new" ) );
     Q_FOREACH ( const QString& gName, groups )
     {
       groupCombo->addItem( gName );
     }
 
-    btnBrowse->setText( "Browse" );
+    btnBrowse->setText( QStringLiteral( "Browse" ) );
     connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( browse() ) );
 
     label->setText( tr( "Select symbols to import" ) );
@@ -135,9 +135,9 @@ void QgsStyleExportImportDialog::doExportImport()
     }
 
     // ensure the user never ommited the extension from the file name
-    if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
     {
-      fileName += ".xml";
+      fileName += QLatin1String( ".xml" );
     }
 
     mFileName = fileName;
@@ -161,7 +161,7 @@ void QgsStyleExportImportDialog::doExportImport()
     accept();
   }
 
-  mFileName = "";
+  mFileName = QLatin1String( "" );
   mTempStyle->clear();
 }
 
@@ -449,21 +449,21 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
 {
   QString type = importTypeCombo->itemData( index ).toString();
 
-  locationLineEdit->setText( "" );
+  locationLineEdit->setText( QLatin1String( "" ) );
 
-  if ( type == "file" )
+  if ( type == QLatin1String( "file" ) )
   {
     locationLineEdit->setEnabled( true );
-    btnBrowse->setText( "Browse" );
+    btnBrowse->setText( QStringLiteral( "Browse" ) );
   }
-  else if ( type == "official" )
+  else if ( type == QLatin1String( "official" ) )
   {
-    btnBrowse->setText( "Fetch Symbols" );
+    btnBrowse->setText( QStringLiteral( "Fetch Symbols" ) );
     locationLineEdit->setEnabled( false );
   }
   else
   {
-    btnBrowse->setText( "Fetch Symbols" );
+    btnBrowse->setText( QStringLiteral( "Fetch Symbols" ) );
     locationLineEdit->setEnabled( true );
   }
 }
@@ -472,7 +472,7 @@ void QgsStyleExportImportDialog::browse()
 {
   QString type = importTypeCombo->currentData().toString();
 
-  if ( type == "file" )
+  if ( type == QLatin1String( "file" ) )
   {
     mFileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), QDir::homePath(),
                 tr( "XML files (*.xml *XML)" ) );
@@ -481,12 +481,12 @@ void QgsStyleExportImportDialog::browse()
       return;
     }
     QFileInfo pathInfo( mFileName );
-    QString groupName = pathInfo.fileName().remove( ".xml" );
+    QString groupName = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
     groupCombo->setItemText( 0, groupName );
     locationLineEdit->setText( mFileName );
     populateStyles( mTempStyle );
   }
-  else if ( type == "official" )
+  else if ( type == QLatin1String( "official" ) )
   {
     // TODO set URL
     // downloadStyleXML( QUrl( "http://...." ) );
@@ -539,7 +539,7 @@ void QgsStyleExportImportDialog::httpFinished()
   if ( mNetReply->error() )
   {
     mTempFile->remove();
-    mFileName = "";
+    mFileName = QLatin1String( "" );
     mProgressDlg->hide();
     QMessageBox::information( this, tr( "HTTP Error!" ),
                               tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
@@ -568,7 +568,7 @@ void QgsStyleExportImportDialog::downloadCanceled()
 {
   mNetReply->abort();
   mTempFile->remove();
-  mFileName = "";
+  mFileName = QLatin1String( "" );
 }
 
 void QgsStyleExportImportDialog::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )

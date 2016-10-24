@@ -49,7 +49,7 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   {
     setupUi( this );
 
-    leConfigMsg->setStyleSheet( QString( "QLineEdit{background-color: %1}" )
+    leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
                                 .arg( QgsAuthGuiUtils::yellowColor().name() ) );
 
     clearConfig();

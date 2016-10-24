@@ -24,28 +24,28 @@ QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits 
   switch ( theLimits )
   {
     case QgsRaster::ContrastEnhancementMinMax:
-      return "MinMax";
+      return QStringLiteral( "MinMax" );
     case QgsRaster::ContrastEnhancementStdDev:
-      return "StdDev";
+      return QStringLiteral( "StdDev" );
     case QgsRaster::ContrastEnhancementCumulativeCut:
-      return "CumulativeCut";
+      return QStringLiteral( "CumulativeCut" );
     default:
       break;
   }
-  return "None";
+  return QStringLiteral( "None" );
 }
 
 QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( const QString& theLimits )
 {
-  if ( theLimits == "MinMax" )
+  if ( theLimits == QLatin1String( "MinMax" ) )
   {
     return ContrastEnhancementMinMax;
   }
-  else if ( theLimits == "StdDev" )
+  else if ( theLimits == QLatin1String( "StdDev" ) )
   {
     return ContrastEnhancementStdDev;
   }
-  else if ( theLimits == "CumulativeCut" )
+  else if ( theLimits == QLatin1String( "CumulativeCut" ) )
   {
     return ContrastEnhancementCumulativeCut;
   }

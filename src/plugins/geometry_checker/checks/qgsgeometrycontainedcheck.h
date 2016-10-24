@@ -54,7 +54,7 @@ class QgsGeometryContainedCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Within" ); }
-    QString errorName() const override { return "QgsGeometryContainedCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }
   private:
     enum ResolutionMethod { Delete, NoChange };
 };

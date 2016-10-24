@@ -23,7 +23,7 @@
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
     : QTreeView( parent )
-    , mSettingsSection( "browser" )
+    , mSettingsSection( QStringLiteral( "browser" ) )
 {
 }
 
@@ -92,7 +92,7 @@ void QgsBrowserTreeView::restoreState()
   else
   {
     // expand root favourites item
-    QModelIndex index = QgsBrowserModel::findPath( model(), "favourites:" );
+    QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favourites:" ) );
     expand( index );
   }
 }
@@ -175,7 +175,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int star
     QModelIndex childIndex = model()->index( i, 0, parentIndex );
     QString childPath = model()->data( childIndex, QgsBrowserModel::PathRole ).toString();
     QString escapedChildPath = childPath;
-    escapedChildPath.replace( '|', "\\|" );
+    escapedChildPath.replace( '|', QLatin1String( "\\|" ) );
 
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
     if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )

@@ -230,7 +230,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addUserInputWidget( QWidget* widget );
 
     //! Set theme (icons)
-    void setTheme( const QString& themeName = "default" );
+    void setTheme( const QString& themeName = QStringLiteral( "default" ) );
 
     void setIconSizes( int size );
 

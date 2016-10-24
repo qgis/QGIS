@@ -31,7 +31,7 @@
 #include "qgsgrassprovider.h"
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
-    : QgsFeatureRenderer( "grassEdit" )
+    : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )
     , mLineRenderer( 0 )
     , mMarkerRenderer( 0 )
 {
@@ -45,11 +45,11 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   QHash<int, QString> labels;
   //labels.insert( QgsGrassVectorMap::TopoUndefined, "Unknown type" );
-  labels.insert( QgsGrassVectorMap::TopoLine, "Line" );
-  labels.insert( QgsGrassVectorMap::TopoBoundaryError, "Boundary (topological error on both sides)" );
-  labels.insert( QgsGrassVectorMap::TopoBoundaryErrorLeft, "Boundary (topological error on the left side)" );
-  labels.insert( QgsGrassVectorMap::TopoBoundaryErrorRight, "Boundary (topological error on the right side)" );
-  labels.insert( QgsGrassVectorMap::TopoBoundaryOk, "Boundary (correct)" );
+  labels.insert( QgsGrassVectorMap::TopoLine, QStringLiteral( "Line" ) );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryError, QStringLiteral( "Boundary (topological error on both sides)" ) );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryErrorLeft, QStringLiteral( "Boundary (topological error on the left side)" ) );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryErrorRight, QStringLiteral( "Boundary (topological error on the right side)" ) );
+  labels.insert( QgsGrassVectorMap::TopoBoundaryOk, QStringLiteral( "Boundary (correct)" ) );
 
   QgsCategoryList categoryList;
 
@@ -76,7 +76,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   }
   delete firstVertexMarkerLine;
   delete lastVertexMarkerLine;
-  mLineRenderer = new QgsCategorizedSymbolRenderer( "topo_symbol", categoryList );
+  mLineRenderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "topo_symbol" ), categoryList );
 
   colors.clear();
   labels.clear();
@@ -86,10 +86,10 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   colors.insert( QgsGrassVectorMap::TopoCentroidOut, QColor( 255, 0, 0 ) );
   colors.insert( QgsGrassVectorMap::TopoCentroidDupl, QColor( 255, 0, 255 ) );
 
-  labels.insert( QgsGrassVectorMap::TopoPoint, "Point" );
-  labels.insert( QgsGrassVectorMap::TopoCentroidIn, "Centroid in area" );
-  labels.insert( QgsGrassVectorMap::TopoCentroidOut, "Centroid outside area" );
-  labels.insert( QgsGrassVectorMap::TopoCentroidDupl, "Duplicate centroid" );
+  labels.insert( QgsGrassVectorMap::TopoPoint, QStringLiteral( "Point" ) );
+  labels.insert( QgsGrassVectorMap::TopoCentroidIn, QStringLiteral( "Centroid in area" ) );
+  labels.insert( QgsGrassVectorMap::TopoCentroidOut, QStringLiteral( "Centroid outside area" ) );
+  labels.insert( QgsGrassVectorMap::TopoCentroidDupl, QStringLiteral( "Duplicate centroid" ) );
 
   categoryList.clear();
 
@@ -100,7 +100,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
     categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
   }
 
-  mMarkerRenderer = new QgsCategorizedSymbolRenderer( "topo_symbol", categoryList );
+  mMarkerRenderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "topo_symbol" ), categoryList );
 }
 
 QgsGrassEditRenderer::~QgsGrassEditRenderer()
@@ -122,7 +122,7 @@ void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRenderer *renderer )
 
 QgsSymbol* QgsGrassEditRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
-  int symbolCode = feature.attribute( "topo_symbol" ).toInt();
+  int symbolCode = feature.attribute( QStringLiteral( "topo_symbol" ) ).toInt();
   QgsDebugMsgLevel( QString( "fid = %1 symbolCode = %2" ).arg( feature.id() ).arg( symbolCode ), 3 );
 
   QgsSymbol* symbol = 0;
@@ -199,19 +199,19 @@ QgsSymbolList QgsGrassEditRenderer::symbols( QgsRenderContext& context )
 
 QString QgsGrassEditRenderer::dump() const
 {
-  return "GRASS edit renderer";
+  return QStringLiteral( "GRASS edit renderer" );
 }
 
 QDomElement QgsGrassEditRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( "type", "grassEdit" );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "grassEdit" ) );
 
-  QDomElement lineElem = doc.createElement( "line" );
+  QDomElement lineElem = doc.createElement( QStringLiteral( "line" ) );
   rendererElem.appendChild( lineElem );
   lineElem.appendChild( mLineRenderer->save( doc ) );
 
-  QDomElement pointElem = doc.createElement( "marker" );
+  QDomElement pointElem = doc.createElement( QStringLiteral( "marker" ) );
   rendererElem.appendChild( pointElem );
   pointElem.appendChild( mMarkerRenderer->save( doc ) );
 
@@ -229,7 +229,7 @@ QgsFeatureRenderer* QgsGrassEditRenderer::create( QDomElement& element )
     QDomElement elem = childElem.firstChildElement();
     if ( !elem.isNull() )
     {
-      QString rendererType = elem.attribute( "type" );
+      QString rendererType = elem.attribute( QStringLiteral( "type" ) );
       QgsDebugMsg( "childElem.tagName() = " + childElem.tagName() + " rendererType = " + rendererType );
       QgsRendererAbstractMetadata* meta = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
       if ( meta )
@@ -238,11 +238,11 @@ QgsFeatureRenderer* QgsGrassEditRenderer::create( QDomElement& element )
         if ( subRenderer )
         {
           QgsDebugMsg( "renderer created : " + renderer->type() );
-          if ( childElem.tagName() == "line" )
+          if ( childElem.tagName() == QLatin1String( "line" ) )
           {
             renderer->setLineRenderer( subRenderer );
           }
-          else if ( childElem.tagName() == "marker" )
+          else if ( childElem.tagName() == QLatin1String( "marker" ) )
           {
             renderer->setMarkerRenderer( subRenderer );
           }

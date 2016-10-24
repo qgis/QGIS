@@ -34,7 +34,7 @@ QgsCharacterSelectorDialog::~QgsCharacterSelectorDialog()
 
 const QChar& QgsCharacterSelectorDialog::selectCharacter( bool* gotChar, const QFont& font, const QString& style )
 {
-  mCharSelectLabelFont->setText( QString( "%1 %2" ).arg( font.family(), style ) );
+  mCharSelectLabelFont->setText( QStringLiteral( "%1 %2" ).arg( font.family(), style ) );
   mCharWidget->updateFont( font );
   mCharWidget->updateStyle( style );
   mCharWidget->updateSize( 22.0 );

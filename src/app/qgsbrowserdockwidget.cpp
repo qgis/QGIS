@@ -125,10 +125,10 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
 
   // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
   QSettings settings;
-  QString defaultProjectionOption = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
-  if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
+  QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString();
+  if ( settings.value( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
   {
-    settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+    settings.setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "useProject" );
   }
 
   // find root item
@@ -171,9 +171,9 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   }
 
   // restore /Projections/defaultBehaviour
-  if ( defaultProjectionOption == "prompt" )
+  if ( defaultProjectionOption == QLatin1String( "prompt" ) )
   {
-    settings.setValue( "/Projections/defaultBehaviour", defaultProjectionOption );
+    settings.setValue( QStringLiteral( "/Projections/defaultBehaviour" ), defaultProjectionOption );
   }
 
   mNameLabel->setText( layerItem->name() );
@@ -184,7 +184,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   mMetadataTextBrowser->setHtml( layerMetadata );
 
   // report if layer was set to to project crs without prompt (may give a false positive)
-  if ( defaultProjectionOption == "prompt" )
+  if ( defaultProjectionOption == QLatin1String( "prompt" ) )
   {
     QgsCoordinateReferenceSystem defaultCrs =
       QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
@@ -384,7 +384,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   if ( item->type() == QgsDataItem::Directory )
   {
     QSettings settings;
-    QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
+    QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
     bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favourites;
 
     if ( item->parent() && !inFavDirs )
@@ -401,7 +401,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
-    action->setChecked( settings.value( "/qgis/scanItemsFastScanUris",
+    action->setChecked( settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
                                         QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
@@ -629,7 +629,7 @@ void QgsBrowserDockWidget::toggleFastScan()
   if ( item->type() == QgsDataItem::Directory )
   {
     QSettings settings;
-    QStringList fastScanDirs = settings.value( "/qgis/scanItemsFastScanUris",
+    QStringList fastScanDirs = settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
                                QStringList() ).toStringList();
     int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
@@ -640,7 +640,7 @@ void QgsBrowserDockWidget::toggleFastScan()
     {
       fastScanDirs << item->path();
     }
-    settings.setValue( "/qgis/scanItemsFastScanUris", fastScanDirs );
+    settings.setValue( QStringLiteral( "/qgis/scanItemsFastScanUris" ), fastScanDirs );
   }
 }
 
@@ -769,8 +769,8 @@ void QgsDockBrowserTreeView::dragEnterEvent( QDragEnterEvent* e )
 {
   // if this mime data come from layer tree, the proposed action will be MoveAction
   // but for browser we really need CopyAction
-  if ( e->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) &&
-       e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  if ( e->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) &&
+       e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
     e->setDropAction( Qt::CopyAction );
 
   // accept drag enter so that our widget will not get ignored
@@ -790,13 +790,13 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent* e )
 
   // if this mime data come from layer tree, the proposed action will be MoveAction
   // but for browser we really need CopyAction
-  if ( e->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) &&
-       e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  if ( e->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) &&
+       e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
     e->setDropAction( Qt::CopyAction );
 
   QTreeView::dragMoveEvent( e );
 
-  if ( !e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  if ( !e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
   {
     e->ignore();
     return;
@@ -807,8 +807,8 @@ void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
 {
   // if this mime data come from layer tree, the proposed action will be MoveAction
   // but for browser we really need CopyAction
-  if ( e->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) &&
-       e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  if ( e->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) &&
+       e->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
     e->setDropAction( Qt::CopyAction );
 
   QTreeView::dropEvent( e );
@@ -822,7 +822,7 @@ void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
 QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject* parent )
     : QSortFilterProxyModel( parent )
     , mModel( nullptr )
-    , mPatternSyntax( "normal" )
+    , mPatternSyntax( QStringLiteral( "normal" ) )
     , mCaseSensitivity( Qt::CaseInsensitive )
 {
   setDynamicSortFilter( true );
@@ -862,7 +862,7 @@ void QgsBrowserTreeFilterProxyModel::updateFilter()
 {
   QgsDebugMsg( QString( "filter = %1 syntax = %2" ).arg( mFilter, mPatternSyntax ) );
   mREList.clear();
-  if ( mPatternSyntax == "normal" )
+  if ( mPatternSyntax == QLatin1String( "normal" ) )
   {
     Q_FOREACH ( const QString& f, mFilter.split( '|' ) )
     {
@@ -872,7 +872,7 @@ void QgsBrowserTreeFilterProxyModel::updateFilter()
       mREList.append( rx );
     }
   }
-  else if ( mPatternSyntax == "wildcard" )
+  else if ( mPatternSyntax == QLatin1String( "wildcard" ) )
   {
     Q_FOREACH ( const QString& f, mFilter.split( '|' ) )
     {
@@ -894,7 +894,7 @@ void QgsBrowserTreeFilterProxyModel::updateFilter()
 
 bool QgsBrowserTreeFilterProxyModel::filterAcceptsString( const QString& value ) const
 {
-  if ( mPatternSyntax == "normal" || mPatternSyntax == "wildcard" )
+  if ( mPatternSyntax == QLatin1String( "normal" ) || mPatternSyntax == QLatin1String( "wildcard" ) )
   {
     Q_FOREACH ( const QRegExp& rx, mREList )
     {

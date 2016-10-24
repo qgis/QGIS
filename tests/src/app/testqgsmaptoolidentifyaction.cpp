@@ -82,9 +82,9 @@ void TestQgsMapToolIdentifyAction::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   QgsApplication::showSettings();
 
@@ -111,14 +111,14 @@ void TestQgsMapToolIdentifyAction::cleanup()
 void TestQgsMapToolIdentifyAction::lengthCalculation()
 {
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "LineString?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolyline line3111;
   line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
   QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
@@ -131,7 +131,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
@@ -152,7 +152,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QVERIFY( qgsDoubleNear( length, 88360.1, 0.1 ) );
 
   //test unchecked "keep base units" setting
-  s.setValue( "/qgis/measure/keepbaseunit", false );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
@@ -163,14 +163,14 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 void TestQgsMapToolIdentifyAction::perimeterCalculation()
 {
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolyline polygonRing3111;
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
   QgsPolygon polygon3111;
@@ -185,7 +185,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
@@ -206,7 +206,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QVERIFY( qgsDoubleNear( perimeter, 420896.0, 0.1 ) );
 
   //test unchecked "keep base units" setting
-  s.setValue( "/qgis/measure/keepbaseunit", false );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
@@ -217,14 +217,14 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
 void TestQgsMapToolIdentifyAction::areaCalculation()
 {
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
   QgsPolyline polygonRing3111;
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
@@ -240,7 +240,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
@@ -261,7 +261,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QVERIFY( qgsDoubleNear( area, 389.6117, 0.001 ) );
 
   //test unchecked "keep base units" setting
-  s.setValue( "/qgis/measure/keepbaseunit", false );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
@@ -277,8 +277,8 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer* layer,
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << layer );
   if ( result.length() != 1 )
-    return "";
-  return result[0].mAttributes["Band 1"];
+    return QLatin1String( "" );
+  return result[0].mAttributes[QStringLiteral( "Band 1" )];
 }
 
 // private
@@ -294,7 +294,7 @@ TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer* layer, double 
 void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 {
   //create a temporary layer
-  QString raster = QString( TEST_DATA_DIR ) + "/raster/test.asc";
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
 
   // By default the QgsRasterLayer forces AAIGRID_DATATYPE=Float64
   CPLSetConfigOption( "AAIGRID_DATATYPE", "Float32" );
@@ -329,7 +329,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
 {
   //create a temporary layer
-  QString raster = QString( TEST_DATA_DIR ) + "/raster/test.asc";
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
   QScopedPointer< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
   QVERIFY( tempLayer->isValid() );
 
@@ -353,10 +353,10 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
 void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()
 {
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer > memoryLayer( new QgsVectorLayer( "Polygon?field=pk:int", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
   // This geometry is an invalid polygon (3 distinct vertices).
   // GEOS reported invalidity: Points of LinearRing do not form a closed linestring
   f1.setGeometry( geomFromHexWKB(

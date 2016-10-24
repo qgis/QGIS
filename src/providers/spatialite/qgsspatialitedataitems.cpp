@@ -32,7 +32,7 @@
 QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QString& errCause );
 
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType )
-    : QgsLayerItem( parent, name, path, uri, layerType, "spatialite" )
+    : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
   setState( Populated ); // no children are expected
 }
@@ -84,19 +84,19 @@ QgsSLConnectionItem::~QgsSLConnectionItem()
 
 static QgsLayerItem::LayerType _layerTypeFromDb( QString dbType )
 {
-  if ( dbType == "POINT" || dbType == "MULTIPOINT" )
+  if ( dbType == QLatin1String( "POINT" ) || dbType == QLatin1String( "MULTIPOINT" ) )
   {
     return QgsLayerItem::Point;
   }
-  else if ( dbType == "LINESTRING" || dbType == "MULTILINESTRING" )
+  else if ( dbType == QLatin1String( "LINESTRING" ) || dbType == QLatin1String( "MULTILINESTRING" ) )
   {
     return QgsLayerItem::Line;
   }
-  else if ( dbType == "POLYGON" || dbType == "MULTIPOLYGON" )
+  else if ( dbType == QLatin1String( "POLYGON" ) || dbType == QLatin1String( "MULTIPOLYGON" ) )
   {
     return QgsLayerItem::Polygon;
   }
-  else if ( dbType == "qgis_table" )
+  else if ( dbType == QLatin1String( "qgis_table" ) )
   {
     return QgsLayerItem::Table;
   }
@@ -135,12 +135,12 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
     }
     QString msgDetails = connection.errorMessage();
     if ( !msgDetails.isEmpty() )
-      msg = QString( "%1 (%2)" ).arg( msg, msgDetails );
+      msg = QStringLiteral( "%1 (%2)" ).arg( msg, msgDetails );
     children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
     return children;
   }
 
-  QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', "\\'" ) );
+  QString connectionInfo = QStringLiteral( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', QLatin1String( "\\'" ) ) );
   QgsDataSourceUri uri( connectionInfo );
 
   Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
@@ -217,7 +217,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
   {
-    if ( u.layerType != "vector" )
+    if ( u.layerType != QLatin1String( "vector" ) )
     {
       importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
       hasError = true; // only vectors can be imported
@@ -229,18 +229,18 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? "geom" : QString() );
+      destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), "spatialite", srcLayer->crs(), false, &importError, false, nullptr, progress );
+      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), false, &importError, false, nullptr, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else if ( err == QgsVectorLayerImport::ErrUserCancelled )
         cancelled = true;
       else
       {
-        importResults.append( QString( "%1: %2" ).arg( u.name, importError ) );
+        importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, importError ) );
         hasError = true;
       }
     }
@@ -266,7 +266,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to SpatiaLite database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
   else
@@ -285,7 +285,7 @@ QgsSLRootItem::QgsSLRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconSpatialite.svg";
+  mIconName = QStringLiteral( "mIconSpatialite.svg" );
   populate();
 }
 
@@ -344,7 +344,7 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause );
 void QgsSLRootItem::createDatabase()
 {
   QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
   QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
                      lastUsedDir,
@@ -382,5 +382,5 @@ QGISEXTERN int dataCapabilities()
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   Q_UNUSED( thePath );
-  return new QgsSLRootItem( parentItem, "SpatiaLite", "spatialite:" );
+  return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
 }

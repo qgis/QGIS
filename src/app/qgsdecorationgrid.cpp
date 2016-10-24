@@ -92,24 +92,24 @@ void QgsDecorationGrid::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
-  mMapUnits = static_cast< QgsUnitTypes::DistanceUnit >( QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
+  mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Enabled" ), false );
+  mMapUnits = static_cast< QgsUnitTypes::DistanceUnit >( QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MapUnits" ),
               QgsUnitTypes::DistanceUnknownUnit ) );
-  mGridStyle = static_cast< GridStyle >( QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
+  mGridStyle = static_cast< GridStyle >( QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Style" ),
                                          QgsDecorationGrid::Line ) );
-  mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
-  mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalY", 10 );
-  mGridOffsetX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetX", 0 );
-  mGridOffsetY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetY", 0 );
+  mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/IntervalX" ), 10 );
+  mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/IntervalY" ), 10 );
+  mGridOffsetX = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/OffsetX" ), 0 );
+  mGridOffsetY = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/OffsetY" ), 0 );
   // mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 3 );
-  mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mNameConfig, "/ShowAnnotation", false );
+  mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/ShowAnnotation" ), false );
   // mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig,
   //                           "/AnnotationPosition", 0 );
   mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
   mGridAnnotationDirection = static_cast< GridAnnotationDirection >( QgsProject::instance()->readNumEntry( mNameConfig,
-                             "/AnnotationDirection", 0 ) );
-  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" );
-  if ( fontStr != "" )
+                             QStringLiteral( "/AnnotationDirection" ), 0 ) );
+  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QLatin1String( "" ) );
+  if ( fontStr != QLatin1String( "" ) )
   {
     mGridAnnotationFont.fromString( fontStr );
   }
@@ -119,8 +119,8 @@ void QgsDecorationGrid::projectRead()
     // TODO fix font scaling problem - put a slightly large font for now
     mGridAnnotationFont.setPointSize( 16 );
   }
-  mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mNameConfig, "/AnnotationFrameDistance", 0 );
-  mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPrecision", 0 );
+  mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/AnnotationFrameDistance" ), 0 );
+  mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/AnnotationPrecision" ), 0 );
 
   // read symbol info from xml
   QDomDocument doc;
@@ -129,8 +129,8 @@ void QgsDecorationGrid::projectRead()
 
   if ( mLineSymbol )
     setLineSymbol( nullptr );
-  xml = QgsProject::instance()->readEntry( mNameConfig, "/LineSymbol" );
-  if ( xml != "" )
+  xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/LineSymbol" ) );
+  if ( xml != QLatin1String( "" ) )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -141,8 +141,8 @@ void QgsDecorationGrid::projectRead()
 
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );
-  xml = QgsProject::instance()->readEntry( mNameConfig, "/MarkerSymbol" );
-  if ( xml != "" )
+  xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/MarkerSymbol" ) );
+  if ( xml != QLatin1String( "" ) )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -161,38 +161,38 @@ void QgsDecorationGrid::projectRead()
 void QgsDecorationGrid::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MapUnits", static_cast< int >( mMapUnits ) );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Style", static_cast< int >( mGridStyle ) );
-  QgsProject::instance()->writeEntry( mNameConfig, "/IntervalX", mGridIntervalX );
-  QgsProject::instance()->writeEntry( mNameConfig, "/IntervalY", mGridIntervalY );
-  QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetX );
-  QgsProject::instance()->writeEntry( mNameConfig, "/OffsetY", mGridOffsetY );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Enabled" ), mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MapUnits" ), static_cast< int >( mMapUnits ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Style" ), static_cast< int >( mGridStyle ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/IntervalX" ), mGridIntervalX );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/IntervalY" ), mGridIntervalY );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OffsetX" ), mGridOffsetX );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OffsetY" ), mGridOffsetY );
   // QgsProject::instance()->writeEntry( mNameConfig, "/CrossLength", mCrossLength );
   // missing mGridPen, but should use styles anyway
-  QgsProject::instance()->writeEntry( mNameConfig, "/ShowAnnotation", mShowGridAnnotation );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ShowAnnotation" ), mShowGridAnnotation );
   // QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPosition", ( int ) mGridAnnotationPosition );
-  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationDirection", static_cast< int >( mGridAnnotationDirection ) );
-  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFont", mGridAnnotationFont.toString() );
-  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFrameDistance", mAnnotationFrameDistance );
-  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPrecision", mGridAnnotationPrecision );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/AnnotationDirection" ), static_cast< int >( mGridAnnotationDirection ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), mGridAnnotationFont.toString() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/AnnotationFrameDistance" ), mAnnotationFrameDistance );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/AnnotationPrecision" ), mGridAnnotationPrecision );
 
   // write symbol info to xml
   QDomDocument doc;
   QDomElement elem;
   if ( mLineSymbol )
   {
-    elem = QgsSymbolLayerUtils::saveSymbol( "line symbol", mLineSymbol, doc );
+    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mLineSymbol, doc );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
-    QgsProject::instance()->writeEntry( mNameConfig, "/LineSymbol", doc.toString() );
+    QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/LineSymbol" ), doc.toString() );
   }
   if ( mMarkerSymbol )
   {
     doc.setContent( QString() );
-    elem = QgsSymbolLayerUtils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
+    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol, doc );
     doc.appendChild( elem );
-    QgsProject::instance()->writeEntry( mNameConfig, "/MarkerSymbol", doc.toString() );
+    QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarkerSymbol" ), doc.toString() );
   }
 
 }

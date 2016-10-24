@@ -406,7 +406,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
   }
 
@@ -433,7 +433,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
   }
 
@@ -455,7 +455,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
   }
   else
@@ -478,7 +478,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
   }
   else
@@ -501,7 +501,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
   }
   else
@@ -524,7 +524,7 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
   }
   return rect;
@@ -607,27 +607,27 @@ QgsRectangle QgsMapSettings::fullExtent() const
 void QgsMapSettings::readXml( QDomNode& theNode )
 {
   // set units
-  QDomNode mapUnitsNode = theNode.namedItem( "units" );
+  QDomNode mapUnitsNode = theNode.namedItem( QStringLiteral( "units" ) );
   QgsUnitTypes::DistanceUnit units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
   setMapUnits( units );
 
   // set projections flag
-  QDomNode projNode = theNode.namedItem( "projections" );
+  QDomNode projNode = theNode.namedItem( QStringLiteral( "projections" ) );
   setCrsTransformEnabled( projNode.toElement().text().toInt() );
 
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
+  QDomNode srsNode = theNode.namedItem( QStringLiteral( "destinationsrs" ) );
   srs.readXml( srsNode );
   setDestinationCrs( srs );
 
   // set extent
-  QDomNode extentNode = theNode.namedItem( "extent" );
+  QDomNode extentNode = theNode.namedItem( QStringLiteral( "extent" ) );
   QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
   setExtent( aoi );
 
   // set rotation
-  QDomNode rotationNode = theNode.namedItem( "rotation" );
+  QDomNode rotationNode = theNode.namedItem( QStringLiteral( "rotation" ) );
   QString rotationVal = rotationNode.toElement().text();
   if ( ! rotationVal.isEmpty() )
   {
@@ -636,10 +636,10 @@ void QgsMapSettings::readXml( QDomNode& theNode )
   }
 
   //render map tile
-  QDomElement renderMapTileElem = theNode.firstChildElement( "rendermaptile" );
+  QDomElement renderMapTileElem = theNode.firstChildElement( QStringLiteral( "rendermaptile" ) );
   if ( !renderMapTileElem.isNull() )
   {
-    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == "1" ? true : false );
+    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) ? true : false );
   }
 
   mDatumTransformStore.readXml( theNode );
@@ -656,24 +656,24 @@ void QgsMapSettings::writeXml( QDomNode& theNode, QDomDocument& theDoc )
   theNode.appendChild( QgsXmlUtils::writeRectangle( extent(), theDoc ) );
 
   // Write current view rotation
-  QDomElement rotNode = theDoc.createElement( "rotation" );
+  QDomElement rotNode = theDoc.createElement( QStringLiteral( "rotation" ) );
   rotNode.appendChild(
     theDoc.createTextNode( qgsDoubleToString( rotation() ) )
   );
   theNode.appendChild( rotNode );
 
   // projections enabled
-  QDomElement projNode = theDoc.createElement( "projections" );
+  QDomElement projNode = theDoc.createElement( QStringLiteral( "projections" ) );
   projNode.appendChild( theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) ) );
   theNode.appendChild( projNode );
 
   // destination CRS
-  QDomElement srsNode = theDoc.createElement( "destinationsrs" );
+  QDomElement srsNode = theDoc.createElement( QStringLiteral( "destinationsrs" ) );
   theNode.appendChild( srsNode );
   destinationCrs().writeXml( srsNode, theDoc );
 
   //render map tile
-  QDomElement renderMapTileElem = theDoc.createElement( "rendermaptile" );
+  QDomElement renderMapTileElem = theDoc.createElement( QStringLiteral( "rendermaptile" ) );
   QDomText renderMapTileText = theDoc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
   theNode.appendChild( renderMapTileElem );

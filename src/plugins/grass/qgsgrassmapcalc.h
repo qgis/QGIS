@@ -217,8 +217,8 @@ class QgsGrassMapcalcFunction
 
     QgsGrassMapcalcFunction();
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
-                             QString description = "", QString label = "",
-                             QString labels = "", bool drawLabel = true );
+                             QString description = QStringLiteral( "" ), QString label = QStringLiteral( "" ),
+                             QString labels = QStringLiteral( "" ), bool drawLabel = true );
     ~QgsGrassMapcalcFunction();
 
     QString name() { return mName; }
@@ -329,7 +329,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     ~QgsGrassMapcalcObject();
 
     // Set map name, constant value or function/operator
-    void setValue( QString val, QString lab = "" );
+    void setValue( QString val, QString lab = QStringLiteral( "" ) );
 
     // Set function
     void setFunction( QgsGrassMapcalcFunction f );

@@ -40,36 +40,36 @@ void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig&
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( "FileWidget", config.value( "FileWidget", true ).toBool() );
-  configElement.setAttribute( "FileWidgetButton", config.value( "FileWidgetButton", true ).toBool() );
+  configElement.setAttribute( QStringLiteral( "FileWidget" ), config.value( QStringLiteral( "FileWidget" ), true ).toBool() );
+  configElement.setAttribute( QStringLiteral( "FileWidgetButton" ), config.value( QStringLiteral( "FileWidgetButton" ), true ).toBool() );
 
 
   // Non mandatory options are not saved into project file (to save some space).
-  if ( config.contains( "UseLink" ) )
-    configElement.setAttribute( "UseLink", config.value( "UseLink" ).toBool() );
+  if ( config.contains( QStringLiteral( "UseLink" ) ) )
+    configElement.setAttribute( QStringLiteral( "UseLink" ), config.value( QStringLiteral( "UseLink" ) ).toBool() );
 
-  if ( config.contains( "FullUrl" ) )
-    configElement.setAttribute( "FullUrl", config.value( "FullUrl" ).toBool() );
+  if ( config.contains( QStringLiteral( "FullUrl" ) ) )
+    configElement.setAttribute( QStringLiteral( "FullUrl" ), config.value( QStringLiteral( "FullUrl" ) ).toBool() );
 
-  if ( config.contains( "DefaultRoot" ) )
-    configElement.setAttribute( "DefaultRoot", config.value( "DefaultRoot" ).toString() );
+  if ( config.contains( QStringLiteral( "DefaultRoot" ) ) )
+    configElement.setAttribute( QStringLiteral( "DefaultRoot" ), config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
 
-  if ( config.contains( "RelativeStorage" ) )
-    configElement.setAttribute( "RelativeStorage" , config.value( "RelativeStorage" ).toString() );
+  if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
+    configElement.setAttribute( QStringLiteral( "RelativeStorage" ) , config.value( QStringLiteral( "RelativeStorage" ) ).toString() );
 
-  if ( config.contains( "DocumentViewer" ) )
-    configElement.setAttribute( "DocumentViewer", config.value( "DocumentViewer" ).toInt() );
+  if ( config.contains( QStringLiteral( "DocumentViewer" ) ) )
+    configElement.setAttribute( QStringLiteral( "DocumentViewer" ), config.value( QStringLiteral( "DocumentViewer" ) ).toInt() );
 
-  if ( config.contains( "DocumentViewerWidth" ) )
-    configElement.setAttribute( "DocumentViewerWidth", config.value( "DocumentViewerWidth" ).toInt() );
+  if ( config.contains( QStringLiteral( "DocumentViewerWidth" ) ) )
+    configElement.setAttribute( QStringLiteral( "DocumentViewerWidth" ), config.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt() );
 
-  if ( config.contains( "DocumentViewerHeight" ) )
-    configElement.setAttribute( "DocumentViewerHeight", config.value( "DocumentViewerHeight" ).toInt() );
+  if ( config.contains( QStringLiteral( "DocumentViewerHeight" ) ) )
+    configElement.setAttribute( QStringLiteral( "DocumentViewerHeight" ), config.value( QStringLiteral( "DocumentViewerHeight" ) ).toInt() );
 
-  if ( config.contains( "FileWidgetFilter" ) )
-    configElement.setAttribute( "FileWidgetFilter", config.value( "FileWidgetFilter" ).toString() );
+  if ( config.contains( QStringLiteral( "FileWidgetFilter" ) ) )
+    configElement.setAttribute( QStringLiteral( "FileWidgetFilter" ), config.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
 
-  configElement.setAttribute( "StorageMode", config.value( "StorageMode" ).toString() );
+  configElement.setAttribute( QStringLiteral( "StorageMode" ), config.value( QStringLiteral( "StorageMode" ) ).toString() );
 }
 
 QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
@@ -79,42 +79,42 @@ QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomEl
 
   QgsEditorWidgetConfig cfg;
 
-  if ( configElement.hasAttribute( "FileWidgetButton" ) )
-    cfg.insert( "FileWidgetButton", configElement.attribute( "FileWidgetButton" ) == "1" );
+  if ( configElement.hasAttribute( QStringLiteral( "FileWidgetButton" ) ) )
+    cfg.insert( QStringLiteral( "FileWidgetButton" ), configElement.attribute( QStringLiteral( "FileWidgetButton" ) ) == QLatin1String( "1" ) );
 
-  if ( configElement.hasAttribute( "FileWidget" ) )
-    cfg.insert( "FileWidget", configElement.attribute( "FileWidget" ) == "1" );
+  if ( configElement.hasAttribute( QStringLiteral( "FileWidget" ) ) )
+    cfg.insert( QStringLiteral( "FileWidget" ), configElement.attribute( QStringLiteral( "FileWidget" ) ) == QLatin1String( "1" ) );
 
-  if ( configElement.hasAttribute( "UseLink" ) )
-    cfg.insert( "UseLink", configElement.attribute( "UseLink" ) == "1" );
+  if ( configElement.hasAttribute( QStringLiteral( "UseLink" ) ) )
+    cfg.insert( QStringLiteral( "UseLink" ), configElement.attribute( QStringLiteral( "UseLink" ) ) == QLatin1String( "1" ) );
 
-  if ( configElement.hasAttribute( "FullUrl" ) )
-    cfg.insert( "FullUrl", configElement.attribute( "FullUrl" ) == "1" );
+  if ( configElement.hasAttribute( QStringLiteral( "FullUrl" ) ) )
+    cfg.insert( QStringLiteral( "FullUrl" ), configElement.attribute( QStringLiteral( "FullUrl" ) ) == QLatin1String( "1" ) );
 
-  if ( configElement.hasAttribute( "DefaultRoot" ) )
-    cfg.insert( "DefaultRoot", configElement.attribute( "DefaultRoot" ) );
+  if ( configElement.hasAttribute( QStringLiteral( "DefaultRoot" ) ) )
+    cfg.insert( QStringLiteral( "DefaultRoot" ), configElement.attribute( QStringLiteral( "DefaultRoot" ) ) );
 
-  if ( configElement.hasAttribute( "RelativeStorage" ) )
+  if ( configElement.hasAttribute( QStringLiteral( "RelativeStorage" ) ) )
   {
-    if (( configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeDefaultPath && configElement.hasAttribute( "DefaultRoot" ) ) ||
-        configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeProject )
-      cfg.insert( "RelativeStorage" , configElement.attribute( "RelativeStorage" ).toInt() );
+    if (( configElement.attribute( QStringLiteral( "RelativeStorage" ) ).toInt() == QgsFileWidget::RelativeDefaultPath && configElement.hasAttribute( QStringLiteral( "DefaultRoot" ) ) ) ||
+        configElement.attribute( QStringLiteral( "RelativeStorage" ) ).toInt() == QgsFileWidget::RelativeProject )
+      cfg.insert( QStringLiteral( "RelativeStorage" ) , configElement.attribute( QStringLiteral( "RelativeStorage" ) ).toInt() );
   }
 
-  if ( configElement.hasAttribute( "DocumentViewer" ) )
-    cfg.insert( "DocumentViewer", configElement.attribute( "DocumentViewer" ) );
+  if ( configElement.hasAttribute( QStringLiteral( "DocumentViewer" ) ) )
+    cfg.insert( QStringLiteral( "DocumentViewer" ), configElement.attribute( QStringLiteral( "DocumentViewer" ) ) );
 
-  if ( configElement.hasAttribute( "DocumentViewerWidth" ) )
-    cfg.insert( "DocumentViewerWidth", configElement.attribute( "DocumentViewerWidth" ) );
+  if ( configElement.hasAttribute( QStringLiteral( "DocumentViewerWidth" ) ) )
+    cfg.insert( QStringLiteral( "DocumentViewerWidth" ), configElement.attribute( QStringLiteral( "DocumentViewerWidth" ) ) );
 
-  if ( configElement.hasAttribute( "DocumentViewerHeight" ) )
-    cfg.insert( "DocumentViewerHeight", configElement.attribute( "DocumentViewerHeight" ) );
+  if ( configElement.hasAttribute( QStringLiteral( "DocumentViewerHeight" ) ) )
+    cfg.insert( QStringLiteral( "DocumentViewerHeight" ), configElement.attribute( QStringLiteral( "DocumentViewerHeight" ) ) );
 
-  if ( configElement.hasAttribute( "FileWidgetFilter" ) )
-    cfg.insert( "FileWidgetFilter", configElement.attribute( "FileWidgetFilter" ) );
+  if ( configElement.hasAttribute( QStringLiteral( "FileWidgetFilter" ) ) )
+    cfg.insert( QStringLiteral( "FileWidgetFilter" ), configElement.attribute( QStringLiteral( "FileWidgetFilter" ) ) );
 
 
-  cfg.insert( "StorageMode", configElement.attribute( "StorageMode", "Files" ) );
+  cfg.insert( QStringLiteral( "StorageMode" ), configElement.attribute( QStringLiteral( "StorageMode" ), QStringLiteral( "Files" ) ) );
 
   return cfg;
 }

@@ -21,8 +21,8 @@
 #include "qgsamssourceselect.h"
 #include "qgsowsconnection.h"
 
-const QString AMS_KEY = "arcgismapserver";
-const QString AMS_DESCRIPTION = "ArcGIS Map Server data provider";
+const QString AMS_KEY = QStringLiteral( "arcgismapserver" );
+const QString AMS_DESCRIPTION = QStringLiteral( "ArcGIS Map Server data provider" );
 
 
 QGISEXTERN QgsAmsProvider * classFactory( const QString *uri )
@@ -59,17 +59,17 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 {
   if ( thePath.isEmpty() )
   {
-    return new QgsAmsRootItem( parentItem, "ArcGisMapServer", "arcgismapserver:" );
+    return new QgsAmsRootItem( parentItem, QStringLiteral( "ArcGisMapServer" ), QStringLiteral( "arcgismapserver:" ) );
   }
 
   // path schema: ams:/connection name (used by OWS)
-  if ( thePath.startsWith( "ams:/" ) )
+  if ( thePath.startsWith( QLatin1String( "ams:/" ) ) )
   {
     QString connectionName = thePath.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( "ArcGisMapServer" ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "ArcGisMapServer" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( "ArcGisMapServer", connectionName );
-      return new QgsAmsConnectionItem( parentItem, "ArcGisMapServer", thePath, connection.uri().param( "url" ) );
+      QgsOwsConnection connection( QStringLiteral( "ArcGisMapServer" ), connectionName );
+      return new QgsAmsConnectionItem( parentItem, QStringLiteral( "ArcGisMapServer" ), thePath, connection.uri().param( QStringLiteral( "url" ) ) );
     }
   }
 

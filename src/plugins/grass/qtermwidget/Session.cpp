@@ -296,7 +296,7 @@ void Session::run()
 
     // here we expect full path. If there is no fullpath let's expect it's
     // a custom shell (eg. python, etc.) available in the PATH.
-    if (exec.startsWith("/"))
+    if (exec.startsWith(QLatin1String("/")))
     {
         QFile excheck(exec);
         if ( exec.isEmpty() || !excheck.exists() ) {
@@ -305,13 +305,13 @@ void Session::run()
         excheck.setFileName(exec);
 
         if ( exec.isEmpty() || !excheck.exists() ) {
-            exec = "/bin/sh";
+            exec = QStringLiteral("/bin/sh");
         }
     }
 
     // _arguments sometimes contain ("") so isEmpty()
     // or count() does not work as expected...
-    QString argsTmp(_arguments.join(" ").trimmed());
+    QString argsTmp(_arguments.join(QStringLiteral(" ")).trimmed());
     QStringList arguments;
     arguments << exec;
     if (argsTmp.length())

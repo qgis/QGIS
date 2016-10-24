@@ -59,11 +59,11 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
     QRegExpValidator *validator = new QRegExpValidator( regexp, this );
     mLineEdit->setValidator( validator );
   }
-  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) );
+  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged() ) );
   layout()->addWidget( mLineEdit );
 
-  mNamesLabel = new QLabel( " ", this );
+  mNamesLabel = new QLabel( QStringLiteral( " " ), this );
   mNamesLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   if ( !mExtensions.isEmpty() )
   {
@@ -71,7 +71,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
     layout()->addWidget( mNamesLabel );
   }
 
-  mErrorLabel = new QLabel( " ", this );
+  mErrorLabel = new QLabel( QStringLiteral( " " ), this );
   mErrorLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mErrorLabel->setWordWrap( true );
   layout()->addWidget( mErrorLabel );
@@ -117,7 +117,7 @@ void QgsNewNameDialog::nameChanged()
   {
     mNamesLabel->setText( namesString );
   }
-  mErrorLabel->setText( " " ); // space to keep vertical space
+  mErrorLabel->setText( QStringLiteral( " " ) ); // space to keep vertical space
   QPushButton* okButton = buttonBox()->button( QDialogButtonBox::Ok );
   okButton->setText( mOkString );
   okButton->setEnabled( true );
@@ -134,7 +134,7 @@ void QgsNewNameDialog::nameChanged()
   QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
-    namesString += ' ' + newNames.join( ", " );
+    namesString += ' ' + newNames.join( QStringLiteral( ", " ) );
     mNamesLabel->setText( namesString );
   }
 
@@ -143,7 +143,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", " ) );
+                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QStringLiteral( ", " ) ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {

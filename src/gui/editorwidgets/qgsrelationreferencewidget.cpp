@@ -51,7 +51,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mHighlight( nullptr )
     , mMapTool( nullptr )
     , mMessageBarItem( nullptr )
-    , mRelationName( "" )
+    , mRelationName( QLatin1String( "" ) )
     , mReferencedAttributeForm( nullptr )
     , mReferencedLayer( nullptr )
     , mReferencingLayer( nullptr )
@@ -103,21 +103,21 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 
   // open form button
   mOpenFormButton = new QToolButton();
-  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.svg" ) );
+  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ) );
   mOpenFormButton->setText( tr( "Open related feature form" ) );
   editLayout->addWidget( mOpenFormButton );
 
   mAddEntryButton = new QToolButton();
-  mAddEntryButton->setIcon( QgsApplication::getThemeIcon( "/mActionAdd.svg" ) );
+  mAddEntryButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd.svg" ) ) );
   mAddEntryButton->setText( tr( "Add new entry" ) );
   editLayout->addWidget( mAddEntryButton );
 
   // highlight button
   mHighlightFeatureButton = new QToolButton( this );
   mHighlightFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionHighlightFeature.svg" ), tr( "Highlight feature" ), this );
-  mScaleHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionScaleHighlightFeature.svg" ), tr( "Scale and highlight feature" ), this );
-  mPanHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( "/mActionPanHighlightFeature.svg" ), tr( "Pan and highlight feature" ), this );
+  mHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHighlightFeature.svg" ) ), tr( "Highlight feature" ), this );
+  mScaleHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleHighlightFeature.svg" ) ), tr( "Scale and highlight feature" ), this );
+  mPanHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanHighlightFeature.svg" ) ), tr( "Pan and highlight feature" ), this );
   mHighlightFeatureButton->addAction( mHighlightFeatureAction );
   mHighlightFeatureButton->addAction( mScaleHighlightFeatureAction );
   mHighlightFeatureButton->addAction( mPanHighlightFeatureAction );
@@ -126,14 +126,14 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 
   // map identification button
   mMapIdentificationButton = new QToolButton( this );
-  mMapIdentificationButton->setIcon( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ) );
+  mMapIdentificationButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
   mMapIdentificationButton->setText( tr( "Select on map" ) );
   mMapIdentificationButton->setCheckable( true );
   editLayout->addWidget( mMapIdentificationButton );
 
   // remove foreign key button
   mRemoveFKButton = new QToolButton( this );
-  mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.svg" ) );
+  mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemove.svg" ) ) );
   mRemoveFKButton->setText( tr( "No selection" ) );
   editLayout->addWidget( mRemoveFKButton );
 
@@ -152,7 +152,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   mInvalidLabel->setWordWrap( true );
   QFont font = mInvalidLabel->font();
   font.setItalic( true );
-  mInvalidLabel->setStyleSheet( "QLabel { color: red; } " );
+  mInvalidLabel->setStyleSheet( QStringLiteral( "QLabel { color: red; } " ) );
   mInvalidLabel->setFont( font );
   mTopLayout->addWidget( mInvalidLabel );
 
@@ -300,10 +300,10 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 
 void QgsRelationReferenceWidget::deleteForeignKey()
 {
-  QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
+  QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
   if ( mReadOnlySelector )
   {
-    QString nullText = "";
+    QString nullText = QLatin1String( "" );
     if ( mAllowNull )
     {
       nullText = tr( "%1 (no selection)" ).arg( nullValue.toString() );
@@ -475,7 +475,7 @@ void QgsRelationReferenceWidget::init()
         mFilterComboBoxes << cb;
         mReferencedLayer->uniqueValues( idx, uniqueValues );
         cb->addItem( mReferencedLayer->attributeDisplayName( idx ) );
-        QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
+        QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         qSort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
@@ -494,7 +494,7 @@ void QgsRelationReferenceWidget::init()
 
       if ( mChainFilters )
       {
-        QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
+        QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
 
         QgsFeature ft;
         QgsFeatureIterator fit = layerCache->getFeatures();
@@ -542,7 +542,7 @@ void QgsRelationReferenceWidget::init()
 
     mComboBox->setModel( mFeatureListModel );
 
-    QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
+    QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
 
     if ( mChainFilters && mFeature.isValid() )
     {
@@ -637,10 +637,10 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   deleteHighlight();
   mHighlight = new QgsHighlight( mCanvas, f, mReferencedLayer );
   QSettings settings;
-  QColor color = QColor( settings.value( "/Map/highlight/color", Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int alpha = settings.value( "/Map/highlight/colorAlpha", Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  double buffer = settings.value( "/Map/highlight/buffer", Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  double minWidth = settings.value( "/Map/highlight/minWidth", Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+  QColor color = QColor( settings.value( QStringLiteral( "/Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( QStringLiteral( "/Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( QStringLiteral( "/Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( QStringLiteral( "/Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
 
   mHighlight->setColor( color ); // sets also fill with default alpha
   color.setAlpha( alpha );
@@ -787,7 +787,7 @@ void QgsRelationReferenceWidget::mapToolDeactivated()
 
 void QgsRelationReferenceWidget::filterChanged()
 {
-  QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
+  QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
 
   QStringList filters;
   QgsAttributeList attrs;
@@ -846,24 +846,24 @@ void QgsRelationReferenceWidget::filterChanged()
 
       if ( cb->currentText() == nullValue.toString() )
       {
-        filters << QString( "\"%1\" IS NULL" ).arg( fieldName );
+        filters << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldName );
       }
       else
       {
         if ( mReferencedLayer->fields().field( fieldName ).type() == QVariant::String )
         {
-          filters << QString( "\"%1\" = '%2'" ).arg( fieldName, cb->currentText() );
+          filters << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldName, cb->currentText() );
         }
         else
         {
-          filters << QString( "\"%1\" = %2" ).arg( fieldName, cb->currentText() );
+          filters << QStringLiteral( "\"%1\" = %2" ).arg( fieldName, cb->currentText() );
         }
       }
       attrs << mReferencedLayer->fields().lookupField( fieldName );
     }
   }
 
-  QString filterExpression = filters.join( " AND " );
+  QString filterExpression = filters.join( QStringLiteral( " AND " ) );
 
   QgsFeatureIterator it( mMasterModel->layerCache()->getFeatures( QgsFeatureRequest().setFilterExpression( filterExpression ).setSubsetOfAttributes( attrs ) ) );
 

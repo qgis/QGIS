@@ -36,7 +36,7 @@ bool QgsServerStreamingDevice::open( OpenMode mode )
     return false;
   }
 
-  mRequestHandler->setHeader( "Content-Type", mFormatName );
+  mRequestHandler->setHeader( QStringLiteral( "Content-Type" ), mFormatName );
   mRequestHandler->sendResponse();
   return QIODevice::open( mode );
 }

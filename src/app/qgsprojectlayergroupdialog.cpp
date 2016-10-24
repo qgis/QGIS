@@ -35,7 +35,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const 
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/EmbedLayer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/EmbedLayer/geometry" ) ).toByteArray() );
 
   if ( !projectFile.isEmpty() )
   {
@@ -53,7 +53,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/EmbedLayer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/EmbedLayer/geometry" ), saveGeometry() );
 
   delete mRootGroup;
 }
@@ -115,7 +115,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   QSettings s;
   QString projectFile = QFileDialog::getOpenFileName( this,
                         tr( "Select project file" ),
-                        s.value( "/qgis/last_embedded_project_path", QDir::homePath() ).toString(),
+                        s.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString(),
                         tr( "QGIS files" ) + " (*.qgs *.QGS)" );
   if ( !projectFile.isEmpty() )
   {
@@ -165,14 +165,14 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 
   mRootGroup->removeAllChildren();
 
-  QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( "layer-tree-group" );
+  QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
     mRootGroup->readChildrenFromXml( layerTreeElem );
   }
   else
   {
-    QgsLayerTreeUtils::readOldLegend( mRootGroup, projectDom.documentElement().firstChildElement( "legend" ) );
+    QgsLayerTreeUtils::readOldLegend( mRootGroup, projectDom.documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
   }
 
   if ( !mShowEmbeddedContent )
@@ -192,7 +192,7 @@ void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
   QList<QgsLayerTreeNode*> childrenToRemove;
   Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
   {
-    if ( child->customProperty( "embedded" ).toInt() )
+    if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup( child ) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
@@ -230,7 +230,7 @@ void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
   QFileInfo fi( mProjectPath );
   if ( fi.exists() )
   {
-    s.setValue( "/qgis/last_embedded_project_path", fi.absolutePath() );
+    s.setValue( QStringLiteral( "/qgis/last_embedded_project_path" ), fi.absolutePath() );
   }
   accept();
 }

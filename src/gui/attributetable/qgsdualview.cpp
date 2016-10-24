@@ -60,7 +60,7 @@ QgsDualView::QgsDualView( QWidget* parent )
   mActionPreviewColumnsMenu->setMenu( mPreviewColumnsMenu );
 
   // Set preview icon
-  mActionExpressionPreview->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionPreview.svg" ) );
+  mActionExpressionPreview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionPreview.svg" ) ) );
 
   // Connect layer list preview signals
   connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
@@ -130,7 +130,7 @@ void QgsDualView::columnBoxInit()
   if ( displayExpression.isEmpty() )
   {
     // ... there isn't really much to display
-    displayExpression = "'[Please define preview text]'";
+    displayExpression = QStringLiteral( "'[Please define preview text]'" );
   }
 
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
@@ -142,7 +142,7 @@ void QgsDualView::columnBoxInit()
     if ( fieldIndex == -1 )
       continue;
 
-    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayerCache->layer(), field.name() ).type() != "Hidden" )
+    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayerCache->layer(), field.name() ).type() != QLatin1String( "Hidden" ) )
     {
       QIcon icon = mLayerCache->layer()->fields().iconForField( fieldIndex );
       QString text = field.name();
@@ -172,7 +172,7 @@ void QgsDualView::columnBoxInit()
     mFeatureListPreviewButton->defaultAction()->trigger();
   }
 
-  QAction* sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( "sort.svg" ), tr( "Sort by preview expression" ), this );
+  QAction* sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort by preview expression" ), this );
   connect( sortByPreviewExpression, SIGNAL( triggered( bool ) ), this, SLOT( sortByPreviewExpression() ) );
   mFeatureListPreviewButton->addAction( sortByPreviewExpression );
 }
@@ -202,7 +202,7 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer, bool cacheGeometry )
 {
   // Initialize the cache
   QSettings settings;
-  int cacheSize = settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt();
+  int cacheSize = settings.value( QStringLiteral( "/qgis/attributeTableRowCache" ), "10000" ).toInt();
   mLayerCache = new QgsVectorLayerCache( layer, cacheSize, this );
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayerCache->layer()->dataProvider()->capabilities() ) )
@@ -304,7 +304,7 @@ void QgsDualView::previewExpressionBuilder()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mLayerCache->layer() );
 
-  QgsExpressionBuilderDialog dlg( mLayerCache->layer(), mFeatureList->displayExpression(), this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayerCache->layer(), mFeatureList->displayExpression(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based preview" ) );
   dlg.setExpressionText( mFeatureList->displayExpression() );
 
@@ -324,7 +324,7 @@ void QgsDualView::previewColumnChanged( QObject* action )
 
   if ( previewAction )
   {
-    if ( !mFeatureList->setDisplayExpression( QString( "COALESCE( \"%1\", '<NULL>' )" ).arg( previewAction->text() ) ) )
+    if ( !mFeatureList->setDisplayExpression( QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( previewAction->text() ) ) )
     {
       QMessageBox::warning( this,
                             tr( "Could not set preview column" ),
@@ -559,7 +559,7 @@ void QgsDualView::modifySort()
   expressionBuilder->setExpressionContext( context );
   expressionBuilder->setLayer( layer );
   expressionBuilder->loadFieldNames();
-  expressionBuilder->loadRecent( "generic" );
+  expressionBuilder->loadRecent( QStringLiteral( "generic" ) );
   expressionBuilder->setExpressionText( sortExpression().isEmpty() ? layer->displayExpression() : sortExpression() );
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );

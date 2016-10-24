@@ -380,23 +380,23 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget* parent )
            this, SLOT( populateIcons( const QModelIndex& ) ) );
 
   QSettings settings;
-  bool useRelativePath = ( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", false )
-                           || settings.value( "/Windows/SvgSelectorWidget/RelativePath" ).toBool() );
+  bool useRelativePath = ( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false )
+                           || settings.value( QStringLiteral( "/Windows/SvgSelectorWidget/RelativePath" ) ).toBool() );
   mRelativePathChkBx->setChecked( useRelativePath );
 }
 
 QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
 {
   QSettings settings;
-  settings.setValue( "/Windows/SvgSelectorWidget/RelativePath", mRelativePathChkBx->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/SvgSelectorWidget/RelativePath" ), mRelativePathChkBx->isChecked() );
 }
 
 void QgsSvgSelectorWidget::setSvgPath( const QString& svgPath )
 {
-  QString updatedPath( "" );
+  QString updatedPath( QLatin1String( "" ) );
 
   // skip possible urls, excepting those that may locally resolve
-  if ( !svgPath.contains( "://" ) || ( svgPath.contains( "file://", Qt::CaseInsensitive ) ) )
+  if ( !svgPath.contains( QLatin1String( "://" ) ) || ( svgPath.contains( QLatin1String( "file://" ), Qt::CaseInsensitive ) ) )
   {
     QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( svgPath.trimmed() );
     if ( !resolvedPath.isNull() )
@@ -471,7 +471,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex& idx )
 void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
 {
   QSettings settings;
-  QString openDir = settings.value( "/UI/lastSVGMarkerDir", QDir::homePath() ).toString();
+  QString openDir = settings.value( QStringLiteral( "/UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
 
   QString lineEditText = mFileLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -497,7 +497,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
     updateLineEditFeedback( false );
     return;
   }
-  settings.setValue( "/UI/lastSVGMarkerDir", fi.absolutePath() );
+  settings.setValue( QStringLiteral( "/UI/lastSVGMarkerDir" ), fi.absolutePath() );
   mFileLineEdit->setText( file );
   updateCurrentSvgPath( file );
 }
@@ -562,12 +562,12 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   setLayout( mLayout );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/SvgSelectorDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
 }
 
 QgsSvgSelectorDialog::~QgsSvgSelectorDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/SvgSelectorDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
 }
 

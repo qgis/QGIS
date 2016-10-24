@@ -37,7 +37,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
   connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 
   //sets up layout
@@ -154,7 +154,7 @@ void QgsExpressionLineEdit::editExpression()
 
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
   if ( !mDa.isNull() )
   {
     dlg.setGeomCalculator( *mDa );

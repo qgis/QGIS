@@ -73,11 +73,11 @@ void TestQgsAttributeTable::testFieldCalculation()
   //test field calculation
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "LineString?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolyline line3111;
   line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
   QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
@@ -88,13 +88,13 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
   QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
   tempLayer->startEditing();
-  dlg->runFieldCalculation( tempLayer.data(), "col1", "$length" );
+  dlg->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
   tempLayer->commitChanges();
   // check result
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
@@ -107,7 +107,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
   tempLayer->startEditing();
-  dlg2->runFieldCalculation( tempLayer.data(), "col1", "$length" );
+  dlg2->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
   tempLayer->commitChanges();
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
@@ -121,11 +121,11 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   //test $area field calculation
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
   QgsPolyline polygonRing3111;
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
@@ -139,13 +139,13 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run area calculation
   QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
   tempLayer->startEditing();
-  dlg->runFieldCalculation( tempLayer.data(), "col1", "$area" );
+  dlg->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
   tempLayer->commitChanges();
   // check result
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
@@ -158,7 +158,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
   QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
   tempLayer->startEditing();
-  dlg2->runFieldCalculation( tempLayer.data(), "col1", "$area" );
+  dlg2->runFieldCalculation( tempLayer.data(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
   tempLayer->commitChanges();
   // check result
   fit = tempLayer->dataProvider()->getFeatures();

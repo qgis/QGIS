@@ -37,25 +37,25 @@ int QgsWFSUtils::gmCounter = 0;
 QString QgsWFSUtils::getBaseCacheDirectory( bool createIfNotExisting )
 {
   QSettings settings;
-  QString cacheDirectory = settings.value( "cache/directory" ).toString();
+  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
   if ( createIfNotExisting )
   {
     QMutexLocker locker( &gmMutex );
-    if ( !QDir( cacheDirectory ).exists( "wfsprovider" ) )
+    if ( !QDir( cacheDirectory ).exists( QStringLiteral( "wfsprovider" ) ) )
     {
       QgsDebugMsg( QString( "Creating main cache dir %1/wfsprovider" ).arg( cacheDirectory ) );
-      QDir( cacheDirectory ).mkpath( "wfsprovider" );
+      QDir( cacheDirectory ).mkpath( QStringLiteral( "wfsprovider" ) );
     }
   }
-  return QDir( cacheDirectory ).filePath( "wfsprovider" );
+  return QDir( cacheDirectory ).filePath( QStringLiteral( "wfsprovider" ) );
 }
 
 QString QgsWFSUtils::getCacheDirectory( bool createIfNotExisting )
 {
   QString baseDirectory( getBaseCacheDirectory( createIfNotExisting ) );
-  QString processPath( QString( "pid_%1" ).arg( QCoreApplication::applicationPid() ) );
+  QString processPath( QStringLiteral( "pid_%1" ).arg( QCoreApplication::applicationPid() ) );
   if ( createIfNotExisting )
   {
     QMutexLocker locker( &gmMutex );
@@ -180,7 +180,7 @@ QSharedMemory* QgsWFSUtils::createAndAttachSHM()
   // For debug purpose. To test in the case where shared memory mechanism doesn't work
   if ( !getenv( "QGIS_USE_SHARED_MEMORY_KEEP_ALIVE" ) )
   {
-    sharedMemory = new QSharedMemory( QString( "qgis_wfs_pid_%1" ).arg( QCoreApplication::applicationPid() ) );
+    sharedMemory = new QSharedMemory( QStringLiteral( "qgis_wfs_pid_%1" ).arg( QCoreApplication::applicationPid() ) );
     if ( sharedMemory->create( sizeof( qint64 ) ) && sharedMemory->lock() && sharedMemory->unlock() )
     {
       return sharedMemory;
@@ -225,7 +225,7 @@ void QgsWFSUtils::init()
     QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
     Q_FOREACH ( const QFileInfo& info, fileList )
     {
-      if ( info.isDir() && info.fileName().startsWith( "pid_" ) )
+      if ( info.isDir() && info.fileName().startsWith( QLatin1String( "pid_" ) ) )
       {
         QString pidStr( info.fileName().mid( 4 ) );
         qint64 pid = pidStr.toLongLong();
@@ -237,7 +237,7 @@ void QgsWFSUtils::init()
         else if ( gmKeepAliveWorks )
         {
           canDelete = true;
-          QSharedMemory otherSharedMemory( QString( "qgis_wfs_pid_%1" ).arg( pid ) );
+          QSharedMemory otherSharedMemory( QStringLiteral( "qgis_wfs_pid_%1" ).arg( pid ) );
           if ( otherSharedMemory.attach() )
           {
             if ( otherSharedMemory.size() == sizeof( qint64 ) )

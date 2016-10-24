@@ -37,11 +37,11 @@ static QgsOldSymbolMeta readSymbolMeta( const QDomNode& synode )
 {
   QgsOldSymbolMeta meta;
 
-  QDomNode lvalnode = synode.namedItem( "lowervalue" );
+  QDomNode lvalnode = synode.namedItem( QStringLiteral( "lowervalue" ) );
   if ( ! lvalnode.isNull() )
   {
     QDomElement lvalelement = lvalnode.toElement();
-    if ( lvalelement.attribute( "null" ).toInt() == 1 )
+    if ( lvalelement.attribute( QStringLiteral( "null" ) ).toInt() == 1 )
     {
       meta.lowerValue = QString::null;
     }
@@ -51,14 +51,14 @@ static QgsOldSymbolMeta readSymbolMeta( const QDomNode& synode )
     }
   }
 
-  QDomNode uvalnode = synode.namedItem( "uppervalue" );
+  QDomNode uvalnode = synode.namedItem( QStringLiteral( "uppervalue" ) );
   if ( ! uvalnode.isNull() )
   {
     QDomElement uvalelement = uvalnode.toElement();
     meta.upperValue = uvalelement.text();
   }
 
-  QDomNode labelnode = synode.namedItem( "label" );
+  QDomNode labelnode = synode.namedItem( QStringLiteral( "label" ) );
   if ( ! labelnode.isNull() )
   {
     QDomElement labelelement = labelnode.toElement();
@@ -73,15 +73,15 @@ static QColor readSymbolColor( const QDomNode& synode, bool fillColor )
 {
   QDomNode cnode = synode.namedItem( fillColor ? "fillcolor" : "outlinecolor" );
   QDomElement celement = cnode.toElement();
-  int red = celement.attribute( "red" ).toInt();
-  int green = celement.attribute( "green" ).toInt();
-  int blue = celement.attribute( "blue" ).toInt();
+  int red = celement.attribute( QStringLiteral( "red" ) ).toInt();
+  int green = celement.attribute( QStringLiteral( "green" ) ).toInt();
+  int blue = celement.attribute( QStringLiteral( "blue" ) ).toInt();
   return QColor( red, green, blue );
 }
 
 static double readOutlineWidth( const QDomNode& synode )
 {
-  QDomNode outlwnode = synode.namedItem( "outlinewidth" );
+  QDomNode outlwnode = synode.namedItem( QStringLiteral( "outlinewidth" ) );
   QDomElement outlwelement = outlwnode.toElement();
   return outlwelement.text().toDouble();
 }
@@ -89,32 +89,32 @@ static double readOutlineWidth( const QDomNode& synode )
 
 static Qt::PenStyle readOutlineStyle( const QDomNode& synode )
 {
-  QDomNode outlstnode = synode.namedItem( "outlinestyle" );
+  QDomNode outlstnode = synode.namedItem( QStringLiteral( "outlinestyle" ) );
   QDomElement outlstelement = outlstnode.toElement();
   return QgsSymbologyConversion::qString2PenStyle( outlstelement.text() );
 }
 
 static Qt::BrushStyle readBrushStyle( const QDomNode& synode )
 {
-  QDomNode fillpnode = synode.namedItem( "fillpattern" );
+  QDomNode fillpnode = synode.namedItem( QStringLiteral( "fillpattern" ) );
   QDomElement fillpelement = fillpnode.toElement();
   return QgsSymbologyConversion::qString2BrushStyle( fillpelement.text() );
 }
 
 static QString readMarkerSymbolName( const QDomNode& synode )
 {
-  QDomNode psymbnode = synode.namedItem( "pointsymbol" );
+  QDomNode psymbnode = synode.namedItem( QStringLiteral( "pointsymbol" ) );
   if ( ! psymbnode.isNull() )
   {
     QDomElement psymbelement = psymbnode.toElement();
     return psymbelement.text();
   }
-  return QString( "hard:circle" );
+  return QStringLiteral( "hard:circle" );
 }
 
 static float readMarkerSymbolSize( const QDomNode& synode )
 {
-  QDomNode psizenode = synode.namedItem( "pointsize" );
+  QDomNode psizenode = synode.namedItem( QStringLiteral( "pointsize" ) );
   if ( ! psizenode.isNull() )
   {
     QDomElement psizeelement = psizenode.toElement();
@@ -135,7 +135,7 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
       double size = readMarkerSymbolSize( synode );
       double angle = 0; // rotation only from classification field
       QString symbolName = readMarkerSymbolName( synode );
-      if ( symbolName.startsWith( "hard:" ) )
+      if ( symbolName.startsWith( QLatin1String( "hard:" ) ) )
       {
         // simple symbol marker
         QColor color = readSymbolColor( synode, true );
@@ -191,7 +191,7 @@ static QgsSymbol* readOldSymbol( const QDomNode& synode, QgsWkbTypes::GeometryTy
 
 static QgsFeatureRenderer* readOldSingleSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
-  QDomNode synode = rnode.namedItem( "symbol" );
+  QDomNode synode = rnode.namedItem( QStringLiteral( "symbol" ) );
   if ( synode.isNull() )
     return nullptr;
 
@@ -203,17 +203,17 @@ static QgsFeatureRenderer* readOldSingleSymbolRenderer( const QDomNode& rnode, Q
 
 static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
-  QDomNode modeNode = rnode.namedItem( "mode" );
+  QDomNode modeNode = rnode.namedItem( QStringLiteral( "mode" ) );
   QString modeValue = modeNode.toElement().text();
-  QDomNode classnode = rnode.namedItem( "classificationfield" );
+  QDomNode classnode = rnode.namedItem( QStringLiteral( "classificationfield" ) );
   QString classificationField = classnode.toElement().text();
 
   QgsGraduatedSymbolRenderer::Mode m = QgsGraduatedSymbolRenderer::Custom;
-  if ( modeValue == "Empty" )
+  if ( modeValue == QLatin1String( "Empty" ) )
   {
     m = QgsGraduatedSymbolRenderer::Custom;
   }
-  else if ( modeValue == "Quantile" )
+  else if ( modeValue == QLatin1String( "Quantile" ) )
   {
     m = QgsGraduatedSymbolRenderer::Quantile;
   }
@@ -224,7 +224,7 @@ static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode
 
   // load ranges and symbols
   QgsRangeList ranges;
-  QDomNode symbolnode = rnode.namedItem( "symbol" );
+  QDomNode symbolnode = rnode.namedItem( QStringLiteral( "symbol" ) );
   while ( !symbolnode.isNull() )
   {
     QgsSymbol* symbol = readOldSymbol( symbolnode, geomType );
@@ -235,7 +235,7 @@ static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode
       double upperValue = meta.upperValue.toDouble();
       QString label = meta.label;
       if ( label.isEmpty() )
-        label = QString( "%1 - %2" ).arg( lowerValue, -1, 'f', 3 ).arg( upperValue, -1, 'f', 3 );
+        label = QStringLiteral( "%1 - %2" ).arg( lowerValue, -1, 'f', 3 ).arg( upperValue, -1, 'f', 3 );
       ranges.append( QgsRendererRange( lowerValue, upperValue, symbol, label ) );
     }
 
@@ -252,12 +252,12 @@ static QgsFeatureRenderer* readOldGraduatedSymbolRenderer( const QDomNode& rnode
 
 static QgsFeatureRenderer* readOldUniqueValueRenderer( const QDomNode& rnode, QgsWkbTypes::GeometryType geomType )
 {
-  QDomNode classnode = rnode.namedItem( "classificationfield" );
+  QDomNode classnode = rnode.namedItem( QStringLiteral( "classificationfield" ) );
   QString classificationField = classnode.toElement().text();
 
   // read categories and symbols
   QgsCategoryList cats;
-  QDomNode symbolnode = rnode.namedItem( "symbol" );
+  QDomNode symbolnode = rnode.namedItem( QStringLiteral( "symbol" ) );
   while ( !symbolnode.isNull() )
   {
     QgsSymbol* symbol = readOldSymbol( symbolnode, geomType );
@@ -284,10 +284,10 @@ static QgsFeatureRenderer* readOldUniqueValueRenderer( const QDomNode& rnode, Qg
 
 QgsFeatureRenderer* QgsSymbologyConversion::readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType )
 {
-  QDomNode singlenode = layerNode.namedItem( "singlesymbol" );
-  QDomNode graduatednode = layerNode.namedItem( "graduatedsymbol" );
-  QDomNode continuousnode = layerNode.namedItem( "continuoussymbol" );
-  QDomNode uniquevaluenode = layerNode.namedItem( "uniquevalue" );
+  QDomNode singlenode = layerNode.namedItem( QStringLiteral( "singlesymbol" ) );
+  QDomNode graduatednode = layerNode.namedItem( QStringLiteral( "graduatedsymbol" ) );
+  QDomNode continuousnode = layerNode.namedItem( QStringLiteral( "continuoussymbol" ) );
+  QDomNode uniquevaluenode = layerNode.namedItem( QStringLiteral( "uniquevalue" ) );
 
   if ( !singlenode.isNull() )
   {
@@ -356,31 +356,31 @@ QString QgsSymbologyConversion::penStyle2QString( Qt::PenStyle penstyle )
 {
   if ( penstyle == Qt::NoPen )
   {
-    return "NoPen";
+    return QStringLiteral( "NoPen" );
   }
   else if ( penstyle == Qt::SolidLine )
   {
-    return "SolidLine";
+    return QStringLiteral( "SolidLine" );
   }
   else if ( penstyle == Qt::DashLine )
   {
-    return "DashLine";
+    return QStringLiteral( "DashLine" );
   }
   else if ( penstyle == Qt::DotLine )
   {
-    return "DotLine";
+    return QStringLiteral( "DotLine" );
   }
   else if ( penstyle == Qt::DashDotLine )
   {
-    return "DashDotLine";
+    return QStringLiteral( "DashDotLine" );
   }
   else if ( penstyle == Qt::DashDotDotLine )
   {
-    return "DashDotDotLine";
+    return QStringLiteral( "DashDotDotLine" );
   }
   else if ( penstyle == Qt::MPenStyle )
   {
-    return "MPenStyle";
+    return QStringLiteral( "MPenStyle" );
   }
   else                        //return a null string
   {
@@ -390,31 +390,31 @@ QString QgsSymbologyConversion::penStyle2QString( Qt::PenStyle penstyle )
 
 Qt::PenStyle QgsSymbologyConversion::qString2PenStyle( const QString& penString )
 {
-  if ( penString == "NoPen" )
+  if ( penString == QLatin1String( "NoPen" ) )
   {
     return Qt::NoPen;
   }
-  else if ( penString == "SolidLine" )
+  else if ( penString == QLatin1String( "SolidLine" ) )
   {
     return Qt::SolidLine;
   }
-  else if ( penString == "DashLine" )
+  else if ( penString == QLatin1String( "DashLine" ) )
   {
     return Qt::DashLine;
   }
-  else if ( penString == "DotLine" )
+  else if ( penString == QLatin1String( "DotLine" ) )
   {
     return Qt::DotLine;
   }
-  else if ( penString == "DashDotLine" )
+  else if ( penString == QLatin1String( "DashDotLine" ) )
   {
     return Qt::DashDotLine;
   }
-  else if ( penString == "DashDotDotLine" )
+  else if ( penString == QLatin1String( "DashDotDotLine" ) )
   {
     return Qt::DashDotDotLine;
   }
-  else if ( penString == "MPenStyle" )
+  else if ( penString == QLatin1String( "MPenStyle" ) )
   {
     return Qt::MPenStyle;
   }
@@ -428,138 +428,138 @@ QString QgsSymbologyConversion::brushStyle2QString( Qt::BrushStyle brushstyle )
 {
   if ( brushstyle == Qt::NoBrush )
   {
-    return "NoBrush";
+    return QStringLiteral( "NoBrush" );
   }
   else if ( brushstyle == Qt::SolidPattern )
   {
-    return "SolidPattern";
+    return QStringLiteral( "SolidPattern" );
   }
   else if ( brushstyle == Qt::Dense1Pattern )
   {
-    return "Dense1Pattern";
+    return QStringLiteral( "Dense1Pattern" );
   }
   else if ( brushstyle == Qt::Dense2Pattern )
   {
-    return "Dense2Pattern";
+    return QStringLiteral( "Dense2Pattern" );
   }
   else if ( brushstyle == Qt::Dense3Pattern )
   {
-    return "Dense3Pattern";
+    return QStringLiteral( "Dense3Pattern" );
   }
   else if ( brushstyle == Qt::Dense4Pattern )
   {
-    return "Dense4Pattern";
+    return QStringLiteral( "Dense4Pattern" );
   }
   else if ( brushstyle == Qt::Dense5Pattern )
   {
-    return "Dense5Pattern";
+    return QStringLiteral( "Dense5Pattern" );
   }
   else if ( brushstyle == Qt::Dense6Pattern )
   {
-    return "Dense6Pattern";
+    return QStringLiteral( "Dense6Pattern" );
   }
   else if ( brushstyle == Qt::Dense7Pattern )
   {
-    return "Dense7Pattern";
+    return QStringLiteral( "Dense7Pattern" );
   }
   else if ( brushstyle == Qt::HorPattern )
   {
-    return "HorPattern";
+    return QStringLiteral( "HorPattern" );
   }
   else if ( brushstyle == Qt::VerPattern )
   {
-    return "VerPattern";
+    return QStringLiteral( "VerPattern" );
   }
   else if ( brushstyle == Qt::CrossPattern )
   {
-    return "CrossPattern";
+    return QStringLiteral( "CrossPattern" );
   }
   else if ( brushstyle == Qt::BDiagPattern )
   {
-    return "BDiagPattern";
+    return QStringLiteral( "BDiagPattern" );
   }
   else if ( brushstyle == Qt::FDiagPattern )
   {
-    return "FDiagPattern";
+    return QStringLiteral( "FDiagPattern" );
   }
   else if ( brushstyle == Qt::DiagCrossPattern )
   {
-    return "DiagCrossPattern";
+    return QStringLiteral( "DiagCrossPattern" );
   }
   else if ( brushstyle == Qt::TexturePattern )
   {
-    return "TexturePattern";
+    return QStringLiteral( "TexturePattern" );
   }
   else                        //return a null string
   {
     QgsDebugMsg( "no matching pattern found" );
-    return " ";
+    return QStringLiteral( " " );
   }
 }
 
 Qt::BrushStyle QgsSymbologyConversion::qString2BrushStyle( const QString& brushString )
 {
-  if ( brushString == "NoBrush" )
+  if ( brushString == QLatin1String( "NoBrush" ) )
   {
     return Qt::NoBrush;
   }
-  else if ( brushString == "SolidPattern" )
+  else if ( brushString == QLatin1String( "SolidPattern" ) )
   {
     return Qt::SolidPattern;
   }
-  else if ( brushString == "Dense1Pattern" )
+  else if ( brushString == QLatin1String( "Dense1Pattern" ) )
   {
     return Qt::Dense1Pattern;
   }
-  else if ( brushString == "Dense2Pattern" )
+  else if ( brushString == QLatin1String( "Dense2Pattern" ) )
   {
     return Qt::Dense2Pattern;
   }
-  else if ( brushString == "Dense3Pattern" )
+  else if ( brushString == QLatin1String( "Dense3Pattern" ) )
   {
     return Qt::Dense3Pattern;
   }
-  else if ( brushString == "Dense4Pattern" )
+  else if ( brushString == QLatin1String( "Dense4Pattern" ) )
   {
     return Qt::Dense4Pattern;
   }
-  else if ( brushString == "Dense5Pattern" )
+  else if ( brushString == QLatin1String( "Dense5Pattern" ) )
   {
     return Qt::Dense5Pattern;
   }
-  else if ( brushString == "Dense6Pattern" )
+  else if ( brushString == QLatin1String( "Dense6Pattern" ) )
   {
     return Qt::Dense6Pattern;
   }
-  else if ( brushString == "Dense7Pattern" )
+  else if ( brushString == QLatin1String( "Dense7Pattern" ) )
   {
     return Qt::Dense7Pattern;
   }
-  else if ( brushString == "HorPattern" )
+  else if ( brushString == QLatin1String( "HorPattern" ) )
   {
     return Qt::HorPattern;
   }
-  else if ( brushString == "VerPattern" )
+  else if ( brushString == QLatin1String( "VerPattern" ) )
   {
     return Qt::VerPattern;
   }
-  else if ( brushString == "CrossPattern" )
+  else if ( brushString == QLatin1String( "CrossPattern" ) )
   {
     return Qt::CrossPattern;
   }
-  else if ( brushString == "BDiagPattern" )
+  else if ( brushString == QLatin1String( "BDiagPattern" ) )
   {
     return Qt::BDiagPattern;
   }
-  else if ( brushString == "FDiagPattern" )
+  else if ( brushString == QLatin1String( "FDiagPattern" ) )
   {
     return Qt::FDiagPattern;
   }
-  else if ( brushString == "DiagCrossPattern" )
+  else if ( brushString == QLatin1String( "DiagCrossPattern" ) )
   {
     return Qt::DiagCrossPattern;
   }
-  else if ( brushString == "TexturePattern" )
+  else if ( brushString == QLatin1String( "TexturePattern" ) )
   {
     return Qt::TexturePattern;
   }

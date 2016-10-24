@@ -96,11 +96,11 @@ void QgsMasterPasswordResetDialog::on_chkPassShowNew_stateChanged( int state )
 
 void QgsMasterPasswordResetDialog::validatePasswords()
 {
-  QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
-                : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+  QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassCurrent->setStyleSheet( ss1 );
-  QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
-                : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+  QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassNew->setStyleSheet( ss2 );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mPassCurOk && mPassNewOk );
 }

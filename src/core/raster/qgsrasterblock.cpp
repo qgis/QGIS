@@ -933,7 +933,7 @@ bool QgsRasterBlock::createNoDataBitmap()
 
 QString  QgsRasterBlock::toString() const
 {
-  return QString( "dataType = %1 width = %2 height = %3" )
+  return QStringLiteral( "dataType = %1 width = %2 height = %3" )
          .arg( mDataType ).arg( mWidth ).arg( mHeight );
 }
 

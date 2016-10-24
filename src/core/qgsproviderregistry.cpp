@@ -83,7 +83,7 @@ void QgsProviderRegistry::init()
 #elif defined(ANDROID)
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( "*.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
 
   QgsDebugMsg( QString( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ) );
@@ -298,12 +298,12 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
   QString list;
 
   if ( asHTML )
-    list += "<ol>";
+    list += QLatin1String( "<ol>" );
 
   while ( it != mProviders.end() )
   {
     if ( asHTML )
-      list += "<li>";
+      list += QLatin1String( "<li>" );
 
     list += it->second->description();
 
@@ -316,7 +316,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
   }
 
   if ( asHTML )
-    list += "</ol>";
+    list += QLatin1String( "</ol>" );
 
   return list;
 }

@@ -153,9 +153,9 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
       mcbDirectionDefault->setCurrentIndex( 2 );
       break;
   }
-  if ( s->mSpeedUnitName == "km/h" )
+  if ( s->mSpeedUnitName == QLatin1String( "km/h" ) )
     mcbUnitOfSpeed->setCurrentIndex( 1 );
-  else if ( s->mSpeedUnitName == "m/s" )
+  else if ( s->mSpeedUnitName == QLatin1String( "m/s" ) )
     mcbUnitOfSpeed->setCurrentIndex( 0 );
 
 }

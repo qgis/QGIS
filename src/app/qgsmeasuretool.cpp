@@ -119,9 +119,9 @@ void QgsMeasureTool::updateSettings()
 {
   QSettings settings;
 
-  int myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
-  int myGreen = settings.value( "/qgis/default_measure_color_green", 155 ).toInt();
-  int myBlue = settings.value( "/qgis/default_measure_color_blue", 67 ).toInt();
+  int myRed = settings.value( QStringLiteral( "/qgis/default_measure_color_red" ), 222 ).toInt();
+  int myGreen = settings.value( QStringLiteral( "/qgis/default_measure_color_green" ), 155 ).toInt();
+  int myBlue = settings.value( QStringLiteral( "/qgis/default_measure_color_blue" ), 67 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
   mRubberBand->setWidth( 3 );
   mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
@@ -150,7 +150,7 @@ void QgsMeasureTool::updateSettings()
       }
       catch ( QgsCsException &cse )
       {
-        QgsMessageLog::logMessage( QString( "Transform error caught at the MeasureTool: %1" ).arg( cse.what() ) );
+        QgsMessageLog::logMessage( QStringLiteral( "Transform error caught at the MeasureTool: %1" ).arg( cse.what() ) );
       }
     }
 

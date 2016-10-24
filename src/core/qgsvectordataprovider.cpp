@@ -38,7 +38,7 @@ QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
     , mCacheMinMaxDirty( true )
 {
   QSettings settings;
-  setEncoding( settings.value( "/UI/encoding", "System" ).toString() );
+  setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
 }
 
 
@@ -48,7 +48,7 @@ QgsVectorDataProvider::~QgsVectorDataProvider()
 
 QString QgsVectorDataProvider::storageType() const
 {
-  return "Generic vector file";
+  return QStringLiteral( "Generic vector file" );
 }
 
 QString QgsVectorDataProvider::dataComment() const
@@ -133,7 +133,7 @@ void QgsVectorDataProvider::setEncoding( const QString& e )
 {
   mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
 
-  if ( !mEncoding && e != "System" )
+  if ( !mEncoding && e != QLatin1String( "System" ) )
   {
     QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
@@ -152,7 +152,7 @@ QString QgsVectorDataProvider::encoding() const
     return mEncoding->name();
   }
 
-  return "";
+  return QLatin1String( "" );
 }
 
 QString QgsVectorDataProvider::capabilitiesString() const
@@ -252,7 +252,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     QgsDebugMsg( "Supports circular geometry types (circularstring, compoundcurve, curvepolygon)" );
   }
 
-  return abilitiesList.join( ", " );
+  return abilitiesList.join( QStringLiteral( ", " ) );
 }
 
 

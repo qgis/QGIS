@@ -159,7 +159,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     {
       // Check GRASS version
       QStringList errors;
-      if ( !QgsGrassModuleOption::checkVersion( confDomElement.attribute( "version_min" ), confDomElement.attribute( "version_max" ), errors ) )
+      if ( !QgsGrassModuleOption::checkVersion( confDomElement.attribute( QStringLiteral( "version_min" ) ), confDomElement.attribute( QStringLiteral( "version_max" ) ), errors ) )
       {
         mErrors << errors; // checkVersion returns falso also if parsing fails
         confDomNode = confDomNode.nextSibling();
@@ -169,7 +169,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       QString optionType = confDomElement.tagName();
       QgsDebugMsg( "optionType = " + optionType );
 
-      if ( confDomElement.attribute( "advanced", "no" ) == "yes" )
+      if ( confDomElement.attribute( QStringLiteral( "advanced" ), QStringLiteral( "no" ) ) == QLatin1String( "yes" ) )
       {
         layout = mypAdvancedLayout;
       }
@@ -178,7 +178,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         layout = mypSimpleLayout;
       }
 
-      QString key = confDomElement.attribute( "key" );
+      QString key = confDomElement.attribute( QStringLiteral( "key" ) );
       QgsDebugMsg( "key = " + key );
 
       QDomNode gnode = QgsGrassModuleParam::nodeByKey( descDocElem, key );
@@ -189,23 +189,23 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         continue;
       }
 
-      if ( optionType == "option" )
+      if ( optionType == QLatin1String( "option" ) )
       {
         bool created = false;
 
         // Check option type and create appropriate control
-        QDomNode promptNode = gnode.namedItem( "gisprompt" );
+        QDomNode promptNode = gnode.namedItem( QStringLiteral( "gisprompt" ) );
         QDomElement promptElem = promptNode.toElement();
         if ( !promptElem.isNull() )
         {
-          QString element = promptElem.attribute( "element" );
-          QString age = promptElem.attribute( "age" );
+          QString element = promptElem.attribute( QStringLiteral( "element" ) );
+          QString age = promptElem.attribute( QStringLiteral( "age" ) );
 
           //QgsDebugMsg("element = " + element + " age = " + age);
-          if ( age == "old" && ( element == "vector" || element == "cell" ||
-                                 element == "strds" || element == "stvds" ||
-                                 element == "str3ds" || element == "stds" )
-               &&  confDomElement.attribute( "widget" ) != "text" )
+          if ( age == QLatin1String( "old" ) && ( element == QLatin1String( "vector" ) || element == QLatin1String( "cell" ) ||
+                                                  element == QLatin1String( "strds" ) || element == QLatin1String( "stvds" ) ||
+                                                  element == QLatin1String( "str3ds" ) || element == QLatin1String( "stds" ) )
+               &&  confDomElement.attribute( QStringLiteral( "widget" ) ) != QLatin1String( "text" ) )
           {
             QgsGrassModuleInput *mi = new QgsGrassModuleInput(
               mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );
@@ -224,14 +224,14 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
           layout->addWidget( so );
           mParams.append( so );
 
-          if ( promptElem.attribute( "prompt" ) == "dbcolumn" )
+          if ( promptElem.attribute( QStringLiteral( "prompt" ) ) == QLatin1String( "dbcolumn" ) )
           {
             // Give only warning if the option is not hidden
             if ( !so->hidden() )
             {
               // G_OPT_DB_COLUMN may be also used for new columns (v.in.db) so we check also if there is at least one input vector
               // but a vector input may also exist (v.random).
-              QList<QDomNode> vectorNodes = QgsGrassModuleParam::nodesByType( descDocElem, G_OPT_V_INPUT, "old" );
+              QList<QDomNode> vectorNodes = QgsGrassModuleParam::nodesByType( descDocElem, G_OPT_V_INPUT, QStringLiteral( "old" ) );
               QgsDebugMsg( QString( "vectorNodes.size() = %1" ).arg( vectorNodes.size() ) );
               if ( !vectorNodes.isEmpty() )
               {
@@ -241,7 +241,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
           }
         }
       }
-      else if ( optionType == "ogr" )
+      else if ( optionType == QLatin1String( "ogr" ) )
       {
         QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
           mModule, QgsGrassModuleGdalInput::Ogr, key, confDomElement,
@@ -249,7 +249,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         layout->addWidget( mi );
         mParams.append( mi );
       }
-      else if ( optionType == "gdal" )
+      else if ( optionType == QLatin1String( "gdal" ) )
       {
         QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
           mModule, QgsGrassModuleGdalInput::Gdal, key, confDomElement,
@@ -257,9 +257,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         layout->addWidget( mi );
         mParams.append( mi );
       }
-      else if ( optionType == "field" )
+      else if ( optionType == QLatin1String( "field" ) )
       {
-        if ( confDomElement.hasAttribute( "layer" ) )
+        if ( confDomElement.hasAttribute( QStringLiteral( "layer" ) ) )
         {
           QgsGrassModuleVectorField *mi = new QgsGrassModuleVectorField(
             mModule, this, key, confDomElement,
@@ -276,7 +276,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
           mParams.append( mi );
         }
       }
-      else if ( optionType == "selection" )
+      else if ( optionType == QLatin1String( "selection" ) )
       {
         QgsGrassModuleSelection *mi = new QgsGrassModuleSelection(
           mModule, this, key, confDomElement,
@@ -284,14 +284,14 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         layout->addWidget( mi );
         mParams.append( mi );
       }
-      else if ( optionType == "file" )
+      else if ( optionType == QLatin1String( "file" ) )
       {
         QgsGrassModuleFile *mi = new QgsGrassModuleFile(
           mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
         mParams.append( mi );
       }
-      else if ( optionType == "flag" )
+      else if ( optionType == QLatin1String( "flag" ) )
       {
         QgsGrassModuleFlag *flag = new QgsGrassModuleFlag(
           mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
@@ -325,9 +325,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       QString optionType = confDomElement.tagName();
       QgsDebugMsg( "optionType = " + optionType );
 
-      if ( optionType == "flag" )
+      if ( optionType == QLatin1String( "flag" ) )
       {
-        QString name = confDomElement.attribute( "name" ).trimmed();
+        QString name = confDomElement.attribute( QStringLiteral( "name" ) ).trimmed();
         QgsDebugMsg( "name = " + name );
         mFlagNames.append( name );
       }
@@ -484,7 +484,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer*>( layer );
-      if ( vector  && vector->providerType() == "grass" )
+      if ( vector  && vector->providerType() == QLatin1String( "grass" ) )
       {
         QgsGrassProvider *provider = qobject_cast<QgsGrassProvider *>( vector->dataProvider() );
         if ( provider )
@@ -505,7 +505,7 @@ QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProvid
     if ( layer->type() == QgsMapLayer::RasterLayer )
     {
       QgsRasterLayer *raster = qobject_cast<QgsRasterLayer*>( layer );
-      if ( raster  && raster->providerType() == "grassraster" )
+      if ( raster  && raster->providerType() == QLatin1String( "grassraster" ) )
       {
         QgsGrassRasterProvider *provider = qobject_cast<QgsGrassRasterProvider *>( raster->dataProvider() );
         if ( provider )
@@ -866,7 +866,7 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* in
     return false;
   }
 
-  QStringList mm = input->currentMap().split( "@" );
+  QStringList mm = input->currentMap().split( QStringLiteral( "@" ) );
   QString map = mm.value( 0 );
   QString mapset = QgsGrass::getDefaultMapset();
   if ( mm.size() > 1 )
@@ -891,7 +891,7 @@ QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
 
 QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString & xname, QStringList & errors )
 {
-  QDomDocument gDoc( "task" );
+  QDomDocument gDoc( QStringLiteral( "task" ) );
 
   // Attention!: sh.exe (MSYS) sets $0 in scripts to file name
   // without full path. Strange because when run from msys.bat
@@ -908,7 +908,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   QString cmd = arguments.takeFirst();
 
-  arguments.append( "--interface-description" );
+  arguments.append( QStringLiteral( "--interface-description" ) );
 
   QProcess process( this );
 
@@ -923,16 +923,16 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
        || !process.waitForReadyRead()
        || !process.waitForFinished()
        || ( process.exitCode() != 0 && process.exitCode() != 255 &&
-            ( !cmd.endsWith( ".py" ) || process.exitCode() != 1 ) ) )
+            ( !cmd.endsWith( QLatin1String( ".py" ) ) || process.exitCode() != 1 ) ) )
   {
     QString pathVariable = QgsGrassModule::libraryPathVariable();
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QString msg = tr( "Cannot start module %1" ).arg( mXName )
                   + "<br><br>" + pathVariable + "=" + environment.value( pathVariable )
-                  + "<br><br>PATH=" + environment.value( "PATH" )
-                  + "<br><br>PYTHONPATH=" + environment.value( "PYTHONPATH" )
-                  + "<br><br>" + tr( "command" ) + QString( ": %1 %2<br>%3<br>%4" )
-                  .arg( cmd, arguments.join( " " ),
+                  + "<br><br>PATH=" + environment.value( QStringLiteral( "PATH" ) )
+                  + "<br><br>PYTHONPATH=" + environment.value( QStringLiteral( "PYTHONPATH" ) )
+                  + "<br><br>" + tr( "command" ) + QStringLiteral( ": %1 %2<br>%3<br>%4" )
+                  .arg( cmd, arguments.join( QStringLiteral( " " ) ),
                         process.readAllStandardOutput().constData(),
                         process.readAllStandardError().constData() );
     QgsDebugMsg( msg );

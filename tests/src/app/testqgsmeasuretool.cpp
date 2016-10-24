@@ -64,9 +64,9 @@ void TestQgsMeasureTool::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   mQgisApp = new QgisApp();
   mCanvas = new QgsMapCanvas();
@@ -87,7 +87,7 @@ void TestQgsMeasureTool::testLengthCalculation()
 {
   //test length measurement
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
@@ -95,7 +95,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   mCanvas->setCrsTransformEnabled( true );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
@@ -154,7 +154,7 @@ void TestQgsMeasureTool::testAreaCalculation()
 {
   //test area measurement
   QSettings s;
-  s.setValue( "/qgis/measure/keepbaseunit", true );
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
 
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
@@ -162,7 +162,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   mCanvas->setCrsTransformEnabled( true );
   mCanvas->setDestinationCrs( srs );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run length calculation

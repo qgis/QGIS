@@ -44,12 +44,12 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsCo
 
   mArrowHeadOutlineColorButton->setColorDialogTitle( tr( "Select arrow head outline color" ) );
   mArrowHeadOutlineColorButton->setAllowAlpha( true );
-  mArrowHeadOutlineColorButton->setContext( "composer" );
+  mArrowHeadOutlineColorButton->setContext( QStringLiteral( "composer" ) );
   mArrowHeadOutlineColorButton->setNoColorString( tr( "Transparent outline" ) );
   mArrowHeadOutlineColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
   mArrowHeadFillColorButton->setAllowAlpha( true );
-  mArrowHeadFillColorButton->setContext( "composer" );
+  mArrowHeadFillColorButton->setContext( QStringLiteral( "composer" ) );
   mArrowHeadFillColorButton->setNoColorString( tr( "Transparent fill" ) );
   mArrowHeadFillColorButton->setShowNoColor( true );
 
@@ -241,7 +241,7 @@ void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString 
     }
     else
     {
-      mArrow->setStartMarker( "" );
+      mArrow->setStartMarker( QLatin1String( "" ) );
     }
     mArrow->update();
     mArrow->endCommand();
@@ -260,7 +260,7 @@ void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString & 
     }
     else
     {
-      mArrow->setEndMarker( "" );
+      mArrow->setEndMarker( QLatin1String( "" ) );
     }
     mArrow->update();
     mArrow->endCommand();
@@ -280,14 +280,14 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
+    openDir = s.value( QStringLiteral( "/UI/lastComposerMarkerDir" ), QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
     QFileInfo fileInfo( svgFileName );
-    s.setValue( "/UI/lastComposerMarkerDir", fileInfo.absolutePath() );
+    s.setValue( QStringLiteral( "/UI/lastComposerMarkerDir" ), fileInfo.absolutePath() );
     mArrow->beginCommand( tr( "Arrow start marker" ) );
     mStartMarkerLineEdit->setText( svgFileName );
     mArrow->endCommand();
@@ -307,14 +307,14 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
+    openDir = s.value( QStringLiteral( "/UI/lastComposerMarkerDir" ), QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
     QFileInfo fileInfo( svgFileName );
-    s.setValue( "/UI/lastComposerMarkerDir", fileInfo.absolutePath() );
+    s.setValue( QStringLiteral( "/UI/lastComposerMarkerDir" ), fileInfo.absolutePath() );
     mArrow->beginCommand( tr( "Arrow end marker" ) );
     mEndMarkerLineEdit->setText( svgFileName );
     mArrow->endCommand();

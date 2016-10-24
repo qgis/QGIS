@@ -24,7 +24,7 @@
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
-    , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
+    , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
 {
   setupUi( this );
 
@@ -91,7 +91,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
 
 void QgsAddAttrDialog::accept()
 {
-  if ( mIsShapeFile && mNameEdit->text().toLower() == "shape" )
+  if ( mIsShapeFile && mNameEdit->text().toLower() == QLatin1String( "shape" ) )
   {
     QMessageBox::warning( this, tr( "Warning" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );

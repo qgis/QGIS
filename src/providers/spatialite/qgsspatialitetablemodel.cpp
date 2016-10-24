@@ -150,7 +150,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, c
       QIcon myIcon = iconForType( wkbType );
       itemFromIndex( currentTypeIndex )->setText( typeList.at( 0 ) ); //todo: add other rows
       itemFromIndex( currentTypeIndex )->setIcon( myIcon );
-      if ( !geomColText.contains( " AS " ) )
+      if ( !geomColText.contains( QLatin1String( " AS " ) ) )
       {
         itemFromIndex( currentGeomColumnIndex )->setText( geomColText + " AS " + typeList.at( 0 ) );
       }
@@ -158,7 +158,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, c
       for ( int j = 1; j < typeList.size(); ++j )
       {
         //todo: add correct type
-        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), "" );
+        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), QLatin1String( "" ) );
       }
     }
   }
@@ -210,32 +210,32 @@ QString QgsSpatiaLiteTableModel::displayStringForType( QgsWkbTypes::Type type ) 
   {
     return tr( "Multipolygon" );
   }
-  return "Unknown";
+  return QStringLiteral( "Unknown" );
 }
 
 QgsWkbTypes::Type QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString & dbType ) const
 {
-  if ( dbType == "POINT" )
+  if ( dbType == QLatin1String( "POINT" ) )
   {
     return QgsWkbTypes::Point;
   }
-  else if ( dbType == "MULTIPOINT" )
+  else if ( dbType == QLatin1String( "MULTIPOINT" ) )
   {
     return QgsWkbTypes::MultiPoint;
   }
-  else if ( dbType == "LINESTRING" )
+  else if ( dbType == QLatin1String( "LINESTRING" ) )
   {
     return QgsWkbTypes::LineString;
   }
-  else if ( dbType == "MULTILINESTRING" )
+  else if ( dbType == QLatin1String( "MULTILINESTRING" ) )
   {
     return QgsWkbTypes::MultiLineString;
   }
-  else if ( dbType == "POLYGON" )
+  else if ( dbType == QLatin1String( "POLYGON" ) )
   {
     return QgsWkbTypes::Polygon;
   }
-  else if ( dbType == "MULTIPOLYGON" )
+  else if ( dbType == QLatin1String( "MULTIPOLYGON" ) )
   {
     return QgsWkbTypes::MultiPolygon;
   }

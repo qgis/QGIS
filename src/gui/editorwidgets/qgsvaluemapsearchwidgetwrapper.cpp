@@ -146,7 +146,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
 
     while ( it != cfg.constEnd() )
     {
-      if ( it.value() != QString( VALUEMAP_NULL_TEXT ) )
+      if ( it.value() != QStringLiteral( VALUEMAP_NULL_TEXT ) )
         mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
@@ -159,9 +159,9 @@ void QgsValueMapSearchWidgetWrapper::setExpression( QString exp )
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 
-  str = QString( "%1 = '%2'" )
+  str = QStringLiteral( "%1 = '%2'" )
         .arg( QgsExpression::quotedColumnRef( fieldName ),
-              exp.replace( '\'', "''" ) );
+              exp.replace( '\'', QLatin1String( "''" ) ) );
 
   mExpression = str;
 }

@@ -141,16 +141,16 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 int QgsSublayersDialog::exec()
 {
   QSettings settings;
-  QString promptLayers = settings.value( "/qgis/promptForSublayers", 1 ).toString();
+  QString promptLayers = settings.value( QStringLiteral( "/qgis/promptForSublayers" ), 1 ).toString();
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
     return QDialog::Rejected;
 
   // check promptForSublayers settings - perhaps this should be in QgsDataSource instead?
-  if ( promptLayers == "no" )
+  if ( promptLayers == QLatin1String( "no" ) )
     return QDialog::Rejected;
-  else if ( promptLayers == "all" )
+  else if ( promptLayers == QLatin1String( "all" ) )
   {
     layersTable->selectAll();
     return QDialog::Accepted;

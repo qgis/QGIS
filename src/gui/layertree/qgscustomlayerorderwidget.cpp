@@ -163,7 +163,7 @@ Qt::DropActions CustomLayerOrderModel::supportedDropActions() const
 QStringList CustomLayerOrderModel::mimeTypes() const
 {
   QStringList types;
-  types << "application/qgis.layerorderdata";
+  types << QStringLiteral( "application/qgis.layerorderdata" );
   return types;
 }
 
@@ -174,7 +174,7 @@ QMimeData*CustomLayerOrderModel::mimeData( const QModelIndexList& indexes ) cons
     lst << data( index, Qt::UserRole + 1 ).toString();
 
   QMimeData* mimeData = new QMimeData();
-  mimeData->setData( "application/qgis.layerorderdata", lst.join( "\n" ).toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.layerorderdata" ), lst.join( QStringLiteral( "\n" ) ).toUtf8() );
   return mimeData;
 }
 
@@ -186,10 +186,10 @@ bool CustomLayerOrderModel::dropMimeData( const QMimeData* data, Qt::DropAction 
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( "application/qgis.layerorderdata" ) )
+  if ( !data->hasFormat( QStringLiteral( "application/qgis.layerorderdata" ) ) )
     return false;
 
-  QByteArray encodedData = data->data( "application/qgis.layerorderdata" );
+  QByteArray encodedData = data->data( QStringLiteral( "application/qgis.layerorderdata" ) );
   QStringList lst = QString::fromUtf8( encodedData ).split( '\n' );
 
   if ( row < 0 )

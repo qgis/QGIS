@@ -50,7 +50,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayer* createFromSld( QDomElement &element );
 
-    QString layerType() const override { return "VectorField"; }
+    QString layerType() const override { return QStringLiteral( "VectorField" ); }
 
     bool setSubSymbol( QgsSymbol* symbol ) override;
     QgsSymbol* subSymbol() override { return mLineSymbol; }

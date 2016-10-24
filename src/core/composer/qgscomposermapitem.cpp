@@ -37,18 +37,18 @@ QgsComposerMapItem::~QgsComposerMapItem()
 bool QgsComposerMapItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc );
-  elem.setAttribute( "uuid", mUuid );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "show", mEnabled );
+  elem.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  elem.setAttribute( QStringLiteral( "name" ), mName );
+  elem.setAttribute( QStringLiteral( "show" ), mEnabled );
   return true;
 }
 
 bool QgsComposerMapItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
-  mUuid = itemElem.attribute( "uuid" );
-  mName = itemElem.attribute( "name" );
-  mEnabled = ( itemElem.attribute( "show", "0" ) != "0" );
+  mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
+  mName = itemElem.attribute( QStringLiteral( "name" ) );
+  mEnabled = ( itemElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   return true;
 }
 

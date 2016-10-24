@@ -35,18 +35,18 @@ QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 
 bool QgsMultiPolygonV2::fromWkt( const QString& wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry*>() << new QgsPolygonV2, "Polygon" );
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry*>() << new QgsPolygonV2, QStringLiteral( "Polygon" ) );
 }
 
 QDomElement QgsMultiPolygonV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   // GML2 does not support curves
-  QDomElement elemMultiPolygon = doc.createElementNS( ns, "MultiPolygon" );
+  QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPolygonV2*>( geom ) )
     {
-      QDomElement elemPolygonMember = doc.createElementNS( ns, "polygonMember" );
+      QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( geom->asGML2( doc, precision, ns ) );
       elemMultiPolygon.appendChild( elemPolygonMember );
     }
@@ -57,12 +57,12 @@ QDomElement QgsMultiPolygonV2::asGML2( QDomDocument& doc, int precision, const Q
 
 QDomElement QgsMultiPolygonV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiSurface = doc.createElementNS( ns, "MultiPolygon" );
+  QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPolygonV2*>( geom ) )
     {
-      QDomElement elemSurfaceMember = doc.createElementNS( ns, "polygonMember" );
+      QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemSurfaceMember.appendChild( geom->asGML3( doc, precision, ns ) );
       elemMultiSurface.appendChild( elemSurfaceMember );
     }
@@ -74,7 +74,7 @@ QDomElement QgsMultiPolygonV2::asGML3( QDomDocument& doc, int precision, const Q
 QString QgsMultiPolygonV2::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
-  QString json = "{\"type\": \"MultiPolygon\", \"coordinates\": [";
+  QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPolygonV2*>( geom ) )
@@ -97,19 +97,19 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
         json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
         delete interiorLineString;
       }
-      if ( json.endsWith( ", " ) )
+      if ( json.endsWith( QLatin1String( ", " ) ) )
       {
         json.chop( 2 ); // Remove last ", "
       }
 
-      json += "], ";
+      json += QLatin1String( "], " );
     }
   }
-  if ( json.endsWith( ", " ) )
+  if ( json.endsWith( QLatin1String( ", " ) ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
-  json += "] }";
+  json += QLatin1String( "] }" );
   return json;
 }
 

@@ -59,7 +59,7 @@ void TestQgsMapLayerStyleManager::cleanupTestCase()
 
 void TestQgsMapLayerStyleManager::init()
 {
-  mVL = new QgsVectorLayer( "LineString", "Line Layer", "memory" );
+  mVL = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
   QgsMapLayerRegistry::instance()->addMapLayer( mVL );
 }
 
@@ -125,8 +125,8 @@ void TestQgsMapLayerStyleManager::testReadWrite()
 
   QgsMapLayerStyleManager sm0( mVL );
 
-  sm0.addStyleFromLayer( "blue" );
-  sm0.setCurrentStyle( "blue" );
+  sm0.addStyleFromLayer( QStringLiteral( "blue" ) );
+  sm0.setCurrentStyle( QStringLiteral( "blue" ) );
   QgsSingleSymbolRenderer* r1 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
   QVERIFY( r1 );
   r1->symbol()->setColor( Qt::blue );
@@ -134,7 +134,7 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   // read and write
 
   QDomDocument doc;
-  QDomElement mgrElem = doc.createElement( "map-layer-style-manager" );
+  QDomElement mgrElem = doc.createElement( QStringLiteral( "map-layer-style-manager" ) );
   doc.appendChild( mgrElem );
   sm0.writeXml( mgrElem );
 
@@ -179,8 +179,8 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 {
   _setVLColor( mVL, Qt::red );
 
-  mVL->styleManager()->addStyleFromLayer( "s1" );
-  mVL->styleManager()->setCurrentStyle( "s1" );
+  mVL->styleManager()->addStyleFromLayer( QStringLiteral( "s1" ) );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
 
   QCOMPARE( mVL->styleManager()->currentStyle(), QString( "s1" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
@@ -190,7 +190,7 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
   mVL->styleManager()->setCurrentStyle( QString() );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
-  mVL->styleManager()->setCurrentStyle( "s1" );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::green ) );
 
   _setVLColor( mVL, Qt::blue );
@@ -198,7 +198,7 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
   mVL->styleManager()->setCurrentStyle( QString() );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
-  mVL->styleManager()->setCurrentStyle( "s1" );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::blue ) );
 }
 

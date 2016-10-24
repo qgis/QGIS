@@ -55,7 +55,7 @@ void QgsMessageOutput::showMessage( const QString& title, const QString& message
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
-    : mMessage( "" )
+    : mMessage( QLatin1String( "" ) )
     , mMsgType( MessageText )
 {
 }
@@ -75,9 +75,9 @@ void QgsMessageOutputConsole::showMessage( bool )
 {
   if ( mMsgType == MessageHtml )
   {
-    mMessage.replace( "<br>", "\n" );
-    mMessage.replace( "&nbsp;", " " );
-    mMessage.replace( QRegExp( "</?[^>]+>" ), "" );
+    mMessage.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+    mMessage.replace( QLatin1String( "&nbsp;" ), QLatin1String( " " ) );
+    mMessage.replace( QRegExp( "</?[^>]+>" ), QLatin1String( "" ) );
   }
   QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
   emit destroyed();

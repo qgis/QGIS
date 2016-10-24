@@ -37,11 +37,11 @@ static void _initRendererWidgetFunctions()
   if ( initialized )
     return;
 
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "paletted", QgsPalettedRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "multibandcolor", QgsMultiBandColorRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandpseudocolor", QgsSingleBandPseudoColorRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandgray", QgsSingleBandGrayRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "hillshade", QgsHillshadeRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "paletted" ), QgsPalettedRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "multibandcolor" ), QgsMultiBandColorRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
 
   initialized = true;
 }
@@ -195,8 +195,8 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
   {
     if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
     {
-      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != "singlebandcolordata" ) ||
-          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == "singlebandcolordata" ) )
+      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
+          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == QLatin1String( "singlebandcolordata" ) ) )
       {
         cboRenderers->addItem( entry.icon(), entry.visibleName, entry.name );
       }
@@ -219,7 +219,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
   }
 
   btnColorizeColor->setColorDialogTitle( tr( "Select color" ) );
-  btnColorizeColor->setContext( "symbology" );
+  btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
 
   // Hue and saturation color control
   const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
@@ -249,11 +249,11 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
     const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
     {
-      if ( zoomedInResampler->type() == "bilinear" )
+      if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
       {
         mZoomedInResamplingComboBox->setCurrentIndex( 1 );
       }
-      else if ( zoomedInResampler->type() == "cubic" )
+      else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
       {
         mZoomedInResamplingComboBox->setCurrentIndex( 2 );
       }
@@ -266,7 +266,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer* layer )
     const QgsRasterResampler* zoomedOutResampler = resampleFilter->zoomedOutResampler();
     if ( zoomedOutResampler )
     {
-      if ( zoomedOutResampler->type() == "bilinear" ) //bilinear resampler does averaging when zooming out
+      if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
       {
         mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
       }

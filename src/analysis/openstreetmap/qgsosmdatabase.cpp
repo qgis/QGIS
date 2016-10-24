@@ -49,7 +49,7 @@ bool QgsOSMDatabase::open()
   int res = QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE, nullptr );
   if ( res != SQLITE_OK )
   {
-    mError = QString( "Failed to open database [%1]: %2" ).arg( res ).arg( mDbFileName );
+    mError = QStringLiteral( "Failed to open database [%1]: %2" ).arg( res ).arg( mDbFileName );
     close();
     return false;
   }
@@ -180,7 +180,7 @@ QList<QgsOSMTagCountPair> QgsOSMDatabase::usedTags( bool ways ) const
 {
   QList<QgsOSMTagCountPair> pairs;
 
-  QString sql = QString( "SELECT k, count(k) FROM %1_tags GROUP BY k" ).arg( ways ? "ways" : "nodes" );
+  QString sql = QStringLiteral( "SELECT k, count(k) FROM %1_tags GROUP BY k" ).arg( ways ? "ways" : "nodes" );
 
   sqlite3_stmt* stmt;
   if ( sqlite3_prepare_v2( mDatabase, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
@@ -281,7 +281,7 @@ bool QgsOSMDatabase::prepareStatements()
     if ( sqlite3_prepare_v2( mDatabase, sql[i], -1, sqlite[i], nullptr ) != SQLITE_OK )
     {
       const char* errMsg = sqlite3_errmsg( mDatabase ); // does not require free
-      mError = QString( "Error preparing SQL command:\n%1\nSQL:\n%2" )
+      mError = QStringLiteral( "Error preparing SQL command:\n%1\nSQL:\n%2" )
                .arg( QString::fromUtf8( errMsg ), QString::fromUtf8( sql[i] ) );
       return false;
     }
@@ -299,9 +299,9 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
   // create SpatiaLite table
 
   QString geometryType;
-  if ( type == Point ) geometryType = "POINT";
-  else if ( type == Polyline ) geometryType = "LINESTRING";
-  else if ( type == Polygon ) geometryType = "POLYGON";
+  if ( type == Point ) geometryType = QStringLiteral( "POINT" );
+  else if ( type == Polyline ) geometryType = QStringLiteral( "LINESTRING" );
+  else if ( type == Polygon ) geometryType = QStringLiteral( "POLYGON" );
   else Q_ASSERT( false && "Unknown export type" );
 
   if ( !createSpatialTable( tableName, geometryType, tagKeys ) )
@@ -333,9 +333,9 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 
 bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys )
 {
-  QString sqlCreateTable = QString( "CREATE TABLE %1 (id INTEGER PRIMARY KEY" ).arg( quotedIdentifier( tableName ) );
+  QString sqlCreateTable = QStringLiteral( "CREATE TABLE %1 (id INTEGER PRIMARY KEY" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
-    sqlCreateTable += QString( ", %1 TEXT" ).arg( quotedIdentifier( tagKeys[i] ) );
+    sqlCreateTable += QStringLiteral( ", %1 TEXT" ).arg( quotedIdentifier( tagKeys[i] ) );
   sqlCreateTable += ')';
 
   char *errMsg = nullptr;
@@ -347,7 +347,7 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
     return false;
   }
 
-  QString sqlAddGeomColumn = QString( "SELECT AddGeometryColumn(%1, 'geometry', 4326, %2, 'XY')" )
+  QString sqlAddGeomColumn = QStringLiteral( "SELECT AddGeometryColumn(%1, 'geometry', 4326, %2, 'XY')" )
                              .arg( quotedValue( tableName ),
                                    quotedValue( geometryType ) );
   ret = sqlite3_exec( mDatabase, sqlAddGeomColumn.toUtf8().constData(), nullptr, nullptr, &errMsg );
@@ -364,7 +364,7 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
 
 bool QgsOSMDatabase::createSpatialIndex( const QString& tableName )
 {
-  QString sqlSpatialIndex = QString( "SELECT CreateSpatialIndex(%1, 'geometry')" ).arg( quotedValue( tableName ) );
+  QString sqlSpatialIndex = QStringLiteral( "SELECT CreateSpatialIndex(%1, 'geometry')" ).arg( quotedValue( tableName ) );
   char *errMsg = nullptr;
   int ret = sqlite3_exec( mDatabase, sqlSpatialIndex.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
@@ -380,14 +380,14 @@ bool QgsOSMDatabase::createSpatialIndex( const QString& tableName )
 
 void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys )
 {
-  QString sqlInsertPoint = QString( "INSERT INTO %1 VALUES (?" ).arg( quotedIdentifier( tableName ) );
+  QString sqlInsertPoint = QStringLiteral( "INSERT INTO %1 VALUES (?" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
-    sqlInsertPoint += QString( ",?" );
-  sqlInsertPoint += ", GeomFromWKB(?, 4326))";
+    sqlInsertPoint += QStringLiteral( ",?" );
+  sqlInsertPoint += QLatin1String( ", GeomFromWKB(?, 4326))" );
   sqlite3_stmt* stmtInsert;
   if ( sqlite3_prepare_v2( mDatabase, sqlInsertPoint.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
-    mError = "Prepare SELECT FROM nodes failed.";
+    mError = QStringLiteral( "Prepare SELECT FROM nodes failed." );
     return;
   }
 
@@ -428,7 +428,7 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
     int insertRes = sqlite3_step( stmtInsert );
     if ( insertRes != SQLITE_DONE )
     {
-      mError = QString( "Error inserting node %1 [%2]" ).arg( n.id() ).arg( insertRes );
+      mError = QStringLiteral( "Error inserting node %1 [%2]" ).arg( n.id() ).arg( insertRes );
       break;
     }
 
@@ -446,14 +446,14 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
 {
   Q_UNUSED( tagKeys );
 
-  QString sqlInsertLine = QString( "INSERT INTO %1 VALUES (?" ).arg( quotedIdentifier( tableName ) );
+  QString sqlInsertLine = QStringLiteral( "INSERT INTO %1 VALUES (?" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
-    sqlInsertLine += QString( ",?" );
-  sqlInsertLine += ", GeomFromWKB(?, 4326))";
+    sqlInsertLine += QStringLiteral( ",?" );
+  sqlInsertLine += QLatin1String( ", GeomFromWKB(?, 4326))" );
   sqlite3_stmt* stmtInsert;
   if ( sqlite3_prepare_v2( mDatabase, sqlInsertLine.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
-    mError = "Prepare SELECT FROM ways failed.";
+    mError = QStringLiteral( "Prepare SELECT FROM ways failed." );
     return;
   }
 
@@ -470,11 +470,11 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
 
     bool isArea = ( polyline.first() == polyline.last() ); // closed way?
     // filter out closed way that are not areas through tags
-    if ( isArea && ( t.contains( "highway" ) || t.contains( "barrier" ) ) )
+    if ( isArea && ( t.contains( QStringLiteral( "highway" ) ) || t.contains( QStringLiteral( "barrier" ) ) ) )
     {
       // make sure tags that indicate areas are taken into consideration when deciding on a closed way is or isn't an area
       // and allow for a closed way to be exported both as a polygon and a line in case both area and non-area tags are present
-      if (( t.value( "area" ) != "yes" && !t.contains( "amenity" ) && !t.contains( "landuse" ) && !t.contains( "building" ) && !t.contains( "natural" ) && !t.contains( "leisure" ) && !t.contains( "aeroway" ) ) || !closed )
+      if (( t.value( QStringLiteral( "area" ) ) != QLatin1String( "yes" ) && !t.contains( QStringLiteral( "amenity" ) ) && !t.contains( QStringLiteral( "landuse" ) ) && !t.contains( QStringLiteral( "building" ) ) && !t.contains( QStringLiteral( "natural" ) ) && !t.contains( QStringLiteral( "leisure" ) ) && !t.contains( QStringLiteral( "aeroway" ) ) ) || !closed )
         isArea = false;
     }
 
@@ -511,7 +511,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     int insertRes = sqlite3_step( stmtInsert );
     if ( insertRes != SQLITE_DONE )
     {
-      mError = QString( "Error inserting way %1 [%2]" ).arg( w.id() ).arg( insertRes );
+      mError = QStringLiteral( "Error inserting way %1 [%2]" ).arg( w.id() ).arg( insertRes );
       break;
     }
 
@@ -526,17 +526,17 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
 
 QString QgsOSMDatabase::quotedIdentifier( QString id )
 {
-  id.replace( '\"', "\"\"" );
-  return QString( "\"%1\"" ).arg( id );
+  id.replace( '\"', QLatin1String( "\"\"" ) );
+  return QStringLiteral( "\"%1\"" ).arg( id );
 }
 
 QString QgsOSMDatabase::quotedValue( QString value )
 {
   if ( value.isNull() )
-    return "NULL";
+    return QStringLiteral( "NULL" );
 
-  value.replace( '\'', "''" );
-  return QString( "'%1'" ).arg( value );
+  value.replace( '\'', QLatin1String( "''" ) );
+  return QStringLiteral( "'%1'" ).arg( value );
 }
 
 ///////////////////////////////////

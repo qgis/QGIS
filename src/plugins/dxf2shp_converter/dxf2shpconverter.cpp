@@ -38,7 +38,7 @@ static const QString sDescription = QObject::tr( "Converts from dxf to shp file 
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/dxf2shp_converter.png";
+static const QString sPluginIcon = QStringLiteral( ":/dxf2shp_converter.png" );
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -70,11 +70,11 @@ void dxf2shpConverter::initGui()
 {
   // Create the action for tool
   delete mQActionPointer;
-  mQActionPointer = new QAction( QIcon(), "Dxf2Shp Converter", this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer = new QAction( QIcon(), QStringLiteral( "Dxf2Shp Converter" ), this );
+  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
 
   // Set the icon
-  setCurrentTheme( "" );
+  setCurrentTheme( QLatin1String( "" ) );
 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Converts DXF files in Shapefile format" ) );
@@ -124,7 +124,7 @@ void dxf2shpConverter::unload()
 
 void dxf2shpConverter::addMyLayer( const QString& myfname, const QString& mytitle )
 {
-  mQGisIface->addVectorLayer( myfname, mytitle, "ogr" );
+  mQGisIface->addVectorLayer( myfname, mytitle, QStringLiteral( "ogr" ) );
 }
 
 //! Set icons to the current theme
@@ -133,7 +133,7 @@ void dxf2shpConverter::setCurrentTheme( const QString& theThemeName )
   Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/dxf2shp_converter.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/dxf2shp_converter.png";
-  QString myQrcPath = ":/dxf2shp_converter.png";
+  QString myQrcPath = QStringLiteral( ":/dxf2shp_converter.png" );
   if ( mQActionPointer )
   {
     if ( QFile::exists( myCurThemePath ) )

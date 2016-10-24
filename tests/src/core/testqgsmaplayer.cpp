@@ -93,7 +93,7 @@ void TestQgsMapLayer::init()
   myFileName = myFileName + "/points.shp";
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
-                                myMapFileInfo.completeBaseName(), "ogr" );
+                                myMapFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 
 void TestQgsMapLayer::cleanup()

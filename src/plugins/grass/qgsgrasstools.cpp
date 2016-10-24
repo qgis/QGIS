@@ -157,7 +157,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   Q_UNUSED( name );
   QgsDebugMsg( "QgsGrassTools()" );
   setupUi( this );
-  QPushButton * closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( "mActionFileExit.png" ), tr( "Close mapset" ), this );
+  QPushButton * closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
   connect( closeMapsetButton, SIGNAL( clicked() ), SLOT( closeMapset() ) );
 
@@ -269,7 +269,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 #endif
 
   QWidget *m;
-  if ( name == "shell" )
+  if ( name == QLatin1String( "shell" ) )
   {
 #ifdef Q_OS_WIN
     QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
@@ -309,7 +309,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
     QApplication::restoreOverrideCursor();
     if ( !gmod->errors().isEmpty() )
     {
-      QgsGrass::warning( gmod->errors().join( "\n" ) );
+      QgsGrass::warning( gmod->errors().join( QStringLiteral( "\n" ) ) );
     }
     m = qobject_cast<QWidget *>( gmod );
   }
@@ -330,7 +330,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
     QIcon is;
     is.addPixmap( pixmap );
-    mTabWidget->addTab( m, is, "" );
+    mTabWidget->addTab( m, is, QLatin1String( "" ) );
   }
   else
   {
@@ -380,7 +380,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
     return false;
   }
 
-  QDomDocument doc( "qgisgrass" );
+  QDomDocument doc( QStringLiteral( "qgisgrass" ) );
   QString err;
   int line, column;
   if ( !doc.setContent( &file,  &err, &line, &column ) )
@@ -394,7 +394,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   }
 
   QDomElement docElem = doc.documentElement();
-  QDomNodeList modulesNodes = docElem.elementsByTagName( "modules" );
+  QDomNodeList modulesNodes = docElem.elementsByTagName( QStringLiteral( "modules" ) );
 
   if ( modulesNodes.count() == 0 )
   {
@@ -451,7 +451,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
     {
 // QgsDebugMsg(QString("tag = %1").arg(e.tagName()));
 
-      if ( e.tagName() != "section" && e.tagName() != "grass" )
+      if ( e.tagName() != QLatin1String( "section" ) && e.tagName() != QLatin1String( "grass" ) )
       {
         QgsDebugMsg( QString( "Unknown tag: %1" ).arg( e.tagName() ) );
         continue;
@@ -459,26 +459,26 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
 
       // Check GRASS version
       QStringList errors;
-      if ( !QgsGrassModuleOption::checkVersion( e.attribute( "version_min" ), e.attribute( "version_max" ), errors ) )
+      if ( !QgsGrassModuleOption::checkVersion( e.attribute( QStringLiteral( "version_min" ) ), e.attribute( QStringLiteral( "version_max" ) ), errors ) )
       {
         // TODO: show somehow errors only in debug mode, but without reloading tree
         if ( !errors.isEmpty() )
         {
-          QString label = e.attribute( "label" ) + e.attribute( "name" ); // one should be non empty
-          label += "\n  ERROR:\t" + errors.join( "\n\t" );
+          QString label = e.attribute( QStringLiteral( "label" ) ) + e.attribute( QStringLiteral( "name" ) ); // one should be non empty
+          label += "\n  ERROR:\t" + errors.join( QStringLiteral( "\n\t" ) );
           QStandardItem *item = new QStandardItem( label );
           item->setData( label, Qt::UserRole + Label );
           item->setData( label, Qt::UserRole + Search );
-          item->setData( QgsApplication::getThemeIcon( "mIconWarning.svg" ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ), Qt::DecorationRole );
           appendItem( treeModel, parent, item );
         }
         n = n.nextSibling();
         continue;
       }
 
-      if ( e.tagName() == "section" )
+      if ( e.tagName() == QLatin1String( "section" ) )
       {
-        QString label = QApplication::translate( "grasslabel", e.attribute( "label" ).toUtf8() );
+        QString label = QApplication::translate( "grasslabel", e.attribute( QStringLiteral( "label" ) ).toUtf8() );
         QgsDebugMsg( QString( "label = %1" ).arg( label ) );
         QStandardItem *item = new QStandardItem( label );
         item->setData( label, Qt::UserRole + Label ); // original label, for debug
@@ -487,9 +487,9 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
         addModules( item, e, treeModel, modulesListModel, direct );
         appendItem( treeModel, parent, item );
       }
-      else if ( e.tagName() == "grass" )
+      else if ( e.tagName() == QLatin1String( "grass" ) )
       { // GRASS module
-        QString name = e.attribute( "name" );
+        QString name = e.attribute( QStringLiteral( "name" ) );
         QgsDebugMsgLevel( QString( "name = %1" ).arg( name ), 1 );
 
         //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
@@ -620,14 +620,14 @@ void QgsGrassTools::closeEvent( QCloseEvent *e )
 void QgsGrassTools::restorePosition()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/GRASS/windows/tools/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/GRASS/windows/tools/geometry" ) ).toByteArray() );
   show();
 }
 
 void QgsGrassTools::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/GRASS/windows/tools/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/GRASS/windows/tools/geometry" ), saveGeometry() );
 }
 
 void QgsGrassTools::emitRegionChanged()
@@ -739,7 +739,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     if ( errors > 0 )
     {
       label += " ( " + tr( "%1 errors" ).arg( errors ) + " )";
-      item->setIcon( QgsApplication::getThemeIcon( "mIconWarning.svg" ) );
+      item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ) );
     }
     else
     {
@@ -750,7 +750,7 @@ int QgsGrassTools::debug( QStandardItem *item )
   }
   else // module
   {
-    if ( name == "shell" )
+    if ( name == QLatin1String( "shell" ) )
     {
       return 0;
     }
@@ -759,7 +759,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     Q_FOREACH ( QString error, module->errors() )
     {
       // each error may have multiple rows and may be html formated (<br>)
-      label += "\n  ERROR:\t" + error.replace( "<br>", "\n" ).replace( "\n", "\n\t" );
+      label += "\n  ERROR:\t" + error.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) ).replace( QLatin1String( "\n" ), QLatin1String( "\n\t" ) );
     }
     item->setText( label );
     int nErrors = module->errors().size();
@@ -780,12 +780,12 @@ void QgsGrassTools::on_mViewModeButton_clicked()
   {
     mListView->hide();
     mTreeView->show();
-    mViewModeButton->setIcon( QgsApplication::getThemeIcon( "mIconListView.png" ) );
+    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconListView.png" ) ) );
   }
   else
   {
     mTreeView->hide();
     mListView->show();
-    mViewModeButton->setIcon( QgsApplication::getThemeIcon( "mIconTreeView.png" ) );
+    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconTreeView.png" ) ) );
   }
 }

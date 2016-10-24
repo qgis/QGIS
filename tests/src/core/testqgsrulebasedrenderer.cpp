@@ -44,7 +44,7 @@ class TestQgsRuleBasedRenderer: public QObject
     void test_load_xml()
     {
       QDomDocument doc;
-      xml2domElement( "rulebasedrenderer_simple.xml", doc );
+      xml2domElement( QStringLiteral( "rulebasedrenderer_simple.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
       QgsRuleBasedRenderer* r = static_cast<QgsRuleBasedRenderer*>( QgsRuleBasedRenderer::create( elem ) );
@@ -56,7 +56,7 @@ class TestQgsRuleBasedRenderer: public QObject
     void test_load_invalid_xml()
     {
       QDomDocument doc;
-      xml2domElement( "rulebasedrenderer_invalid.xml", doc );
+      xml2domElement( QStringLiteral( "rulebasedrenderer_invalid.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
       QSharedPointer<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer*>( QgsRuleBasedRenderer::create( elem ) ) );
@@ -66,8 +66,8 @@ class TestQgsRuleBasedRenderer: public QObject
     void test_willRenderFeature_symbolsForFeature()
     {
       // prepare features
-      QgsVectorLayer* layer = new QgsVectorLayer( "point?field=fld:int", "x", "memory" );
-      int idx = layer->fields().indexFromName( "fld" );
+      QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      int idx = layer->fields().indexFromName( QStringLiteral( "fld" ) );
       QVERIFY( idx != -1 );
       QgsFeature f1;
       f1.initAttributes( 1 );
@@ -83,8 +83,8 @@ class TestQgsRuleBasedRenderer: public QObject
       QgsSymbol* s1 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
       QgsSymbol* s2 = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
       RRule* rootRule = new RRule( nullptr );
-      rootRule->appendChild( new RRule( s1, 0, 0, "fld >= 5 and fld <= 20" ) );
-      rootRule->appendChild( new RRule( s2, 0, 0, "fld <= 10" ) );
+      rootRule->appendChild( new RRule( s1, 0, 0, QStringLiteral( "fld >= 5 and fld <= 20" ) ) );
+      rootRule->appendChild( new RRule( s2, 0, 0, QStringLiteral( "fld <= 10" ) ) );
       QgsRuleBasedRenderer r( rootRule );
 
       QVERIFY( r.capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature );
@@ -120,9 +120,9 @@ class TestQgsRuleBasedRenderer: public QObject
     void test_clone_ruleKey()
     {
       RRule* rootRule = new RRule( 0 );
-      RRule* sub1Rule = new RRule( 0, 0, 0, "fld > 1" );
-      RRule* sub2Rule = new RRule( 0, 0, 0, "fld > 2" );
-      RRule* sub3Rule = new RRule( 0, 0, 0, "fld > 3" );
+      RRule* sub1Rule = new RRule( 0, 0, 0, QStringLiteral( "fld > 1" ) );
+      RRule* sub2Rule = new RRule( 0, 0, 0, QStringLiteral( "fld > 2" ) );
+      RRule* sub3Rule = new RRule( 0, 0, 0, QStringLiteral( "fld > 3" ) );
       rootRule->appendChild( sub1Rule );
       sub1Rule->appendChild( sub2Rule );
       sub2Rule->appendChild( sub3Rule );
@@ -145,7 +145,7 @@ class TestQgsRuleBasedRenderer: public QObject
   private:
     void xml2domElement( const QString& testFile, QDomDocument& doc )
     {
-      QString fileName = QString( TEST_DATA_DIR ) + '/' + testFile;
+      QString fileName = QStringLiteral( TEST_DATA_DIR ) + '/' + testFile;
       QFile f( fileName );
       bool fileOpen = f.open( QIODevice::ReadOnly );
       QVERIFY( fileOpen );

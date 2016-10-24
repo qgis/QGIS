@@ -71,7 +71,7 @@ void TestQgsRubberband::initTestCase()
   QString myPolygonFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolygonFileInfo( myPolygonFileName );
   mPolygonLayer = new QgsVectorLayer( myPolygonFileInfo.filePath(),
-                                      myPolygonFileInfo.completeBaseName(), "ogr" );
+                                      myPolygonFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   mCanvas = new QgsMapCanvas();
   mRubberband = 0;
@@ -99,8 +99,8 @@ void TestQgsRubberband::cleanup()
 void TestQgsRubberband::testAddSingleMultiGeometries()
 {
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
-  QgsGeometry geomSinglePart( QgsGeometry::fromWkt( "POLYGON((-0.00022418 -0.00000279,-0.0001039 0.00002395,-0.00008677 -0.00005313,-0.00020705 -0.00007987,-0.00022418 -0.00000279))" ) );
-  QgsGeometry geomMultiPart( QgsGeometry::fromWkt( "MULTIPOLYGON(((-0.00018203 0.00012178,-0.00009444 0.00014125,-0.00007861 0.00007001,-0.00016619 0.00005054,-0.00018203 0.00012178)),((-0.00030957 0.00009464,-0.00021849 0.00011489,-0.00020447 0.00005184,-0.00029555 0.00003158,-0.00030957 0.00009464)))" ) );
+  QgsGeometry geomSinglePart( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((-0.00022418 -0.00000279,-0.0001039 0.00002395,-0.00008677 -0.00005313,-0.00020705 -0.00007987,-0.00022418 -0.00000279))" ) ) );
+  QgsGeometry geomMultiPart( QgsGeometry::fromWkt( QStringLiteral( "MULTIPOLYGON(((-0.00018203 0.00012178,-0.00009444 0.00014125,-0.00007861 0.00007001,-0.00016619 0.00005054,-0.00018203 0.00012178)),((-0.00030957 0.00009464,-0.00021849 0.00011489,-0.00020447 0.00005184,-0.00029555 0.00003158,-0.00030957 0.00009464)))" ) ) );
 
   mCanvas->setExtent( QgsRectangle( -1e-3, -1e-3, 1e-3, 1e-3 ) ); // otherwise point cannot be converted to canvas coord
 
@@ -123,7 +123,7 @@ void TestQgsRubberband::testBoundingRect()
 
   // Polygon extent is 10,10 to 30,30
   QgsGeometry geom( QgsGeometry::fromWkt(
-                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+                      QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
                     ) );
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
   mRubberband->setIconSize( 5 ); // default, but better be explicit
@@ -173,7 +173,7 @@ void TestQgsRubberband::testVisibility()
 
   // Check visibility after setting to valid geometry
   QgsGeometry geom( QgsGeometry::fromWkt(
-                      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+                      QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
                     ) );
   mRubberband->setToGeometry( geom, mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), true );

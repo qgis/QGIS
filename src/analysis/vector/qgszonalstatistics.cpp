@@ -117,77 +117,77 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   if ( mStatistics & QgsZonalStatistics::Count )
   {
     countFieldName = getUniqueFieldName( mAttributePrefix + "count" );
-    QgsField countField( countFieldName, QVariant::Double, "double precision" );
+    QgsField countField( countFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( countField );
   }
   QString sumFieldName;
   if ( mStatistics & QgsZonalStatistics::Sum )
   {
     sumFieldName = getUniqueFieldName( mAttributePrefix + "sum" );
-    QgsField sumField( sumFieldName, QVariant::Double, "double precision" );
+    QgsField sumField( sumFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( sumField );
   }
   QString meanFieldName;
   if ( mStatistics & QgsZonalStatistics::Mean )
   {
     meanFieldName = getUniqueFieldName( mAttributePrefix + "mean" );
-    QgsField meanField( meanFieldName, QVariant::Double, "double precision" );
+    QgsField meanField( meanFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( meanField );
   }
   QString medianFieldName;
   if ( mStatistics & QgsZonalStatistics::Median )
   {
     medianFieldName = getUniqueFieldName( mAttributePrefix + "median" );
-    QgsField medianField( medianFieldName, QVariant::Double, "double precision" );
+    QgsField medianField( medianFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( medianField );
   }
   QString stdevFieldName;
   if ( mStatistics & QgsZonalStatistics::StDev )
   {
     stdevFieldName = getUniqueFieldName( mAttributePrefix + "stdev" );
-    QgsField stdField( stdevFieldName, QVariant::Double, "double precision" );
+    QgsField stdField( stdevFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( stdField );
   }
   QString minFieldName;
   if ( mStatistics & QgsZonalStatistics::Min )
   {
     minFieldName = getUniqueFieldName( mAttributePrefix + "min" );
-    QgsField minField( minFieldName, QVariant::Double, "double precision" );
+    QgsField minField( minFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( minField );
   }
   QString maxFieldName;
   if ( mStatistics & QgsZonalStatistics::Max )
   {
     maxFieldName = getUniqueFieldName( mAttributePrefix + "max" );
-    QgsField maxField( maxFieldName, QVariant::Double, "double precision" );
+    QgsField maxField( maxFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( maxField );
   }
   QString rangeFieldName;
   if ( mStatistics & QgsZonalStatistics::Range )
   {
     rangeFieldName = getUniqueFieldName( mAttributePrefix + "range" );
-    QgsField rangeField( rangeFieldName, QVariant::Double, "double precision" );
+    QgsField rangeField( rangeFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( rangeField );
   }
   QString minorityFieldName;
   if ( mStatistics & QgsZonalStatistics::Minority )
   {
     minorityFieldName = getUniqueFieldName( mAttributePrefix + "minority" );
-    QgsField minorityField( minorityFieldName, QVariant::Double, "double precision" );
+    QgsField minorityField( minorityFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( minorityField );
   }
   QString majorityFieldName;
   if ( mStatistics & QgsZonalStatistics::Majority )
   {
     majorityFieldName = getUniqueFieldName( mAttributePrefix + "majority" );
-    QgsField majField( majorityFieldName, QVariant::Double, "double precision" );
+    QgsField majField( majorityFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( majField );
   }
   QString varietyFieldName;
   if ( mStatistics & QgsZonalStatistics::Variety )
   {
     varietyFieldName = getUniqueFieldName( mAttributePrefix + "variety" );
-    QgsField varietyField( varietyFieldName, QVariant::Int, "int" );
+    QgsField varietyField( varietyFieldName, QVariant::Int, QStringLiteral( "int" ) );
     newFieldList.push_back( varietyField );
   }
   vectorProvider->addAttributes( newFieldList );
@@ -529,7 +529,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
 {
   QgsVectorDataProvider* dp = mPolygonLayer->dataProvider();
 
-  if ( !dp->storageType().contains( "ESRI Shapefile" ) )
+  if ( !dp->storageType().contains( QLatin1String( "ESRI Shapefile" ) ) )
   {
     return fieldName;
   }
@@ -553,7 +553,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
   }
 
   int n = 1;
-  shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+  shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
   found = true;
   while ( found )
   {
@@ -565,11 +565,11 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
         n += 1;
         if ( n < 9 )
         {
-          shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
         }
         else
         {
-          shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
+          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
         }
         found = true;
       }

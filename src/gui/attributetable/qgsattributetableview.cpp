@@ -45,7 +45,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/BetterAttributeTable/geometry" ) ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
@@ -184,7 +184,7 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     if ( !action.showInAttributeTable() )
       continue;
 
-    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : "";
+    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QLatin1String( "" );
     QAction* act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
     act->setData( "user_action" );
@@ -252,7 +252,7 @@ void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e );
   QSettings settings;
-  settings.setValue( "/BetterAttributeTable/geometry", QVariant( saveGeometry() ) );
+  settings.setValue( QStringLiteral( "/BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
 
 void QgsAttributeTableView::mousePressEvent( QMouseEvent *event )
@@ -414,11 +414,11 @@ void QgsAttributeTableView::actionTriggered()
   QgsFeature f;
   mFilterModel->layerCache()->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
 
-  if ( action->data().toString() == "user_action" )
+  if ( action->data().toString() == QLatin1String( "user_action" ) )
   {
     mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toInt(), f );
   }
-  else if ( action->data().toString() == "map_layer_action" )
+  else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {
     QObject* object = action->property( "action" ).value<QObject *>();
     QgsMapLayerAction* layerAction = qobject_cast<QgsMapLayerAction *>( object );

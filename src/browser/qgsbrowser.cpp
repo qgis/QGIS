@@ -82,7 +82,7 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
 
   //Set the icon size of for all the toolbars created in the future.
   QSettings settings;
-  int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
+  int size = settings.value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
   //Change all current icon sizes.
@@ -224,7 +224,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
     }
     if ( type == QgsMapLayer::RasterLayer )
     {
-      mLayer = new QgsRasterLayer( uri, "", providerKey );
+      mLayer = new QgsRasterLayer( uri, QLatin1String( "" ), providerKey );
     }
   }
 
@@ -263,7 +263,7 @@ void QgsBrowser::newVectorLayer()
     if ( dirItem )
     {
       QSettings settings;
-      settings.setValue( "/UI/lastVectorFileFilterDir", dirItem->dirPath() );
+      settings.setValue( QStringLiteral( "/UI/lastVectorFileFilterDir" ), dirItem->dirPath() );
     }
   }
 
@@ -281,7 +281,7 @@ void QgsBrowser::newVectorLayer()
 
 void QgsBrowser::on_mActionWmsConnections_triggered()
 {
-  QDialog *wmss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "wms" ), this ) );
+  QDialog *wmss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wms" ), this ) );
   if ( !wmss )
   {
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
@@ -334,30 +334,30 @@ void QgsBrowser::on_mActionSetProjection_triggered()
 void QgsBrowser::saveWindowState()
 {
   QSettings settings;
-  settings.setValue( "/Windows/Browser/state", saveState() );
-  settings.setValue( "/Windows/Browser/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Browser/sizes/0", splitter->sizes().at( 0 ) );
-  settings.setValue( "/Windows/Browser/sizes/1", splitter->sizes().at( 1 ) );
+  settings.setValue( QStringLiteral( "/Windows/Browser/state" ), saveState() );
+  settings.setValue( QStringLiteral( "/Windows/Browser/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/Browser/sizes/0" ), splitter->sizes().at( 0 ) );
+  settings.setValue( QStringLiteral( "/Windows/Browser/sizes/1" ), splitter->sizes().at( 1 ) );
 }
 
 void QgsBrowser::restoreWindowState()
 {
   QSettings settings;
-  if ( !restoreState( settings.value( "/Windows/Browser/state" ).toByteArray() ) )
+  if ( !restoreState( settings.value( QStringLiteral( "/Windows/Browser/state" ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of UI state failed" );
   }
-  if ( !restoreGeometry( settings.value( "/Windows/Browser/geometry" ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "/Windows/Browser/geometry" ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of UI geometry failed" );
   }
-  int size0 = settings.value( "/Windows/Browser/sizes/0" ).toInt();
+  int size0 = settings.value( QStringLiteral( "/Windows/Browser/sizes/0" ) ).toInt();
   if ( size0 > 0 )
   {
 
     QList<int> sizes;
     sizes << size0;
-    sizes << settings.value( "/Windows/Browser/sizes/1" ).toInt();
+    sizes << settings.value( QStringLiteral( "/Windows/Browser/sizes/1" ) ).toInt();
     QgsDebugMsg( QString( "set splitter sizes to %1 %2" ).arg( sizes[0] ).arg( sizes[1] ) );
     splitter->setSizes( sizes );
   }
@@ -528,7 +528,7 @@ void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
   {
     // Initialize the cache
     QSettings settings;
-    int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
+    int cacheSize = qMax( 1, settings.value( QStringLiteral( "/qgis/attributeTableRowCache" ), "10000" ).toInt() );
     QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( vLayer, cacheSize, this );
     layerCache->setCacheGeometry( false );
 

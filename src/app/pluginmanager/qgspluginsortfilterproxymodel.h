@@ -49,7 +49,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     void setAcceptedStatuses( const QStringList& statuses );
 
     //! (Re)configire the spacer filter
-    void setAcceptedSpacers( const QString& spacers = "" );
+    void setAcceptedSpacers( const QString& spacers = QStringLiteral( "" ) );
 
     //! Return number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus();

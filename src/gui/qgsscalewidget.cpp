@@ -33,7 +33,7 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
 
   mCurrentScaleButton = new QToolButton( this );
   mCurrentScaleButton->setToolTip( tr( "Set to current canvas scale" ) );
-  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ) );
+  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
   layout->addWidget( mCurrentScaleButton );
   mCurrentScaleButton->hide();
 

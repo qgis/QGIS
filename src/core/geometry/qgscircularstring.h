@@ -36,7 +36,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;
 
-    virtual QString geometryType() const override { return "CircularString"; }
+    virtual QString geometryType() const override { return QStringLiteral( "CircularString" ); }
     virtual int dimension() const override { return 1; }
     virtual QgsCircularString* clone() const override;
     virtual void clear() override;
@@ -47,8 +47,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     int numPoints() const override;

@@ -41,7 +41,7 @@ QgsCodeEditorHTML::~QgsCodeEditorHTML()
 void QgsCodeEditorHTML::setSciLexerHTML()
 {
   QsciLexerHTML* lexer = new QsciLexerHTML( this );
-  lexer->setDefaultFont( QFont( "Sans", 10 ) );
+  lexer->setDefaultFont( QFont( QStringLiteral( "Sans" ), 10 ) );
 
   setLexer( lexer );
 }

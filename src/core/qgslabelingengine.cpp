@@ -341,31 +341,31 @@ void QgsLabelingEngine::readSettingsFromProject()
 {
   bool saved = false;
   QgsProject* prj = QgsProject::instance();
-  mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( "PAL", "/SearchMethod", static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
-  mCandPoint = prj->readNumEntry( "PAL", "/CandidatesPoint", 16, &saved );
-  mCandLine = prj->readNumEntry( "PAL", "/CandidatesLine", 50, &saved );
-  mCandPolygon = prj->readNumEntry( "PAL", "/CandidatesPolygon", 30, &saved );
+  mSearchMethod = static_cast< QgsPalLabeling::Search >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( QgsPalLabeling::Chain ), &saved ) );
+  mCandPoint = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), 16, &saved );
+  mCandLine = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), 50, &saved );
+  mCandPolygon = prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), 30, &saved );
 
   mFlags = 0;
-  if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
-  if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
-  if ( prj->readBoolEntry( "PAL", "/ShowingAllLabels", false, &saved ) ) mFlags |= UseAllLabels;
-  if ( prj->readBoolEntry( "PAL", "/ShowingPartialsLabels", true, &saved ) ) mFlags |= UsePartialCandidates;
-  if ( prj->readBoolEntry( "PAL", "/DrawOutlineLabels", true, &saved ) ) mFlags |= RenderOutlineLabels;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= DrawCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= DrawLabelRectOnly;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= UseAllLabels;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), true, &saved ) ) mFlags |= UsePartialCandidates;
+  if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true, &saved ) ) mFlags |= RenderOutlineLabels;
 }
 
 void QgsLabelingEngine::writeSettingsToProject()
 {
-  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", static_cast< int >( mSearchMethod ) );
-  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", mCandPoint );
-  QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", mCandLine );
-  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", mCandPolygon );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/SearchMethod" ), static_cast< int >( mSearchMethod ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPoint" ), mCandPoint );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLine" ), mCandLine );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygon" ), mCandPolygon );
 
-  QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mFlags.testFlag( DrawCandidates ) );
-  QgsProject::instance()->writeEntry( "PAL", "/DrawRectOnly", mFlags.testFlag( DrawLabelRectOnly ) );
-  QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mFlags.testFlag( UseAllLabels ) );
-  QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mFlags.testFlag( UsePartialCandidates ) );
-  QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", mFlags.testFlag( RenderOutlineLabels ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), mFlags.testFlag( DrawCandidates ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), mFlags.testFlag( DrawLabelRectOnly ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), mFlags.testFlag( UseAllLabels ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingPartialsLabels" ), mFlags.testFlag( UsePartialCandidates ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), mFlags.testFlag( RenderOutlineLabels ) );
 }
 
 
@@ -404,44 +404,44 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLay
     switch ( position )
     {
       case QgsPalLayerSettings::TopLeft:
-        predefinedOrderString << "TL";
+        predefinedOrderString << QStringLiteral( "TL" );
         break;
       case QgsPalLayerSettings::TopSlightlyLeft:
-        predefinedOrderString << "TSL";
+        predefinedOrderString << QStringLiteral( "TSL" );
         break;
       case QgsPalLayerSettings::TopMiddle:
-        predefinedOrderString << "T";
+        predefinedOrderString << QStringLiteral( "T" );
         break;
       case QgsPalLayerSettings::TopSlightlyRight:
-        predefinedOrderString << "TSR";
+        predefinedOrderString << QStringLiteral( "TSR" );
         break;
       case QgsPalLayerSettings::TopRight:
-        predefinedOrderString << "TR";
+        predefinedOrderString << QStringLiteral( "TR" );
         break;
       case QgsPalLayerSettings::MiddleLeft:
-        predefinedOrderString << "L";
+        predefinedOrderString << QStringLiteral( "L" );
         break;
       case QgsPalLayerSettings::MiddleRight:
-        predefinedOrderString << "R";
+        predefinedOrderString << QStringLiteral( "R" );
         break;
       case QgsPalLayerSettings::BottomLeft:
-        predefinedOrderString << "BL";
+        predefinedOrderString << QStringLiteral( "BL" );
         break;
       case QgsPalLayerSettings::BottomSlightlyLeft:
-        predefinedOrderString << "BSL";
+        predefinedOrderString << QStringLiteral( "BSL" );
         break;
       case QgsPalLayerSettings::BottomMiddle:
-        predefinedOrderString << "B";
+        predefinedOrderString << QStringLiteral( "B" );
         break;
       case QgsPalLayerSettings::BottomSlightlyRight:
-        predefinedOrderString << "BSR";
+        predefinedOrderString << QStringLiteral( "BSR" );
         break;
       case QgsPalLayerSettings::BottomRight:
-        predefinedOrderString << "BR";
+        predefinedOrderString << QStringLiteral( "BR" );
         break;
     }
   }
-  return predefinedOrderString.join( "," );
+  return predefinedOrderString.join( QStringLiteral( "," ) );
 }
 
 QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString& positionString )
@@ -451,29 +451,29 @@ QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePr
   Q_FOREACH ( const QString& position, predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
-    if ( cleaned == "TL" )
+    if ( cleaned == QLatin1String( "TL" ) )
       result << QgsPalLayerSettings::TopLeft;
-    else if ( cleaned == "TSL" )
+    else if ( cleaned == QLatin1String( "TSL" ) )
       result << QgsPalLayerSettings::TopSlightlyLeft;
-    else if ( cleaned == "T" )
+    else if ( cleaned == QLatin1String( "T" ) )
       result << QgsPalLayerSettings::TopMiddle;
-    else if ( cleaned == "TSR" )
+    else if ( cleaned == QLatin1String( "TSR" ) )
       result << QgsPalLayerSettings::TopSlightlyRight;
-    else if ( cleaned == "TR" )
+    else if ( cleaned == QLatin1String( "TR" ) )
       result << QgsPalLayerSettings::TopRight;
-    else if ( cleaned == "L" )
+    else if ( cleaned == QLatin1String( "L" ) )
       result << QgsPalLayerSettings::MiddleLeft;
-    else if ( cleaned == "R" )
+    else if ( cleaned == QLatin1String( "R" ) )
       result << QgsPalLayerSettings::MiddleRight;
-    else if ( cleaned == "BL" )
+    else if ( cleaned == QLatin1String( "BL" ) )
       result << QgsPalLayerSettings::BottomLeft;
-    else if ( cleaned == "BSL" )
+    else if ( cleaned == QLatin1String( "BSL" ) )
       result << QgsPalLayerSettings::BottomSlightlyLeft;
-    else if ( cleaned == "B" )
+    else if ( cleaned == QLatin1String( "B" ) )
       result << QgsPalLayerSettings::BottomMiddle;
-    else if ( cleaned == "BSR" )
+    else if ( cleaned == QLatin1String( "BSR" ) )
       result << QgsPalLayerSettings::BottomSlightlyRight;
-    else if ( cleaned == "BR" )
+    else if ( cleaned == QLatin1String( "BR" ) )
       result << QgsPalLayerSettings::BottomRight;
   }
   return result;

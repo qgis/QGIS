@@ -58,13 +58,13 @@ QgsOSMExportDialog::~QgsOSMExportDialog()
 void QgsOSMExportDialog::onBrowse()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( "/osm/lastDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editDbFileName->setText( fileName );
 }
 
@@ -74,12 +74,12 @@ void QgsOSMExportDialog::updateLayerName()
 
   QString layerType;
   if ( radPoints->isChecked() )
-    layerType = "points";
+    layerType = QStringLiteral( "points" );
   else if ( radPolylines->isChecked() )
-    layerType = "polylines";
+    layerType = QStringLiteral( "polylines" );
   else
-    layerType = "polygons";
-  editLayerName->setText( QString( "%1_%2" ).arg( baseName, layerType ) );
+    layerType = QStringLiteral( "polygons" );
+  editLayerName->setText( QStringLiteral( "%1_%2" ).arg( baseName, layerType ) );
 }
 
 
@@ -171,8 +171,8 @@ void QgsOSMExportDialog::onOK()
   {
     QgsDataSourceUri uri;
     uri.setDatabase( editDbFileName->text() );
-    uri.setDataSource( QString(), editLayerName->text(), "geometry" );
-    QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), "spatialite" );
+    uri.setDataSource( QString(), editLayerName->text(), QStringLiteral( "geometry" ) );
+    QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), QStringLiteral( "spatialite" ) );
     if ( vlayer->isValid() )
       QgsMapLayerRegistry::instance()->addMapLayer( vlayer );
   }

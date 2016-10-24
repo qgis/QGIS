@@ -218,7 +218,7 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( "about:blank" ) );
+      mWebView->setUrl( QUrl( QStringLiteral( "about:blank" ) ) );
     }
 #endif
     if ( mDocumentViewerContent == Image )

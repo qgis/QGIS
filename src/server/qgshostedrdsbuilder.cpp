@@ -47,8 +47,8 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     return nullptr;
   }
 
-  QString uri = elem.attribute( "uri", "not found" );
-  if ( uri == "not found" )
+  QString uri = elem.attribute( QStringLiteral( "uri" ), QStringLiteral( "not found" ) );
+  if ( uri == QLatin1String( "not found" ) )
   {
     QgsDebugMsg( "Uri not found" );
     return nullptr;
@@ -80,7 +80,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     //projection
     if ( rl )
     {
-      QString epsg = elem.attribute( "epsg" );
+      QString epsg = elem.attribute( QStringLiteral( "epsg" ) );
       if ( !epsg.isEmpty() )
       {
         bool conversionOk;
@@ -88,7 +88,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
         if ( conversionOk )
         {
           //set spatial ref sys
-          QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+          QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgnr ) );
           rl->setCrs( srs );
         }
       }

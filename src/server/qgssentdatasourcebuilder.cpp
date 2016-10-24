@@ -42,11 +42,11 @@ QgsMapLayer* QgsSentDataSourceBuilder::createMapLayer( const QDomElement& elem,
 {
   Q_UNUSED( layerName );
   Q_UNUSED( allowCaching );
-  if ( elem.tagName() == "SentRDS" )
+  if ( elem.tagName() == QLatin1String( "SentRDS" ) )
   {
     return rasterLayerFromSentRDS( elem, filesToRemove, layersToRemove );
   }
-  else if ( elem.tagName() == "SentVDS" )
+  else if ( elem.tagName() == QLatin1String( "SentVDS" ) )
   {
     return vectorLayerFromSentVDS( elem, filesToRemove, layersToRemove );
   }
@@ -55,7 +55,7 @@ QgsMapLayer* QgsSentDataSourceBuilder::createMapLayer( const QDomElement& elem,
 
 QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElement& sentVDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
 {
-  if ( sentVDSElem.attribute( "format" ) == "GML" )
+  if ( sentVDSElem.attribute( QStringLiteral( "format" ) ) == QLatin1String( "GML" ) )
   {
     QTemporaryFile* tmpFile = new QTemporaryFile();
     if ( tmpFile->open() )
@@ -70,7 +70,7 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
       return nullptr;
     }
 
-    QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), "WFS" );
+    QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), QStringLiteral( "WFS" ) );
     if ( !theVectorLayer || !theVectorLayer->isValid() )
     {
       QgsDebugMsg( "invalid maplayer" );
@@ -101,9 +101,9 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
 
   QTemporaryFile* tmpFile = new QTemporaryFile();
 
-  QString encoding = sentRDSElem.attribute( "encoding" );
+  QString encoding = sentRDSElem.attribute( QStringLiteral( "encoding" ) );
 
-  if ( encoding == "base64" )
+  if ( encoding == QLatin1String( "base64" ) )
   {
     if ( tmpFile->open() )
     {

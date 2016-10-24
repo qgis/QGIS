@@ -58,7 +58,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
 
   //get default composer font from settings
   QSettings settings;
-  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -289,7 +289,7 @@ QString QgsComposerLabel::displayText() const
 
 void QgsComposerLabel::replaceDateText( QString& text ) const
 {
-  QString constant = "$CURRENT_DATE";
+  QString constant = QStringLiteral( "$CURRENT_DATE" );
   int currentDatePos = text.indexOf( constant );
   if ( currentDatePos != -1 )
   {
@@ -307,7 +307,7 @@ void QgsComposerLabel::replaceDateText( QString& text ) const
     }
     else //no bracket
     {
-      text.replace( "$CURRENT_DATE", QDate::currentDate().toString() );
+      text.replace( QLatin1String( "$CURRENT_DATE" ), QDate::currentDate().toString() );
     }
   }
 }
@@ -368,25 +368,25 @@ bool QgsComposerLabel::writeXml( QDomElement& elem, QDomDocument & doc ) const
     return false;
   }
 
-  QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
+  QDomElement composerLabelElem = doc.createElement( QStringLiteral( "ComposerLabel" ) );
 
-  composerLabelElem.setAttribute( "htmlState", mHtmlState );
+  composerLabelElem.setAttribute( QStringLiteral( "htmlState" ), mHtmlState );
 
-  composerLabelElem.setAttribute( "labelText", mText );
-  composerLabelElem.setAttribute( "marginX", QString::number( mMarginX ) );
-  composerLabelElem.setAttribute( "marginY", QString::number( mMarginY ) );
-  composerLabelElem.setAttribute( "halign", mHAlignment );
-  composerLabelElem.setAttribute( "valign", mVAlignment );
+  composerLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
+  composerLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
+  composerLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
+  composerLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
+  composerLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
 
   //font
-  QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, "LabelFont" );
+  QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
   composerLabelElem.appendChild( labelFontElem );
 
   //font color
-  QDomElement fontColorElem = doc.createElement( "FontColor" );
-  fontColorElem.setAttribute( "red", mFontColor.red() );
-  fontColorElem.setAttribute( "green", mFontColor.green() );
-  fontColorElem.setAttribute( "blue", mFontColor.blue() );
+  QDomElement fontColorElem = doc.createElement( QStringLiteral( "FontColor" ) );
+  fontColorElem.setAttribute( QStringLiteral( "red" ), mFontColor.red() );
+  fontColorElem.setAttribute( QStringLiteral( "green" ), mFontColor.green() );
+  fontColorElem.setAttribute( QStringLiteral( "blue" ), mFontColor.blue() );
   composerLabelElem.appendChild( fontColorElem );
 
   elem.appendChild( composerLabelElem );
@@ -403,41 +403,41 @@ bool QgsComposerLabel::readXml( const QDomElement& itemElem, const QDomDocument&
   //restore label specific properties
 
   //text
-  mText = itemElem.attribute( "labelText" );
+  mText = itemElem.attribute( QStringLiteral( "labelText" ) );
 
   //html state
-  mHtmlState = itemElem.attribute( "htmlState" ).toInt();
+  mHtmlState = itemElem.attribute( QStringLiteral( "htmlState" ) ).toInt();
 
   //margin
   bool marginXOk = false;
   bool marginYOk = false;
-  mMarginX = itemElem.attribute( "marginX" ).toDouble( &marginXOk );
-  mMarginY = itemElem.attribute( "marginY" ).toDouble( &marginYOk );
+  mMarginX = itemElem.attribute( QStringLiteral( "marginX" ) ).toDouble( &marginXOk );
+  mMarginY = itemElem.attribute( QStringLiteral( "marginY" ) ).toDouble( &marginYOk );
   if ( !marginXOk || !marginYOk )
   {
     //upgrade old projects where margins where stored in a single attribute
-    double margin = itemElem.attribute( "margin", "1.0" ).toDouble();
+    double margin = itemElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "1.0" ) ).toDouble();
     mMarginX = margin;
     mMarginY = margin;
   }
 
   //Horizontal alignment
-  mHAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( "halign" ).toInt() );
+  mHAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "halign" ) ).toInt() );
 
   //Vertical alignment
-  mVAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( "valign" ).toInt() );
+  mVAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "valign" ) ).toInt() );
 
   //font
-  QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "LabelFont" );
+  QgsFontUtils::setFromXmlChildNode( mFont, itemElem, QStringLiteral( "LabelFont" ) );
 
   //font color
-  QDomNodeList fontColorList = itemElem.elementsByTagName( "FontColor" );
+  QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
   if ( !fontColorList.isEmpty() )
   {
     QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
-    int red = fontColorElem.attribute( "red", "0" ).toInt();
-    int green = fontColorElem.attribute( "green", "0" ).toInt();
-    int blue = fontColorElem.attribute( "blue", "0" ).toInt();
+    int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
+    int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
+    int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
     mFontColor = QColor( red, green, blue );
   }
   else
@@ -446,16 +446,16 @@ bool QgsComposerLabel::readXml( const QDomElement& itemElem, const QDomDocument&
   }
 
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
     //rotation
-    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
+    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
     {
       //check for old (pre 2.1) rotation attribute
-      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
+      setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
     }
 
     _readXml( composerItemElem, doc );
@@ -612,10 +612,10 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
 QUrl QgsComposerLabel::createStylesheetUrl() const
 {
   QString stylesheet;
-  stylesheet += QString( "body { margin: %1 %2;" ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) );
+  stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
-  stylesheet += QString( "color: %1;" ).arg( mFontColor.name() );
-  stylesheet += QString( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
+  stylesheet += QStringLiteral( "color: %1;" ).arg( mFontColor.name() );
+  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
 
   QByteArray ba;
   ba.append( stylesheet.toUtf8() );

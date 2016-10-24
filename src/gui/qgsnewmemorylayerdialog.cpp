@@ -44,37 +44,37 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   switch ( geometrytype )
   {
     case QgsWkbTypes::Point:
-      geomType = "point";
+      geomType = QStringLiteral( "point" );
       break;
     case QgsWkbTypes::LineString:
-      geomType = "linestring";
+      geomType = QStringLiteral( "linestring" );
       break;
     case QgsWkbTypes::Polygon:
-      geomType = "polygon";
+      geomType = QStringLiteral( "polygon" );
       break;
     case QgsWkbTypes::MultiPoint:
-      geomType = "multipoint";
+      geomType = QStringLiteral( "multipoint" );
       break;
     case QgsWkbTypes::MultiLineString:
-      geomType = "multilinestring";
+      geomType = QStringLiteral( "multilinestring" );
       break;
     case QgsWkbTypes::MultiPolygon:
-      geomType = "multipolygon";
+      geomType = QStringLiteral( "multipolygon" );
       break;
     case QgsWkbTypes::NoGeometry:
-      geomType = "none";
+      geomType = QStringLiteral( "none" );
       break;
     default:
-      geomType = "point";
+      geomType = QStringLiteral( "point" );
   }
 
-  QString layerProperties = QString( "%1?" ).arg( geomType );
+  QString layerProperties = QStringLiteral( "%1?" ).arg( geomType );
   if ( QgsWkbTypes::NoGeometry != geometrytype )
-    layerProperties.append( QString( "crs=%1&" ).arg( dialog.crs().authid() ) );
-  layerProperties.append( QString( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
+    layerProperties.append( QStringLiteral( "crs=%1&" ).arg( dialog.crs().authid() ) );
+  layerProperties.append( QStringLiteral( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
 
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
-  QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QString( "memory" ) );
+  QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QStringLiteral( "memory" ) );
   return newLayer;
 }
 
@@ -84,11 +84,11 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/NewMemoryLayer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
 
   mPointRadioButton->setChecked( true );
 
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
@@ -98,7 +98,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/NewMemoryLayer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ), saveGeometry() );
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const

@@ -24,8 +24,8 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
 
   if ( vectorLayer() )
   {
-    mXAttributeComboBox->addItem( "" );
-    mYAttributeComboBox->addItem( "" );
+    mXAttributeComboBox->addItem( QLatin1String( "" ) );
+    mYAttributeComboBox->addItem( QLatin1String( "" ) );
     int i = 0;
     Q_FOREACH ( const QgsField& f, vectorLayer()->fields() )
     {
@@ -43,7 +43,7 @@ QgsVectorFieldSymbolLayerWidget::~QgsVectorFieldSymbolLayerWidget()
 
 void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
-  if ( layer->layerType() != "VectorField" )
+  if ( layer->layerType() != QLatin1String( "VectorField" ) )
   {
     return;
   }
@@ -162,7 +162,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mHeightRadioButton_toggled( bool checke
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Height );
-    mXAttributeLabel->setText( "" );
+    mXAttributeLabel->setText( QLatin1String( "" ) );
     mXAttributeComboBox->setEnabled( false );
     mYAttributeLabel->setText( tr( "Height attribute" ) );
     emit changed();

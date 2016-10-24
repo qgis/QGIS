@@ -52,13 +52,13 @@ QgsComposerFrame::~QgsComposerFrame()
 
 bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement frameElem = doc.createElement( "ComposerFrame" );
-  frameElem.setAttribute( "sectionX", QString::number( mSection.x() ) );
-  frameElem.setAttribute( "sectionY", QString::number( mSection.y() ) );
-  frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
-  frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
-  frameElem.setAttribute( "hidePageIfEmpty", mHidePageIfEmpty );
-  frameElem.setAttribute( "hideBackgroundIfEmpty", mHideBackgroundIfEmpty );
+  QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );
+  frameElem.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionHeight" ), QString::number( mSection.height() ) );
+  frameElem.setAttribute( QStringLiteral( "hidePageIfEmpty" ), mHidePageIfEmpty );
+  frameElem.setAttribute( QStringLiteral( "hideBackgroundIfEmpty" ), mHideBackgroundIfEmpty );
   elem.appendChild( frameElem );
 
   return _writeXml( frameElem, doc );
@@ -66,14 +66,14 @@ bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
 bool QgsComposerFrame::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  double x = itemElem.attribute( "sectionX" ).toDouble();
-  double y = itemElem.attribute( "sectionY" ).toDouble();
-  double width = itemElem.attribute( "sectionWidth" ).toDouble();
-  double height = itemElem.attribute( "sectionHeight" ).toDouble();
+  double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
+  double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
+  double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
+  double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
   mSection = QRectF( x, y, width, height );
-  mHidePageIfEmpty = itemElem.attribute( "hidePageIfEmpty", "0" ).toInt();
-  mHideBackgroundIfEmpty = itemElem.attribute( "hideBackgroundIfEmpty", "0" ).toInt();
-  QDomElement composerItem = itemElem.firstChildElement( "ComposerItem" );
+  mHidePageIfEmpty = itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  QDomElement composerItem = itemElem.firstChildElement( QStringLiteral( "ComposerItem" ) );
   if ( composerItem.isNull() )
   {
     return false;

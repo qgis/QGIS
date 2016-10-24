@@ -28,14 +28,14 @@ QgsEditorWidgetConfig QgsCheckBoxConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "CheckedState", leCheckedState->text() );
-  cfg.insert( "UncheckedState", leUncheckedState->text() );
+  cfg.insert( QStringLiteral( "CheckedState" ), leCheckedState->text() );
+  cfg.insert( QStringLiteral( "UncheckedState" ), leUncheckedState->text() );
 
   return cfg;
 }
 
 void QgsCheckBoxConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  leCheckedState->setText( config.value( "CheckedState" ).toString() );
-  leUncheckedState->setText( config.value( "UncheckedState" ).toString() );
+  leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
+  leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
 }

@@ -102,7 +102,7 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid 
   if ( constraintValid )
     widget()->setStyleSheet( QString() );
   else
-    widget()->setStyleSheet( "background-color: #dd7777;" );
+    widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
 }
 
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
@@ -146,8 +146,8 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     }
     else
     {
-      description = "NotNull";
-      expression = "NotNull";
+      description = QStringLiteral( "NotNull" );
+      expression = QStringLiteral( "NotNull" );
     }
 
     mValidConstraint = mValidConstraint && !value.isNull();

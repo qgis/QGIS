@@ -32,7 +32,7 @@ QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ProjectionSelector/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ProjectionSelector/geometry" ) ).toByteArray() );
 
   //we will show this only when a message is set
   textEdit->hide();
@@ -48,7 +48,7 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
   if ( theMessage.isEmpty() )
   {
     // Set up text edit pane
-    QString format( "<h1>%1</h1>%2 %3" );
+    QString format( QStringLiteral( "<h1>%1</h1>%2 %3" ) );
     QString header = tr( "Define this layer's coordinate reference system:" );
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
@@ -65,7 +65,7 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
 {
   QSettings settings;
-  settings.setValue( "/Windows/ProjectionSelector/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ProjectionSelector/geometry" ), saveGeometry() );
 }
 
 void QgsGenericProjectionSelector::setSelectedCrsName( const QString& theName )

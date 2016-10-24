@@ -64,16 +64,16 @@ void TestQgsVectorDataProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString layerPointsUrl = QString( TEST_DATA_DIR ) + "/points.shp";
-  QString layerLinesUrl = QString( TEST_DATA_DIR ) + "/lines.shp";
+  QString layerPointsUrl = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  QString layerLinesUrl = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
 
   // load layers
 
-  vlayerPoints = new QgsVectorLayer( layerPointsUrl, "testlayer", "ogr" );
+  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
   QVERIFY( vlayerPoints );
   QVERIFY( vlayerPoints->isValid() );
 
-  vlayerLines = new QgsVectorLayer( layerLinesUrl, "testlayer", "ogr" );
+  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
   QVERIFY( vlayerLines );
   QVERIFY( vlayerLines->isValid() );
 }

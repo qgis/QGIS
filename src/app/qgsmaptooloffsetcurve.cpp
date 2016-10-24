@@ -91,8 +91,8 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
     QSettings settings;
     config.setMode( QgsSnappingConfig::AllLayers );
     config.setType( QgsSnappingConfig::Segment );
-    config.setTolerance( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
-    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() ) );
+    config.setTolerance( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
+    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() ) );
     snapping->setConfig( config );
 
     QgsPointLocator::Match match = snapping->snapToMap( e->pos() );
@@ -372,9 +372,9 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
   if ( geosGeom )
   {
     QSettings s;
-    int joinStyle = s.value( "/qgis/digitizing/offset_join_style", 0 ).toInt();
-    int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
-    double mitreLimit = s.value( "/qgis/digitizing/offset_miter_limit", 5.0 ).toDouble();
+    int joinStyle = s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt();
+    int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
+    double mitreLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
 
     GEOSGeometry* offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, mitreLimit );
     if ( !offsetGeom )

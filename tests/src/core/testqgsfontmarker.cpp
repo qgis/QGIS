@@ -94,7 +94,7 @@ void TestQgsFontMarkerSymbol::initTestCase()
   QString pointFileName = mTestDataDir + "points.shp";
   QFileInfo pointFileInfo( pointFileName );
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), "ogr" );
+                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -112,7 +112,7 @@ void TestQgsFontMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPointsLayer->id() );
-  mReport += "<h1>Font Marker Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Font Marker Tests</h1>\n" );
 
 }
 void TestQgsFontMarkerSymbol::cleanupTestCase()
@@ -131,10 +131,10 @@ void TestQgsFontMarkerSymbol::cleanupTestCase()
 
 void TestQgsFontMarkerSymbol::fontMarkerSymbol()
 {
-  mReport += "<h2>Font marker symbol layer test</h2>\n";
+  mReport += QLatin1String( "<h2>Font marker symbol layer test</h2>\n" );
 
   mFontMarkerLayer->setColor( Qt::blue );
-  QFont font = QgsFontUtils::getStandardTestFont( "Bold" );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
   mFontMarkerLayer->setCharacter( 'A' );
   mFontMarkerLayer->setSize( 12 );
@@ -144,7 +144,7 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbol()
 void TestQgsFontMarkerSymbol::fontMarkerSymbolOutline()
 {
   mFontMarkerLayer->setColor( Qt::blue );
-  QFont font = QgsFontUtils::getStandardTestFont( "Bold" );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
   mFontMarkerLayer->setCharacter( 'A' );
   mFontMarkerLayer->setSize( 30 );
@@ -155,16 +155,16 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolOutline()
 void TestQgsFontMarkerSymbol::bounds()
 {
   mFontMarkerLayer->setColor( Qt::blue );
-  QFont font = QgsFontUtils::getStandardTestFont( "Bold" );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
   //use a narrow character to test that width is correctly calculated
   mFontMarkerLayer->setCharacter( 'l' );
   mFontMarkerLayer->setSize( 12 );
   mFontMarkerLayer->setOutlineWidth( 0 );
-  mFontMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 4.47214, 7.07106)" ) );
+  mFontMarkerLayer->setDataDefinedProperty( QStringLiteral( "size" ), new QgsDataDefined( true, true, QStringLiteral( "min(\"importance\" * 4.47214, 7.07106)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
-  bool result = imageCheck( "fontmarker_bounds" );
+  bool result = imageCheck( QStringLiteral( "fontmarker_bounds" ) );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
   QVERIFY( result );
 }
@@ -182,7 +182,7 @@ bool TestQgsFontMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_fontmarker" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_fontmarker" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType, 30 );

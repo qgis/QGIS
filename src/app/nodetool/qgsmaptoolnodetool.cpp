@@ -89,14 +89,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
         QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.geometry().type() );
         QSettings settings;
         QColor color(
-          settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
-          settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
-          settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
-        double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 30 ).toInt() / 255.0 ;
+          settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
+          settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
+          settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
+        double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 30 ).toInt() / 255.0 ;
         color.setAlphaF( myAlpha );
         rb->setOutlineColor( color );
         rb->setBrushStyle( Qt::NoBrush );
-        rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
+        rb->setOutlineWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
         QgsAbstractGeometry* rbGeom = feature.geometry().geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
           rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -124,7 +124,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
     if ( mMoveRubberBands.empty() )
     {
       QSettings settings;
-      bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();
+      bool ghostLine = settings.value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool();
       if ( !ghostLine )
       {
         delete mSelectRubberBand;
@@ -132,14 +132,14 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       }
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
       QColor color(
-        settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
-        settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
-        settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
-      double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 30 ).toInt() / 255.0 ;
+        settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
+        settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
+        settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
+      double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 30 ).toInt() / 255.0 ;
       color.setAlphaF( myAlpha );
       rb->setOutlineColor( color );
       rb->setBrushStyle( Qt::NoBrush );
-      rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
+      rb->setOutlineWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
       QgsAbstractGeometry* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
       if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
         rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -396,10 +396,10 @@ void QgsMapToolNodeTool::updateSelectFeature( const QgsGeometry &geom )
 
     QSettings settings;
     QColor color(
-      settings.value( "/qgis/digitizing/fill_color_red", 255 ).toInt(),
-      settings.value( "/qgis/digitizing/fill_color_green", 0 ).toInt(),
-      settings.value( "/qgis/digitizing/fill_color_blue", 0 ).toInt() );
-    double myAlpha = settings.value( "/qgis/digitizing/fill_color_alpha", 30 ).toInt() / 255.0 ;
+      settings.value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt(),
+      settings.value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt(),
+      settings.value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
+    double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
     color.setAlphaF( myAlpha );
     mSelectRubberBand->setFillColor( color );
 
@@ -424,7 +424,7 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   QSettings settings;
-  bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();
+  bool ghostLine = settings.value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool();
   if ( !ghostLine && mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
   {
     updateSelectFeature( geom );

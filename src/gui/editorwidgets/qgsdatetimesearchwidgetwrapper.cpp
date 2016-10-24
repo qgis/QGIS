@@ -46,7 +46,7 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
   if ( ! mDateTimeEdit )
     return QDateTime();
 
-  const QString fieldFormat = config( "field_format", QgsDateTimeEditConfig::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
+  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeEditConfig::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
   return mDateTimeEdit->dateTime().toString( fieldFormat );
 }
 
@@ -116,9 +116,9 @@ void QgsDateTimeSearchWidgetWrapper::setExpression( QString exp )
 {
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  QString str = QString( "%1 = '%3'" )
+  QString str = QStringLiteral( "%1 = '%3'" )
                 .arg( QgsExpression::quotedColumnRef( fieldName ),
-                      exp.replace( '\'', "''" )
+                      exp.replace( '\'', QLatin1String( "''" ) )
                     );
   mExpression = str;
 }
@@ -152,10 +152,10 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     mDateTimeEdit->setAllowNull( false );
 
-    const QString displayFormat = config( "display_format", QgsDateTimeEditConfig::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
+    const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeEditConfig::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
     mDateTimeEdit->setDisplayFormat( displayFormat );
 
-    const bool calendar = config( "calendar_popup", false ).toBool();
+    const bool calendar = config( QStringLiteral( "calendar_popup" ), false ).toBool();
     mDateTimeEdit->setCalendarPopup( calendar );
     if ( calendar && mDateTimeEdit->calendarWidget() )
     {

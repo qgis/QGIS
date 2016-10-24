@@ -51,7 +51,7 @@ void QgsSOAPRequestHandler::parseInput()
     QgsDebugMsg( "error message: " + errorMsg );
     QgsDebugMsg( "the xml string was:" );
     QgsDebugMsg( inputString );
-    throw QgsMapServiceException( "InvalidXML", "XML error: " + errorMsg );
+    throw QgsMapServiceException( QStringLiteral( "InvalidXML" ), "XML error: " + errorMsg );
   }
 
   // if xml reading was successfull, save the inputXML in a file
@@ -59,98 +59,98 @@ void QgsSOAPRequestHandler::parseInput()
   QTextStream soapStream;
 
   //go through soap envelope->soap body, search for either GetCapabilities or GetMap
-  QDomNodeList envelopeNodeList = inputXML.elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
+  QDomNodeList envelopeNodeList = inputXML.elementsByTagNameNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "Envelope" ) );
   if ( envelopeNodeList.size() < 1 )
   {
     QgsDebugMsg( "Envelope element not found" );
-    throw QgsMapServiceException( "SOAPError", "Element <Envelope> not found" );
+    throw QgsMapServiceException( QStringLiteral( "SOAPError" ), QStringLiteral( "Element <Envelope> not found" ) );
   }
 
-  QDomNodeList bodyNodeList = envelopeNodeList.item( 0 ).toElement().elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
+  QDomNodeList bodyNodeList = envelopeNodeList.item( 0 ).toElement().elementsByTagNameNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "Body" ) );
   if ( bodyNodeList.size() < 1 )
   {
     QgsDebugMsg( "body node not found" );
-    throw QgsMapServiceException( "SOAPError", "Element <Body> not found" );
+    throw QgsMapServiceException( QStringLiteral( "SOAPError" ), QStringLiteral( "Element <Body> not found" ) );
   }
   QDomElement bodyElement = bodyNodeList.item( 0 ).toElement();
   QDomElement firstChildElement = bodyElement.firstChild().toElement();
 
-  QString serviceString = firstChildElement.attribute( "service" );
-  if ( serviceString == "MS" )
+  QString serviceString = firstChildElement.attribute( QStringLiteral( "service" ) );
+  if ( serviceString == QLatin1String( "MS" ) )
   {
     QgsDebugMsg( "service = MS " );
-    mParameterMap.insert( "SERVICE", "MS" );
-    mService = "MS";
+    mParameterMap.insert( QStringLiteral( "SERVICE" ), QStringLiteral( "MS" ) );
+    mService = QStringLiteral( "MS" );
   }
-  else if ( serviceString == "WMS" )
+  else if ( serviceString == QLatin1String( "WMS" ) )
   {
-    mParameterMap.insert( "SERVICE", "WMS" );
-    mService = "WMS";
+    mParameterMap.insert( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+    mService = QStringLiteral( "WMS" );
   }
-  else if ( serviceString == "MDS" )
+  else if ( serviceString == QLatin1String( "MDS" ) )
   {
-    mParameterMap.insert( "SERVICE", "MDS" );
-    mService = "MDS";
+    mParameterMap.insert( QStringLiteral( "SERVICE" ), QStringLiteral( "MDS" ) );
+    mService = QStringLiteral( "MDS" );
   }
-  else if ( serviceString == "MAS" )
+  else if ( serviceString == QLatin1String( "MAS" ) )
   {
-    mParameterMap.insert( "SERVICE", "MAS" );
-    mService = "MAS";
+    mParameterMap.insert( QStringLiteral( "SERVICE" ), QStringLiteral( "MAS" ) );
+    mService = QStringLiteral( "MAS" );
   }
   else
   {
-    mParameterMap.insert( "SERVICE", "DISCOVERY" );
-    mService = "DISCOVERY";
+    mParameterMap.insert( QStringLiteral( "SERVICE" ), QStringLiteral( "DISCOVERY" ) );
+    mService = QStringLiteral( "DISCOVERY" );
   }
 
 
   //GetCapabilities request
   //if(firstChildElement.localName().compare("getCapabilities", Qt::CaseInsensitive) == 0)
-  if ( firstChildElement.localName() == "GetCapabilities" || firstChildElement.localName() == "getCapabilities" )
+  if ( firstChildElement.localName() == QLatin1String( "GetCapabilities" ) || firstChildElement.localName() == QLatin1String( "getCapabilities" ) )
   {
-    mParameterMap.insert( "REQUEST", "GetCapabilities" );
+    mParameterMap.insert( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
   }
   //GetMap request
   //else if(firstChildElement.tagName().compare("getMap",Qt::CaseInsensitive) == 0)
-  else if ( firstChildElement.localName() == "GetMap" || firstChildElement.localName() == "getMap" )
+  else if ( firstChildElement.localName() == QLatin1String( "GetMap" ) || firstChildElement.localName() == QLatin1String( "getMap" ) )
   {
-    mParameterMap.insert( "REQUEST", "GetMap" );
+    mParameterMap.insert( QStringLiteral( "REQUEST" ), QStringLiteral( "GetMap" ) );
     parseGetMapElement( mParameterMap, firstChildElement );
   }
   //GetDiagram request
   //else if(firstChildElement.tagName().compare("getDiagram", Qt::CaseInsensitive) == 0)
-  else if ( firstChildElement.localName() == "GetDiagram" )
+  else if ( firstChildElement.localName() == QLatin1String( "GetDiagram" ) )
   {
-    mParameterMap.insert( "REQUEST", "GetDiagram" );
+    mParameterMap.insert( QStringLiteral( "REQUEST" ), QStringLiteral( "GetDiagram" ) );
     parseGetMapElement( mParameterMap, firstChildElement ); //reuse the method for GetMap
   }
   //GetFeatureInfo request
-  else if ( firstChildElement.localName() == "GetFeatureInfo" )
+  else if ( firstChildElement.localName() == QLatin1String( "GetFeatureInfo" ) )
   {
-    mParameterMap.insert( "REQUEST", "GetFeatureInfo" );
+    mParameterMap.insert( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeatureInfo" ) );
     parseGetFeatureInfoElement( mParameterMap, firstChildElement );
   }
 
   //set mFormat
-  QString formatString = mParameterMap.value( "FORMAT" );
+  QString formatString = mParameterMap.value( QStringLiteral( "FORMAT" ) );
   if ( !formatString.isEmpty() )
   {
     //remove the image/ in front of the format
-    if ( formatString == "image/jpeg" || formatString == "JPG" || formatString == "jpg" )
+    if ( formatString == QLatin1String( "image/jpeg" ) || formatString == QLatin1String( "JPG" ) || formatString == QLatin1String( "jpg" ) )
     {
-      formatString = "JPG";
+      formatString = QStringLiteral( "JPG" );
     }
-    else if ( formatString == "image/png" || formatString == "PNG" || formatString == "png" )
+    else if ( formatString == QLatin1String( "image/png" ) || formatString == QLatin1String( "PNG" ) || formatString == QLatin1String( "png" ) )
     {
-      formatString = "PNG";
+      formatString = QStringLiteral( "PNG" );
     }
-    else if ( formatString == "image/gif" || formatString == "GIF" || formatString == "gif" )
+    else if ( formatString == QLatin1String( "image/gif" ) || formatString == QLatin1String( "GIF" ) || formatString == QLatin1String( "gif" ) )
     {
-      formatString = "GIF";
+      formatString = QStringLiteral( "GIF" );
     }
     else
     {
-      throw QgsMapServiceException( "InvalidFormat", "Invalid format " + formatString + ", only jpg and png are supported" );
+      throw QgsMapServiceException( QStringLiteral( "InvalidFormat" ), "Invalid format " + formatString + ", only jpg and png are supported" );
     }
 
     mFormat = formatString;
@@ -159,15 +159,15 @@ void QgsSOAPRequestHandler::parseInput()
 
 void QgsSOAPRequestHandler::setGetMapResponse( const QString& service, QImage* img )
 {
-  QgsMapServiceException ex( "set error", "Error, could not set Image" );
-  if ( service == "WMS" )
+  QgsMapServiceException ex( QStringLiteral( "set error" ), QStringLiteral( "Error, could not set Image" ) );
+  if ( service == QLatin1String( "WMS" ) )
   {
     if ( setUrlToFile( img ) != 0 )
     {
       setServiceException( ex );
     }
   }
-  else if ( service == "MAS" || service == "MS" || service == "MDS" )
+  else if ( service == QLatin1String( "MAS" ) || service == QLatin1String( "MS" ) || service == QLatin1String( "MDS" ) )
   {
 
     if ( setSOAPWithAttachments( img ) != 0 )
@@ -187,39 +187,39 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
   QDomElement DocCapabilitiesElement = doc.firstChildElement();
   if ( !DocCapabilitiesElement.isNull() )
   {
-    QDomNodeList capabilitiesNodes =  DocCapabilitiesElement.elementsByTagName( "Capability" );
+    QDomNodeList capabilitiesNodes =  DocCapabilitiesElement.elementsByTagName( QStringLiteral( "Capability" ) );
     if ( !capabilitiesNodes.isEmpty() )
     {
 
       //create response document
       QDomDocument soapResponseDoc;
       //Envelope element
-      QDomElement soapEnvelopeElement = soapResponseDoc.createElement( "soap:Envelope" );
-      soapEnvelopeElement.setAttribute( "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
-      soapEnvelopeElement.setAttribute( "soap:encoding", "http://schemas.xmlsoap.org/soap/encoding/" );
+      QDomElement soapEnvelopeElement = soapResponseDoc.createElement( QStringLiteral( "soap:Envelope" ) );
+      soapEnvelopeElement.setAttribute( QStringLiteral( "xmlns:soap" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ) );
+      soapEnvelopeElement.setAttribute( QStringLiteral( "soap:encoding" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/encoding/" ) );
       soapResponseDoc.appendChild( soapEnvelopeElement );
 
       //Body element
-      QDomElement soapBodyElement = soapResponseDoc.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "soap:Body" );
+      QDomElement soapBodyElement = soapResponseDoc.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "soap:Body" ) );
       soapEnvelopeElement.appendChild( soapBodyElement );
 
       // check if WMS or MS SOAP request
 
-      if ( mService == "MS" || mService == "MDS" || mService == "MAS" )
+      if ( mService == QLatin1String( "MS" ) || mService == QLatin1String( "MDS" ) || mService == QLatin1String( "MAS" ) )
       {
         //OA_MI_MS_Capabilities element
-        QDomElement msCapabilitiesElement = soapResponseDoc.createElement( "ms:OA_MI_Service_Capabilities" );
-        msCapabilitiesElement.setAttribute( "service", "MS" );
-        msCapabilitiesElement.setAttribute( "version", "1.1" );
-        msCapabilitiesElement.setAttribute( "xmlns:ms", "http://www.eu-orchestra.org/services/ms" );
-        msCapabilitiesElement.setAttribute( "xmlns", "http://www.eu-orchestra.org/services/oas/oa_basic" );
-        msCapabilitiesElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
-        msCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-        msCapabilitiesElement.setAttribute( "xmlns:xsd", "http://www.w3.org/2001/XMLSchema" );
+        QDomElement msCapabilitiesElement = soapResponseDoc.createElement( QStringLiteral( "ms:OA_MI_Service_Capabilities" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "service" ), QStringLiteral( "MS" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:ms" ), QStringLiteral( "http://www.eu-orchestra.org/services/ms" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.eu-orchestra.org/services/oas/oa_basic" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsd" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema" ) );
         soapBodyElement.appendChild( msCapabilitiesElement );
 
         // import the orchestra common capabilities
-        QFile common( "common.xml" );
+        QFile common( QStringLiteral( "common.xml" ) );
         if ( !common.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
@@ -243,27 +243,27 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
           msCapabilitiesElement.appendChild( orchestraCommon );
 
           // write specific capabilities
-          QDomElement msSpecificCapabilitiesElement = soapResponseDoc.createElement( "serviceSpecificCapabilities" );
+          QDomElement msSpecificCapabilitiesElement = soapResponseDoc.createElement( QStringLiteral( "serviceSpecificCapabilities" ) );
           soapBodyElement.appendChild( msSpecificCapabilitiesElement );
 
           QDomElement capabilitiesElement = capabilitiesNodes.item( 0 ).toElement();
           msSpecificCapabilitiesElement.appendChild( capabilitiesElement );
 
           // to do supportedOperations
-          QDomNodeList requestNodes = capabilitiesElement.elementsByTagName( "Request" );
+          QDomNodeList requestNodes = capabilitiesElement.elementsByTagName( QStringLiteral( "Request" ) );
           if ( !requestNodes.isEmpty() )
           {
             QDomElement requestElement = requestNodes.item( 0 ).toElement();
             QDomNodeList requestChildNodes = requestElement.childNodes();
 
             //append an array element for 'supportedOperations' to the soap document
-            QDomElement supportedOperationsElement = soapResponseDoc.createElement( "supportedOperations" );
-            supportedOperationsElement.setAttribute( "xsi:type", "soapenc:Array" );
-            supportedOperationsElement.setAttribute( "soap:arrayType", "xsd:string[" + QString::number( requestChildNodes.size() ) + "]" );
+            QDomElement supportedOperationsElement = soapResponseDoc.createElement( QStringLiteral( "supportedOperations" ) );
+            supportedOperationsElement.setAttribute( QStringLiteral( "xsi:type" ), QStringLiteral( "soapenc:Array" ) );
+            supportedOperationsElement.setAttribute( QStringLiteral( "soap:arrayType" ), "xsd:string[" + QString::number( requestChildNodes.size() ) + "]" );
 
             for ( int i = 0; i < requestChildNodes.size(); ++i )
             {
-              QDomElement itemElement = soapResponseDoc.createElement( "item" );
+              QDomElement itemElement = soapResponseDoc.createElement( QStringLiteral( "item" ) );
               QDomText itemText = soapResponseDoc.createTextNode( requestChildNodes.item( i ).toElement().tagName() );
               itemElement.appendChild( itemText );
               supportedOperationsElement.appendChild( itemElement );
@@ -281,19 +281,19 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
 
 
       }
-      else if ( mService == "WMS" )
+      else if ( mService == QLatin1String( "WMS" ) )
       {
         //WMS_Capabilities element
-        QDomElement msCapabilitiesElement = soapResponseDoc.createElement( "wms:Capabilities" );
-        msCapabilitiesElement.setAttribute( "service", "WMS" );
-        msCapabilitiesElement.setAttribute( "version", "1.3.0" );
-        msCapabilitiesElement.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
-        msCapabilitiesElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
-        msCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-        msCapabilitiesElement.setAttribute( "xmlns:xsd", "http://www.w3.org/2001/XMLSchema" );
+        QDomElement msCapabilitiesElement = soapResponseDoc.createElement( QStringLiteral( "wms:Capabilities" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WMS" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.3.0" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:wms" ), QStringLiteral( "http://www.opengis.net/wms" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsd" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema" ) );
         soapBodyElement.appendChild( msCapabilitiesElement );
 
-        QFile wmsService( "wms_metadata.xml" );
+        QFile wmsService( QStringLiteral( "wms_metadata.xml" ) );
         if ( !wmsService.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
@@ -317,7 +317,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
           msCapabilitiesElement.appendChild( service );
         }
 
-        QDomElement msServiceElement = soapResponseDoc.createElement( "Service" );
+        QDomElement msServiceElement = soapResponseDoc.createElement( QStringLiteral( "Service" ) );
         msCapabilitiesElement.appendChild( msServiceElement );
 
         QDomElement capabilitiesElement = capabilitiesNodes.item( 0 ).toElement();
@@ -329,18 +329,18 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
       else
       {
         //OA_MI_MS_Capabilities element
-        QDomElement msCapabilitiesElement = soapResponseDoc.createElement( "ms:OA_MI_Service_Capabilities" );
-        msCapabilitiesElement.setAttribute( "service", "MS" );
-        msCapabilitiesElement.setAttribute( "version", "1.1" );
-        msCapabilitiesElement.setAttribute( "xmlns:ms", "http://www.eu-orchestra.org/services/ms" );
-        msCapabilitiesElement.setAttribute( "xmlns", "http://www.eu-orchestra.org/services/oas/oa_basic" );
-        msCapabilitiesElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
-        msCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-        msCapabilitiesElement.setAttribute( "xmlns:xsd", "http://www.w3.org/2001/XMLSchema" );
+        QDomElement msCapabilitiesElement = soapResponseDoc.createElement( QStringLiteral( "ms:OA_MI_Service_Capabilities" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "service" ), QStringLiteral( "MS" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:ms" ), QStringLiteral( "http://www.eu-orchestra.org/services/ms" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.eu-orchestra.org/services/oas/oa_basic" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+        msCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsd" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema" ) );
         soapBodyElement.appendChild( msCapabilitiesElement );
 
         // import the orchestra common capabilities
-        QFile common( "common.xml" );
+        QFile common( QStringLiteral( "common.xml" ) );
         if ( !common.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
@@ -366,7 +366,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
       }
 
       QByteArray ba = soapResponseDoc.toByteArray();
-      setHttpResponse( &ba, "text/xml" );
+      setHttpResponse( &ba, QStringLiteral( "text/xml" ) );
     }
   }
 }
@@ -377,20 +377,20 @@ void QgsSOAPRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
   QDomDocument featureInfoResponseDoc;
 
   //Envelope
-  QDomElement soapEnvelopeElement = featureInfoResponseDoc.createElement( "soap:Envelope" );
-  soapEnvelopeElement.setAttribute( "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
-  soapEnvelopeElement.setAttribute( "soap:encoding", "http://schemas.xmlsoap.org/soap/encoding/" );
+  QDomElement soapEnvelopeElement = featureInfoResponseDoc.createElement( QStringLiteral( "soap:Envelope" ) );
+  soapEnvelopeElement.setAttribute( QStringLiteral( "xmlns:soap" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ) );
+  soapEnvelopeElement.setAttribute( QStringLiteral( "soap:encoding" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/encoding/" ) );
   featureInfoResponseDoc.appendChild( soapEnvelopeElement );
 
   //Body
-  QDomElement soapBodyElement = featureInfoResponseDoc.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "soap:Body" );
+  QDomElement soapBodyElement = featureInfoResponseDoc.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "soap:Body" ) );
   soapEnvelopeElement.appendChild( soapBodyElement );
 
   soapBodyElement.appendChild( infoDoc.documentElement() );
 
   //now set message
   QByteArray ba = featureInfoResponseDoc.toByteArray();
-  setHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, QStringLiteral( "text/xml" ) );
 }
 
 void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc )
@@ -398,20 +398,20 @@ void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc )
   QDomDocument featureInfoResponseDoc;
 
   //Envelope
-  QDomElement soapEnvelopeElement = featureInfoResponseDoc.createElement( "soap:Envelope" );
-  soapEnvelopeElement.setAttribute( "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
-  soapEnvelopeElement.setAttribute( "soap:encoding", "http://schemas.xmlsoap.org/soap/encoding/" );
+  QDomElement soapEnvelopeElement = featureInfoResponseDoc.createElement( QStringLiteral( "soap:Envelope" ) );
+  soapEnvelopeElement.setAttribute( QStringLiteral( "xmlns:soap" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ) );
+  soapEnvelopeElement.setAttribute( QStringLiteral( "soap:encoding" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/encoding/" ) );
   featureInfoResponseDoc.appendChild( soapEnvelopeElement );
 
   //Body
-  QDomElement soapBodyElement = featureInfoResponseDoc.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "soap:Body" );
+  QDomElement soapBodyElement = featureInfoResponseDoc.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "soap:Body" ) );
   soapEnvelopeElement.appendChild( soapBodyElement );
 
   soapBodyElement.appendChild( infoDoc.documentElement() );
 
   //now set message
   QByteArray ba = featureInfoResponseDoc.toByteArray();
-  setHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, QStringLiteral( "text/xml" ) );
 }
 
 void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc, const QString& mimeType )
@@ -431,75 +431,75 @@ void QgsSOAPRequestHandler::setServiceException( const QgsMapServiceException& e
   //create response document
   QDomDocument soapResponseDoc;
   //Envelope element
-  QDomElement soapEnvelopeElement = soapResponseDoc.createElement( "soap:Envelope" );
-  soapEnvelopeElement.setAttribute( "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
-  soapEnvelopeElement.setAttribute( "soap:encoding", "http://schemas.xmlsoap.org/soap/encoding/" );
+  QDomElement soapEnvelopeElement = soapResponseDoc.createElement( QStringLiteral( "soap:Envelope" ) );
+  soapEnvelopeElement.setAttribute( QStringLiteral( "xmlns:soap" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ) );
+  soapEnvelopeElement.setAttribute( QStringLiteral( "soap:encoding" ), QStringLiteral( "http://schemas.xmlsoap.org/soap/encoding/" ) );
   soapResponseDoc.appendChild( soapEnvelopeElement );
 
   //Body element
-  QDomElement soapBodyElement = soapResponseDoc.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "soap:Body" );
+  QDomElement soapBodyElement = soapResponseDoc.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "soap:Body" ) );
   soapEnvelopeElement.appendChild( soapBodyElement );
 
-  QDomElement msExceptionsElement = soapResponseDoc.createElement( "Exception" );
-  msExceptionsElement.setAttribute( "format", "text/xml" );
+  QDomElement msExceptionsElement = soapResponseDoc.createElement( QStringLiteral( "Exception" ) );
+  msExceptionsElement.setAttribute( QStringLiteral( "format" ), QStringLiteral( "text/xml" ) );
   soapBodyElement.appendChild( msExceptionsElement );
 
   QDomText msExceptionMessage = soapResponseDoc.createTextNode( QString( ex.message() ) );
   msExceptionsElement.appendChild( msExceptionMessage );
 
   QByteArray ba = soapResponseDoc.toByteArray();
-  setHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, QStringLiteral( "text/xml" ) );
 }
 
 int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const
 {
-  QDomNodeList boundingBoxList = getMapElement.elementsByTagName( "BoundingBox" );
+  QDomNodeList boundingBoxList = getMapElement.elementsByTagName( QStringLiteral( "BoundingBox" ) );
   if ( !boundingBoxList.isEmpty() )
   {
     parseBoundingBoxElement( parameterMap, boundingBoxList.item( 0 ).toElement() );
   }
-  QDomNodeList CRSList = getMapElement.elementsByTagName( "coordinateReferenceSystem" );
+  QDomNodeList CRSList = getMapElement.elementsByTagName( QStringLiteral( "coordinateReferenceSystem" ) );
   if ( !CRSList.isEmpty() )
   {
     QString crsText = CRSList.item( 0 ).toElement().text();
     QString epsgNumber;
-    if ( !crsText.startsWith( "EPSG_" ) ) //use underscore in SOAP because ':' is reserved for namespaces
+    if ( !crsText.startsWith( QLatin1String( "EPSG_" ) ) ) //use underscore in SOAP because ':' is reserved for namespaces
     {
       //error
     }
     else
     {
-      epsgNumber = crsText.replace( 4, 1, ":" );//replace the underscore with a ':' to make it WMS compatible
+      epsgNumber = crsText.replace( 4, 1, QStringLiteral( ":" ) );//replace the underscore with a ':' to make it WMS compatible
     }
-    parameterMap.insert( "CRS", epsgNumber );
+    parameterMap.insert( QStringLiteral( "CRS" ), epsgNumber );
   }
-  QDomNodeList GMLList = getMapElement.elementsByTagNameNS( "http://www.eu-orchestra.org/services/ms", "GML" );
+  QDomNodeList GMLList = getMapElement.elementsByTagNameNS( QStringLiteral( "http://www.eu-orchestra.org/services/ms" ), QStringLiteral( "GML" ) );
   if ( !GMLList.isEmpty() )
   {
     QString gmlText;
     QTextStream gmlStream( &gmlText );
     GMLList.at( 0 ).save( gmlStream, 2 );
-    parameterMap.insert( "GML", gmlText );
+    parameterMap.insert( QStringLiteral( "GML" ), gmlText );
   }
 
   //outputAttributes
-  QDomNodeList imageDocumentAttributesList = getMapElement.elementsByTagName( "Output" );
+  QDomNodeList imageDocumentAttributesList = getMapElement.elementsByTagName( QStringLiteral( "Output" ) );
   if ( !imageDocumentAttributesList.isEmpty() )
   {
     parseOutputAttributesElement( parameterMap, imageDocumentAttributesList.item( 0 ).toElement() );
   }
 
   //SLD
-  QDomNodeList sldList = getMapElement.elementsByTagName( "StyledLayerDescriptor" );
+  QDomNodeList sldList = getMapElement.elementsByTagName( QStringLiteral( "StyledLayerDescriptor" ) );
   if ( !sldList.isEmpty() )
   {
     QString sldString;
     QTextStream sldStream( &sldString );
     sldList.item( 0 ).save( sldStream, 0 );
     //Replace some special characters
-    sldString.replace( "&lt;", "<" );
-    sldString.replace( "&gt;", ">" );
-    parameterMap.insert( "SLD", sldString );
+    sldString.replace( QLatin1String( "&lt;" ), QLatin1String( "<" ) );
+    sldString.replace( QLatin1String( "&gt;" ), QLatin1String( ">" ) );
+    parameterMap.insert( QStringLiteral( "SLD" ), sldString );
   }
 
   return 0;
@@ -507,7 +507,7 @@ int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameter
 
 int QgsSOAPRequestHandler::parseGetFeatureInfoElement( QMap<QString, QString>& parameterMap, const QDomElement& getFeatureInfoElement ) const
 {
-  QDomNodeList queryList = getFeatureInfoElement.elementsByTagName( "Query" );
+  QDomNodeList queryList = getFeatureInfoElement.elementsByTagName( QStringLiteral( "Query" ) );
   if ( queryList.size() < 1 )
   {
     return 1;
@@ -515,16 +515,16 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( QMap<QString, QString>& p
   QDomElement queryElem = queryList.at( 0 ).toElement();
 
   //find <QueryLayer>
-  QDomNodeList queryLayerList = queryElem.elementsByTagName( "QueryLayer" );
+  QDomNodeList queryLayerList = queryElem.elementsByTagName( QStringLiteral( "QueryLayer" ) );
   if ( queryLayerList.size() < 1 )
   {
     return 0; //no error, but nothing to do
   }
   QString queryLayerString = queryLayerList.at( 0 ).toElement().text();
-  parameterMap.insert( "QUERY_LAYERS", queryLayerString );
+  parameterMap.insert( QStringLiteral( "QUERY_LAYERS" ), queryLayerString );
 
   //find <XImagePoint>
-  QDomNodeList xImageList = queryElem.elementsByTagName( "XImagePoint" );
+  QDomNodeList xImageList = queryElem.elementsByTagName( QStringLiteral( "XImagePoint" ) );
   if ( xImageList.size() < 1 )
   {
     return 2; //mandatory
@@ -535,10 +535,10 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( QMap<QString, QString>& p
   {
     return 4;
   }
-  parameterMap.insert( "I", QString::number( xPoint ) );
+  parameterMap.insert( QStringLiteral( "I" ), QString::number( xPoint ) );
 
   //find <YImagePoint>
-  QDomNodeList yImageList = queryElem.elementsByTagName( "YImagePoint" );
+  QDomNodeList yImageList = queryElem.elementsByTagName( QStringLiteral( "YImagePoint" ) );
   if ( yImageList.size() < 1 )
   {
     return 5; //mandatory
@@ -548,21 +548,21 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( QMap<QString, QString>& p
   {
     return 6;
   }
-  parameterMap.insert( "J", QString::number( yPoint ) );
+  parameterMap.insert( QStringLiteral( "J" ), QString::number( yPoint ) );
 
   //find <FeatureCount>
-  QDomNodeList featureCountList = queryElem.elementsByTagName( "FeatureCount" );
+  QDomNodeList featureCountList = queryElem.elementsByTagName( QStringLiteral( "FeatureCount" ) );
   if ( !featureCountList.isEmpty() ) //optional
   {
     int featureCount = featureCountList.at( 0 ).toElement().text().toInt( &conversionSuccess );
     if ( conversionSuccess )
     {
-      parameterMap.insert( "FEATURE_COUNT", QString::number( featureCount ) );
+      parameterMap.insert( QStringLiteral( "FEATURE_COUNT" ), QString::number( featureCount ) );
     }
   }
 
   //RequestCopy
-  QDomNodeList requestCopyList = getFeatureInfoElement.elementsByTagName( "RequestCopy" );
+  QDomNodeList requestCopyList = getFeatureInfoElement.elementsByTagName( QStringLiteral( "RequestCopy" ) );
   if ( requestCopyList.size() < 1 )
   {
     return 7;
@@ -581,75 +581,75 @@ int QgsSOAPRequestHandler::parseBoundingBoxElement( QMap<QString, QString>& para
   QString minx, miny, maxx, maxy;
 
   //leftBound
-  QDomNodeList leftBoundList = boundingBoxElement.elementsByTagName( "leftBound" );
+  QDomNodeList leftBoundList = boundingBoxElement.elementsByTagName( QStringLiteral( "leftBound" ) );
   if ( !leftBoundList.isEmpty() )
   {
     minx = leftBoundList.item( 0 ).toElement().text();
   }
 
   //rightBound
-  QDomNodeList rightBoundList = boundingBoxElement.elementsByTagName( "rightBound" );
+  QDomNodeList rightBoundList = boundingBoxElement.elementsByTagName( QStringLiteral( "rightBound" ) );
   if ( !rightBoundList.isEmpty() )
   {
     maxx = rightBoundList.item( 0 ).toElement().text();
   }
 
   //lowerBound
-  QDomNodeList lowerBoundList = boundingBoxElement.elementsByTagName( "lowerBound" );
+  QDomNodeList lowerBoundList = boundingBoxElement.elementsByTagName( QStringLiteral( "lowerBound" ) );
   if ( !lowerBoundList.isEmpty() )
   {
     miny = lowerBoundList.item( 0 ).toElement().text();
   }
 
   //upperBound
-  QDomNodeList upperBoundList = boundingBoxElement.elementsByTagName( "upperBound" );
+  QDomNodeList upperBoundList = boundingBoxElement.elementsByTagName( QStringLiteral( "upperBound" ) );
   if ( !upperBoundList.isEmpty() )
   {
     maxy = upperBoundList.item( 0 ).toElement().text();
   }
-  parameterMap.insert( "BBOX", minx + "," + miny + "," + maxx + "," + maxy );
+  parameterMap.insert( QStringLiteral( "BBOX" ), minx + "," + miny + "," + maxx + "," + maxy );
   return 0;
 }
 
 int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const
 {
   //height
-  QDomNodeList heightList = outputAttributesElement.elementsByTagName( "Height" );
+  QDomNodeList heightList = outputAttributesElement.elementsByTagName( QStringLiteral( "Height" ) );
   if ( !heightList.isEmpty() )
   {
     QString heightString = heightList.item( 0 ).toElement().text();
-    parameterMap.insert( "HEIGHT", heightString );
+    parameterMap.insert( QStringLiteral( "HEIGHT" ), heightString );
   }
 
   //width
-  QDomNodeList widthList = outputAttributesElement.elementsByTagName( "Width" );
+  QDomNodeList widthList = outputAttributesElement.elementsByTagName( QStringLiteral( "Width" ) );
   if ( !widthList.isEmpty() )
   {
     QString widthString = widthList.item( 0 ).toElement().text();
-    parameterMap.insert( "WIDTH", widthString );
+    parameterMap.insert( QStringLiteral( "WIDTH" ), widthString );
   }
 
   //format
-  QDomNodeList formatList = outputAttributesElement.elementsByTagName( "Format" );
+  QDomNodeList formatList = outputAttributesElement.elementsByTagName( QStringLiteral( "Format" ) );
   if ( !formatList.isEmpty() )
   {
     QString formatString = formatList.item( 0 ).toElement().text();
-    parameterMap.insert( "FORMAT", formatString );
+    parameterMap.insert( QStringLiteral( "FORMAT" ), formatString );
   }
 
   //background transparendy
-  QDomNodeList bgTransparencyList = outputAttributesElement.elementsByTagName/*NS*/( /*"http://www.eu-orchestra.org/services/ms",*/ "Transparent" );
+  QDomNodeList bgTransparencyList = outputAttributesElement.elementsByTagName/*NS*/( /*"http://www.eu-orchestra.org/services/ms",*/ QStringLiteral( "Transparent" ) );
   if ( !bgTransparencyList.isEmpty() )
   {
     QString bgTransparencyString = bgTransparencyList.item( 0 ).toElement().text();
-    if ( bgTransparencyString.compare( "true", Qt::CaseInsensitive ) == 0
-         || bgTransparencyString == "1" )
+    if ( bgTransparencyString.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0
+         || bgTransparencyString == QLatin1String( "1" ) )
     {
-      parameterMap.insert( "TRANSPARENT", "TRUE" );
+      parameterMap.insert( QStringLiteral( "TRANSPARENT" ), QStringLiteral( "TRUE" ) );
     }
     else
     {
-      parameterMap.insert( "TRANSPARENT", "FALSE" );
+      parameterMap.insert( QStringLiteral( "TRANSPARENT" ), QStringLiteral( "FALSE" ) );
     }
   }
   return 0;
@@ -660,16 +660,16 @@ int QgsSOAPRequestHandler::setSOAPWithAttachments( QImage* img )
   QgsDebugMsg( "Entering." );
   //create response xml document
   QDomDocument xmlResponse; //response xml, save this into mimeString
-  QDomElement envelopeElement = xmlResponse.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
+  QDomElement envelopeElement = xmlResponse.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "Envelope" ) );
   xmlResponse.appendChild( envelopeElement );
-  QDomElement bodyElement = xmlResponse.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
+  QDomElement bodyElement = xmlResponse.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "Body" ) );
   envelopeElement.appendChild( bodyElement );
-  QDomElement getMapResponseElement = xmlResponse.createElementNS( "http://www.eu-orchestra.org/services/ms", "getMapResponse" );
+  QDomElement getMapResponseElement = xmlResponse.createElementNS( QStringLiteral( "http://www.eu-orchestra.org/services/ms" ), QStringLiteral( "getMapResponse" ) );
   bodyElement.appendChild( getMapResponseElement );
-  QDomElement returnElement = xmlResponse.createElementNS( "http://www.eu-orchestra.org/services/ms", "return" );
-  returnElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  returnElement.setAttribute( "xsi:type", "OA_ImageDocument" );
-  returnElement.setAttribute( "href", "image@mapservice" );
+  QDomElement returnElement = xmlResponse.createElementNS( QStringLiteral( "http://www.eu-orchestra.org/services/ms" ), QStringLiteral( "return" ) );
+  returnElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+  returnElement.setAttribute( QStringLiteral( "xsi:type" ), QStringLiteral( "OA_ImageDocument" ) );
+  returnElement.setAttribute( QStringLiteral( "href" ), QStringLiteral( "image@mapservice" ) );
   getMapResponseElement.appendChild( returnElement );
 
   //create image buffer
@@ -681,8 +681,8 @@ int QgsSOAPRequestHandler::setSOAPWithAttachments( QImage* img )
   QByteArray xmlByteArray = xmlResponse.toString().toLocal8Bit();
 
   // Set headers
-  setHeader( "MIME-Version", "1.0" );
-  setHeader( "Content-Type", "Multipart/Related; boundary=\"MIME_boundary\"; type=\"text/xml\"; start=\"<xml@mapservice>\"" );
+  setHeader( QStringLiteral( "MIME-Version" ), QStringLiteral( "1.0" ) );
+  setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "Multipart/Related; boundary=\"MIME_boundary\"; type=\"text/xml\"; start=\"<xml@mapservice>\"" ) );
   // Start body
   appendBody( "--MIME_boundary\r\n" );
   appendBody( "Content-Type: text/xml\n" );
@@ -693,11 +693,11 @@ int QgsSOAPRequestHandler::setSOAPWithAttachments( QImage* img )
   appendBody( "\n" );
   appendBody( "\r\n" );
   appendBody( "--MIME_boundary\r\n" );
-  if ( mFormat == "JPG" )
+  if ( mFormat == QLatin1String( "JPG" ) )
   {
     appendBody( "Content-Type: image/jpg\n" );
   }
-  else if ( mFormat == "PNG" )
+  else if ( mFormat == QLatin1String( "PNG" ) )
   {
     appendBody( "Content-Type: image/png\n" );
   }
@@ -731,7 +731,7 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
   }
   tmpDir = QDir( QDir::currentPath() + "/tmp" );
 #else // Q_OS_WIN
-  tmpDir = QDir( "/tmp" );
+  tmpDir = QDir( QStringLiteral( "/tmp" ) );
 #endif
 
   QgsDebugMsg( "Path to tmpDir is: " + tmpDir.absolutePath() );
@@ -744,7 +744,7 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
   if ( !QFile::exists( tmpDir.absolutePath() + "/mas_tmp" ) )
   {
     QgsDebugMsg( "Trying to create mas_tmp folder" );
-    if ( !tmpDir.mkdir( "mas_tmp" ) )
+    if ( !tmpDir.mkdir( QStringLiteral( "mas_tmp" ) ) )
     {
       return 2;
     }
@@ -758,12 +758,12 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
 
   QgsDebugMsg( "Temp. folder is: " + tmpMasDir.absolutePath() + "/" + folderName );
 
-  if ( mFormat == "JPG" )
+  if ( mFormat == QLatin1String( "JPG" ) )
   {
     theFile.setFileName( tmpMasDir.absolutePath() + "/" + folderName + "/map.jpg" );
     uri.append( "/mas_tmp/" + folderName + "/map.jpg" );
   }
-  else if ( mFormat == "PNG" )
+  else if ( mFormat == QLatin1String( "PNG" ) )
   {
     theFile.setFileName( tmpMasDir.absolutePath() + "/" + folderName + "/map.png" );
     uri.append( "/mas_tmp/" + folderName + "/map.png" );
@@ -781,13 +781,13 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
   }
 
   QDomDocument xmlResponse;
-  QDomElement envelopeElement = xmlResponse.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
+  QDomElement envelopeElement = xmlResponse.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "Envelope" ) );
   xmlResponse.appendChild( envelopeElement );
-  QDomElement bodyElement = xmlResponse.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
+  QDomElement bodyElement = xmlResponse.createElementNS( QStringLiteral( "http://schemas.xmlsoap.org/soap/envelope/" ), QStringLiteral( "Body" ) );
   envelopeElement.appendChild( bodyElement );
-  QDomElement getMapResponseElement = xmlResponse.createElementNS( "http://www.eu-orchestra.org/services/ms", "getMapResponse" );
-  QDomElement ahrefElement = xmlResponse.createElement( "a" );
-  ahrefElement.setAttribute( "href", uri );
+  QDomElement getMapResponseElement = xmlResponse.createElementNS( QStringLiteral( "http://www.eu-orchestra.org/services/ms" ), QStringLiteral( "getMapResponse" ) );
+  QDomElement ahrefElement = xmlResponse.createElement( QStringLiteral( "a" ) );
+  ahrefElement.setAttribute( QStringLiteral( "href" ), uri );
   //QString href("<a href=\""+uri+"\">"+uri+"</a>");
   QDomText uriNode = xmlResponse.createTextNode( uri );
   ahrefElement.appendChild( uriNode );
@@ -796,14 +796,14 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
   bodyElement.appendChild( getMapResponseElement );
 
   QByteArray xmlByteArray = xmlResponse.toByteArray();
-  setHttpResponse( &xmlByteArray, "text/xml" );
+  setHttpResponse( &xmlByteArray, QStringLiteral( "text/xml" ) );
   return 0;
 }
 
 int QgsSOAPRequestHandler::findOutHostAddress( QString& address ) const
 {
   QDomDocument wmsMetadataDoc;
-  QFile wmsMetadataFile( "wms_metadata.xml" );
+  QFile wmsMetadataFile( QStringLiteral( "wms_metadata.xml" ) );
 
   if ( !wmsMetadataFile.open( QIODevice::ReadOnly ) )
   {
@@ -813,12 +813,12 @@ int QgsSOAPRequestHandler::findOutHostAddress( QString& address ) const
   {
     return 2;
   }
-  QDomNodeList onlineResourceList = wmsMetadataDoc.elementsByTagName( "OnlineResource" );
+  QDomNodeList onlineResourceList = wmsMetadataDoc.elementsByTagName( QStringLiteral( "OnlineResource" ) );
   if ( onlineResourceList.size() < 1 )
   {
     return 3;
   }
-  address = onlineResourceList.at( 0 ).toElement().attribute( "href" );
+  address = onlineResourceList.at( 0 ).toElement().attribute( QStringLiteral( "href" ) );
   QgsDebugMsg( "address found: " + address );
   if ( address.isEmpty() )
   {

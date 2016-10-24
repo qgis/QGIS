@@ -58,17 +58,17 @@ bool RgLineVectorLayerSettings::test()
 
 void RgLineVectorLayerSettings::read( const QgsProject *project )
 {
-  int dd          = project->readNumEntry( "roadgraphplugin", "/defaultDirection" );
-  mDirection    = project->readEntry( "roadgraphplugin", "/directionField" );
+  int dd          = project->readNumEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultDirection" ) );
+  mDirection    = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/directionField" ) );
   mFirstPointToLastPointDirectionVal =
-    project->readEntry( "roadgraphplugin", "/FirstPointToLastPointDirectionVal" );
+    project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/FirstPointToLastPointDirectionVal" ) );
   mLastPointToFirstPointDirectionVal =
-    project->readEntry( "roadgraphplugin", "/LastPointToFirstPointDirectionVal" );
-  mBothDirectionVal = project->readEntry( "roadgraphplugin", "/BothDirectionVal" );
-  mSpeed        = project->readEntry( "roadgraphplugin", "/speedField" );
-  mDefaultSpeed = project->readDoubleEntry( "roadgraphplugin", "/defaultSpeed" );
-  mLayerName        = project->readEntry( "roadgraphplugin", "/layer" );
-  mSpeedUnitName = project->readEntry( "roadgraphplugin", "/speedUnitName" );
+    project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/LastPointToFirstPointDirectionVal" ) );
+  mBothDirectionVal = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/BothDirectionVal" ) );
+  mSpeed        = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/speedField" ) );
+  mDefaultSpeed = project->readDoubleEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultSpeed" ) );
+  mLayerName        = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/layer" ) );
+  mSpeedUnitName = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/speedUnitName" ) );
 
   if ( dd == 1 )
   {
@@ -87,17 +87,17 @@ void RgLineVectorLayerSettings::read( const QgsProject *project )
 
 void RgLineVectorLayerSettings::write( QgsProject *project )
 {
-  project->writeEntry( "roadgraphplugin", "/defaultDirection", mDefaultDirection );
-  project->writeEntry( "roadgraphplugin", "/directionField",   mDirection );
-  project->writeEntry( "roadgraphplugin", "/FirstPointToLastPointDirectionVal",
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultDirection" ), mDefaultDirection );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/directionField" ),   mDirection );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/FirstPointToLastPointDirectionVal" ),
                        mFirstPointToLastPointDirectionVal );
-  project->writeEntry( "roadgraphplugin", "/LastPointToFirstPointDirectionVal",
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/LastPointToFirstPointDirectionVal" ),
                        mLastPointToFirstPointDirectionVal );
-  project->writeEntry( "roadgraphplugin", "/BothDirectionVal", mBothDirectionVal );
-  project->writeEntry( "roadgraphplugin", "/speedField",   mSpeed );
-  project->writeEntry( "roadgraphplugin", "/defaultSpeed", mDefaultSpeed );
-  project->writeEntry( "roadgraphplugin", "/layer",        mLayerName );
-  project->writeEntry( "roadgraphplugin", "/speedUnitName",    mSpeedUnitName );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/BothDirectionVal" ), mBothDirectionVal );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/speedField" ),   mSpeed );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultSpeed" ), mDefaultSpeed );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/layer" ),        mLayerName );
+  project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/speedUnitName" ),    mSpeedUnitName );
 } // RgLineVectorLayerSettings::write( QgsProject *project )
 
 QWidget* RgLineVectorLayerSettings::getGui( QWidget *parent )
@@ -135,10 +135,10 @@ void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
 
   if ( w->mcbUnitOfSpeed->currentIndex() == 0 )
   {
-    mSpeedUnitName = "m/s";
+    mSpeedUnitName = QStringLiteral( "m/s" );
   }
   else if ( w->mcbUnitOfSpeed->currentIndex() == 1 )
   {
-    mSpeedUnitName = "km/h";
+    mSpeedUnitName = QStringLiteral( "km/h" );
   }
 }

@@ -50,9 +50,9 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
    */
 
   QSettings settings;
-  QString selected = settings.value( "/Oracle/connections/selected" ).toString();
+  QString selected = settings.value( QStringLiteral( "/Oracle/connections/selected" ) ).toString();
 
-  restoreGeometry( settings.value( "/Oracle/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Oracle/geometry" ) ).toByteArray() );
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( selected ) );
   if ( selected == cmbConnections->currentText() )
@@ -64,14 +64,14 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
 QgsOracleSelectGeoraster::~QgsOracleSelectGeoraster()
 {
   QSettings settings;
-  settings.setValue( "/Oracle/geometry", saveGeometry() );
-  settings.setValue( "/Oracle/connections/selected", cmbConnections->currentText() );
+  settings.setValue( QStringLiteral( "/Oracle/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Oracle/connections/selected" ), cmbConnections->currentText() );
 }
 
 void QgsOracleSelectGeoraster::populateConnectionList()
 {
   QSettings settings;
-  settings.beginGroup( "/Oracle/connections" );
+  settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
 
@@ -108,7 +108,7 @@ void QgsOracleSelectGeoraster::populateConnectionList()
 
 void QgsOracleSelectGeoraster::on_btnNew_clicked()
 {
-  QgsOracleConnect *oc = new QgsOracleConnect( this, "New Connection" );
+  QgsOracleConnect *oc = new QgsOracleConnect( this, QStringLiteral( "New Connection" ) );
   if ( oc->exec() )
   {
     populateConnectionList();
@@ -144,7 +144,7 @@ void QgsOracleSelectGeoraster::on_btnDelete_clicked()
     settings.remove( key );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     setConnectionListPosition();
-    lineEdit->setText( "" );
+    lineEdit->setText( QLatin1String( "" ) );
     listWidget->clear();
   }
 }
@@ -161,7 +161,7 @@ void QgsOracleSelectGeoraster::connectToServer()
   QString database = settings.value( key + "/database" ).toString();
   QString subdtset = settings.value( key + "/subdtset" ).toString();
   bool makeConnection = true;
-  if ( savepass == "false" )
+  if ( savepass == QLatin1String( "false" ) )
   {
     makeConnection = false;
     ( void )QInputDialog::getText( this,
@@ -173,7 +173,7 @@ void QgsOracleSelectGeoraster::connectToServer()
   }
   if ( makeConnection )
   {
-    settings.setValue( "/Oracle/connections/selected",
+    settings.setValue( QStringLiteral( "/Oracle/connections/selected" ),
                        cmbConnections->currentText() );
     showSelection( subdtset );
     lineEdit->setText( subdtset );
@@ -247,34 +247,34 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   QStringList fields = identification.split( ',' );
   QString count = QString::number( nSubDatasets / 2 );
 
-  QString plural = "s";
+  QString plural = QStringLiteral( "s" );
 
-  if ( count == "1" )
+  if ( count == QLatin1String( "1" ) )
   {
-    plural = "";
+    plural = QLatin1String( "" );
   }
 
   if ( fields.size() < 4 )
   {
-    labelStatus->setText( QString( "%1 GeoRaster table%2" )
+    labelStatus->setText( QStringLiteral( "%1 GeoRaster table%2" )
                           .arg( count, plural ) );
     checkBox->setEnabled( false );
   }
   else if ( fields.size() == 4 )
   {
-    labelStatus->setText( QString( "%1 GeoRaster column%2 on table %3" )
+    labelStatus->setText( QStringLiteral( "%1 GeoRaster column%2 on table %3" )
                           .arg( count, plural, fields[3] ) );
     checkBox->setEnabled( false );
   }
   else if ( fields.size() == 5 )
   {
-    labelStatus->setText( QString( "%1 GeoRaster object%2 on table %3 column %4" )
+    labelStatus->setText( QStringLiteral( "%1 GeoRaster object%2 on table %3 column %4" )
                           .arg( count, plural, fields[3], fields[4] ) );
     checkBox->setEnabled( true );
   }
   else
   {
-    labelStatus->setText( QString( "%1 GeoRaster object%2 on table %3 column %4 where %5" )
+    labelStatus->setText( QStringLiteral( "%1 GeoRaster object%2 on table %3 column %4 where %5" )
                           .arg( count, plural, fields[3], fields[4], fields[5] ) );
     checkBox->setEnabled( true );
   }
@@ -314,7 +314,7 @@ void QgsOracleSelectGeoraster::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
   QSettings settings;
-  QString toSelect = settings.value( "/Oracle/connections/selected" ).toString();
+  QString toSelect = settings.value( QStringLiteral( "/Oracle/connections/selected" ) ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   // If we couldn't find the stored item, but there are some,

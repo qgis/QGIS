@@ -66,7 +66,7 @@ class QgsGeometryOverlapCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Overlap" ); }
-    QString errorName() const override { return "QgsGeometryOverlapCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryOverlapCheck" ); }
   private:
     enum ResolutionMethod { Subtract, NoChange };
     double mThreshold;
