@@ -272,6 +272,8 @@ QgsWcsProvider::QgsWcsProvider( const QString& uri )
   // Get types
   // TODO: we are using the same data types like GDAL (not wider like GDAL provider)
   // with expectation to replace 'no data' values by NaN
+  mSrcGdalDataType.reserve( mBandCount );
+  mGdalDataType.reserve( mBandCount );
   for ( int i = 1; i <= mBandCount; i++ )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );

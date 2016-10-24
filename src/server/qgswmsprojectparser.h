@@ -155,7 +155,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
                     QgsLayerTreeGroup *layerTreeGroup,
                     const QMap<QString, QgsMapLayer *> &layerMap,
                     const QStringList &nonIdentifiableLayers,
-                    QString version, //1.1.1 or 1.3.0
+                    const QString &version, //1.1.1 or 1.3.0
                     bool fullProjectSettings,
                     QHash<QString, QString> &idNameMap,
                     QStringList &layerIDList ) const;

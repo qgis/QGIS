@@ -2589,6 +2589,7 @@ static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionCo
   QgsExpressionSorter sorter( orderBy );
 
   QList<QgsFeature> partFeatures;
+  partFeatures.reserve( collection->partCount() );
   for ( int i = 0; i < collection->partCount(); ++i )
   {
     f.setGeometry( QgsGeometry( collection->geometryN( i )->clone() ) );

@@ -75,7 +75,7 @@ void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString& title )
   mExpressionDialogTitle = title;
 }
 
-void QgsFieldExpressionWidget::setFilters( const QgsFieldProxyModel::Filters& filters )
+void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
 {
   mFieldProxyModel->setFilters( filters );
 }

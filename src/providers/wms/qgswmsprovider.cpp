@@ -590,7 +590,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
                .arg( otherResTiles.count() ) );
 }
 
-uint qHash( const QgsWmsProvider::TilePosition& tp )
+uint qHash( QgsWmsProvider::TilePosition tp )
 {
   return ( uint ) tp.col + (( uint ) tp.row << 16 );
 }

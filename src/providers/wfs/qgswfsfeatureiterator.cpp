@@ -889,7 +889,7 @@ void QgsWFSFeatureIterator::setInterruptionChecker( QgsInterruptionChecker* inte
 
 // This method will serialize the receive feature list, first into memory, and
 // if it goes above a given threshold, on disk
-void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGmlIdPair> list )
+void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair>& list )
 {
   QgsDebugMsg( QString( "QgsWFSFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ) );
   QMutexLocker locker( &mMutex );

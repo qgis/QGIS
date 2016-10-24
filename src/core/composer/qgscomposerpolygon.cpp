@@ -29,7 +29,7 @@ QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
   createDefaultPolygonStyleSymbol();
 }
 
-QgsComposerPolygon::QgsComposerPolygon( QPolygonF polygon, QgsComposition* c )
+QgsComposerPolygon::QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c )
     : QgsComposerNodesItem( "ComposerPolygon", polygon, c )
     , mPolygonStyleSymbol( nullptr )
 {
@@ -41,7 +41,7 @@ QgsComposerPolygon::~QgsComposerPolygon()
 }
 
 bool QgsComposerPolygon::_addNode( const int indexPoint,
-                                   const QPointF &newPoint,
+                                   QPointF newPoint,
                                    const double radius )
 {
   Q_UNUSED( radius );

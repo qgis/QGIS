@@ -163,6 +163,10 @@ struct VTable
   QgsFields fields() const { return mFields; }
 
 private:
+
+  VTable( const VTable& other );
+  VTable& operator=( const VTable& other );
+
   // connection
   sqlite3* mSql;
 

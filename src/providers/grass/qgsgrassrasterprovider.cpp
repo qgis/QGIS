@@ -576,7 +576,7 @@ bool QgsGrassRasterProvider::isValid() const
   return mValid;
 }
 
-void QgsGrassRasterProvider::setLastError( QString error )
+void QgsGrassRasterProvider::setLastError( const QString& error )
 {
   mLastErrorTitle = tr( "GRASS raster provider" );
   mLastError = error;
@@ -588,7 +588,7 @@ void QgsGrassRasterProvider::clearLastError()
   mLastError.clear();
 }
 
-void QgsGrassRasterProvider::appendIfError( QString error )
+void QgsGrassRasterProvider::appendIfError( const QString& error )
 {
   if ( !error.isEmpty() )
   {

@@ -98,7 +98,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QgsDataDefinedButton( QWidget* parent = nullptr,
                           const QgsVectorLayer* vl = nullptr,
                           const QgsDataDefined* datadefined = nullptr,
-                          const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+                          QgsDataDefinedButton::DataTypes datatypes = AnyType,
                           const QString& description = QString() );
     ~QgsDataDefinedButton();
 
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      */
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = nullptr,
-               const QgsDataDefinedButton::DataTypes& datatypes = AnyType,
+               QgsDataDefinedButton::DataTypes datatypes = AnyType,
                const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const { return mProperty; }

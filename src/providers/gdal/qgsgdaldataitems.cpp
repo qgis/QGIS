@@ -54,7 +54,7 @@ QgsGdalLayerItem::~QgsGdalLayerItem()
 }
 
 
-bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
+bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
   if ( !hDS )

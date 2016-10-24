@@ -107,7 +107,7 @@ class QgsAttributeTableConfig
     /**
      * Set the style of the action widget
      */
-    void setActionWidgetStyle( const ActionWidgetStyle& actionWidgetStyle );
+    void setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle );
 
     /**
      * Serialize to XML on layer save
@@ -165,5 +165,5 @@ class QgsAttributeTableConfig
      * Set the sort order
      * @note Added in 2.16
      */
-    void setSortOrder( const Qt::SortOrder& sortOrder );
+    void setSortOrder( Qt::SortOrder sortOrder );
 };

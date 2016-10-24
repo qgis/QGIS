@@ -480,14 +480,15 @@ QgsCategorizedSymbolRenderer* QgsCategorizedSymbolRenderer::clone() const
   return r;
 }
 
-void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  props[ "attribute" ] = mAttrName;
+  QgsStringMap newProps = props;
+  newProps[ "attribute" ] = mAttrName;
 
   // create a Rule for each range
   for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
   {
-    QgsStringMap catProps( props );
+    QgsStringMap catProps( newProps );
     it->toSld( doc, element, catProps );
   }
 }

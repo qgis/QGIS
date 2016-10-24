@@ -205,7 +205,7 @@ class QgsWFSFeatureIterator : public QObject,
 
   private slots:
     void featureReceived( int featureCount );
-    void featureReceivedSynchronous( QVector<QgsWFSFeatureGmlIdPair> list );
+    void featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list );
     void endOfDownload( bool success );
     void checkInterruption();
 

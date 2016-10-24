@@ -56,7 +56,7 @@ namespace QgsVirtualLayerQueryParser
       {}
 
       QString name() const { return mName; }
-      void setName( QString name ) { mName = name; }
+      void setName( const QString& name ) { mName = name; }
 
       bool isGeometry() const { return mType == QVariant::UserType; }
       void setGeometry( QgsWkbTypes::Type wkbType ) { mType = QVariant::UserType; mWkbType = wkbType; }

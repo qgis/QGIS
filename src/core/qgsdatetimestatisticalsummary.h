@@ -60,7 +60,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /** Constructor for QgsDateTimeStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsDateTimeStatisticalSummary( const QgsDateTimeStatisticalSummary::Statistics& stats = All );
+    QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg count).
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const Statistics& stats ) { mStatistics = stats; }
+    void setStatistics( Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */

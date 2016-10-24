@@ -241,6 +241,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
     }
 
     QList<QStandardItem *> row;
+    row.reserve( dbtmColumns );
 
     for ( int j = 0; j < dbtmColumns; j++ )
     {

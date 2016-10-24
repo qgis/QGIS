@@ -406,6 +406,7 @@ void QgsRasterTransparencyWidget::apply()
     {
       QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
       QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
+      myTransparentThreeValuePixelList.reserve( tableTransparency->rowCount() );
       for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
       {
         myTransparentPixel.red = transparencyCellValue( myListRunner, 0 );
@@ -420,6 +421,7 @@ void QgsRasterTransparencyWidget::apply()
     {
       QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
       QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+      myTransparentSingleValuePixelList.reserve( tableTransparency->rowCount() );
       for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
       {
         myTransparentPixel.min = transparencyCellValue( myListRunner, 0 );

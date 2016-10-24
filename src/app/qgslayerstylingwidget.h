@@ -85,11 +85,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       History,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, QList<QgsMapLayerConfigWidgetFactory *> pages, QWidget *parent = 0 );
+    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = 0 );
     ~QgsLayerStylingWidget();
     QgsMapLayer* layer() { return mCurrentLayer; }
 
-    void setPageFactories( QList<QgsMapLayerConfigWidgetFactory *> factories );
+    void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );
 
     /** Sets whether updates of the styling widget are blocked. This can be called to prevent
      * the widget being refreshed multiple times when a batch of layer style changes are

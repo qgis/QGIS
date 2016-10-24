@@ -72,7 +72,7 @@ class QgsRequestHandler
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
 
     /** Allow plugins to return a QgsMapServiceException*/
-    virtual void setServiceException( QgsMapServiceException ex ) = 0;
+    virtual void setServiceException( const QgsMapServiceException& ex ) = 0;
 
     //! @note not available in Python bindings
     virtual void setXmlResponse( const QDomDocument& doc ) = 0;
@@ -155,7 +155,7 @@ class QgsRequestHandler
     /** Allow core services to call plugin hooks through sendResponse()
      * @note not available in Python bindings
      */
-    virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
+    virtual void setPluginFilters( const QgsServerFiltersMap& pluginFilters ) = 0;
 #endif
 
     //! @note not available in Python bindings

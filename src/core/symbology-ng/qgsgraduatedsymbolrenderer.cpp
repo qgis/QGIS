@@ -510,16 +510,17 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::clone() const
   return r;
 }
 
-void QgsGraduatedSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsGraduatedSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  props[ "attribute" ] = mAttrName;
-  props[ "method" ] = graduatedMethodStr( mGraduatedMethod );
+  QgsStringMap newProps = props;
+  newProps[ "attribute" ] = mAttrName;
+  newProps[ "method" ] = graduatedMethodStr( mGraduatedMethod );
 
   // create a Rule for each range
   bool first = true;
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
   {
-    QgsStringMap catProps( props );
+    QgsStringMap catProps( newProps );
     it->toSld( doc, element, catProps, first );
     first = false;
   }

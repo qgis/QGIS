@@ -39,7 +39,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) override;
     virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) override;
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) override;
-    virtual void setServiceException( QgsMapServiceException ex ) override;
+    virtual void setServiceException( const QgsMapServiceException &ex ) override;
     virtual void setXmlResponse( const QDomDocument& doc ) override;
     virtual void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) override;
     virtual void setGetPrintResponse( QByteArray* ba ) override;
@@ -62,7 +62,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual QString parameter( const QString &key ) const override;
     virtual int removeParameter( const QString &key ) override;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) override;
+    virtual void setPluginFilters( const QgsServerFiltersMap &pluginFilters ) override;
 #endif
     /** Return the response if capture output is activated */
     QPair<QByteArray, QByteArray> getResponse() override;

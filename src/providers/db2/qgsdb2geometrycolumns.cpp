@@ -21,7 +21,7 @@
 #include <qgslogger.h>
 
 
-QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase db )
+QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase& db )
     : mDatabase( db )
     , mEnvironment( ENV_LUW )
 {

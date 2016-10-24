@@ -128,7 +128,7 @@ bool QgsRelationReferenceSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( QVariant value )
+void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant& value )
 {
   if ( !value.isValid() )
   {

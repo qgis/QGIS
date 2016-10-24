@@ -29,7 +29,7 @@ QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
   createDefaultPolylineStyleSymbol();
 }
 
-QgsComposerPolyline::QgsComposerPolyline( QPolygonF polyline, QgsComposition* c )
+QgsComposerPolyline::QgsComposerPolyline( const QPolygonF& polyline, QgsComposition* c )
     : QgsComposerNodesItem( "ComposerPolyline", polyline, c )
     , mPolylineStyleSymbol( nullptr )
 {
@@ -41,7 +41,7 @@ QgsComposerPolyline::~QgsComposerPolyline()
 }
 
 bool QgsComposerPolyline::_addNode( const int indexPoint,
-                                    const QPointF &newPoint,
+                                    QPointF newPoint,
                                     const double radius )
 {
   const double distStart = computeDistance( newPoint, mPolygon[0] );

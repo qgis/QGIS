@@ -228,7 +228,7 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with feature ID filter
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with feature ID filter
-    explicit QgsFeatureRequest( QgsFeatureIds fids );
+    explicit QgsFeatureRequest( const QgsFeatureIds &fids );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsFeatureRequest
     long limit() const { return mLimit; }
 
     //! Set flags that affect how features will be fetched
-    QgsFeatureRequest& setFlags( const QgsFeatureRequest::Flags& flags );
+    QgsFeatureRequest& setFlags( QgsFeatureRequest::Flags flags );
     const Flags& flags() const { return mFlags; }
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.

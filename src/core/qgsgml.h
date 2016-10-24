@@ -131,6 +131,9 @@ class CORE_EXPORT QgsGmlStreamingParser
 
   private:
 
+    QgsGmlStreamingParser( const QgsGmlStreamingParser& other );
+    QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other );
+
     enum ParseMode
     {
       none,

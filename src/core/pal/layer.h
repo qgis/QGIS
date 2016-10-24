@@ -113,7 +113,7 @@ namespace pal
        * @param flags arrangement flags
        * @see arrangementFlags
        */
-      void setArrangementFlags( const LineArrangementFlags& flags ) { mArrangementFlags = flags; }
+      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
       /**
        * \brief Sets whether the layer is currently active.

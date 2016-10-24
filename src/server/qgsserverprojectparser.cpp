@@ -47,6 +47,7 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
     QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
     QDomElement currentElement;
     int nNodes = layerNodeList.size();
+    mProjectLayerElements.reserve( nNodes );
     for ( int i = 0; i < nNodes; ++i )
     {
       currentElement = layerNodeList.at( i ).toElement();
@@ -1470,6 +1471,7 @@ QList< QPair< QString, QgsLayerCoordinateTransform > > QgsServerProjectParser::l
   }
 
   QDomNodeList layerTransformNodeList = coordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+  layerTransformList.reserve( layerTransformNodeList.size() );
   for ( int i = 0; i < layerTransformNodeList.size(); ++i )
   {
     QPair< QString, QgsLayerCoordinateTransform > layerEntry;

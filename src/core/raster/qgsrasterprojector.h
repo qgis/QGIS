@@ -134,6 +134,9 @@ class ProjectorData
     int srcCols() const { return mSrcCols; }
 
   private:
+    ProjectorData( const ProjectorData& other );
+    ProjectorData& operator=( const ProjectorData& other );
+
     /** \brief get destination point for _current_ destination position */
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
 

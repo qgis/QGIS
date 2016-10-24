@@ -71,7 +71,7 @@ QString QgsSQLStatement::quotedIdentifier( QString name )
   return QString( "\"%1\"" ).arg( name.replace( '\"', "\"\"" ) );
 }
 
-QString QgsSQLStatement::quotedIdentifierIfNeeded( QString name )
+QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString& name )
 {
   // This might not be complete, but it must be at least what we recognize
   static const char* const reservedKeyWords[] =

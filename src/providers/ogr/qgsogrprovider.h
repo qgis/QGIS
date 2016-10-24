@@ -250,7 +250,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     int layerIndex() const { return mLayerIndex; }
 
-    QByteArray quotedIdentifier( QByteArray field ) const;
+    QByteArray quotedIdentifier( const QByteArray &field ) const;
 
     /**
      * A forced reload invalidates the underlying connection.

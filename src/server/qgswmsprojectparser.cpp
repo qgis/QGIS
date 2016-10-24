@@ -996,6 +996,7 @@ void QgsWmsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument
   if ( !layerList.isEmpty() )
   {
     QStringList reversedList;
+    reversedList.reserve( layerList.size() );
     for ( int i = layerList.size() - 1; i >= 0; --i )
       reversedList << layerList[ i ];
 
@@ -1102,7 +1103,7 @@ void QgsWmsProjectParser::addLayers( QDomDocument &doc,
                                      QgsLayerTreeGroup *layerTreeGroup,
                                      const QMap<QString, QgsMapLayer *> &layerMap,
                                      const QStringList &nonIdentifiableLayers,
-                                     QString version, //1.1.1 or 1.3.0
+                                     const QString& version, //1.1.1 or 1.3.0
                                      bool fullProjectSettings,
                                      QHash<QString, QString> &idNameMap,
                                      QStringList &layerIDList ) const

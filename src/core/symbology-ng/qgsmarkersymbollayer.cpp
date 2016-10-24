@@ -1348,6 +1348,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScal
     polygon = t.map( polygon );
 
     QgsPointSequence p;
+    p.reserve( polygon.size() );
     for ( int i = 0; i < polygon.size(); i++ )
       p << QgsPointV2( polygon[i] );
     p << p[0];

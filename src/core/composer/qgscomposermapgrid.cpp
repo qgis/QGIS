@@ -1076,7 +1076,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
+void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString& annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
 {
   if ( !mComposerMap )
   {
@@ -2188,7 +2188,7 @@ void QgsComposerMapGrid::setAnnotationDirection( const QgsComposerMapGrid::Annot
   }
 }
 
-void QgsComposerMapGrid::setFrameSideFlags( const FrameSideFlags& flags )
+void QgsComposerMapGrid::setFrameSideFlags( FrameSideFlags flags )
 {
   mGridFrameSides = flags;
 }

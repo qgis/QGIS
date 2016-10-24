@@ -48,7 +48,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
      */
     QgsPointDistanceRenderer( const QString& rendererName, const QString& labelAttributeName = QString() );
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const;
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual QSet<QString> usedAttributes() const;
     virtual Capabilities capabilities();

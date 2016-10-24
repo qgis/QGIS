@@ -653,9 +653,10 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geometr
   QDomNodeList currentPosList;
 
   QDomNodeList polygonMemberList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "polygonMember" );
+  QgsPolygon currentPolygonList;
   for ( int i = 0; i < polygonMemberList.size(); ++i )
   {
-    QgsPolygon currentPolygonList;
+    currentPolygonList.resize( 0 ); // preserve capacity - don't use clear
     currentPolygonMemberElement = polygonMemberList.at( i ).toElement();
     polygonList = currentPolygonMemberElement.elementsByTagNameNS( GML_NAMESPACE, "Polygon" );
     if ( polygonList.size() < 1 )

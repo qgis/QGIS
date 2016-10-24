@@ -53,7 +53,7 @@ class QgsWFSSharedData : public QObject
 
     /** Used by a QgsWFSFeatureIterator to start a downloader and get the
         generation counter. */
-    int registerToCache( QgsWFSFeatureIterator* iterator, QgsRectangle rect = QgsRectangle() );
+    int registerToCache( QgsWFSFeatureIterator* iterator, const QgsRectangle &rect = QgsRectangle() );
 
     /** Used by the rewind() method of an iterator so as to get the up-to-date
         generation counter. */
@@ -64,7 +64,7 @@ class QgsWFSSharedData : public QObject
     void serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featureList );
 
     /** Called by QgsWFSFeatureDownloader::run() at the end of the download process. */
-    void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, QString errorMsg );
+    void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, const QString &errorMsg );
 
     /** Used by QgsWFSProvider::reloadData(). The effect is to invalid
         all the caching state, so that a new request results in fresh download */

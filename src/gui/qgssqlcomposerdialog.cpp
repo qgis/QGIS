@@ -456,7 +456,7 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
     listApi << f.name;
     QString entryText( f.name );
     entryText += "(";
-    if ( f.argumentList.size() )
+    if ( !f.argumentList.isEmpty() )
     {
       for ( int i = 0;i < f.argumentList.size();i++ )
       {
@@ -766,7 +766,7 @@ void QgsSQLComposerDialog::addApis( const QStringList& list )
   mQueryEdit->lexer()->setAPIs( apis );
 }
 
-void QgsSQLComposerDialog::setSupportMultipleTables( bool on, QString mainTypename )
+void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString& mainTypename )
 {
   mJoinsLabels->setVisible( on );
   mTableJoins->setVisible( on );

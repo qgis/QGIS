@@ -34,7 +34,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( QString uri = QString() );
+    explicit QgsDb2Provider( const QString &uri = QString() );
 
     virtual ~QgsDb2Provider();
 
@@ -136,7 +136,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     static bool convertField( QgsField &field );
 
     /** Convert a QgsField to work with DB2 */
-    static QString qgsFieldToDb2Field( QgsField field );
+    static QString qgsFieldToDb2Field( const QgsField &field );
 
   protected:
     /** Loads fields from input file to member attributeFields */

@@ -30,7 +30,7 @@ static const QString PROVIDER_DESCRIPTION = "DB2 Spatial Extender provider";
 
 int QgsDb2Provider::sConnectionId = 0;
 
-QgsDb2Provider::QgsDb2Provider( QString uri )
+QgsDb2Provider::QgsDb2Provider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mNumberFeatures( 0 )
     , mEnvironment( ENV_LUW )
@@ -1542,7 +1542,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   return QgsVectorLayerImport::NoError;
 }
 
-QString QgsDb2Provider::qgsFieldToDb2Field( QgsField field )
+QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField& field )
 {
   QString result = "";
   switch ( field.type() )

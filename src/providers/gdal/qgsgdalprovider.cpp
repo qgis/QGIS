@@ -1916,7 +1916,7 @@ QStringList QgsGdalProvider::subLayers() const
   return mSubLayers;
 }
 
-void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )
+void QgsGdalProvider::emitProgress( int theType, double theProgress, const QString& theMessage )
 {
   emit progress( theType, theProgress, theMessage );
 }

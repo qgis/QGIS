@@ -103,7 +103,7 @@ typedef SInt32 SRefCon;
 
 /** Print usage text
  */
-void usage( QString appName )
+void usage( const QString& appName )
 {
   QStringList msg;
 

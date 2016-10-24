@@ -2233,7 +2233,7 @@ QMainWindow* QgsComposerView::composerWindow()
   return nullptr;
 }
 
-void QgsComposerView::addPolygonNode( const QPointF & scenePoint )
+void QgsComposerView::addPolygonNode( QPointF scenePoint )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
   polygon.append( QPointF( scenePoint.x(), scenePoint.y() ) );
@@ -2244,7 +2244,7 @@ void QgsComposerView::addPolygonNode( const QPointF & scenePoint )
   mPolygonItem.data()->setPolygon( polygon );
 }
 
-void QgsComposerView::movePolygonNode( const QPointF & scenePoint )
+void QgsComposerView::movePolygonNode( QPointF scenePoint )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
 

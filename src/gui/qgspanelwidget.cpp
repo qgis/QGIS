@@ -28,7 +28,7 @@ QgsPanelWidget::QgsPanelWidget( QWidget *parent )
 {
 }
 
-void QgsPanelWidget::connectChildPanels( QList<QgsPanelWidget *> panels )
+void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *>& panels )
 {
   Q_FOREACH ( QgsPanelWidget* widget, panels )
   {

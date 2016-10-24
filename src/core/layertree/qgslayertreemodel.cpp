@@ -1065,7 +1065,7 @@ bool QgsLayerTreeModel::removeRows( int row, int count, const QModelIndex& paren
   return false;
 }
 
-void QgsLayerTreeModel::setFlags( const QgsLayerTreeModel::Flags& f )
+void QgsLayerTreeModel::setFlags( QgsLayerTreeModel::Flags f )
 {
   mFlags = f;
 }

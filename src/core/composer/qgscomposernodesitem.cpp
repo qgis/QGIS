@@ -23,7 +23,7 @@
 #include <limits>
 #include <math.h>
 
-QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
+QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
     QgsComposition* c )
     : QgsComposerItem( c )
     , mTagName( tagName )
@@ -32,8 +32,8 @@ QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
 {
 }
 
-QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
-    QPolygonF polygon,
+QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
+    const QPolygonF& polygon,
     QgsComposition* c )
     : QgsComposerItem( c )
     , mTagName( tagName )
@@ -51,13 +51,13 @@ QgsComposerNodesItem::~QgsComposerNodesItem()
 {
 }
 
-double QgsComposerNodesItem::computeDistance( const QPointF &pt1,
-    const QPointF &pt2 ) const
+double QgsComposerNodesItem::computeDistance( QPointF pt1,
+    QPointF pt2 ) const
 {
   return sqrt( pow( pt1.x() - pt2.x(), 2 ) + pow( pt1.y() - pt2.y(), 2 ) );
 }
 
-bool QgsComposerNodesItem::addNode( const QPointF &pt,
+bool QgsComposerNodesItem::addNode( QPointF pt,
                                     const bool checkArea,
                                     const double radius )
 {
@@ -260,7 +260,7 @@ bool QgsComposerNodesItem::removeNode( const int index )
   return rc;
 }
 
-bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
+bool QgsComposerNodesItem::moveNode( const int index, QPointF pt )
 {
   bool rc( false );
 

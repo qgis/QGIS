@@ -305,7 +305,7 @@ void QgsMapSettings::setMapUnits( QgsUnitTypes::DistanceUnit u )
   updateDerived();
 }
 
-void QgsMapSettings::setFlags( const QgsMapSettings::Flags& flags )
+void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
 {
   mFlags = flags;
 }

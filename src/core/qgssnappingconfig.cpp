@@ -266,7 +266,7 @@ QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSet
   }
 }
 
-void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer* vl, IndividualLayerSettings individualLayerSettings )
+void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer* vl, const IndividualLayerSettings& individualLayerSettings )
 {
   if ( !vl || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
   {

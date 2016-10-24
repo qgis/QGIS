@@ -195,7 +195,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
         //! clone this rule, return new instance
         QgsRuleBasedRenderer::Rule* clone() const /Factory/;
 
-        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
+        void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props );
         static QgsRuleBasedRenderer::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
         QDomElement save( QDomDocument& doc, QgsSymbolMap& symbolMap );

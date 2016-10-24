@@ -83,6 +83,11 @@ class QgsCPLErrorHandler
     {
       CPLPopErrorHandler();
     }
+
+  private:
+    QgsCPLErrorHandler( const QgsCPLErrorHandler& other );
+    QgsCPLErrorHandler& operator=( const QgsCPLErrorHandler& other );
+
 };
 
 
@@ -1974,7 +1979,7 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 } // createFileFilter_
 
 
-QString createFilters( QString type )
+QString createFilters( const QString& type )
 {
   /** Database drivers available*/
   static QString myDatabaseDrivers;
@@ -2904,7 +2909,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   return value;
 }
 
-QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field ) const
+QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray& field ) const
 {
   return QgsOgrProviderUtils::quotedIdentifier( field, ogrDriverName );
 }

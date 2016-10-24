@@ -242,6 +242,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
 
     QList<QStandardItem *> row;
 
+    row.reserve( dbtmColumns );
     for ( int j = 0; j < dbtmColumns; j++ )
     {
       row << itemFromIndex( currentChildIndex.sibling( i, j ) );

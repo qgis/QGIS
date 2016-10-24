@@ -90,6 +90,12 @@ struct EFFECTIVE_AREAS
   QgsPointSequence inpts;
   areanode *initial_arealist;
   double *res_arealist;
+
+private:
+
+  EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other );
+  EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other );
+
 };
 
 void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld );

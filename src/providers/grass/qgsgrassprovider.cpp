@@ -109,7 +109,7 @@ static QString GRASS_KEY = "grass";
 int QgsGrassProvider::LAST_TYPE = -9999;
 int QgsGrassProvider::mEditedCount = 0;
 
-QgsGrassProvider::QgsGrassProvider( QString uri )
+QgsGrassProvider::QgsGrassProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mLayerField( -1 )
     , mLayerType( POINT )
@@ -516,7 +516,7 @@ int QgsGrassProvider::grassLayer()
   return mLayerField;
 }
 
-int QgsGrassProvider::grassLayer( QString name )
+int QgsGrassProvider::grassLayer( const QString& name )
 {
   // Get field number
   int pos = name.indexOf( '_' );
@@ -529,7 +529,7 @@ int QgsGrassProvider::grassLayer( QString name )
   return name.leftRef( pos ).toInt();
 }
 
-int QgsGrassProvider::grassLayerType( QString name )
+int QgsGrassProvider::grassLayerType( const QString& name )
 {
   int pos = name.indexOf( '_' );
 

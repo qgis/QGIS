@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLogger
 
 /** \ingroup core
  */
-class QgsScopeLogger
+class QgsScopeLogger // clazy:exclude=rule-of-three
 {
   public:
     QgsScopeLogger( const char* file, const char* func, int line )

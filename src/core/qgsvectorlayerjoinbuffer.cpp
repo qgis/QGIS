@@ -350,6 +350,7 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
       {
         QStringList* fieldNames = new QStringList;
         QDomNodeList fieldNodes = infoElem.elementsByTagName( "field" );
+        fieldNames->reserve( fieldNodes.count() );
         for ( int i = 0; i < fieldNodes.count(); ++i )
           *fieldNames << fieldNodes.at( i ).toElement().attribute( "name" );
         info.setJoinFieldNamesSubset( fieldNames );

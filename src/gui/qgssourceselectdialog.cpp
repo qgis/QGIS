@@ -459,7 +459,7 @@ void QgsSourceSelectDialog::buildQueryButtonClicked()
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }
 
-void QgsSourceSelectDialog::filterChanged( QString text )
+void QgsSourceSelectDialog::filterChanged( const QString& text )
 {
   QgsDebugMsg( "FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );

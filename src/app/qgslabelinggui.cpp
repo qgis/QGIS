@@ -503,7 +503,7 @@ void QgsLabelingGui::setDockMode( bool enabled )
   mDockMode = enabled;
 }
 
-void QgsLabelingGui::connectValueChanged( QList<QWidget *> widgets, const char *slot )
+void QgsLabelingGui::connectValueChanged( const QList<QWidget *>& widgets, const char *slot )
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {

@@ -73,11 +73,14 @@ class QgisPlugin
     };
 
 
+    /**
+     * Constructor for QgisPlugin
+     */
     QgisPlugin( QString const & name = "",
                 QString const & description = "",
                 QString const & category = "",
                 QString const & version = "",
-                PLUGINTYPE const & type = MAPLAYER )
+                PLUGINTYPE type = MAPLAYER )
         : mName( name )
         , mDescription( description )
         , mCategory( category )

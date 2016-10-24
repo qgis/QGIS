@@ -40,7 +40,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( QgsFeatureIds fids )
+QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds& fids )
     : mFilter( FilterFids )
     , mFilterFid( -1 )
     , mFilterFids( fids )
@@ -182,7 +182,7 @@ QgsFeatureRequest& QgsFeatureRequest::setLimit( long limit )
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFlags( const QgsFeatureRequest::Flags& flags )
+QgsFeatureRequest& QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
 {
   mFlags = flags;
   return *this;

@@ -39,7 +39,7 @@ QgsInterval::QgsInterval( double seconds )
     , mValid( true )
 { }
 
-bool QgsInterval::operator==( const QgsInterval& other ) const
+bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )
     return true;
@@ -125,18 +125,18 @@ QgsInterval operator-( const QDateTime& dt1, const QDateTime& dt2 )
   return QgsInterval( mSeconds / 1000.0 );
 }
 
-QDateTime operator+( const QDateTime& start, const QgsInterval& interval )
+QDateTime operator+( const QDateTime& start, QgsInterval interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }
 
-QgsInterval operator-( const QDate& date1, const QDate& date2 )
+QgsInterval operator-( QDate date1, QDate date2 )
 {
   qint64 seconds = static_cast< qint64 >( date2.daysTo( date1 ) ) * 24 * 60 * 60;
   return QgsInterval( seconds );
 }
 
-QgsInterval operator-( const QTime& time1, const QTime& time2 )
+QgsInterval operator-( QTime time1, QTime time2 )
 {
   qint64 mSeconds = time2.msecsTo( time1 );
   return QgsInterval( mSeconds / 1000.0 );

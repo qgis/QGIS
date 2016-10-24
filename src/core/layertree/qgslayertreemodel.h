@@ -91,7 +91,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Set OR-ed combination of model flags
-    void setFlags( const QgsLayerTreeModel::Flags& f );
+    void setFlags( QgsLayerTreeModel::Flags f );
     //! Enable or disable a model flag
     void setFlag( Flag f, bool on = true );
     //! Return OR-ed combination of model flags

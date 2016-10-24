@@ -207,7 +207,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 /// @cond PRIVATE
 
-class GEOSException
+class GEOSException // clazy:exclude=rule-of-three
 {
   public:
     explicit GEOSException( const QString& theMsg )

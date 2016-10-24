@@ -141,6 +141,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   else if ( mLineEdit )
   {
     QStringList values;
+    values.reserve( mCache.size() );
     Q_FOREACH ( const ValueRelationItem& i,  mCache )
     {
       values << i.second;

@@ -306,6 +306,7 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject* parent )
   QStringList svgPaths = QgsApplication::svgPaths();
   QStandardItem *parentItem = invisibleRootItem();
   QStringList parentPaths;
+  parentPaths.reserve( svgPaths.size() );
 
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
@@ -538,7 +539,7 @@ void QgsSvgSelectorWidget::populateList()
 //-- QgsSvgSelectorDialog
 
 QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
-    const QDialogButtonBox::StandardButtons& buttons,
+    QDialogButtonBox::StandardButtons buttons,
     Qt::Orientation orientation )
     : QDialog( parent, fl )
 {

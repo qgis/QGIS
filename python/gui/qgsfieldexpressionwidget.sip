@@ -18,7 +18,7 @@ class QgsFieldExpressionWidget : QWidget
     const QString expressionDialogTitle();
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( const QgsFieldProxyModel::Filters& filters );
+    void setFilters( QgsFieldProxyModel::Filters filters );
 
     void setLeftHandButtonStyle( bool isLeft );
 

@@ -592,13 +592,13 @@ QString QgsGrass::getDefaultMapsetPath()
   return getDefaultLocationPath() + "/" + defaultMapset;
 }
 
-void QgsGrass::setLocation( QString gisdbase, QString location )
+void QgsGrass::setLocation( const QString& gisdbase, const QString& location )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase, location ) );
   setMapset( gisdbase, location, "PERMANENT" );
 }
 
-void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
+void QgsGrass::setMapset( const QString& gisdbase, const QString& location, const QString& mapset )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 mapset = %3" ).arg( gisdbase, location, mapset ) );
   if ( !init() )
@@ -647,12 +647,12 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 #endif
 }
 
-void QgsGrass::setMapset( QgsGrassObject grassObject )
+void QgsGrass::setMapset( const QgsGrassObject& grassObject )
 {
   setMapset( grassObject.gisdbase(), grassObject.location(), grassObject.mapset() );
 }
 
-bool QgsGrass::isMapsetInSearchPath( QString mapset )
+bool QgsGrass::isMapsetInSearchPath( const QString& mapset )
 {
   return mMapsetSearchPath.contains( mapset );
 }
@@ -1787,7 +1787,7 @@ void QgsGrass::initRegion( struct Cell_head *window )
   window->cols = 1;
 }
 
-void QgsGrass::setRegion( struct Cell_head *window, QgsRectangle rect )
+void QgsGrass::setRegion( struct Cell_head *window, const QgsRectangle& rect )
 {
   window->west = rect.xMinimum();
   window->south = rect.yMinimum();
@@ -1795,7 +1795,7 @@ void QgsGrass::setRegion( struct Cell_head *window, QgsRectangle rect )
   window->north = rect.yMaximum();
 }
 
-QString QgsGrass::setRegion( struct Cell_head *window, QgsRectangle rect, int rows, int cols )
+QString QgsGrass::setRegion( struct Cell_head *window, const QgsRectangle& rect, int rows, int cols )
 {
   initRegion( window );
   window->west = rect.xMinimum();
@@ -1834,8 +1834,8 @@ QgsRectangle QgsGrass::extent( struct Cell_head *window )
   return QgsRectangle( window->west, window->south, window->east, window->north );
 }
 
-bool QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,
-                          QString location, QString mapset, QString map,
+bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString& gisdbase,
+                          const QString& location, const QString& mapset, const QString& map,
                           struct Cell_head *window )
 {
   QgsDebugMsg( QString( "map = %1" ).arg( map ) );
@@ -2299,8 +2299,8 @@ QHash<QString, QString> QgsGrass::info( const QString& gisdbase, const QString& 
   return inf;
 }
 
-QList<QgsGrass::Color> QgsGrass::colors( QString gisdbase, QString location, QString mapset,
-    QString map, QString& error )
+QList<QgsGrass::Color> QgsGrass::colors( const QString& gisdbase, const QString& location, const QString& mapset,
+    const QString& map, QString& error )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase, location ) );
   QList<QgsGrass::Color> ct;
@@ -2330,7 +2330,7 @@ QList<QgsGrass::Color> QgsGrass::colors( QString gisdbase, QString location, QSt
   return ct;
 }
 
-QMap<QString, QString> QgsGrass::query( QString gisdbase, QString location, QString mapset, QString map, QgsGrassObject::Type type, double x, double y )
+QMap<QString, QString> QgsGrass::query( const QString& gisdbase, const QString& location, const QString& mapset, const QString& map, QgsGrassObject::Type type, double x, double y )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase, location ) );
 
@@ -2456,7 +2456,7 @@ void QgsGrass::createVectorMap( const QgsGrassObject & object, QString &error )
   QgsGrass::unlock();
 }
 
-void QgsGrass::createTable( dbDriver *driver, const QString tableName, const QgsFields &fields )
+void QgsGrass::createTable( dbDriver *driver, const QString& tableName, const QgsFields &fields )
 {
   if ( !driver ) // should not happen
   {
@@ -2514,7 +2514,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString tableName, const Qgs
   }
 }
 
-void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
+void QgsGrass::insertRow( dbDriver *driver, const QString& tableName,
                           const QgsAttributes& attributes )
 {
   if ( !driver ) // should not happen
@@ -2723,7 +2723,7 @@ QString QgsGrass::gisrcFilePath()
   return mGisrc;
 }
 
-void QgsGrass::putEnv( QString name, QString value )
+void QgsGrass::putEnv( const QString& name, const QString& value )
 {
   QString env = name + "=" + value;
   /* _Correct_ putenv() implementation is not making copy! */

@@ -90,7 +90,7 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometry& geom, con
   return minDistPoint;
 }
 
-double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, const QgsVertexId &id )
+double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id )
 {
   double currentDist = 0;
   QgsVertexId vertexId;

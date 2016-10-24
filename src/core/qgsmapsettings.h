@@ -171,7 +171,7 @@ class CORE_EXPORT QgsMapSettings
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Set combination of flags that will be used for rendering
-    void setFlags( const QgsMapSettings::Flags& flags );
+    void setFlags( QgsMapSettings::Flags flags );
     //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
     //! Return combination of flags used for rendering

@@ -151,6 +151,7 @@ QList< int > QgsDatumTransformDialog::selectedDatumTransform()
   QTreeWidgetItem * item = mDatumTransformTreeWidget->currentItem();
   if ( item )
   {
+    list.reserve( 2 );
     for ( int i = 0; i < 2; ++i )
     {
       int transformNr = item->data( i, Qt::UserRole ).toInt();

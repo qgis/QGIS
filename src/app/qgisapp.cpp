@@ -3724,7 +3724,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
 } // QgisApp::addVectorLayer()
 
 // present a dialog to choose zipitem layers
-bool QgisApp::askUserForZipItemLayers( QString path )
+bool QgisApp::askUserForZipItemLayers( const QString& path )
 {
   bool ok = false;
   QVector<QgsDataItem*> childItems;
@@ -3860,6 +3860,8 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   QgsSublayersDialog::LayerDefinitionList layers;
   QStringList names;
+  names.reserve( sublayers.size() );
+  layers.reserve( sublayers.size() );
   for ( int i = 0; i < sublayers.size(); i++ )
   {
     // simplify raster sublayer name - should add a function in gdal provider for this?
@@ -6236,7 +6238,7 @@ void QgisApp::saveAsLayerDefinition()
 class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
 {
   public:
-    QgisAppFieldValueConverter( QgsVectorLayer* vl, QgsAttributeList attributesAsDisplayedValues );
+    QgisAppFieldValueConverter( QgsVectorLayer* vl, const QgsAttributeList &attributesAsDisplayedValues );
 
     virtual QgsField fieldDefinition( const QgsField& field ) override;
 
@@ -6247,7 +6249,7 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
     QgsAttributeList mAttributesAsDisplayedValues;
 };
 
-QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer* vl, QgsAttributeList attributesAsDisplayedValues )
+QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer* vl, const QgsAttributeList& attributesAsDisplayedValues )
     : mLayer( vl )
     , mAttributesAsDisplayedValues( attributesAsDisplayedValues )
 {

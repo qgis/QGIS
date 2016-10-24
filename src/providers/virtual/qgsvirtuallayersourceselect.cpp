@@ -271,7 +271,7 @@ void QgsVirtualLayerSourceSelect::onTableRowChanged( const QModelIndex& current,
   mRemoveLayerBtn->setEnabled( current.row() != -1 );
 }
 
-void QgsVirtualLayerSourceSelect::addEmbeddedLayer( QString name, QString provider, QString encoding, QString source )
+void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString& name, const QString& provider, const QString& encoding, const QString& source )
 {
   // insert a new row
   onAddLayer();

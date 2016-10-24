@@ -940,7 +940,7 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::clone() const
   return r;
 }
 
-void QgsRuleBasedRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsRuleBasedRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
 {
   mRootRule->toSld( doc, element, props );
 }

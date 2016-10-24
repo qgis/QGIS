@@ -277,7 +277,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                             QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
                                             bool forceMulti = false,
                                             bool includeZ = false,
-                                            QgsAttributeList attributes = QgsAttributeList(),
+                                            const QgsAttributeList &attributes = QgsAttributeList(),
                                             FieldValueConverter* fieldValueConverter = nullptr
                                           );
 
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                             QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
                                             bool forceMulti = false,
                                             bool includeZ = false,
-                                            QgsAttributeList attributes = QgsAttributeList(),
+                                            const QgsAttributeList &attributes = QgsAttributeList(),
                                             FieldValueConverter* fieldValueConverter = nullptr
                                           );
 

@@ -285,7 +285,7 @@ void QgsMeasureTool::addPoint( const QgsPoint &point )
 }
 
 
-QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
+QgsPoint QgsMeasureTool::snapPoint( QPoint p )
 {
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
   return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );

@@ -715,7 +715,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see frameSideFlags
      * @see testFrameSideFlag
      */
-    void setFrameSideFlags( const FrameSideFlags& flags );
+    void setFrameSideFlags( QgsComposerMapGrid::FrameSideFlags flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side
@@ -962,7 +962,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
+    void drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString &annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
 
     /** Draws a single annotation
      * @param p drawing painter

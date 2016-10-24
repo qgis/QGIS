@@ -58,4 +58,5 @@ class QgsRasterProjector : QgsRasterInterface
     static bool extentSize( const QgsCoordinateTransform& ct,
                             const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
                             QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+
 };

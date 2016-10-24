@@ -4242,7 +4242,7 @@ QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
   return mLayerTitleAsName && !vl->title().isEmpty() ? vl->title() : vl->name();
 }
 
-void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings )
+void QgsDxfExport::drawLabel( const QString& layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings )
 {
   Q_UNUSED( context );
 
@@ -4379,7 +4379,7 @@ void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::L
 }
 
 
-void QgsDxfExport::registerDxfLayer( QString layerId, QgsFeatureId fid, QString layerName )
+void QgsDxfExport::registerDxfLayer( const QString& layerId, QgsFeatureId fid, const QString& layerName )
 {
   if ( !mDxfLayerNames.contains( layerId ) )
     mDxfLayerNames[ layerId ] = QMap<QgsFeatureId, QString>();

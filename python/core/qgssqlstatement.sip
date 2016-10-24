@@ -113,7 +113,7 @@ class QgsSQLStatement
      * otherwise the original string.
      * @see quotedString(), quotedIdentifier()
      */
-    static QString quotedIdentifierIfNeeded( QString name );
+    static QString quotedIdentifierIfNeeded( const QString& name );
 
     /** Remove double quotes from an identifier.
      * @see quotedIdentifier()
@@ -340,7 +340,7 @@ class QgsSQLStatement
     class NodeFunction : QgsSQLStatement::Node
     {
       public:
-        NodeFunction( QString name, QgsSQLStatement::NodeList* args /Transfer/ );
+        NodeFunction( const QString name, QgsSQLStatement::NodeList* args /Transfer/ );
         ~NodeFunction();
 
         /** Return function name */
@@ -474,7 +474,7 @@ class QgsSQLStatement
     {
       public:
         NodeJoin( QgsSQLStatement::NodeTableDef* tabledef /Transfer/, QgsSQLStatement::Node* onExpr /Transfer/, QgsSQLStatement::JoinType type );
-        NodeJoin( QgsSQLStatement::NodeTableDef* tabledef /Transfer/, QList<QString> usingColumns, QgsSQLStatement::JoinType type );
+        NodeJoin( QgsSQLStatement::NodeTableDef* tabledef /Transfer/, const QList<QString>& usingColumns, QgsSQLStatement::JoinType type );
 
         /** Table definition */
         QgsSQLStatement::NodeTableDef* tableDef() const;
@@ -525,13 +525,13 @@ class QgsSQLStatement
         NodeSelect( QList<QgsSQLStatement::NodeTableDef*> tableList /Transfer/, QList<QgsSQLStatement::NodeSelectedColumn*> columns /Transfer/, bool distinct );
 
         /** Set joins */
-        void setJoins( QList<QgsSQLStatement::NodeJoin*> joins /Transfer/ );
+        void setJoins( const QList<QgsSQLStatement::NodeJoin*>& joins /Transfer/ );
         /** Append a join */
         void appendJoin( QgsSQLStatement::NodeJoin* join /Transfer/ );
         /** Set where clause */
         void setWhere( QgsSQLStatement::Node* where /Transfer/ );
         /** Set order by columns */
-        void setOrderBy( QList<QgsSQLStatement::NodeColumnSorted*> orderBy /Transfer/ );
+        void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted*>& orderBy /Transfer/ );
 
         /** Return the list of tables */
         QList<QgsSQLStatement::NodeTableDef*> tables() const;

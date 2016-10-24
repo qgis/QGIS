@@ -28,7 +28,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( const QgsDateTimeStatisticalSummary::Statistics& stats )
+QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats )
     : mStatistics( stats )
 {
   reset();

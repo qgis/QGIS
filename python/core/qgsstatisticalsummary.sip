@@ -44,7 +44,7 @@ class QgsStatisticalSummary
     /** Constructor for QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = QgsStatisticalSummary::All );
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
 
     virtual ~QgsStatisticalSummary();
 
@@ -59,7 +59,7 @@ class QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const QgsStatisticalSummary::Statistics& stats );
+    void setStatistics( QgsStatisticalSummary::Statistics stats );
 
     /** Resets the calculated values
      */

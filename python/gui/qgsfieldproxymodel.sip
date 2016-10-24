@@ -40,7 +40,7 @@ class QgsFieldProxyModel : QSortFilterProxyModel
      * @param filters are Filter flags
      * @see filters()
      */
-    QgsFieldProxyModel* setFilters( const Filters& filters );
+    QgsFieldProxyModel* setFilters( Filters filters );
 
     /** Returns the filters controlling displayed fields.
      * @see setFilters()

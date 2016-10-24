@@ -366,7 +366,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     typedef struct TilePosition
     {
       TilePosition( int r, int c ): row( r ), col( c ) {}
-      bool operator==( const TilePosition& other ) const { return row == other.row && col == other.col; }
+      bool operator==( TilePosition other ) const { return row == other.row && col == other.col; }
       int row;
       int col;
     } TilePosition;
@@ -459,7 +459,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( QRectF r, QImage i ): rect( r ), img( i ) {}
+      TileImage( const QRectF& r, const QImage& i ): rect( r ), img( i ) {}
       QRectF rect; //!< destination rectangle for a tile (in screen coordinates)
       QImage img;  //!< cached tile to be drawn
     } TileImage;
@@ -684,6 +684,7 @@ class QgsWmsStatistics
     static QMap<QString, Stat> sData;
 };
 
+Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
 #endif
 

@@ -74,7 +74,7 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     QAction* mSpatialQueryAction;
 
 
-    void MsgDEBUG( QString sMSg );
+    void MsgDEBUG( const QString &sMSg );
 
 };
 #endif

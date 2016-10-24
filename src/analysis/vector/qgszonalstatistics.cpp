@@ -34,7 +34,7 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, const Statistics& stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, Statistics stats )
     : mRasterFilePath( rasterFile )
     , mRasterBand( rasterBand )
     , mPolygonLayer( polygonLayer )

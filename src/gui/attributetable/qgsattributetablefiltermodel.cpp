@@ -209,7 +209,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   sort( config.sortExpression(), config.sortOrder() );
 }
 
-void QgsAttributeTableFilterModel::sort( QString expression, Qt::SortOrder order )
+void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrder order )
 {
   QSortFilterProxyModel::sort( -1 );
   masterModel()->prefetchSortData( expression );
@@ -271,6 +271,7 @@ void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds& ids
 QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
 {
   QgsFeatureIds ids;
+  ids.reserve( rowCount() );
   for ( int i = 0; i < rowCount(); ++i )
   {
     QModelIndex row = index( i, 0 );

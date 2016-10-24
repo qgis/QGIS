@@ -62,7 +62,7 @@ QgsRasterFileWriter::QgsRasterFileWriter()
 
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
   QgsDebugMsgLevel( "Entered", 4 );
@@ -185,6 +185,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   QList<bool> destHasNoDataValueList;
   QList<double> destNoDataValueList;
   QList<Qgis::DataType> destDataTypeList;
+  destDataTypeList.reserve( nBands );
+  destHasNoDataValueList.reserve( nBands );
+  destNoDataValueList.reserve( nBands );
+
   for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
   {
     QgsRasterNuller *nuller = pipe->nuller();

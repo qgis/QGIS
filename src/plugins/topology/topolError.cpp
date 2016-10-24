@@ -26,7 +26,7 @@ bool TopolError::fix( const QString& fixName )
   return ( this->*mFixMap[fixName] )();
 }
 
-bool TopolError::fixMove( FeatureLayer fl1, FeatureLayer fl2 )
+bool TopolError::fixMove( const FeatureLayer& fl1, const FeatureLayer& fl2 )
 {
   bool ok;
   QgsFeature f1, f2;
@@ -59,7 +59,7 @@ bool TopolError::fixMoveSecond()
   return fixMove( mFeaturePairs.at( 1 ), mFeaturePairs.at( 0 ) );
 }
 
-bool TopolError::fixUnion( FeatureLayer fl1, FeatureLayer fl2 )
+bool TopolError::fixUnion( const FeatureLayer& fl1, const FeatureLayer& fl2 )
 {
   bool ok;
   QgsFeature f1, f2;

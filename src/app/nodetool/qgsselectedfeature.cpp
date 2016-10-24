@@ -474,7 +474,7 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::invertVertexSelection( QVector<int> vertexIndices )
+void QgsSelectedFeature::invertVertexSelection( const QVector<int>& vertexIndices )
 {
   Q_FOREACH ( int index, vertexIndices )
   {

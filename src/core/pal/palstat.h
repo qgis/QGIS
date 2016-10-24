@@ -96,6 +96,8 @@ namespace pal
       int *layersNbLabelledObjects; // [nbLayers]
 
       PalStat();
+      PalStat( const PalStat& other );
+      PalStat& operator=( const PalStat& other );
   };
 
 } // end namespace pal
