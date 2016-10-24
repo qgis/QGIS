@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, 
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -62,12 +63,12 @@ class LinesIntersection(GeoAlgorithm):
                                           self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterTableField(
             self.FIELD_A,
-            self.tr('Input unique ID field'),
+            self.tr('Input field to keep (leave as [not set] to keep all fields)'),
             self.INPUT_A,
             optional=True))
         self.addParameter(ParameterTableField(
             self.FIELD_B,
-            self.tr('Intersect unique ID field'),
+            self.tr('Intersect field to keep (leave as [not set] to keep all fields)'),
             self.INPUT_B,
             optional=True))
 
@@ -82,10 +83,22 @@ class LinesIntersection(GeoAlgorithm):
         idxA = layerA.fieldNameIndex(fieldA)
         idxB = layerB.fieldNameIndex(fieldB)
 
-        fieldList = [layerA.pendingFields()[idxA],
-                     layerB.pendingFields()[idxB]]
+        if idxA != -1:
+            fieldListA = QgsFields()
+            fieldListA.append(layerA.fields()[idxA])
+        else:
+            fieldListA = layerA.fields()
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
+        if idxB != -1:
+            fieldListB = QgsFields()
+            fieldListB.append(layerB.fields()[idxB])
+        else:
+            fieldListB = layerB.fields()
+
+        fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
+        fieldListA.extend(fieldListB)
+
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldListA,
                                                                      QGis.WKBPoint, layerA.dataProvider().crs())
 
         spatialIndex = vector.spatialindex(layerB)
@@ -111,7 +124,11 @@ class LinesIntersection(GeoAlgorithm):
 
                     points = []
                     attrsA = inFeatA.attributes()
+                    if idxA != -1:
+                        attrsA = [attrsA[idxA]]
                     attrsB = inFeatB.attributes()
+                    if idxB != -1:
+                        attrsB = [attrsB[idxB]]
 
                     if inGeom.intersects(tmpGeom):
                         tempGeom = inGeom.intersection(tmpGeom)
@@ -123,8 +140,8 @@ class LinesIntersection(GeoAlgorithm):
 
                             for j in points:
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
-                                outFeat.setAttributes([attrsA[idxA],
-                                                       attrsB[idxB]])
+                                attrsA.extend(attrsB)
+                                outFeat.setAttributes(attrsA)
                                 writer.addFeature(outFeat)
 
             progress.setPercentage(int(current * total))
