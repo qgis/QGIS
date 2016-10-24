@@ -22,7 +22,7 @@ email                : brush.tyler@gmail.com
 from builtins import str
 
 # this will disable the dbplugin if the connector raise an ImportError
-from .connector import SpatiaLiteDBConnector
+from .connector import GPKGDBConnector
 
 from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 from qgis.PyQt.QtGui import QIcon
@@ -33,47 +33,48 @@ from qgis.gui import QgsMessageBar
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
 
-from . import resources_rc  # NOQA
+from . import resources_rc
+hasattr(resources_rc, 'foo')
 
 
 def classFactory():
-    return SpatiaLiteDBPlugin
+    return GPKGDBPlugin
 
 
-class SpatiaLiteDBPlugin(DBPlugin):
+class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/spatialite/icon")
+        return QIcon(":/db_manager/gpkg/icon")
 
     @classmethod
     def typeName(self):
-        return 'spatialite'
+        return 'gpkg'
 
     @classmethod
     def typeNameString(self):
-        return 'SpatiaLite'
+        return 'GeoPackage'
 
     @classmethod
     def providerName(self):
-        return 'spatialite'
+        return 'ogr'
 
     @classmethod
     def connectionSettingsKey(self):
-        return '/SpatiaLite/connections'
+        return '/GPKG/connections'
 
     def databasesFactory(self, connection, uri):
-        return SLDatabase(connection, uri)
+        return GPKGDatabase(connection, uri)
 
     def connect(self, parent=None):
         conn_name = self.connectionName()
         settings = QSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
-        if not settings.contains("sqlitepath"):  # non-existent entry?
+        if not settings.contains("gpkgpath"):  # non-existent entry?
             raise InvalidDataException(u'there is no defined database connection "%s".' % conn_name)
 
-        database = settings.value("sqlitepath")
+        database = settings.value("gpkgpath")
 
         uri = QgsDataSourceUri()
         uri.setDatabase(database)
@@ -83,14 +84,15 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def addConnection(self, conn_name, uri):
         settings = QSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
-        settings.setValue("sqlitepath", uri.database())
+        settings.setValue("gpkgpath", uri.database())
         return True
 
     @classmethod
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename, selected_filter = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite file")
+            filename, selected_filter = QFileDialog.getOpenFileName(parent,
+                                                                    parent.tr("Choose GeoPackage file"), None, "GeoPackage (*.gpkg)")
             if not filename:
                 return
         finally:
@@ -103,32 +105,32 @@ class SpatiaLiteDBPlugin(DBPlugin):
         index.internalPointer().itemChanged()
 
 
-class SLDatabase(Database):
+class GPKGDatabase(Database):
 
     def __init__(self, connection, uri):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
-        return SpatiaLiteDBConnector(uri)
+        return GPKGDBConnector(uri)
 
     def dataTablesFactory(self, row, db, schema=None):
-        return SLTable(row, db, schema)
+        return GPKGTable(row, db, schema)
 
     def vectorTablesFactory(self, row, db, schema=None):
-        return SLVectorTable(row, db, schema)
+        return GPKGVectorTable(row, db, schema)
 
     def rasterTablesFactory(self, row, db, schema=None):
-        return SLRasterTable(row, db, schema)
+        return GPKGRasterTable(row, db, schema)
 
     def info(self):
-        from .info_model import SLDatabaseInfo
+        from .info_model import GPKGDatabaseInfo
 
-        return SLDatabaseInfo(self)
+        return GPKGDatabaseInfo(self)
 
     def sqlResultModel(self, sql, parent):
-        from .data_model import SLSqlResultModel
+        from .data_model import GPKGSqlResultModel
 
-        return SLSqlResultModel(self, sql, parent)
+        return GPKGSqlResultModel(self, sql, parent)
 
     def registerDatabaseActions(self, mainWindow):
         action = QAction(self.tr("Run &Vacuum"), self)
@@ -166,14 +168,15 @@ class SLDatabase(Database):
     def uniqueIdFunction(self):
         return None
 
-    def explicitSpatialIndex(self):
-        return True
+    def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
+        from qgis.core import QgsVectorLayer
 
-    def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
-        return u""" "%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
+        vl = QgsVectorLayer(self.uri().database(), layerName, 'ogr')
+        vl.setSubsetString(sql)
+        return vl
 
 
-class SLTable(Table):
+class GPKGTable(Table):
 
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, None)
@@ -184,40 +187,43 @@ class SLTable(Table):
         return ogrUri
 
     def mimeUri(self):
-        return Table.mimeUri(self)
+
+        # QGIS has no provider to load Geopackage vectors, let's use OGR
+        return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
 
-        provider = self.database().dbplugin().providerName()
-        uri = self.uri().uri()
+        provider = "ogr"
+        uri = self.ogrUri()
 
         return QgsVectorLayer(uri, self.name, provider)
 
     def tableFieldsFactory(self, row, table):
-        return SLTableField(row, table)
+        return GPKGTableField(row, table)
 
     def tableIndexesFactory(self, row, table):
-        return SLTableIndex(row, table)
+        return GPKGTableIndex(row, table)
 
     def tableTriggersFactory(self, row, table):
-        return SLTableTrigger(row, table)
+        return GPKGTableTrigger(row, table)
 
     def tableDataModel(self, parent):
-        from .data_model import SLTableDataModel
+        from .data_model import GPKGTableDataModel
 
-        return SLTableDataModel(self, parent)
+        return GPKGTableDataModel(self, parent)
 
 
-class SLVectorTable(SLTable, VectorTable):
+class GPKGVectorTable(GPKGTable, VectorTable):
 
     def __init__(self, row, db, schema=None):
-        SLTable.__init__(self, row[:-5], db, schema)
+        GPKGTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
-        # SpatiaLite does case-insensitive checks for table names, but the
-        # SL provider didn't do the same in Qgis < 1.9, so self.geomTableName
+        # GPKG does case-insensitive checks for table names, but the
+        # GPKG provider didn't do the same in Qgis < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
         self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[-5:]
+        self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn, force=False)
 
     def uri(self):
         uri = self.database().uri()
@@ -245,26 +251,29 @@ class SLVectorTable(SLTable, VectorTable):
     def refreshTableEstimatedExtent(self):
         return
 
+    def refreshTableExtent(self):
+        prevExtent = self.extent
+        self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn, force=True)
+        if self.extent != prevExtent:
+            self.refresh()
+
     def runAction(self, action):
-        if SLTable.runAction(self, action):
+        if GPKGTable.runAction(self, action):
             return True
         return VectorTable.runAction(self, action)
 
 
-class SLRasterTable(SLTable, RasterTable):
+class GPKGRasterTable(GPKGTable, RasterTable):
 
     def __init__(self, row, db, schema=None):
-        SLTable.__init__(self, row[:-3], db, schema)
+        GPKGTable.__init__(self, row[:-3], db, schema)
         RasterTable.__init__(self, db, schema)
         self.prefixName, self.geomColumn, self.srid = row[-3:]
         self.geomType = 'RASTER'
+        self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn)
 
-        # def info(self):
-        #from .info_model import SLRasterTableInfo
-        #return SLRasterTableInfo(self)
-
-    def rasterliteGdalUri(self):
-        gdalUri = u'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)
+    def gpkgGdalUri(self):
+        gdalUri = u'GPKG:%s:%s' % (self.uri().database(), self.prefixName)
         return gdalUri
 
     def mimeUri(self):
@@ -275,16 +284,15 @@ class SLRasterTable(SLTable, RasterTable):
     def toMapLayer(self):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
-        # QGIS has no provider to load Rasterlite rasters, let's use GDAL
-        uri = self.rasterliteGdalUri()
-
+        # QGIS has no provider to load rasters, let's use GDAL
+        uri = self.gpkgGdalUri()
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
             rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
         return rl
 
 
-class SLTableField(TableField):
+class GPKGTableField(TableField):
 
     def __init__(self, row, table):
         TableField.__init__(self, table)
@@ -292,14 +300,14 @@ class SLTableField(TableField):
         self.hasDefault = self.default
 
 
-class SLTableIndex(TableIndex):
+class GPKGTableIndex(TableIndex):
 
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.num, self.name, self.isUnique, self.columns = row
 
 
-class SLTableTrigger(TableTrigger):
+class GPKGTableTrigger(TableTrigger):
 
     def __init__(self, row, table):
         TableTrigger.__init__(self, table)

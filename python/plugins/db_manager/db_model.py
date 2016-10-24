@@ -300,6 +300,7 @@ class DBModel(QAbstractItemModel):
             self.importVector.connect(self.vectorImport)
 
         self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
+        self.hasGPKGSupport = "gpkg" in supportedDbTypes()
 
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
@@ -401,7 +402,7 @@ class DBModel(QAbstractItemModel):
                     flags |= Qt.ItemIsDropEnabled
 
             # SL/Geopackage db files can be dropped everywhere in the tree
-            if self.hasSpatialiteSupport:
+            if self.hasSpatialiteSupport or self.hasGPKGSupport:
                 flags |= Qt.ItemIsDropEnabled
 
         return flags
