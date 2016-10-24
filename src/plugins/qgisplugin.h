@@ -73,6 +73,9 @@ class QgisPlugin
     };
 
 
+    /**
+     * Constructor for QgisPlugin
+     */
     QgisPlugin( QString const & name = "",
                 QString const & description = "",
                 QString const & category = "",

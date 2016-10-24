@@ -123,7 +123,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
     @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
     //! return a pointer to the identify menu which will be used in layer selection mode
     //! this menu can also be customized
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param layerList Performs the identification within the given list of layers.
     @param layerType Only performs identification in a certain type of layers (raster, vector).
     @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer*>& layerList, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer*>& layerList, LayerType layerType = AllLayers );
 
     QgsIdentifyMenu* mIdentifyMenu;
 

@@ -186,13 +186,18 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
-    // This will _write_ selected crs in data source
-    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs )
-    { Q_UNUSED( crs ); return false; }
+    /**
+     * Writes the selected crs into data source. The original data source will be modified when calling this
+     * method.
+     */
+    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs ) { Q_UNUSED( crs ); return false; }
 
     // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
+    /**
+     * Sets the capabilities for the data item.
+     */
     virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
 
     // static methods
@@ -236,7 +241,12 @@ class CORE_EXPORT QgsDataItem : public QObject
 
   protected:
     virtual void populate( const QVector<QgsDataItem*>& children );
+
+    /**
+     * Refresh the items from a specified list of child items.
+     */
     virtual void refresh( const QVector<QgsDataItem *> &children );
+
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.
@@ -555,8 +565,15 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
     static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
 
+    /**
+     * Creates a new data item from the specified path.
+     */
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString &path, const QString &name );
-    //! @note available in python as itemFromFilePath
+
+    /**
+    * Creates a new data item from the specified path.
+    * @note available in python as itemFromFilePath
+    */
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path );
 
     static const QIcon &iconZip();
