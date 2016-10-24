@@ -505,12 +505,30 @@ class GPKGDBConnector(DBConnector):
         quoted_name = f_split[0]
         name = self.unquoteId(quoted_name)
         sql_type = f_split[1].upper()
+        if len(f_split) >= 3 and f_split[2].startswith('(') and f_split[2].endswith(')'):
+            sql_type += ' ' + f_split[2]
+            f_split = [f for f in f_split[3:]]
+        else:
+            f_split = [f for f in f_split[2:]]
         ogr_type, ogr_subtype, width = self.getOGRFieldTypeFromSQL(sql_type)
         fld_defn = ogr.FieldDefn(name, ogr_type)
         fld_defn.SetSubType(ogr_subtype)
         fld_defn.SetWidth(width)
-        if len(f_split) >= 4 and f_split[2] == 'NOT' and f_split[3] == 'NULL':
+        if len(f_split) >= 2 and f_split[0] == 'NOT' and f_split[1] == 'NULL':
             fld_defn.SetNullable(False)
+            f_split = [f for f in f_split[2:]]
+        elif len(f_split) >= 1:
+            f_split = [f for f in f_split[1:]]
+        if len(f_split) >= 2 and f_split[0] == 'DEFAULT':
+            new_default = f_split[1]
+            if new_default == '':
+                fld_defn.SetDefault(None)
+            elif new_default == 'NULL' or ogr_type in (ogr.OFTInteger, ogr.OFTReal):
+                fld_defn.SetDefault(new_default)
+            elif new_default.startswith("'") and new_default.endswith("'"):
+                fld_defn.SetDefault(new_default)
+            else:
+                fld_defn.SetDefault(self.quoteString(new_default))
         return fld_defn
 
     def createTable(self, table, field_defs, pkey):
@@ -640,6 +658,8 @@ class GPKGDBConnector(DBConnector):
                 if new_default == '':
                     new_fielddefn.SetDefault(None)
                 elif new_default == 'NULL' or ogr_type in (ogr.OFTInteger, ogr.OFTReal):
+                    new_fielddefn.SetDefault(str(new_default))
+                elif new_default.startswith("'") and new_default.endswith("'"):
                     new_fielddefn.SetDefault(str(new_default))
                 else:
                     new_fielddefn.SetDefault(self.quoteString(new_default))
