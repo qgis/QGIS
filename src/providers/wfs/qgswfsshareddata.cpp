@@ -1162,7 +1162,7 @@ QgsGmlStreamingParser* QgsWFSSharedData::createParser()
     axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
   }
 
-  if ( mLayerPropertiesList.size() )
+  if ( !mLayerPropertiesList.isEmpty() )
   {
     QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
     Q_FOREACH ( QgsOgcUtils::LayerProperties layerProperties, mLayerPropertiesList )
