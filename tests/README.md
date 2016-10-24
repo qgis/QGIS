@@ -1,14 +1,12 @@
 QGIS unit tests
 ===============
 
-Build tests
------------
+# Build tests
 
 Make sure that you have enabled building of tests in CMake.
 `cmake -DENABLE_TESTS=ON ..`
 
-Run tests
----------
+# Run tests
 
 You can run all tests using `make check`.
 
@@ -41,10 +39,9 @@ with something like this:
 ```
 
 
-Advanced configuration
-----------------------
+# Advanced configuration
 
-### Postgres
+## Postgres
 
 Make sure that you have enabled building of postgres test in CMake.
 `cmake -DENABLE_PGTEST=ON ..`
@@ -74,3 +71,12 @@ For convenience, a shell script is provided to create the database
 and initialize it as needed:
 
     tests/testdata/provider/testdata_pg.sh
+
+# Write tests
+
+Instructions about wriing tests for the proessig framework
+can be found in a local README file:
+
+  ${TOP_SRCDIR}/python/plugins/processing/tests/README.md
+
+TODO: write more here
