@@ -30,7 +30,7 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
     QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
     ~QgsPaperGrid();
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
   private:
@@ -48,10 +48,10 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
     ~QgsPaperItem();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerPaper; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Stores state in Dom element
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 
   private:
     QgsPaperItem();
-    /** Set flags and z-value*/
+    //! Set flags and z-value
     void initialize();
 
     void calculatePageMargin();

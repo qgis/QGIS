@@ -52,7 +52,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
     void populateDataDefinedButtons( QgsPalLayerSettings& s );
-    /** Sets data defined property attribute to map */
+    //! Sets data defined property attribute to map
     void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
 
   private:

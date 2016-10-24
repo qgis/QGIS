@@ -88,7 +88,7 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    /** Set symbol (takes ownership)*/
+    //! Set symbol (takes ownership)
     void setSymbol( QgsSymbol* s );
     QgsSymbol* symbol() {return mSymbol;}
 

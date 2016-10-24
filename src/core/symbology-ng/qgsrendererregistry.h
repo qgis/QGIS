@@ -106,7 +106,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 {
   public:
 
-    /** Construct metadata */
+    //! Construct metadata
     //! @note not available in python bindings
     QgsRendererMetadata( const QString& name,
                          const QString& visibleName,

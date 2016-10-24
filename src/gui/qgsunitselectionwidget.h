@@ -164,7 +164,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      */
     void setUnits( const QgsUnitTypes::RenderUnitList& units );
 
-    /** Get the selected unit index */
+    //! Get the selected unit index
     int getUnit() const { return mUnitCombo->currentIndex(); }
 
     /** Returns the current predefined selected unit (if applicable).
@@ -184,10 +184,10 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      */
     void setUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the map unit scale */
+    //! Returns the map unit scale
     QgsMapUnitScale getMapUnitScale() const { return mMapUnitScale; }
 
-    /** Sets the map unit scale */
+    //! Sets the map unit scale
     void setMapUnitScale( const QgsMapUnitScale& scale ) { mMapUnitScale = scale; }
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current

@@ -62,15 +62,15 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
 
-    /** Means of accessing canonical single instance  */
+    //! Means of accessing canonical single instance
     static QgsLayerTreeEmbeddedWidgetRegistry* instance();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
-    /** Return list of all registered providers */
+    //! Return list of all registered providers
     QStringList providers() const;
 
-    /** Get provider object from the provider's ID */
+    //! Get provider object from the provider's ID
     QgsLayerTreeEmbeddedWidgetProvider* provider( const QString& providerId ) const;
 
     /** Register a provider, takes ownership of the object.

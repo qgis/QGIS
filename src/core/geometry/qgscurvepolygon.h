@@ -76,11 +76,11 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     virtual void setExteriorRing( QgsCurve* ring );
 
-    /** Sets all interior rings (takes ownership)*/
+    //! Sets all interior rings (takes ownership)
     void setInteriorRings( const QList<QgsCurve*>& rings );
-    /** Adds an interior ring to the geometry (takes ownership)*/
+    //! Adds an interior ring to the geometry (takes ownership)
     virtual void addInteriorRing( QgsCurve* ring );
-    /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
+    //! Removes ring. Exterior ring is 0, first interior ring 1, ...
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const override;

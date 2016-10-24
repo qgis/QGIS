@@ -210,29 +210,29 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     enum ShapeType
     {
-      ShapeRectangle = 0, /*!< rectangle */
-      ShapeSquare, /*!< square - buffered sizes only*/
-      ShapeEllipse, /*!< ellipse */
-      ShapeCircle, /*!< circle */
-      ShapeSVG /*!< SVG file */
+      ShapeRectangle = 0, //!< Rectangle
+      ShapeSquare, //!< Square - buffered sizes only
+      ShapeEllipse, //!< Ellipse
+      ShapeCircle, //!< Circle
+      ShapeSVG //!< SVG file
     };
 
     /** Methods for determining the background shape size.
      */
     enum SizeType
     {
-      SizeBuffer = 0, /*!< shape size is determined by adding a buffer margin around text */
-      SizeFixed, /*!< fixed size */
-      SizePercent /*!< shape size is determined by percent of text size */
+      SizeBuffer = 0, //!< Shape size is determined by adding a buffer margin around text
+      SizeFixed, //!< Fixed size
+      SizePercent //!< Shape size is determined by percent of text size
     };
 
     /** Methods for determining the rotation of the background shape.
      */
     enum RotationType
     {
-      RotationSync = 0, /*!< shape rotation is synced with text rotation */
-      RotationOffset, /*!< shape rotation is offset from text rotation */
-      RotationFixed /*!< shape rotation is a fixed angle */
+      RotationSync = 0, //!< Shape rotation is synced with text rotation
+      RotationOffset, //!< Shape rotation is offset from text rotation
+      RotationFixed //!< Shape rotation is a fixed angle
     };
 
     QgsTextBackgroundSettings();
@@ -605,10 +605,10 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     enum ShadowPlacement
     {
-      ShadowLowest = 0, /*!< draw shadow below all text components */
-      ShadowText, /*!< draw shadow under text */
-      ShadowBuffer, /*!< draw shadow under buffer */
-      ShadowShape /*!< draw shadow under background shape */
+      ShadowLowest = 0, //!< Draw shadow below all text components
+      ShadowText, //!< Draw shadow under text
+      ShadowBuffer, //!< Draw shadow under buffer
+      ShadowShape //!< Draw shadow under background shape
     };
 
     QgsTextShadowSettings();

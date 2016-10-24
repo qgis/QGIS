@@ -32,11 +32,11 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
 
     virtual void handleBadLayers( const QList<QDomNode>& layers ) override;
 
-    /** Flag to store the Ignore button press of MessageBox used by QgsLegend */
+    //! Flag to store the Ignore button press of MessageBox used by QgsLegend
     static bool mIgnore;
 
   protected:
-    /** This is used to locate files that have moved or otherwise are missing */
+    //! This is used to locate files that have moved or otherwise are missing
     bool findMissingFile( const QString& fileFilters, QDomNode& layerNode );
 
     /**

@@ -84,7 +84,7 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
     QgsIdentifyResultsWebViewItem( QTreeWidget *treeWidget = nullptr );
     QgsIdentifyResultsWebView *webView() { return mWebView; }
     void setHtml( const QString &html );
-    /** @note added in 2.1 */
+    //! @note added in 2.1
     void setContent( const QByteArray & data, const QString & mimeType = QString(), const QUrl & baseUrl = QUrl() );
 
   public slots:
@@ -122,12 +122,12 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     ~QgsIdentifyResultsDialog();
 
-    /** Add add feature from vector layer */
+    //! Add add feature from vector layer
     void addFeature( QgsVectorLayer * layer,
                      const QgsFeature &f,
                      const QMap< QString, QString > &derivedAttributes );
 
-    /** Add add feature from other layer */
+    //! Add add feature from other layer
     void addFeature( QgsRasterLayer * layer,
                      const QString& label,
                      const QMap< QString, QString > &attributes,
@@ -136,13 +136,13 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
                      const QgsFeature &feature = QgsFeature(),
                      const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
 
-    /** Add feature from identify results */
+    //! Add feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult& result );
 
-    /** Map tool was deactivated */
+    //! Map tool was deactivated
     void deactivate();
 
-    /** Map tool was activated */
+    //! Map tool was activated
     void activate();
 
   signals:
@@ -156,7 +156,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void activateLayer( QgsMapLayer * );
 
   public slots:
-    /** Remove results */
+    //! Remove results
     void clear();
 
     void updateViewModes();

@@ -41,61 +41,61 @@ class CORE_EXPORT QgsUnitTypes
     //! Units of distance
     enum DistanceUnit
     {
-      DistanceMeters = 0, /*!< meters */
-      DistanceKilometers, /*!< kilometers */
-      DistanceFeet, /*!< imperial feet */
-      DistanceNauticalMiles, /*!< nautical miles */
-      DistanceYards, /*!< imperial yards */
-      DistanceMiles, /*!< terrestial miles */
-      DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
-      DistanceUnknownUnit, /*!< unknown distance unit */
+      DistanceMeters = 0, //!< Meters
+      DistanceKilometers, //!< Kilometers
+      DistanceFeet, //!< Imperial feet
+      DistanceNauticalMiles, //!< Nautical miles
+      DistanceYards, //!< Imperial yards
+      DistanceMiles, //!< Terrestial miles
+      DistanceDegrees, //!< Degrees, for planar geographic CRS distance measurements
+      DistanceUnknownUnit, //!< Unknown distance unit
     };
 
     /** Types of distance units
      */
     enum DistanceUnitType
     {
-      Standard = 0, /*!< unit is a standard measurement unit */
-      Geographic,   /*!< unit is a geographic (eg degree based) unit */
-      UnknownType,  /*!< unknown unit type */
+      Standard = 0, //!< Unit is a standard measurement unit
+      Geographic,   //!< Unit is a geographic (eg degree based) unit
+      UnknownType,  //!< Unknown unit type
     };
 
     //! Units of area
     enum AreaUnit
     {
-      AreaSquareMeters = 0, /*!< square meters */
-      AreaSquareKilometers, /*!< square kilometers */
-      AreaSquareFeet, /*!< square feet */
-      AreaSquareYards, /*!< square yards */
-      AreaSquareMiles, /*!< square miles */
-      AreaHectares, /*!< hectares */
-      AreaAcres, /*!< acres */
-      AreaSquareNauticalMiles, /*!< square nautical miles */
-      AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      AreaUnknownUnit, /*!< unknown areal unit */
+      AreaSquareMeters = 0, //!< Square meters
+      AreaSquareKilometers, //!< Square kilometers
+      AreaSquareFeet, //!< Square feet
+      AreaSquareYards, //!< Square yards
+      AreaSquareMiles, //!< Square miles
+      AreaHectares, //!< Hectares
+      AreaAcres, //!< Acres
+      AreaSquareNauticalMiles, //!< Square nautical miles
+      AreaSquareDegrees, //!< Square degrees, for planar geographic CRS area measurements
+      AreaUnknownUnit, //!< Unknown areal unit
     };
 
     //! Units of angles
     enum AngleUnit
     {
-      AngleDegrees = 0, /*!< degrees */
-      AngleRadians, /*!< square kilometers */
-      AngleGon, /*!< gon/gradian */
-      AngleMinutesOfArc, /*!< minutes of arc */
-      AngleSecondsOfArc, /*!< seconds of arc */
-      AngleTurn, /*!< turn/revolutions */
-      AngleUnknownUnit, /*!< unknown angle unit */
+      AngleDegrees = 0, //!< Degrees
+      AngleRadians, //!< Square kilometers
+      AngleGon, //!< Gon/gradian
+      AngleMinutesOfArc, //!< Minutes of arc
+      AngleSecondsOfArc, //!< Seconds of arc
+      AngleTurn, //!< Turn/revolutions
+      AngleUnknownUnit, //!< Unknown angle unit
     };
 
     //! Rendering size units
     enum RenderUnit
     {
-      RenderMillimeters = 0, //!< millimeters
-      RenderMapUnits, //!< map units
-      RenderPixels, //!< pixels
-      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
+      RenderMillimeters = 0, //!< Millimeters
+      RenderMapUnits, //!< Map units
+      RenderPixels, //!< Pixels
+      RenderPercentage, //!< Percentage of another measurement (eg canvas size, feature size)
       RenderPoints, //! points (eg for font sizes)
-      RenderUnknownUnit, //!< mixed or unknown units
+      RenderUnknownUnit, //!< Mixed or unknown units
     };
 
     //! List of render units

@@ -38,7 +38,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeos( const QgsAbstractGeometry* geometry, double precision = 0 );
     ~QgsGeos();
 
-    /** Removes caches*/
+    //! Removes caches
     void geometryChanged() override;
     void prepareGeometry() override;
 

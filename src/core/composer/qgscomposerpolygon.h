@@ -45,24 +45,24 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
      */
     QgsComposerPolygon( const QPolygonF &polygon, QgsComposition* c );
 
-    /** Destructor */
+    //! Destructor
     ~QgsComposerPolygon();
 
-    /** Overridden to return shape name */
+    //! Overridden to return shape name
     virtual QString displayName() const override;
 
-    /** Returns the QgsSymbol used to draw the shape. */
+    //! Returns the QgsSymbol used to draw the shape.
     QgsFillSymbol* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
 
-    /** Set the QgsSymbol used to draw the shape. */
+    //! Set the QgsSymbol used to draw the shape.
     void setPolygonStyleSymbol( QgsFillSymbol* symbol );
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerPolygon; }
 
   protected:
 
-    /** QgsSymbol use to draw the shape. */
+    //! QgsSymbol use to draw the shape.
     QScopedPointer<QgsFillSymbol> mPolygonStyleSymbol;
 
     /** Add the node newPoint at the given position according to some
@@ -71,16 +71,16 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
 
     bool _removeNode( const int nodeIndex ) override;
 
-    /** Draw nodes for the current shape. */
+    //! Draw nodes for the current shape.
     void _draw( QPainter *painter ) override;
 
-    /** Read symbol in XML. */
+    //! Read symbol in XML.
     void _readXmlStyle( const QDomElement &elmt ) override;
 
-    /** Write the symbol in an XML document. */
+    //! Write the symbol in an XML document.
     void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const override;
 
-    /** Create a default symbol. */
+    //! Create a default symbol.
     void createDefaultPolygonStyleSymbol();
 };
 

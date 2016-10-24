@@ -55,7 +55,7 @@ static QString _rasterLayerName( const QString& filename )
 
 
 
-/** Helper class to report progress */
+//! Helper class to report progress
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
   explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}

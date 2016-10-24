@@ -51,11 +51,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
     enum Flag
     {
-      DrawLabels              = 1 << 1,  //!< whether the labels should be rendered
-      DrawAllLabels           = 1 << 2,  //!< whether all features will be labelled even though overlaps occur
-      MergeConnectedLines     = 1 << 3,  //!< whether adjacent lines (with the same label text) should be merged
-      CentroidMustBeInside    = 1 << 4,  //!< whether location of centroid must be inside of polygons
-      LabelPerFeaturePart     = 1 << 6,  //!< whether to label each part of multi-part features separately
+      DrawLabels              = 1 << 1,  //!< Whether the labels should be rendered
+      DrawAllLabels           = 1 << 2,  //!< Whether all features will be labelled even though overlaps occur
+      MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
+      CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
+      LabelPerFeaturePart     = 1 << 6,  //!< Whether to label each part of multi-part features separately
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

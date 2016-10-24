@@ -64,14 +64,14 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     explicit QgsGrassModuleInputModel( QObject *parent = 0 );
     ~QgsGrassModuleInputModel();
 
-    /** Get singleton instance of this class. */
+    //! Get singleton instance of this class.
     static QgsGrassModuleInputModel* instance();
 
     QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
 
 
   public slots:
-    /** Reload current mapset */
+    //! Reload current mapset
     void reload();
 
     void onMapsetChanged();

@@ -31,9 +31,9 @@ class APP_EXPORT QgsTipFactory : public QObject
 {
     Q_OBJECT //used for tr() so we don't need to do QObject::tr()
   public:
-    /** Constructor */
+    //! Constructor
     QgsTipFactory();
-    /** Destructor */
+    //! Destructor
     ~QgsTipFactory();
     /** Get a random tip (generic or gui-centric)
      * @return An QgsTip containing the tip

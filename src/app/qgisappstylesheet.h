@@ -33,7 +33,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     QgisAppStyleSheet( QObject * parent = nullptr );
     ~QgisAppStyleSheet();
 
-    /** Return changeable options built from settings and/or defaults */
+    //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultOptions();
 
     /** Generate stylesheet
@@ -42,10 +42,10 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
      */
     void buildStyleSheet( const QMap<QString, QVariant>& opts );
 
-    /** Save changed default option keys/values to user settings */
+    //! Save changed default option keys/values to user settings
     void saveToSettings( const QMap<QString, QVariant>& opts );
 
-    /** Get reference font for initial qApp */
+    //! Get reference font for initial qApp
     QFont defaultFont() { return mDefaultFont; }
 
   signals:
@@ -55,7 +55,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     void appStyleSheetChanged( const QString& appStyleSheet );
 
   private:
-    /** Set active configuration values */
+    //! Set active configuration values
     void setActiveValues();
 
     // qt styles

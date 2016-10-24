@@ -59,7 +59,7 @@ independent from any server side technology*/
 class QgsWfsServer: public QgsOWSServer
 {
   public:
-    /** Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
+    //! Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)
     QgsWfsServer(
       const QString& configFilePath
       , QMap<QString, QString>& parameters
@@ -73,10 +73,10 @@ class QgsWfsServer: public QgsOWSServer
 
     void executeRequest() override;
 
-    /** Returns an XML file with the capabilities description (as described in the WFS specs)*/
+    //! Returns an XML file with the capabilities description (as described in the WFS specs)
     QDomDocument getCapabilities();
 
-    /** Returns an XML file with the describe feature type (as described in the WFS specs)*/
+    //! Returns an XML file with the describe feature type (as described in the WFS specs)
     QDomDocument describeFeatureType();
 
     /** Creates a document that describes the result of the getFeature request.
@@ -87,14 +87,14 @@ class QgsWfsServer: public QgsOWSServer
        @return 0 in case of success*/
     QDomDocument transaction( const QString& requestBody );
 
-    /** Sets configuration parser for administration settings. Does not take ownership*/
+    //! Sets configuration parser for administration settings. Does not take ownership
     void setAdminConfigParser( QgsWfsProjectParser* parser ) { mConfigParser = parser; }
 
   private:
-    /** Don't use the default constructor*/
+    //! Don't use the default constructor
     QgsWfsServer();
 
-    /** Get service address from REQUEST_URI if not specified in the configuration*/
+    //! Get service address from REQUEST_URI if not specified in the configuration
     QString serviceUrl() const;
 
     /* The Type of Feature created */

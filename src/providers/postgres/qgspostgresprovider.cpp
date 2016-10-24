@@ -651,7 +651,7 @@ QString QgsPostgresProvider::dataComment() const
 }
 
 
-/** @todo XXX Perhaps this should be promoted to QgsDataProvider? */
+//! @todo XXX Perhaps this should be promoted to QgsDataProvider?
 QString QgsPostgresProvider::endianString()
 {
   switch ( QgsApplication::endian() )

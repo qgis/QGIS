@@ -56,7 +56,7 @@ class QgsComposerConfigObject: public QObject
     QgsComposerConfigObject( QWidget* parent, QgsComposerObject* composerObject );
     ~QgsComposerConfigObject();
 
-    /** Sets a data defined property for the item from its current data defined button settings*/
+    //! Sets a data defined property for the item from its current data defined button settings
     void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
 
     /** Registers a data defined button, setting up its initial value, connections and description.
@@ -68,14 +68,14 @@ class QgsComposerConfigObject: public QObject
     void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
                                     QgsDataDefinedButton::DataType type, const QString& description );
 
-    /** Returns the current atlas coverage layer (if set)*/
+    //! Returns the current atlas coverage layer (if set)
     QgsVectorLayer* atlasCoverageLayer() const;
 
-    /** Returns the atlas for the composition*/
+    //! Returns the atlas for the composition
     QgsAtlasComposition *atlasComposition() const;
 
   private slots:
-    /** Must be called when a data defined button changes*/
+    //! Must be called when a data defined button changes
     void updateDataDefinedProperty();
 
     //! Updates data defined buttons to reflect current state of atlas (eg coverage layer)
@@ -108,10 +108,10 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
                                     QgsDataDefinedButton::DataType type, const QString& description );
 
-    /** Returns the current atlas coverage layer (if set)*/
+    //! Returns the current atlas coverage layer (if set)
     QgsVectorLayer* atlasCoverageLayer() const;
 
-    /** Returns the atlas for the composition*/
+    //! Returns the atlas for the composition
     QgsAtlasComposition *atlasComposition() const;
 
   private:
@@ -128,12 +128,12 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
     ~QgsComposerItemWidget();
 
-    /** A combination of upper/middle/lower and left/middle/right*/
+    //! A combination of upper/middle/lower and left/middle/right
     QgsComposerItem::ItemPositionMode positionMode() const;
 
-    /** Toggles display of the background group*/
+    //! Toggles display of the background group
     void showBackgroundGroup( bool showGroup );
-    /** Toggles display of the frame group*/
+    //! Toggles display of the frame group
     void showFrameGroup( bool showGroup );
 
   public slots:
@@ -183,7 +183,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void setValuesForGuiNonPositionElements();
 
   protected slots:
-    /** Initializes data defined buttons to current atlas coverage layer*/
+    //! Initializes data defined buttons to current atlas coverage layer
     void populateDataDefinedButtons();
 
   private:

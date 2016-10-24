@@ -24,9 +24,9 @@
 class ANALYSIS_EXPORT Line3D
 {
   private:
-    /** Copy constructor, declared private to not use it*/
+    //! Copy constructor, declared private to not use it
     Line3D( const Line3D& );
-    /** Assignment operator, declared private to not use it*/
+    //! Assignment operator, declared private to not use it
     Line3D& operator=( const Line3D& );
   protected:
     Node* head;
@@ -38,21 +38,21 @@ class ANALYSIS_EXPORT Line3D
   public:
     Line3D();
     ~Line3D();
-    /** Returns true, if the Line contains no Point3D, otherwise false*/
+    //! Returns true, if the Line contains no Point3D, otherwise false
     bool empty() const;
-    /** Inserts a node behind the current position and sets the current position to this new node*/
+    //! Inserts a node behind the current position and sets the current position to this new node
     void insertPoint( Point3D* p );
-    /** Removes the point behind the current position*/
+    //! Removes the point behind the current position
     void removePoint();
-    /** Gets the point at the current position*/
+    //! Gets the point at the current position
     Point3D* getPoint() const;
-    /** Returns the current position*/
+    //! Returns the current position
     unsigned int getCurrent() const;
-    /** Returns the size of the line (the numbero of inserted Nodes without 'head' and 'z'*/
+    //! Returns the size of the line (the numbero of inserted Nodes without 'head' and 'z'
     unsigned int getSize() const;
-    /** Sets the current Node to head*/
+    //! Sets the current Node to head
     void goToBegin();
-    /** Goes to the next Node*/
+    //! Goes to the next Node
     void goToNext();
 };
 

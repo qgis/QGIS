@@ -53,25 +53,25 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     // main actions
 
-    /** Get a point locator for the given layer. If such locator does not exist, it will be created */
+    //! Get a point locator for the given layer. If such locator does not exist, it will be created
     QgsPointLocator* locatorForLayer( QgsVectorLayer* vl );
 
-    /** Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches. */
+    //! Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches.
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter* filter = nullptr );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = nullptr );
 
-    /** Snap to current layer */
+    //! Snap to current layer
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter* filter = nullptr );
 
     // environment setup
 
-    /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
+    //! Assign current map settings to the utils - used for conversion between screen coords to map coords
     void setMapSettings( const QgsMapSettings& settings );
     QgsMapSettings mapSettings() const { return mMapSettings; }
 
-    /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
+    //! Set current layer so that if mode is SnapCurrentLayer we know which layer to use
     void setCurrentLayer( QgsVectorLayer* layer );
-    /** The current layer used if mode is SnapCurrentLayer */
+    //! The current layer used if mode is SnapCurrentLayer
     QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
 
 
@@ -80,9 +80,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! modes for "snap to background"
     enum SnapToMapMode
     {
-      SnapCurrentLayer,    //!< snap just to current layer (tolerance and type from defaultSettings())
-      SnapAllLayers,       //!< snap to all rendered layers (tolerance and type from defaultSettings())
-      SnapAdvanced,        //!< snap according to the configuration set in setLayers()
+      SnapCurrentLayer,    //!< Snap just to current layer (tolerance and type from defaultSettings())
+      SnapAllLayers,       //!< Snap to all rendered layers (tolerance and type from defaultSettings())
+      SnapAdvanced,        //!< Snap according to the configuration set in setLayers()
     };
 
     enum IndexingStrategy
@@ -92,9 +92,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       IndexHybrid         //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
     };
 
-    /** Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be */
+    //! Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
     void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
-    /** Find out which strategy is used for indexing - by default hybrid indexing is used */
+    //! Find out which strategy is used for indexing - by default hybrid indexing is used
     IndexingStrategy indexingStrategy() const { return mStrategy; }
 
     /**
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       QgsTolerance::UnitType unit;
     };
 
-    /** Query layers used for snapping */
+    //! Query layers used for snapping
     QList<LayerConfig> layers() const { return mLayers; }
 
     /** Get extra information about the instance

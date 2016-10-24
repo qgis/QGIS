@@ -49,16 +49,16 @@ class CORE_EXPORT QgsDiagram
      */
     QgsExpression* getExpression( const QString& expression, const QgsExpressionContext& context );
 
-    /** Draws the diagram at the given position (in pixel coordinates)*/
+    //! Draws the diagram at the given position (in pixel coordinates)
     virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) = 0;
 
     /**
      * Get a descriptive name for this diagram type.
      */
     virtual QString diagramName() const = 0;
-    /** Returns the size in map units the diagram will use to render.*/
+    //! Returns the size in map units the diagram will use to render.
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
-    /** Returns the size in map units the diagram will use to render. Interpolate size*/
+    //! Returns the size in map units the diagram will use to render. Interpolate size
     virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
 
     /** Returns the size of the legend item for the diagram corresponding to a specified value.

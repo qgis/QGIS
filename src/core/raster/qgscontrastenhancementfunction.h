@@ -35,29 +35,29 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
     virtual ~QgsContrastEnhancementFunction() {}
 
-    /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */
+    //! \brief A customizable method that takes in a double and returns a int between 0 and 255
     virtual int enhance( double );
 
-    /** \brief A customicable method to indicate if the pixels is displayable */
+    //! \brief A customicable method to indicate if the pixels is displayable
     virtual bool isValueInDisplayableRange( double );
 
-    /** \brief Mustator for the maximum value */
+    //! \brief Mustator for the maximum value
     void setMaximumValue( double );
 
-    /** \brief Mutator for the minimum value */
+    //! \brief Mutator for the minimum value
     void setMinimumValue( double );
 
   protected:
-    /** \brief User defineable maximum value for the band, used for enhanceContrasting */
+    //! \brief User defineable maximum value for the band, used for enhanceContrasting
     double mMaximumValue;
 
-    /** \brief User defineable minimum value for the band, used for enhanceContrasting */
+    //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;
 
-    /** \brief Minimum maximum range for the band, used for enhanceContrasting */
+    //! \brief Minimum maximum range for the band, used for enhanceContrasting
     double mMinimumMaximumRange;
 
-    /** \brief Data type of the band */
+    //! \brief Data type of the band
     Qgis::DataType mQgsRasterDataType;
 };
 

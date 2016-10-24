@@ -179,14 +179,14 @@ class CORE_EXPORT QgsPalLayerSettings
     //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum Placement
     {
-      AroundPoint, /**< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.*/
-      OverPoint, /**  Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.*/
-      Line, /**< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only. */
-      Curved, /** Arranges candidates following the curvature of a line feature. Applies to line layers only.*/
-      Horizontal, /**< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.*/
-      Free, /**< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.*/
-      OrderedPositionsAroundPoint, /**< Candidates are placed in predefined positions around a point. Peference is given to positions with greatest cartographic appeal, eg top right, bottom right, etc. Applies to point layers only.*/
-      PerimeterCurved, /** Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.*/
+      AroundPoint, //!< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.
+      OverPoint, //! Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
+      Line, //!< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
+      Curved, //! Arranges candidates following the curvature of a line feature. Applies to line layers only.
+      Horizontal, //!< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
+      Free, //!< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
+      OrderedPositionsAroundPoint, //!< Candidates are placed in predefined positions around a point. Peference is given to positions with greatest cartographic appeal, eg top right, bottom right, etc. Applies to point layers only.
+      PerimeterCurved, //! Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
     };
 
     //! Positions for labels when using the QgsPalLabeling::OrderedPositionsAroundPoint placement mode
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
     enum LinePlacementFlags
     {
-      OnLine    = 1,      /**< Labels can be placed directly over a line feature.*/
+      OnLine    = 1,      //!< Labels can be placed directly over a line feature.
       AboveLine = 2,      /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
                                respects the direction of the line feature, so a line from right to left labels will have labels
                                placed placed below the line feature. */
@@ -249,16 +249,16 @@ class CORE_EXPORT QgsPalLayerSettings
 
     enum UpsideDownLabels
     {
-      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright */
-      ShowDefined, /*!< show upside down when rotation is layer- or data-defined */
-      ShowAll /*!< show upside down for all labels, including dynamic ones */
+      Upright, //!< Upside-down labels (90 <= angle < 270) are shown upright
+      ShowDefined, //!< Show upside down when rotation is layer- or data-defined
+      ShowAll //!< Show upside down for all labels, including dynamic ones
     };
 
     enum DirectionSymbols
     {
-      SymbolLeftRight, /*!< place direction symbols on left/right of label */
-      SymbolAbove, /*!< place direction symbols on above label */
-      SymbolBelow /*!< place direction symbols on below label */
+      SymbolLeftRight, //!< Place direction symbols on left/right of label
+      SymbolAbove, //!< Place direction symbols on above label
+      SymbolBelow //!< Place direction symbols on below label
     };
 
     enum MultiLineAlign
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
 
-    /** Units used for option sizes, before being converted to rendered sizes */
+    //! Units used for option sizes, before being converted to rendered sizes
     enum SizeUnit
     {
       Points = 0,
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void setDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p,
                                  bool active, bool useExpr, const QString& expr, const QString& field );
 
-    /** Set a property to static instead data defined */
+    //! Set a property to static instead data defined
     void removeDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
     /** Clear all data-defined properties

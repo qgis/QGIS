@@ -37,8 +37,8 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     enum SnappingMode
     {
       NoSnapping,
-      SnapProjectConfig,  //!< snap according to the configuration set in the snapping settings
-      SnapAllLayers,      //!< snap to all rendered layers (tolerance and type from defaultSettings())
+      SnapProjectConfig,  //!< Snap according to the configuration set in the snapping settings
+      SnapAllLayers,      //!< Snap to all rendered layers (tolerance and type from defaultSettings())
     };
 
     /**

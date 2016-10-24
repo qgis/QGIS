@@ -127,7 +127,7 @@ void QgsSpatiaLiteSourceSelect::addClicked()
   addTables();
 }
 
-/** End Autoconnected SLOTS **/
+//! End Autoconnected SLOTS *
 
 // Remember which database is selected
 void QgsSpatiaLiteSourceSelect::on_cmbConnections_activated( int )

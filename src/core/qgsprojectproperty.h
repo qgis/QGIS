@@ -56,10 +56,10 @@ class CORE_EXPORT QgsProperty
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
-    /** Returns true if is a QgsPropertyKey */
+    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const = 0;
 
-    /** Returns true if is a QgsPropertyValue */
+    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const = 0;
 
     /** Returns true if a leaf node
@@ -123,10 +123,10 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
     virtual ~QgsPropertyValue();
 
-    /** Returns true if is a QgsPropertyKey */
+    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return false; }
 
-    /** Returns true if is a QgsPropertyValue */
+    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const override { return true; }
 
     QVariant value() const override { return value_; }
@@ -261,10 +261,10 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// Does this property not have any subkeys or values?
     /* virtual */ bool isEmpty() const { return mProperties.isEmpty(); }
 
-    /** Returns true if is a QgsPropertyKey */
+    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return true; }
 
-    /** Returns true if is a QgsPropertyValue */
+    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const override { return false; }
 
     /// return keys that do not contain other keys

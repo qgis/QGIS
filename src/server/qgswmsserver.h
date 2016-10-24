@@ -95,13 +95,13 @@ class QgsWmsServer: public QgsOWSServer
     of the image object). If an instance to existing hit test structure is passed, instead of rendering
     it will fill the structure with symbols that would be used for rendering */
     QImage* getMap( HitTest* hitTest = nullptr );
-    /** GetMap request with vector format output. This output is usually symbolized (difference to WFS GetFeature)*/
+    //! GetMap request with vector format output. This output is usually symbolized (difference to WFS GetFeature)
     void getMapAsDxf();
-    /** Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
+    //! Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)
     QDomDocument getStyle();
-    /** Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
+    //! Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)
     QDomDocument getStyles();
-    /** Returns a describeLayer file with the onlineResource of the requested layers. Exception is raised in case of troubles :-)*/
+    //! Returns a describeLayer file with the onlineResource of the requested layers. Exception is raised in case of troubles :-)
     QDomDocument describeLayer();
 
     /** Returns printed page as binary
@@ -113,14 +113,14 @@ class QgsWmsServer: public QgsOWSServer
        @return 0 in case of success*/
     int getFeatureInfo( QDomDocument& result, const QString& version = "1.3.0" );
 
-    /** Sets configuration parser for administration settings. Does not take ownership*/
+    //! Sets configuration parser for administration settings. Does not take ownership
     void setAdminConfigParser( QgsWmsConfigParser* parser ) { mConfigParser = parser; }
 
-    /** Returns the schemaExtension for WMS 1.3.0 capabilities*/
+    //! Returns the schemaExtension for WMS 1.3.0 capabilities
     QDomDocument getSchemaExtension();
 
   private:
-    /** Don't use the default constructor*/
+    //! Don't use the default constructor
     QgsWmsServer();
 
     /** Initializes WMS layers and configures mMapRendering.
@@ -161,7 +161,7 @@ class QgsWmsServer: public QgsOWSServer
                                     const QString& version,
                                     const QString& infoFormat,
                                     QgsRectangle* featureBBox = nullptr ) const;
-    /** Appends feature info xml for the layer to the layer element of the dom document*/
+    //! Appends feature info xml for the layer to the layer element of the dom document
     int featureInfoFromRasterLayer( QgsRasterLayer* layer,
                                     const QgsPoint* infoPoint,
                                     QDomDocument& infoDocument,
@@ -173,12 +173,12 @@ class QgsWmsServer: public QgsOWSServer
        @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
     QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator = -1 ) const;
 
-    /** Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend*/
+    //! Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend
     void runHitTest( QPainter* painter, HitTest& hitTest );
-    /** Record which symbols within one layer would be rendered with the given renderer context*/
+    //! Record which symbols within one layer would be rendered with the given renderer context
     void runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, QgsRenderContext& context );
 
-    /** Read legend parameter from the request or from the first print composer in the project*/
+    //! Read legend parameter from the request or from the first print composer in the project
     void legendParameters( double& boxSpace, double& layerSpace, double& layerTitleSpace,
                            double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight, QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
 
@@ -206,23 +206,23 @@ class QgsWmsServer: public QgsOWSServer
     /** Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
-    /** Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes*/
+    //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
     static void groupStringList( QStringList& list, const QString& groupString );
 
     /** Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
       @return list with layer ids where selections have been created*/
     QStringList applyFeatureSelections( const QStringList& layerList ) const;
-    /** Clear all feature selections in the given layers*/
+    //! Clear all feature selections in the given layers
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
-    /** Applies opacity on layer/group level*/
+    //! Applies opacity on layer/group level
     void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRenderer*> >& vectorRenderers,
                          QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                          QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                          QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies
                        );
 
-    /** Restore original opacities*/
+    //! Restore original opacities
     void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRenderer*> >& vectorRenderers,
                            QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                            QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
@@ -234,19 +234,19 @@ class QgsWmsServer: public QgsOWSServer
       @return true if width/height values are okay*/
     bool checkMaximumWidthHeight() const;
 
-    /** Get service address from REQUEST_URI if not specified in the configuration*/
+    //! Get service address from REQUEST_URI if not specified in the configuration
     QString serviceUrl() const;
 
-    /** Add '<?xml version="1.0" ?>'. Some clients need an xml declaration (though it is not strictly required)*/
+    //! Add '<?xml version="1.0" ?>'. Some clients need an xml declaration (though it is not strictly required)
     void addXmlDeclaration( QDomDocument& doc ) const;
 
-    /** Converts a feature info xml document to SIA2045 norm*/
+    //! Converts a feature info xml document to SIA2045 norm
     void convertFeatureInfoToSIA2045( QDomDocument& doc );
 
-    /** Cleanup temporary objects (e.g. SLD parser objects or temporary files) after request*/
+    //! Cleanup temporary objects (e.g. SLD parser objects or temporary files) after request
     void cleanupAfterRequest();
 
-    /** Map containing the WMS parameters*/
+    //! Map containing the WMS parameters
     QgsMapRenderer* mMapRenderer;
 
     QgsCapabilitiesCache* mCapabilitiesCache;
@@ -269,19 +269,19 @@ class QgsWmsServer: public QgsOWSServer
       int version,
       QStringList* attributes = nullptr ) const;
 
-    /** Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
+    //! Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );
 
-    /** Return the image quality to use for getMap request */
+    //! Return the image quality to use for getMap request
     int getImageQuality() const;
 
-    /** Return precision to use for GetFeatureInfo request */
+    //! Return precision to use for GetFeatureInfo request
     int getWMSPrecision( int defaultValue ) const;
 
-    /** Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)*/
+    //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
     QgsRectangle featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRenderer* mr, const QgsRenderContext& rct, const QgsPoint& infoPoint ) const;
 
-    /** Reads and extracts the different options in the FORMAT_OPTIONS parameter*/
+    //! Reads and extracts the different options in the FORMAT_OPTIONS parameter
     void readFormatOptions( QMap<QString, QString>& formatOptions ) const;
     void readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
 };

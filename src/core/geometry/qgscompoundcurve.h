@@ -101,7 +101,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     void sumUpArea( double& sum ) const override;
 
-    /** Appends first point if not already closed.*/
+    //! Appends first point if not already closed.
     void close();
 
     bool hasCurvedSegments() const override;

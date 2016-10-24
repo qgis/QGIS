@@ -43,7 +43,7 @@ class QgsMSLayerBuilder
      @return the created layer or 0 in case of error*/
     virtual QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const = 0;
   protected:
-    /** Tries to create a suitable layer name from a URL. */
+    //! Tries to create a suitable layer name from a URL.
     virtual QString layerNameFromUri( const QString& uri ) const;
     /** Helper function that creates a new temporary file with random name under /tmp/qgis_wms_serv/
     and returns the path of the file (Unix). On Windows, it is created in the current working directory

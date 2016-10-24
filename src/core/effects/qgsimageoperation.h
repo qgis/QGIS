@@ -47,18 +47,18 @@ class CORE_EXPORT QgsImageOperation
      */
     enum GrayscaleMode
     {
-      GrayscaleLightness, /*!< keep the lightness of the color, drops the saturation */
-      GrayscaleLuminosity, /*!< grayscale by perceptual luminosity (weighted sum of color RGB components) */
-      GrayscaleAverage, /*!< grayscale by taking average of color RGB components */
-      GrayscaleOff /*!< no change */
+      GrayscaleLightness, //!< Keep the lightness of the color, drops the saturation
+      GrayscaleLuminosity, //!< Grayscale by perceptual luminosity (weighted sum of color RGB components)
+      GrayscaleAverage, //!< Grayscale by taking average of color RGB components
+      GrayscaleOff //!< No change
     };
 
     /** Flip operation types
      */
     enum FlipType
     {
-      FlipHorizontal, /*!< flip the image horizontally */
-      FlipVertical /*!< flip the image vertically */
+      FlipHorizontal, //!< Flip the image horizontally
+      FlipVertical //!< Flip the image vertically
     };
 
     /** Convert a QImage to a grayscale image. Alpha channel is preserved.
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsImageOperation
      */
     static void overlayColor( QImage &image, const QColor& color );
 
-    /** Struct for storing properties of a distance transform operation*/
+    //! Struct for storing properties of a distance transform operation
     struct DistanceTransformProperties
     {
       DistanceTransformProperties()

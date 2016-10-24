@@ -101,10 +101,10 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual QgsRectangle extent() const override;
     virtual bool isValid() const override;
 
-    /** Return a provider name */
+    //! Return a provider name
     virtual QString name() const override;
 
-    /** Return description */
+    //! Return description
     virtual QString description() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
@@ -115,7 +115,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     void changeAttributeValues( QgsGPSObject& obj,
                                 const QgsAttributeMap& attrs );
 
-    /** Adds one feature (used by addFeatures()) */
+    //! Adds one feature (used by addFeatures())
     bool addFeature( QgsFeature& f );
 
 

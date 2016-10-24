@@ -80,7 +80,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     virtual QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    //! Mutator for sql where clause used to limit dataset size
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
@@ -144,7 +144,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     void pushErrorSlot( const QString& errorMsg );
 
   private:
-    /** Mutable data shared between provider and feature sources */
+    //! Mutable data shared between provider and feature sources
     QSharedPointer<QgsWFSSharedData> mShared;
 
     friend class QgsWFSFeatureSource;
@@ -154,15 +154,15 @@ class QgsWFSProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    /** Geometry type of the features in this layer*/
+    //! Geometry type of the features in this layer
     mutable QgsWkbTypes::Type mWKBType;
-    /** Flag if provider is valid*/
+    //! Flag if provider is valid
     bool mValid;
-    /** Namespace URL of the server (comes from DescribeFeatureDocument)*/
+    //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
-    /** Server capabilities for this layer (generated from capabilities document)*/
+    //! Server capabilities for this layer (generated from capabilities document)
     QgsVectorDataProvider::Capabilities mCapabilities;
-    /** Fields of this typename. Might be different from mShared->mFields in case of SELECT */
+    //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
     QgsFields mThisTypenameFields;
 
     QString mProcessSQLErrorMsg;
@@ -188,20 +188,20 @@ class QgsWFSProvider : public QgsVectorDataProvider
         note: true does not automatically mean that the transaction succeeded*/
     bool sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse );
 
-    /** Creates a transaction element and adds it (normally as first element) to the document*/
+    //! Creates a transaction element and adds it (normally as first element) to the document
     QDomElement createTransactionElement( QDomDocument& doc ) const;
 
-    /** True if the server response means success*/
+    //! True if the server response means success
     bool transactionSuccess( const QDomDocument& serverResponse ) const;
-    /** Returns the inserted ids*/
+    //! Returns the inserted ids
     QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
-    /** Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
+    //! Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)
     bool getCapabilities();
-    /** Records provider error*/
+    //! Records provider error
     void handleException( const QDomDocument& serverResponse );
-    /** Converts DescribeFeatureType schema geometry property type to WKBType*/
+    //! Converts DescribeFeatureType schema geometry property type to WKBType
     QgsWkbTypes::Type geomTypeFromPropertyType( const QString& attName, const QString& propType );
-    /** Convert the value to its appropriate XML representation */
+    //! Convert the value to its appropriate XML representation
     QString convertToXML( const QVariant& value );
 
     bool processSQL( const QString& sqlString, QString& errorMsg, QString& warningMsg );

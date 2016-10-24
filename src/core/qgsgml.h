@@ -53,34 +53,34 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
-        /** Constructor */
+        //! Constructor
         LayerProperties() {}
 
-        /** Layer name */
+        //! Layer name
         QString mName;
-        /** Geometry attribute name */
+        //! Geometry attribute name
         QString mGeometryAttribute;
     };
 
-    /** Axis orientation logic. */
+    //! Axis orientation logic.
     typedef enum
     {
-      /** Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG: **/
+      //! Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG: *
       Honour_EPSG_if_urn,
-      /** Honour EPSG axis order */
+      //! Honour EPSG axis order
       Honour_EPSG,
-      /** Ignore EPSG axis order */
+      //! Ignore EPSG axis order
       Ignore_EPSG,
     } AxisOrientationLogic;
 
-    /** Constructor */
+    //! Constructor
     QgsGmlStreamingParser( const QString& typeName,
                            const QString& geometryAttribute,
                            const QgsFields & fields,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
 
-    /** Constructor for a join layer, or dealing with renamed fields*/
+    //! Constructor for a join layer, or dealing with renamed fields
     QgsGmlStreamingParser( const QList<LayerProperties>& layerProperties,
                            const QgsFields & fields,
                            const QMap< QString, QPair<QString, QString> >& mapFieldNameToSrcLayerNameFieldName,
@@ -102,31 +102,31 @@ class CORE_EXPORT QgsGmlStreamingParser
         by later calls. */
     QVector<QgsGmlFeaturePtrGmlIdPair> getAndStealReadyFeatures();
 
-    /** Return the EPSG code, or 0 if unknown */
+    //! Return the EPSG code, or 0 if unknown
     int getEPSGCode() const { return mEpsg; }
 
-    /** Return the value of the srsName attribute */
+    //! Return the value of the srsName attribute
     const QString& srsName() const { return mSrsName; }
 
-    /** Return layer bounding box */
+    //! Return layer bounding box
     const QgsRectangle& layerExtent() const { return mLayerExtent; }
 
-    /** Return the geometry type */
+    //! Return the geometry type
     QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
-    /** Return WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found */
+    //! Return WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
     int numberMatched() const { return mNumberMatched; }
 
-    /** Return WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found */
+    //! Return WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
     int numberReturned() const { return mNumberReturned; }
 
-    /** Return whether the document parser is a OGC exception */
+    //! Return whether the document parser is a OGC exception
     bool isException() const { return mIsException; }
 
-    /** Return the exception text. */
+    //! Return the exception text.
     const QString& exceptionText() const { return mExceptionText; }
 
-    /** Return whether a "truncatedResponse" element is found */
+    //! Return whether a "truncatedResponse" element is found
     bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsGmlStreamingParser
       ExceptionText
     };
 
-    /** XML handler methods*/
+    //! XML handler methods
     void startElement( const XML_Char* el, const XML_Char** attr );
     void endElement( const XML_Char* el );
     void characters( const XML_Char* chars, int len );
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsGmlStreamingParser
        @return attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
-    /** Creates a rectangle from a coordinate string. */
+    //! Creates a rectangle from a coordinate string.
     bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
     /** Creates a set of points from a coordinate string.
        @param points list that will contain the created points
@@ -221,26 +221,26 @@ class CORE_EXPORT QgsGmlStreamingParser
     int createMultiPointFromFragments();
     int createPolygonFromFragments();
     int createMultiPolygonFromFragments();
-    /** Adds all the integers contained in mCurrentWKBFragmentSizes*/
+    //! Adds all the integers contained in mCurrentWKBFragmentSizes
     int totalWKBFragmentSize() const;
 
-    /** Get safely (if empty) top from mode stack */
+    //! Get safely (if empty) top from mode stack
     ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
 
-    /** Safely (if empty) pop from mode stack */
+    //! Safely (if empty) pop from mode stack
     ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
 
-    /** Expat parser */
+    //! Expat parser
     XML_Parser mParser;
 
-    /** List of (feature, gml_id) pairs */
+    //! List of (feature, gml_id) pairs
     QVector<QgsGmlFeaturePtrGmlIdPair> mFeatureList;
 
-    /** Describe the various feature types of a join layer */
+    //! Describe the various feature types of a join layer
     QList<LayerProperties> mLayerProperties;
     QMap< QString, LayerProperties > mMapTypeNameToProperties;
 
-    /** Typename without namespace prefix */
+    //! Typename without namespace prefix
     QString mTypeName;
     QByteArray mTypeNameBA;
     const char* mTypeNamePtr;
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     //results are members such that handler routines are able to manipulate them
 
-    /** Name of geometry attribute*/
+    //! Name of geometry attribute
     QString mGeometryAttribute;
     QByteArray mGeometryAttributeBA;
     const char* mGeometryAttributePtr;
@@ -260,19 +260,19 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool mIsException;
     QString mExceptionText;
     bool mTruncatedResponse;
-    /** Parsing depth */
+    //! Parsing depth
     int mParseDepth;
     int mFeatureTupleDepth;
-    QString mCurrentTypename; /** Used to track the current (unprefixed) typename for wfs:Member in join layer */
-    /** Keep track about the most important nested elements*/
+    QString mCurrentTypename; //! Used to track the current (unprefixed) typename for wfs:Member in join layer
+    //! Keep track about the most important nested elements
     QStack<ParseMode> mParseModeStack;
-    /** This contains the character data if an important element has been encountered*/
+    //! This contains the character data if an important element has been encountered
     QString mStringCash;
     QgsFeature* mCurrentFeature;
     QVector<QVariant> mCurrentAttributes; //attributes of current feature
     QString mCurrentFeatureId;
     int mFeatureCount;
-    /** The total WKB for a feature*/
+    //! The total WKB for a feature
     QgsWkbPtr mCurrentWKB;
     QgsRectangle mCurrentExtent;
     bool mBoundedByNullFound;
@@ -283,36 +283,36 @@ class CORE_EXPORT QgsGmlStreamingParser
     QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
     QString mAttributeName;
     char mEndian;
-    /** Coordinate separator for coordinate strings. Usually "," */
+    //! Coordinate separator for coordinate strings. Usually ","
     QString mCoordinateSeparator;
-    /** Tuple separator for coordinate strings. Usually " " */
+    //! Tuple separator for coordinate strings. Usually " "
     QString mTupleSeparator;
-    /** Number of dimensions in pos or posList */
+    //! Number of dimensions in pos or posList
     int mDimension;
-    /** Coordinates mode, coordinate or posList */
+    //! Coordinates mode, coordinate or posList
     ParseMode mCoorMode;
-    /** EPSG of parsed features geometries */
+    //! EPSG of parsed features geometries
     int mEpsg;
-    /** Literal srsName attribute */
+    //! Literal srsName attribute
     QString mSrsName;
-    /** Layer bounding box */
+    //! Layer bounding box
     QgsRectangle mLayerExtent;
-    /** GML namespace URI */
+    //! GML namespace URI
     QString mGMLNameSpaceURI;
     const char* mGMLNameSpaceURIPtr;
-    /** Axis orientation logic */
+    //! Axis orientation logic
     AxisOrientationLogic mAxisOrientationLogic;
-    /** Whether to invert axis orientation. This value is immutable, but combined with what is infered from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation */
+    //! Whether to invert axis orientation. This value is immutable, but combined with what is infered from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation
     bool mInvertAxisOrientationRequest;
-    /** Whether to invert axis orientation: result of mAxisOrientationLogic, mInvertAxisOrientationRequest and what is infered from data and mAxisOrientationLogic */
+    //! Whether to invert axis orientation: result of mAxisOrientationLogic, mInvertAxisOrientationRequest and what is infered from data and mAxisOrientationLogic
     bool mInvertAxisOrientation;
-    /** WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found */
+    //! WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
     int mNumberReturned;
-    /** WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found */
+    //! WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
     int mNumberMatched;
-    /** XML blob containing geometry */
+    //! XML blob containing geometry
     std::string mGeometryString;
-    /** Whether we found a unhandled geometry element */
+    //! Whether we found a unhandled geometry element
     bool mFoundUnhandledGeometryElement;
 };
 
@@ -356,10 +356,10 @@ class CORE_EXPORT QgsGml : public QObject
      */
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent = nullptr );
 
-    /** Get parsed features for given type name */
+    //! Get parsed features for given type name
     QMap<QgsFeatureId, QgsFeature* > featuresMap() const { return mFeatures; }
 
-    /** Get feature ids map */
+    //! Get feature ids map
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /** Returns features spatial reference system
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsGml : public QObject
 
     void setFinished();
 
-    /** Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'*/
+    //! Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'
     void handleProgressEvent( qint64 progress, qint64 totalSteps );
 
   signals:
@@ -392,23 +392,23 @@ class CORE_EXPORT QgsGml : public QObject
 
     QgsGmlStreamingParser mParser;
 
-    /** Typename without namespace prefix */
+    //! Typename without namespace prefix
     QString mTypeName;
 
-    /** True if the request is finished*/
+    //! True if the request is finished
     bool mFinished;
 
-    /** The features of the layer, map of feature maps for each feature type*/
+    //! The features of the layer, map of feature maps for each feature type
     //QMap<QgsFeatureId, QgsFeature* > &mFeatures;
     QMap<QgsFeatureId, QgsFeature* > mFeatures;
     //QMap<QString, QMap<QgsFeatureId, QgsFeature* > > mFeatures;
 
-    /** Stores the relation between provider ids and WFS server ids*/
+    //! Stores the relation between provider ids and WFS server ids
     //QMap<QgsFeatureId, QString > &mIdMap;
     QMap<QgsFeatureId, QString > mIdMap;
     //QMap<QString, QMap<QgsFeatureId, QString > > mIdMap;
 
-    /** Bounding box of the layer*/
+    //! Bounding box of the layer
     QgsRectangle mExtent;
 };
 

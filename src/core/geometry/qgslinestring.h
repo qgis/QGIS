@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void addVertex( const QgsPointV2& pt );
 
-    /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
+    //! Closes the line string by appending the first point to the end of the line, if it is not already closed.
     void close();
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve

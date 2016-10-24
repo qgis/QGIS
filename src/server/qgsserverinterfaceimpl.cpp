@@ -21,7 +21,7 @@
 #include "qgsconfigcache.h"
 #include "qgsmslayercache.h"
 
-/** Constructor */
+//! Constructor
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
     : mCapabilitiesCache( capCache )
 {
@@ -36,7 +36,7 @@ QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 }
 
 
-/** Destructor */
+//! Destructor
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
   delete mAccessControls;
@@ -68,7 +68,7 @@ void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
   mFilters = *filters;
 }
 
-/** Register a new access control filter */
+//! Register a new access control filter
 void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
 {
   mAccessControls->registerAccessControl( accessControl, priority );

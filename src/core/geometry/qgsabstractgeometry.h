@@ -45,7 +45,7 @@ class CORE_EXPORT QgsAbstractGeometry
 {
   public:
 
-    /** Segmentation tolerance as maximum angle or maximum difference between approximation and circle*/
+    //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
     enum SegmentationToleranceType
     {
       MaximumAngle = 0,
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double area() const { return 0.0; }
 
-    /** Returns the centroid of the geometry */
+    //! Returns the centroid of the geometry
     virtual QgsPointV2 centroid() const;
 
     /** Returns true if the geometry is empty

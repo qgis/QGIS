@@ -282,7 +282,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool readBoolEntry( const QString& scope, const QString& key, bool def = false, bool* ok = nullptr ) const;
 
 
-    /** Remove the given key */
+    //! Remove the given key
     bool removeEntry( const QString& scope, const QString& key );
 
 
@@ -312,10 +312,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
-    /** Turn filename read from the project file to an absolute path */
+    //! Turn filename read from the project file to an absolute path
     QString readPath( QString filename ) const;
 
-    /** Return error message from previous read/write */
+    //! Return error message from previous read/write
     QString error() const;
 
     /** Change handler for missing layers.
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
-    /** Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
+    //! Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
     QString layerIsEmbedded( const QString& id ) const;
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
@@ -338,10 +338,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
-    /** Convenience function to set topological editing */
+    //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
 
-    /** Convenience function to query topological editing status */
+    //! Convenience function to query topological editing status
     bool topologicalEditing() const;
 
     /** Convenience function to query default distance measurement units for project.

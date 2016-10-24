@@ -148,14 +148,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
 
-    /** Sets geometry calculator used in distance/area calculations. */
+    //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea & da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
     QString expressionText();
 
-    /** Sets the expression string for the widget */
+    //! Sets the expression string for the widget
     void setExpressionText( const QString& expression );
 
     /** Returns the expression context for the widget. The context is used for the expression

@@ -35,7 +35,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     QgsComposerAttributeTableV2* mComposerTable;
     QgsComposerFrame* mFrame;
 
-    /** Blocks / unblocks the signals of all GUI elements*/
+    //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
     void toggleSourceControls();
@@ -80,10 +80,10 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mWrapBehaviourComboBox_currentIndexChanged( int index );
     void on_mAdvancedCustomisationButton_clicked();
 
-    /** Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
+    //! Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)
     void setMaximumNumberOfFeatures( int n );
 
-    /** Sets the GUI elements to the values of mComposerTable*/
+    //! Sets the GUI elements to the values of mComposerTable
     void updateGuiElements();
 
     void atlasToggled();

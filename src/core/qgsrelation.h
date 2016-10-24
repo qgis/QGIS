@@ -297,17 +297,17 @@ class CORE_EXPORT QgsRelation
     void updateRelationStatus();
 
   private:
-    /** Unique Id */
+    //! Unique Id
     QString mRelationId;
-    /** Human redable name*/
+    //! Human redable name
     QString mRelationName;
-    /** The child layer */
+    //! The child layer
     QString mReferencingLayerId;
-    /** The child layer */
+    //! The child layer
     QgsVectorLayer* mReferencingLayer;
-    /** The parent layer id */
+    //! The parent layer id
     QString mReferencedLayerId;
-    /** The parent layer */
+    //! The parent layer
     QgsVectorLayer* mReferencedLayer;
     /** A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values

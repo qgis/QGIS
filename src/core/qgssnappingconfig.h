@@ -34,9 +34,9 @@ class CORE_EXPORT QgsSnappingConfig
      */
     enum SnappingMode
     {
-      ActiveLayer = 1, /*!< on the active layer */
-      AllLayers = 2, /*!< on all vector layers */
-      AdvancedConfiguration = 3, /*!< on a per layer configuration basis */
+      ActiveLayer = 1, //!< On the active layer
+      AllLayers = 2, //!< On all vector layers
+      AdvancedConfiguration = 3, //!< On a per layer configuration basis
     };
 
     /**
@@ -44,9 +44,9 @@ class CORE_EXPORT QgsSnappingConfig
      */
     enum SnappingType
     {
-      Vertex = 1, /*!< on vertices only */
-      VertexAndSegment = 2, /*!< both on vertices and segments */
-      Segment = 3, /*!< on segments only */
+      Vertex = 1, //!< On vertices only
+      VertexAndSegment = 2, //!< Both on vertices and segments
+      Segment = 3, //!< On segments only
     };
 
     /** \ingroup core

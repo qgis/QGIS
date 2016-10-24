@@ -207,12 +207,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Returns a bitmask containing the supported capabilities*/
+    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** The Postgres provider does its own transforms so we return
@@ -330,7 +330,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void setEditorWidgets();
 
-    /** Convert a QgsField to work with PG */
+    //! Convert a QgsField to work with PG
     static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
 
     /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
@@ -362,7 +362,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     static QList<QgsVectorLayer*> searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& schema, const QString& tableName );
 
-    /** Old-style mapping of index to name for QgsPalLabeling fix */
+    //! Old-style mapping of index to name for QgsPalLabeling fix
     QgsAttrPalIndexNameHash mAttrPalIndexName;
 
     QgsFields mAttributeFields;
@@ -496,7 +496,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 };
 
 
-/** Assorted Postgres utility functions */
+//! Assorted Postgres utility functions
 class QgsPostgresUtils
 {
   public:

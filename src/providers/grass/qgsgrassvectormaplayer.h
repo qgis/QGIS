@@ -54,10 +54,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     bool isValid() const { return mValid; }
     QgsGrassVectorMap *map() { return mMap; }
 
-    /** Category index index */
+    //! Category index index
     int cidxFieldIndex();
 
-    /** Current number of cats in cat index, changing during editing */
+    //! Current number of cats in cat index, changing during editing
     int cidxFieldNumCats();
 
     /** Original fields before editing started + topo field if edited.
@@ -86,13 +86,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void addUser();
     void removeUser();
 
-    /** Load attributes from the map. Old sources are released. */
+    //! Load attributes from the map. Old sources are released.
     void load();
 
-    /** Clear all cached data */
+    //! Clear all cached data
     void clear();
 
-    /** Decrease number of users and clear if no more users */
+    //! Decrease number of users and clear if no more users
     void close();
 
     void startEdit();
@@ -156,7 +156,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     void deleteColumn( const QgsField &field, QString &error );
 
-    /** Insert records for all existing categories to the table */
+    //! Insert records for all existing categories to the table
     void insertCats( QString &error );
 
     // update fields to real state

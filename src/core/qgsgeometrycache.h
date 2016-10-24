@@ -40,7 +40,7 @@ class CORE_EXPORT QgsGeometryCache
     //! get rid of the cached geometry
     void removeGeometry( QgsFeatureId fid ) { mCachedGeometries.remove( fid ); }
 
-    /** Deletes the geometries in mCachedGeometries */
+    //! Deletes the geometries in mCachedGeometries
     void deleteCachedGeometries();
 
     void setCachedGeometriesRect( const QgsRectangle& extent ) { mCachedGeometriesRect = extent; }
@@ -48,10 +48,10 @@ class CORE_EXPORT QgsGeometryCache
 
   protected:
 
-    /** Cache of the committed geometries retrieved *for the current display* */
+    //! Cache of the committed geometries retrieved *for the current display*
     QgsGeometryMap mCachedGeometries;
 
-    /** Extent for which there are cached geometries */
+    //! Extent for which there are cached geometries
     QgsRectangle mCachedGeometriesRect;
 
 };

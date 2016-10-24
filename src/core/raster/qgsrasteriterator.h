@@ -86,7 +86,7 @@ class CORE_EXPORT QgsRasterIterator
     int mMaximumTileWidth;
     int mMaximumTileHeight;
 
-    /** Remove part into and release memory*/
+    //! Remove part into and release memory
     void removePartInfo( int bandNumber );
 };
 

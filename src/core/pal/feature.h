@@ -46,7 +46,7 @@
 
 namespace pal
 {
-  /** Optional additional info about label (for curved labels) */
+  //! Optional additional info about label (for curved labels)
   class CORE_EXPORT LabelInfo
   {
     public:
@@ -251,7 +251,7 @@ namespace pal
       //! Get hole (inner ring) - considered as obstacle
       FeaturePart* getSelfObstacle( int i ) { return mHoles.at( i ); }
 
-      /** Check whether this part is connected with some other part */
+      //! Check whether this part is connected with some other part
       bool isConnected( FeaturePart* p2 );
 
       /** Merge other (connected) part with this one and save the result in this part (other is unchanged).
@@ -279,7 +279,7 @@ namespace pal
       QgsLabelFeature* mLF;
       QList<FeaturePart*> mHoles;
 
-      /** \brief read coordinates from a GEOS geom */
+      //! \brief read coordinates from a GEOS geom
       void extractCoords( const GEOSGeometry* geom );
 
     private:

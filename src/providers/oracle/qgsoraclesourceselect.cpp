@@ -38,7 +38,7 @@ email                : jef at norbit dot de
 #include <QHeaderView>
 #include <QStringList>
 
-/** Used to create an editor for when the user tries to change the contents of a cell */
+//! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
@@ -256,7 +256,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   populateConnectionList();
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 // Slot for adding a new connection
 void QgsOracleSourceSelect::on_btnNew_clicked()
 {
@@ -319,7 +319,7 @@ void QgsOracleSourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-/** End Autoconnected SLOTS **/
+//! End Autoconnected SLOTS *
 
 // Remember which database is selected
 void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )

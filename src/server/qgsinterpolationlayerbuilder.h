@@ -22,7 +22,7 @@
 
 class QgsVectorLayer;
 
-/** A class that produces a rasterlayer from a vector layer with spatial interpolation*/
+//! A class that produces a rasterlayer from a vector layer with spatial interpolation
 class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
 {
   public:

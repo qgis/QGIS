@@ -47,7 +47,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetFeatureResponse( QByteArray* ba ) override;
     virtual void endGetFeatureResponse( QByteArray* ba ) override;
     virtual void setGetCoverageResponse( QByteArray* ba ) override;
-    /** Send out HTTP headers and flush output buffer*/
+    //! Send out HTTP headers and flush output buffer
     virtual void sendResponse() override;
     virtual void setDefaultHeaders() override;
     virtual void setHeader( const QString &name, const QString &value ) override;
@@ -64,7 +64,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     virtual void setPluginFilters( const QgsServerFiltersMap &pluginFilters ) override;
 #endif
-    /** Return the response if capture output is activated */
+    //! Return the response if capture output is activated
     QPair<QByteArray, QByteArray> getResponse() override;
 
   protected:
@@ -76,7 +76,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     QString formatToMimeType( const QString& format ) const;
 
     void requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters );
-    /** Read CONTENT_LENGTH characters from stdin*/
+    //! Read CONTENT_LENGTH characters from stdin
     QString readPostBody() const;
 
   private:
@@ -89,7 +89,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static bool greenCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
     static bool blueCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
     static bool alphaCompare( QPair<QRgb, int> c1, QPair<QRgb, int> c2 );
-    /** Calculates a representative color for a box (pixel weighted average)*/
+    //! Calculates a representative color for a box (pixel weighted average)
     static QRgb boxColor( const QgsColorBox& box, int boxPixels );
     // TODO: if HAVE_SERVER_PYTHON
     QByteArray mResponseHeader;

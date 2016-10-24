@@ -39,7 +39,7 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
     const QgsAttributes& attributes() { return mAttributes; }
 
   protected:
-    /** Stores attribute values for diagram rendering*/
+    //! Stores attribute values for diagram rendering
     QgsAttributes mAttributes;
 };
 

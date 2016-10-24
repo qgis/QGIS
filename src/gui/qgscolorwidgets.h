@@ -43,14 +43,14 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      */
     enum ColorComponent
     {
-      Multiple = 0, /*!< widget alters multiple color components */
-      Red, /*!< red component of color */
-      Green, /*!< green component of color */
-      Blue, /*!< blue component of color */
-      Hue, /*!< hue component of color (based on HSV model) */
-      Saturation, /*!< saturation component of color (based on HSV model) */
-      Value, /*!< value component of color (based on HSV model) */
-      Alpha /*!< alpha component (opacity) of color */
+      Multiple = 0, //!< Widget alters multiple color components
+      Red, //!< Red component of color
+      Green, //!< Green component of color
+      Blue, //!< Blue component of color
+      Hue, //!< Hue component of color (based on HSV model)
+      Saturation, //!< Saturation component of color (based on HSV model)
+      Value, //!< Value component of color (based on HSV model)
+      Alpha //!< Alpha component (opacity) of color
     };
 
     /** Construct a new color widget.
@@ -328,10 +328,10 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
      */
     void createImages( const QSizeF size );
 
-    /** Creates the hue wheel image*/
+    //! Creates the hue wheel image
     void createWheel();
 
-    /** Creates the inner triangle image*/
+    //! Creates the inner triangle image
     void createTriangle();
 
     /** Sets the widget color based on a point in the widget
@@ -446,8 +446,8 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      */
     enum Orientation
     {
-      Horizontal = 0, /*!< horizontal ramp */
-      Vertical /*!< vertical ramp */
+      Horizontal = 0, //!< Horizontal ramp
+      Vertical //!< Vertical ramp
     };
 
     /** Construct a new color ramp widget.
@@ -639,10 +639,10 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     enum ColorTextFormat
     {
-      HexRgb = 0, /*!< \#RRGGBB in hexadecimal */
-      HexRgbA, /*!< \#RRGGBBAA in hexadecimal, with alpha */
-      Rgb, /*!< rgb( r, g, b ) format */
-      Rgba /*!< rgba( r, g, b, a ) format, with alpha */
+      HexRgb = 0, //!< \#RRGGBB in hexadecimal
+      HexRgbA, //!< \#RRGGBBAA in hexadecimal, with alpha
+      Rgb, //!< Rgb( r, g, b ) format
+      Rgba //!< Rgba( r, g, b, a ) format, with alpha
     };
 
     QLineEdit* mLineEdit;

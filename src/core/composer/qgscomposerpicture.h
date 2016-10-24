@@ -37,11 +37,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     enum ResizeMode
     {
-      Zoom, /*!< enlarges image to fit frame while maintaining aspect ratio of picture */
-      Stretch, /*!< stretches image to fit frame, ignores aspect ratio */
-      Clip, /*!< draws image at original size and clips any portion which falls outside frame */
-      ZoomResizeFrame, /*!< enlarges image to fit frame, then resizes frame to fit resultant image */
-      FrameToImageSize /*!< sets size of frame to match original size of image without scaling */
+      Zoom, //!< Enlarges image to fit frame while maintaining aspect ratio of picture
+      Stretch, //!< Stretches image to fit frame, ignores aspect ratio
+      Clip, //!< Draws image at original size and clips any portion which falls outside frame
+      ZoomResizeFrame, //!< Enlarges image to fit frame, then resizes frame to fit resultant image
+      FrameToImageSize //!< Sets size of frame to match original size of image without scaling
     };
 
     /** Format of source image
@@ -56,17 +56,17 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     //! Method for syncing rotation to a map's North direction
     enum NorthMode
     {
-      GridNorth = 0, /*!< Align to grid north */
-      TrueNorth, /*!< Align to true north */
+      GridNorth = 0, //!< Align to grid north
+      TrueNorth, //!< Align to true north
     };
 
     QgsComposerPicture( QgsComposition *composition );
     ~QgsComposerPicture();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerPicture; }
 
-    /** Reimplementation of QCanvasItem::paint*/
+    //! Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Sets the source path of the image (may be svg or a raster format). Data defined
@@ -284,19 +284,19 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   signals:
-    /** Is emitted on picture rotation change*/
+    //! Is emitted on picture rotation change
     void pictureRotationChanged( double newRotation );
 
   private:
 
     //default constructor is forbidden
     QgsComposerPicture();
-    /** Calculates bounding rect for svg file (mSourcefile) such that aspect ratio is correct*/
+    //! Calculates bounding rect for svg file (mSourcefile) such that aspect ratio is correct
     QRectF boundedSVGRect( double deviceWidth, double deviceHeight );
-    /** Calculates bounding rect for image such that aspect ratio is correct*/
+    //! Calculates bounding rect for image such that aspect ratio is correct
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
 
-    /** Returns size of current raster or svg picture */
+    //! Returns size of current raster or svg picture
     QSizeF pictureSize();
 
     QImage mImage;
@@ -306,9 +306,9 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     QSize mDefaultSvgSize;
 
-    /** Image rotation*/
+    //! Image rotation
     double mPictureRotation;
-    /** Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
+    //! Map that sets the rotation (or 0 if this picture uses map independent rotation)
     const QgsComposerMap* mRotationMap;
 
     //! Mode used to align to North
@@ -316,9 +316,9 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     //! Offset for north arrow
     double mNorthOffset;
 
-    /** Width of the picture (in mm)*/
+    //! Width of the picture (in mm)
     double mPictureWidth;
-    /** Height of the picture (in mm)*/
+    //! Height of the picture (in mm)
     double mPictureHeight;
 
     ResizeMode mResizeMode;
@@ -332,10 +332,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     bool mLoaded;
     bool mLoadingSvg;
 
-    /** Loads an image file into the picture item and redraws the item*/
+    //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QString &path );
 
-    /** Sets up the picture item and connects to relevant signals*/
+    //! Sets up the picture item and connects to relevant signals
     void init();
 
     /** Returns part of a raster image which will be shown, given current picture

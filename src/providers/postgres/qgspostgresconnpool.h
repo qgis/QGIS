@@ -64,7 +64,7 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
 
 };
 
-/** PostgreSQL connection pool - singleton */
+//! PostgreSQL connection pool - singleton
 class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgresConnPoolGroup>
 {
   public:

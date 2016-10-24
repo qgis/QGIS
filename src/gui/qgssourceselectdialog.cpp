@@ -43,7 +43,7 @@
 class QgsSourceSelectItemDelegate : public QItemDelegate
 {
   public:
-    /** Constructor */
+    //! Constructor
     QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };

@@ -50,16 +50,16 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
      */
     void updateFields( QgsFields& fields );
 
-    /** Calls cacheJoinLayer() for all vector joins*/
+    //! Calls cacheJoinLayer() for all vector joins
     void createJoinCaches();
 
-    /** Saves mVectorJoins to xml under the layer node*/
+    //! Saves mVectorJoins to xml under the layer node
     void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
 
-    /** Reads joins from project file*/
+    //! Reads joins from project file
     void readXml( const QDomNode& layer_node );
 
-    /** Quick way to test if there is any join at all*/
+    //! Quick way to test if there is any join at all
     bool containsJoins() const { return !mVectorJoins.isEmpty(); }
 
     const QgsVectorJoinList& vectorJoins() const { return mVectorJoins; }
@@ -96,13 +96,13 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
 
     QgsVectorLayer* mLayer;
 
-    /** Joined vector layers*/
+    //! Joined vector layers
     QgsVectorJoinList mVectorJoins;
 
-    /** Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)*/
+    //! Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)
     void cacheJoinLayer( QgsVectorJoinInfo& joinInfo );
 
-    /** Main mutex to protect most data members that can be modified concurrently */
+    //! Main mutex to protect most data members that can be modified concurrently
     QMutex mMutex;
 };
 

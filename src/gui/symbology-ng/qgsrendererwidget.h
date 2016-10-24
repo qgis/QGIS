@@ -100,17 +100,17 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
-    /** Change color of selected symbols*/
+    //! Change color of selected symbols
     void changeSymbolColor();
-    /** Change opacity of selected symbols*/
+    //! Change opacity of selected symbols
     void changeSymbolTransparency();
-    /** Change units mm/map units of selected symbols*/
+    //! Change units mm/map units of selected symbols
     void changeSymbolUnit();
-    /** Change line widths of selected symbols*/
+    //! Change line widths of selected symbols
     void changeSymbolWidth();
-    /** Change marker sizes of selected symbols*/
+    //! Change marker sizes of selected symbols
     void changeSymbolSize();
-    /** Change marker angles of selected symbols*/
+    //! Change marker angles of selected symbols
     void changeSymbolAngle();
 
     virtual void copy() {}

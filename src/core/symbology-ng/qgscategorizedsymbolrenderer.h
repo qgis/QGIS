@@ -212,7 +212,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
   private:
 
-    /** Returns calculated classification value for a feature */
+    //! Returns calculated classification value for a feature
     QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 
 };

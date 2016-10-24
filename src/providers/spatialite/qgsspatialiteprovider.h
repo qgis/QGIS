@@ -55,7 +55,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    /** Import a vector layer into the database */
+    //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -92,7 +92,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     virtual QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    //! Mutator for sql where clause used to limit dataset size
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
@@ -162,7 +162,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /** Returns a bitmask containing the supported capabilities*/
+    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** The SpatiaLite provider does its own transforms so we return

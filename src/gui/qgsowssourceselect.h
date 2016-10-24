@@ -49,7 +49,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     Q_OBJECT
 
   public:
-    /** Formats supported by provider */
+    //! Formats supported by provider
     struct SupportedFormat
     {
       QString format;

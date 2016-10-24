@@ -455,7 +455,7 @@ class CORE_EXPORT QgsWkbTypes
       return Unknown;
     }
 
-    /** Returns the modified input geometry type according to hasZ / hasM */
+    //! Returns the modified input geometry type according to hasZ / hasM
     static Type zmType( Type type, bool hasZ, bool hasM )
     {
       type = flatType( type );

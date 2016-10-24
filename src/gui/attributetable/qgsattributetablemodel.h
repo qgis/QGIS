@@ -347,12 +347,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsFeatureRequest mFeatureRequest;
 
-    /** The currently cached column */
+    //! The currently cached column
     QgsExpression mSortCacheExpression;
     QgsAttributeList mSortCacheAttributes;
-    /** If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression*/
+    //! If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression
     int mSortFieldIndex;
-    /** Allows caching of one value per column (used for sorting) */
+    //! Allows caching of one value per column (used for sorting)
     QHash<QgsFeatureId, QVariant> mSortCache;
 
     /**

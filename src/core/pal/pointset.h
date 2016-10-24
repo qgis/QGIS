@@ -122,7 +122,7 @@ namespace pal
         max[1] = ymax;
       }
 
-      /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
+      //! Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset.
       PointSet* getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }

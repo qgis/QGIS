@@ -165,7 +165,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 #endif
     void openURL( const QString& url, bool useQgisDocDirectory = true ) override;
 
-    /** Return a pointer to the map canvas used by qgisapp */
+    //! Return a pointer to the map canvas used by qgisapp
     QgsMapCanvas * mapCanvas() override;
 
     /**
@@ -184,10 +184,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsMessageBar * messageBar() override;
 
-    /** Open the message log dock widget **/
+    //! Open the message log dock widget *
     void openMessageLog() override;
 
-    /** Adds a widget to the user input tool bar.*/
+    //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget* widget ) override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
@@ -210,56 +210,56 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) override;
 
-    /** Deletes parent composer of composer view, after closing composer window */
+    //! Deletes parent composer of composer view, after closing composer window
     void deleteComposer( QgsComposerView* composerView ) override;
 
-    /** Return changeable options built from settings and/or defaults */
+    //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
 
     /** Generate stylesheet
      * @param opts generated default option values, or a changed copy of them */
     void buildStyleSheet( const QMap<QString, QVariant>& opts ) override;
 
-    /** Save changed default option keys/values to user settings */
+    //! Save changed default option keys/values to user settings
     void saveStyleSheetOptions( const QMap<QString, QVariant>& opts ) override;
 
-    /** Get reference font for initial qApp (may not be same as QgisApp) */
+    //! Get reference font for initial qApp (may not be same as QgisApp)
     QFont defaultStyleSheetFont() override;
 
-    /** Add action to the plugins menu */
+    //! Add action to the plugins menu
     void addPluginToMenu( const QString& name, QAction* action ) override;
-    /** Remove action from the plugins menu */
+    //! Remove action from the plugins menu
     void removePluginMenu( const QString& name, QAction* action ) override;
 
-    /** Add action to the Database menu */
+    //! Add action to the Database menu
     void addPluginToDatabaseMenu( const QString& name, QAction* action ) override;
-    /** Remove action from the Database menu */
+    //! Remove action from the Database menu
     void removePluginDatabaseMenu( const QString& name, QAction* action ) override;
 
-    /** Add action to the Raster menu */
+    //! Add action to the Raster menu
     void addPluginToRasterMenu( const QString& name, QAction* action ) override;
-    /** Remove action from the Raster menu */
+    //! Remove action from the Raster menu
     void removePluginRasterMenu( const QString& name, QAction* action ) override;
 
-    /** Add action to the Vector menu */
+    //! Add action to the Vector menu
     void addPluginToVectorMenu( const QString& name, QAction* action ) override;
-    /** Remove action from the Raster menu */
+    //! Remove action from the Raster menu
     void removePluginVectorMenu( const QString& name, QAction* action ) override;
 
-    /** Add action to the Web menu */
+    //! Add action to the Web menu
     void addPluginToWebMenu( const QString& name, QAction* action ) override;
-    /** Remove action from the Web menu */
+    //! Remove action from the Web menu
     void removePluginWebMenu( const QString& name, QAction* action ) override;
 
-    /** Add "add layer" action to the layer menu */
+    //! Add "add layer" action to the layer menu
     void insertAddLayerAction( QAction *action ) override;
-    /** Remove "add layer" action from the layer menu */
+    //! Remove "add layer" action from the layer menu
     void removeAddLayerAction( QAction *action ) override;
 
-    /** Add a dock widget to the main window */
+    //! Add a dock widget to the main window
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) override;
 
-    /** Remove specified dock widget from main window (doesn't delete it). */
+    //! Remove specified dock widget from main window (doesn't delete it).
     void removeDockWidget( QDockWidget * dockwidget ) override;
 
     //! return CAD dock widget
@@ -282,10 +282,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) override;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI. */
+    //! Register action to the shortcuts manager so its shortcut can be changed in GUI.
     virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) override;
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded. */
+    //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded.
     virtual bool unregisterMainWindowAction( QAction* action ) override;
 
     /** Register a new tab in the vector layer properties dialog.
@@ -408,9 +408,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionAddRasterLayer() override;
     virtual QAction *actionAddPgLayer() override;
     virtual QAction *actionAddWmsLayer() override;
-    /** Get access to the native Add ArcGIS FeatureServer action. */
+    //! Get access to the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() override;
-    /** Get access to the native Add ArcGIS MapServer action. */
+    //! Get access to the native Add ArcGIS MapServer action.
     virtual QAction *actionAddAmsLayer() override;
     virtual QAction *actionCopyLayerStyle() override;
     virtual QAction *actionPasteLayerStyle() override;
@@ -500,7 +500,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
 
-    /** Get timeout for timed messages: default of 5 seconds */
+    //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() override;
 
   signals:

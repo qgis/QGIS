@@ -41,7 +41,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 
-/** Used to create an editor for when the user tries to change the contents of a cell */
+//! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
@@ -208,7 +208,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   cbxAllowGeometrylessTables->setDisabled( true );
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 // Slot for adding a new connection
 void QgsDb2SourceSelect::on_btnNew_clicked()
 {
@@ -285,7 +285,7 @@ void QgsDb2SourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-/** End Autoconnected SLOTS **/
+//! End Autoconnected SLOTS *
 
 // Remember which database is selected
 void QgsDb2SourceSelect::on_cmbConnections_activated( int )

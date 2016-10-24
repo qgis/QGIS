@@ -67,7 +67,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      * @note: added in version 2.3 */
     void setFillColor( const QColor & fillColor );
 
-    /** Set width. Ignored in feature mode. */
+    //! Set width. Ignored in feature mode.
     void setWidth( int width );
 
     /** Set line / outline buffer in millimeters.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void init();
     void setSymbol( QgsSymbol* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
     double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
-    /** Get renderer for current color mode and colors. The renderer should be freed by caller. */
+    //! Get renderer for current color mode and colors. The renderer should be freed by caller.
     QgsFeatureRenderer * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );
     void paintPoint( QPainter *p, const QgsPoint& point );
     void paintLine( QPainter *p, QgsPolyline line );

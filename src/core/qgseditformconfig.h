@@ -35,7 +35,7 @@ class CORE_EXPORT QgsEditFormConfig
 {
   public:
 
-    /** The different types to layout the attribute editor. */
+    //! The different types to layout the attribute editor.
     enum EditorLayout
     {
       GeneratedLayout = 0, //!< Autogenerate a simple tabular layout for the form
@@ -125,13 +125,13 @@ class CORE_EXPORT QgsEditFormConfig
      */
     QgsAttributeEditorContainer* invisibleRootContainer();
 
-    /** Get the active layout style for the attribute editor for this layer */
+    //! Get the active layout style for the attribute editor for this layer
     EditorLayout layout() const;
 
-    /** Set the active layout style for the attribute editor for this layer */
+    //! Set the active layout style for the attribute editor for this layer
     void setLayout( EditorLayout editorLayout );
 
-    /** Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout. */
+    //! Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout.
     QString uiForm() const;
 
     /**
@@ -351,12 +351,12 @@ class CORE_EXPORT QgsEditFormConfig
      */
     PythonInitCodeSource initCodeSource() const;
 
-    /** Set if python code shall be used for edit form initialization and its origin */
+    //! Set if python code shall be used for edit form initialization and its origin
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
 
-    /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
+    //! Type of feature form pop-up suppression after feature creation (overrides app setting)
     FeatureFormSuppress suppress() const;
-    /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
+    //! Set type of feature form pop-up suppression after feature creation (overrides app setting)
     void setSuppress( FeatureFormSuppress s );
 
     // Serialization

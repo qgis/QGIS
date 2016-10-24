@@ -31,7 +31,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = "generic",
                                 const QgsExpressionContext& context = QgsExpressionContext() );
 
-    /** The builder widget that is used by the dialog */
+    //! The builder widget that is used by the dialog
     QgsExpressionBuilderWidget* expressionBuilder();
 
     void setExpressionText( const QString& text );
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      */
     void setExpressionContext( const QgsExpressionContext& context );
 
-    /** Sets geometry calculator used in distance/area calculations. */
+    //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea & da );
 
   protected:

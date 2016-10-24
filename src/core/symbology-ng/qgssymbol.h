@@ -350,7 +350,7 @@ class CORE_EXPORT QgsSymbol
     SymbolType mType;
     QgsSymbolLayerList mLayers;
 
-    /** Symbol opacity (in the range 0 - 1)*/
+    //! Symbol opacity (in the range 0 - 1)
     qreal mAlpha;
 
     RenderHints mRenderHints;
@@ -707,9 +707,9 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
   private:
 
     void renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
-    /** Calculates the bounds of a polygon including rings*/
+    //! Calculates the bounds of a polygon including rings
     QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
-    /** Translates the rings in a polygon by a set distance*/
+    //! Translates the rings in a polygon by a set distance
     QList<QPolygonF>* translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
 };
 

@@ -189,10 +189,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
     bool beginRender();
-    /** Ends the rendering. Restores original extent */
+    //! Ends the rendering. Restores original extent
     void endRender();
 
-    /** Returns the number of features in the coverage layer */
+    //! Returns the number of features in the coverage layer
     int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     bool prepareForFeature( const QgsFeature *feat );
 
-    /** Returns the current filename. Must be called after prepareForFeature() */
+    //! Returns the current filename. Must be called after prepareForFeature()
     QString currentFilename() const;
 
     void writeXml( QDomElement& elem, QDomDocument& doc ) const;
@@ -251,10 +251,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
-    /** Recalculates the bounds of an atlas driven map */
+    //! Recalculates the bounds of an atlas driven map
     void prepareMap( QgsComposerMap* map );
 
-    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
+    //! Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS)
     QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
 
   public slots:
@@ -270,25 +270,25 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void firstFeature();
 
   signals:
-    /** Emitted when one of the parameters changes */
+    //! Emitted when one of the parameters changes
     void parameterChanged();
 
-    /** Emitted when atlas is enabled or disabled */
+    //! Emitted when atlas is enabled or disabled
     void toggled( bool );
 
-    /** Is emitted when the atlas has an updated status bar message for the composer window*/
+    //! Is emitted when the atlas has an updated status bar message for the composer window
     void statusMsgChanged( const QString& message );
 
-    /** Is emitted when the coverage layer for an atlas changes*/
+    //! Is emitted when the coverage layer for an atlas changes
     void coverageLayerChanged( QgsVectorLayer* layer );
 
-    /** Is emitted when atlas rendering has begun*/
+    //! Is emitted when atlas rendering has begun
     void renderBegun();
 
-    /** Is emitted when atlas rendering has ended*/
+    //! Is emitted when atlas rendering has ended
     void renderEnded();
 
-    /** Is emitted when the current atlas feature changes*/
+    //! Is emitted when the current atlas feature changes
     void featureChanged( QgsFeature* feature );
 
     /** Is emitted when the number of features for the atlas changes.

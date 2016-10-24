@@ -46,9 +46,9 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      */
     enum ResizeMode
     {
-      UseExistingFrames = 0, /*!< don't automatically create new frames, just use existing frames */
-      ExtendToNextPage, /*!< creates new full page frames on the following page(s) until the entire multiframe content is visible */
-      RepeatOnEveryPage, /*!< repeats the same frame on every page */
+      UseExistingFrames = 0, //!< Don't automatically create new frames, just use existing frames
+      ExtendToNextPage, //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
+      RepeatOnEveryPage, //!< Repeats the same frame on every page
       RepeatUntilFinished /*!< creates new frames with the same position and dimensions as the existing frame on the following page(s),
                               until the entire multiframe content is visible */
     };
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     ResizeMode mResizeMode;
 
-    /** True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )*/
+    //! True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )
     bool mCreateUndoCommands;
 
   protected slots:

@@ -59,7 +59,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
   public:
 
-    /** Import a vector layer into the database */
+    //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -180,10 +180,10 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
 
-    /** Returns the default value for field specified by @c fieldName */
+    //! Returns the default value for field specified by @c fieldName
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
 
-    /** Returns the default value for field specified by @c fieldId */
+    //! Returns the default value for field specified by @c fieldId
     QVariant defaultValue( int fieldId ) const override;
 
     /** Adds a list of features
@@ -231,15 +231,15 @@ class QgsOracleProvider : public QgsVectorDataProvider
     //! Get the table name associated with this provider instance
     QString getTableName();
 
-    /** Accessor for sql where clause used to limit dataset */
+    //! Accessor for sql where clause used to limit dataset
     QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Returns a bitmask containing the supported capabilities*/
+    //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /** Return a provider name
@@ -298,7 +298,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     bool loadFields();
 
-    /** Convert a QgsField to work with Oracle */
+    //! Convert a QgsField to work with Oracle
     static bool convertField( QgsField &field );
 
     QgsFields mAttributeFields;  //! List of fields
@@ -421,7 +421,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 };
 
 
-/** Assorted Oracle utility functions */
+//! Assorted Oracle utility functions
 class QgsOracleUtils
 {
   public:

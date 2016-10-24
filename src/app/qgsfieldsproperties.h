@@ -196,7 +196,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     void updateExpression();
 
-    /** Editing of layer was toggled */
+    //! Editing of layer was toggled
     void editingToggled();
 
   protected:

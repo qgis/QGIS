@@ -178,10 +178,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     QgsGrass();
 
-    /** Get singleton instance of this class. Used as signals proxy between provider and plugin. */
+    //! Get singleton instance of this class. Used as signals proxy between provider and plugin.
     static QgsGrass* instance();
 
-    /** Global GRASS library lock */
+    //! Global GRASS library lock
     static void lock();
     static void unlock();
 
@@ -236,18 +236,18 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      */
     bool isMapsetInSearchPath( const QString &mapset );
 
-    /** Add mapset to search path of currently open mapset */
+    //! Add mapset to search path of currently open mapset
     void addMapsetToSearchPath( const QString & mapset, QString& error );
 
-    /** Add mapset to search path of currently open mapset */
+    //! Add mapset to search path of currently open mapset
     void removeMapsetFromSearchPath( const QString & mapset, QString& error );
 
     //! Error codes returned by error()
     enum GERROR
     {
-      OK, /*!< OK. No error. */
-      WARNING, /*!< Warning, non fatal error. Should be printed by application. */
-      FATAL /*!< Fatal error */
+      OK, //!< OK. No error.
+      WARNING, //!< Warning, non fatal error. Should be printed by application.
+      FATAL //!< Fatal error
     };
 
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
@@ -262,7 +262,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get initialization error
     static QString initError() { return mInitError; }
 
-    /** Test is current user is owner of mapset */
+    //! Test is current user is owner of mapset
     static bool isOwner( const QString& gisdbase, const QString& location, const QString& mapset );
 
     /** Open existing GRASS mapset.
@@ -280,10 +280,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      */
     static QString closeMapset();
 
-    /** \brief Save current mapset to project file. */
+    //! \brief Save current mapset to project file.
     static void saveMapset();
 
-    /** Create new mapset in existing location */
+    //! Create new mapset in existing location
     static void createMapset( const QString& gisdbase, const QString& location,
                               const QString& mapset, QString& error );
 
@@ -498,21 +498,21 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * @param error */
     static void createVectorMap( const QgsGrassObject & object, QString &error );
 
-    /** Create new table. Throws  QgsGrass::Exception */
+    //! Create new table. Throws  QgsGrass::Exception
     static void createTable( dbDriver *driver, const QString &tableName, const QgsFields &fields );
 
-    /** Insert row to table. Throws  QgsGrass::Exception */
+    //! Insert row to table. Throws  QgsGrass::Exception
     static void insertRow( dbDriver *driver, const QString &tableName,
                            const QgsAttributes& attributes );
 
-    /** Returns true if object is link to external data (created by r.external) */
+    //! Returns true if object is link to external data (created by r.external)
     static bool isExternal( const QgsGrassObject & object );
 
     /** Adjust cell header, G_adjust_Cell_head wrapper
      * @throws QgsGrass::Exception */
     static void adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag );
 
-    /** Get map of vector types / names */
+    //! Get map of vector types / names
     static QMap<int, QString> vectorTypeMap();
 
     /** Get GRASS vector type from name
@@ -583,7 +583,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     static QPen regionPen();
 
-    /** Store region pen in settings, emits regionPenChanged */
+    //! Store region pen in settings, emits regionPenChanged
     void setRegionPen( const QPen & pen );
 
     // Modules UI debug
@@ -592,10 +592,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Switch modules UI debug
     void setModulesDebug( bool debug );
 
-    /** Show warning dialog with message */
+    //! Show warning dialog with message
     static void warning( const QString &message );
 
-    /** Show warning dialog with exception message */
+    //! Show warning dialog with exception message
     static void warning( QgsGrass::Exception &e );
 
     /** Set mute mode, if set, warning() does not open dialog but prints only
@@ -621,31 +621,31 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &value );
 
   public slots:
-    /** Close mapset and show warning if closing failed */
+    //! Close mapset and show warning if closing failed
     bool closeMapsetWarn();
 
     void openOptions();
 
-    /** Read mapset search path from GRASS location */
+    //! Read mapset search path from GRASS location
     void loadMapsetSearchPath();
 
     void setMapsetSearchPathWatcher();
     void onSearchPathFileChanged( const QString & path );
 
   signals:
-    /** Signal emitted  when user changed GISBASE */
+    //! Signal emitted  when user changed GISBASE
     void gisbaseChanged();
 
-    /** Signal emitted after mapset was opened */
+    //! Signal emitted after mapset was opened
     void mapsetChanged();
 
-    /** Signal emitted when mapset search path changed (SEARCH_PATH file changed and it was loaded to mMapsetSearchPath) */
+    //! Signal emitted when mapset search path changed (SEARCH_PATH file changed and it was loaded to mMapsetSearchPath)
     void mapsetSearchPathChanged();
 
-    /** Emitted when path to modules config dir changed */
+    //! Emitted when path to modules config dir changed
     void modulesConfigChanged();
 
-    /** Emitted when modules debug mode changed */
+    //! Emitted when modules debug mode changed
     void modulesDebugChanged();
 
     /** Emitted when current region changed
@@ -654,7 +654,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      */
     void regionChanged();
 
-    /** Emitted when region pen changed */
+    //! Emitted when region pen changed
     void regionPenChanged();
 
     /** Request from browser to open a new layer for editing, the plugin should connect
