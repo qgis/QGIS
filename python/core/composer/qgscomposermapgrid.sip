@@ -526,6 +526,10 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     QFont annotationFont() const;
 
+    void setAnnotationTextFormat( const QgsTextFormat& format );
+
+    QgsTextFormat annotationTextFormat() const;
+
     /** Sets the font color used for drawing grid annotations
      * @param color font color for annotations
      * @see annotationFontColor

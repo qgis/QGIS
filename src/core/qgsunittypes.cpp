@@ -1079,6 +1079,8 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
       return "Pixel";
     case RenderPercentage:
       return "Percentage";
+    case RenderPoints:
+      return "Point";
     default:
       return "MM";
   }
@@ -1095,10 +1097,18 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString& string, 
     return RenderMillimeters;
   if ( normalized == encodeUnit( RenderMapUnits ).toLower() )
     return RenderMapUnits;
+  if ( normalized == "mapunits" )
+    return RenderMapUnits;
   if ( normalized == encodeUnit( RenderPixels ).toLower() )
     return RenderPixels;
   if ( normalized == encodeUnit( RenderPercentage ).toLower() )
     return RenderPercentage;
+  if ( normalized == "percent" )
+    return RenderPercentage;
+  if ( normalized == encodeUnit( RenderPoints ).toLower() )
+    return RenderPoints;
+  if ( normalized == "points" )
+    return RenderPoints;
 
   if ( ok )
     *ok = false;

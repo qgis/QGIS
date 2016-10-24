@@ -229,9 +229,10 @@ QFont QgsMapToolLabel::currentLabelFont()
   QgsPalLayerSettings& labelSettings = mCurrentLabel.settings;
   QgsVectorLayer* vlayer = mCurrentLabel.layer;
 
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   if ( mCurrentLabel.valid && vlayer )
   {
-    font = labelSettings.textFont;
+    font = labelSettings.format().font();
 
     QgsFeature f;
     if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
@@ -240,15 +241,9 @@ QFont QgsMapToolLabel::currentLabelFont()
       int sizeIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Size, mCurrentLabel.settings, vlayer );
       if ( sizeIndx != -1 )
       {
-        if ( labelSettings.fontSizeInMapUnits )
-        {
-          font.setPixelSize( labelSettings.sizeToPixel( f.attribute( sizeIndx ).toDouble(),
-                             QgsRenderContext(), QgsPalLayerSettings::MapUnits, true ) );
-        }
-        else
-        {
-          font.setPointSizeF( f.attribute( sizeIndx ).toDouble() );
-        }
+        font.setPixelSize( QgsTextRenderer::sizeToPixel( f.attribute( sizeIndx ).toDouble(),
+                           context, labelSettings.format().sizeUnit(), true,
+                           labelSettings.format().sizeMapUnitScale() ) );
       }
 
       //family

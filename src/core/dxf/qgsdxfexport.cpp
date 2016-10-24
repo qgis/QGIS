@@ -4261,9 +4261,12 @@ void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::L
 
   //font
   QFont dFont = lf->definedFont();
-  QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString(), tmpLyr.textFont.styleName() ), 4 );
+  QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.format().font().toString(), tmpLyr.format().font().styleName() ), 4 );
   QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString(), dFont.styleName() ), 4 );
-  tmpLyr.textFont = dFont;
+
+  QgsTextFormat format = tmpLyr.format();
+  format.setFont( dFont );
+  tmpLyr.setFormat( format );
 
   if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
   {
@@ -4354,28 +4357,28 @@ void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::L
 
   txt = txt.replace( wrapchr, "\\P" );
 
-  if ( tmpLyr.textFont.underline() )
+  if ( tmpLyr.format().font().underline() )
   {
     txt.prepend( "\\L" ).append( "\\l" );
   }
 
-  if ( tmpLyr.textFont.overline() )
+  if ( tmpLyr.format().font().overline() )
   {
     txt.prepend( "\\O" ).append( "\\o" );
   }
 
-  if ( tmpLyr.textFont.strikeOut() )
+  if ( tmpLyr.format().font().strikeOut() )
   {
     txt.prepend( "\\K" ).append( "\\k" );
   }
 
   txt.prepend( QString( "\\f%1|i%2|b%3;\\H%4;" )
-               .arg( tmpLyr.textFont.family() )
-               .arg( tmpLyr.textFont.italic() ? 1 : 0 )
-               .arg( tmpLyr.textFont.bold() ? 1 : 0 )
+               .arg( tmpLyr.format().font().family() )
+               .arg( tmpLyr.format().font().italic() ? 1 : 0 )
+               .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
 
-  writeMText( dxfLayer, txt, QgsPointV2( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.textColor );
+  writeMText( dxfLayer, txt, QgsPointV2( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
 }
 
 

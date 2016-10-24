@@ -209,6 +209,7 @@ SET(QGIS_CORE_SRCS
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstextlabelfeature.cpp
+  qgstextrenderer.cpp
   qgstolerance.cpp
   qgstracer.cpp
   qgstransaction.cpp
@@ -705,6 +706,8 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstestutils.h
   qgstextlabelfeature.h
+  qgstextrenderer.h
+  qgstextrenderer_p.h
   qgstolerance.h
   qgstracer.h
 

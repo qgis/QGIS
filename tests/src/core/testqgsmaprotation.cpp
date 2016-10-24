@@ -210,8 +210,10 @@ void TestQgsMapRotation::linesLayer()
   //use test font
   QgsPalLayerSettings palSettings;
   palSettings.readFromLayer( mLinesLayer );
-  palSettings.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
-  palSettings.textFont.setPointSizeF( 16 );
+  QgsTextFormat format = palSettings.format();
+  format.setFont( QgsFontUtils::getStandardTestFont( "Bold" ) );
+  format.setSize( 16 );
+  palSettings.setFormat( format );
   palSettings.writeToLayer( mLinesLayer );
 
   QVERIFY( success );

@@ -40,6 +40,8 @@
 #include <QRegExp>
 #include <QPicture>
 
+#define POINTS_TO_MM 2.83464567
+
 QString QgsSymbolLayerUtils::encodeColor( const QColor& color )
 {
   return QString( "%1,%2,%3,%4" ).arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
@@ -375,6 +377,19 @@ QPointF QgsSymbolLayerUtils::decodePoint( const QString& str )
   if ( lst.count() != 2 )
     return QPointF( 0, 0 );
   return QPointF( lst[0].toDouble(), lst[1].toDouble() );
+}
+
+QString QgsSymbolLayerUtils::encodeSize( QSizeF size )
+{
+  return QString( "%1,%2" ).arg( qgsDoubleToString( size.width() ), qgsDoubleToString( size.height() ) );
+}
+
+QSizeF QgsSymbolLayerUtils::decodeSize( const QString& string )
+{
+  QStringList lst = string.split( ',' );
+  if ( lst.count() != 2 )
+    return QSizeF( 0, 0 );
+  return QSizeF( lst[0].toDouble(), lst[1].toDouble() );
 }
 
 QString QgsSymbolLayerUtils::encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale )
@@ -3198,6 +3213,8 @@ double QgsSymbolLayerUtils::lineWidthScaleFactor( const QgsRenderContext& c, Qgs
   {
     case QgsUnitTypes::RenderMillimeters:
       return c.scaleFactor();
+    case QgsUnitTypes::RenderPoints:
+      return c.scaleFactor() * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
@@ -3274,9 +3291,44 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
     {
       return size * c.scaleFactor() * c.rasterScaleFactor() * mup;
     }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return size * c.scaleFactor() * c.rasterScaleFactor() * mup / POINTS_TO_MM;
+    }
     case QgsUnitTypes::RenderPixels:
     {
       return size * mup;
+    }
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
+}
+
+double QgsSymbolLayerUtils::convertFromMapUnits( const QgsRenderContext& context, double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit )
+{
+  double mup = context.mapToPixel().mapUnitsPerPixel();
+
+  switch ( outputUnit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      return sizeInMapUnits;
+    }
+    case QgsUnitTypes::RenderMillimeters:
+    {
+      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup );
+    }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup / POINTS_TO_MM );
+    }
+    case QgsUnitTypes::RenderPixels:
+    {
+      return sizeInMapUnits / mup;
     }
 
     case QgsUnitTypes::RenderUnknownUnit:
@@ -3293,6 +3345,8 @@ double QgsSymbolLayerUtils::pixelSizeScaleFactor( const QgsRenderContext& c, Qgs
   {
     case QgsUnitTypes::RenderMillimeters:
       return ( c.scaleFactor() * c.rasterScaleFactor() );
+    case QgsUnitTypes::RenderPoints:
+      return ( c.scaleFactor() * c.rasterScaleFactor() ) * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( c );
@@ -3321,6 +3375,8 @@ double QgsSymbolLayerUtils::mapUnitScaleFactor( const QgsRenderContext &c, QgsUn
   {
     case QgsUnitTypes::RenderMillimeters:
       return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor();
+    case QgsUnitTypes::RenderPoints:
+      return scale.computeMapUnitsPerPixel( c ) * c.scaleFactor() * c.rasterScaleFactor() * POINTS_TO_MM;
     case QgsUnitTypes::RenderMapUnits:
     {
       return 1.0;

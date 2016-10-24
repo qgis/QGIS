@@ -156,11 +156,14 @@
 %Include qgsslider.sip
 %Include qgssourceselectdialog.sip
 %Include qgssublayersdialog.sip
+%Include qgssubstitutionlistwidget.sip
 %Include qgssvgannotationitem.sip
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
 %Include qgstextannotationitem.sip
+%Include qgstextformatwidget.sip
+%Include qgstextpreview.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip

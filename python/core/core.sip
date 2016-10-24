@@ -135,6 +135,7 @@
 %Include qgsstatisticalsummary.sip
 %Include qgsstringstatisticalsummary.sip
 %Include qgsstringutils.sip
+%Include qgstextrenderer.sip
 %Include qgstolerance.sip
 %Include qgstracer.sip
 %Include qgsunittypes.sip

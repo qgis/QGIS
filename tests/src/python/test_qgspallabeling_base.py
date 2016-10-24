@@ -42,7 +42,9 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsProviderRegistry,
     QgsVectorLayer,
-    QgsMultiRenderChecker
+    QgsMultiRenderChecker,
+    QgsTextFormat,
+    QgsUnitTypes
 )
 
 from qgis.testing import start_app, unittest
@@ -258,9 +260,13 @@ class TestQgsPalLabeling(unittest.TestCase):
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
         font.setPointSize(32)
-        lyr.textFont = font
-        lyr.textNamedStyle = 'Roman'
-        lyr.bufferJoinStyle = Qt.BevelJoin  # handle change of default join style
+        format = lyr.format()
+        format.setFont(font)
+        format.setNamedStyle('Roman')
+        format.setSize(32)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setJoinStyle(Qt.BevelJoin)
+        lyr.setFormat(format)
         return lyr
 
     @staticmethod

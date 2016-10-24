@@ -21,6 +21,7 @@
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
+#include "qgstextrenderer.h"
 #include <QString>
 #include <QPainter>
 
@@ -557,6 +558,11 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     QFont annotationFont() const { return mGridAnnotationFont; }
 
+
+    void setAnnotationTextFormat( const QgsTextFormat& format ) { mAnnotationFormat = format; }
+
+    QgsTextFormat annotationTextFormat() const { return mAnnotationFormat; }
+
     /** Sets the font color used for drawing grid annotations
      * @param color font color for annotations
      * @see annotationFontColor
@@ -862,6 +868,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     QFont mGridAnnotationFont;
     /** Font color for grid coordinates*/
     QColor mGridAnnotationFontColor;
+    //! Format for drawing grid annotations
+    QgsTextFormat mAnnotationFormat;
     /** Digits after the dot*/
     int mGridAnnotationPrecision;
     /** True if coordinate values should be drawn*/
@@ -950,27 +958,27 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, GridExtension* extension = nullptr ) const;
 
     /** Draw coordinates for mGridAnnotationType Coordinate
-        @param p drawing painter
+        @param context destination render context
         @param hLines horizontal coordinate lines in item coordinates
         @param vLines vertical coordinate lines in item coordinates
         @param expressionContext expression context for evaluating custom annotation formats
         @param extension optional. If specified, nothing will be drawn and instead the maximum extension for the grid
         annotations will be stored in this variable.
      */
-    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext, GridExtension* extension = nullptr ) const;
+    void drawCoordinateAnnotations( QgsRenderContext& context, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext& expressionContext, GridExtension* extension = nullptr ) const;
 
     /** Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
+    void drawCoordinateAnnotation( QgsRenderContext& context, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension = nullptr ) const;
 
     /** Draws a single annotation
-     * @param p drawing painter
+     * @param context destination render context
      * @param pos item coordinates where to draw
      * @param rotation text rotation
      * @param annotationText the text to draw
      */
-    void drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText ) const;
+    void drawAnnotation( QgsRenderContext& context, QPointF pos, int rotation, const QString& annotationText ) const;
 
     QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext& expressionContext ) const;
 

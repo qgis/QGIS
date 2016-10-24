@@ -349,7 +349,6 @@ void QgsLabelingEngine::readSettingsFromProject()
   mFlags = 0;
   if ( prj->readBoolEntry( "PAL", "/ShowingCandidates", false, &saved ) ) mFlags |= DrawCandidates;
   if ( prj->readBoolEntry( "PAL", "/DrawRectOnly", false, &saved ) ) mFlags |= DrawLabelRectOnly;
-  if ( prj->readBoolEntry( "PAL", "/ShowingShadowRects", false, &saved ) ) mFlags |= DrawShadowRects;
   if ( prj->readBoolEntry( "PAL", "/ShowingAllLabels", false, &saved ) ) mFlags |= UseAllLabels;
   if ( prj->readBoolEntry( "PAL", "/ShowingPartialsLabels", true, &saved ) ) mFlags |= UsePartialCandidates;
   if ( prj->readBoolEntry( "PAL", "/DrawOutlineLabels", true, &saved ) ) mFlags |= RenderOutlineLabels;
@@ -364,7 +363,6 @@ void QgsLabelingEngine::writeSettingsToProject()
 
   QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mFlags.testFlag( DrawCandidates ) );
   QgsProject::instance()->writeEntry( "PAL", "/DrawRectOnly", mFlags.testFlag( DrawLabelRectOnly ) );
-  QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mFlags.testFlag( DrawShadowRects ) );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mFlags.testFlag( UseAllLabels ) );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingPartialsLabels", mFlags.testFlag( UsePartialCandidates ) );
   QgsProject::instance()->writeEntry( "PAL", "/DrawOutlineLabels", mFlags.testFlag( RenderOutlineLabels ) );
