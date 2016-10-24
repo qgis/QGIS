@@ -38,11 +38,7 @@ class CORE_EXPORT QgsProjectVersion
         , mSub( 0 )
     {}
     ~QgsProjectVersion() {}
-
-    /**
-     * Constructor for QgsProjectVersion which accepts a major, minor and sub version number and a release name.
-     */
-    QgsProjectVersion( int major, int minor, int sub, const QString& name = QLatin1String( "" ) );
+    QgsProjectVersion( int major, int minor, int sub, const QString& name = "" );
     QgsProjectVersion( const QString& string );
     int majorVersion() { return mMajor;}
     int minorVersion() { return mMinor;}

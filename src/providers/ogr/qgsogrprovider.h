@@ -68,7 +68,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsOgrProvider( QString const & uri = QLatin1String( "" ) );
+    explicit QgsOgrProvider( QString const & uri = "" );
 
     /**
      * Destructor

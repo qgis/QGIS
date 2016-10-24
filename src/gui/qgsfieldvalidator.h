@@ -33,12 +33,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     Q_OBJECT
 
   public:
-
-    /**
-     * Constructor for QgsFieldValidator.
-     */
-    QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat = QStringLiteral( "yyyy-MM-dd" ) );
-
+    QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat = "yyyy-MM-dd" );
     ~QgsFieldValidator();
 
     virtual State validate( QString &, int & ) const override;

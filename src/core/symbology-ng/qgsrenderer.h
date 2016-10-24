@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation

@@ -212,7 +212,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   bool theIncludeOutOfRange = false ) override;
 
     QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
-                           const QString & theResamplingMethod = QStringLiteral( "NEAREST" ),
+                           const QString & theResamplingMethod = "NEAREST",
                            QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                            const QStringList & theCreateOptions = QStringList() ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;

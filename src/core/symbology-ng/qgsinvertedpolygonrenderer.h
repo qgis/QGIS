@@ -94,7 +94,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /** Proxy that will call this method on the embedded renderer.
      * @note not available in python bindings
      */
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
     /** Proxy that will call this method on the embedded renderer.
      */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;

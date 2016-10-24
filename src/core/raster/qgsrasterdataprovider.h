@@ -268,7 +268,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
-                                   const QString & theResamplingMethod = QStringLiteral( "NEAREST" ),
+                                   const QString & theResamplingMethod = "NEAREST",
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() )
     {

@@ -553,10 +553,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
     void setVariantName( const QString& variantName ) { mVariantName = variantName; mFileLoaded = false; }
     void setVariantList( const QStringList& variantList ) { mVariantList = variantList; }
-    /**
-     * Sets the name for the color ramp, based on a scheme, variant and list of variants.
-     */
-    void setName( const QString& schemeName, const QString& variantName = QLatin1String( "" ), const QStringList& variantList = QStringList() )
+    void setName( const QString& schemeName, const QString& variantName = "", const QStringList& variantList = QStringList() )
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }

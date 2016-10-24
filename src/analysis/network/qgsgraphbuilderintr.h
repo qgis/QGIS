@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * @param topologyTolerance sqrt distance between source point as one graph vertex
      * @param ellipsoidID ellipsoid for edge measurement
      */
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = QStringLiteral( "WGS84" ) )
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" )
         : mCrs( crs )
         , mCtfEnabled( ctfEnabled )
         , mTopologyTolerance( topologyTolerance )

@@ -157,10 +157,7 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
     bool showFeatureCount() const { return mShowFeatureCount; }
 
-    /**
-     * Sets the legend layer item to the appropriate default style for the specified legend rule.
-     */
-    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) );
+    void setDefaultStyle( double scaleDenominator = -1, const QString& rule = "" );
 
   private:
     QString mLayerID;

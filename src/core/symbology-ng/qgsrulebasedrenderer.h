@@ -145,7 +145,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsSymbolList symbols( const QgsRenderContext& context = QgsRenderContext() ) const;
 
         //! @note not available in python bindings
-        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) ) const;
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) const;
 
         //! @note added in 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -440,7 +440,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QString dump() const override;
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;

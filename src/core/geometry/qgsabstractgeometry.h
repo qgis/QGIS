@@ -168,7 +168,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see asGML3
      * @see asJSON
      */
-    virtual QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const = 0;
+    virtual QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const = 0;
 
     /** Returns a GML3 representation of the geometry.
      * @param doc DOM document
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see asGML2
      * @see asJSON
      */
-    virtual QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const = 0;
+    virtual QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const = 0;
 
     /** Returns a GeoJSON representation of the geometry.
      * @param precision number of decimal places for coordinates

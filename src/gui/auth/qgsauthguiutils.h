@@ -44,13 +44,13 @@ class GUI_EXPORT QgsAuthGuiUtils
     static QColor yellowColor();
 
     /** Green text stylesheet representing valid, trusted, etc. certificate */
-    static QString greenTextStyleSheet( const QString& selector = QStringLiteral( "*" ) );
+    static QString greenTextStyleSheet( const QString& selector = "*" );
 
     /** Orange text stylesheet representing loaded component, but not stored in database */
-    static QString orangeTextStyleSheet( const QString& selector = QStringLiteral( "*" ) );
+    static QString orangeTextStyleSheet( const QString& selector = "*" );
 
     /** Red text stylesheet representing invalid, untrusted, etc. certificate */
-    static QString redTextStyleSheet( const QString& selector = QStringLiteral( "*" ) );
+    static QString redTextStyleSheet( const QString& selector = "*" );
 
 
     /** Verify the authentication system is active, else notify user */

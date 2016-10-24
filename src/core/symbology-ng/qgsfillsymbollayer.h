@@ -817,11 +817,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
-
-    /**
-     * Constructor for QgsSVGFillSymbolLayer which accepts the path to an SVG file.
-     */
-    QgsSVGFillSymbolLayer( const QString& svgFilePath = QLatin1String( "" ), double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QString& svgFilePath = "", double width = 20, double rotation = 0.0 );
     QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20, double rotation = 0.0 );
     ~QgsSVGFillSymbolLayer();
 

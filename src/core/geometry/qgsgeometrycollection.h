@@ -84,8 +84,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     virtual QgsRectangle boundingBox() const override;

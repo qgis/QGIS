@@ -42,12 +42,9 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
       ProfileLineEdit // Profile + LineEdit
     };
 
-    /**
-     * Constructor for QgsRasterFormatSaveOptionsWidget.
-     */
-    QgsRasterFormatSaveOptionsWidget( QWidget* parent = nullptr, const QString& format = QStringLiteral( "GTiff" ),
+    QgsRasterFormatSaveOptionsWidget( QWidget* parent = nullptr, const QString& format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      const QString& provider = QStringLiteral( "gdal" ) );
+                                      const QString& provider = "gdal" );
     ~QgsRasterFormatSaveOptionsWidget();
 
     void setFormat( const QString& format );

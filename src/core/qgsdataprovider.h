@@ -74,10 +74,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
-    /**
-     * Constructor for QgsDataProvider.
-     */
-    QgsDataProvider( QString const & uri = QLatin1String( "" ) )
+    QgsDataProvider( QString const & uri = "" )
         : mDataSourceURI( uri )
     {}
 

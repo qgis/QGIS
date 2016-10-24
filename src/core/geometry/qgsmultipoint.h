@@ -36,8 +36,8 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     // inherited: int wkbSize() const;
     // inherited: unsigned char* asWkb( int& binarySize ) const;
     // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
 

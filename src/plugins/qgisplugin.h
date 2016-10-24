@@ -76,10 +76,10 @@ class QgisPlugin
     /**
      * Constructor for QgisPlugin
      */
-    QgisPlugin( QString const & name = QLatin1String( "" ),
-                QString const & description = QLatin1String( "" ),
-                QString const & category = QLatin1String( "" ),
-                QString const & version = QLatin1String( "" ),
+    QgisPlugin( QString const & name = "",
+                QString const & description = "",
+                QString const & category = "",
+                QString const & version = "",
                 PLUGINTYPE type = MAPLAYER )
         : mName( name )
         , mDescription( description )

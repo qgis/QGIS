@@ -34,7 +34,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsVirtualLayerProvider( QString const &uri = QLatin1String( "" ) );
+    explicit QgsVirtualLayerProvider( QString const &uri = "" );
 
     /** Destructor */
     virtual ~QgsVirtualLayerProvider();
@@ -92,11 +92,11 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     struct SourceLayer
     {
       SourceLayer(): layer( nullptr ) {}
-      SourceLayer( QgsVectorLayer *l, const QString& n = QLatin1String( "" ) )
+      SourceLayer( QgsVectorLayer *l, const QString& n = "" )
           : layer( l )
           , name( n )
       {}
-      SourceLayer( const QString& p, const QString& s, const QString& n, const QString& e = QStringLiteral( "UTF-8" ) )
+      SourceLayer( const QString& p, const QString& s, const QString& n, const QString& e = "UTF-8" )
           : layer( nullptr )
           , name( n )
           , source( s )

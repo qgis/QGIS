@@ -790,7 +790,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Read custom properties from project file.
       @param layerNode note to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
-    void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = QLatin1String( "" ) );
+    void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = "" );
 
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;

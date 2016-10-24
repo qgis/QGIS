@@ -47,11 +47,10 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       Oracle,
     };
 
-    /**
-     * Constructor for QgsManageConnectionsDialog. The mode argument must be 0 for export and 1 for import.
-     * The type argument must be 0 for WMS and 1 for PostGIS.
-     */
-    QgsManageConnectionsDialog( QWidget *parent = nullptr, Mode mode = Export, Type type = WMS, const QString& fileName = QStringLiteral( "" ) );
+    // constructor
+    // mode argument must be 0 for export and 1 for import
+    // type argument must be 0 for WMS and 1 for PostGIS
+    QgsManageConnectionsDialog( QWidget *parent = nullptr, Mode mode = Export, Type type = WMS, const QString& fileName = "" );
 
   public slots:
     void doExportImport();
