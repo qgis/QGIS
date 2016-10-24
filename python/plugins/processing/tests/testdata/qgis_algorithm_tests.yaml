@@ -1202,3 +1202,14 @@ tests:
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
       #  type: vector
+
+  - algorithm: qgis:removenullgeometries
+    name: Remove null geometries
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/remove_null_polys.gml
+        type: vector
