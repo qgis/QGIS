@@ -111,7 +111,7 @@ class ModelerDialog(BASE, WIDGET):
         def _wheelEvent(event):
             self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
             factor = 1.05
-            if event.delta() > 0:
+            if event.angleDelta().y() > 0:
                 factor = 1 / factor
             self.view.scale(factor, factor)
             self.repaintModel()
