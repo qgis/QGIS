@@ -571,34 +571,34 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
       break;
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     case wkbCircularString:
-      geom = "CircularString";
+      geom = QStringLiteral( "CircularString" );
       break;
     case wkbCompoundCurve:
-      geom = "CompoundCurve";
+      geom = QStringLiteral( "CompoundCurve" );
       break;
     case wkbCurvePolygon:
-      geom = "CurvePolygon";
+      geom = QStringLiteral( "CurvePolygon" );
       break;
     case wkbMultiCurve:
-      geom = "MultiCurve";
+      geom = QStringLiteral( "MultiCurve" );
       break;
     case wkbMultiSurface:
-      geom = "MultiSurface";
+      geom = QStringLiteral( "MultiSurface" );
       break;
     case wkbCircularStringZ:
-      geom = "CircularStringZ";
+      geom = QStringLiteral( "CircularStringZ" );
       break;
     case wkbCompoundCurveZ:
-      geom = "CompoundCurveZ";
+      geom = QStringLiteral( "CompoundCurveZ" );
       break;
     case wkbCurvePolygonZ:
-      geom = "CurvePolygonZ";
+      geom = QStringLiteral( "CurvePolygonZ" );
       break;
     case wkbMultiCurveZ:
-      geom = "MultiCurveZ";
+      geom = QStringLiteral( "MultiCurveZ" );
       break;
     case wkbMultiSurfaceZ:
-      geom = "MultiSurfaceZ";
+      geom = QStringLiteral( "MultiSurfaceZ" );
       break;
 #endif
     case wkbNone:
@@ -3288,7 +3288,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     }
   }
   QByteArray sql;
-  if ( subsetString.startsWith( "SELECT ", Qt::CaseInsensitive ) )
+  if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
     sql = encoding->fromUnicode( subsetString );
   else
   {
@@ -3580,7 +3580,8 @@ bool QgsOgrProvider::isSaveAndLoadStyleToDBSupported() const
 {
   // We could potentially extend support for styling to other drivers
   // with multiple layer support.
-  return ogrDriverName == "GPKG" || ogrDriverName == "SQLite";
+  return ogrDriverName == QLatin1String( "GPKG" ) ||
+         ogrDriverName == QLatin1String( "SQLite" );
 }
 
 // ---------------------------------------------------------------------------
@@ -3753,9 +3754,9 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
   if ( useAsDefault )
   {
-    QString oldDefaultQuery = QString( "useAsDefault = 1 AND f_table_schema=''"
-                                       " AND f_table_name=%1"
-                                       " AND f_geometry_column=%2" )
+    QString oldDefaultQuery = QStringLiteral( "useAsDefault = 1 AND f_table_schema=''"
+                              " AND f_table_name=%1"
+                              " AND f_geometry_column=%2" )
                               .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                               .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) );
     OGR_L_SetAttributeFilter( hLayer, TO8F( oldDefaultQuery ) );
@@ -3774,10 +3775,10 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     }
   }
 
-  QString checkQuery = QString( "f_table_schema=''"
-                                " AND f_table_name=%1"
-                                " AND f_geometry_column=%2"
-                                " AND styleName=%3" )
+  QString checkQuery = QStringLiteral( "f_table_schema=''"
+                                       " AND f_table_name=%1"
+                                       " AND f_geometry_column=%2"
+                                       " AND styleName=%3" )
                        .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                        .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) )
                        .arg( QgsOgrProviderUtils::quotedValue( realStyleName ) );
@@ -3790,7 +3791,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   {
     QSettings settings;
     // Only used in tests. Do not define it for interactive implication
-    QVariant overwriteStyle = settings.value( "/qgis/overwriteStyle" );
+    QVariant overwriteStyle = settings.value( QStringLiteral( "/qgis/overwriteStyle" ) );
     if (( !overwriteStyle.isNull() && !overwriteStyle.toBool() ) ||
         ( overwriteStyle.isNull() &&
           QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
@@ -3883,11 +3884,11 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     return "";
   }
 
-  QString selectQmlQuery = QString( "f_table_schema=''"
-                                    " AND f_table_name=%1"
-                                    " AND f_geometry_column=%2"
-                                    " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
-                                    ",update_time DESC LIMIT 1" )
+  QString selectQmlQuery = QStringLiteral( "f_table_schema=''"
+                           " AND f_table_name=%1"
+                           " AND f_geometry_column=%2"
+                           " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                           ",update_time DESC LIMIT 1" )
                            .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                            .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) );
   OGR_L_SetAttributeFilter( hLayer, TO8F( selectQmlQuery ) );
