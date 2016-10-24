@@ -75,7 +75,7 @@ and initialize it as needed:
 # Write tests
 
 Instructions about writing tests for the processing framework
-can be found in a local README file:
+can be found in a [separate README file](../python/plugins/processing/tests/README.md):
 
     ${TOP_SRCDIR}/python/plugins/processing/tests/README.md
 
