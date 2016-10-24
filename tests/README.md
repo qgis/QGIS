@@ -74,9 +74,19 @@ and initialize it as needed:
 
 # Write tests
 
-Instructions about wriing tests for the proessig framework
+Instructions about writing tests for the proessig framework
 can be found in a local README file:
 
-  ${TOP_SRCDIR}/python/plugins/processing/tests/README.md
+    ${TOP_SRCDIR}/python/plugins/processing/tests/README.md
 
-TODO: write more here
+Information about labeling tests design and organization:
+
+    ${TOP_SRCDIR}/tests/testdata/labeling/README.rst
+
+WCS testing information can be found in:
+
+    ${TOP_SRCDIR}/tests/testdata/raster/README.WCS
+
+Abot benchmark tests you can read:
+
+    ${TOP_SRCDIR}/tests/bench/README
