@@ -2077,7 +2077,7 @@ void QgisApp::createToolBars()
     mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
     mSnappingWidget->setObjectName( "mSnappingWidget" );
     //mSnappingWidget->setFont( myFont );
-    connect( mSnappingWidget, SIGNAL( snapSettingsChanged() ), QgsProject::instance(), SIGNAL( snapSettingsChanged() ) );
+    connect( mSnappingWidget, SIGNAL( snappingConfigChanged() ), QgsProject::instance(), SIGNAL( snappingConfigChanged() ) );
     mSnappingToolBar->addWidget( mSnappingWidget );
   }
 
@@ -2435,7 +2435,7 @@ void QgisApp::createStatusBar()
     mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, statusBar() );
     mSnappingWidget->setObjectName( "mSnappingWidget" );
     mSnappingWidget->setFont( myFont );
-    connect( mSnappingWidget, SIGNAL( snapSettingsChanged() ), QgsProject::instance(), SIGNAL( snapSettingsChanged() ) );
+    connect( mSnappingWidget, SIGNAL( snappingConfigChanged() ), QgsProject::instance(), SIGNAL( snappingConfigChanged() ) );
     statusBar()->addPermanentWidget( mSnappingWidget, 0 );
   }
 
