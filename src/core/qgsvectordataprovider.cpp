@@ -100,8 +100,11 @@ QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
 
 QgsField::Constraints QgsVectorDataProvider::fieldConstraints( int fieldIndex ) const
 {
-  Q_UNUSED( fieldIndex );
-  return 0;
+  QgsFields f = fields();
+  if ( fieldIndex < 0 || fieldIndex >= f.count() )
+    return 0;
+
+  return f.at( fieldIndex ).constraints();
 }
 
 bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )

@@ -71,6 +71,9 @@ class QgsFieldPrivate : public QSharedData
         , alias( other.alias )
         , defaultValueExpression( other.defaultValueExpression )
         , constraints( other.constraints )
+        , constraintOrigins( other.constraintOrigins )
+        , expressionConstraint( other.expressionConstraint )
+        , expressionConstraintDescription( other.expressionConstraintDescription )
     {
     }
 
@@ -81,7 +84,10 @@ class QgsFieldPrivate : public QSharedData
       return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
               && ( length == other.length ) && ( precision == other.precision )
               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
-              && ( constraints == other.constraints ) );
+              && ( constraints == other.constraints )
+              && ( expressionConstraint == other.expressionConstraint )
+              && ( expressionConstraintDescription == other.expressionConstraintDescription )
+              && ( constraintOrigins == other.constraintOrigins ) );
     }
 
     //! Name
@@ -113,6 +119,15 @@ class QgsFieldPrivate : public QSharedData
 
     //! Constraints
     QgsField::Constraints constraints;
+
+    //! Origin of field constraints
+    QHash< QgsField::Constraint, QgsField::ConstraintOrigin > constraintOrigins;
+
+    //! Expression constraint
+    QString expressionConstraint;
+
+    //! Expression constraint descriptive name
+    QString expressionConstraintDescription;
 
     QgsEditorWidgetSetup editorWidgetSetup;
 };

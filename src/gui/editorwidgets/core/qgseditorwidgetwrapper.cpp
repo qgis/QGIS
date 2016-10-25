@@ -148,7 +148,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   else
     mValidConstraint = true;
 
-  if ( layer()->fieldConstraints( mFieldIdx ) & QgsField::ConstraintNotNull )
+  if ( layer()->fields().at( mFieldIdx ).constraints() & QgsField::ConstraintNotNull )
   {
     descriptions << QStringLiteral( "NotNull" );
     if ( !expression.isEmpty() )
@@ -170,7 +170,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     toEmit = true;
   }
 
-  if ( layer()->fieldConstraints( mFieldIdx ) & QgsField::ConstraintUnique )
+  if ( layer()->fields().at( mFieldIdx ).constraints() & QgsField::ConstraintUnique )
   {
     descriptions << QStringLiteral( "Unique" );
     if ( !expression.isEmpty() )

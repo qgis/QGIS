@@ -1000,12 +1000,10 @@ bool QgsPostgresProvider::loadFields()
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
-    QgsField::Constraints constraints = 0;
     if ( notNullMap[tableoid][attnum] )
-      constraints |= QgsField::ConstraintNotNull;
+      newField.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
     if ( uniqueMap[tableoid][attnum] )
-      constraints |= QgsField::ConstraintUnique;
-    newField.setConstraints( constraints );
+      newField.setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginProvider );
 
     mAttributeFields.append( newField );
   }
@@ -1736,14 +1734,6 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
   }
 
   return defVal;
-}
-
-QgsField::Constraints QgsPostgresProvider::fieldConstraints( int fieldIndex ) const
-{
-  if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
-    return 0;
-
-  return mAttributeFields.at( fieldIndex ).constraints();
 }
 
 QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const

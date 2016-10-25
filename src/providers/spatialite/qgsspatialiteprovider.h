@@ -130,7 +130,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) const override;
-    QgsField::Constraints fieldConstraints( int fieldIndex ) const override;
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }

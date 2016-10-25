@@ -2940,7 +2940,12 @@ void QgsVectorLayer::updateFields()
       continue;
 
     // always keep provider constraints intact
-    mFields[ index ].setConstraints( mFields.at( index ).constraints() | constraintIt.value() );
+    if ( !( mFields.at( index ).constraints() & QgsField::ConstraintNotNull ) && ( constraintIt.value() & QgsField::ConstraintNotNull ) )
+      mFields[ index ].setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginLayer );
+    if ( !( mFields.at( index ).constraints() & QgsField::ConstraintUnique ) && ( constraintIt.value() & QgsField::ConstraintUnique ) )
+      mFields[ index ].setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginLayer );
+    if ( !( mFields.at( index ).constraints() & QgsField::ConstraintExpression ) && ( constraintIt.value() & QgsField::ConstraintExpression ) )
+      mFields[ index ].setConstraint( QgsField::ConstraintExpression, QgsField::ConstraintOriginLayer );
   }
 
   if ( oldFields != mFields )

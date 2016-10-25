@@ -84,7 +84,8 @@ void TestQgsField::create()
 void TestQgsField::copy()
 {
   QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
-  original.setConstraints( QgsField::ConstraintNotNull );  
+  original.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+  original.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   QgsField copy( original );
   QVERIFY( copy == original );
 
@@ -96,7 +97,8 @@ void TestQgsField::copy()
 void TestQgsField::assignment()
 {
   QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
-  original.setConstraints( QgsField::ConstraintNotNull );
+  original.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+  original.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
@@ -125,8 +127,22 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.alias(), QString( "alias" ) );
   field.setDefaultValueExpression( QStringLiteral( "1+2" ) );
   QCOMPARE( field.defaultValueExpression(), QString( "1+2" ) );
-  field.setConstraints( QgsField::ConstraintNotNull );
+  field.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
   QCOMPARE( field.constraints(), QgsField::ConstraintNotNull );
+  QCOMPARE( field.constraintOrigin( QgsField::ConstraintNotNull ), QgsField::ConstraintOriginProvider );
+  QCOMPARE( field.constraintOrigin( QgsField::ConstraintUnique ), QgsField::ConstraintOriginNotSet );
+  field.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginNotSet );
+  QCOMPARE( field.constraints(), 0 );
+  field.setConstraint( QgsField::ConstraintUnique );
+  field.setConstraint( QgsField::ConstraintNotNull );
+  QCOMPARE( field.constraints(), QgsField::ConstraintUnique | QgsField::ConstraintNotNull );
+  field.removeConstraint( QgsField::ConstraintNotNull );
+  QCOMPARE( field.constraints(), QgsField::ConstraintUnique );
+
+  field.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  QCOMPARE( field.constraintExpression(), QStringLiteral( "constraint expression" ) );
+  QCOMPARE( field.constraintDescription(), QStringLiteral( "description" ) );
+  QCOMPARE( field.constraints(), QgsField::ConstraintUnique | QgsField::ConstraintExpression ); //setting constraint expression should add constraint
 }
 
 void TestQgsField::isNumeric()
@@ -161,7 +177,7 @@ void TestQgsField::equality()
   field1.setPrecision( 2 );
   field1.setTypeName( QStringLiteral( "typename1" ) ); //typename is NOT required for equality
   field1.setComment( QStringLiteral( "comment1" ) ); //comment is NOT required for equality
-  field1.setConstraints( QgsField::ConstraintNotNull );
+  field1.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
   QgsField field2;
   field2.setName( QStringLiteral( "name" ) );
   field2.setType( QVariant::Int );
@@ -169,7 +185,7 @@ void TestQgsField::equality()
   field2.setPrecision( 2 );
   field2.setTypeName( QStringLiteral( "typename2" ) ); //typename is NOT required for equality
   field2.setComment( QStringLiteral( "comment2" ) ); //comment is NOT required for equality
-  field2.setConstraints( QgsField::ConstraintNotNull );
+  field2.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
   QVERIFY( field1 == field2 );
   QVERIFY( !( field1 != field2 ) );
 
@@ -198,16 +214,26 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setDefaultValueExpression( QString() );
-  field2.setConstraints( QgsField::ConstraintUnique );
+  field2.removeConstraint( QgsField::ConstraintNotNull );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  field2.setConstraints( QgsField::ConstraintNotNull );
+  field2.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginLayer );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+  field2.setConstraintExpression( QStringLiteral( "exp" ) );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setConstraintExpression( QStringLiteral( "exp" ), QStringLiteral( "desc" ) );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setConstraintExpression( QString(), QString() );
 }
 
 void TestQgsField::asVariant()
 {
   QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
-  original.setConstraints( QgsField::ConstraintNotNull );
+  original.setConstraint( QgsField::ConstraintNotNull );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
@@ -386,7 +412,9 @@ void TestQgsField::dataStream()
   original.setComment( QStringLiteral( "comment1" ) );
   original.setAlias( QStringLiteral( "alias" ) );
   original.setDefaultValueExpression( QStringLiteral( "default" ) );
-  original.setConstraints( QgsField::ConstraintNotNull );
+  original.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+  original.setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginLayer );
+  original.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );

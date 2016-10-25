@@ -842,16 +842,13 @@ void QgsSpatiaLiteProvider::fetchConstraints()
         field = field.trimmed();
         QString fieldName = field.left( field.indexOf( ' ' ) );
         QString definition = field.mid( field.indexOf( ' ' ) + 1 );
-        QgsField::Constraints constraints = 0;
-        if ( definition.contains( "unique", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
-          constraints |= QgsField::ConstraintUnique;
-        if ( definition.contains( "not null", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
-          constraints |= QgsField::ConstraintNotNull;
-
         int fieldIdx = mAttributeFields.lookupField( fieldName );
         if ( fieldIdx >= 0 )
         {
-          mAttributeFields[ fieldIdx ].setConstraints( constraints );
+          if ( definition.contains( "unique", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+            mAttributeFields[ fieldIdx ].setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginProvider );
+          if ( definition.contains( "not null", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+            mAttributeFields[ fieldIdx ].setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
         }
       }
     }
@@ -3664,14 +3661,6 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   sqlite3_finalize( stmt );
 
   return;
-}
-
-QgsField::Constraints QgsSpatiaLiteProvider::fieldConstraints( int fieldIndex ) const
-{
-  if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
-    return 0;
-
-  return mAttributeFields.at( fieldIndex ).constraints();
 }
 
 QString QgsSpatiaLiteProvider::geomParam() const

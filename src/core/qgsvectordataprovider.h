@@ -286,7 +286,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * field index.
      * @note added in QGIS 3.0
      */
-    virtual QgsField::Constraints fieldConstraints( int fieldIndex ) const;
+    QgsField::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
      * Changes geometries of existing features

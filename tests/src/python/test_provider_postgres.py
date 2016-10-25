@@ -455,8 +455,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # test that constraints have been saved to fields correctly
         fields = vl.fields()
         self.assertTrue(fields.at(0).constraints() & QgsField.ConstraintNotNull)
+        self.assertEqual(fields.at(0).constraintOrigin(QgsField.ConstraintNotNull), QgsField.ConstraintOriginProvider)
         self.assertFalse(fields.at(1).constraints() & QgsField.ConstraintNotNull)
         self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraintOrigin(QgsField.ConstraintNotNull), QgsField.ConstraintOriginProvider)
         self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintNotNull)
 
     def testUniqueConstraint(self):
@@ -476,8 +478,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # test that constraints have been saved to fields correctly
         fields = vl.fields()
         self.assertTrue(fields.at(0).constraints() & QgsField.ConstraintUnique)
+        self.assertEqual(fields.at(0).constraintOrigin(QgsField.ConstraintUnique), QgsField.ConstraintOriginProvider)
         self.assertTrue(fields.at(1).constraints() & QgsField.ConstraintUnique)
+        self.assertEqual(fields.at(1).constraintOrigin(QgsField.ConstraintUnique), QgsField.ConstraintOriginProvider)
         self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintUnique)
+        self.assertEqual(fields.at(2).constraintOrigin(QgsField.ConstraintUnique), QgsField.ConstraintOriginProvider)
         self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintUnique)
 
     def testConstraintOverwrite(self):

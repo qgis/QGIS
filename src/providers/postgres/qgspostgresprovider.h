@@ -161,7 +161,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsAttributeList attributeIndexes() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QVariant defaultValue( int fieldId ) const override;
-    QgsField::Constraints fieldConstraints( int fieldIndex ) const override;
 
     /** Adds a list of features
       @return true in case of success and false in case of failure*/
