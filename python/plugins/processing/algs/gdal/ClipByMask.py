@@ -193,6 +193,9 @@ class ClipByMask(GdalAlgorithm):
 
             arguments.append("-wo OPTIMIZE_SIZE=TRUE")
 
+        if GdalUtils.version() in [2010000, 2010100]:
+            arguments.append("--config GDALWARP_IGNORE_BAD_CUTLINE YES")
+
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
