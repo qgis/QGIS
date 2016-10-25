@@ -62,7 +62,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     {
       rl = qobject_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
     }
-    if ( !rl )
+    if ( !rl || !rl->isValid() )
     {
       QgsDebugMsg( "hostedrds layer not in cache, so create and insert it" );
       rl = new QgsRasterLayer( uri, layerNameFromUri( uri ) );
