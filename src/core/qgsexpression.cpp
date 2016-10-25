@@ -3601,7 +3601,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
     << new StaticFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), False, QSet<QString>(), true )
     << new StaticFunction( QStringLiteral( "aggregate" ), ParameterList() << Parameter( QStringLiteral( "layer" ) ) << Parameter( QStringLiteral( "aggregate" ) ) << Parameter( QStringLiteral( "expression" ) )
-                           << Parameter( QStringLiteral( "filter" ), true ) << Parameter( QStringLiteral( "concatenator" ), true ), fcnAggregate, QStringLiteral( "Aggregates" ), QString(), false, QSet<QString>(), true )
+                           << Parameter( QStringLiteral( "filter" ), true ) << Parameter( QStringLiteral( "concatenator" ), true ), fcnAggregate, QStringLiteral( "Aggregates" ), QString(), true, QSet<QString>() << QgsFeatureRequest::AllAttributes, true )
     << new StaticFunction( QStringLiteral( "relation_aggregate" ), ParameterList() << Parameter( QStringLiteral( "relation" ) ) << Parameter( QStringLiteral( "aggregate" ) ) << Parameter( QStringLiteral( "expression" ) ) << Parameter( QStringLiteral( "concatenator" ), true ),
                            fcnAggregateRelation, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>() << QgsFeatureRequest::AllAttributes, true )
 
