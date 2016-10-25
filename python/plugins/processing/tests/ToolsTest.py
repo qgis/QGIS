@@ -133,7 +133,7 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(name, 'memory_layer')
         name = vector.ogrLayerName('multipointz')
         self.assertEqual(name, 'memory_layer')
-        name = vector.ogrLayreName('memory?geometry=Point&field=ID:Integer64(10,0)')
+        name = vector.ogrLayerName('memory?geometry=Point&field=ID:Integer64(10,0)')
         self.assertEqual(name, 'memory_layer')
         name = vector.ogrLayerName('point25dM?abc=d')
         self.assertEqual(name, 'invalid-uri')
