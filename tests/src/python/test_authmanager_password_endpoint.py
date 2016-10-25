@@ -8,7 +8,7 @@ and QGIS Server WFS/WMS that check if QGIS can use a stored auth manager auth
 configuration to access an HTTP Basic protected endpoint.
 
 
-From build dir, run: ctest -R PyQgsAuthManagerEnpointTest -V
+From build dir, run: ctest -R PyQgsAuthManagerUsernamePasswordEnpointTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ from qgis.testing import (
 try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
 except:
-    QGIS_SERVER_ENDPOINT_PORT = '0' # Auto
+    QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
 
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
