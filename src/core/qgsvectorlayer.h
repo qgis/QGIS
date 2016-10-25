@@ -403,6 +403,7 @@ protected:
  * Provider to display vector data in a GRASS GIS layer.
  *
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
+ * @see QgsVectorLayerUtils()
  */
 
 

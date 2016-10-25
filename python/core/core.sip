@@ -148,6 +148,7 @@
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
+%Include qgsvectorlayerutils.sip
 %Include qgsvectorsimplifymethod.sip
 
 %Include qgscachedfeatureiterator.sip

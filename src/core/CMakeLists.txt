@@ -230,6 +230,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
@@ -722,6 +723,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerlabelprovider.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
+  qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
   qgsmapthemecollection.h
   qgsxmlutils.h
