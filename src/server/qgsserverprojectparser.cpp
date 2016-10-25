@@ -278,6 +278,10 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     //layer->setLayerName( layerName( elem ) );
 
+    if ( !layer->isValid() )
+    {
+      return nullptr;
+    }
     // Insert layer in registry and cache before addValueRelationLayersForLayer
     if ( !QgsMapLayerRegistry::instance()->mapLayer( id ) )
       QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
