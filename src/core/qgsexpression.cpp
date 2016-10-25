@@ -1215,9 +1215,41 @@ static QVariant fcnLength( const QVariantList& values, const QgsExpressionContex
 static QVariant fcnReplace( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
-  QString before = getStringValue( values.at( 1 ), parent );
-  QString after = getStringValue( values.at( 2 ), parent );
-  return QVariant( str.replace( before, after ) );
+  QVariantList before;
+  QVariantList after;
+  bool isSingleReplacement = false;
+
+  if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+  {
+    before = QVariantList() << getStringValue( values.at( 1 ), parent );
+  }
+  else
+  {
+    before = getListValue( values.at( 1 ), parent );
+  }
+
+  if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+  {
+    after = QVariantList() << getStringValue( values.at( 2 ), parent );
+    isSingleReplacement = true;
+  }
+  else
+  {
+    after = getListValue( values.at( 2 ), parent );
+  }
+
+  if ( !isSingleReplacement && before.length() != after.length() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid pair of array, length not identical" ) );
+    return QVariant();
+  }
+
+  for ( int i = 0; i < before.length(); i++ )
+  {
+    str = str.replace( before.at( i ).toString(), after.at( isSingleReplacement ? 0 : i ).toString() );
+  }
+
+  return QVariant( str );
 }
 static QVariant fcnRegexpReplace( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
