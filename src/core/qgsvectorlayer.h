@@ -821,8 +821,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const override;
 
-    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
-
     /**
      * Writes the symbology of the layer into the document provided in SLD 1.1 format
      * @param node the node that will have the style element added to it.

@@ -2048,11 +2048,6 @@ bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
   return true;
 }
 
-bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
-{
-  return writeSld( node, doc, errorMessage, QgsStringMap() );
-}
-
 bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, const QgsStringMap& props ) const
 {
   Q_UNUSED( errorMessage );
