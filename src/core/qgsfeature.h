@@ -349,6 +349,8 @@ typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
+uint qHash( const QgsFeature& key, uint seed = 0 );
+
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )
 

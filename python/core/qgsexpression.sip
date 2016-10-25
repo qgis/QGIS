@@ -45,13 +45,19 @@ class QgsExpression
 
     /**
      * Get list of columns referenced by the expression.
-     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     *
+     * @note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
-     * TODO QGIS3: Return QSet<QString>
+     * @see referencedAttributeIndexes()
      */
     QSet<QString> referencedColumns() const;
+
+    /**
+     * Return a list of all variables which are used in this expression.
+     */
+    QSet<QString> referencedVariables() const;
 
     /**
      * Return a list of field name indexes obtained from the provided fields.
@@ -561,6 +567,11 @@ class QgsExpression
         virtual QSet<QString> referencedColumns() const = 0;
 
         /**
+         * Return a list of all variables which are used in this expression.
+         */
+        virtual QSet<QString> referencedVariables() const = 0;
+
+        /**
          * Abstract virtual method which returns if the geometry is required to evaluate
          * this expression.
          *
@@ -638,6 +649,7 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
     };
@@ -658,6 +670,7 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
 
@@ -692,6 +705,7 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
     };
@@ -712,6 +726,7 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
 
@@ -734,6 +749,7 @@ class QgsExpression
         virtual QgsExpression::Node* clone() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
     };
 
@@ -751,6 +767,7 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
 
         virtual QgsExpression::Node* clone() const;
@@ -783,6 +800,7 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
     };

@@ -622,7 +622,7 @@ static QVariant fcnMin( const QVariantList& values, const QgsExpressionContext*,
   return QVariant( minVal );
 }
 
-static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionContext* context, QgsExpression *parent )
+static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
 {
   //lazy eval, so we need to evaluate nodes now
 
@@ -677,15 +677,28 @@ static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionCon
     parameters.delimiter = value.toString();
   }
 
-  QString cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter );
-  if ( context && context->hasCachedValue( cacheKey ) )
-    return context->cachedValue( cacheKey );
-
   QVariant result;
   if ( context )
   {
+    QString cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter );
+
+    QgsExpression subExp( subExpression );
+    if ( subExp.referencedVariables().contains( "parent" ) || subExp.referencedVariables().contains( QString() ) )
+    {
+      cacheKey += ':' + qHash( context->feature() );
+    }
+
+    if ( context && context->hasCachedValue( cacheKey ) )
+      return context->cachedValue( cacheKey );
+
     QgsExpressionContext subContext( *context );
+    QgsExpressionContextScope* subScope = new QgsExpressionContextScope();
+    subScope->setVariable( "parent", context->feature() );
+    subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+
+    if ( ok )
+      context->setCachedValue( cacheKey, result );
   }
   else
   {
@@ -697,9 +710,6 @@ static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionCon
     return QVariant();
   }
 
-  // cache value
-  if ( context )
-    context->setCachedValue( cacheKey, result );
   return result;
 }
 
@@ -3991,6 +4001,14 @@ QSet<QString> QgsExpression::referencedColumns() const
   return d->mRootNode->referencedColumns();
 }
 
+QSet<QString> QgsExpression::referencedVariables() const
+{
+  if ( !d->mRootNode )
+    return QSet<QString>();
+
+  return d->mRootNode->referencedVariables();
+}
+
 bool QgsExpression::NodeInOperator::needsGeometry() const
 {
   bool needs = false;
@@ -4301,6 +4319,16 @@ bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const Qgs
 QString QgsExpression::NodeUnaryOperator::dump() const
 {
   return QStringLiteral( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
+}
+
+QSet<QString> QgsExpression::NodeUnaryOperator::referencedColumns() const
+{
+  return mOperand->referencedColumns();
+}
+
+QSet<QString> QgsExpression::NodeUnaryOperator::referencedVariables() const
+{
+  return mOperand->referencedVariables();
 }
 
 QgsExpression::Node*QgsExpression::NodeUnaryOperator::clone() const
@@ -4790,6 +4818,11 @@ QSet<QString> QgsExpression::NodeBinaryOperator::referencedColumns() const
   return mOpLeft->referencedColumns() + mOpRight->referencedColumns();
 }
 
+QSet<QString> QgsExpression::NodeBinaryOperator::referencedVariables() const
+{
+  return mOpLeft->referencedVariables() + mOpRight->referencedVariables();
+}
+
 bool QgsExpression::NodeBinaryOperator::needsGeometry() const
 {
   return mOpLeft->needsGeometry() || mOpRight->needsGeometry();
@@ -4993,6 +5026,23 @@ QSet<QString> QgsExpression::NodeFunction::referencedColumns() const
   return functionColumns;
 }
 
+QSet<QString> QgsExpression::NodeFunction::referencedVariables() const
+{
+  Function* fd = Functions()[mFnIndex];
+  if ( fd->name() == "var" )
+  {
+    if ( !mArgs->list().isEmpty() )
+    {
+      QgsExpression::NodeLiteral* var = dynamic_cast<QgsExpression::NodeLiteral*>( mArgs->list().first() );
+      if ( var )
+        return QSet<QString>() << var->value().toString();
+    }
+    return QSet<QString>() << QString();
+  }
+  else
+    return QSet<QString>();
+}
+
 bool QgsExpression::NodeFunction::needsGeometry() const
 {
   bool needs = Functions()[mFnIndex]->usesGeometry();
@@ -5119,6 +5169,16 @@ QString QgsExpression::NodeLiteral::dump() const
   }
 }
 
+QSet<QString> QgsExpression::NodeLiteral::referencedColumns() const
+{
+  return QSet<QString>();
+}
+
+QSet<QString> QgsExpression::NodeLiteral::referencedVariables() const
+{
+  return QSet<QString>();
+}
+
 QgsExpression::Node*QgsExpression::NodeLiteral::clone() const
 {
   return new NodeLiteral( mValue );
@@ -5175,6 +5235,16 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
 QString QgsExpression::NodeColumnRef::dump() const
 {
   return QRegExp( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ).exactMatch( mName ) ? mName : quotedColumnRef( mName );
+}
+
+QSet<QString> QgsExpression::NodeColumnRef::referencedColumns() const
+{
+  return QSet<QString>() << mName;
+}
+
+QSet<QString> QgsExpression::NodeColumnRef::referencedVariables() const
+{
+  return QSet<QString>();
 }
 
 QgsExpression::Node*QgsExpression::NodeColumnRef::clone() const
@@ -5249,6 +5319,20 @@ QSet<QString> QgsExpression::NodeCondition::referencedColumns() const
 
   if ( mElseExp )
     lst += mElseExp->referencedColumns();
+
+  return lst;
+}
+
+QSet<QString> QgsExpression::NodeCondition::referencedVariables() const
+{
+  QSet<QString> lst;
+  Q_FOREACH ( WhenThen* cond, mConditions )
+  {
+    lst += cond->mWhenExp->referencedVariables() + cond->mThenExp->referencedVariables();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->referencedVariables();
 
   return lst;
 }
@@ -5616,6 +5700,14 @@ QSet<QString> QgsExpression::NodeInOperator::referencedColumns() const
   QSet<QString> lst( mNode->referencedColumns() );
   Q_FOREACH ( const Node* n, mList->list() )
     lst.unite( n->referencedColumns() );
+  return lst;
+}
+
+QSet<QString> QgsExpression::NodeInOperator::referencedVariables() const
+{
+  QSet<QString> lst( mNode->referencedVariables() );
+  Q_FOREACH ( const Node* n, mList->list() )
+    lst.unite( n->referencedVariables() );
   return lst;
 }
 

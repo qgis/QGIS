@@ -180,10 +180,17 @@ class CORE_EXPORT QgsExpression
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
      * @see referencedAttributeIndexes()
-     *
-     * TODO QGIS3: Return QSet<QString>
      */
     QSet<QString> referencedColumns() const;
+
+    /**
+     * Return a list of all variables which are used in this expression.
+     * If the list contains a NULL QString, there is a variable name used
+     * which is determined at runtime.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<QString> referencedVariables() const;
 
     /**
      * Return a list of field name indexes obtained from the provided fields.
@@ -858,6 +865,11 @@ class CORE_EXPORT QgsExpression
         virtual QSet<QString> referencedColumns() const = 0;
 
         /**
+         * Return a list of all variables which are used in this expression.
+         */
+        virtual QSet<QString> referencedVariables() const = 0;
+
+        /**
          * Abstract virtual method which returns if the geometry is required to evaluate
          * this expression.
          *
@@ -953,7 +965,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QSet<QString> referencedColumns() const override { return mOperand->referencedColumns(); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
         virtual Node* clone() const override;
 
@@ -984,6 +997,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -1028,6 +1042,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -1055,6 +1070,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -1084,7 +1100,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QSet<QString> referencedColumns() const override { return QSet<QString>(); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
         virtual Node* clone() const override;
 
@@ -1110,7 +1127,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QSet<QString> referencedColumns() const override { return QSet<QString>() << mName; }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
 
         virtual Node* clone() const override;
@@ -1162,6 +1180,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
