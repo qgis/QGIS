@@ -130,6 +130,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) const override;
+    QgsField::Constraints fieldConstraints( int fieldIndex ) const override;
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
@@ -445,6 +446,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     int computeSizeFromGeosWKB2D( const unsigned char *blob, int size,
                                   int type, int nDims, int little_endian,
                                   int endian_arch );
+
+    void fetchConstraints();
 
     enum GEOS_3D
     {

@@ -19,7 +19,7 @@ import sys
 import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry, QgsField
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -133,6 +133,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql = "CREATE TABLE test_relation_b(trackid INTEGER, trackname TEXT, trackartist INTEGER, FOREIGN KEY(trackartist) REFERENCES test_relation_a(artistid));"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_relation_b', 'Geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+
+        # tables with constraints
+        sql = "CREATE TABLE test_constraints(id INTEGER PRIMARY KEY, num INTEGER NOT NULL, desc TEXT UNIQUE, desc2 TEXT, num2 INTEGER NOT NULL UNIQUE)"
         cur.execute(sql)
 
         cur.execute("COMMIT")
@@ -381,6 +385,54 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         finally:
             QgsMapLayerRegistry.instance().removeMapLayer(track.id())
             QgsMapLayerRegistry.instance().removeMapLayer(artist.id())
+
+    def testNotNullConstraint(self):
+        vl = QgsVectorLayer("dbname=%s table=test_constraints key='id'" % self.dbname, "test_constraints",
+                                "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 5)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsField.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsField.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(1) & QgsField.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(2) & QgsField.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsField.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(4) & QgsField.ConstraintNotNull)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints() & QgsField.ConstraintNotNull)
+        self.assertTrue(fields.at(1).constraints() & QgsField.ConstraintNotNull)
+        self.assertFalse(fields.at(2).constraints() & QgsField.ConstraintNotNull)
+        self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintNotNull)
+        self.assertTrue(fields.at(4).constraints() & QgsField.ConstraintNotNull)
+
+    def testUniqueConstraint(self):
+        vl = QgsVectorLayer("dbname=%s table=test_constraints key='id'" % self.dbname, "test_constraints",
+                                "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 5)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsField.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsField.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsField.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsField.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsField.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(4) & QgsField.ConstraintUnique)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints() & QgsField.ConstraintUnique)
+        self.assertFalse(fields.at(1).constraints() & QgsField.ConstraintUnique)
+        self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintUnique)
+        self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintUnique)
+        self.assertTrue(fields.at(4).constraints() & QgsField.ConstraintUnique)
 
     # This test would fail. It would require turning on WAL
     def XXXXXtestLocking(self):

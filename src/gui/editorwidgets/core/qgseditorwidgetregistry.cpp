@@ -263,8 +263,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
 
       formConfig.setReadOnly( idx, ewv2CfgElem.attribute( QStringLiteral( "fieldEditable" ), QStringLiteral( "1" ) ) != QLatin1String( "1" ) );
       formConfig.setLabelOnTop( idx, ewv2CfgElem.attribute( QStringLiteral( "labelOnTop" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
-      formConfig.setNotNull( idx, ewv2CfgElem.attribute( QStringLiteral( "notNull" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
-      if ( ewv2CfgElem.attribute( QStringLiteral("notNull"), QStringLiteral("0") ) == QLatin1String( "1" ) )
+      if ( ewv2CfgElem.attribute( QStringLiteral( "notNull" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) )
       {
         // upgrade from older config
         vectorLayer->setFieldConstraints( idx, vectorLayer->fieldConstraints( idx ) | QgsField::ConstraintNotNull );

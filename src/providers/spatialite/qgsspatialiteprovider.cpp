@@ -36,6 +36,7 @@ email                : a.furieri@lqt.it
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QDir>
+#include <QRegularExpression>
 
 
 const QString SPATIALITE_KEY = QStringLiteral( "spatialite" );
@@ -811,6 +812,65 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   return mSpatialiteVersionInfo;
 }
 
+void QgsSpatiaLiteProvider::fetchConstraints()
+{
+  char **results;
+  char *errMsg = nullptr;
+
+  // this is not particularly robust but unfortunately sqlite offers no way to check directly
+  // for the presence of constraints on a field (only indexes, but not all constraints are indexes)
+  QString sql = QStringLiteral( "SELECT sql FROM sqlite_master WHERE type='table' AND name=%1" ).arg( quotedIdentifier( mTableName ) );
+  int columns = 0;
+  int rows = 0;
+
+  int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret != SQLITE_OK )
+    goto error;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    QString sqlDef = QString::fromUtf8( results[ 1 ] );
+    // extract definition
+    QRegularExpression re( QStringLiteral( "\\((.*)\\)" ) );
+    QRegularExpressionMatch match = re.match( sqlDef );
+    if ( match.hasMatch() )
+    {
+      QString matched = match.captured( 1 );
+      Q_FOREACH ( QString field, matched.split( ',' ) )
+      {
+        field = field.trimmed();
+        QString fieldName = field.left( field.indexOf( ' ' ) );
+        QString definition = field.mid( field.indexOf( ' ' ) + 1 );
+        QgsField::Constraints constraints = 0;
+        if ( definition.contains( "unique", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+          constraints |= QgsField::ConstraintUnique;
+        if ( definition.contains( "not null", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+          constraints |= QgsField::ConstraintNotNull;
+
+        int fieldIdx = mAttributeFields.lookupField( fieldName );
+        if ( fieldIdx >= 0 )
+        {
+          mAttributeFields[ fieldIdx ].setConstraints( constraints );
+        }
+      }
+    }
+
+  }
+  sqlite3_free_table( results );
+
+  return;
+
+error:
+  QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
+  // unexpected error
+  if ( errMsg )
+  {
+    sqlite3_free( errMsg );
+  }
+
+}
+
 void QgsSpatiaLiteProvider::loadFields()
 {
   int ret;
@@ -866,6 +926,8 @@ void QgsSpatiaLiteProvider::loadFields()
     }
     sqlite3_free_table( results );
 
+    // check for constraints
+    fetchConstraints();
 
     // for views try to get the primary key from the meta table
     if ( mViewBased && mPrimaryKey.isEmpty() )
@@ -3602,6 +3664,14 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   sqlite3_finalize( stmt );
 
   return;
+}
+
+QgsField::Constraints QgsSpatiaLiteProvider::fieldConstraints( int fieldIndex ) const
+{
+  if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    return 0;
+
+  return mAttributeFields.at( fieldIndex ).constraints();
 }
 
 QString QgsSpatiaLiteProvider::geomParam() const
