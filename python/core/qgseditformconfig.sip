@@ -198,52 +198,6 @@ class QgsEditFormConfig
     void setReadOnly( int idx, bool readOnly = true );
 
     /**
-     * Returns the constraint expression of a specific field
-     *
-     * @param idx The index of the field
-     * @return the expression
-     *
-     * @note added in QGIS 2.16
-     * @note renamed in QGIS 3.0
-     */
-    QString constraintExpression( int idx ) const;
-
-    /**
-     * Set the constraint expression for a specific field
-     *
-     * @param idx the field index
-     * @param expression the constraint expression
-     *
-     * @note added in QGIS 2.16
-     * @note renamed in QGIS 3.0
-     */
-    void setConstraintExpression( int idx, const QString& expression );
-
-    /**
-     * Returns the constraint expression description of a specific field.
-     *
-     * @param idx The index of the field
-     * @return The expression description. Will be presented
-     *         to the user in case the constraint fails.
-     *
-     * @note added in QGIS 2.16
-     * @note renamed in QGIS 3.0
-     */
-    QString constraintDescription( int idx ) const;
-
-    /**
-     * Set the constraint expression description for a specific field.
-     *
-     * @param idx The index of the field
-     * @param description The description of the expression. Will be presented
-     *                    to the user in case the constraint fails.
-     *
-     * @note added in QGIS 2.16
-     * @note renamed in QGIS 3.0
-     */
-    void setContraintDescription( int idx, const QString& description );
-
-    /**
      * If this returns true, the widget at the given index will receive its label on the previous line
      * while if it returns false, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.

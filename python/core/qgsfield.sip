@@ -23,6 +23,7 @@ class QgsField
     {
       ConstraintNotNull, //!< Field may not be null
       ConstraintUnique, //!< Field must have a unique value
+      ConstraintExpression, //!< Field has an expression constraint set. See constraintExpression().
     };
     typedef QFlags<QgsField::Constraint> Constraints;
 

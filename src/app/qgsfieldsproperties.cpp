@@ -977,8 +977,7 @@ void QgsFieldsProperties::apply()
 
     editFormConfig.setReadOnly( i, !cfg.mEditable );
     editFormConfig.setLabelOnTop( i, cfg.mLabelOnTop );
-    editFormConfig.setContraintDescription( i, cfg.mConstraintDescription );
-    editFormConfig.setConstraintExpression( i, cfg.mConstraint );
+    mLayer->setConstraintExpression( i, cfg.mConstraint, cfg.mConstraintDescription );
 
     editFormConfig.setWidgetType( name, cfg.mEditorWidgetType );
     editFormConfig.setWidgetConfig( name, cfg.mEditorWidgetConfig );
@@ -1062,8 +1061,8 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
   mConstraints = layer->fields().at( idx ).constraints();
-  mConstraint = layer->editFormConfig().constraintExpression( idx );
-  mConstraintDescription = layer->editFormConfig().constraintDescription( idx );
+  mConstraint = layer->fields().at( idx ).constraintExpression();
+  mConstraintDescription = layer->fields().at( idx ).constraintDescription();
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();

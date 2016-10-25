@@ -38,8 +38,6 @@ class QgsEditFormConfigPrivate : public QSharedData
         : QSharedData( o )
         , mInvisibleRootContainer( static_cast<QgsAttributeEditorContainer*>( o.mInvisibleRootContainer->clone( nullptr ) ) )
         , mConfiguredRootContainer( o.mConfiguredRootContainer )
-        , mConstraints( o.mConstraints )
-        , mConstraintsDescription( o.mConstraintsDescription )
         , mFieldEditables( o.mFieldEditables )
         , mLabelOnTop( o.mLabelOnTop )
         , mEditorWidgetTypes( o.mEditorWidgetTypes )
@@ -64,8 +62,6 @@ class QgsEditFormConfigPrivate : public QSharedData
     //! This flag is set if the root container was configured by the user
     bool mConfiguredRootContainer;
 
-    QMap< QString, QString> mConstraints;
-    QMap< QString, QString> mConstraintsDescription;
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
 

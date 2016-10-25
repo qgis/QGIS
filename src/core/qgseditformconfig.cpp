@@ -182,44 +182,6 @@ bool QgsEditFormConfig::labelOnTop( int idx ) const
     return false;
 }
 
-QString QgsEditFormConfig::constraintExpression( int idx ) const
-{
-  QString expr;
-
-  if ( idx >= 0 && idx < d->mFields.count() )
-    expr = d->mConstraints.value( d->mFields.at( idx ).name(), QString() );
-
-  return expr;
-}
-
-void QgsEditFormConfig::setConstraintExpression( int idx, const QString& expression )
-{
-  if ( idx >= 0 && idx < d->mFields.count() )
-  {
-    d.detach();
-    d->mConstraints[ d->mFields.at( idx ).name()] = expression;
-  }
-}
-
-QString QgsEditFormConfig::constraintDescription( int idx ) const
-{
-  QString description;
-
-  if ( idx >= 0 && idx < d->mFields.count() )
-    description = d->mConstraintsDescription[ d->mFields.at( idx ).name()];
-
-  return description;
-}
-
-void QgsEditFormConfig::setContraintDescription( int idx, const QString &descr )
-{
-  if ( idx >= 0 && idx < d->mFields.count() )
-  {
-    d.detach();
-    d->mConstraintsDescription[ d->mFields.at( idx ).name()] = descr;
-  }
-}
-
 void QgsEditFormConfig::setReadOnly( int idx, bool readOnly )
 {
   if ( idx >= 0 && idx < d->mFields.count() )

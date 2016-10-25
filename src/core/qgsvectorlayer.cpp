@@ -1459,6 +1459,24 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
       mFieldConstraints.insert( field, static_cast< QgsField::Constraints >( constraints ) );
     }
   }
+  mFieldConstraintExpressions.clear();
+  QDomNode constraintExpressionsNode = layer_node.namedItem( "constraintExpressions" );
+  if ( !constraintExpressionsNode.isNull() )
+  {
+    QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( "constraint" );
+    for ( int i = 0; i < constraintNodeList.size(); ++i )
+    {
+      QDomElement constraintElem = constraintNodeList.at( i ).toElement();
+
+      QString field = constraintElem.attribute( "field", QString() );
+      QString exp = constraintElem.attribute( "exp", QString() );
+      QString desc = constraintElem.attribute( "desc", QString() );
+      if ( field.isEmpty() || exp.isEmpty() )
+        continue;
+
+      mFieldConstraintExpressions.insert( field, qMakePair( exp, desc ) );
+    }
+  }
 
   updateFields();
 
@@ -1676,6 +1694,19 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     constraintsElem.appendChild( constraintElem );
   }
   layer_node.appendChild( constraintsElem );
+
+  // constraint expressions
+  QDomElement constraintExpressionsElem = document.createElement( "constraintExpressions" );
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QDomElement constraintExpressionElem = document.createElement( "constraint" );
+    constraintExpressionElem.setAttribute( "field", field.name() );
+    constraintExpressionElem.setAttribute( "exp", field.constraintExpression() );
+    constraintExpressionElem.setAttribute( "desc", field.constraintDescription() );
+    constraintExpressionsElem.appendChild( constraintExpressionElem );
+  }
+  layer_node.appendChild( constraintExpressionsElem );
+
 
   // change dependencies
   QDomElement dataDependenciesElement = document.createElement( QStringLiteral( "dataDependencies" ) );
@@ -2946,6 +2977,20 @@ void QgsVectorLayer::updateFields()
       mFields[ index ].setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginLayer );
     if ( !( mFields.at( index ).constraints() & QgsField::ConstraintExpression ) && ( constraintIt.value() & QgsField::ConstraintExpression ) )
       mFields[ index ].setConstraint( QgsField::ConstraintExpression, QgsField::ConstraintOriginLayer );
+  }
+
+  QMap< QString, QPair< QString, QString > >::const_iterator constraintExpIt = mFieldConstraintExpressions.constBegin();
+  for ( ; constraintExpIt != mFieldConstraintExpressions.constEnd(); ++constraintExpIt )
+  {
+    int index = mFields.lookupField( constraintExpIt.key() );
+    if ( index < 0 )
+      continue;
+
+    // always keep provider constraints intact
+    if ( mFields.at( index ).constraintOrigin( QgsField::ConstraintExpression ) == QgsField::ConstraintOriginProvider )
+      continue;
+
+    mFields[ index ].setConstraintExpression( constraintExpIt.value().first, constraintExpIt.value().second );
   }
 
   if ( oldFields != mFields )
@@ -4265,6 +4310,38 @@ void QgsVectorLayer::setFieldConstraints( int index, QgsField::Constraints const
   else
   {
     mFieldConstraints.insert( mFields.at( index ).name(), constraints );
+  }
+  updateFields();
+}
+
+QString QgsVectorLayer::constraintExpression( int index ) const
+{
+  if ( index < 0 || index >= mFields.count() )
+    return QString();
+
+  return mFields.at( index ).constraintExpression();
+}
+
+QString QgsVectorLayer::constraintDescription( int index ) const
+{
+  if ( index < 0 || index >= mFields.count() )
+    return QString();
+
+  return mFields.at( index ).constraintDescription();
+}
+
+void QgsVectorLayer::setConstraintExpression( int index, const QString& expression, const QString& description )
+{
+  if ( index < 0 || index >= mFields.count() )
+    return;
+
+  if ( expression.isEmpty() )
+  {
+    mFieldConstraintExpressions.remove( mFields.at( index ).name() );
+  }
+  else
+  {
+    mFieldConstraintExpressions.insert( mFields.at( index ).name(), qMakePair( expression, description ) );
   }
   updateFields();
 }

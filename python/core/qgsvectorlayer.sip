@@ -1275,6 +1275,34 @@ class QgsVectorLayer : QgsMapLayer
      */
     void setFieldConstraints( int index, QgsField::Constraints constraints );
 
+    /**
+     * Returns the constraint expression for for a specified field index, if set.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     * @see constraintDescription()
+     * @see setConstraintExpression()
+     */
+    QString constraintExpression( int index ) const;
+
+    /**
+     * Returns the descriptive name for the constraint expression for a specified field index.
+     * @note added in QGIS 3.0
+     * @see constraints()
+     * @see constraintExpression()
+     * @see setConstraintExpression()
+     */
+    QString constraintDescription( int index ) const;
+
+    /**
+     * Set the constraint expression for the specified field index. An optional descriptive name for the constraint
+     * can also be set. Setting an empty expression will clear any existing expression constraint.
+     * @note added in QGIS 3.0
+     * @see constraintExpression()
+     * @see constraintDescription()
+     * @see constraints()
+     */
+    void setConstraintExpression( int index, const QString& expression, const QString& description = QString() );
+
     /** Calculates a list of unique values contained within an attribute in the layer. Note that
      * in some circumstances when unsaved changes are present for the layer then the returned list
      * may contain outdated values (for instance when the attribute value in a saved feature has

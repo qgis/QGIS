@@ -78,14 +78,11 @@ void TestQgsAttributeForm::testFieldConstraint()
   form.setFeature( ft );
 
   // testing stuff
-  QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
   QString validLabel = QStringLiteral( "col0<font color=\"green\">*</font>" );
   QString invalidLabel = QStringLiteral( "col0<font color=\"red\">*</font>" );
 
   // set constraint
-  QgsEditFormConfig config = layer->editFormConfig();
-  config.setConstraintExpression( 0, QString() );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QString() );
 
   // get wrapper
   QgsEditorWidgetWrapper *ww;
@@ -96,8 +93,13 @@ void TestQgsAttributeForm::testFieldConstraint()
   QCOMPARE( label->text(), QString( "col0" ) );
 
   // set a not null constraint
-  config.setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
+  // build a form for this feature
+  QgsAttributeForm form2( layer );
+  form2.setFeature( ft );
+  QSignalSpy spy( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
+  ww = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[0] );
+  label = form2.mBuddyMap.value( ww->widget() );
 
   // set value to 1
   ww->setValue( 1 );
@@ -131,12 +133,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ft.setAttribute( QStringLiteral( "col3" ), 3 );
 
   // set constraints for each field
-  QgsEditFormConfig config = layer->editFormConfig();
-  config.setConstraintExpression( 0, QString() );
-  config.setConstraintExpression( 1, QString() );
-  config.setConstraintExpression( 2, QString() );
-  config.setConstraintExpression( 3, QString() );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QString() );
+  layer->setConstraintExpression( 1, QString() );
+  layer->setConstraintExpression( 2, QString() );
+  layer->setConstraintExpression( 3, QString() );
 
   // build a form for this feature
   QgsAttributeForm form( layer );
@@ -167,15 +167,26 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( label3->text(), QString( "col3" ) );
 
   // update constraint
-  config.setConstraintExpression( 0, QStringLiteral( "col0 < (col1 * col2)" ) );
-  config.setConstraintExpression( 1, QString() );
-  config.setConstraintExpression( 2, QString() );
-  config.setConstraintExpression( 3, QStringLiteral( "col0 = 2" ) );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QStringLiteral( "col0 < (col1 * col2)" ) );
+  layer->setConstraintExpression( 1, QString() );
+  layer->setConstraintExpression( 2, QString() );
+  layer->setConstraintExpression( 3, QStringLiteral( "col0 = 2" ) );
+
+  QgsAttributeForm form2( layer );
+  form2.setFeature( ft );
+  ww0 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[0] );
+  ww1 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[1] );
+  ww2 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[2] );
+  ww3 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[3] );
+  label0 = form2.mBuddyMap.value( ww0->widget() );
+  label1 = form2.mBuddyMap.value( ww1->widget() );
+  label2 = form2.mBuddyMap.value( ww2->widget() );
+  label3 = form2.mBuddyMap.value( ww3->widget() );
+  QSignalSpy spy2( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
 
   // change value
   ww0->setValue( 2 ); // update col0
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy2.count(), 2 );
 
   QCOMPARE( label0->text(), QString( "col0" + inv ) ); // 2 < ( 1 + 2 )
   QCOMPARE( label1->text(), QString( "col1" ) );
@@ -183,9 +194,9 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( label3->text(), QString( "col3" + val ) ); // 2 = 2
 
   // change value
-  spy.clear();
+  spy2.clear();
   ww0->setValue( 1 ); // update col0
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy2.count(), 2 );
 
   QCOMPARE( label0->text(), QString( "col0" + val ) ); // 1 < ( 1 + 2 )
   QCOMPARE( label1->text(), QString( "col1" ) );
@@ -205,9 +216,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   ft.setValid( true );
 
   // set constraint
-  QgsEditFormConfig config = layer->editFormConfig();
-  config.setConstraintExpression( 0, QString() );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QString() );
 
   // build a form for this feature
   QgsAttributeForm form( layer );
@@ -235,14 +244,21 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QCOMPARE( okButton->isEnabled(), true );
 
   // invalid constraint and editable layer : OK button disabled
-  config.setConstraintExpression( 0, QStringLiteral( "col0 = 0" ) );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QStringLiteral( "col0 = 0" ) );
+  QgsAttributeForm form2( layer );
+  form2.setFeature( ft );
+  ww = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[0] );
+  okButton = form2.mButtonBox->button( QDialogButtonBox::Ok );
   ww->setValue( 1 );
   QCOMPARE( okButton->isEnabled(), false );
 
   // valid constraint and editable layer : OK button enabled
-  config.setConstraintExpression( 0, QStringLiteral( "col0 = 2" ) );
-  layer->setEditFormConfig( config );
+  layer->setConstraintExpression( 0, QStringLiteral( "col0 = 2" ) );
+  QgsAttributeForm form3( layer );
+  form3.setFeature( ft );
+  ww = qobject_cast<QgsEditorWidgetWrapper*>( form3.mWidgets[0] );
+  okButton = form3.mButtonBox->button( QDialogButtonBox::Ok );
+
   ww->setValue( 2 );
   QCOMPARE( okButton->isEnabled(), true );
 

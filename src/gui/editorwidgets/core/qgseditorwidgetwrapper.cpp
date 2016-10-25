@@ -109,10 +109,11 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid 
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 {
   bool toEmit( false );
-  QString expression = layer()->editFormConfig().constraintExpression( mFieldIdx );
+  QgsField field = layer()->fields().at( mFieldIdx );
+
+  QString expression = field.constraintExpression();
   QStringList expressions, descriptions;
   QVariant value = ft.attribute( mFieldIdx );
-  QString fieldName = ft.fields().count() > mFieldIdx ? ft.fields().field( mFieldIdx ).name() : QString();
 
   mConstraintFailureReason.clear();
 
@@ -121,7 +122,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   if ( ! expression.isEmpty() )
   {
     expressions << expression;
-    descriptions << layer()->editFormConfig().constraintDescription( mFieldIdx );
+    descriptions << field.constraintDescription();
 
     QgsExpressionContext context = layer()->createExpressionContext();
     context.setFeature( ft );
@@ -140,7 +141,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     }
     else if ( ! mValidConstraint )
     {
-      errors << tr( "%1 check failed" ).arg( layer()->editFormConfig().constraintDescription( mFieldIdx ) );
+      errors << tr( "%1 check failed" ).arg( field.constraintDescription() );
     }
 
     toEmit = true;
@@ -148,12 +149,12 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   else
     mValidConstraint = true;
 
-  if ( layer()->fields().at( mFieldIdx ).constraints() & QgsField::ConstraintNotNull )
+  if ( field.constraints() & QgsField::ConstraintNotNull )
   {
     descriptions << QStringLiteral( "NotNull" );
     if ( !expression.isEmpty() )
     {
-      expressions << fieldName + " IS NOT NULL";
+      expressions << field.name() + " IS NOT NULL";
     }
     else
     {
@@ -170,12 +171,12 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     toEmit = true;
   }
 
-  if ( layer()->fields().at( mFieldIdx ).constraints() & QgsField::ConstraintUnique )
+  if ( field.constraints() & QgsField::ConstraintUnique )
   {
     descriptions << QStringLiteral( "Unique" );
     if ( !expression.isEmpty() )
     {
-      expressions << fieldName + " IS UNIQUE";
+      expressions << field.name() + " IS UNIQUE";
     }
     else
     {
