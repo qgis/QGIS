@@ -823,9 +823,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     QDialog* dialog = new QDialog( this );
     dialog->setWindowTitle( tr( "Project snapping settings" ) );
     QVBoxLayout* layout = new QVBoxLayout( dialog );
-    QDialogButtonBox* button = new QDialogButtonBox( QDialogButtonBox::Close );
     layout->addWidget( mSnappingDialogWidget );
-    layout->addWidget( button );
+    layout->setMargin( 0 );
     mSnappingDialogContainer = dialog;
   }
   endProfile();

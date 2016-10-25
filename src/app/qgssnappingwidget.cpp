@@ -201,12 +201,15 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
       mLayerTreeView = new QTreeView();
       QgsSnappingLayerTreeModel* model = new QgsSnappingLayerTreeModel( mProject, this );
       model->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), model ) );
+
+      connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+      connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+      connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+
       // model->setFlags( 0 );
       mLayerTreeView->setModel( model );
       mLayerTreeView->resizeColumnToContents( 0 );
       mLayerTreeView->header()->show();
-      mLayerTreeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-      mLayerTreeView->header()->setSectionResizeMode( QHeaderView::Interactive );
       mLayerTreeView->setSelectionMode( QAbstractItemView::NoSelection );
 
       // item delegates
@@ -230,9 +233,17 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   connect( project, &QgsProject::topologicalEditingChanged, this, &QgsSnappingWidget::projectTopologicalEditingChanged );
   connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( updateToleranceDecimals() ) );
 
+
+  // Slightly modify the config so the settings changed code doesn't early exit
+  mConfig = project->snappingConfig();
+  mConfig.setEnabled( !mConfig.enabled() );
+  projectSnapSettingsChanged();
+
   // modeChanged determines if widget are visible or not based on mode
   modeChanged();
   updateToleranceDecimals();
+
+  restoreGeometry( QSettings().value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
 }
 
 QgsSnappingWidget::~QgsSnappingWidget()
@@ -252,7 +263,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
 
   mEnabledAction->setChecked( config.enabled() );
 
-  if ( config.mode() == QgsSnappingConfig::AllLayers && mModeButton->defaultAction() != mActiveLayerAction )
+  if ( config.mode() == QgsSnappingConfig::AllLayers && mModeButton->defaultAction() != mAllLayersAction )
   {
     mModeButton->setDefaultAction( mAllLayersAction );
     modeChanged();
@@ -349,6 +360,12 @@ void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 {
   mConfig.setIntersectionSnapping( enabled );
   mProject->setSnappingConfig( mConfig );
+}
+
+void QgsSnappingWidget::onSnappingTreeLayersChanged()
+{
+  mLayerTreeView->resizeColumnToContents( 0 );
+  QTimer::singleShot( 0, mLayerTreeView, &QTreeView::expandAll );
 }
 
 void QgsSnappingWidget::modeButtonTriggered( QAction* action )

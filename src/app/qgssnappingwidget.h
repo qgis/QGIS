@@ -91,6 +91,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     //! number of decimals of the tolerance spin box depends on map units
     void updateToleranceDecimals();
 
+    void onSnappingTreeLayersChanged();
+
   private:
     enum DisplayMode
     {

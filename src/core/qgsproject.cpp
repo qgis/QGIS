@@ -451,6 +451,7 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mSnappingConfig.reset();
+  emit snappingConfigChanged();
 
   mMapThemeCollection.reset( new QgsMapThemeCollection() );
   emit mapThemeCollectionChanged();
