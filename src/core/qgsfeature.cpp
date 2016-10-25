@@ -323,6 +323,7 @@ uint qHash( const QgsFeature& key, uint seed )
   }
 
   hash ^= qHash( key.geometry().exportToWkt() );
+  hash ^= qHash( key.id() );
 
   return hash;
 }
