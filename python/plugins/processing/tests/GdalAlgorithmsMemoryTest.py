@@ -37,20 +37,12 @@ from PyQt4.QtCore import QVariant
 import os.path
 import errno
 import shutil
+import tempfile
 
 dataFolder = os.path.join(os.path.dirname(__file__), 'testdata/')
-expectedFolder = os.path.abspath(os.path.join(dataFolder, 'expected', 'gdal'))
-tmpBaseFolder = os.path.join(os.sep, 'tmp', 'qgis_test', str(os.getpid()))
+expectedFolder = os.path.join(dataFolder, 'expected', 'gdal')
+tmpBaseFolder = tempfile.mkdtemp()
 
-
-def mkDirP(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
 
 start_app()
 
@@ -59,7 +51,6 @@ class GdalAlgorithmsMemoryTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        mkDirP(tmpBaseFolder)
         Processing.initialize()
 
     @classmethod

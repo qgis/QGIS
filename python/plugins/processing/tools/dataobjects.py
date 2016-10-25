@@ -300,7 +300,7 @@ def exportVectorLayer(layer, supported=None, exportFormat="shp"):
     ogrDriver = {
         "shp": "ESRI Shapefile",
         "sqlite": "SQLite",
-                  "gpkg": "GPKG"
+        "gpkg": "GPKG"
     }
     datasetCreationOptions = {
         "shp": [],

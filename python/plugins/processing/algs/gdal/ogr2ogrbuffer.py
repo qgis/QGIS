@@ -115,9 +115,9 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         arguments.append(distance)
         fieldList = getLayerFieldList(inLayer)
         if dissolveall or field != 'None':
-            arguments.append(')),%s' % fieldList)
+            arguments.append(u')),{}'.format(fieldList))
         else:
-            arguments.append('),%s' % fieldList)
+            arguments.append(u'),{}'.format(fieldList))
         arguments.append('FROM')
         arguments.append(layername)
         if field != 'None':

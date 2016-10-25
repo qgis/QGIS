@@ -99,7 +99,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         arguments.append(',')
         arguments.append(distance)
         fieldList = getLayerFieldList(inLayer)
-        arguments.append('),%s' % fieldList)
+        arguments.append(u'),{}'.format(fieldList))
         arguments.append('FROM')
         arguments.append(layername)
         arguments.append('"')

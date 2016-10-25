@@ -101,7 +101,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         queryend = ' FROM ' + layername + ' GROUP BY ' + field + '"'
         fieldList = getLayerFieldList(inLayer)
         if fields:
-            queryfields = ',%s' % fieldList
+            queryfields = u',{}'.format(fieldList)
         else:
             queryfields = "," + field
         if count:

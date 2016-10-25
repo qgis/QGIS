@@ -342,10 +342,12 @@ def combineVectorFields(layerA, layerB):
 
 
 def getLayerFieldList(uri):
-    """ Returns an escaped list of field names to pass to SQL SELECT clauses
+    """ Returns an escaped list of field names to pass to SQL SELECT clauses.
+        Some memory layer fields might include a colon and parenthesis, make
+        sure to omit them (e.g., "ID:Integer64(10,0)").
     """
     layer = dataobjects.getObjectFromUri(uri, False)
-    return ",".join(["\"%s\"" % f.name() for f in layer.fields()])
+    return ",".join([u"\"{}\"".format(f.name()) for f in layer.fields() if ":" not in f.name()])
 
 
 def duplicateInMemory(layer, newName='', addToRegistry=False):
@@ -566,7 +568,7 @@ def ogrLayerName(uri):
         return r.groups()[1]
 
     # handle URIs from QGIS memory layers
-    if re.match('^(multi)?(point|linestring|polygon)(25d|(z?m?))?(\?|$)', uri, re.I):
+    if re.match('^(multi)?(point|linestring|polygon|memory)(25d|(z?m?))?(\?|$)', uri, re.I):
         return 'memory_layer'
 
     fields = uri.split('|')

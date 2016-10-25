@@ -126,14 +126,14 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
 
         if dissolveall or field is not None:
             if operation == 0:
-                sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
+                sql = u"SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
             else:
-                sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
+                sql = u"SELECT ST_Union(ST_OffsetCurve({}, {}, {})), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
         else:
             if operation == 0:
-                sql = "SELECT ST_SingleSidedBuffer({},{},{}), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
+                sql = u"SELECT ST_SingleSidedBuffer({},{},{}), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
             else:
-                sql = "SELECT ST_OffsetCurve({}, {}, {}), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
+                sql = u"SELECT ST_OffsetCurve({}, {}, {}), {} FROM \"{}\"".format(geometry, distance, leftright, fieldList, layername)
 
         if field is not None:
             sql = '"{} GROUP BY {}"'.format(sql, field)
