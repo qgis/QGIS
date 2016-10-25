@@ -254,7 +254,14 @@ qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel
 qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5
 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
 qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
-qwt-devel gsl-devel postgresql-devel
+qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3
+python3-psycopg2 python3-PyYAML qca-qt5-ossl
+```
+
+To build QGIS server additional dependencies are required:
+
+```
+dnf install fcgi-devel
 ```
 
 Make sure that your build directory is completely empty when you enter the
@@ -264,7 +271,7 @@ command in the empty build directory once before starting to use the interactive
 tools.
 
 ```
-cmake -DENABLE_QT5=ON -DWITH_QWTPOLAR=OFF ..
+cmake ..
 ```
 
 If everything went ok you can finally start to compile. (As usual append a -jX
