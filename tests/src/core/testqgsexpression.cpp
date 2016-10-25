@@ -1267,6 +1267,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "filter context" ) << "aggregate('test','sum',\"col1\", \"col1\" <= @test_var)" << false << QVariant( 13 );
       QTest::newRow( "filter named" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\", filter:=\"col1\" <= 10)" << false << QVariant( 13 );
       QTest::newRow( "filter no matching" ) << "aggregate('test','sum',\"col1\", \"col1\" <= -10)" << false << QVariant( 0 );
+
+      QTest::newRow( "filter by @parent attribute" ) << "aggregate(layer:='child_layer', aggregate:='min', expression:=\"col3\", filter:=\"parent\"=attribute(@parent,'col1'))" << false << QVariant( 1 );
     }
 
     void aggregate()
@@ -1275,6 +1277,9 @@ class TestQgsExpression: public QObject
       QgsExpressionContextScope* scope = new QgsExpressionContextScope();
       scope->setVariable( QStringLiteral( "test_var" ), 10 );
       context << scope;
+      QgsFeature f;
+      mAggregatesLayer->getFeatures( "col1 = 4 " ).nextFeature( f );
+      context.setFeature( f );
 
       QFETCH( QString, string );
       QFETCH( bool, evalError );
