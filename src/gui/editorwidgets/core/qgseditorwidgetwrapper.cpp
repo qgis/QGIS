@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfields.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QTableView>
 
@@ -108,14 +109,19 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid 
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 {
   bool toEmit( false );
-  QString errStr( tr( "predicate is True" ) );
   QString expression = layer()->editFormConfig().constraintExpression( mFieldIdx );
-  QString description;
+  QStringList expressions, descriptions;
   QVariant value = ft.attribute( mFieldIdx );
+  QString fieldName = ft.fields().count() > mFieldIdx ? ft.fields().field( mFieldIdx ).name() : QString();
+
+  mConstraintFailureReason.clear();
+
+  QStringList errors;
 
   if ( ! expression.isEmpty() )
   {
-    description = layer()->editFormConfig().constraintDescription( mFieldIdx );
+    expressions << expression;
+    descriptions << layer()->editFormConfig().constraintDescription( mFieldIdx );
 
     QgsExpressionContext context = layer()->createExpressionContext();
     context.setFeature( ft );
@@ -125,11 +131,17 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     mValidConstraint = expr.evaluate( &context ).toBool();
 
     if ( expr.hasParserError() )
-      errStr = expr.parserErrorString();
+    {
+      errors << tr( "Parser error: %1" ).arg( expr.parserErrorString() );
+    }
     else if ( expr.hasEvalError() )
-      errStr = expr.evalErrorString();
+    {
+      errors << tr( "Evaluation error: %1" ).arg( expr.evalErrorString() );
+    }
     else if ( ! mValidConstraint )
-      errStr = tr( "predicate is False" );
+    {
+      errors << tr( "%1 check failed" ).arg( layer()->editFormConfig().constraintDescription( mFieldIdx ) );
+    }
 
     toEmit = true;
   }
@@ -138,36 +150,77 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 
   if ( layer()->fieldConstraints( mFieldIdx ) & QgsField::ConstraintNotNull )
   {
+    descriptions << QStringLiteral( "NotNull" );
     if ( !expression.isEmpty() )
     {
-      QString fieldName = ft.fields().field( mFieldIdx ).name();
-      expression = "( " + expression + " ) AND ( " + fieldName + " IS NOT NULL)";
-      description = "( " + description + " ) AND NotNull";
+      expressions << fieldName + " IS NOT NULL";
     }
     else
     {
-      description = QStringLiteral( "NotNull" );
-      expression = QStringLiteral( "NotNull" );
+      expressions << QStringLiteral( "NotNull" );
     }
 
     mValidConstraint = mValidConstraint && !value.isNull();
 
     if ( value.isNull() )
-      errStr = tr( "predicate is False" );
+    {
+      errors << tr( "Value is NULL" );
+    }
+
+    toEmit = true;
+  }
+
+  if ( layer()->fieldConstraints( mFieldIdx ) & QgsField::ConstraintUnique )
+  {
+    descriptions << QStringLiteral( "Unique" );
+    if ( !expression.isEmpty() )
+    {
+      expressions << fieldName + " IS UNIQUE";
+    }
+    else
+    {
+      expression = QStringLiteral( "Unique" );
+    }
+
+    bool alreadyExists = QgsVectorLayerUtils::valueExists( layer(), mFieldIdx, value, QgsFeatureIds() << ft.id() );
+    mValidConstraint = mValidConstraint && !alreadyExists;
+
+    if ( alreadyExists )
+    {
+      errors << tr( "Value is not unique" );
+    }
 
     toEmit = true;
   }
 
   if ( toEmit )
   {
+    QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : errors.join( '\n' );
+    mConstraintFailureReason = errors.join( ", " );
+    QString description;
+    if ( descriptions.size() > 1 )
+      description = "( " + descriptions.join( " ) AND ( " ) + " )";
+    else if ( !descriptions.isEmpty() )
+      description = descriptions.at( 0 );
+    QString expressionDesc;
+    if ( expressions.size() > 1 )
+      expressionDesc = "( " + expressions.join( " ) AND ( " ) + " )";
+    else if ( !expressions.isEmpty() )
+      expressionDesc = expressions.at( 0 );
+
     updateConstraintWidgetStatus( mValidConstraint );
-    emit constraintStatusChanged( expression, description, errStr, mValidConstraint );
+    emit constraintStatusChanged( expressionDesc, description, errStr, mValidConstraint );
   }
 }
 
 bool QgsEditorWidgetWrapper::isValidConstraint() const
 {
   return mValidConstraint;
+}
+
+QString QgsEditorWidgetWrapper::constraintFailureReason() const
+{
+  return mConstraintFailureReason;
 }
 
 bool QgsEditorWidgetWrapper::isInTable( const QWidget* parent )

@@ -824,8 +824,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
       {
         invalidFields.append( eww->field().name() );
 
-        QString desc = eww->layer()->editFormConfig().constraintDescription( eww->fieldIdx() );
-        descriptions.append( desc );
+        descriptions.append( eww->constraintFailureReason() );
 
         valid = false; // continue to get all invalif fields
       }

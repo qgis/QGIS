@@ -104,11 +104,20 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 
     /**
      * Get the current constraint status.
-     * @return true if the constraint is valid or if there's not constraint,
+     * @return true if the constraint is valid or if there's no constraint,
      * false otherwise
      * @note added in QGIS 2.16
+     * @see constraintFailureReason()
      */
     bool isValidConstraint() const;
+
+    /**
+     * Returns the reason why a constraint check has failed (or an empty string
+     * if constraint check was successful).
+     * @see isValidConstraint()
+     * @note added in QGIS 3.0
+     */
+    QString constraintFailureReason() const;
 
   signals:
     /**
