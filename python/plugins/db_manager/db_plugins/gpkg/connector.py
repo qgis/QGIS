@@ -47,7 +47,11 @@ class GPKGDBConnector(DBConnector):
         self.dbname = uri.database()
         self.has_raster = False
         self.mapSridToName = {}
+        self._opendb()
 
+    def _opendb(self):
+
+        self.gdal_ds = None
         if hasattr(gdal, 'OpenEx'):
             # GDAL >= 2
             self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
@@ -215,6 +219,23 @@ class GPKGDBConnector(DBConnector):
 
     def hasSpatialSupport(self):
         return True
+
+    # Used by DlgTableProperties
+    def canAddGeometryColumn(self, table):
+        _, tablename = self.getSchemaTableName(table)
+        lyr = self.gdal_ds.GetLayerByName(tablename)
+        if lyr is None:
+            return False
+        return lyr.GetGeomType() == ogr.wkbNone
+
+    # Used by DlgTableProperties
+    def canAddSpatialIndex(self, table):
+        _, tablename = self.getSchemaTableName(table)
+        lyr = self.gdal_ds.GetLayerByName(tablename)
+        if lyr is None or lyr.GetGeometryColumn() == '':
+            return False
+        return not self.hasSpatialIndex(table,
+                                        lyr.GetGeometryColumn())
 
     def hasRasterSupport(self):
         return self.has_raster
@@ -591,7 +612,12 @@ class GPKGDBConnector(DBConnector):
 
         gdal.ErrorReset()
         self.gdal_ds.ExecuteSQL('ALTER TABLE %s RENAME TO %s' % (tablename, new_table))
-        return gdal.GetLastErrorMsg() == ''
+        if gdal.GetLastErrorMsg() != '':
+            return False
+        # we need to reopen after renaming since OGR doesn't update its
+        # internal state
+        self._opendb()
+        return True
 
     def moveTable(self, table, new_table, new_schema=None):
         return self.renameTable(table, new_table)
@@ -720,7 +746,10 @@ class GPKGDBConnector(DBConnector):
             if sr.ImportFromEPSG(srid) == 0:
                 geom_field_defn.SetSpatialRef(sr)
 
-        return lyr.CreateGeomField(geom_field_defn) == 0
+        if lyr.CreateGeomField(geom_field_defn) != 0:
+            return False
+        self._opendb()
+        return True
 
     def deleteGeometryColumn(self, table, geom_column):
         return False # not supported

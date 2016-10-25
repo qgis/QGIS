@@ -49,6 +49,12 @@ class DBConnector(object):
     def hasSpatialSupport(self):
         return False
 
+    def canAddGeometryColumn(self, table):
+        return self.hasSpatialSupport()
+
+    def canAddSpatialIndex(self, table):
+        return self.hasSpatialSupport()
+
     def hasRasterSupport(self):
         return False
 
