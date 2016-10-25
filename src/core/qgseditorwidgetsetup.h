@@ -26,6 +26,7 @@
 class CORE_EXPORT QgsEditorWidgetSetup
 {
   public:
+
     /**
      * Constructor
      */

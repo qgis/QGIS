@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 
 ///@cond
+
 /**
  * This class exists only for implicit sharing of QgsExpression
  * and is not part of the public API.

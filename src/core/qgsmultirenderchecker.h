@@ -130,6 +130,7 @@ class CORE_EXPORT QgsMultiRenderChecker
 
 #ifdef ENABLE_TESTS
 ///@cond PRIVATE
+
 /** \ingroup core
  * \class QgsCompositionChecker
  * Renders a composition to an image and compares with an expected output

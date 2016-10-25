@@ -104,6 +104,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     bool clip() const { return mClip; }
 
   private:
+
     /** This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values

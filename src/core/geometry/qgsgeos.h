@@ -31,6 +31,7 @@ class QgsGeometry;
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 {
   public:
+
     /** GEOS geometry engine constructor
      * @param geometry The geometry
      * @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.

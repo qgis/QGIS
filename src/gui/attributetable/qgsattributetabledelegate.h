@@ -37,6 +37,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     static const QgsAttributeTableModel* masterModel( const QAbstractItemModel* model );
 
   public:
+
     /**
      * Constructor
      * @param parent parent object
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
   signals:
+
     /**
      * Is emitted when an action column item is painted.
      * The consumer of this signal can initialize the index widget.

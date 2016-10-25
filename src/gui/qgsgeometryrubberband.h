@@ -34,26 +34,32 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
   public:
     enum IconType
     {
+
       /**
       * No icon is used
       */
       ICON_NONE,
+
       /**
        * A cross is used to highlight points (+)
        */
       ICON_CROSS,
+
       /**
        * A cross is used to highlight points (x)
        */
       ICON_X,
+
       /**
        * A box is used to highlight points (□)
        */
       ICON_BOX,
+
       /**
        * A circle is used to highlight points (○)
        */
       ICON_CIRCLE,
+
       /**
        * A full box is used to highlight points (■)
        */

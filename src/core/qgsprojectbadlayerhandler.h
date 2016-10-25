@@ -24,6 +24,7 @@
 class CORE_EXPORT QgsProjectBadLayerHandler
 {
   public:
+
     /**
      * This method will be called whenever the project tries to load layers which
      * cannot be accessed. It should inform the user about this and if possible offer

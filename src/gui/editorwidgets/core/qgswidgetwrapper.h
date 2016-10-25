@@ -40,6 +40,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new widget wrapper
      *
@@ -133,6 +134,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual bool valid() const = 0;
 
   protected:
+
     /**
      * This method should create a new widget with the provided parent. This will only be called
      * if the form did not already provide a widget, so it is not guaranteed to be called!
@@ -154,6 +156,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual void initWidget( QWidget* editor );
 
   public slots:
+
     /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation
      * to reflect the new value.

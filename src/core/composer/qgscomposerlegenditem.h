@@ -44,6 +44,7 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     };
 
     virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const = 0;
+
     /** Read item content from xml
       @param itemElem item to read from
       @param xServerAvailable Read item icons if true (QIcon needs x-server)*/

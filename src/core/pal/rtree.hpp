@@ -363,6 +363,7 @@ namespace pal
 
   // Because there is not stream support, this is a quick and dirty file I/O helper.
   // Users will likely replace its usage with a Stream implementation from their favorite API.
+
   /** \ingroup core
    */
   class RTFileStream

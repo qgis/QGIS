@@ -411,12 +411,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 #endif
     //! Path to the output directory of the build. valid only when running from build directory
     static QString ABISYM( mBuildOutputPath );
+
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
+
     /**
      * @note added in 2.4 */
     static int ABISYM( mMaxThreads );
+
     /**
      * @note added in 2.12 */
     static QString ABISYM( mAuthDbDirPath );

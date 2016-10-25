@@ -101,6 +101,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void widgetRemoved( QgsMessageBarItem *item );
 
   public slots:
+
     /** Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
      *  @return true if the widget was removed, false otherwise

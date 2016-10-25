@@ -109,6 +109,7 @@ class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
+
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization

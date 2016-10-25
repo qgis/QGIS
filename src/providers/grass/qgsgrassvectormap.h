@@ -5,6 +5,7 @@
     copyright            : (C) 2015 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -61,6 +62,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int oldNumLines() const { return mOldNumLines; }
     // number of instances using this map
     int userCount() const;
+
     /** Get current number of lines.
      *   @return number of lines */
     int numLines();
@@ -149,6 +151,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void printDebug();
 
   signals:
+
     /** Ask all iterators to cancel iteration when possible. Connected to iterators with
      * Qt::DirectConnection (non blocking) */
     void cancelIterators();

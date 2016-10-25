@@ -33,6 +33,7 @@ class QgsMapLayerComboBox;
 /**
 @author Sergey Yakushev
 */
+
 /**
 * \class RgLineVectorLayerSettingsWidget
 * \brief
@@ -50,6 +51,7 @@ class RgLineVectorLayerSettingsWidget : public QWidget
     QgsVectorLayer * selectedLayer();
 
   public:
+
     /**
      * list of passible layers
      */

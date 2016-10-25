@@ -47,6 +47,7 @@ class CORE_EXPORT QgsLayerDefinition
     class CORE_EXPORT DependencySorter
     {
       public:
+
         /** Constructor
          * @param doc The XML document containing maplayer elements
          */

@@ -394,10 +394,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see removeCustomProperty()
      */
     void setCustomProperty( const QString& key, const QVariant& value );
+
     /** Read a custom property from layer. Properties are stored in a map and saved in project file.
      * @see setCustomProperty()
     */
     QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
+
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * @see setCustomProperty()
      */
@@ -590,6 +592,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note added in 2.6
      */
     void setLegend( QgsMapLayerLegend* legend );
+
     /**
      * Can be null.
      * @note added in 2.6
@@ -860,6 +863,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool hasDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const;
 
   private:
+
     /**
      * This method returns true by default but can be overwritten to specify
      * that a certain layer is writable.

@@ -212,6 +212,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /** Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
      *  QObject hierarchy. */
     QgsDataItem* parent() const { return mParent; }
+
     /** Set item parent and connect / disconnect parent to / from item signals.
      *  It does not add itself to parents children (mChildren) */
     void setParent( QgsDataItem* parent );
@@ -272,6 +273,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QMap<QString, QIcon> mIconMap;
 
   public slots:
+
     /** Safely delete the item:
      *   - disconnects parent
      *   - unsets parent (but does not remove itself)
@@ -501,6 +503,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 
 // ---------
+
 /** \ingroup core
  * \class QgsDirectoryParamWidget
  */

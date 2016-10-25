@@ -29,6 +29,7 @@ class QgsEditorWidgetSetup;
 class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 {
   public:
+
     /**
      * Typical scores are:
      *   * 0: no matching type found.
@@ -47,6 +48,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 
 
 ///@cond PRIVATE
+
 /** \ingroup gui
  * Class that allows to register plugins to pick automatically a widget type for editing fields.
  * This class has only one instance, owned by the QgsEditorWidgetRegistry singleton
@@ -58,6 +60,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 class GUI_EXPORT QgsEditorWidgetAutoConf
 {
   public:
+
     /**
      * Register the default plugins.
      */

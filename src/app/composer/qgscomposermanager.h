@@ -5,6 +5,7 @@
     copyright            : (C) 2009 by Marco Hugentobler
     email                : marco at hugis dot net
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -59,6 +60,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     void activate();
 
   private:
+
     /** Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;

@@ -47,6 +47,7 @@
 class SERVER_EXPORT QgsServer
 {
   public:
+
     /** Creates the server instance
      * @param captureOutput set to false for stdout output (FCGI)
      */

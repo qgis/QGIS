@@ -276,6 +276,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
   signals:
+
     /**
      *   This is emitted whenever the worker thread has fully calculated the
      *   PostGIS extents for this layer, and its event has been received by this
@@ -309,6 +310,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      const QgsAttributeList &fetchAttributes );
 
     QString geomParam( int offset ) const;
+
     /** Get parametrized primary key clause
      * @param offset specifies offset to use for the pk value parameter
      * @param alias specifies an optional alias given to the subject table
@@ -385,14 +387,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Name of the table with no schema
      */
     QString mTableName;
+
     /**
      * Name of the table or subquery
      */
     QString mQuery;
+
     /**
      * Name of the schema
      */
     QString mSchemaName;
+
     /**
      * SQL statement used to limit the features retrieved
      */

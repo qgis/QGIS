@@ -35,6 +35,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
+
     /**
      * @brief Widget to control a layers transparency and related options
      */
@@ -42,6 +43,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     ~QgsRasterTransparencyWidget();
 
   public slots:
+
     /**
      * Sync the widget state to the layer set for the widget.
      */

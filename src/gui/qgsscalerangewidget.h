@@ -34,6 +34,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     ~QgsScaleRangeWidget();
 
     //! set the map canvas which will be used for the current scale buttons
+
     /**
      * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
      * if not set, the buttons are hidden.
@@ -62,6 +63,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     void reloadProjectScales();
 
   public slots:
+
     /**
      * Set the minimum scale. Infinite will be handled equally to 0 internally.
      */

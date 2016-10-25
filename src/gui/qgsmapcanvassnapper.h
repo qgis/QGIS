@@ -33,6 +33,7 @@ class QPoint;
 class GUI_EXPORT QgsMapCanvasSnapper
 {
   public:
+
     /** Constructor
      @param canvas the map canvas to snap to*/
     QgsMapCanvasSnapper( QgsMapCanvas* canvas );

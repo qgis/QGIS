@@ -28,6 +28,7 @@ class QgsVectorLayer;
 /**
 @author Sergey Yakushev
 */
+
 /**
 * \class RgSettingsDlg
 * \brief implement of export dialog

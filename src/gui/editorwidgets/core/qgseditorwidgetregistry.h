@@ -41,6 +41,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * This class is a singleton and has therefore to be accessed with this method instead
      * of a constructor.
@@ -181,6 +182,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorWidgetRegistry();
 
   private slots:
+
     /**
      * Read all the editor widget information from a map layer XML node
      * @param mapLayer

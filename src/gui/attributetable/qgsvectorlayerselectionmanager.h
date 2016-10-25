@@ -30,6 +30,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
 
   public:
     explicit QgsVectorLayerSelectionManager( QgsVectorLayer* layer, QObject *parent = nullptr );
+
     /**
      * The number of features that are selected in this layer
      *

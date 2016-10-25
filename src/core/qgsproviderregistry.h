@@ -113,6 +113,7 @@ class CORE_EXPORT QgsProviderRegistry
       It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const;
+
     /** Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
@@ -182,20 +183,24 @@ class CORE_EXPORT QgsProviderRegistry
      * one time.
      */
     QString mVectorFileFilters;
+
     /** File filter string for raster files
      */
     QString mRasterFileFilters;
+
     /** Available database drivers string for vector databases
      *
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDatabaseDrivers;
+
     /** Available directory drivers string for vector databases
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDirectoryDrivers;
+
     /** Available protocol drivers string for vector databases
      *
      * This is a string of form:

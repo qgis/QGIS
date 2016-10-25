@@ -212,6 +212,7 @@ namespace pal
       bool hasSameLabelFeatureAs( FeaturePart* part ) const;
 
 #if 0
+
       /**
        * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen

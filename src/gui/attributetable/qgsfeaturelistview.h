@@ -44,6 +44,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     Q_OBJECT
 
   public:
+
     /**
      * Creates a feature list view
      *
@@ -68,6 +69,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * @param featureListModel  The model to use
      */
     virtual void setModel( QgsFeatureListModel* featureListModel );
+
     /**
      * Get the featureListModel used by this view
      *
@@ -128,6 +130,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void contextMenuEvent( QContextMenuEvent *event ) override;
 
   signals:
+
     /**
      * Is emitted, whenever the current edit selection has been changed.
      *
@@ -145,6 +148,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void aboutToChangeEditSelection( bool& ok );
 
   public slots:
+
     /**
      * Set the feature(s) to be edited
      *

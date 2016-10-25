@@ -34,6 +34,7 @@
 class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
 {
   public:
+
     /**
      * Construct a default optional expression.
      * It will be disabled and with an empty expression.

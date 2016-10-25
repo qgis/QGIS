@@ -102,6 +102,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     struct LayerConfig
     {
+
       /**
        * Create a new configuration for a snapping layer.
 
@@ -165,6 +166,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void setConfig( const QgsSnappingConfig& snappingConfig );
 
   signals:
+
     /**
      * Emitted when the snapping settings object changes.
      */

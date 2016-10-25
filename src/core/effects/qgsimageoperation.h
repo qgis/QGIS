@@ -116,14 +116,17 @@ class CORE_EXPORT QgsImageOperation
        * on opaque pixels
        */
       bool shadeExterior;
+
       /** Set to true to automatically calculate the maximum distance in the
        * transform to use as the spread value
        */
       bool useMaxDistance;
+
       /** Maximum distance (in pixels) for the distance transform shading to
        * spread
        */
       double spread;
+
       /** Color ramp to use for shading the distance transform
        */
       QgsColorRamp* ramp;

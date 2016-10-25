@@ -35,10 +35,12 @@ class APP_EXPORT QgsTipFactory : public QObject
     QgsTipFactory();
     //! Destructor
     ~QgsTipFactory();
+
     /** Get a random tip (generic or gui-centric)
      * @return An QgsTip containing the tip
      */
     QgsTip getTip();
+
     /** Get a specific tip (generic or gui-centric).
      * @param thePosition The tip returned will be based on the
      *        number passed in as thePosition. If the
@@ -47,10 +49,12 @@ class APP_EXPORT QgsTipFactory : public QObject
      * @return An QgsTip containing the tip
      */
     QgsTip getTip( int thePosition );
+
     /** Get a random generic tip
      * @return An QgsTip containing the tip
      */
     QgsTip getGenericTip();
+
     /** Get a random gui-centric tip
      * @return An QgsTip  containing the tip
      */

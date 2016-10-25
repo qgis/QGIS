@@ -608,6 +608,7 @@ void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()
 }
 void TestQgsCoordinateReferenceSystem::customSrsValidation()
 {
+
   /**
    * @todo implement this test
   "QgsCoordinateReferenceSystem myCrs;

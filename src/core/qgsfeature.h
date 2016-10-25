@@ -58,6 +58,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     QgsAttributes()
         : QVector<QVariant>()
     {}
+
     /**
      * Create a new vector of attributes with the given size
      *
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     QgsAttributes( int size )
         : QVector<QVariant>( size )
     {}
+
     /**
      * Constructs a vector with an initial size of size elements. Each element is initialized with value.
      * @param size Number of elements

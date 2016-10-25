@@ -21,6 +21,7 @@
 #include <QVariant>
 
 ///@cond PRIVATE
+
 /** @ingroup gui
  * Table model to edit a QVariantList.
  * @note added in QGIS 3.0
@@ -61,6 +62,7 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
     Q_OBJECT
     Q_PROPERTY( QVariantList list READ list WRITE setList )
   public:
+
     /**
      * Constructor.
      */

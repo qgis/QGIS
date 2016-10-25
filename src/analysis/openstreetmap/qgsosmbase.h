@@ -110,6 +110,7 @@ class ANALYSIS_EXPORT QgsOSMWay : public QgsOSMElement
 
 
 #if 0
+
 /** \ingroup analysis
 A relation is one of the core data elements that consists of one or more tags and also an ordered list
 of one or more nodes and/or ways as members which is used to define logical or geographic relationships

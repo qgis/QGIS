@@ -77,6 +77,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     CompileStatus compileStatus() const { return mCompileStatus; }
 
   protected:
+
     /**
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!

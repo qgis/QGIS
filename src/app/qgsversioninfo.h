@@ -26,6 +26,7 @@ class QgsVersionInfo : public QObject
     explicit QgsVersionInfo( QObject *parent = nullptr );
 
   public slots:
+
     /**
      * Connects to qgis.org and checks for new versions.
      */

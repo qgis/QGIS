@@ -76,6 +76,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     void applyChanges();
 
   signals:
+
     /**
      * Emitted when expression context variables on the associated
      * vector layers have been changed. Will request the parent dialog
@@ -117,6 +118,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     virtual void paste() {}
 
   private:
+
     /**
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
@@ -146,6 +148,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     Q_OBJECT
 
   public:
+
     /** Constructor
      * @param symbolList must not be empty
      * @param layer must not be null
@@ -176,6 +179,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void dataDefinedChanged();
 
   protected:
+
     /**
      * Should be called in the constructor of child classes.
      *

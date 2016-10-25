@@ -282,6 +282,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Returns if the field at fieldidx should be treated as NOT NULL value
      */
     bool notNull( int fieldidx ) const;
+
     /**
      * Set if the field at fieldidx should be treated as NOT NULL value
      */

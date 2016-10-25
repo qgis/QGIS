@@ -5,6 +5,7 @@
     copyright            : (C) 2012 by Radim Blazek
     email                : radim dot blazek at gmail dot com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

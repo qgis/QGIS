@@ -58,6 +58,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -169,6 +170,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Read band scale for raster value
      * @@note added in 2.3 */
     double bandScale( int bandNo ) const override;
+
     /** Read band offset for raster value
      * @@note added in 2.3 */
     double bandOffset( int bandNo ) const override;

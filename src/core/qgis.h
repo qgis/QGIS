@@ -306,6 +306,7 @@ const int PROJ_PREFIX_LEN = 6;
 const int ELLPS_PREFIX_LEN = 7;
 //! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
+
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;

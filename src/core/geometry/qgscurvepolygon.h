@@ -61,6 +61,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int numInteriorRings() const;
     const QgsCurve* exteriorRing() const;
     const QgsCurve* interiorRing( int i ) const;
+
     /** Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
@@ -97,6 +98,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     bool hasCurvedSegments() const override;
+
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/

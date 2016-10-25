@@ -441,6 +441,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * @note added in QGIS 2.16
      */
     int geometryPartCount() const { return mGeometryPartCount; }
+
     /** Sets the part count of current geometry
      * @note added in QGIS 2.16
      */
@@ -450,6 +451,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * @note added in QGIS 2.16
      */
     int geometryPartNum() const { return mGeometryPartNum; }
+
     /** Sets the part number of current geometry
      * @note added in QGIS 2.16
      */
@@ -467,6 +469,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * @return An expression scope for details about this symbol
      */
     QgsExpressionContextScope* expressionContextScope();
+
     /**
      * Set an expression scope for this symbol.
      *
@@ -651,6 +654,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 {
   public:
+
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
@@ -693,6 +697,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 {
   public:
+
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */

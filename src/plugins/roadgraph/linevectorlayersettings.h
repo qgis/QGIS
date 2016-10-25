@@ -27,6 +27,7 @@ class QWidget;
 /**
 @author Sergey Yakushev
 */
+
 /**
  * \class RgSettings
  * \brief This class contained settings for RgLineVectorLayerDirector
@@ -35,6 +36,7 @@ class QWidget;
 class RgLineVectorLayerSettings: public RgSettings
 {
   public:
+
     /**
      * \enum  DirectionType
      * \brief DirectionType enumeration discribe
@@ -42,6 +44,7 @@ class RgLineVectorLayerSettings: public RgSettings
     enum DirectionType {  FirstPointToLastPoint = 1, LastPointToFirstPoint = 2, Both = 3 };
 
   public:
+
     /**
      * default constructor.
      */

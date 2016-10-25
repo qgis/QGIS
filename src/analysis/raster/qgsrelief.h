@@ -94,9 +94,11 @@ class ANALYSIS_EXPORT QgsRelief
 
     //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
     GDALDatasetH openInputFile( int& nCellsX, int& nCellsY );
+
     /** Opens the output driver and tests if it supports the creation of a new dataset
       @return nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
+
     /** Opens the output file and sets the same geotransform and CRS as the input data
       @return the output dataset or nullptr in case of error*/
     GDALDatasetH openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
@@ -106,11 +108,13 @@ class ANALYSIS_EXPORT QgsRelief
 
     //! Sets relief colors
     void setDefaultReliefColors();
+
     /** Returns class (0-255) for an elevation value
       @return elevation class or -1 in case of error*/
     int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
     //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
     void optimiseClassBreaks( QList<int>& breaks, double* frequencies );
+
     /** Calculates coefficients a and b
       @param input data points ( elevation class / frequency )
       @param a slope

@@ -201,15 +201,18 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
         @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< qreal, QLineF > >& hLines, const QList< QPair< qreal, QLineF > >& vLines );
     void drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString& annotationString );
+
     /** Draws a single annotation
         @param p drawing painter
         @param pos item coordinates where to draw
         @param rotation text rotation
         @param annotationText the text to draw*/
     void drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText );
+
     /** Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
     int xGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
+
     /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         @return 0 in case of success*/
     int yGridLines( QList< QPair< qreal, QLineF > >& lines ) const;

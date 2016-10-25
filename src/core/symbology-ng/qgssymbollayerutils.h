@@ -287,6 +287,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,
                                        const QVector<qreal>* dashPattern = nullptr );
+
     /** Create ogr feature style string for brush
      @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );

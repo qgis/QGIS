@@ -31,6 +31,7 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 class CORE_EXPORT QgsRasterRange
 {
   public:
+
     /** \brief Constructor.
      */
     QgsRasterRange();

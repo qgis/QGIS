@@ -54,6 +54,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 
     // QgsAbstractFeatureIterator interface
   protected:
+
     /**
      * Implementation for fetching a feature.
      *
@@ -86,6 +87,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIterator
 {
   public:
+
     /**
      * This constructor creates a feature iterator, which queries the backend and caches retrieved features.
      *

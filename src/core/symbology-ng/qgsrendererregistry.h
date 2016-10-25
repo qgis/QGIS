@@ -69,6 +69,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) = 0;
+
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
      * The \a oldRenderer argument may refer to previously used renderer (or it is null).

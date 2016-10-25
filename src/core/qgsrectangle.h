@@ -85,6 +85,7 @@ class CORE_EXPORT QgsRectangle
     void grow( double delta );
     //! Updates the rectangle to include the specified point
     void include( const QgsPoint& p );
+
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
     QgsRectangle buffer( double width );
@@ -119,14 +120,17 @@ class CORE_EXPORT QgsRectangle
     QString toString( int thePrecision ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
+
     /** Comparison operator
      * @return True if rectangles are equal
      */
     bool operator==( const QgsRectangle &r1 ) const;
+
     /** Comparison operator
      * @return False if rectangles are equal
      */
     bool operator!=( const QgsRectangle &r1 ) const;
+
     /** Assignment operator
      * @param r1 QgsRectangle to assign from
      */

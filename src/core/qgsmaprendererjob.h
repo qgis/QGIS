@@ -141,6 +141,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     const QgsMapSettings& mapSettings() const;
 
   signals:
+
     /**
      * Emitted when the layers are rendered.
      * Rendering labels is not yet done. If the fully rendered layer including labels is required use

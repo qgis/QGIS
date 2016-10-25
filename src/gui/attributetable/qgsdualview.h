@@ -51,10 +51,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     enum ViewMode
     {
+
       /**
        * Shows the features and attributes in a table layout
        */
       AttributeTable = 0,
+
       /**
        * Show a list of the features, where one can be chosen
        * and the according attribute dialog will be presented
@@ -190,12 +192,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QString sortExpression() const;
 
   protected:
+
     /**
      * Initializes widgets which depend on the attributes of this layer
      */
     void columnBoxInit();
 
   public slots:
+
     /**
      * @brief Set the current edit selection in the {@link AttributeEditor} mode.
      *
@@ -231,6 +235,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void copyCellContent() const;
 
   signals:
+
     /**
      * Is emitted, whenever the display expression is successfully changed
      * @param expression The expression that was applied

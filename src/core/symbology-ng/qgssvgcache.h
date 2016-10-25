@@ -38,6 +38,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
     QgsSvgCacheEntry();
+
     /** Constructor.
      * @param file Absolute path to SVG file (relative paths are not resolved).
      * @param size
@@ -113,6 +114,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      */
     const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                               double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
      * @param size size of cached image

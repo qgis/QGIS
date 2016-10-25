@@ -73,6 +73,7 @@ class CORE_EXPORT QgsSymbolLayer
      * The fill color.
      */
     virtual QColor color() const { return mColor; }
+
     /**
      * The fill color.
      */

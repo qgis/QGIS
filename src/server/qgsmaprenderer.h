@@ -99,6 +99,7 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
 
     //! Scale denominator
     double scale() const { return mScale; }
+
     /** Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
     void setScale( double scale ) {mScale = scale;}
@@ -336,6 +337,7 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! current extent to be drawn
     QgsRectangle mExtent;
     //
+
     /** Last extent to we drew so we know if we can
         used layer render caching or not. Note there are no
         accessors for this as it is intended to internal

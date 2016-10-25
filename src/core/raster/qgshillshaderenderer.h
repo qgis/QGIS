@@ -34,6 +34,7 @@ class QgsRasterInterface;
 class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 {
   public:
+
     /**
      * @brief A renderer for generating live hillshade models.
      * @param input The input raster interface

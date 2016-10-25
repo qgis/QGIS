@@ -31,6 +31,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new filter legend button
      *
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      * May be null
      */
     QgsVectorLayer* vectorLayer() const;
+
     /**
      * Sets the associated vectorLayer
      * May be null
@@ -62,6 +64,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     void setVectorLayer( QgsVectorLayer* layer );
 
   signals:
+
     /**
      * Emitted when the expression text changes
      */

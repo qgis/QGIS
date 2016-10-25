@@ -173,6 +173,7 @@ class CORE_EXPORT QgsConditionalStyle
      * @return True of the color set for background is valid.
      */
     bool validBackgroundColor() const;
+
     /**
      * @brief The font for the style
      * @return QFont for the style

@@ -56,6 +56,7 @@ bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theRe
 
   return false;
 }
+
 /**
   Generates and new RGBA value based on an original RGBA value
 

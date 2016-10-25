@@ -50,12 +50,15 @@ class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
+
     /** Default constructor
      */
     QgsMapTip();
+
     /** Destructor
      */
     virtual ~QgsMapTip();
+
     /** Show a maptip at a given point on the map canvas
      * @param thepLayer a qgis vector map layer pointer that will
      *        be used to provide the attribute data for the map tip.
@@ -69,6 +72,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
                      QgsPoint & theMapPosition,
                      QPoint & thePixelPosition,
                      QgsMapCanvas *mpMapCanvas );
+
     /** Clear the current maptip if it exists
      * @param mpMapCanvas the canvas from which the tip should be cleared.
      */

@@ -44,6 +44,7 @@ class QgsCoordinateTransform;
 class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:
+
     /** Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
      */

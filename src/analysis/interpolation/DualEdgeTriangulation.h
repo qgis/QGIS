@@ -98,6 +98,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual bool swapEdge( double x, double y ) override;
     //! Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method
     virtual QList<int>* getPointsAroundEdge( double x, double y ) override;
+
     /** Saves the triangulation as a (line) shapefile
     @return true in case of success*/
     virtual bool saveAsShapefile( const QString& fileName ) const override;
