@@ -697,8 +697,7 @@ static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionCon
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
-    if ( ok )
-      context->setCachedValue( cacheKey, result );
+    context->setCachedValue( cacheKey, result );
   }
   else
   {
