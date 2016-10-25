@@ -28,18 +28,20 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
     , mName( name )
     , mShowCount( false )
     , mShowType( false )
+    , mProviderType( providerType )
 {
   setupUi( this );
 
-  if ( providerType == QgsSublayersDialog::Ogr )
+  if ( mProviderType == QgsSublayersDialog::Ogr )
   {
     setWindowTitle( tr( "Select vector layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) );
+    // Geometry-Type and count should always be sent for Ogr
     mShowCount = true;
     mShowType = true;
   }
-  else if ( providerType == QgsSublayersDialog::Gdal )
+  else if ( mProviderType == QgsSublayersDialog::Gdal )
   {
     setWindowTitle( tr( "Select raster layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
@@ -94,13 +96,18 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
     def.layerId = item->text( 0 ).toInt();
     def.layerName = item->text( 1 );
     if ( mShowType )
-    {
-      // If there are more sub layers of the same name (virtual for geometry types),
-      // add geometry type
-      if ( !_isLayerIdUnique( def.layerId, layersTable ) )
-        def.type = item->text( mShowCount ? 3 : 2 );
+    { // Geometry-Type and count should always be sent
+     // with ogr, this should always be true. I don't believe this is needed anymore
+     bool is_unique=_isLayerIdUnique( def.layerId, layersTable );
+     // If Layer-Name is unique would be more interesting. Ogr.SubLayers determins this
+     if (mShowCount)
+      def.count=item->text( 2 ).toInt();     
+     def.type = item->text( mShowCount ? 3 : 2 );
+     if ( mProviderType == QgsSublayersDialog::Ogr )
+     { // Ogr-Internal use only - no needed to show to user
+      def.getType = item->text(  mShowCount ? 4 : 3 ).toInt();
+     }     
     }
-
     list << def;
   }
   return list;
@@ -116,7 +123,11 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     if ( mShowCount )
       elements << QString::number( item.count );
     if ( mShowType )
-      elements << item.type;
+     elements << item.type;
+    if ( mProviderType == QgsSublayersDialog::Ogr )
+    {  // Ogr-Internal use only - no needed to show to user
+     elements << QString::number( item.getType );
+    }
     layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
 
@@ -180,10 +191,15 @@ QList<int> QgsSublayersDialog::selectionIndexes()
 
 void QgsSublayersDialog::populateLayerTable( const QStringList& theList, const QString& delim )
 {
+  int i_element_count = 4;
+  if ( mProviderType == QgsSublayersDialog::Ogr )
+  {
+   i_element_count = 5;
+  }
   Q_FOREACH ( const QString& item, theList )
   {
     QStringList elements = item.split( delim );
-    while ( elements.size() > 4 )
+    while ( elements.size() > i_element_count )
     {
       elements[1] += delim + elements[2];
       elements.removeAt( 2 );

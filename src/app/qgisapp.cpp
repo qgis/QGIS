@@ -3932,23 +3932,24 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   Q_FOREACH ( const QString& sublayer, sublayers )
   {
     // OGR provider returns items in this format:
-    // <layer_index>:<name>:<feature_count>:<geom_type>
+    // <layer_index>:<name>:<feature_count>:<geom_type>:<ogr_get_type>
 
     QStringList elements = sublayer.split( ":" );
     // merge back parts of the name that may have been split
-    while ( elements.size() > 4 )
+    while ( elements.size() > 5 )
     {
       elements[1] += ":" + elements[2];
       elements.removeAt( 2 );
     }
 
-    if ( elements.count() == 4 )
+    if ( elements.count() == 5 )
     {
       QgsSublayersDialog::LayerDefinition def;
       def.layerId = elements[0].toInt();
       def.layerName = elements[1];
       def.count = elements[2].toInt();
       def.type = elements[3];
+      def.getType = elements[4].toInt();
       list << def;
     }
     else
@@ -3985,12 +3986,16 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   Q_FOREACH ( const QgsSublayersDialog::LayerDefinition& def, chooseSublayersDialog.selection() )
   {
     QString layerGeometryType = def.type;
-    QString composedURI = uri + "|layerid=" + QString::number( def.layerId );
-
+    QString composedURI = uri + "|layerid=" + QString::number( def.layerId )+ "|layername=" + def.layerName;
+    if (def.count >= 0 )
+    {
+      composedURI += "|featurescount=" + QString::number(def.count);
+    }
     if ( !layerGeometryType.isEmpty() )
     {
       composedURI += "|geometrytype=" + layerGeometryType;
     }
+    composedURI += "|ogrgettype=" + QString::number(def.getType);
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = fileName + " " + def.layerName;

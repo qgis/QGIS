@@ -52,13 +52,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     return;
   }
 
-  if ( mSource->mLayerName.isNull() )
+  if ( !mSource->mSubLayerString.isNull() )
   {
-    ogrLayer = OGR_DS_GetLayer( mConn->ds, mSource->mLayerIndex );
-  }
-  else
-  {
-    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, TO8( mSource->mLayerName ) );
+    ogrLayer = QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( mConn->ds, mSource-> mSubLayerString );
   }
   if ( !ogrLayer )
   {
@@ -319,7 +315,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) 
       // OK
     }
     else if (( useIntersect && ( !feature.constGeometry() || !feature.constGeometry()->intersects( mRequest.filterRect() ) ) )
-             || ( geometryTypeFilter && ( !feature.constGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.constGeometry()->wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
+             || ( geometryTypeFilter && ( !feature.constGeometry() || QgsOgrProviderUtils::wkbSingleFlattenWrapper(( OGRwkbGeometryType )feature.constGeometry()->wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
@@ -366,7 +362,8 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
     mFieldsWithoutFid.append( mFields.at( i ) );
   mDriverName = p->ogrDriverName;
   mFirstFieldIsFid = p->mFirstFieldIsFid;
-  mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
+  mOgrGeometryTypeFilter = QgsOgrProviderUtils::wkbSingleFlattenWrapper( p->mOgrGeometryTypeFilter );
+  mSubLayerString = p->SubLayerString();
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 

@@ -94,7 +94,8 @@ class CORE_EXPORT QgsWKBTypes
       Polygon25D,
       MultiPoint25D,
       MultiLineString25D,
-      MultiPolygon25D
+      MultiPolygon25D,
+      GeometryCollection25D
     };
 
     enum GeometryType
@@ -120,6 +121,7 @@ class CORE_EXPORT QgsWKBTypes
         case GeometryCollectionZ:
         case GeometryCollectionM:
         case GeometryCollectionZM:
+        case GeometryCollection25D:
           return Unknown;
 
         case Point:
@@ -249,6 +251,9 @@ class CORE_EXPORT QgsWKBTypes
 
         case GeometryCollectionZ:
           return GeometryCollectionZ;
+
+        case GeometryCollection25D:
+          return GeometryCollection25D;
 
         case GeometryCollectionM:
           return GeometryCollectionM;
@@ -414,6 +419,7 @@ class CORE_EXPORT QgsWKBTypes
 
         case GeometryCollection:
         case GeometryCollectionZ:
+        case GeometryCollection25D:
         case GeometryCollectionM:
         case GeometryCollectionZM:
           return GeometryCollection;
@@ -588,6 +594,7 @@ class CORE_EXPORT QgsWKBTypes
         case Unknown:
         case GeometryCollection:
         case GeometryCollectionZ:
+        case GeometryCollection25D:
         case GeometryCollectionM:
         case GeometryCollectionZM:
           return UnknownGeometry;

@@ -122,13 +122,22 @@ QString QgsOgrLayerItem::layerName() const
 
 // -------
 
-static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
+static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString sublayer, QString path, OGRDataSourceH hDataSource, long layerId )
 {
-  OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
+  // this will contain the Layer-Name [1] ; the layer-id[0] maybe '-1' instead of the value in layerId :
+  QStringList sa_list_sublayer = sublayer.split( ":" );
+  bool ok;
+  // if lLayerIndex < 0, GetLayerByName will be used ; 'layerId' contains the real id if that fails
+  long lLayerIndex = sa_list_sublayer[0].toLong( &ok, 10 );
+  QString sLayerName = sa_list_sublayer[1];
+  OGRLayerH hLayer = QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( hDataSource, sublayer );
+  if (( !hLayer ) && ( lLayerIndex <= 0 ) )
+  { // the attemt to retrieve the LayerByName has failed, try with the real index
+    hLayer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( hDataSource, layerId );
+  }
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
-
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
+  OGRwkbGeometryType ogrType = QgsOgrProviderUtils::getOgrGeomType( hLayer );
   switch ( ogrType )
   {
     case wkbUnknown:
@@ -163,20 +172,20 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
   QString layerUri = path;
 
-  if ( name.isEmpty() )
-  {
+  if ( sLayerName.isEmpty() )
+  { // this should never happen
     // we are in a collection
-    name = FROM8( OGR_FD_GetName( hDef ) );
-    QgsDebugMsg( "OGR layer name : " + name );
+    sLayerName = FROM8( OGR_FD_GetName( hDef ) );
+    QgsDebugMsg( "OGR layer name : " + sLayerName );
 
-    layerUri += "|layerid=" + QString::number( layerId );
-
-    path += '/' + name;
+    path += '/' + sLayerName;
   }
+  // Since the layer-id returned by OGR may change [source has been externaly changed], the Layer-Name should always be included
+  layerUri += "|layerid=" + QString::number( layerId ) + "|layername=" + sLayerName;
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
 
-  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType );
+  return new QgsOgrLayerItem( parentItem, sLayerName, path, layerUri, layerType );
 }
 
 // ----
@@ -198,12 +207,19 @@ QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
   OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mPath ), false, &hDriver );
   if ( !hDataSource )
     return children;
-  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+  QStringList listSubLayers = QgsOgrProviderUtils::OGRGetSubLayersWrapper( hDataSource );
+  int numLayers = listSubLayers.size();
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem* item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
+    QStringList sa_list_id_fields = listSubLayers[i].split( ":" );
+    bool ok;
+    long lLayerIndex = sa_list_id_fields[0].toLong( &ok, 10 );
+    QString sLayerName = sa_list_id_fields[1];
+    // 's_sublayer' result will determin how the the layer should be opened (depending on duplicate-layers, layer-name conventions)
+    QString s_sublayer = QgsOgrProviderUtils::OGRGetSubLayerWrapper( sLayerName, lLayerIndex, listSubLayers );
+    QgsOgrLayerItem* item = dataItemForLayer( this, s_sublayer, mPath, hDataSource, lLayerIndex );
     children.append( item );
   }
 

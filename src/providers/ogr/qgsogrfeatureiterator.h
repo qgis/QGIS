@@ -43,6 +43,8 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QgsFields mFieldsWithoutFid;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
+    // mSubLayerList entry that was actually used to open the layer
+    QString mSubLayerString;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;
@@ -51,6 +53,27 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
 {
   public:
+    /** QgsOgrFeatureIterator
+     * @param source QgsOgrFeatureSource
+     * @note
+     *
+     * Up to Gdal 2.* each geometry was 1 layer and could be retrieved using an index
+     * Starting with Gdal 2.0, each table is one layer, that can contain more than 1 geometry
+     * - therefore it is important to use the correct method to open the Layer
+     *
+     * QgsOgrFeatureSource contains the const QgsOgrProvider
+     * - at this point the Layer has been opened
+     * @see QgsOgrProvider::OGRGetLayerWrapper()
+     *
+     * To open the Layer again, the information stored in 'mSubLayerString' should be extracted
+     * @see QgsOgrProvider::mSubLayerString
+     * - if 'OGRGetLayerNameWrapper' was used to successfully load the Layer, the index value in 'mSubLayerString' will be set to '-1'
+     * - the Layer-nname stored in 'mSubLayerString' should be used when calling OGRGetLayerNameWrapper
+     * @see QgsOgrProviderUtils::OGRGetLayerNameWrapper()
+     * - otherwise the index value stored in 'mSubLayerString' should be used when calling OGRGetLayerIndexWrapper
+     * @see QgsOgrProviderUtils::OGRGetLayerIndexWrapper()
+     *
+     */
     QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsOgrFeatureIterator();
