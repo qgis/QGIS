@@ -1910,7 +1910,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         values += delim + QString( "$%1" ).arg( defaultValues.size() + offset );
         delim = ',';
         fieldId << idx;
-        defaultValues << quotedValue( defaultValue( idx ) );
+        defaultValues << defaultValue( idx ).toString();
       }
     }
 
