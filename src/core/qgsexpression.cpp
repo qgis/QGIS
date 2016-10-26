@@ -4963,7 +4963,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
     }
   }
 
-  if ( context && context->feature().isValid() )
+  if ( context && context->hasVariable( QgsExpressionContext::EXPR_FEATURE ) )
   {
     QgsFeature feature = context->feature();
     if ( index >= 0 )
