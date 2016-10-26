@@ -508,7 +508,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context.lastScope()->setVariable( QStringLiteral( "row_number" ), counter + 1 );
+        context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
         currentRow << value;

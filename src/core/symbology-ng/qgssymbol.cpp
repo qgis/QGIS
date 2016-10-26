@@ -696,8 +696,8 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
   {
     context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
     QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
-    mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount() );
-    mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1 );
+    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
+    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
   }
 
   // Collection of markers to paint, only used for no curve types.
@@ -800,7 +800,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
       for ( int i = 0; i < mp.numGeometries(); ++i )
       {
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
-        mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
+        mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
 
         const QgsPointV2& point = static_cast< const QgsPointV2& >( *mp.geometryN( i ) );
         const QPointF pt = _getPoint( context, point );
@@ -829,7 +829,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
       for ( unsigned int i = 0; i < num; ++i )
       {
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
-        mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
+        mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
 
         context.setGeometry( geomCollection.geometryN( i ) );
         const QgsCurve& curve = dynamic_cast<const QgsCurve&>( *geomCollection.geometryN( i ) );
@@ -887,7 +887,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
         {
           const unsigned i = listPartIndex[idx];
           mSymbolRenderContext->setGeometryPartNum( i + 1 );
-          mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
+          mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
 
           context.setGeometry( geomCollection.geometryN( i ) );
           const QgsPolygonV2& polygon = dynamic_cast<const QgsPolygonV2&>( *geomCollection.geometryN( i ) );

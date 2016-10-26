@@ -44,7 +44,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mVectorLayer );
 
-  expContext.lastScope()->setVariable( QStringLiteral( "row_number" ), 1 );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
   expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
 
   builder->setLayer( vl );
@@ -282,7 +282,7 @@ void QgsFieldCalculator::accept()
     while ( fit.nextFeature( feature ) )
     {
       expContext.setFeature( feature );
-      expContext.lastScope()->setVariable( QStringLiteral( "row_number" ), rownum );
+      expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
       QVariant value = exp.evaluate( &expContext );
       if ( exp.hasEvalError() )

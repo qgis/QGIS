@@ -78,7 +78,7 @@ void QgsFieldConditionalFormatWidget::setExpression()
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mLayer );
-  context.lastScope()->setVariable( QStringLiteral( "value" ), 0 );
+  context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 0, true ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "value" ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, QStringLiteral( "generic" ), context );

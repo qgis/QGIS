@@ -137,8 +137,8 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
     w->setPanelTitle( tr( "Renderer settings" ) );
 
     QgsExpressionContextScope scope;
-    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
-    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+    scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
+    scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
     QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
     scopes << scope;
     QgsSymbolWidgetContext context = mContext;
@@ -190,8 +190,8 @@ void QgsPointClusterRendererWidget::on_mCenterSymbolPushButton_clicked()
 
   QgsSymbolWidgetContext context = mContext;
   QgsExpressionContextScope scope;
-  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
-  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
   QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
   scopes << scope;
   context.setAdditionalExpressionContextScopes( scopes );

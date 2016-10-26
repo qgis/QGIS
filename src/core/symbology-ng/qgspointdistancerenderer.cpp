@@ -449,15 +449,15 @@ QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const Clu
 
     if ( groupColor.isValid() )
     {
-      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QgsSymbolLayerUtils::encodeColor( groupColor ) );
+      clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QgsSymbolLayerUtils::encodeColor( groupColor ), true ) );
     }
     else
     {
       //mixed colors
-      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QVariant() );
+      clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QVariant(), true ) );
     }
 
-    clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size() );
+    clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size(), true ) );
   }
   return clusterScope;
 }

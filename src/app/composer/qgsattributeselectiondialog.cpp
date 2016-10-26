@@ -105,7 +105,7 @@ QgsExpressionContext QgsComposerColumnSourceDelegate::createExpressionContext() 
   }
 
   QgsExpressionContext expContext = mComposerObject->createExpressionContext();
-  expContext.lastScope()->setVariable( QStringLiteral( "row_number" ), 1 );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
   expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
   return expContext;
 }

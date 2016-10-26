@@ -1297,7 +1297,7 @@ static QVariant fcnFeature( const QVariantList&, const QgsExpressionContext* con
   if ( !context )
     return QVariant();
 
-  return context->variable( QgsExpressionContext::EXPR_FEATURE );
+  return context->feature();
 }
 static QVariant fcnAttribute( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
@@ -4963,9 +4963,9 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
     }
   }
 
-  if ( context && context->hasVariable( QgsExpressionContext::EXPR_FEATURE ) )
+  if ( context && context->feature().isValid() )
   {
-    QgsFeature feature = qvariant_cast<QgsFeature>( context->variable( QgsExpressionContext::EXPR_FEATURE ) );
+    QgsFeature feature = context->feature();
     if ( index >= 0 )
       return feature.attribute( index );
     else
