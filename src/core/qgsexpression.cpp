@@ -1225,7 +1225,7 @@ static QVariant fcnRegexpReplace( const QVariantList& values, const QgsExpressio
   QString regexp = getStringValue( values.at( 1 ), parent );
   QString after = getStringValue( values.at( 2 ), parent );
 
-  QRegExp re( regexp );
+  QRegularExpression re( regexp );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
@@ -1239,7 +1239,7 @@ static QVariant fcnRegexpMatch( const QVariantList& values, const QgsExpressionC
   QString str = getStringValue( values.at( 0 ), parent );
   QString regexp = getStringValue( values.at( 1 ), parent );
 
-  QRegExp re( regexp );
+  QRegularExpression re( regexp );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
@@ -1253,7 +1253,7 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsExpression
   QString str = getStringValue( values.at( 0 ), parent );
   QString regexp = getStringValue( values.at( 1 ), parent );
 
-  QRegExp re( regexp );
+  QRegularExpression re( regexp );
   if ( !re.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
@@ -1261,11 +1261,11 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsExpression
   }
 
   // extract substring
-  ( void )re.indexIn( str );
-  if ( re.captureCount() > 0 )
+  QRegularExpressionMatch match = re.match( str );
+  if ( match.hasMatch() )
   {
     // return first capture
-    return QVariant( re.capturedTexts().at( 1 ) );
+    return QVariant( match.captured( 0 ) );
   }
   else
   {
