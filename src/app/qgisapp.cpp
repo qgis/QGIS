@@ -2069,16 +2069,11 @@ void QgisApp::createToolBars()
   << mLabelToolBar;
 
 
-  // snapping widget as tool bar
-  QString simpleSnappingWidgetMode = QSettings().value( QStringLiteral( "/qgis/simpleSnappingWidgetMode" ), "toolbar" ).toString();
-  if ( simpleSnappingWidgetMode != QLatin1String( "statusbar" ) )
-  {
-    mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
-    mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
-    //mSnappingWidget->setFont( myFont );
-    connect( mSnappingWidget, SIGNAL( snappingConfigChanged() ), QgsProject::instance(), SIGNAL( snappingConfigChanged() ) );
-    mSnappingToolBar->addWidget( mSnappingWidget );
-  }
+  mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
+  mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
+  //mSnappingWidget->setFont( myFont );
+  connect( mSnappingWidget, SIGNAL( snappingConfigChanged() ), QgsProject::instance(), SIGNAL( snappingConfigChanged() ) );
+  mSnappingToolBar->addWidget( mSnappingWidget );
 
   QList<QAction*> toolbarMenuActions;
   // Set action names so that they can be used in customization
@@ -2426,17 +2421,6 @@ void QgisApp::createStatusBar()
   mRotationLabel->setText( tr( "Rotation" ) );
   mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationLabel, 0 );
-
-  // snapping widget
-  QString simpleSnappingWidgetMode = QSettings().value( QStringLiteral( "/qgis/simpleSnappingWidgetMode" ), "toolbar" ).toString();
-  if ( simpleSnappingWidgetMode == QLatin1String( "statusbar" ) )
-  {
-    mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, statusBar() );
-    mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
-    mSnappingWidget->setFont( myFont );
-    connect( mSnappingWidget, SIGNAL( snappingConfigChanged() ), QgsProject::instance(), SIGNAL( snappingConfigChanged() ) );
-    statusBar()->addPermanentWidget( mSnappingWidget, 0 );
-  }
 
   mRotationEdit = new QgsDoubleSpinBox( statusBar() );
   mRotationEdit->setObjectName( QStringLiteral( "mRotationEdit" ) );

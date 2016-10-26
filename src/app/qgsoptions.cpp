@@ -915,10 +915,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mSnappingMainDialogComboBox->addItem( tr( "dialog" ), "dialog" );
   mSnappingMainDialogComboBox->addItem( tr( "dock" ), "dock" );
   mSnappingMainDialogComboBox->setCurrentIndex( mSnappingMainDialogComboBox->findData( mSettings->value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString() ) );
-  mSnappingSimplePanelComboBox->clear();
-  mSnappingSimplePanelComboBox->addItem( tr( "tool bar" ), "toolbar" );
-  mSnappingSimplePanelComboBox->addItem( tr( "status bar" ), "statusbar" );
-  mSnappingSimplePanelComboBox->setCurrentIndex( mSnappingSimplePanelComboBox->findData( mSettings->value( QStringLiteral( "/qgis/simpleSnappingWidgetMode" ), "toolbar" ).toString() ) );
 
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
   mOffsetJoinStyleComboBox->addItem( tr( "Mitre" ), 1 );
@@ -1191,7 +1187,6 @@ void QgsOptions::saveOptions()
                        cmbScanZipInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/ignoreShapeEncoding" ), cbxIgnoreShapeEncoding->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
-  mSettings->setValue( QStringLiteral( "/qgis/simpleSnappingWidgetMode" ), mSnappingSimplePanelComboBox->currentData() );
 
   mSettings->setValue( QStringLiteral( "/qgis/addPostgisDC" ), cbxAddPostgisDC->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/addOracleDC" ), cbxAddOracleDC->isChecked() );

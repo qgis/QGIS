@@ -22,7 +22,6 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QSettings>
-#include <QStatusBar>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -59,17 +58,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   }
   else
   {
-    QStatusBar *sb = qobject_cast<QStatusBar*>( parent );
-    if ( sb )
-    {
-      mDisplayMode = StatusBar;
-      setObjectName( QStringLiteral( "SnappingOptionStatusBar" ) );
-    }
-    else
-    {
-      mDisplayMode = Widget;
-      setObjectName( QStringLiteral( "SnappingOptionDialog" ) );
-    }
+    mDisplayMode = Widget;
+    setObjectName( QStringLiteral( "SnappingOptionDialog" ) );
   }
 
   // enable button
@@ -162,7 +152,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   }
   else
   {
-    // mode = widget or status bar
+    // mode = widget
     QHBoxLayout* layout = new QHBoxLayout();
 
     QToolButton* enabledButton = new QToolButton();
@@ -196,36 +186,28 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
     layout->setAlignment( Qt::AlignRight );
     layout->setSpacing( mDisplayMode == Widget ? 3 : 0 );
 
-    if ( mDisplayMode == Widget )
-    {
-      mLayerTreeView = new QTreeView();
-      QgsSnappingLayerTreeModel* model = new QgsSnappingLayerTreeModel( mProject, this );
-      model->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), model ) );
+    mLayerTreeView = new QTreeView();
+    QgsSnappingLayerTreeModel* model = new QgsSnappingLayerTreeModel( mProject, this );
+    model->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), model ) );
 
-      connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-      connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-      connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+    connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+    connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+    connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
 
-      // model->setFlags( 0 );
-      mLayerTreeView->setModel( model );
-      mLayerTreeView->resizeColumnToContents( 0 );
-      mLayerTreeView->header()->show();
-      mLayerTreeView->setSelectionMode( QAbstractItemView::NoSelection );
+    // model->setFlags( 0 );
+    mLayerTreeView->setModel( model );
+    mLayerTreeView->resizeColumnToContents( 0 );
+    mLayerTreeView->header()->show();
+    mLayerTreeView->setSelectionMode( QAbstractItemView::NoSelection );
 
-      // item delegates
-      mLayerTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
-      mLayerTreeView->setItemDelegate( new QgsSnappingLayerDelegate( mCanvas, this ) );
+    // item delegates
+    mLayerTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
+    mLayerTreeView->setItemDelegate( new QgsSnappingLayerDelegate( mCanvas, this ) );
 
-      QGridLayout* topLayout = new QGridLayout();
-      topLayout->addLayout( layout, 0, 0, Qt::AlignLeft | Qt::AlignTop );
-      topLayout->addWidget( mLayerTreeView, 1, 0 );
-      setLayout( topLayout );
-    }
-    else
-    {
-      // mode = status bar
-      setLayout( layout );
-    }
+    QGridLayout* topLayout = new QGridLayout();
+    topLayout->addLayout( layout, 0, 0, Qt::AlignLeft | Qt::AlignTop );
+    topLayout->addWidget( mLayerTreeView, 1, 0 );
+    setLayout( topLayout );
   }
 
   // connect settings changed and map units changed to properly update the widget

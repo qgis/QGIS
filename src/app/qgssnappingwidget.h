@@ -97,7 +97,6 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     enum DisplayMode
     {
       ToolBar,
-      StatusBar,
       Widget
     };
     DisplayMode mDisplayMode;
