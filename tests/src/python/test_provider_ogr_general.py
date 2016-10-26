@@ -659,6 +659,35 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del features_vl_layer_5
             del vl_layer_5
 
+###############################################################################
+# Test sqlite Integer64
+# - created [as 'sqlite_test.db']  and filled  with gdal autotest/auto/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
+# contains 47 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
+
+    def test_05_OgrInteger64(self):
+        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
+        datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_sqlite_test.db')
+        print('\n-I-> Reading db(%s)' % (datasource))
+        vl_sqlite_test = QgsVectorLayer(u'{}'.format(datasource), u'sqlite_test', u'ogr')
+        count_layers=len(vl_sqlite_test.dataProvider().subLayers())
+        print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
+        for index in range(count_layers):
+                print('-I-> Sublayer[%d] : [%s]'% (index, vl_sqlite_test.dataProvider().subLayers()[index]))
+
+        del vl_sqlite_test
+
+        if (count_layers ==7):
+            vl_layer_tpoly = QgsVectorLayer(u'{0}|layerid=1|layername=tpoly|featurescount=18|geometrytype=Polygon|ogrgettype=0'.format(datasource), u'test_layer_tpoly', u'ogr')
+            self.assertTrue(vl_layer_tpoly.isValid())
+            count_fields=len(vl_layer_tpoly.fields())
+            print('-I-> Testing type/values of a \'Integer64\' of the layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('tpoly',vl_layer_tpoly.featureCount(),count_fields,vl_layer_tpoly.hasGeometryType()))
+            for index in range(count_fields):
+                print('-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_tpoly.fields()[index].name(), vl_layer_tpoly.fields()[index].typeName()))
+
+            print('-I-> Retrieving record 7 of layername[%s], checking returned area and int64 test values [%2.3f,%ld]' % ('tpoly',268597.625, 1234567890123))
+            got = [(f.attribute('ogc_fid'), f.attribute('area'), f.attribute('int64')) for f in vl_layer_tpoly.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 7"))]
+            self.assertEqual(got, [(7, 268597.625, 1234567890123)])
+
 
 if __name__ == '__main__':
     unittest.main()
