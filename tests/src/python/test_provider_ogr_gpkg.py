@@ -20,9 +20,8 @@ import shutil
 from osgeo import gdal, ogr
 
 from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsRectangle
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
 from qgis.testing import start_app, unittest
-
-start_app()
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -43,6 +42,13 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsOGRProviderGpkg.com")
+        QCoreApplication.setApplicationName("TestPyQgsOGRProviderGpkg")
+        QSettings().clear()
+        start_app()
+
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
 
@@ -50,6 +56,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
+
+        QSettings().clear()
 
     def testSingleToMultiPolygonPromotion(self):
 
@@ -220,6 +228,137 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 1)
 
+    def testStyle(self):
+
+        # First test with invalid URI
+        vl = QgsVectorLayer('/idont/exist.gpkg', 'test', 'ogr')
+
+        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDBSupported())
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, -1)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertNotEqual(errmsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        qml, success = vl.loadNamedStyle('/idont/exist.gpkg')
+        self.assertFalse(success)
+
+        errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
+        self.assertNotEqual(errorMsg, "")
+
+        # Now with valid URI
+        tmpfile = os.path.join(self.basetestpath, 'testStyle.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPolygon)
+        lyr.CreateField(ogr.FieldDefn('foo', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['foo'] = 'bar'
+        lyr.CreateFeature(f)
+        f = None
+        lyr = ds.CreateLayer('test2', geom_type=ogr.wkbMultiPolygon)
+        lyr.CreateField(ogr.FieldDefn('foo', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['foo'] = 'bar'
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer('{}|layername=test'.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        vl2 = QgsVectorLayer('{}|layername=test2'.format(tmpfile), 'test2', 'ogr')
+        self.assertTrue(vl2.isValid())
+
+        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDBSupported())
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 0)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertNotEqual(errmsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("not_existing")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        qml, success = vl.loadNamedStyle('{}|layerid=0'.format(tmpfile))
+        self.assertFalse(success)
+
+        errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
+        self.assertEqual(errorMsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("not_existing")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(errmsg, "")
+        self.assertEqual(idlist, ['1'])
+        self.assertEqual(namelist, ['name'])
+        self.assertEqual(desclist, ['description'])
+
+        qml, errmsg = vl.getStyleFromDatabase("100")
+        self.assertEqual(qml, "")
+        self.assertNotEqual(errmsg, "")
+
+        qml, errmsg = vl.getStyleFromDatabase("1")
+        self.assertTrue(qml.startswith('<!DOCTYPE qgis'), qml)
+        self.assertEqual(errmsg, "")
+
+        # Try overwrite it but simulate answer no
+        settings = QSettings()
+        settings.setValue("/qgis/overwriteStyle", False)
+        errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
+        self.assertNotEqual(errorMsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(errmsg, "")
+        self.assertEqual(idlist, ['1'])
+        self.assertEqual(namelist, ['name'])
+        self.assertEqual(desclist, ['description'])
+
+        # Try overwrite it and simulate answer yes
+        settings = QSettings()
+        settings.setValue("/qgis/overwriteStyle", True)
+        errorMsg = vl.saveStyleToDatabase("name", "description_bis", False, "")
+        self.assertEqual(errorMsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(errmsg, "")
+        self.assertEqual(idlist, ['1'])
+        self.assertEqual(namelist, ['name'])
+        self.assertEqual(desclist, ['description_bis'])
+
+        errorMsg = vl2.saveStyleToDatabase("name_test2", "description_test2", True, "")
+        self.assertEqual(errorMsg, "")
+
+        errorMsg = vl.saveStyleToDatabase("name2", "description2", True, "")
+        self.assertEqual(errorMsg, "")
+
+        errorMsg = vl.saveStyleToDatabase("name3", "description3", True, "")
+        self.assertEqual(errorMsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 3)
+        self.assertEqual(errmsg, "")
+        self.assertEqual(idlist, ['1', '3', '4', '2'])
+        self.assertEqual(namelist, ['name', 'name2', 'name3', 'name_test2'])
+        self.assertEqual(desclist, ['description_bis', 'description2', 'description3', 'name_test2'])
+
+        # Check that layers_style table is not list in subLayers()
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+        sublayers = vl.dataProvider().subLayers()
+        self.assertEqual(len(sublayers), 2, sublayers)
 
 if __name__ == '__main__':
     unittest.main()

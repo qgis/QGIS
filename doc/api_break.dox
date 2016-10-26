@@ -1438,6 +1438,9 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.</li>
 <li>Removed fieldNameIndex(), use fields().lookupField() or fields().indexFromName() instead
 <li>Renamed addAttributeAlias() to setFieldAlias()
 <li>Renamed remAttributeAlias() to removeFieldAlias()
+<li>saveStyleToDatabase(): msgError argument is correctly declared as output argument
+<li>getStyleFromDatabase(): msgError argument is correctly declared as output argument
+<li>loadNamedStyle(): theResultFlag argument is correctly declared as output argument
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer
