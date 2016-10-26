@@ -37,7 +37,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.tools import dataobjects, vector
 
 
 class Eliminate(GeoAlgorithm):
