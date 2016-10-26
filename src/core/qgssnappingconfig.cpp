@@ -129,16 +129,16 @@ void QgsSnappingConfig::reset()
 {
   // get defaults values. They are both used for standard and advanced configuration (per layer)
   bool enabled = QSettings().value( QStringLiteral( "/qgis/digitizing/default_advanced_snap_enabled" ), true ).toBool();
-  SnappingMode mode = ( SnappingMode )QSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), ( int )AllLayers ).toInt();
-  if ( mMode == 0 )
+  SnappingMode mode = static_cast<SnappingMode>( QSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), AllLayers ).toInt() );
+  if ( mode == 0 )
   {
     // backward compatibility with QGIS 2.x
     // could be removed in 3.4+
-    mMode = AllLayers;
+    mode = AllLayers;
   }
-  SnappingType type = ( SnappingType )QSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), ( int )Vertex ).toInt();
+  SnappingType type = static_cast<SnappingType>( QSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), Vertex ).toInt() );
   double tolerance = QSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble();
-  QgsTolerance::UnitType units = ( QgsTolerance::UnitType )QSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), ( int )QgsTolerance::ProjectUnits ).toInt();
+  QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( QSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsTolerance::ProjectUnits ).toInt() );
 
   // assign main (standard) config
   mEnabled = enabled;
