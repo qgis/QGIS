@@ -1214,42 +1214,62 @@ static QVariant fcnLength( const QVariantList& values, const QgsExpressionContex
 
 static QVariant fcnReplace( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
-  QString str = getStringValue( values.at( 0 ), parent );
-  QVariantList before;
-  QVariantList after;
-  bool isSingleReplacement = false;
-
-  if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+  if ( values.count() == 2 && values.at( 1 ).type() == QVariant::Map )
   {
-    before = QVariantList() << getStringValue( values.at( 1 ), parent );
+    QString str = getStringValue( values.at( 0 ), parent );
+    QVariantMap map = getMapValue( values.at( 1 ), parent );
+
+    for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+    {
+      str = str.replace( it.key(), it.value().toString() );
+    }
+
+    return QVariant( str );
+  }
+  else if ( values.count() == 3 )
+  {
+    QString str = getStringValue( values.at( 0 ), parent );
+    QVariantList before;
+    QVariantList after;
+    bool isSingleReplacement = false;
+
+    if ( values.at( 1 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    {
+      before = QVariantList() << getStringValue( values.at( 1 ), parent );
+    }
+    else
+    {
+      before = getListValue( values.at( 1 ), parent );
+    }
+
+    if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
+    {
+      after = QVariantList() << getStringValue( values.at( 2 ), parent );
+      isSingleReplacement = true;
+    }
+    else
+    {
+      after = getListValue( values.at( 2 ), parent );
+    }
+
+    if ( !isSingleReplacement && before.length() != after.length() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Invalid pair of array, length not identical" ) );
+      return QVariant();
+    }
+
+    for ( int i = 0; i < before.length(); i++ )
+    {
+      str = str.replace( before.at( i ).toString(), after.at( isSingleReplacement ? 0 : i ).toString() );
+    }
+
+    return QVariant( str );
   }
   else
   {
-    before = getListValue( values.at( 1 ), parent );
-  }
-
-  if ( values.at( 2 ).type() != QVariant::List && values.at( 2 ).type() != QVariant::StringList )
-  {
-    after = QVariantList() << getStringValue( values.at( 2 ), parent );
-    isSingleReplacement = true;
-  }
-  else
-  {
-    after = getListValue( values.at( 2 ), parent );
-  }
-
-  if ( !isSingleReplacement && before.length() != after.length() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Invalid pair of array, length not identical" ) );
+    parent->setEvalErrorString( QObject::tr( "Function replace requires 2 or 3 arguments" ) );
     return QVariant();
   }
-
-  for ( int i = 0; i < before.length(); i++ )
-  {
-    str = str.replace( before.at( i ).toString(), after.at( isSingleReplacement ? 0 : i ).toString() );
-  }
-
-  return QVariant( str );
 }
 static QVariant fcnRegexpReplace( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
@@ -3521,7 +3541,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "char" ), 1, fcnChar, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "wordwrap" ), ParameterList() << Parameter( QStringLiteral( "text" ) ) << Parameter( QStringLiteral( "length" ) ) << Parameter( QStringLiteral( "delimiter" ), true, "" ), fcnWordwrap, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "length" ), ParameterList() << Parameter( QStringLiteral( "text" ), true, "" ), fcnLength, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "GeometryGroup" ) )
-    << new StaticFunction( QStringLiteral( "replace" ), 3, fcnReplace, QStringLiteral( "String" ) )
+    << new StaticFunction( QStringLiteral( "replace" ), -1, fcnReplace, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "regexp_replace" ), 3, fcnRegexpReplace, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "regexp_substr" ), 2, fcnRegexpSubstr, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "substr" ), 3, fcnSubstr, QStringLiteral( "String" ) )
