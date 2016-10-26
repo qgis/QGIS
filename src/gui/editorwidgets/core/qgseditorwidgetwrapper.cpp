@@ -113,61 +113,25 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 
   QString expression = field.constraintExpression();
   QStringList expressions, descriptions;
-  QVariant value = ft.attribute( mFieldIdx );
-
-  mConstraintFailureReason.clear();
-
-  QStringList errors;
 
   if ( ! expression.isEmpty() )
   {
     expressions << expression;
     descriptions << field.constraintDescription();
-
-    QgsExpressionContext context = layer()->createExpressionContext();
-    context.setFeature( ft );
-
-    QgsExpression expr( expression );
-
-    mValidConstraint = expr.evaluate( &context ).toBool();
-
-    if ( expr.hasParserError() )
-    {
-      errors << tr( "Parser error: %1" ).arg( expr.parserErrorString() );
-    }
-    else if ( expr.hasEvalError() )
-    {
-      errors << tr( "Evaluation error: %1" ).arg( expr.evalErrorString() );
-    }
-    else if ( ! mValidConstraint )
-    {
-      errors << tr( "%1 check failed" ).arg( field.constraintDescription() );
-    }
-
     toEmit = true;
   }
-  else
-    mValidConstraint = true;
 
   if ( field.constraints() & QgsField::ConstraintNotNull )
   {
-    descriptions << QStringLiteral( "NotNull" );
+    descriptions << QStringLiteral( "Not NULL" );
     if ( !expression.isEmpty() )
     {
       expressions << field.name() + " IS NOT NULL";
     }
     else
     {
-      expressions << QStringLiteral( "NotNull" );
+      expressions << QStringLiteral( "IS NOT NULL" );
     }
-
-    mValidConstraint = mValidConstraint && !value.isNull();
-
-    if ( value.isNull() )
-    {
-      errors << tr( "Value is NULL" );
-    }
-
     toEmit = true;
   }
 
@@ -180,29 +144,20 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
     }
     else
     {
-      expression = QStringLiteral( "Unique" );
+      expressions << QStringLiteral( "IS UNIQUE" );
     }
-
-    bool alreadyExists = QgsVectorLayerUtils::valueExists( layer(), mFieldIdx, value, QgsFeatureIds() << ft.id() );
-    mValidConstraint = mValidConstraint && !alreadyExists;
-
-    if ( alreadyExists )
-    {
-      errors << tr( "Value is not unique" );
-    }
-
     toEmit = true;
   }
 
+  QStringList errors;
+  mValidConstraint = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, errors );
+  mConstraintFailureReason = errors.join( ", " );
+
   if ( toEmit )
   {
-    QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : errors.join( '\n' );
-    mConstraintFailureReason = errors.join( ", " );
-    QString description;
-    if ( descriptions.size() > 1 )
-      description = "( " + descriptions.join( " ) AND ( " ) + " )";
-    else if ( !descriptions.isEmpty() )
-      description = descriptions.at( 0 );
+    QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : mConstraintFailureReason;
+
+    QString description = descriptions.join( ", " );
     QString expressionDesc;
     if ( expressions.size() > 1 )
       expressionDesc = "( " + expressions.join( " ) AND ( " ) + " )";

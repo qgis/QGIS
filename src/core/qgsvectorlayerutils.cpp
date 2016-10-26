@@ -49,3 +49,64 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldInd
 
   return false;
 }
+
+bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors )
+{
+  if ( !layer )
+    return false;
+
+  if ( attributeIndex < 0 || attributeIndex >= layer->fields().count() )
+    return false;
+
+  QgsField field = layer->fields().at( attributeIndex );
+  QVariant value = feature.attribute( attributeIndex );
+  bool valid = true;
+  errors.clear();
+
+  if ( field.constraints() & QgsField::ConstraintExpression && !field.constraintExpression().isEmpty() )
+  {
+    QgsExpressionContext context = layer->createExpressionContext();
+    context.setFeature( feature );
+
+    QgsExpression expr( field.constraintExpression() );
+
+    valid = expr.evaluate( &context ).toBool();
+
+    if ( expr.hasParserError() )
+    {
+      errors << QObject::tr( "parser error: %1" ).arg( expr.parserErrorString() );
+    }
+    else if ( expr.hasEvalError() )
+    {
+      errors << QObject::tr( "evaluation error: %1" ).arg( expr.evalErrorString() );
+    }
+    else if ( !valid )
+    {
+      errors << QObject::tr( "%1 check failed" ).arg( field.constraintDescription() );
+    }
+  }
+
+  if ( field.constraints() & QgsField::ConstraintNotNull )
+  {
+    valid = valid && !value.isNull();
+
+    if ( value.isNull() )
+    {
+      errors << QObject::tr( "value is NULL" );
+    }
+  }
+
+  if ( field.constraints() & QgsField::ConstraintUnique )
+  {
+    bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
+    valid = valid && !alreadyExists;
+
+    if ( alreadyExists )
+    {
+      errors << QObject::tr( "value is not unique" );
+    }
+  }
+
+  return valid;
+}
+

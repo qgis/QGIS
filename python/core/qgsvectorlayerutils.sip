@@ -19,4 +19,10 @@ class QgsVectorLayerUtils
      */
     static bool valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds = QgsFeatureIds() );
 
+    /**
+     * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
+     * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
+     */
+    static bool validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors /Out/ );
+
 };

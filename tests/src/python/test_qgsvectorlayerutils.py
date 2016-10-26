@@ -22,7 +22,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsField,
                        QgsFields,
-                       QgsFeature
+                       QgsFeature,
+                       NULL
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -82,6 +83,73 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [3]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [99999, 3]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [2, 4, 5, 3]))
+
+    def test_validate_attribute(self):
+        """ test validating attributes against constraints """
+        layer = createLayerWithOnePoint()
+
+        # field expression check
+        layer.setConstraintExpression(1, 'fldint>5')
+
+        f = QgsFeature(2)
+        f.setAttributes(["test123", 6])
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
+        f.setAttributes(["test123", 2])
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertFalse(res)
+        self.assertEqual(len(errors), 1)
+        print(errors)
+
+        # bad field expression check
+        layer.setConstraintExpression(1, 'fldint>')
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertFalse(res)
+        self.assertEqual(len(errors), 1)
+        print(errors)
+
+        layer.setConstraintExpression(1, None)
+
+        # not null constraint
+        f.setAttributes(["test123", NULL])
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
+
+        layer.setFieldConstraints(1, QgsField.ConstraintNotNull)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertFalse(res)
+        self.assertEqual(len(errors), 1)
+        print(errors)
+
+        # unique constraint
+        f.setAttributes(["test123", 123])
+        layer.setFieldConstraints(1, QgsField.Constraints())
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
+        layer.setFieldConstraints(1, QgsField.ConstraintUnique)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertFalse(res)
+        self.assertEqual(len(errors), 1)
+        print(errors)
+
+        # check - same id should be ignored when testing for uniqueness
+        f1 = QgsFeature(1)
+        f1.setAttributes(["test123", 123])
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f1, 1)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
+
+        # test double constraint failure
+        layer.setConstraintExpression(1, 'fldint>5')
+        layer.setFieldConstraints(1, QgsField.ConstraintNotNull)
+        f.setAttributes(["test123", NULL])
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
+        self.assertFalse(res)
+        self.assertEqual(len(errors), 2)
+        print(errors)
 
 
 if __name__ == '__main__':
