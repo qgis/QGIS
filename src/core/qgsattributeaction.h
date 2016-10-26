@@ -1,5 +1,5 @@
 /***************************************************************************
-                        qgsactionmanager.h
+                        qgsattributeaction.h
 
 This is a legacy header to keep backwards compatibility until QGIS 3.
 

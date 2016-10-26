@@ -610,6 +610,7 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgsaction.h
+  qgsactionmanager.h
   qgsaggregatecalculator.h
   qgsannotation.h
   qgsattributetableconfig.h
