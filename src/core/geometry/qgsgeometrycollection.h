@@ -91,6 +91,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const override;
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
+    virtual int nCoordinates() const override;
+
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 

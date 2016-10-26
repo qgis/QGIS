@@ -148,6 +148,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
+    virtual int nCoordinates() const override { return mX.size(); }
     void points( QgsPointSequence &pt ) const override;
 
     void draw( QPainter& p ) const override;

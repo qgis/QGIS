@@ -369,6 +369,22 @@ QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
   return mCoordinateSequence;
 }
 
+int QgsGeometryCollection::nCoordinates() const
+{
+  if ( !mCoordinateSequence.isEmpty() )
+    return QgsAbstractGeometry::nCoordinates();
+
+  int count = 0;
+
+  QVector< QgsAbstractGeometry* >::const_iterator geomIt = mGeometries.constBegin();
+  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
+  {
+    count += ( *geomIt )->nCoordinates();
+  }
+
+  return count;
+}
+
 double QgsGeometryCollection::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mGeometries, QgsGeometryUtils::PART, pt, segmentPt, vertexAfter, leftOf, epsilon );
