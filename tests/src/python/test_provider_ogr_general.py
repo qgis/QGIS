@@ -91,7 +91,8 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
             print('-I-> Using version of gdal/ogr[%d]' % (self.gdal_version_num))
             print('-W-> Note: when qgis is compiled with gdal 2.*\n\tthe application may be killed with: \'symbol lookup error\'\n\t\t undefined symbol: OGR_GT_HasM \n')
-            print('-W-> Note: when qgis is compiled with gdal 2.*\n\ttpython-scripts may fail with: \' libqgis_core.so.2.17.0:\'\n\t\t undefined symbol: OGR_F_GetFieldAsInteger64 \n')
+            print('-W-> Note: when qgis is compiled with gdal 2.*\n\ttpython-scripts may fail with: \' libqgis_core.so.2.17.0:\'')
+            print('\t\t undefined symbol: OGR_F_GetFieldAsInteger64\n\t\t undefined symbol: OGR_F_SetFieldInteger64\n\t\t undefined symbol: OGR_G_ExportToIsoWkb \n')
 
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_views_writable.sqlite')
         print('-I-> Reading db(%s)' % (datasource))
@@ -202,7 +203,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_8_2_geometries.sqlite')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spatialite_8 = QgsVectorLayer(u'{}'.format(datasource), u'spatialite_8', u'ogr')
-        # self.assertTrue(vl_spatialite_8.isValid())
+        self.assertTrue(vl_spatialite_8.isValid())
         count_layers=len(vl_spatialite_8.dataProvider().subLayers())
         print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
         for index in range(count_layers):
@@ -210,7 +211,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 # Sublayer[0] : [0:test:1:Point] ; should be : [0:test(geom1):1:Point]
                 print('-E-> invalid entry: Sublayer[%d] : [%s]'% (index, vl_spatialite_8.dataProvider().subLayers()[index]))
             else:
-                print('-I-> Sublayer[%d] : [%s]'% (index, vl_spatialite_8.dataProvider().subLayers()[index]))
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_spatialite_8.dataProvider().subLayers()[index]))
 
         del vl_spatialite_8
 
@@ -275,10 +276,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_5_ZM.sqlite')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spatialite_5 = QgsVectorLayer(u'{}'.format(datasource), u'spatialite_5', u'ogr')
+        self.assertTrue(vl_spatialite_5.isValid())
         count_layers=len(vl_spatialite_5.dataProvider().subLayers())
         print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
         for index in range(count_layers):
-                print('-I-> Sublayer[%d] : [%s]'% (index, vl_spatialite_5.dataProvider().subLayers()[index]))
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_spatialite_5.dataProvider().subLayers()[index]))
 
         del vl_spatialite_5
 
@@ -296,8 +298,8 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_test_geom
             vl_test_geom = QgsVectorLayer(u'{}|layerid=2|layername=test2|featurescount=1|geometrytype=PointM|ogrgettype=0'.format(datasource), u'test_pointm', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'POINT M\' EWKT[%s] count[%d]' % ('SRID=4326;POINTM(1 2 3)',vl_test_geom.featureCount()))
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'POINT M\' EWKT[%s] count[%d] HasGeometryType[%d]' % ('SRID=4326;POINTM(1 2 3)',vl_test_geom.featureCount(), vl_test_geom.hasGeometryType()))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
             if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
                 print('-I-> Using version of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
@@ -434,13 +436,14 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.ogr_bezirk_Spandau_1938.3068.gml')
         print('\n-I-> Reading db(%s)' % (datasource))
-        vl_spandau_1942 = QgsVectorLayer(u'{}'.format(datasource), u'spandau_1942', u'ogr')
-        count_layers=len(vl_spandau_1942.dataProvider().subLayers())
+        vl_spandau_1938 = QgsVectorLayer(u'{}'.format(datasource), u'spandau_1938', u'ogr')
+        self.assertTrue(vl_spandau_1938.isValid())
+        count_layers=len(vl_spandau_1938.dataProvider().subLayers())
         print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
         for index in range(count_layers):
-                print('-I-> Sublayer[%d] : [%s]'% (index, vl_spandau_1942.dataProvider().subLayers()[index]))
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_spandau_1938.dataProvider().subLayers()[index]))
 
-        del vl_spandau_1942
+        del vl_spandau_1938
 
         if (count_layers ==1):
             vl_test_geom = QgsVectorLayer(u'{}|layerid=0|layername=bezirk_Spandau_1938|featurescount=1|geometrytype=MultiPolygon|ogrgettype=0'.format(datasource), u'test_multipolygon', u'ogr')
@@ -448,7 +451,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             count_fields=len(vl_test_geom.fields())
             print('-I-> Testing type/values of a \'MULTIPOLYGON\' layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('bezirk_Spandau_1938',vl_test_geom.featureCount(),count_fields,vl_test_geom.hasGeometryType()))
             for index in range(count_fields):
-                print('-I-> Field[%d] : name[%s] type[%s]'% (index, vl_test_geom.fields()[index].name(), vl_test_geom.fields()[index].typeName()))
+                print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_test_geom.fields()[index].name(), vl_test_geom.fields()[index].typeName()))
             # <ogr:belongs_to>1902010800</ogr:belongs_to>
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("fid='1902010800'"))]
             #pprint(getmembers(features_vl_test))
@@ -600,10 +603,12 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.qgis_bugreport_15168.zk.kmz')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_bugreport_15168 = QgsVectorLayer(u'{}'.format(datasource), u'bugreport_15168', u'ogr')
+        self.assertTrue(vl_bugreport_15168.isValid())
         count_layers=len(vl_bugreport_15168.dataProvider().subLayers())
         print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
-        for index in range(count_layers):
-                print('-I-> Sublayer[%d] : [%s]'% (index, vl_bugreport_15168.dataProvider().subLayers()[index]))
+        # Note: when using 'ctest', the unicode chinese charaters will cause the script to fail
+        # for index in range(count_layers):
+        #        print(u'-I-> Sublayer[{0}] : [{1}]'.format(index,vl_bugreport_15168.dataProvider().subLayers()[index]))
 
         del vl_bugreport_15168
 
@@ -616,7 +621,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             count_fields=len(vl_layer_3.fields())
             print('-I-> Testing type/values of a \'LineString25D\' of first duplicate layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('Directions from 423, Taiwan',vl_layer_3.featureCount(),count_fields,vl_layer_3.hasGeometryType()))
             for index in range(count_fields):
-                print('-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_3.fields()[index].name(), vl_layer_3.fields()[index].typeName()))
+                print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_3.fields()[index].name(), vl_layer_3.fields()[index].typeName()))
             vl_layer_5 = QgsVectorLayer(u'{0}|layerid=5|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=1'.format(datasource,duplicate_layername), u'test_layer_5', u'ogr')
             self.assertTrue(vl_layer_5.isValid())
             vl_layer_1 = QgsVectorLayer(u'{0}|layerid=1|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=0'.format(datasource,unique_layername_1), u'test_layer_1', u'ogr')
@@ -662,31 +667,39 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 ###############################################################################
 # Test sqlite Integer64
 # - created [as 'sqlite_test.db']  and filled  with gdal autotest/auto/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
-# contains 47 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
+# contains 7 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
 
     def test_05_OgrInteger64(self):
         self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_sqlite_test.db')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_sqlite_test = QgsVectorLayer(u'{}'.format(datasource), u'sqlite_test', u'ogr')
+        self.assertTrue(vl_sqlite_test.isValid())
         count_layers=len(vl_sqlite_test.dataProvider().subLayers())
         print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
         for index in range(count_layers):
-                print('-I-> Sublayer[%d] : [%s]'% (index, vl_sqlite_test.dataProvider().subLayers()[index]))
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_sqlite_test.dataProvider().subLayers()[index]))
 
         del vl_sqlite_test
 
-        if (count_layers ==7):
+        if (count_layers == 7):
             vl_layer_tpoly = QgsVectorLayer(u'{0}|layerid=1|layername=tpoly|featurescount=18|geometrytype=Polygon|ogrgettype=0'.format(datasource), u'test_layer_tpoly', u'ogr')
             self.assertTrue(vl_layer_tpoly.isValid())
             count_fields=len(vl_layer_tpoly.fields())
             print('-I-> Testing type/values of a \'Integer64\' of the layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('tpoly',vl_layer_tpoly.featureCount(),count_fields,vl_layer_tpoly.hasGeometryType()))
             for index in range(count_fields):
-                print('-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_tpoly.fields()[index].name(), vl_layer_tpoly.fields()[index].typeName()))
+                print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_tpoly.fields()[index].name(), vl_layer_tpoly.fields()[index].typeName()))
 
-            print('-I-> Retrieving record 7 of layername[%s], checking returned area and int64 test values [%2.3f,%ld]' % ('tpoly',268597.625, 1234567890123))
+            # Integer64 [Max-Integer32: 2147483647] 
+            gdal_2_value=1234567890123
+            gdal_1_value=1912276171
+            print('-I-> Retrieving record 7 of layername[%s], checking returned area and int64 test values [%2.3f,%ld]' % ('tpoly',268597.625, gdal_2_value))
             got = [(f.attribute('ogc_fid'), f.attribute('area'), f.attribute('int64')) for f in vl_layer_tpoly.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 7"))]
-            self.assertEqual(got, [(7, 268597.625, 1234567890123)])
+            if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
+                self.assertEqual(got, [(7, 268597.625, gdal_2_value)])
+            else:
+                print('-I-> Using version of gdal/ogr[%d], result will be [%d] instead of [%ld].' % (self.gdal_version_num,gdal_1_value,gdal_2_value))
+                self.assertEqual(got, [(7, 268597.625, gdal_1_value)])
 
 
 if __name__ == '__main__':

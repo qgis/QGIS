@@ -1893,8 +1893,9 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         break;
       case QVariant::LongLong:
       case QVariant::ULongLong:
-        OGR_F_SetFieldInteger64( poFeature, ogrField, attrValue.toLongLong() );
-        break;
+        // when called with gdal 1.*: ImportError: ../lib/libqgis_core.so.2.19.0: undefined symbol: OGR_F_SetFieldInteger64
+        // OGR_F_SetFieldInteger64( poFeature, ogrField, attrValue.toLongLong() );
+        // break;
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
