@@ -106,7 +106,7 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid 
     widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
 }
 
-void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
+void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsField::ConstraintOrigin constraintOrigin )
 {
   bool toEmit( false );
   QgsField field = layer()->fields().at( mFieldIdx );
@@ -150,7 +150,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   }
 
   QStringList errors;
-  mValidConstraint = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, errors );
+  mValidConstraint = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, errors, constraintOrigin );
   mConstraintFailureReason = errors.join( ", " );
 
   if ( toEmit )

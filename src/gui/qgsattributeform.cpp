@@ -674,30 +674,6 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       break;
   }
 
-  if ( eww->layer()->fields().at( eww->fieldIdx() ).constraints() & QgsField::ConstraintNotNull )
-  {
-    QLabel* buddy = mBuddyMap.value( eww->widget() );
-
-    if ( buddy )
-    {
-      if ( !buddy->property( "originalText" ).isValid() )
-        buddy->setProperty( "originalText", buddy->text() );
-
-      QString text = buddy->property( "originalText" ).toString();
-
-      if ( value.isNull() )
-      {
-        // not good
-        buddy->setText( QStringLiteral( "%1<font color=\"red\">❌</font>" ).arg( text ) );
-      }
-      else
-      {
-        // good
-        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
-      }
-    }
-  }
-
   updateConstraints( eww );
 
   // emit
@@ -720,14 +696,25 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
   QgsFeature ft;
   if ( currentFormFeature( ft ) )
   {
+    // if the layer is NOT being edited then we only check layer based constraints, and not
+    // any constraints enforced by the provider. Because:
+    // 1. we want to keep browsing features nice and responsive. It's nice to give feedback as to whether
+    // the value checks out, but not if it's too slow to do so. Some constraints (eg unique) can be
+    // expensive to test. A user can freely remove a layer-based constraint if it proves to be too slow
+    // to test, but they are unlikely to have any control over provider-side constraints
+    // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint
+    // and there's no point rechecking!
+    QgsField::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsField::ConstraintOriginNotSet
+        : QgsField::ConstraintOriginLayer;
+
     // update eww constraint
-    eww->updateConstraint( ft );
+    eww->updateConstraint( ft, constraintOrigin );
 
     // update eww dependencies constraint
     QList<QgsEditorWidgetWrapper*> deps = constraintDependencies( eww );
 
     Q_FOREACH ( QgsEditorWidgetWrapper* depsEww, deps )
-      depsEww->updateConstraint( ft );
+      depsEww->updateConstraint( ft, constraintOrigin );
 
     // sync ok button status
     synchronizeEnabledState();
@@ -914,12 +901,12 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
     if ( !ok )
     {
       // not good
-      buddy->setText( QStringLiteral( "%1<font color=\"red\">*</font>" ).arg( text ) );
+      buddy->setText( QStringLiteral( "%1<font color=\"red\">❌</font>" ).arg( text ) );
     }
     else
     {
       // good
-      buddy->setText( QStringLiteral( "%1<font color=\"green\">*</font>" ).arg( text ) );
+      buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
     }
   }
 }

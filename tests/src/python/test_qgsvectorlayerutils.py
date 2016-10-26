@@ -101,6 +101,10 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
         print(errors)
+        # checking only for provider constraints
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsField.ConstraintOriginProvider)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
 
         # bad field expression check
         layer.setConstraintExpression(1, 'fldint>')
@@ -123,6 +127,11 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         print(errors)
 
+        # checking only for provider constraints
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsField.ConstraintOriginProvider)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
+
         # unique constraint
         f.setAttributes(["test123", 123])
         layer.setFieldConstraints(1, QgsField.Constraints())
@@ -134,6 +143,11 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
         print(errors)
+
+        # checking only for provider constraints
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsField.ConstraintOriginProvider)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 0)
 
         # check - same id should be ignored when testing for uniqueness
         f1 = QgsFeature(1)

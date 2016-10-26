@@ -118,9 +118,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Update constraint.
      * @param featureContext the feature to use to evaluate the constraint
+     * @param constraintOrigin optional origin for constraints to check. This can be used to limit the constraints tested
+     * to only provider or layer based constraints.
      * @note added in QGIS 2.16
      */
-    void updateConstraint( const QgsFeature &featureContext );
+    void updateConstraint( const QgsFeature &featureContext, QgsField::ConstraintOrigin constraintOrigin = QgsField::ConstraintOriginNotSet );
 
     /**
      * Get the current constraint status.

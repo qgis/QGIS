@@ -50,7 +50,7 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldInd
   return false;
 }
 
-bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors )
+bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors, QgsField::ConstraintOrigin origin )
 {
   if ( !layer )
     return false;
@@ -63,7 +63,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
   bool valid = true;
   errors.clear();
 
-  if ( field.constraints() & QgsField::ConstraintExpression && !field.constraintExpression().isEmpty() )
+  if ( field.constraints() & QgsField::ConstraintExpression && !field.constraintExpression().isEmpty()
+       && ( origin == QgsField::ConstraintOriginNotSet || origin == field.constraintOrigin( QgsField::ConstraintExpression ) ) )
   {
     QgsExpressionContext context = layer->createExpressionContext();
     context.setFeature( feature );
@@ -86,7 +87,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
     }
   }
 
-  if ( field.constraints() & QgsField::ConstraintNotNull )
+  if ( field.constraints() & QgsField::ConstraintNotNull
+       && ( origin == QgsField::ConstraintOriginNotSet || origin == field.constraintOrigin( QgsField::ConstraintNotNull ) ) )
   {
     valid = valid && !value.isNull();
 
@@ -96,7 +98,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
     }
   }
 
-  if ( field.constraints() & QgsField::ConstraintUnique )
+  if ( field.constraints() & QgsField::ConstraintUnique
+       && ( origin == QgsField::ConstraintOriginNotSet || origin == field.constraintOrigin( QgsField::ConstraintUnique ) ) )
   {
     bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
     valid = valid && !alreadyExists;
