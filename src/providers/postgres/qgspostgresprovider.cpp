@@ -2049,12 +2049,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         if ( value.isNull() )
         {
           const QgsField &fld = field( attrIdx );
-          v = paramValue( defaultValues[ i ], defaultValues[ i ] );
+          if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
+            v = defaultValues[ i ];
+          else
+            v = paramValue( defaultValues[ i ], defaultValues[ i ] );
+
           features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[ i ] );
+          if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
+            v = value.toString();
+          else
+            v = paramValue( value.toString(), defaultValues[ i ] );
 
           if ( v != value.toString() )
           {
