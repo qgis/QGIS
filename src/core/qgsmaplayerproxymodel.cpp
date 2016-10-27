@@ -32,7 +32,7 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   sort( 0 );
 }
 
-QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( const Filters& filters )
+QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
   invalidateFilter();

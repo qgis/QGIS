@@ -95,7 +95,7 @@ void QgsGCPListModel::updateModel()
   }
 
 
-  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" && mapUnitsPossible )
+  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mapUnitsPossible )
   {
     unitType = tr( "map units" );
   }
@@ -183,9 +183,9 @@ void QgsGCPListModel::updateModel()
     }
     else
     {
-      setItem( i, j++, new QgsStandardItem( "n/a" ) );
-      setItem( i, j++, new QgsStandardItem( "n/a" ) );
-      setItem( i, j++, new QgsStandardItem( "n/a" ) );
+      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
+      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
+      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
     }
   }
 }

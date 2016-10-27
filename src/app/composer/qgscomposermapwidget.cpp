@@ -23,19 +23,17 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposermapgridwidget.h"
 #include "qgscomposition.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
-#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmaplayerregistry.h"
 #include "qgscomposershape.h"
 #include "qgspaperitem.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
@@ -48,6 +46,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     , mComposerMap( composerMap )
 {
   setupUi( this );
+  setPanelTitle( tr( "Map properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
@@ -65,77 +64,17 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
   mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
-  mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
-  mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
-  mGridTypeComboBox->insertItem( 2, tr( "Markers" ) );
-  mGridTypeComboBox->insertItem( 3, tr( "Frame and annotations only" ) );
-
-  insertFrameDisplayEntries( mFrameDivisionsLeftComboBox );
-  insertFrameDisplayEntries( mFrameDivisionsRightComboBox );
-  insertFrameDisplayEntries( mFrameDivisionsTopComboBox );
-  insertFrameDisplayEntries( mFrameDivisionsBottomComboBox );
-
-  mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QgsComposerMapGrid::Decimal );
-  mAnnotationFormatComboBox->addItem( tr( "Decimal with suffix" ), QgsComposerMapGrid::DecimalWithSuffix );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, minute" ), QgsComposerMapGrid::DegreeMinuteNoSuffix );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, minute with suffix" ), QgsComposerMapGrid::DegreeMinute );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, minute aligned" ), QgsComposerMapGrid::DegreeMinutePadded );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second" ), QgsComposerMapGrid::DegreeMinuteSecondNoSuffix );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second with suffix" ), QgsComposerMapGrid::DegreeMinuteSecond );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, minute, second aligned" ), QgsComposerMapGrid::DegreeMinuteSecondPadded );
-  mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsComposerMapGrid::CustomFormat );
-
-  mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mAnnotationFontColorButton->setAllowAlpha( true );
-  mAnnotationFontColorButton->setContext( "composer" );
-
-  insertAnnotationDisplayEntries( mAnnotationDisplayLeftComboBox );
-  insertAnnotationDisplayEntries( mAnnotationDisplayRightComboBox );
-  insertAnnotationDisplayEntries( mAnnotationDisplayTopComboBox );
-  insertAnnotationDisplayEntries( mAnnotationDisplayBottomComboBox );
-
-  insertAnnotationPositionEntries( mAnnotationPositionLeftComboBox );
-  insertAnnotationPositionEntries( mAnnotationPositionRightComboBox );
-  insertAnnotationPositionEntries( mAnnotationPositionTopComboBox );
-  insertAnnotationPositionEntries( mAnnotationPositionBottomComboBox );
-
-  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxLeft );
-  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxRight );
-  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxTop );
-  insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxBottom );
-
-  mGridFramePenColorButton->setColorDialogTitle( tr( "Select grid frame color" ) );
-  mGridFramePenColorButton->setAllowAlpha( true );
-  mGridFramePenColorButton->setContext( "composer" );
-  mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
-  mGridFramePenColorButton->setShowNoColor( true );
-
-  mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
-  mGridFrameFill1ColorButton->setAllowAlpha( true );
-  mGridFrameFill1ColorButton->setContext( "composer" );
-  mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
-  mGridFrameFill1ColorButton->setShowNoColor( true );
-
-  mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
-  mGridFrameFill2ColorButton->setAllowAlpha( true );
-  mGridFrameFill2ColorButton->setContext( "composer" );
-  mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
-  mGridFrameFill2ColorButton->setShowNoColor( true );
-
-  //set initial state of frame style controls
-  toggleFrameControls( false, false, false );
-
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
   connect( mFollowVisibilityPresetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( followVisibilityPresetSelected( int ) ) );
-  connect( QgsProject::instance()->mapThemeCollection(), SIGNAL( presetsChanged() ),
-           this, SLOT( onPresetsChanged() ) );
-  onPresetsChanged();
+  connect( QgsProject::instance()->mapThemeCollection(), SIGNAL( mapThemesChanged() ),
+           this, SLOT( onMapThemesChanged() ) );
+  onMapThemesChanged();
 
   // keep layers from preset button
   QMenu* menuKeepLayers = new QMenu( this );
   mLayerListFromPresetButton->setMenu( menuKeepLayers );
-  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) );
+  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
   connect( menuKeepLayers, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowKeepLayersVisibilityPresetsMenu() ) );
 
@@ -219,7 +158,7 @@ void QgsComposerMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  Q_FOREACH ( const QString& presetName, QgsProject::instance()->mapThemeCollection()->presets() )
+  Q_FOREACH ( const QString& presetName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
   {
     menu->addAction( presetName, this, SLOT( keepLayersVisibilityPresetSelected() ) );
   }
@@ -267,20 +206,20 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
-    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName ) );
+    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverride( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();
   }
 }
 
-void QgsComposerMapWidget::onPresetsChanged()
+void QgsComposerMapWidget::onMapThemesChanged()
 {
   if ( QStringListModel* model = qobject_cast<QStringListModel*>( mFollowVisibilityPresetCombo->model() ) )
   {
     QStringList lst;
     lst.append( tr( "(none)" ) );
-    lst += QgsProject::instance()->mapThemeCollection()->presets();
+    lst += QgsProject::instance()->mapThemeCollection()->mapThemes();
     model->setStringList( lst );
 
     // select the previously selected item again
@@ -289,6 +228,37 @@ void QgsComposerMapWidget::onPresetsChanged()
     mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
     mFollowVisibilityPresetCombo->blockSignals( false );
   }
+}
+
+void QgsComposerMapWidget::updateOverviewFrameStyleFromWidget()
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  overview->setFrameSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol()->clone() ) );
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  updateOverviewFrameSymbolMarker( overview );
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
@@ -757,7 +727,6 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
 
-  blockGridItemsSignals( b );
   blockOverviewItemsSignals( b );
 }
 
@@ -804,31 +773,6 @@ void QgsComposerMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::B
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled )
-{
-  //set status of frame controls
-  mFrameWidthSpinBox->setEnabled( frameSizeEnabled );
-  mGridFramePenSizeSpinBox->setEnabled( frameEnabled );
-  mGridFramePenColorButton->setEnabled( frameEnabled );
-  mGridFrameFill1ColorButton->setEnabled( frameFillEnabled );
-  mGridFrameFill2ColorButton->setEnabled( frameFillEnabled );
-  mFrameWidthLabel->setEnabled( frameSizeEnabled );
-  mFramePenLabel->setEnabled( frameEnabled );
-  mFrameFillLabel->setEnabled( frameFillEnabled );
-  mCheckGridLeftSide->setEnabled( frameEnabled );
-  mCheckGridRightSide->setEnabled( frameEnabled );
-  mCheckGridTopSide->setEnabled( frameEnabled );
-  mCheckGridBottomSide->setEnabled( frameEnabled );
-  mFrameDivisionsLeftComboBox->setEnabled( frameEnabled );
-  mFrameDivisionsRightComboBox->setEnabled( frameEnabled );
-  mFrameDivisionsTopComboBox->setEnabled( frameEnabled );
-  mFrameDivisionsBottomComboBox->setEnabled( frameEnabled );
-  mLeftDivisionsLabel->setEnabled( frameEnabled );
-  mRightDivisionsLabel->setEnabled( frameEnabled );
-  mTopDivisionsLabel->setEnabled( frameEnabled );
-  mBottomDivisionsLabel->setEnabled( frameEnabled );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -1094,15 +1038,15 @@ void QgsComposerMapWidget::atlasLayerChanged( QgsVectorLayer* layer )
 bool QgsComposerMapWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
-  bool hasProjectScales( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
+  QStringList scales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+  bool hasProjectScales( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales
     QSettings settings;
-    QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
-    return !myScalesList.isEmpty() && myScalesList[0] != "";
+    return !myScalesList.isEmpty() && myScalesList[0] != QLatin1String( "" );
   }
   return true;
 }
@@ -1203,12 +1147,17 @@ void QgsComposerMapWidget::on_mGridListWidget_currentItemChanged( QListWidgetIte
   Q_UNUSED( previous );
   if ( !current )
   {
-    mGridCheckBox->setEnabled( false );
+    mDrawGridCheckBox->setEnabled( false );
+    mDrawGridCheckBox->setChecked( false );
+    mGridPropertiesButton->setEnabled( false );
     return;
   }
 
-  mGridCheckBox->setEnabled( true );
-  setGridItems( mComposerMap->grids()->constGrid( current->data( Qt::UserRole ).toString() ) );
+  mDrawGridCheckBox->setEnabled( true );
+  mDrawGridCheckBox->setChecked( currentGrid()->enabled() );
+  mGridPropertiesButton->setEnabled( currentGrid()->enabled() );
+
+  mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( currentGrid()->name() ) );
 }
 
 void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem* item )
@@ -1228,890 +1177,25 @@ void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem* item
   if ( item->isSelected() )
   {
     //update check box title if item is current item
-    mGridCheckBox->setTitle( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
+    mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
   }
 }
 
-void QgsComposerMapWidget::setGridItemsEnabled( bool enabled )
+void QgsComposerMapWidget::on_mGridPropertiesButton_clicked()
 {
-  mGridTypeComboBox->setEnabled( enabled );
-  mIntervalXSpinBox->setEnabled( enabled );
-  mIntervalYSpinBox->setEnabled( enabled );
-  mOffsetXSpinBox->setEnabled( enabled );
-  mOffsetYSpinBox->setEnabled( enabled );
-  mCrossWidthSpinBox->setEnabled( enabled );
-  mFrameStyleComboBox->setEnabled( enabled );
-  mFrameWidthSpinBox->setEnabled( enabled );
-  mGridLineStyleButton->setEnabled( enabled );
-  mGridFramePenSizeSpinBox->setEnabled( enabled );
-  mGridFramePenColorButton->setEnabled( enabled );
-  mGridFrameFill1ColorButton->setEnabled( enabled );
-  mGridFrameFill2ColorButton->setEnabled( enabled );
-  mFrameDivisionsLeftComboBox->setEnabled( enabled );
-  mFrameDivisionsRightComboBox->setEnabled( enabled );
-  mFrameDivisionsTopComboBox->setEnabled( enabled );
-  mFrameDivisionsBottomComboBox->setEnabled( enabled );
-}
-
-void QgsComposerMapWidget::blockGridItemsSignals( bool block )
-{
-  //grid
-  mGridCheckBox->blockSignals( block );
-  mGridTypeComboBox->blockSignals( block );
-  mIntervalXSpinBox->blockSignals( block );
-  mIntervalYSpinBox->blockSignals( block );
-  mOffsetXSpinBox->blockSignals( block );
-  mOffsetYSpinBox->blockSignals( block );
-  mCrossWidthSpinBox->blockSignals( block );
-  mFrameStyleComboBox->blockSignals( block );
-  mFrameWidthSpinBox->blockSignals( block );
-  mGridLineStyleButton->blockSignals( block );
-  mMapGridUnitComboBox->blockSignals( block );
-  mGridFramePenSizeSpinBox->blockSignals( block );
-  mGridFramePenColorButton->blockSignals( block );
-  mGridFrameFill1ColorButton->blockSignals( block );
-  mGridFrameFill2ColorButton->blockSignals( block );
-  mGridBlendComboBox->blockSignals( block );
-  mCheckGridLeftSide->blockSignals( block );
-  mCheckGridRightSide->blockSignals( block );
-  mCheckGridTopSide->blockSignals( block );
-  mCheckGridBottomSide->blockSignals( block );
-  mFrameDivisionsLeftComboBox->blockSignals( block );
-  mFrameDivisionsRightComboBox->blockSignals( block );
-  mFrameDivisionsTopComboBox->blockSignals( block );
-  mFrameDivisionsBottomComboBox->blockSignals( block );
-
-  //grid annotation
-  mDrawAnnotationGroupBox->blockSignals( block );
-  mAnnotationFormatComboBox->blockSignals( block );
-  mAnnotationDisplayLeftComboBox->blockSignals( block );
-  mAnnotationPositionLeftComboBox->blockSignals( block );
-  mAnnotationDirectionComboBoxLeft->blockSignals( block );
-  mAnnotationDisplayRightComboBox->blockSignals( block );
-  mAnnotationPositionRightComboBox->blockSignals( block );
-  mAnnotationDirectionComboBoxRight->blockSignals( block );
-  mAnnotationDisplayTopComboBox->blockSignals( block );
-  mAnnotationPositionTopComboBox->blockSignals( block );
-  mAnnotationDirectionComboBoxTop->blockSignals( block );
-  mAnnotationDisplayBottomComboBox->blockSignals( block );
-  mAnnotationPositionBottomComboBox->blockSignals( block );
-  mAnnotationDirectionComboBoxBottom->blockSignals( block );
-  mDistanceToMapFrameSpinBox->blockSignals( block );
-  mCoordinatePrecisionSpinBox->blockSignals( block );
-  mAnnotationFontColorButton->blockSignals( block );
-  mAnnotationFontButton->blockSignals( block );
-}
-
-void QgsComposerMapWidget::setGridItems( const QgsComposerMapGrid* grid )
-{
-  if ( !grid )
+  if ( !mComposerMap )
   {
     return;
   }
 
-  blockGridItemsSignals( true );
-
-  mGridCheckBox->setTitle( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
-  mGridCheckBox->setChecked( grid->enabled() );
-  mIntervalXSpinBox->setValue( grid->intervalX() );
-  mIntervalYSpinBox->setValue( grid->intervalY() );
-  mOffsetXSpinBox->setValue( grid->offsetX() );
-  mOffsetYSpinBox->setValue( grid->offsetY() );
-  mCrossWidthSpinBox->setValue( grid->crossLength() );
-  mFrameWidthSpinBox->setValue( grid->frameWidth() );
-  mGridFramePenSizeSpinBox->setValue( grid->framePenSize() );
-  mGridFramePenColorButton->setColor( grid->framePenColor() );
-  mGridFrameFill1ColorButton->setColor( grid->frameFillColor1() );
-  mGridFrameFill2ColorButton->setColor( grid->frameFillColor2() );
-
-  QgsComposerMapGrid::GridStyle gridStyle = grid->style();
-  switch ( gridStyle )
-  {
-    case QgsComposerMapGrid::Cross:
-      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Cross" ) ) );
-      mCrossWidthSpinBox->setVisible( true );
-      mCrossWidthLabel->setVisible( true );
-      mGridLineStyleButton->setVisible( true );
-      mLineStyleLabel->setVisible( true );
-      mGridMarkerStyleButton->setVisible( false );
-      mMarkerStyleLabel->setVisible( false );
-      mGridBlendComboBox->setVisible( true );
-      mGridBlendLabel->setVisible( true );
-      break;
-    case QgsComposerMapGrid::Markers:
-      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Markers" ) ) );
-      mCrossWidthSpinBox->setVisible( false );
-      mCrossWidthLabel->setVisible( false );
-      mGridLineStyleButton->setVisible( false );
-      mLineStyleLabel->setVisible( false );
-      mGridMarkerStyleButton->setVisible( true );
-      mMarkerStyleLabel->setVisible( true );
-      mGridBlendComboBox->setVisible( true );
-      mGridBlendLabel->setVisible( true );
-      break;
-    case QgsComposerMapGrid::Solid:
-      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
-      mCrossWidthSpinBox->setVisible( false );
-      mCrossWidthLabel->setVisible( false );
-      mGridLineStyleButton->setVisible( true );
-      mLineStyleLabel->setVisible( true );
-      mGridMarkerStyleButton->setVisible( false );
-      mMarkerStyleLabel->setVisible( false );
-      mGridBlendComboBox->setVisible( true );
-      mGridBlendLabel->setVisible( true );
-      break;
-    case QgsComposerMapGrid::FrameAnnotationsOnly:
-      mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Frame and annotations only" ) ) );
-      mCrossWidthSpinBox->setVisible( false );
-      mCrossWidthLabel->setVisible( false );
-      mGridLineStyleButton->setVisible( false );
-      mLineStyleLabel->setVisible( false );
-      mGridMarkerStyleButton->setVisible( false );
-      mMarkerStyleLabel->setVisible( false );
-      mGridBlendComboBox->setVisible( false );
-      mGridBlendLabel->setVisible( false );
-      break;
-  }
-
-  //grid frame
-  mFrameWidthSpinBox->setValue( grid->frameWidth() );
-  QgsComposerMapGrid::FrameStyle gridFrameStyle = grid->frameStyle();
-  switch ( gridFrameStyle )
-  {
-    case QgsComposerMapGrid::Zebra:
-      mFrameStyleComboBox->setCurrentIndex( 1 );
-      toggleFrameControls( true, true, true );
-      break;
-    case QgsComposerMapGrid::InteriorTicks:
-      mFrameStyleComboBox->setCurrentIndex( 2 );
-      toggleFrameControls( true, false, true );
-      break;
-    case QgsComposerMapGrid::ExteriorTicks:
-      mFrameStyleComboBox->setCurrentIndex( 3 );
-      toggleFrameControls( true, false, true );
-      break;
-    case QgsComposerMapGrid::InteriorExteriorTicks:
-      mFrameStyleComboBox->setCurrentIndex( 4 );
-      toggleFrameControls( true, false, true );
-      break;
-    case QgsComposerMapGrid::LineBorder:
-      mFrameStyleComboBox->setCurrentIndex( 5 );
-      toggleFrameControls( true, false, false );
-      break;
-    default:
-      mFrameStyleComboBox->setCurrentIndex( 0 );
-      toggleFrameControls( false, false, false );
-      break;
-  }
-
-  mCheckGridLeftSide->setChecked( grid->testFrameSideFlag( QgsComposerMapGrid::FrameLeft ) );
-  mCheckGridRightSide->setChecked( grid->testFrameSideFlag( QgsComposerMapGrid::FrameRight ) );
-  mCheckGridTopSide->setChecked( grid->testFrameSideFlag( QgsComposerMapGrid::FrameTop ) );
-  mCheckGridBottomSide->setChecked( grid->testFrameSideFlag( QgsComposerMapGrid::FrameBottom ) );
-
-  initFrameDisplayBox( mFrameDivisionsLeftComboBox, grid->frameDivisions( QgsComposerMapGrid::Left ) );
-  initFrameDisplayBox( mFrameDivisionsRightComboBox, grid->frameDivisions( QgsComposerMapGrid::Right ) );
-  initFrameDisplayBox( mFrameDivisionsTopComboBox, grid->frameDivisions( QgsComposerMapGrid::Top ) );
-  initFrameDisplayBox( mFrameDivisionsBottomComboBox, grid->frameDivisions( QgsComposerMapGrid::Bottom ) );
-
-  //line style
-  updateGridLineSymbolMarker( grid );
-  //marker style
-  updateGridMarkerSymbolMarker( grid );
-
-  mGridBlendComboBox->setBlendMode( grid->blendMode() );
-
-  mDrawAnnotationGroupBox->setChecked( grid->annotationEnabled() );
-  initAnnotationDisplayBox( mAnnotationDisplayLeftComboBox, grid->annotationDisplay( QgsComposerMapGrid::Left ) );
-  initAnnotationDisplayBox( mAnnotationDisplayRightComboBox, grid->annotationDisplay( QgsComposerMapGrid::Right ) );
-  initAnnotationDisplayBox( mAnnotationDisplayTopComboBox, grid->annotationDisplay( QgsComposerMapGrid::Top ) );
-  initAnnotationDisplayBox( mAnnotationDisplayBottomComboBox, grid->annotationDisplay( QgsComposerMapGrid::Bottom ) );
-
-  initAnnotationPositionBox( mAnnotationPositionLeftComboBox, grid->annotationPosition( QgsComposerMapGrid::Left ) );
-  initAnnotationPositionBox( mAnnotationPositionRightComboBox, grid->annotationPosition( QgsComposerMapGrid::Right ) );
-  initAnnotationPositionBox( mAnnotationPositionTopComboBox, grid->annotationPosition( QgsComposerMapGrid::Top ) );
-  initAnnotationPositionBox( mAnnotationPositionBottomComboBox, grid->annotationPosition( QgsComposerMapGrid::Bottom ) );
-
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxLeft, grid->annotationDirection( QgsComposerMapGrid::Left ) );
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxRight, grid->annotationDirection( QgsComposerMapGrid::Right ) );
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxTop, grid->annotationDirection( QgsComposerMapGrid::Top ) );
-  initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, grid->annotationDirection( QgsComposerMapGrid::Bottom ) );
-
-  mAnnotationFontColorButton->setColor( grid->annotationFontColor() );
-
-  mAnnotationFormatComboBox->setCurrentIndex( mAnnotationFormatComboBox->findData( grid->annotationFormat() ) );
-  mAnnotationFormatButton->setEnabled( grid->annotationFormat() == QgsComposerMapGrid::CustomFormat );
-  mDistanceToMapFrameSpinBox->setValue( grid->annotationFrameDistance() );
-  mCoordinatePrecisionSpinBox->setValue( grid->annotationPrecision() );
-
-  //Unit
-  QgsComposerMapGrid::GridUnit gridUnit = grid->units();
-  if ( gridUnit == QgsComposerMapGrid::MapUnit )
-  {
-    mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findText( tr( "Map unit" ) ) );
-  }
-  else if ( gridUnit == QgsComposerMapGrid::MM )
-  {
-    mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findText( tr( "Millimeter" ) ) );
-  }
-  else if ( gridUnit == QgsComposerMapGrid::CM )
-  {
-    mMapGridUnitComboBox->setCurrentIndex( mMapGridUnitComboBox->findText( tr( "Centimeter" ) ) );
-  }
-
-  //CRS button
-  QgsCoordinateReferenceSystem gridCrs = grid->crs();
-  QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "change..." );
-  mMapGridCRSButton->setText( crsButtonText );
-
-  blockGridItemsSignals( false );
-}
-
-void QgsComposerMapWidget::updateGridLineSymbolMarker( const QgsComposerMapGrid* grid )
-{
-  if ( grid )
-  {
-    QgsLineSymbol* nonConstSymbol = const_cast<QgsLineSymbol*>( grid->lineSymbol() ); //bad
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
-    mGridLineStyleButton->setIcon( icon );
-  }
-}
-
-void QgsComposerMapWidget::updateGridMarkerSymbolMarker( const QgsComposerMapGrid *grid )
-{
-  if ( grid )
-  {
-    QgsMarkerSymbol* nonConstSymbol = const_cast<QgsMarkerSymbol*>( grid->markerSymbol() ); //bad
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridMarkerStyleButton->iconSize() );
-    mGridMarkerStyleButton->setIcon( icon );
-  }
-}
-
-void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
-{
   QgsComposerMapGrid* grid = currentGrid();
   if ( !grid )
   {
     return;
   }
 
-  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( grid->lineSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
-
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Grid line style changed" ) );
-    grid->setLineSymbol( newSymbol );
-    updateGridLineSymbolMarker( grid );
-    mComposerMap->endCommand();
-    mComposerMap->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
-}
-
-void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  QgsMarkerSymbol* newSymbol = static_cast<QgsMarkerSymbol*>( grid->markerSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
-
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Grid markers style changed" ) );
-    grid->setMarkerSymbol( newSymbol );
-    updateGridMarkerSymbolMarker( grid );
-    mComposerMap->endCommand();
-    mComposerMap->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
-}
-
-void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid interval changed" ) );
-  grid->setIntervalX( mIntervalXSpinBox->value() );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mIntervalYSpinBox_editingFinished()
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid interval changed" ) );
-  grid->setIntervalY( mIntervalYSpinBox->value() );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mOffsetXSpinBox_valueChanged( double value )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid offset changed" ) );
-  grid->setOffsetX( value );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mOffsetYSpinBox_valueChanged( double value )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid offset changed" ) );
-  grid->setOffsetY( value );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double val )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Cross width changed" ) );
-  grid->setCrossLength( val );
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double val )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Frame width changed" ) );
-  grid->setFrameWidth( val );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mCheckGridLeftSide_toggled( bool checked )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Frame left side changed" ) );
-  grid->setFrameSideFlag( QgsComposerMapGrid::FrameLeft, checked );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mCheckGridRightSide_toggled( bool checked )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Frame right side changed" ) );
-  grid->setFrameSideFlag( QgsComposerMapGrid::FrameRight, checked );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mCheckGridTopSide_toggled( bool checked )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Frame top side changed" ) );
-  grid->setFrameSideFlag( QgsComposerMapGrid::FrameTop, checked );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mCheckGridBottomSide_toggled( bool checked )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Frame bottom side changed" ) );
-  grid->setFrameSideFlag( QgsComposerMapGrid::FrameBottom, checked );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mFrameDivisionsLeftComboBox_currentIndexChanged( int index )
-{
-  handleChangedFrameDisplay( QgsComposerMapGrid::Left, ( QgsComposerMapGrid::DisplayMode ) mFrameDivisionsLeftComboBox->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mFrameDivisionsRightComboBox_currentIndexChanged( int index )
-{
-  handleChangedFrameDisplay( QgsComposerMapGrid::Right, ( QgsComposerMapGrid::DisplayMode ) mFrameDivisionsRightComboBox->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mFrameDivisionsTopComboBox_currentIndexChanged( int index )
-{
-  handleChangedFrameDisplay( QgsComposerMapGrid::Top, ( QgsComposerMapGrid::DisplayMode ) mFrameDivisionsTopComboBox->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mFrameDivisionsBottomComboBox_currentIndexChanged( int index )
-{
-  handleChangedFrameDisplay( QgsComposerMapGrid::Bottom, ( QgsComposerMapGrid::DisplayMode ) mFrameDivisionsBottomComboBox->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mGridFramePenSizeSpinBox_valueChanged( double d )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid || !mComposerMap )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Changed grid frame line thickness" ) );
-  grid->setFramePenSize( d );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mGridFramePenColorButton_colorChanged( const QColor& newColor )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid || !mComposerMap )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid frame color changed" ) );
-  grid->setFramePenColor( newColor );
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mGridFrameFill1ColorButton_colorChanged( const QColor& newColor )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid || !mComposerMap )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid frame first fill color changed" ) );
-  grid->setFrameFillColor1( newColor );
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mGridFrameFill2ColorButton_colorChanged( const QColor& newColor )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid || !mComposerMap )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid frame second fill color changed" ) );
-  grid->setFrameFillColor2( newColor );
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mFrameStyleComboBox_currentIndexChanged( const QString& text )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Changed grid frame style" ) );
-  if ( text == tr( "Zebra" ) )
-  {
-    grid->setFrameStyle( QgsComposerMapGrid::Zebra );
-    toggleFrameControls( true, true, true );
-  }
-  else if ( text == tr( "Interior ticks" ) )
-  {
-    grid->setFrameStyle( QgsComposerMapGrid::InteriorTicks );
-    toggleFrameControls( true, false, true );
-  }
-  else if ( text == tr( "Exterior ticks" ) )
-  {
-    grid->setFrameStyle( QgsComposerMapGrid::ExteriorTicks );
-    toggleFrameControls( true, false, true );
-  }
-  else if ( text == tr( "Interior and exterior ticks" ) )
-  {
-    grid->setFrameStyle( QgsComposerMapGrid::InteriorExteriorTicks );
-    toggleFrameControls( true, false, true );
-  }
-  else if ( text == tr( "Line border" ) )
-  {
-    grid->setFrameStyle( QgsComposerMapGrid::LineBorder );
-    toggleFrameControls( true, false, false );
-  }
-  else //no frame
-  {
-    grid->setFrameStyle( QgsComposerMapGrid::NoFrame );
-    toggleFrameControls( false, false, false );
-  }
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mMapGridUnitComboBox_currentIndexChanged( const QString& text )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Changed grid unit" ) );
-  if ( text == tr( "Map unit" ) )
-  {
-    grid->setUnits( QgsComposerMapGrid::MapUnit );
-  }
-  else if ( text == tr( "Millimeter" ) )
-  {
-    grid->setUnits( QgsComposerMapGrid::MM );
-  }
-  else if ( text == tr( "Centimeter" ) )
-  {
-    grid->setUnits( QgsComposerMapGrid::CM );
-  }
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mGridBlendComboBox_currentIndexChanged( int index )
-{
-  Q_UNUSED( index );
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( grid )
-  {
-    mComposerMap->beginCommand( tr( "Grid blend mode changed" ) );
-    grid->setBlendMode( mGridBlendComboBox->blendMode() );
-    mComposerMap->update();
-    mComposerMap->endCommand();
-  }
-
-}
-
-void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QString& text )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Grid type changed" ) );
-  if ( text == tr( "Cross" ) )
-  {
-    grid->setStyle( QgsComposerMapGrid::Cross );
-    mCrossWidthSpinBox->setVisible( true );
-    mCrossWidthLabel->setVisible( true );
-    mGridLineStyleButton->setVisible( true );
-    mLineStyleLabel->setVisible( true );
-    mGridMarkerStyleButton->setVisible( false );
-    mMarkerStyleLabel->setVisible( false );
-    mGridBlendComboBox->setVisible( true );
-    mGridBlendLabel->setVisible( true );
-  }
-  else if ( text == tr( "Markers" ) )
-  {
-    grid->setStyle( QgsComposerMapGrid::Markers );
-    mCrossWidthSpinBox->setVisible( false );
-    mCrossWidthLabel->setVisible( false );
-    mGridLineStyleButton->setVisible( false );
-    mLineStyleLabel->setVisible( false );
-    mGridMarkerStyleButton->setVisible( true );
-    mMarkerStyleLabel->setVisible( true );
-    mGridBlendComboBox->setVisible( true );
-    mGridBlendLabel->setVisible( true );
-  }
-  else if ( text == tr( "Solid" ) )
-  {
-    grid->setStyle( QgsComposerMapGrid::Solid );
-    mCrossWidthSpinBox->setVisible( false );
-    mCrossWidthLabel->setVisible( false );
-    mGridLineStyleButton->setVisible( true );
-    mLineStyleLabel->setVisible( true );
-    mGridMarkerStyleButton->setVisible( false );
-    mMarkerStyleLabel->setVisible( false );
-    mGridBlendComboBox->setVisible( true );
-    mGridBlendLabel->setVisible( true );
-  }
-  else
-  {
-    grid->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
-    mCrossWidthSpinBox->setVisible( false );
-    mCrossWidthLabel->setVisible( false );
-    mGridLineStyleButton->setVisible( false );
-    mLineStyleLabel->setVisible( false );
-    mGridMarkerStyleButton->setVisible( false );
-    mMarkerStyleLabel->setVisible( false );
-    mGridBlendComboBox->setVisible( false );
-    mGridBlendLabel->setVisible( false );
-  }
-
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mMapGridCRSButton_clicked()
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid || !mComposerMap )
-  {
-    return;
-  }
-
-  QgsGenericProjectionSelector crsDialog( this );
-  QgsCoordinateReferenceSystem crs = grid->crs();
-  QString currentAuthId = crs.isValid() ? crs.authid() : mComposerMap->composition()->mapSettings().destinationCrs().authid();
-  crsDialog.setSelectedAuthId( currentAuthId );
-
-  if ( crsDialog.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Grid CRS changed" ) );
-    QString selectedAuthId = crsDialog.selectedAuthId();
-    grid->setCrs( QgsCoordinateReferenceSystem( selectedAuthId ) );
-    mComposerMap->updateBoundingRect();
-    mMapGridCRSButton->setText( selectedAuthId );
-    mComposerMap->endCommand();
-  }
-}
-
-void QgsComposerMapWidget::on_mDrawAnnotationGroupBox_toggled( bool state )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Annotation toggled" ) );
-  grid->setAnnotationEnabled( state );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mAnnotationFormatButton_clicked()
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  QgsExpressionContext expressionContext = grid->createExpressionContext();
-
-  QgsExpressionBuilderDialog exprDlg( nullptr, grid->annotationExpression(), this, "generic", expressionContext );
-  exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
-
-  if ( exprDlg.exec() == QDialog::Accepted )
-  {
-    QString expression =  exprDlg.expressionText();
-    mComposerMap->beginCommand( tr( "Annotation format changed" ) );
-    grid->setAnnotationExpression( expression );
-    mComposerMap->updateBoundingRect();
-    mComposerMap->update();
-    mComposerMap->endCommand();
-  }
-}
-
-void QgsComposerMapWidget::on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString &text )
-{
-  handleChangedAnnotationDisplay( QgsComposerMapGrid::Left, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDisplayRightComboBox_currentIndexChanged( const QString &text )
-{
-  handleChangedAnnotationDisplay( QgsComposerMapGrid::Right, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDisplayTopComboBox_currentIndexChanged( const QString &text )
-{
-  handleChangedAnnotationDisplay( QgsComposerMapGrid::Top, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString &text )
-{
-  handleChangedAnnotationDisplay( QgsComposerMapGrid::Bottom, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text )
-{
-  handleChangedAnnotationPosition( QgsComposerMapGrid::Left, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text )
-{
-  handleChangedAnnotationPosition( QgsComposerMapGrid::Right, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationPositionTopComboBox_currentIndexChanged( const QString& text )
-{
-  handleChangedAnnotationPosition( QgsComposerMapGrid::Top, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString& text )
-{
-  handleChangedAnnotationPosition( QgsComposerMapGrid::Bottom, text );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index )
-{
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Left, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxRight_currentIndexChanged( int index )
-{
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Right, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxRight->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxTop_currentIndexChanged( int index )
-{
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Top, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxTop->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index )
-{
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Bottom, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() );
-}
-
-void QgsComposerMapWidget::on_mDistanceToMapFrameSpinBox_valueChanged( double d )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Annotation distance changed" ), QgsComposerMergeCommand::ComposerMapAnnotationDistance );
-  grid->setAnnotationFrameDistance( d );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, grid->annotationFont() );
-  if ( ok )
-  {
-    mComposerMap->beginCommand( tr( "Annotation font changed" ) );
-    grid->setAnnotationFont( newFont );
-    mComposerMap->updateBoundingRect();
-    mComposerMap->update();
-    mComposerMap->endCommand();
-  }
-}
-
-void QgsComposerMapWidget::on_mAnnotationFontColorButton_colorChanged( const QColor& color )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Annotation color changed" ) );
-  grid->setAnnotationFontColor( color );
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mAnnotationFormatComboBox_currentIndexChanged( int index )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-
-  mComposerMap->beginCommand( tr( "Annotation format changed" ) );
-
-  grid->setAnnotationFormat(( QgsComposerMapGrid::AnnotationFormat )mAnnotationFormatComboBox->itemData( index ).toInt() );
-  mAnnotationFormatButton->setEnabled( grid->annotationFormat() == QgsComposerMapGrid::CustomFormat );
-
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
-void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int value )
-{
-  QgsComposerMapGrid* grid = currentGrid();
-  if ( !grid )
-  {
-    return;
-  }
-  mComposerMap->beginCommand( tr( "Changed annotation precision" ) );
-  grid->setAnnotationPrecision( value );
-  mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-  mComposerMap->endCommand();
+  QgsComposerMapGridWidget* w = new QgsComposerMapGridWidget( grid, mComposerMap );
+  openPanel( w );
 }
 
 QListWidgetItem* QgsComposerMapWidget::addGridListItem( const QString& id, const QString& name )
@@ -2163,13 +1247,15 @@ void QgsComposerMapWidget::loadGridEntries()
   }
 }
 
-void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
+void QgsComposerMapWidget::on_mDrawGridCheckBox_toggled( bool state )
 {
   QgsComposerMapGrid* grid = currentGrid();
   if ( !grid )
   {
     return;
   }
+
+  mGridPropertiesButton->setEnabled( state );
 
   mComposerMap->beginCommand( tr( "Grid checkbox toggled" ) );
   if ( state )
@@ -2462,21 +1548,21 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
-  QgsFillSymbol* newSymbol = static_cast<QgsFillSymbol*>( overview->frameSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
-    overview->setFrameSymbol( newSymbol );
-    updateOverviewFrameSymbolMarker( overview );
-    mComposerMap->endCommand();
-    mComposerMap->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
+  QgsFillSymbol* newSymbol = static_cast<QgsFillSymbol*>( overview->frameSymbol()->clone() );
+  QgsExpressionContext context = mComposerMap->createExpressionContext();
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d->setContext( symbolContext );
+
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateOverviewFrameStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpOverviewFrameStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
 }
 
 void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( int index )

@@ -112,7 +112,7 @@ void QgsVectorLayerUndoCommandDeleteFeature::redo()
 
 
 
-QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry newGeom )
+QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry& newGeom )
     : QgsVectorLayerUndoCommand( buffer )
     , mFid( fid )
     , mNewGeom( newGeom )
@@ -411,7 +411,9 @@ void QgsVectorLayerUndoCommandDeleteAttribute::undo()
     }
   }
 
-  mBuffer->L->editFormConfig().setWidgetConfig( mFieldName, mOldEditorWidgetConfig );
+  QgsEditFormConfig formConfig = mBuffer->L->editFormConfig();
+  formConfig.setWidgetConfig( mFieldName, mOldEditorWidgetConfig );
+  mBuffer->L->setEditFormConfig( formConfig );
 
   emit mBuffer->attributeAdded( mFieldIndex );
 }

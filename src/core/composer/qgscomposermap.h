@@ -48,16 +48,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_OBJECT
 
   public:
-    /** Constructor. */
+    //! Constructor.
     QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
-    /** Constructor. Settings are read from project. */
+    //! Constructor. Settings are read from project.
     QgsComposerMap( QgsComposition *composition );
     virtual ~QgsComposerMap();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerMap; }
 
-    /** \brief Preview style  */
+    //! \brief Preview style
     enum PreviewMode
     {
       Cache = 0,   // Use raster cache
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     enum AtlasScalingMode
     {
-      Fixed,      /*!< The current scale of the map is used for each feature of the atlas */
+      Fixed,      //!< The current scale of the map is used for each feature of the atlas
       Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
                     the list of scales where the atlas feature is fully visible is chosen.
                     @see QgsAtlasComposition::setPredefinedScales.
@@ -89,23 +89,23 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void draw( QPainter *painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale = nullptr );
 
-    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** \brief Create cache image */
+    //! \brief Create cache image
     void cache();
 
     /** Return map settings that would be used for drawing of the map
      *  @note added in 2.6 */
     QgsMapSettings mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const;
 
-    /** \brief Get identification number*/
+    //! \brief Get identification number
     int id() const {return mId;}
 
-    /** True if a draw is already in progress*/
+    //! True if a draw is already in progress
     bool isDrawing() const {return mDrawing;}
 
-    /** Resizes an item in x- and y direction (canvas coordinates)*/
+    //! Resizes an item in x- and y direction (canvas coordinates)
     void resize( double dx, double dy );
 
     /** Move content of map
@@ -122,13 +122,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
 
-    /** Sets new scene rectangle bounds and recalculates hight and extent*/
+    //! Sets new scene rectangle bounds and recalculates hight and extent
     void setSceneRect( const QRectF& rectangle ) override;
 
-    /** \brief Scale */
+    //! \brief Scale
     double scale() const;
 
-    /** Sets new scale and changes only mExtent*/
+    //! Sets new scale and changes only mExtent
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
     /** Sets new extent for the map. This method may change the width or height of the map
@@ -168,28 +168,28 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
 
-    /** Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas */
+    //! Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
     bool keepLayerSet() const {return mKeepLayerSet;}
-    /** Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas */
+    //! Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
-    /** Getter for stored layer set that is used if mKeepLayerSet is true */
+    //! Getter for stored layer set that is used if mKeepLayerSet is true
     QStringList layerSet() const {return mLayerSet;}
-    /** Setter for stored layer set that is used if mKeepLayerSet is true */
+    //! Setter for stored layer set that is used if mKeepLayerSet is true
     void setLayerSet( const QStringList& layerSet ) {mLayerSet = layerSet;}
-    /** Stores the current layer set of the qgis mapcanvas in mLayerSet*/
+    //! Stores the current layer set of the qgis mapcanvas in mLayerSet
     void storeCurrentLayerSet();
 
-    /** Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }
-    /** Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    //! Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     void setKeepLayerStyles( bool enabled ) { mKeepLayerStyles = enabled; }
 
-    /** Getter for stored overrides of styles for layers. @note added in 2.8 */
+    //! Getter for stored overrides of styles for layers. @note added in 2.8
     QMap<QString, QString> layerStyleOverrides() const { return mLayerStyleOverrides; }
-    /** Setter for stored overrides of styles for layers. @note added in 2.8 */
+    //! Setter for stored overrides of styles for layers. @note added in 2.8
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
-    /** Stores the current layer styles into style overrides. @note added in 2.8 */
+    //! Stores the current layer styles into style overrides. @note added in 2.8
     void storeCurrentLayerStyles();
 
     /** Whether the map should follow a map theme. If true, the layers and layer styles
@@ -218,13 +218,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     QgsRectangle extent() const {return mExtent;}
 
-    /** Sets offset values to shift image (useful for live updates when moving item content)*/
+    //! Sets offset values to shift image (useful for live updates when moving item content)
     void setOffset( double xOffset, double yOffset );
 
-    /** True if composer map renders a WMS layer*/
+    //! True if composer map renders a WMS layer
     bool containsWmsLayer() const;
 
-    /** True if composer map contains layers with blend modes or flattened layers for vectors */
+    //! True if composer map contains layers with blend modes or flattened layers for vectors
     bool containsAdvancedEffects() const;
 
     /** Stores state in Dom node
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     QgsComposerMapOverview* overview();
 
-    /** In case of annotations, the bounding rectangle can be larger than the map item rectangle */
+    //! In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
 
     /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
@@ -291,13 +291,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void updateItem() override;
 
-    /** Sets canvas pointer (necessary to query and draw map canvas items)*/
+    //! Sets canvas pointer (necessary to query and draw map canvas items)
     void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
 
     void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
     bool drawCanvasItems() const { return mDrawCanvasItems; }
 
-    /** Returns the conversion factor map units -> mm*/
+    //! Returns the conversion factor map units -> mm
     double mapUnitsToMM() const;
 
     /** Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
@@ -357,10 +357,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
-    /** Sets whether updates to the composer map are enabled. */
+    //! Sets whether updates to the composer map are enabled.
     void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
 
-    /** Returns whether updates to the composer map are enabled. */
+    //! Returns whether updates to the composer map are enabled.
     bool updatesEnabled() const { return mUpdatesEnabled; }
 
     /** Get the number of layers that this item requires for exporting as layers
@@ -381,10 +381,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //overridden to show "Map 1" type names
     virtual QString displayName() const override;
 
-    /** Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
+    //! Returns extent that considers rotation and shift with mOffsetX / mOffsetY
     QPolygonF transformedMapPolygon() const;
 
-    /** Transforms map coordinates to item coordinates (considering rotation and move offset)*/
+    //! Transforms map coordinates to item coordinates (considering rotation and move offset)
     QPointF mapToItemCoords( QPointF mapCoords ) const;
 
     /** Calculates the extent to request and the yShift of the top-left point in case of rotation.
@@ -396,10 +396,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
   signals:
     void extentChanged();
 
-    /** Is emitted on rotation change to notify north arrow pictures*/
+    //! Is emitted on rotation change to notify north arrow pictures
     void mapRotationChanged( double newRotation );
 
-    /** Is emitted when the map has been prepared for atlas rendering, just before actual rendering*/
+    //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
     void preparedForAtlas();
 
     /** Emitted when layer style overrides are changed... a means to let
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
   public slots:
 
-    /** Forces an update of the cached map image*/
+    //! Forces an update of the cached map image
     void updateCachedImage();
 
     /** Updates the cached map image if the map is set to Render mode
@@ -418,7 +418,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void renderModeUpdateCachedImage();
 
-    /** Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle */
+    //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
   private:
 
-    /** Unique identifier*/
+    //! Unique identifier
     int mId;
 
     QgsComposerMapGridStack* mGridStack;
@@ -456,34 +456,34 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // Is cache up to date
     bool mCacheUpdated;
 
-    /** \brief Preview style  */
+    //! \brief Preview style
     PreviewMode mPreviewMode;
 
-    /** \brief Number of layers when cache was created  */
+    //! \brief Number of layers when cache was created
     int mNumCachedLayers;
 
-    /** \brief set to true if in state of drawing. Concurrent requests to draw method are returned if set to true */
+    //! \brief set to true if in state of drawing. Concurrent requests to draw method are returned if set to true
     bool mDrawing;
 
-    /** Offset in x direction for showing map cache image*/
+    //! Offset in x direction for showing map cache image
     double mXOffset;
-    /** Offset in y direction for showing map cache image*/
+    //! Offset in y direction for showing map cache image
     double mYOffset;
 
-    /** Map rotation*/
+    //! Map rotation
     double mMapRotation;
     /** Temporary evaluated map rotation. Data defined rotation may mean this value
      * differs from mMapRotation*/
     double mEvaluatedMapRotation;
 
-    /** Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)*/
+    //! Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)
     bool mKeepLayerSet;
 
-    /** Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
+    //! Stored layer list (used if layer live-link mKeepLayerSet is disabled)
     QStringList mLayerSet;
 
     bool mKeepLayerStyles;
-    /** Stored style names (value) to be used with particular layer IDs (key) instead of default style */
+    //! Stored style names (value) to be used with particular layer IDs (key) instead of default style
     QMap<QString, QString> mLayerStyleOverrides;
 
     /** Whether layers and styles should be used from a preset (preset name is stored
@@ -494,53 +494,53 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
 
-    /** Whether updates to the map are enabled */
+    //! Whether updates to the map are enabled
     bool mUpdatesEnabled;
 
-    /** Establishes signal/slot connection for update in case of layer change*/
+    //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();
 
-    /** Removes layer ids from mLayerSet that are no longer present in the qgis main map*/
+    //! Removes layer ids from mLayerSet that are no longer present in the qgis main map
     void syncLayerSet();
 
-    /** Returns first map grid or creates an empty one if none*/
+    //! Returns first map grid or creates an empty one if none
     const QgsComposerMapGrid* constFirstMapGrid() const;
 
-    /** Returns first map overview or creates an empty one if none*/
+    //! Returns first map overview or creates an empty one if none
     const QgsComposerMapOverview* constFirstMapOverview() const;
 
-    /** Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
+    //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
     QGraphicsView* mMapCanvas;
-    /** True if annotation items, rubber band, etc. from the main canvas should be displayed*/
+    //! True if annotation items, rubber band, etc. from the main canvas should be displayed
     bool mDrawCanvasItems;
 
     /** Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
     void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const;
 
-    /** True if map is being controlled by an atlas*/
+    //! True if map is being controlled by an atlas
     bool mAtlasDriven;
-    /** Current atlas scaling mode*/
+    //! Current atlas scaling mode
     AtlasScalingMode mAtlasScalingMode;
-    /** Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode*/
+    //! Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode
     double mAtlasMargin;
 
     void init();
 
-    /** Resets the item tooltip to reflect current map id*/
+    //! Resets the item tooltip to reflect current map id
     void updateToolTip();
 
-    /** Returns a list of the layers to render for this map item*/
+    //! Returns a list of the layers to render for this map item
     QStringList layersToRender( const QgsExpressionContext* context = nullptr ) const;
 
-    /** Returns current layer style overrides for this map item*/
+    //! Returns current layer style overrides for this map item
     QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext& context ) const;
 
-    /** Returns extent that considers mOffsetX / mOffsetY (during content move)*/
+    //! Returns extent that considers mOffsetX / mOffsetY (during content move)
     QgsRectangle transformedExtent() const;
 
-    /** MapPolygon variant using a given extent */
+    //! MapPolygon variant using a given extent
     void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
 
     /** Scales a composer map shift (in MM) and rotates it by mRotation
@@ -562,7 +562,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       SelectionBoxes
     };
 
-    /** Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer*/
+    //! Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer
     bool shouldDrawPart( PartType part ) const;
 
     /** Refresh the map's extents, considering data defined extent, scale and rotation

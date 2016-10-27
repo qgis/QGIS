@@ -34,65 +34,68 @@
 
 class CORE_EXPORT QgsUnitTypes
 {
+    Q_GADGET
+
   public:
 
     //! Units of distance
     enum DistanceUnit
     {
-      DistanceMeters = 0, /*!< meters */
-      DistanceKilometers, /*!< kilometers */
-      DistanceFeet, /*!< imperial feet */
-      DistanceNauticalMiles, /*!< nautical miles */
-      DistanceYards, /*!< imperial yards */
-      DistanceMiles, /*!< terrestial miles */
-      DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
-      DistanceUnknownUnit, /*!< unknown distance unit */
+      DistanceMeters = 0, //!< Meters
+      DistanceKilometers, //!< Kilometers
+      DistanceFeet, //!< Imperial feet
+      DistanceNauticalMiles, //!< Nautical miles
+      DistanceYards, //!< Imperial yards
+      DistanceMiles, //!< Terrestial miles
+      DistanceDegrees, //!< Degrees, for planar geographic CRS distance measurements
+      DistanceUnknownUnit, //!< Unknown distance unit
     };
 
     /** Types of distance units
      */
     enum DistanceUnitType
     {
-      Standard = 0, /*!< unit is a standard measurement unit */
-      Geographic,   /*!< unit is a geographic (eg degree based) unit */
-      UnknownType,  /*!< unknown unit type */
+      Standard = 0, //!< Unit is a standard measurement unit
+      Geographic,   //!< Unit is a geographic (eg degree based) unit
+      UnknownType,  //!< Unknown unit type
     };
 
     //! Units of area
     enum AreaUnit
     {
-      AreaSquareMeters = 0, /*!< square meters */
-      AreaSquareKilometers, /*!< square kilometers */
-      AreaSquareFeet, /*!< square feet */
-      AreaSquareYards, /*!< square yards */
-      AreaSquareMiles, /*!< square miles */
-      AreaHectares, /*!< hectares */
-      AreaAcres, /*!< acres */
-      AreaSquareNauticalMiles, /*!< square nautical miles */
-      AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      AreaUnknownUnit, /*!< unknown areal unit */
+      AreaSquareMeters = 0, //!< Square meters
+      AreaSquareKilometers, //!< Square kilometers
+      AreaSquareFeet, //!< Square feet
+      AreaSquareYards, //!< Square yards
+      AreaSquareMiles, //!< Square miles
+      AreaHectares, //!< Hectares
+      AreaAcres, //!< Acres
+      AreaSquareNauticalMiles, //!< Square nautical miles
+      AreaSquareDegrees, //!< Square degrees, for planar geographic CRS area measurements
+      AreaUnknownUnit, //!< Unknown areal unit
     };
 
     //! Units of angles
     enum AngleUnit
     {
-      AngleDegrees = 0, /*!< degrees */
-      AngleRadians, /*!< square kilometers */
-      AngleGon, /*!< gon/gradian */
-      AngleMinutesOfArc, /*!< minutes of arc */
-      AngleSecondsOfArc, /*!< seconds of arc */
-      AngleTurn, /*!< turn/revolutions */
-      AngleUnknownUnit, /*!< unknown angle unit */
+      AngleDegrees = 0, //!< Degrees
+      AngleRadians, //!< Square kilometers
+      AngleGon, //!< Gon/gradian
+      AngleMinutesOfArc, //!< Minutes of arc
+      AngleSecondsOfArc, //!< Seconds of arc
+      AngleTurn, //!< Turn/revolutions
+      AngleUnknownUnit, //!< Unknown angle unit
     };
 
     //! Rendering size units
     enum RenderUnit
     {
-      RenderMillimeters = 0, //!< millimeters
-      RenderMapUnits, //!< map units
-      RenderPixels, //!< pixels
-      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
-      RenderUnknownUnit, //!< mixed or unknown units
+      RenderMillimeters = 0, //!< Millimeters
+      RenderMapUnits, //!< Map units
+      RenderPixels, //!< Pixels
+      RenderPercentage, //!< Percentage of another measurement (eg canvas size, feature size)
+      RenderPoints, //! points (eg for font sizes)
+      RenderUnknownUnit, //!< Mixed or unknown units
     };
 
     //! List of render units
@@ -102,14 +105,14 @@ class CORE_EXPORT QgsUnitTypes
 
     /** Returns the type for a distance unit.
      */
-    static DistanceUnitType unitType( DistanceUnit unit );
+    Q_INVOKABLE static DistanceUnitType unitType( DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
      */
-    static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
+    Q_INVOKABLE static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
     /** Decodes a distance unit from a string.
      * @param string string to decode
@@ -117,40 +120,40 @@ class CORE_EXPORT QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      */
-    static QString toString( QgsUnitTypes::DistanceUnit unit );
+    Q_INVOKABLE static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     /** Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok = 0 );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
      * @param toUnit distance unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
+    Q_INVOKABLE static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
 
     // AREAL UNITS
 
     /** Returns the type for an areal unit.
     */
-    static DistanceUnitType unitType( AreaUnit unit );
+    Q_INVOKABLE static DistanceUnitType unitType( AreaUnit unit );
 
     /** Encodes an areal unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeAreaUnit()
     */
-    static QString encodeUnit( AreaUnit unit );
+    Q_INVOKABLE static QString encodeUnit( AreaUnit unit );
 
     /** Decodes an areal unit from a string.
      * @param string string to decode
@@ -158,33 +161,33 @@ class CORE_EXPORT QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
     */
-    static AreaUnit decodeAreaUnit( const QString& string, bool *ok = 0 );
+    Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing an areal unit.
      * @param unit unit to convert to string
      * @see stringToAreaUnit()
      */
-    static QString toString( AreaUnit unit );
+    Q_INVOKABLE static QString toString( AreaUnit unit );
 
     /** Converts a translated string to an areal unit.
      * @param string string representing an areal unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
-    static AreaUnit stringToAreaUnit( const QString& string, bool *ok = 0 );
+    Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString& string, bool *ok = 0 );
 
     /** Returns the conversion factor between the specified areal units.
      * @param fromUnit area unit to convert from
      * @param toUnit area unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
+    Q_INVOKABLE static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
     /** Converts a distance unit to its corresponding area unit, eg meters to square meters
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */
-    static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+    Q_INVOKABLE static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 
     // ANGULAR UNITS
 
@@ -193,7 +196,7 @@ class CORE_EXPORT QgsUnitTypes
      * @returns encoded string
      * @see decodeAngleUnit()
     */
-    static QString encodeUnit( AngleUnit unit );
+    Q_INVOKABLE static QString encodeUnit( AngleUnit unit );
 
     /** Decodes an angular unit from a string.
      * @param string string to decode
@@ -201,19 +204,19 @@ class CORE_EXPORT QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
     */
-    static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
+    Q_INVOKABLE static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
 
     /** Returns a translated string representing an angular unit.
      * @param unit unit to convert to string
      */
-    static QString toString( AngleUnit unit );
+    Q_INVOKABLE static QString toString( AngleUnit unit );
 
     /** Returns the conversion factor between the specified angular units.
      * @param fromUnit angle unit to convert from
      * @param toUnit angle unit to convert to
      * @returns multiplication factor to convert between units
      */
-    static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
+    Q_INVOKABLE static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
 
     /** Returns an angle formatted as a friendly string.
      * @param angle angle to format
@@ -221,7 +224,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param unit unit of angle
      * @returns formatted angle string
      */
-    static QString formatAngle( double angle, int decimals, AngleUnit unit );
+    Q_INVOKABLE static QString formatAngle( double angle, int decimals, AngleUnit unit );
 
     // RENDER UNITS
 
@@ -230,7 +233,7 @@ class CORE_EXPORT QgsUnitTypes
      * @returns encoded string
      * @see decodeRenderUnit()
      */
-    static QString encodeUnit( RenderUnit unit );
+    Q_INVOKABLE static QString encodeUnit( RenderUnit unit );
 
     /** Decodes a render unit from a string.
      * @param string string to decode
@@ -238,7 +241,7 @@ class CORE_EXPORT QgsUnitTypes
      * @returns decoded units
      * @see encodeUnit()
      */
-    static RenderUnit decodeRenderUnit( const QString& string, bool *ok = 0 );
+    Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString& string, bool *ok = 0 );
 
 };
 

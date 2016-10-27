@@ -26,9 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtWidgets import QApplication, QMessageBox
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QSizePolicy
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import Qt
+
+from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -56,10 +58,13 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.setWindowTitle(self.tr('Batch Processing - %s') % self.alg.name)
 
-        self.mainWidget = BatchPanel(self, self.alg)
-        self.setMainWidget()
+        self.setMainWidget(BatchPanel(self, self.alg))
 
         self.textShortHelp.setVisible(False)
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().insertWidget(0, self.bar)
 
     def accept(self):
         self.algs = []
@@ -72,10 +77,11 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             for param in alg.parameters:
                 if param.hidden:
                     continue
-                widget = self.mainWidget.tblParameters.cellWidget(row, col)
-                if not self.mainWidget.setParamValue(param, widget, alg):
-                    self.lblProgress.setText(
-                        self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
+                wrapper = self.mainWidget.wrappers[row][col]
+                if not self.mainWidget.setParamValue(param, wrapper, alg):
+                    self.bar.pushMessage("", self.tr('Wrong or missing parameter value: %s (row %d)')
+                                         % (param.description, row + 1),
+                                         level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
                 col += 1
@@ -89,8 +95,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     out.value = text
                     col += 1
                 else:
-                    self.lblProgress.setText(
-                        self.tr('<b>Wrong or missing parameter value: %s (row %d)</b>') % (out.description, row + 1))
+                    self.bar.pushMessage("", self.tr('Wrong or missing output value: %s (row %d)')
+                                         % (out.description, row + 1),
+                                         level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
 

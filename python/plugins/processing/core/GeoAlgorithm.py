@@ -42,8 +42,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.SilentProgress import SilentProgress
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter, ParameterExtent
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
@@ -73,10 +72,6 @@ class GeoAlgorithm(object):
         # appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
-        # if true, will show only loaded layers in parameters dialog.
-        # Also, if True, the algorithm does not run on the modeler
-        # or batch ptocessing interface
-        self.allowOnlyOpenedLayers = False
 
         # False if it should not be run a a batch process
         self.canRunInBatchMode = True
@@ -201,17 +196,15 @@ class GeoAlgorithm(object):
         self.model = model
         try:
             self.setOutputCRS()
-            self.resolveTemporaryOutputs()
-            self.resolveDataObjects()
-            self.resolveMinCoveringExtent()
-            self.checkOutputFileExtensions()
+            self.resolveOutputs()
+            self.evaluateParameterValues()
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
             progress.setPercentage(100)
             self.convertUnsupportedFormats(progress)
             self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException as gaee:
-            lines = [self.tr('Uncaught error while executing algorithm')]
+            lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
@@ -332,44 +325,23 @@ class GeoAlgorithm(object):
                 return name
         return 'GTiff'
 
-    def checkOutputFileExtensions(self):
-        """Checks if the values of outputs are correct and have one of
-        the supported output extensions.
+    def evaluateParameterValues(self):
+        for param in self.parameters:
+            try:
+                param.evaluate(self)
+            except ValueError as e:
+                traceback.print_exc()
+                raise GeoAlgorithmExecutionException(str(e))
 
-        If not, it adds the first one of the supported extensions, which
-        is assumed to be the default one.
-        """
-        for out in self.outputs:
-            if not out.hidden and out.value is not None:
-                if not os.path.isabs(out.value):
-                    continue
-                if isinstance(out, OutputRaster):
-                    exts = \
-                        dataobjects.getSupportedOutputRasterLayerExtensions()
-                elif isinstance(out, OutputVector):
-                    exts = \
-                        dataobjects.getSupportedOutputVectorLayerExtensions()
-                elif isinstance(out, OutputTable):
-                    exts = dataobjects.getSupportedOutputTableExtensions()
-                elif isinstance(out, OutputHTML):
-                    exts = ['html', 'htm']
-                else:
-                    continue
-                idx = out.value.rfind('.')
-                if idx == -1:
-                    out.value = out.value + '.' + exts[0]
-                else:
-                    ext = out.value[idx + 1:]
-                    if ext not in exts + ['dbf']:
-                        out.value = out.value + '.' + exts[0]
-
-    def resolveTemporaryOutputs(self):
+    def resolveOutputs(self):
         """Sets temporary outputs (output.value = None) with a
-        temporary file instead.
+        temporary file instead. Resolves expressions as well.
         """
-        for out in self.outputs:
-            if not out.hidden and out.value is None:
-                setTempOutput(out, self)
+        try:
+            for out in self.outputs:
+                out.resolveValue(self)
+        except ValueError as e:
+            raise GeoAlgorithmExecutionException(str(e))
 
     def setOutputCRS(self):
         layers = dataobjects.getAllLayers()
@@ -413,61 +385,6 @@ class GeoAlgorithm(object):
                                 inputlayers[i] = layer.source()
                                 break
                     param.setValue(";".join(inputlayers))
-
-    def canUseAutoExtent(self):
-        for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                return True
-            if isinstance(param, ParameterMultipleInput):
-                return True
-        return False
-
-    def resolveMinCoveringExtent(self):
-        for param in self.parameters:
-            if isinstance(param, ParameterExtent):
-                if param.value is None:
-                    param.value = self.getMinCoveringExtent()
-
-    def getMinCoveringExtent(self):
-        first = True
-        found = False
-        for param in self.parameters:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                                QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = dataobjects.getObject(param.value)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = dataobjects.getObject(layername)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return '{},{},{},{}'.format(
-                self.xmin, self.xmax, self.ymin, self.ymax)
-        else:
-            return None
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,
@@ -545,7 +462,8 @@ class GeoAlgorithm(object):
         for param in self.parameters:
             s += '\t' + str(param) + '\n'
         for out in self.outputs:
-            s += '\t' + str(out) + '\n'
+            if not out.hidden:
+                s += '\t' + str(out) + '\n'
         s += '\n'
         return s
 

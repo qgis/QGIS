@@ -164,7 +164,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
   mv->setWindowTitle( tr( "Commit errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  " ) )
+                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();
@@ -172,7 +172,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
   QAction *act = new QAction( showMore );
   act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
   act->setText( tr( "Show more" ) );
-  showMore->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+  showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
   showMore->setCursor( Qt::PointingHandCursor );
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );

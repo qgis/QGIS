@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 from builtins import str
 
 __author__ = 'Victor Olaya'
@@ -94,7 +95,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]
-            request = QgsFeatureRequest().setFilterFid(neighbourID)
+            request = QgsFeatureRequest().setFilterFid(neighbourID).setSubsetOfAttributes([])
             neighbour = next(layer.getFeatures(request))
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())

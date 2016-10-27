@@ -37,7 +37,7 @@ QgsOracleConnect::QgsOracleConnect( QWidget* parent,
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
     txtUsername->setText( settings.value( key + "/username" ).toString() );
 
-    if ( settings.value( key + "/savepass" ).toString() == "true" )
+    if ( settings.value( key + "/savepass" ).toString() == QLatin1String( "true" ) )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
@@ -68,7 +68,7 @@ void QgsOracleConnect::saveConnection()
 {
   QSettings settings;
 
-  QString baseKey = "/Oracle/connections/";
+  QString baseKey = QStringLiteral( "/Oracle/connections/" );
 
   settings.setValue( baseKey + "selected", txtName->text() );
   baseKey += txtName->text();

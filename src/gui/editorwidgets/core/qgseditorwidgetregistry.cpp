@@ -56,27 +56,27 @@ QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
   QgsEditorWidgetRegistry *reg = instance();
-  reg->registerWidget( "TextEdit", new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
-  reg->registerWidget( "Classification", new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
-  reg->registerWidget( "Range", new QgsRangeWidgetFactory( tr( "Range" ) ) );
-  reg->registerWidget( "UniqueValues", new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
-  reg->registerWidget( "FileName", new QgsFileNameWidgetFactory( tr( "File Name" ) ) );
-  reg->registerWidget( "ValueMap", new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
-  reg->registerWidget( "Enumeration", new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
-  reg->registerWidget( "Hidden", new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
-  reg->registerWidget( "CheckBox", new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
-  reg->registerWidget( "ValueRelation", new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
-  reg->registerWidget( "UuidGenerator", new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-  reg->registerWidget( "Photo", new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
+  reg->registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  reg->registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
+  reg->registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
+  reg->registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
+  reg->registerWidget( QStringLiteral( "FileName" ), new QgsFileNameWidgetFactory( tr( "File Name" ) ) );
+  reg->registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
+  reg->registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
+  reg->registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
+  reg->registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
+  reg->registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
+  reg->registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
+  reg->registerWidget( QStringLiteral( "Photo" ), new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
 #ifdef WITH_QTWEBKIT
-  reg->registerWidget( "WebView", new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
+  reg->registerWidget( QStringLiteral( "WebView" ), new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
 #endif
-  reg->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
-  reg->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
-  reg->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
-  reg->registerWidget( "ExternalResource", new QgsExternalResourceWidgetFactory( tr( "External Resource" ) ) );
-  reg->registerWidget( "KeyValue", new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
-  reg->registerWidget( "List", new QgsListWidgetFactory( tr( "List" ) ) );
+  reg->registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
+  reg->registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
+  reg->registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
+  reg->registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "External Resource" ) ) );
+  reg->registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
+  reg->registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
@@ -128,7 +128,7 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
       if ( !ww->valid() )
       {
         delete ww;
-        QString wid = findSuitableWrapper( editor, "TextEdit" );
+        QString wid = findSuitableWrapper( editor, QStringLiteral( "TextEdit" ) );
         ww = mWidgetFactories[wid]->create( vl, fieldIdx, editor, parent );
         ww->setConfig( config );
         ww->setContext( context );
@@ -194,12 +194,12 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
 {
   if ( !widgetFactory )
   {
-    QgsMessageLog::instance()->logMessage( "QgsEditorWidgetRegistry: Factory not valid." );
+    QgsMessageLog::instance()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory not valid." ) );
     return false;
   }
   else if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsMessageLog::instance()->logMessage( QString( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
+    QgsMessageLog::instance()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
     return false;
   }
   else
@@ -207,8 +207,8 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
     mWidgetFactories.insert( widgetId, widgetFactory );
 
     // Use this factory as default where it provides the heighest priority
-    QMap<const char*, int> types = widgetFactory->supportedWidgetTypes();
-    QMap<const char*, int>::ConstIterator it;
+    QHash<const char*, int> types = widgetFactory->supportedWidgetTypes();
+    QHash<const char*, int>::ConstIterator it;
     it = types.constBegin();
 
     for ( ; it != types.constEnd(); ++it )
@@ -233,7 +233,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
   QgsVectorLayer* vectorLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
   Q_ASSERT( vectorLayer );
 
-  QDomNodeList editTypeNodes = layerElem.namedItem( "edittypes" ).childNodes();
+  QDomNodeList editTypeNodes = layerElem.namedItem( QStringLiteral( "edittypes" ) ).childNodes();
 
   QgsEditFormConfig formConfig = vectorLayer->editFormConfig();
 
@@ -242,30 +242,30 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
     QDomNode editTypeNode = editTypeNodes.at( i );
     QDomElement editTypeElement = editTypeNode.toElement();
 
-    QString name = editTypeElement.attribute( "name" );
+    QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
 
     int idx = vectorLayer->fields().lookupField( name );
     if ( idx == -1 )
       continue;
 
-    QString ewv2Type = editTypeElement.attribute( "widgetv2type" );
+    QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
     QgsEditorWidgetConfig cfg;
 
     if ( mWidgetFactories.contains( ewv2Type ) )
     {
       formConfig.setWidgetType( name, ewv2Type );
-      QDomElement ewv2CfgElem = editTypeElement.namedItem( "widgetv2config" ).toElement();
+      QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
 
       if ( !ewv2CfgElem.isNull() )
       {
         cfg = mWidgetFactories[ewv2Type]->readEditorConfig( ewv2CfgElem, vectorLayer, idx );
       }
 
-      formConfig.setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
-      formConfig.setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
-      formConfig.setNotNull( idx, ewv2CfgElem.attribute( "notNull", "0" ) == "1" );
-      formConfig.setConstraintExpression( idx, ewv2CfgElem.attribute( "constraint", QString() ) );
-      formConfig.setContraintDescription( idx, ewv2CfgElem.attribute( "constraintDescription", QString() ) );
+      formConfig.setReadOnly( idx, ewv2CfgElem.attribute( QStringLiteral( "fieldEditable" ), QStringLiteral( "1" ) ) != QLatin1String( "1" ) );
+      formConfig.setLabelOnTop( idx, ewv2CfgElem.attribute( QStringLiteral( "labelOnTop" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+      formConfig.setNotNull( idx, ewv2CfgElem.attribute( QStringLiteral( "notNull" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+      formConfig.setConstraintExpression( idx, ewv2CfgElem.attribute( QStringLiteral( "constraint" ), QString() ) );
+      formConfig.setContraintDescription( idx, ewv2CfgElem.attribute( QStringLiteral( "constraintDescription" ), QString() ) );
 
       formConfig.setWidgetConfig( name, cfg );
     }
@@ -291,7 +291,7 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
     return;
   }
 
-  QDomNode editTypesNode = doc.createElement( "edittypes" );
+  QDomNode editTypesNode = doc.createElement( QStringLiteral( "edittypes" ) );
 
   QgsFields fields = vectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
@@ -310,18 +310,18 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
     }
 
 
-    QDomElement editTypeElement = doc.createElement( "edittype" );
-    editTypeElement.setAttribute( "name", field.name() );
-    editTypeElement.setAttribute( "widgetv2type", widgetType );
+    QDomElement editTypeElement = doc.createElement( QStringLiteral( "edittype" ) );
+    editTypeElement.setAttribute( QStringLiteral( "name" ), field.name() );
+    editTypeElement.setAttribute( QStringLiteral( "widgetv2type" ), widgetType );
 
     if ( mWidgetFactories.contains( widgetType ) )
     {
-      QDomElement ewv2CfgElem = doc.createElement( "widgetv2config" );
-      ewv2CfgElem.setAttribute( "fieldEditable", !vectorLayer->editFormConfig().readOnly( idx ) );
-      ewv2CfgElem.setAttribute( "labelOnTop", vectorLayer->editFormConfig().labelOnTop( idx ) );
-      ewv2CfgElem.setAttribute( "notNull", vectorLayer->editFormConfig().notNull( idx ) );
-      ewv2CfgElem.setAttribute( "constraint", vectorLayer->editFormConfig().constraintExpression( idx ) );
-      ewv2CfgElem.setAttribute( "constraintDescription", vectorLayer->editFormConfig().constraintDescription( idx ) );
+      QDomElement ewv2CfgElem = doc.createElement( QStringLiteral( "widgetv2config" ) );
+      ewv2CfgElem.setAttribute( QStringLiteral( "fieldEditable" ), !vectorLayer->editFormConfig().readOnly( idx ) );
+      ewv2CfgElem.setAttribute( QStringLiteral( "labelOnTop" ), vectorLayer->editFormConfig().labelOnTop( idx ) );
+      ewv2CfgElem.setAttribute( QStringLiteral( "notNull" ), vectorLayer->editFormConfig().notNull( idx ) );
+      ewv2CfgElem.setAttribute( QStringLiteral( "constraint" ), vectorLayer->editFormConfig().constraintExpression( idx ) );
+      ewv2CfgElem.setAttribute( QStringLiteral( "constraintDescription" ), vectorLayer->editFormConfig().constraintDescription( idx ) );
 
       mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig().widgetConfig( field.name() ), ewv2CfgElem, doc, vectorLayer, idx );
 

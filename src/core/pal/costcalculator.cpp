@@ -104,6 +104,7 @@ void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >
   // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
   // calculated so will have nonsense values
   QList< LabelPosition* > toSort;
+  toSort.reserve( nblp );
   for ( int i = 0; i < nblp; ++i )
   {
     toSort << lPos.at( i );

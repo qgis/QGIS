@@ -57,7 +57,7 @@ void initVirtualLayerMetadata( sqlite3* db )
   char *errMsg;
   if ( create_meta )
   {
-    r = sqlite3_exec( db, QString( "CREATE TABLE _meta (version INT, url TEXT); INSERT INTO _meta (version) VALUES(%1);" ).arg( VIRTUAL_LAYER_VERSION ).toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
+    r = sqlite3_exec( db, QStringLiteral( "CREATE TABLE _meta (version INT, url TEXT); INSERT INTO _meta (version) VALUES(%1);" ).arg( VIRTUAL_LAYER_VERSION ).toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
       throw std::runtime_error( errMsg );
@@ -163,6 +163,10 @@ struct VTable
   QgsFields fields() const { return mFields; }
 
 private:
+
+  VTable( const VTable& other );
+  VTable& operator=( const VTable& other );
+
   // connection
   sqlite3* mSql;
 
@@ -195,25 +199,25 @@ private:
     QStringList sqlFields;
 
     // add a hidden field for rtree filtering
-    sqlFields << "_search_frame_ HIDDEN BLOB";
+    sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
 
     Q_FOREACH ( const QgsField& field, mFields )
     {
-      QString typeName = "text";
+      QString typeName = QStringLiteral( "text" );
       switch ( field.type() )
       {
         case QVariant::Int:
         case QVariant::UInt:
         case QVariant::Bool:
         case QVariant::LongLong:
-          typeName = "int";
+          typeName = QStringLiteral( "int" );
           break;
         case QVariant::Double:
-          typeName = "real";
+          typeName = QStringLiteral( "real" );
           break;
         case QVariant::String:
         default:
-          typeName = "text";
+          typeName = QStringLiteral( "text" );
           break;
       }
       sqlFields << field.name() + " " + typeName;
@@ -226,7 +230,7 @@ private:
       // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
       // we are using them to set the geometry type and srid
       // these will be reused by the provider when it will introspect the query to detect types
-      sqlFields << QString( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
+      sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
     }
 
     QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
@@ -235,7 +239,7 @@ private:
       mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
     }
 
-    mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( "," ) + ")";
+    mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QStringLiteral( "," ) ) + ")";
 
     mCrs = provider->crs().postgisSrid();
   }
@@ -332,7 +336,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
 
   if ( argc < 4 )
   {
-    QString err( "Missing arguments: layer_id | provider, source" );
+    QString err( QStringLiteral( "Missing arguments: layer_id | provider, source" ) );
     RETURN_CPPSTR_ERROR( err );
     return SQLITE_ERROR;
   }
@@ -355,7 +359,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     {
       if ( outErr )
       {
-        QString err( "Cannot find layer " );
+        QString err( QStringLiteral( "Cannot find layer " ) );
         err += QString::fromUtf8( argv[3] );
         RETURN_CPPSTR_ERROR( err );
       }
@@ -373,7 +377,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     // encoding = argv[5]
     QString provider = argv[3];
     QString source = QString::fromUtf8( argv[4] );
-    QString encoding = "UTF-8";
+    QString encoding = QStringLiteral( "UTF-8" );
     if ( argc == 6 )
     {
       encoding = argv[5];
@@ -381,12 +385,12 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     if ( provider.size() >= 1 && provider[0] == '\'' )
     {
       // trim and undouble single quotes
-      provider = provider.mid( 1, provider.size() - 2 ).replace( "''", "'" );
+      provider = provider.mid( 1, provider.size() - 2 ).replace( QLatin1String( "''" ), QLatin1String( "'" ) );
     }
     if ( source.size() >= 1 && source[0] == '\'' )
     {
       // trim and undouble single quotes
-      source = source.mid( 1, source.size() - 2 ).replace( "''", "'" );
+      source = source.mid( 1, source.size() - 2 ).replace( QLatin1String( "''" ), QLatin1String( "'" ) );
     }
     try
     {
@@ -510,23 +514,23 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
       switch ( indexInfo->aConstraint[i].op )
       {
         case SQLITE_INDEX_CONSTRAINT_EQ:
-          expr += " = ";
+          expr += QLatin1String( " = " );
           break;
         case SQLITE_INDEX_CONSTRAINT_GT:
-          expr += " > ";
+          expr += QLatin1String( " > " );
           break;
         case SQLITE_INDEX_CONSTRAINT_LE:
-          expr += " <= ";
+          expr += QLatin1String( " <= " );
           break;
         case SQLITE_INDEX_CONSTRAINT_LT:
-          expr += " < ";
+          expr += QLatin1String( " < " );
           break;
         case SQLITE_INDEX_CONSTRAINT_GE:
-          expr += " >= ";
+          expr += QLatin1String( " >= " );
           break;
 #ifdef SQLITE_INDEX_CONSTRAINT_LIKE
         case SQLITE_INDEX_CONSTRAINT_LIKE:
-          expr += " LIKE ";
+          expr += QLatin1String( " LIKE " );
           break;
 #endif
         default:
@@ -617,11 +621,11 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
         int n = sqlite3_value_bytes( argv[0] );
         const char* t = reinterpret_cast<const char*>( sqlite3_value_text( argv[0] ) );
         QString str = QString::fromUtf8( t, n );
-        expr += "'" + str.replace( "'", "''" ) + "'";
+        expr += "'" + str.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) + "'";
         break;
       }
       default:
-        expr = "";
+        expr = QLatin1String( "" );
     }
     if ( !expr.isEmpty() )
     {
@@ -775,7 +779,7 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
     };
   }
 
-  QgsExpression parentExpr( "" );
+  QgsExpression parentExpr( QLatin1String( "" ) );
   QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr );
   if ( parentExpr.hasEvalError() )
   {
@@ -841,13 +845,13 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
 void registerQgisFunctions( sqlite3* db )
 {
   QStringList excludedFunctions;
-  excludedFunctions << "min" << "max" << "coalesce" << "get_feature" << "getFeature" << "attribute";
+  excludedFunctions << QStringLiteral( "min" ) << QStringLiteral( "max" ) << QStringLiteral( "coalesce" ) << QStringLiteral( "get_feature" ) << QStringLiteral( "getFeature" ) << QStringLiteral( "attribute" );
   QStringList reservedFunctions;
-  reservedFunctions << "left" << "right" << "union";
+  reservedFunctions << QStringLiteral( "left" ) << QStringLiteral( "right" ) << QStringLiteral( "union" );
   // register QGIS expression functions
   Q_FOREACH ( QgsExpression::Function* foo, QgsExpression::Functions() )
   {
-    if ( foo->usesGeometry() || foo->lazyEval() )
+    if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {
       // there is no "current" feature here, so calling functions that access "the" geometry does not make sense
       // also, we can't pass Node values for lazy evaluations
@@ -864,7 +868,7 @@ void registerQgisFunctions( sqlite3* db )
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
         name = "_" + name;
-      if ( name.startsWith( "$" ) )
+      if ( name.startsWith( QLatin1String( "$" ) ) )
         continue;
 
       // register the function and pass the pointer to the Function* as user data

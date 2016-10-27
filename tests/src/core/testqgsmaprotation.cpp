@@ -46,7 +46,7 @@ class TestQgsMapRotation : public QObject
         , mLinesLayer( 0 )
         , mMapSettings( 0 )
     {
-      mTestDataDir = QString( TEST_DATA_DIR ) + '/';
+      mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
 
     ~TestQgsMapRotation();
@@ -96,14 +96,14 @@ void TestQgsMapRotation::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                     myPointFileInfo.completeBaseName(), "ogr" );
+                                     myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mapLayers << mPointsLayer;
 
   //create a line layer that will be used in all tests...
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
-                                    myLinesFileInfo.completeBaseName(), "ogr" );
+                                    myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mapLayers << mLinesLayer;
 
   // Register all layers with the registry
@@ -114,9 +114,9 @@ void TestQgsMapRotation::initTestCase()
   // re-set it to the size of the expected image
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
 
-  mReport += "<h1>Map Rotation Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Map Rotation Tests</h1>\n" );
 
-  QgsFontUtils::loadStandardTestFonts( QStringList() << "Bold" );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 TestQgsMapRotation::~TestQgsMapRotation()
@@ -210,8 +210,10 @@ void TestQgsMapRotation::linesLayer()
   //use test font
   QgsPalLayerSettings palSettings;
   palSettings.readFromLayer( mLinesLayer );
-  palSettings.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
-  palSettings.textFont.setPointSizeF( 16 );
+  QgsTextFormat format = palSettings.format();
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 16 );
+  palSettings.setFormat( format );
   palSettings.writeToLayer( mLinesLayer );
 
   QVERIFY( success );
@@ -228,7 +230,7 @@ bool TestQgsMapRotation::render( const QString& theTestType )
   mReport += "<h2>" + theTestType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( "maprotation" );
+  checker.setControlPathPrefix( QStringLiteral( "maprotation" ) );
   checker.setControlName( "expected_" + theTestType );
   checker.setMapSettings( *mMapSettings );
   bool result = checker.runTest( theTestType );

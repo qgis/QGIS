@@ -31,6 +31,7 @@ class QgsMapHitTest;
 class QgsMapLayer;
 class QgsMapSettings;
 class QgsExpression;
+class QgsRenderContext;
 
 /** \ingroup core
  * The QgsLayerTreeModel class is model implementation for Qt item views framework.
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       ShowLegend                 = 0x0001,  //!< Add legend nodes for layer nodes
       ShowRasterPreviewIcon      = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
       ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
-      DeferredLegendInvalidation = 0x0008,  //!< defer legend model invalidation
+      DeferredLegendInvalidation = 0x0008,  //!< Defer legend model invalidation
       UseEmbeddedWidgets         = 0x0010,  //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16
 
       // behavioral flags
@@ -90,7 +91,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Set OR-ed combination of model flags
-    void setFlags( const QgsLayerTreeModel::Flags& f );
+    void setFlags( QgsLayerTreeModel::Flags f );
     //! Enable or disable a model flag
     void setFlag( Flag f, bool on = true );
     //! Return OR-ed combination of model flags
@@ -191,7 +192,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
     //! If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
     //! @note added in 2.6
-    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale );
+    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const;
 
     //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! @note added in 2.10
@@ -258,7 +259,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QVariant legendNodeData( QgsLayerTreeModelLegendNode* node, int role ) const;
     Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode* node ) const;
     bool legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
-    /** Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon). */
+    //! Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon).
     QgsLayerTreeModelLegendNode* legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
     QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
     void legendCleanup();
@@ -328,6 +329,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     int mLegendMapViewDpi;
     double mLegendMapViewScale;
     QTimer mDeferLegendInvalidationTimer;
+
+  private:
+
+    //! Returns a temporary render context
+    QgsRenderContext* createTemporaryRenderContext() const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

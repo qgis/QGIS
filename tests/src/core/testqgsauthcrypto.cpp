@@ -48,10 +48,10 @@ class TestQgsAuthCrypto: public QObject
     static const QString smCrypt;
 };
 
-const QString TestQgsAuthCrypto::smPass = "password";
-const QString TestQgsAuthCrypto::smSalt = "f48b706946df69d4d2b45bd0603c95af";
-const QString TestQgsAuthCrypto::smHash = "0be18c3f1bf872194d6042f5f4a0c116";
-const QString TestQgsAuthCrypto::smCiv = QString(
+const QString TestQgsAuthCrypto::smPass = QStringLiteral( "password" );
+const QString TestQgsAuthCrypto::smSalt = QStringLiteral( "f48b706946df69d4d2b45bd0603c95af" );
+const QString TestQgsAuthCrypto::smHash = QStringLiteral( "0be18c3f1bf872194d6042f5f4a0c116" );
+const QString TestQgsAuthCrypto::smCiv = QStringLiteral(
       "1c18c442b6723ee465bcbb60568412179fcc3313eb0187b4546ca96d869fbdc1"
     );
 const QString TestQgsAuthCrypto::smText = QString(

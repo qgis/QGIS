@@ -29,7 +29,7 @@ if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
 
-set BUILDDIR=%CD%\build-nightly-%ARCH%
+set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 
 if "%OSGEO4W_ROOT%"=="" (
 	if "%ARCH%"=="x86" (

@@ -63,6 +63,9 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     // ok is set to true if ok or false on error
     double value( double x, double y, bool *ok );
   private:
+    QgsGrassRasterValue( const QgsGrassRasterValue& other );
+    QgsGrassRasterValue& operator=( const QgsGrassRasterValue& other );
+
     void start();
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
@@ -209,10 +212,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     void thaw();
 
   private:
-    void setLastError( QString error );
+    void setLastError( const QString &error );
     void clearLastError();
     // append error if it is not empty
-    void appendIfError( QString error );
+    void appendIfError( const QString &error );
     /**
      * Flag indicating if the layer data source is a valid layer
      */

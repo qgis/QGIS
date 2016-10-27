@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRasterBlock
      */
     bool isValid() const { return mValid; }
 
-    /** \brief Mark block as valid or invalid */
+    //! \brief Mark block as valid or invalid
     void setValid( bool valid ) { mValid = valid; }
 
     /** Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
@@ -130,16 +130,16 @@ class CORE_EXPORT QgsRasterBlock
       return typeSize( mDataType );
     }
 
-    /** Returns true if data type is numeric */
+    //! Returns true if data type is numeric
     static bool typeIsNumeric( Qgis::DataType type );
 
-    /** Returns true if data type is color */
+    //! Returns true if data type is color
     static bool typeIsColor( Qgis::DataType type );
 
-    /** Returns data type */
+    //! Returns data type
     Qgis::DataType dataType() const { return mDataType; }
 
-    /** For given data type returns wider type and sets no data value */
+    //! For given data type returns wider type and sets no data value
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 
     /** True if the block has no data value.
@@ -322,10 +322,10 @@ class CORE_EXPORT QgsRasterBlock
      * @@note added in 2.3 */
     void applyScaleOffset( double scale, double offset );
 
-    /** \brief Get error */
+    //! \brief Get error
     QgsError error() const { return mError; }
 
-    /** \brief Set error */
+    //! \brief Set error
     void setError( const QgsError & theError ) { mError = theError;}
 
     QString toString() const;

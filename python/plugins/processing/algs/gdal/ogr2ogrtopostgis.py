@@ -94,15 +94,15 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterCrs(self.S_SRS,
                                        self.tr('Override source CRS'), '', optional=True))
         self.addParameter(ParameterString(self.HOST,
-                                          self.tr('Host'), 'localhost', optional=False))
+                                          self.tr('Host'), 'localhost', optional=True))
         self.addParameter(ParameterString(self.PORT,
-                                          self.tr('Port'), '5432', optional=False))
+                                          self.tr('Port'), '5432', optional=True))
         self.addParameter(ParameterString(self.USER,
-                                          self.tr('Username'), '', optional=False))
+                                          self.tr('Username'), '', optional=True))
         self.addParameter(ParameterString(self.DBNAME,
-                                          self.tr('Database name'), '', optional=False))
+                                          self.tr('Database name'), '', optional=True))
         self.addParameter(ParameterString(self.PASSWORD,
-                                          self.tr('Password'), '', optional=False))
+                                          self.tr('Password'), '', optional=True))
         self.addParameter(ParameterString(self.SCHEMA,
                                           self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
@@ -154,6 +154,28 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
+    def getConnectionString(self):
+        host = self.getParameterValue(self.HOST)
+        port = self.getParameterValue(self.PORT)
+        user = self.getParameterValue(self.USER)
+        dbname = self.getParameterValue(self.DBNAME)
+        password = self.getParameterValue(self.PASSWORD)
+        schema = self.getParameterValue(self.SCHEMA)
+        arguments = []
+        if host:
+            arguments.append('host=' + host)
+        if port:
+            arguments.append('port=' + str(port))
+        if dbname:
+            arguments.append('dbname=' + dbname)
+        if password:
+            arguments.append('password=' + password)
+        if schema:
+            arguments.append('active_schema=' + schema)
+        if user:
+            arguments.append('user=' + user)
+        return GdalUtils.escapeAndJoin(arguments)
+
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
@@ -161,12 +183,6 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         ssrs = str(self.getParameterValue(self.S_SRS))
         tsrs = str(self.getParameterValue(self.T_SRS))
         asrs = str(self.getParameterValue(self.A_SRS))
-        host = str(self.getParameterValue(self.HOST))
-        port = str(self.getParameterValue(self.PORT))
-        user = str(self.getParameterValue(self.USER))
-        dbname = str(self.getParameterValue(self.DBNAME))
-        password = str(self.getParameterValue(self.PASSWORD))
-        schema = str(self.getParameterValue(self.SCHEMA))
         table = str(self.getParameterValue(self.TABLE))
         pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
@@ -203,17 +219,9 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
             arguments.append('"' + shapeEncoding + '"')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=' + host)
-        arguments.append('port=' + port)
-        if len(dbname) > 0:
-            arguments.append('dbname=' + dbname)
-        if len(password) > 0:
-            arguments.append('password=' + password)
-        if len(schema) > 0:
-            arguments.append('active_schema=' + schema)
-        else:
-            arguments.append('active_schema=public')
-        arguments.append('user=' + user + '"')
+        arguments.append('PG:"')
+        arguments.append(self.getConnectionString())
+        arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))

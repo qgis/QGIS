@@ -14,7 +14,7 @@ Build-Depends:
  libfcgi-dev,
  libgdal-dev (>= 1.11),
 #trusty# libgsl0-dev,
-#sid stretch xenial# libgsl-dev,
+#sid stretch xenial yakkety# libgsl-dev,
  libgeos-dev (>= 3.0.0),
  libpq-dev,
  libproj-dev,
@@ -42,9 +42,9 @@ Build-Depends:
 #oracle# oracle-instantclient12.1-devel,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch xenial#Standards-Version: 3.9.7
+#sid stretch xenial yakkety#Standards-Version: 3.9.7
 #trusty#Standards-Version: 3.8.4
-#trusty xenial#XS-Python-Version: current
+#trusty xenial yakkety#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -203,7 +203,7 @@ Depends:
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
 #trusty# libgsl0-dev,
-#sid stretch xenial# libgsl-dev,
+#sid stretch xenial yakkety# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqgis-app{QGIS_ABI} (= ${binary:Version}),

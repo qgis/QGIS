@@ -82,7 +82,7 @@ void TestQgsComposition::initTestCase()
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposition->setNumPages( 3 );
 
-  mReport = "<h1>Composition Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composition Tests</h1>\n" );
 
 }
 
@@ -213,21 +213,21 @@ void TestQgsComposition::shouldExportPage()
   htmlItem->addFrame( frame2 );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
   //short content, so frame 2 should be empty
-  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
   htmlItem->loadHtml();
 
   QCOMPARE( mComposition->shouldExportPage( 1 ), true );
   QCOMPARE( mComposition->shouldExportPage( 2 ), false );
 
   //long content, so frame 2 should not be empty
-  htmlItem->setHtml( QString( "<p style=\"height: 10000px\"><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 10000px\"><i>Test manual <b>html</b></i></p>" ) );
   htmlItem->loadHtml();
 
   QCOMPARE( mComposition->shouldExportPage( 1 ), true );
   QCOMPARE( mComposition->shouldExportPage( 2 ), true );
 
   //...and back again...
-  htmlItem->setHtml( QString( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
   htmlItem->loadHtml();
 
   QCOMPARE( mComposition->shouldExportPage( 1 ), true );
@@ -273,20 +273,20 @@ void TestQgsComposition::customProperties()
 
   QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
   QVERIFY( composition->customProperties().isEmpty() );
-  composition->setCustomProperty( "testprop", "testval" );
+  composition->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   QCOMPARE( composition->customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
   QCOMPARE( composition->customProperties().length(), 1 );
   QCOMPARE( composition->customProperties().at( 0 ), QString( "testprop" ) );
 
   //test no crash
-  composition->removeCustomProperty( "badprop" );
+  composition->removeCustomProperty( QStringLiteral( "badprop" ) );
 
-  composition->removeCustomProperty( "testprop" );
+  composition->removeCustomProperty( QStringLiteral( "testprop" ) );
   QVERIFY( composition->customProperties().isEmpty() );
   QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
 
-  composition->setCustomProperty( "testprop1", "testval1" );
-  composition->setCustomProperty( "testprop2", "testval2" );
+  composition->setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
+  composition->setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
   QStringList keys = composition->customProperties();
   QCOMPARE( keys.length(), 2 );
   QVERIFY( keys.contains( "testprop1" ) );
@@ -298,20 +298,20 @@ void TestQgsComposition::customProperties()
 void TestQgsComposition::writeRetrieveCustomProperties()
 {
   QgsComposition* composition = new QgsComposition( *mMapSettings );
-  composition->setCustomProperty( "testprop", "testval" );
-  composition->setCustomProperty( "testprop2", 5 );
+  composition->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
+  composition->setCustomProperty( QStringLiteral( "testprop2" ), 5 );
 
   //test writing composition with custom properties
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( "qgis" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   QVERIFY( composition->writeXml( rootNode, doc ) );
 
   //check if composition node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( "Composition" );
+  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "Composition" ) );
   QCOMPARE( evalNodeList.count(), 1 );
   QDomElement compositionElem = evalNodeList.at( 0 ).toElement();
 
@@ -420,9 +420,9 @@ void TestQgsComposition::resizeToContents()
   //resize to contents, no margin
   composition->resizePageToContents();
 
-  QgsCompositionChecker checker( "composition_bounds", composition );
+  QgsCompositionChecker checker( QStringLiteral( "composition_bounds" ), composition );
   checker.setSize( QSize( 774, 641 ) );
-  checker.setControlPathPrefix( "composition" );
+  checker.setControlPathPrefix( QStringLiteral( "composition" ) );
   QVERIFY( checker.testComposition( mReport ) );
 
   delete composition;
@@ -461,9 +461,9 @@ void TestQgsComposition::resizeToContentsMargin()
   //resize to contents, with margin
   composition->resizePageToContents( 30, 20, 50, 40 );
 
-  QgsCompositionChecker checker( "composition_bounds_margin", composition );
+  QgsCompositionChecker checker( QStringLiteral( "composition_bounds_margin" ), composition );
   checker.setSize( QSize( 1000, 942 ) );
-  checker.setControlPathPrefix( "composition" );
+  checker.setControlPathPrefix( QStringLiteral( "composition" ) );
   QVERIFY( checker.testComposition( mReport ) );
 
   delete composition;
@@ -506,9 +506,9 @@ void TestQgsComposition::resizeToContentsMultiPage()
 
   QCOMPARE( composition->numPages(), 1 );
 
-  QgsCompositionChecker checker( "composition_bounds_multipage", composition );
+  QgsCompositionChecker checker( QStringLiteral( "composition_bounds_multipage" ), composition );
   checker.setSize( QSize( 394, 996 ) );
-  checker.setControlPathPrefix( "composition" );
+  checker.setControlPathPrefix( QStringLiteral( "composition" ) );
   QVERIFY( checker.testComposition( mReport ) );
 
   delete composition;
@@ -590,11 +590,11 @@ void TestQgsComposition::variablesEdited()
   QgsComposition c( ms );
   QSignalSpy spyVariablesChanged( &c, SIGNAL( variablesChanged() ) );
 
-  c.setCustomProperty( "not a variable", "1" );
+  c.setCustomProperty( QStringLiteral( "not a variable" ), "1" );
   QVERIFY( spyVariablesChanged.count() == 0 );
-  c.setCustomProperty( "variableNames", "1" );
+  c.setCustomProperty( QStringLiteral( "variableNames" ), "1" );
   QVERIFY( spyVariablesChanged.count() == 1 );
-  c.setCustomProperty( "variableValues", "1" );
+  c.setCustomProperty( QStringLiteral( "variableValues" ), "1" );
   QVERIFY( spyVariablesChanged.count() == 2 );
 }
 

@@ -41,7 +41,6 @@ class SetVectorStyle(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        # self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
@@ -61,5 +60,4 @@ class SetVectorStyle(GeoAlgorithm):
         else:
             layer.loadNamedStyle(style)
             iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerLegend(layer)
             layer.triggerRepaint()

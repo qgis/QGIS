@@ -43,7 +43,7 @@ class QgsRequestHandler
     // virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
 
     /** Allow plugins to return a QgsMapServiceException*/
-    virtual void setServiceException( QgsMapServiceException ex /Transfer/ ) = 0;
+    virtual void setServiceException( const QgsMapServiceException& ex /Transfer/ ) = 0;
 
     //! @note not available in Python bindings
     // virtual void setXmlResponse( const QDomDocument& doc ) = 0;

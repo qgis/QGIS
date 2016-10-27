@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRenderChecker
 
     void setControlPathSuffix( const QString& theName );
 
-    /** Get an md5 hash that uniquely identifies an image */
+    //! Get an md5 hash that uniquely identifies an image
     QString imageToHash( const QString& theImageFile );
 
     void setRenderedImage( const QString& theImageFileName ) { mRenderedImageFile = theImageFileName; }
@@ -202,8 +202,8 @@ inline bool compareWkt( const QString& a, const QString& b, double tolerance = 0
   QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
-  a0.replace( re, "#" );
-  b0.replace( re, "#" );
+  a0.replace( re, QStringLiteral( "#" ) );
+  b0.replace( re, QStringLiteral( "#" ) );
 
   QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0, b0 ) );
 

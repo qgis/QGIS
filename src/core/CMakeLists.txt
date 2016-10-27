@@ -85,6 +85,7 @@ SET(QGIS_CORE_SRCS
   qgsaggregatecalculator.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
+  qgsbearingutils.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -177,7 +178,9 @@ SET(QGIS_CORE_SRCS
   qgspoint.cpp
   qgspointlocator.cpp
   qgsproject.cpp
+  qgsprojectbadlayerhandler.cpp
   qgsprojectfiletransform.cpp
+  qgssnappingconfig.cpp
   qgsprojectproperty.cpp
   qgsprojectversion.cpp
   qgsprovidermetadata.cpp
@@ -206,6 +209,7 @@ SET(QGIS_CORE_SRCS
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstextlabelfeature.cpp
+  qgstextrenderer.cpp
   qgstolerance.cpp
   qgstracer.cpp
   qgstransaction.cpp
@@ -477,6 +481,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
+  qgspoint.h
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h
@@ -485,6 +490,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgstracer.h
   qgstransaction.h
   qgstransactiongroup.h
+  qgsunittypes.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorlayereditbuffer.h
@@ -596,10 +602,12 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgsaction.h
+  qgsactionmanager.h
   qgsaggregatecalculator.h
   qgsannotation.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
+  qgsbearingutils.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
@@ -671,11 +679,11 @@ SET(QGIS_CORE_HDRS
   qgspainting.h
   qgspallabeling.h
   qgspluginlayerregistry.h
-  qgspoint.h
   qgspointlocator.h
-  qgsproject.h
+  qgsprojectbadlayerhandler.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
+  qgssnappingconfig.h
   qgsprojectversion.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
@@ -690,6 +698,7 @@ SET(QGIS_CORE_HDRS
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h
+  qgssnappingconfig.h
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h
@@ -698,9 +707,10 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstestutils.h
   qgstextlabelfeature.h
+  qgstextrenderer.h
+  qgstextrenderer_p.h
   qgstolerance.h
   qgstracer.h
-  qgsunittypes.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h

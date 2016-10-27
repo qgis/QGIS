@@ -82,8 +82,31 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString& str );
 
+    /** Encodes a QPointF to a string.
+     * @see decodePoint()
+     * @see encodeSize()
+     */
     static QString encodePoint( QPointF point );
-    static QPointF decodePoint( const QString& str );
+
+    /** Decodes a QSizeF from a string.
+     * @see encodePoint()
+     * @see decodeSize()
+     */
+    static QPointF decodePoint( const QString& string );
+
+    /** Encodes a QSizeF to a string.
+     * @see decodeSize()
+     * @see encodePoint()
+     * @note added in QGIS 3.0
+     */
+    static QString encodeSize( QSizeF size );
+
+    /** Decodes a QSizeF from a string.
+     * @see encodeSize()
+     * @see decodePoint()
+     * @note added in QGIS 3.0
+     */
+    static QSizeF decodeSize( const QString& string );
 
     static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
     static QgsMapUnitScale decodeMapUnitScale( const QString& str );
@@ -157,7 +180,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! @note customContext parameter added in 2.6
     static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = nullptr );
 
-    /** Returns the maximum estimated bleed for the symbol */
+    //! Returns the maximum estimated bleed for the symbol
     static double estimateMaxSymbolBleed( QgsSymbol* symbol );
 
     /** Attempts to load a symbol from a DOM element
@@ -258,7 +281,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString& label,
                                 const QFont &font, const QColor& color = QColor(), double size = -1 );
 
-    /** Create ogr feature style string for pen */
+    //! Create ogr feature style string for pen
     static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
@@ -448,23 +471,33 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param unit units for specified size
      * @param scale map unit scale
      * @note added in QGIS 2.16
+     * @see convertFromMapUnits()
      * @see convertToPainterUnits()
      */
     static double convertToMapUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    /** Returns scale factor painter units -> pixel dimensions*/
+    /** Converts a size from map units to the specied units.
+     * @param context render context
+     * @param sizeInMapUnits size (in map units) to convert
+     * @param outputUnit output units
+     * @note added in QGIS 3.0
+     * @see convertToMapUnits()
+     */
+    static double convertFromMapUnits( const QgsRenderContext& context, double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit );
+
+    //! Returns scale factor painter units -> pixel dimensions
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    /** Returns scale factor painter units -> map units*/
+    //! Returns scale factor painter units -> map units
     static double mapUnitScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    /** Creates a render context for a pixel based device*/
+    //! Creates a render context for a pixel based device
     static QgsRenderContext createRenderContext( QPainter* p );
 
-    /** Multiplies opacity of image pixel values with a (global) transparency value*/
+    //! Multiplies opacity of image pixel values with a (global) transparency value
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
-    /** Blurs an image in place, e.g. creating Qt-independent drop shadows */
+    //! Blurs an image in place, e.g. creating Qt-independent drop shadows
     static void blurImageInPlace( QImage& image, QRect rect, int radius, bool alphaOnly );
 
     /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
@@ -472,9 +505,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static void premultiplyColor( QColor& rgb, int alpha );
 
-    /** Sorts the passed list in requested order*/
+    //! Sorts the passed list in requested order
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
-    /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
     static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );
 
     //! Return a list of all available svg files
@@ -534,7 +567,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QPointF rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point

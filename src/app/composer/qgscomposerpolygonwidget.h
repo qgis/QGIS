@@ -41,8 +41,11 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
   private slots:
     void on_mPolygonStyleButton_clicked();
 
-    /** Sets the GUI elements to the currentValues of mComposerShape*/
+    //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
+
+    void updateStyleFromWidget();
+    void cleanUpStyleSelector( QgsPanelWidget* container );
 };
 
 #endif // QGSCOMPOSERPOLYGONWIDGET_H

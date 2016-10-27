@@ -602,5 +602,5 @@ QString QgsRasterInterface::capabilitiesString() const
 
   QgsDebugMsgLevel( "Capability: " + abilitiesList.join( ", " ), 4 );
 
-  return abilitiesList.join( ", " );
+  return abilitiesList.join( QStringLiteral( ", " ) );
 }

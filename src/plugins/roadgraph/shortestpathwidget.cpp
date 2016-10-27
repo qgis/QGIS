@@ -58,7 +58,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
     , mPlugin( thePlugin )
 {
   setWindowTitle( tr( "Shortest path" ) );
-  setObjectName( "ShortestPathDock" );
+  setObjectName( QStringLiteral( "ShortestPathDock" ) );
   setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   QWidget *myWidget = new QWidget( this );
@@ -192,7 +192,7 @@ void RgShortestPathWidget::onSelectFrontPoint()
 void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mFrontPointMapTool );
-  mFrontPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+  mFrontPointLineEdit->setText( QStringLiteral( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
                                 QString::number( pt.y(), 'f' ) ) );
   mFrontPoint = pt;
 
@@ -216,7 +216,7 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mPlugin->iface()->mapCanvas()->unsetMapTool( mBackPointMapTool );
 
   mBackPoint = pt;
-  mBackPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+  mBackPointLineEdit->setText( QStringLiteral( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
                                QString::number( pt.y(), 'f' ) ) );
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;

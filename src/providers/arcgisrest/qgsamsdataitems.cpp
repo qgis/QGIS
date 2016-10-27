@@ -25,7 +25,7 @@ QgsAmsRootItem::QgsAmsRootItem( QgsDataItem* parent, QString name, QString path 
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconAms.svg";
+  mIconName = QStringLiteral( "mIconAms.svg" );
   populate();
 }
 
@@ -33,11 +33,11 @@ QVector<QgsDataItem*> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
+  Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
   {
-    QgsOwsConnection connection( "ArcGisMapServer", connName );
+    QgsOwsConnection connection( QStringLiteral( "ArcGisMapServer" ), connName );
     QString path = "ams:/" + connName;
-    connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( "url" ) ) );
+    connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( QStringLiteral( "url" ) ) ) );
   }
   return connections;
 }
@@ -79,7 +79,7 @@ QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem* parent, QString name, Q
     : QgsDataCollectionItem( parent, name, path )
     , mUrl( url )
 {
-  mIconName = "mIconAms.png";
+  mIconName = QStringLiteral( "mIconAms.png" );
 }
 
 QVector<QgsDataItem*> QgsAmsConnectionItem::createChildren()
@@ -92,8 +92,8 @@ QVector<QgsDataItem*> QgsAmsConnectionItem::createChildren()
     return layers;
   }
 
-  QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData["spatialReference"].toMap() ).authid();
-  QString format = "jpg";
+  QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData[QStringLiteral( "spatialReference" )].toMap() ).authid();
+  QString format = QStringLiteral( "jpg" );
   bool found = false;
   QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
   foreach ( const QString& encoding, serviceData["supportedImageFormatTypes"].toString().split( "," ) )
@@ -114,8 +114,8 @@ QVector<QgsDataItem*> QgsAmsConnectionItem::createChildren()
   foreach ( const QVariant& layerInfo, serviceData["layers"].toList() )
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
-    QString id = layerInfoMap["id"].toString();
-    QgsAmsLayerItem* layer = new QgsAmsLayerItem( this, mName, mUrl, id, layerInfoMap["name"].toString(), authid, format );
+    QString id = layerInfoMap[QStringLiteral( "id" )].toString();
+    QgsAmsLayerItem* layer = new QgsAmsLayerItem( this, mName, mUrl, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format );
     layers.append( layer );
   }
 
@@ -145,7 +145,7 @@ QList<QAction*> QgsAmsConnectionItem::actions()
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-afs/", mName );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-afs/" ), mName );
   nc.setWindowTitle( tr( "Modify AMS connection" ) );
 
   if ( nc.exec() )
@@ -156,16 +156,16 @@ void QgsAmsConnectionItem::editConnection()
 
 void QgsAmsConnectionItem::deleteConnection()
 {
-  QgsOwsConnection::deleteConnection( "ArcGisMapServer", mName );
+  QgsOwsConnection::deleteConnection( QStringLiteral( "ArcGisMapServer" ), mName );
   mParent->refresh();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& id, const QString& title, const QString& authid, const QString& format )
-    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, "arcgismapserver" )
+    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
 {
-  mUri = QString( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid ).arg( format ).arg( id ).arg( url );
+  mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, url );
   setState( Populated );
-  mIconName = "mIconAms.svg";
+  mIconName = QStringLiteral( "mIconAms.svg" );
 }

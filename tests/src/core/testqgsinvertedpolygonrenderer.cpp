@@ -89,7 +89,7 @@ void TestQgsInvertedPolygon::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys_overlapping.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
@@ -98,7 +98,7 @@ void TestQgsInvertedPolygon::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Inverted Polygon Renderer Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
 }
 
 void TestQgsInvertedPolygon::cleanupTestCase()
@@ -117,14 +117,14 @@ void TestQgsInvertedPolygon::cleanupTestCase()
 
 void TestQgsInvertedPolygon::singleSubRenderer()
 {
-  mReport += "<h2>Inverted polygon renderer, single sub renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Inverted polygon renderer, single sub renderer test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_single" ) );
 }
 
 void TestQgsInvertedPolygon::graduatedSubRenderer()
 {
-  mReport += "<h2>Inverted polygon renderer, graduated sub renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Inverted polygon renderer, graduated sub renderer test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_graduated.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_graduated" ) );
 }
@@ -132,15 +132,15 @@ void TestQgsInvertedPolygon::graduatedSubRenderer()
 void TestQgsInvertedPolygon::preprocess()
 {
   // FIXME will have to find some overlapping polygons
-  mReport += "<h2>Inverted polygon renderer, preprocessing test</h2>\n";
+  mReport += QLatin1String( "<h2>Inverted polygon renderer, preprocessing test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
 
 void TestQgsInvertedPolygon::projectionTest()
 {
-  mReport += "<h2>Inverted polygon renderer, projection test</h2>\n";
-  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:2154" ) );
+  mReport += QLatin1String( "<h2>Inverted polygon renderer, projection test</h2>\n" );
+  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ) );
   mMapSettings.setCrsTransformEnabled( true );
   QgsRectangle extent( QgsPoint( -8639421, 8382691 ), QgsPoint( -3969110, 12570905 ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
@@ -203,7 +203,7 @@ bool TestQgsInvertedPolygon::imageCheck( const QString& theTestType, const QgsRe
   }
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_invertedpolygon" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_invertedpolygon" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

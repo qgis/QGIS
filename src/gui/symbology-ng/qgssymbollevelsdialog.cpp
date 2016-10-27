@@ -35,7 +35,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, b
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/symbolLevelsDlg/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/symbolLevelsDlg/geometry" ) ).toByteArray() );
 
   tableLevels->setItemDelegate( new SpinBoxDelegate( this ) );
 
@@ -88,7 +88,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, b
 QgsSymbolLevelsDialog::~QgsSymbolLevelsDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/symbolLevelsDlg/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/symbolLevelsDlg/geometry" ), saveGeometry() );
 }
 
 void QgsSymbolLevelsDialog::populateTable()

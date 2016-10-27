@@ -25,8 +25,8 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
     , mSectionLimit( 0 )
 {
   setupUi( this );
-  setWindowTitle( "Load style from database" );
-  mSelectedStyleId = "";
+  setWindowTitle( QStringLiteral( "Load style from database" ) );
+  mSelectedStyleId = QLatin1String( "" );
 
   mLoadButton->setDisabled( true );
   mRelatedTable->setEditTriggers( QTableWidget::NoEditTriggers );
@@ -51,14 +51,14 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   setTabOrder( mCancelButton, mLoadButton );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/loadStyleFromDb/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
 
 }
 
 QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/loadStyleFromDb/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ), saveGeometry() );
 }
 
 void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit )
@@ -66,8 +66,8 @@ void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QS
   mSectionLimit = sectionLimit;
   int relatedTableNOfCols = sectionLimit > 0 ? 2 : 1;
   int othersTableNOfCols = ids.count() - sectionLimit > 0 ? 2 : 1;
-  QString twoColsHeader( "Name;Description" );
-  QString oneColsHeader( "No styles found in the database" );
+  QString twoColsHeader( QStringLiteral( "Name;Description" ) );
+  QString oneColsHeader( QStringLiteral( "No styles found in the database" ) );
   QString relatedTableHeader = relatedTableNOfCols == 1 ? oneColsHeader : twoColsHeader;
   QString othersTableHeader = othersTableNOfCols == 1 ? oneColsHeader : twoColsHeader;
 
@@ -82,18 +82,18 @@ void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QS
 
   for ( int i = 0; i < sectionLimit; i++ )
   {
-    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, "" ) );
+    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QLatin1String( "" ) ) );
     item->setData( Qt::UserRole, ids[i] );
     mRelatedTable->setItem( i, 0, item );
-    mRelatedTable->setItem( i, 1, new QTableWidgetItem( descriptions.value( i, "" ) ) );
+    mRelatedTable->setItem( i, 1, new QTableWidgetItem( descriptions.value( i, QLatin1String( "" ) ) ) );
   }
   for ( int i = sectionLimit; i < ids.count(); i++ )
   {
     int j = i - sectionLimit;
-    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, "" ) );
+    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QLatin1String( "" ) ) );
     item->setData( Qt::UserRole, ids[i] );
     mOthersTable->setItem( j, 0, item );
-    mOthersTable->setItem( j, 1, new QTableWidgetItem( descriptions.value( i, "" ) ) );
+    mOthersTable->setItem( j, 1, new QTableWidgetItem( descriptions.value( i, QLatin1String( "" ) ) ) );
   }
 }
 

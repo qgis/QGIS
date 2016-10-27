@@ -36,7 +36,7 @@ class QgsRendererRange
      * @param firstRange set to true if the range is the first range, where the lower value uses a <= test
      * rather than a < test.
      */
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props, bool firstRange = false ) const;
 
   protected:
     // for cpy+swap idiom

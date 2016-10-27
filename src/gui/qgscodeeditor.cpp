@@ -30,7 +30,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool foldin
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
-    setWindowTitle( "Text Editor" );
+    setWindowTitle( QStringLiteral( "Text Editor" ) );
   }
   else
   {
@@ -121,10 +121,10 @@ void QgsCodeEditor::setMarginVisible( bool margin )
   mMargin = margin;
   if ( margin )
   {
-    QFont marginFont( "Courier", 10 );
+    QFont marginFont( QStringLiteral( "Courier" ), 10 );
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
-    setMarginWidth( 1, "00000" );
+    setMarginWidth( 1, QStringLiteral( "00000" ) );
     setMarginsForegroundColor( QColor( "#3E3EE3" ) );
     setMarginsBackgroundColor( QColor( "#f9f9f9" ) );
   }
@@ -175,8 +175,8 @@ bool QgsCodeEditor::isFixedPitch( const QFont& font )
 QFont QgsCodeEditor::getMonospaceFont()
 {
   QSettings settings;
-  QString loadFont = settings.value( "pythonConsole/fontfamilytextEditor", "Monospace" ).toString();
-  int fontSize = settings.value( "pythonConsole/fontsizeEditor", 10 ).toInt();
+  QString loadFont = settings.value( QStringLiteral( "pythonConsole/fontfamilytextEditor" ), "Monospace" ).toString();
+  int fontSize = settings.value( QStringLiteral( "pythonConsole/fontsizeEditor" ), 10 ).toInt();
 
   QFont font( loadFont );
   font.setFixedPitch( true );

@@ -93,14 +93,14 @@ QgsServer::~QgsServer()
 
 QString& QgsServer::serverName()
 {
-  static QString* name = new QString( "qgis_server" );
+  static QString* name = new QString( QStringLiteral( "qgis_server" ) );
   return *name;
 }
 
 
 QFileInfo QgsServer::defaultAdminSLD()
 {
-  return QFileInfo( "admin.sld" );
+  return QFileInfo( QStringLiteral( "admin.sld" ) );
 }
 
 
@@ -112,16 +112,16 @@ void QgsServer::setupNetworkAccessManager()
   QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
   QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
-  QString cacheDirectory = settings.value( "cache/directory" ).toString();
+  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsMessageLog::logMessage( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ), "Server", QgsMessageLog::INFO );
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
+  QgsMessageLog::logMessage( QStringLiteral( "setCacheDirectory: %1" ).arg( cacheDirectory ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "setMaximumCacheSize: %1" ).arg( cacheSize ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
-  QgsMessageLog::logMessage( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   nam->setCache( cache );
 }
 
@@ -162,11 +162,11 @@ QFileInfo QgsServer::defaultProjectFile()
   QDir currentDir;
   fprintf( FCGI_stderr, "current directory: %s\n", currentDir.absolutePath().toUtf8().constData() );
   QStringList nameFilterList;
-  nameFilterList << "*.qgs";
+  nameFilterList << QStringLiteral( "*.qgs" );
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
-    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( projectFiles.size() < 1 )
   {
@@ -190,7 +190,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
   QMap< QString, QString>::const_iterator pIt = parameterMap.constBegin();
   for ( ; pIt != parameterMap.constEnd(); ++pIt )
   {
-    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
 }
 
@@ -199,46 +199,46 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
  */
 void QgsServer::printRequestInfos()
 {
-  QgsMessageLog::logMessage( "********************new request***************", "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "********************new request***************" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   if ( getenv( "REMOTE_ADDR" ) )
   {
-    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_HOST" ) )
   {
-    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_HOST" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_USER" ) )
   {
-    QgsMessageLog::logMessage( "remote user: " + QString( getenv( "REMOTE_USER" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "remote user: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_IDENT" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "CONTENT_TYPE" ) )
   {
-    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "AUTH_TYPE" ) )
   {
-    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "HTTP_USER_AGENT" ) )
   {
-    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "HTTP_PROXY" ) )
   {
-    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "HTTPS_PROXY" ) )
   {
-    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   if ( getenv( "NO_PROXY" ) )
   {
-    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
 }
 
@@ -291,10 +291,10 @@ QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QStr
   }
   else
   {
-    QMap<QString, QString>::const_iterator paramIt = parameters.find( "MAP" );
+    QMap<QString, QString>::const_iterator paramIt = parameters.find( QStringLiteral( "MAP" ) );
     if ( paramIt == parameters.constEnd() )
     {
-      QgsMessageLog::logMessage( QString( "Using default configuration file path: %1" ).arg( defaultConfigPath ), "Server", QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
     }
     else
     {
@@ -329,7 +329,7 @@ bool QgsServer::init( )
   QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
   if ( !optionsPath.isEmpty() )
   {
-    QgsMessageLog::logMessage( "Options PATH: " + optionsPath, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Options PATH: " + optionsPath, QStringLiteral( "Server" ), QgsMessageLog::INFO );
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
   }
@@ -356,12 +356,12 @@ bool QgsServer::init( )
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDbFilePath(), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDbFilePath(), "Server", QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDbFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDbFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
 
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
@@ -376,7 +376,7 @@ bool QgsServer::init( )
   if ( projectFileInfo.exists() )
   {
     defaultConfigFilePath = projectFileInfo.absoluteFilePath();
-    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   else
   {
@@ -395,7 +395,7 @@ bool QgsServer::init( )
   sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
-  QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -405,18 +405,18 @@ bool QgsServer::init( )
     // Init plugins
     if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
     {
-      QgsMessageLog::logMessage( "No server python plugins are available", "Server", QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
     }
     else
     {
-      QgsMessageLog::logMessage( "Server python plugins loaded", "Server", QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
     }
   }
 #endif
 
   QgsEditorWidgetRegistry::initEditors();
   sInitialised = true;
-  QgsMessageLog::logMessage( "Server initialized", "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   return true;
 }
 
@@ -448,7 +448,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
    * to handleRequest without using os.environment
    */
   if ( ! queryString.isEmpty() )
-    putenv( "QUERY_STRING", queryString );
+    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
 
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
@@ -478,7 +478,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   }
   catch ( QgsMapServiceException& e )
   {
-    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), "Server", QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
     theRequestHandler->setServiceException( e );
   }
 
@@ -514,30 +514,30 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   sServerInterface->setConfigFilePath( configFilePath );
 #endif
   //Service parameter
-  QString serviceString = theRequestHandler->parameter( "SERVICE" );
+  QString serviceString = theRequestHandler->parameter( QStringLiteral( "SERVICE" ) );
 
   if ( serviceString.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    QString requestString = theRequestHandler->parameter( "REQUEST" );
-    if ( requestString == "GetMap" || requestString == "GetFeatureInfo" )
+    QString requestString = theRequestHandler->parameter( QStringLiteral( "REQUEST" ) );
+    if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
     {
-      serviceString = "WMS";
+      serviceString = QStringLiteral( "WMS" );
     }
   }
 
   //possibility for client to suggest a download filename
-  QString outputFileName = theRequestHandler->parameter( "FILE_NAME" );
+  QString outputFileName = theRequestHandler->parameter( QStringLiteral( "FILE_NAME" ) );
   if ( !outputFileName.isEmpty() )
   {
     theRequestHandler->setDefaultHeaders();
-    theRequestHandler->setHeader( "Content-Disposition", "attachment; filename=\"" + outputFileName + "\"" );
+    theRequestHandler->setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
   }
 
   // Enter core services main switch
   if ( !theRequestHandler->exceptionRaised() )
   {
-    if ( serviceString == "WCS" )
+    if ( serviceString == QLatin1String( "WCS" ) )
     {
       QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
                                  configFilePath
@@ -547,7 +547,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
       }
       else
       {
@@ -563,7 +563,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
         wcsServer.executeRequest();
       }
     }
-    else if ( serviceString == "WFS" )
+    else if ( serviceString == QLatin1String( "WFS" ) )
     {
       QgsWfsProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
                                  configFilePath
@@ -573,7 +573,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                                );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "Project file error" ), QStringLiteral( "Error reading the project file" ) ) );
       }
       else
       {
@@ -589,7 +589,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
         wfsServer.executeRequest();
       }
     }
-    else if ( serviceString == "WMS" )
+    else if ( serviceString == QLatin1String( "WMS" ) )
     {
       QgsWmsConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
                                 configFilePath
@@ -599,7 +599,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
                               );
       if ( !p )
       {
-        theRequestHandler->setServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
+        theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "WMS configuration error" ), QStringLiteral( "There was an error reading the project file or the SLD configuration" ) ) );
       }
       else
       {
@@ -619,7 +619,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
     }
     else
     {
-      theRequestHandler->setServiceException( QgsMapServiceException( "Service configuration error", "Service unknown or unsupported" ) );
+      theRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "Service configuration error" ), QStringLiteral( "Service unknown or unsupported" ) ) );
     } // end switch
   } // end if not exception raised
 
@@ -639,7 +639,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
   if ( logLevel < 1 )
   {
-    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
   // Returns the header and response bytestreams (to be used in Python bindings)
   return theRequestHandler->getResponse();
@@ -655,8 +655,8 @@ QPair<QByteArray, QByteArray> QgsServer::testQPair( QPair<QByteArray, QByteArray
 
 void QgsServer::saveEnvVars()
 {
-  saveEnvVar( "MAX_CACHE_LAYERS" );
-  saveEnvVar( "DEFAULT_DATUM_TRANSFORM" );
+  saveEnvVar( QStringLiteral( "MAX_CACHE_LAYERS" ) );
+  saveEnvVar( QStringLiteral( "DEFAULT_DATUM_TRANSFORM" ) );
 }
 
 void QgsServer::saveEnvVar( const QString& variableName )

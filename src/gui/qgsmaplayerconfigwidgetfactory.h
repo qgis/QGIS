@@ -31,13 +31,13 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
 
-    /** Constructor */
+    //! Constructor
     QgsMapLayerConfigWidgetFactory();
 
-    /** Constructor */
-    QgsMapLayerConfigWidgetFactory( QString title, QIcon icon );
+    //! Constructor
+    QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 
-    /** Destructor */
+    //! Destructor
     virtual ~QgsMapLayerConfigWidgetFactory();
 
     /**

@@ -36,14 +36,14 @@ extern "C"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
 
-const QString VIRTUAL_LAYER_KEY = "virtual";
-const QString VIRTUAL_LAYER_DESCRIPTION = "Virtual layer data provider";
+const QString VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
+const QString VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
 
-const QString VIRTUAL_LAYER_QUERY_VIEW = "_query";
+const QString VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral( "_query" );
 
 static QString quotedColumn( QString name )
 {
-  return "\"" + name.replace( "\"", "\"\"" ) + "\"";
+  return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
 #define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
@@ -149,7 +149,7 @@ bool QgsVirtualLayerProvider::openIt()
   }
 
   {
-    Sqlite::Query q( mSqlite.get(), "SELECT name FROM sqlite_master WHERE name='_meta'" );
+    Sqlite::Query q( mSqlite.get(), QStringLiteral( "SELECT name FROM sqlite_master WHERE name='_meta'" ) );
     if ( q.step() != SQLITE_ROW )
     {
       PROVIDER_ERROR( "No metadata tables!" );
@@ -158,7 +158,7 @@ bool QgsVirtualLayerProvider::openIt()
   }
   // look for the correct version and the stored url
   {
-    Sqlite::Query q( mSqlite.get(), "SELECT version, url FROM _meta" );
+    Sqlite::Query q( mSqlite.get(), QStringLiteral( "SELECT version, url FROM _meta" ) );
     int version = 0;
     if ( q.step() == SQLITE_ROW )
     {
@@ -257,7 +257,7 @@ bool QgsVirtualLayerProvider::createIt()
   mPath = mDefinition.filePath();
   // use a temporary file if needed
   if ( mPath.isEmpty() )
-    path = ":memory:";
+    path = QStringLiteral( ":memory:" );
   else
     path = mPath;
 
@@ -292,18 +292,18 @@ bool QgsVirtualLayerProvider::createIt()
     QString vname = mLayers.at( i ).name;
     if ( vlayer )
     {
-      QString createStr = QString( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
+      QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
       Sqlite::Query::exec( mSqlite.get(), createStr );
     }
     else
     {
       QString provider = mLayers.at( i ).provider;
       // double each single quote
-      provider.replace( "'", "''" );
+      provider.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString source = mLayers.at( i ).source;
-      source.replace( "'", "''" );
+      source.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString encoding = mLayers.at( i ).encoding;
-      QString createStr = QString( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
+      QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
                           .arg( vname,
                                 provider,
                                 encoding,
@@ -409,7 +409,7 @@ bool QgsVirtualLayerProvider::createIt()
     mTableName = VIRTUAL_LAYER_QUERY_VIEW;
 
     // create a view
-    QString viewStr = QString( "DROP VIEW IF EXISTS %1; CREATE VIEW %1 AS %2" )
+    QString viewStr = QStringLiteral( "DROP VIEW IF EXISTS %1; CREATE VIEW %1 AS %2" )
                       .arg( VIRTUAL_LAYER_QUERY_VIEW,
                             mDefinition.query() );
     Sqlite::Query::exec( mSqlite.get(), viewStr );
@@ -428,7 +428,7 @@ bool QgsVirtualLayerProvider::createIt()
       }
       else if ( !noGeometry )
       {
-        mDefinition.setGeometryField( "geometry" );
+        mDefinition.setGeometryField( QStringLiteral( "geometry" ) );
         mDefinition.setGeometryWkbType( c.wkbType() );
         mDefinition.setGeometrySrid( c.srid() );
       }
@@ -438,7 +438,7 @@ bool QgsVirtualLayerProvider::createIt()
 
   // Save the definition back to the sqlite file
   {
-    Sqlite::Query q( mSqlite.get(), "UPDATE _meta SET url=?" );
+    Sqlite::Query q( mSqlite.get(), QStringLiteral( "UPDATE _meta SET url=?" ) );
     q.bind( mDefinition.toUrl().toString() );
     q.step();
   }
@@ -454,14 +454,14 @@ void QgsVirtualLayerProvider::resetSqlite()
 {
   bool hasSpatialrefsys = false;
   {
-    Sqlite::Query q( mSqlite.get(), "SELECT name FROM sqlite_master WHERE name='spatial_ref_sys'" );
+    Sqlite::Query q( mSqlite.get(), QStringLiteral( "SELECT name FROM sqlite_master WHERE name='spatial_ref_sys'" ) );
     hasSpatialrefsys = q.step() == SQLITE_ROW;
   }
 
-  QString sql = "DROP TABLE IF EXISTS _meta;";
+  QString sql = QStringLiteral( "DROP TABLE IF EXISTS _meta;" );
   if ( !hasSpatialrefsys )
   {
-    sql += "SELECT InitSpatialMetadata(1);";
+    sql += QLatin1String( "SELECT InitSpatialMetadata(1);" );
   }
   Sqlite::Query::exec( mSqlite.get(), sql );
 }
@@ -473,7 +473,7 @@ QgsAbstractFeatureSource* QgsVirtualLayerProvider::featureSource() const
 
 QString QgsVirtualLayerProvider::storageType() const
 {
-  return "No storage per se, view data from other data sources";
+  return QStringLiteral( "No storage per se, view data from other data sources" );
 }
 
 QgsCoordinateReferenceSystem QgsVirtualLayerProvider::crs() const
@@ -494,7 +494,7 @@ QString QgsVirtualLayerProvider::subsetString() const
 bool QgsVirtualLayerProvider::setSubsetString( const QString& subset, bool updateFeatureCount )
 {
   mSubset = subset;
-  mCacheMinMaxDirty = true;
+  clearMinMaxCache();
   if ( updateFeatureCount )
     updateStatistics();
   return true;
@@ -527,9 +527,9 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 void QgsVirtualLayerProvider::updateStatistics() const
 {
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
-  QString subset = mSubset.isEmpty() ? "" : " WHERE " + mSubset;
-  QString sql = QString( "SELECT Count(*)%1 FROM %2%3" )
-                .arg( hasGeometry ? QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : "",
+  QString subset = mSubset.isEmpty() ? QLatin1String( "" ) : " WHERE " + mSubset;
+  QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
+                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QLatin1String( "" ),
                       mTableName,
                       subset );
   Sqlite::Query q( mSqlite.get(), sql );

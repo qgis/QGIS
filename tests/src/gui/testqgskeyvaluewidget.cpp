@@ -40,7 +40,7 @@ class TestQgsKeyValueWidget : public QObject
 
     void testUpdate()
     {
-      const QgsKeyValueWidgetFactory factory( "testKeyValue" );
+      const QgsKeyValueWidgetFactory factory( QStringLiteral( "testKeyValue" ) );
       QgsEditorWidgetWrapper* wrapper = factory.create( nullptr, 0, nullptr, nullptr );
       QVERIFY( wrapper );
       QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant& ) ) );
@@ -49,8 +49,8 @@ class TestQgsKeyValueWidget : public QObject
       QVERIFY( widget );
 
       QVariantMap initial;
-      initial["1"] = "one";
-      initial["2"] = "two";
+      initial[QStringLiteral( "1" )] = "one";
+      initial[QStringLiteral( "2" )] = "two";
       wrapper->setValue( initial );
 
       const QVariant value = wrapper->value();
@@ -63,7 +63,7 @@ class TestQgsKeyValueWidget : public QObject
       QCOMPARE( spy.count(), 1 );
 
       QVariantMap expected = initial;
-      expected["1"] = "hello";
+      expected[QStringLiteral( "1" )] = "hello";
       QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
       QCOMPARE( int( eventValue.type() ), int( QVariant::Map ) );
       QCOMPARE( eventValue.toMap(), expected );

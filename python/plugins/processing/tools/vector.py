@@ -41,6 +41,8 @@ import io
 
 import psycopg2
 
+from osgeo import ogr
+
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
@@ -122,13 +124,23 @@ def uniqueValues(layer, attribute):
     Attribute can be defined using a field names or a zero-based
     field index. It considers the existing selection.
     """
-    values = []
+
     fieldIndex = resolveFieldIndex(layer, attribute)
-    feats = features(layer)
-    for feat in feats:
-        if feat.attributes()[fieldIndex] not in values:
-            values.append(feat.attributes()[fieldIndex])
-    return values
+    if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
+            and layer.selectedFeatureCount() > 0:
+
+        # iterate through selected features
+        values = []
+        request = QgsFeatureRequest().setSubsetOfAttributes([fieldIndex]).setFlags(QgsFeatureRequest.NoGeometry)
+        feats = features(layer, request)
+        for feat in feats:
+            if feat.attributes()[fieldIndex] not in values:
+                values.append(feat.attributes()[fieldIndex])
+        return values
+    else:
+        # no selection, or not considering selecting
+        # so we can take advantage of provider side unique value optimisations
+        return layer.uniqueValues(fieldIndex)
 
 
 def resolveFieldIndex(layer, attr):
@@ -163,17 +175,30 @@ def values(layer, *attributes):
     to a number.
     """
     ret = {}
+    indices = []
+    attr_keys = {}
     for attr in attributes:
         index = resolveFieldIndex(layer, attr)
-        values = []
-        feats = features(layer)
-        for feature in feats:
+        indices.append(index)
+        attr_keys[index] = attr
+
+    # use an optimised feature request
+    request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
+
+    for feature in features(layer, request):
+        for i in indices:
+
+            # convert attribute value to number
             try:
-                v = float(feature.attributes()[index])
-                values.append(v)
+                v = float(feature.attributes()[i])
             except:
-                values.append(None)
-        ret[attr] = values
+                v = None
+
+            k = attr_keys[i]
+            if k in ret:
+                ret[k].append(v)
+            else:
+                ret[k] = [v]
     return ret
 
 
@@ -196,7 +221,13 @@ def testForUniqueness(fieldList1, fieldList2):
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
     """
-    idx = QgsSpatialIndex(layer.getFeatures())
+    request = QgsFeatureRequest()
+    request.setSubsetOfAttributes([])
+    if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
+            and layer.selectedFeatureCount() > 0:
+        idx = QgsSpatialIndex(layer.selectedFeaturesIterator(request))
+    else:
+        idx = QgsSpatialIndex(layer.getFeatures(request))
     return idx
 
 
@@ -269,14 +300,15 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     # 1 - project CRS
     # 2 - ellipsoidal
 
-    if geom.wkbType() in [QgsWkbTypes.Point, QgsWkbTypes.Point25D]:
-        pt = geom.asPoint()
-        attr1 = pt.x()
-        attr2 = pt.y()
-    elif geom.wkbType() in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
-        pt = geom.asMultiPoint()
-        attr1 = pt[0].x()
-        attr2 = pt[0].y()
+    if geom.type() == QgsWkbTypes.PointGeometry:
+        if not geom.isMultipart():
+            pt = geom.geometry()
+            attr1 = pt.x()
+            attr2 = pt.y()
+        else:
+            pt = geom.asMultiPoint()
+            attr1 = pt[0].x()
+            attr2 = pt[0].y()
     else:
         measure = QgsDistanceArea()
 
@@ -506,21 +538,67 @@ def ogrConnectionString(uri):
     return '"' + ogrstr + '"'
 
 
+#
+# The uri parameter is an URI from any QGIS provider,
+# so could have different formats.
+# Example formats:
+#
+# -- PostgreSQL provider
+# port=5493 sslmode=disable key='edge_id' srid=0 type=LineString table="city_data"."edge" (geom) sql=
+#
+# -- Spatialite provider
+# dbname='/tmp/x.sqlite' table="t" (geometry) sql='
+#
+# -- OGR provider (single-layer directory)
+# /tmp/x.gdb
+#
+# -- OGR provider (multi-layer directory)
+# /tmp/x.gdb|layerid=1
+#
+# -- OGR provider (multi-layer directory)
+# /tmp/x.gdb|layername=thelayer
+#
 def ogrLayerName(uri):
-    if 'host' in uri:
-        regex = re.compile('(table=")(.+?)(\.)(.+?)"')
-        r = regex.search(uri)
-        return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
-    elif 'dbname' in uri:
-        regex = re.compile('(table=")(.+?)"')
+
+    # handle URIs of database providers
+    if ' table=' in uri:
+        # Matches table="schema"."table"
+        re_table_schema = re.compile(' table="([^"]*)"\."([^"]*)"')
+        r = re_table_schema.search(uri)
+        if r:
+            return r.groups()[0] + '.' + r.groups()[1]
+        # Matches table="table"
+        re_table = re.compile(' table="([^"]*)"')
+        r = re_table.search(uri)
+        if r:
+            return r.groups()[0]
+
+    # handle URIs of OGR provider with explicit layername
+    if 'layername' in uri:
+        regex = re.compile('(layername=)([^|]*)')
         r = regex.search(uri)
         return r.groups()[1]
-    elif 'layername' in uri:
-        regex = re.compile('(layername=)(.*)')
-        r = regex.search(uri)
-        return r.groups()[1]
-    else:
-        return os.path.basename(os.path.splitext(uri)[0])
+
+    fields = uri.split('|')
+    ogruri = fields[0]
+    fields = fields[1:]
+    layerid = 0
+    for f in fields:
+        if f.startswith('layername='):
+            # Name encoded in uri, nothing more needed
+            return f.split('=')[1]
+        if f.startswith('layerid='):
+            layerid = int(f.split('=')[1])
+            # Last layerid= takes precedence, to allow of layername to
+            # take precedence
+    ds = ogr.Open(ogruri)
+    if not ds:
+        return "invalid-uri"
+    ly = ds.GetLayer(layerid)
+    if not ly:
+        return "invalid-layerid"
+    name = ly.GetName()
+    return name
 
 
 class VectorWriter(object):

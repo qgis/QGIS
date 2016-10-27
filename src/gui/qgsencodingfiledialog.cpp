@@ -46,7 +46,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
   if ( encoding.isEmpty() )
   {
     QSettings settings;
-    enc = settings.value( "/UI/encoding", "System" ).toString();
+    enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
   }
 
   // The specified decoding is added if not existing alread, and then set current.
@@ -84,7 +84,7 @@ QString QgsEncodingFileDialog::encoding() const
 void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QSettings settings;
-  settings.setValue( "/UI/encoding", encoding() );
+  settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
   QgsDebugMsg( QString( "Set encoding " + encoding() + " as default." ) );
 }
 

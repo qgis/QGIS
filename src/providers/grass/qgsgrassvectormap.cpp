@@ -159,7 +159,7 @@ bool QgsGrassVectorMap::openMap()
   }
   else if ( level == 1 )
   {
-    QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
+    QMessageBox::StandardButton ret = QMessageBox::question( 0, QStringLiteral( "Warning" ),
                                       QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ),
                                       QMessageBox::Ok | QMessageBox::Cancel );
 
@@ -178,7 +178,7 @@ bool QgsGrassVectorMap::openMap()
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    QgsGrass::warning( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+    QgsGrass::warning( QStringLiteral( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     QgsGrass::unlock();
     return false;
   }
@@ -196,7 +196,7 @@ bool QgsGrassVectorMap::openMap()
     }
     G_CATCH( QgsGrass::Exception &e )
     {
-      QgsGrass::warning( QString( "Cannot build topology: %1" ).arg( e.what() ) );
+      QgsGrass::warning( QStringLiteral( "Cannot build topology: %1" ).arg( e.what() ) );
       QgsGrass::unlock();
       return false;
     }
@@ -504,7 +504,7 @@ bool QgsGrassVectorMap::mapOutdated()
   {
     // If the cidx file has been deleted, the map is currently being modified
     // by an external tool. Do not update until the cidx file has been recreated.
-    if ( !QFileInfo( dp + "/cidx" ).exists() )
+    if ( !QFileInfo::exists( dp + "/cidx" ) )
     {
       QgsDebugMsg( "The map is being modified and is unavailable : " + mGrassObject.toString() );
       return false;

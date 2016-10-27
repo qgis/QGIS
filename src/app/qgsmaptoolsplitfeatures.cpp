@@ -96,7 +96,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
-    int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+    int topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Features split" ) );
     int returnCode = vlayer->splitFeatures( points(), topologicalEditing );
     vlayer->endEditCommand();

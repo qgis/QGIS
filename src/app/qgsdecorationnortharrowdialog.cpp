@@ -28,7 +28,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationNorthArrow/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
   QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -60,7 +60,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/DecorationNorthArrow/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
@@ -105,7 +105,7 @@ void QgsDecorationNorthArrowDialog::apply()
 void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 {
   QPixmap myQPixmap;
-  QString myFileNameQString = ":/images/north_arrows/default.png";
+  QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
 // QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
   if ( myQPixmap.load( myFileNameQString ) )
   {
@@ -152,7 +152,7 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
     myPainterPixmap.fill();
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
-    QFont myQFont( "time", 12, QFont::Bold );
+    QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
     myQPainter.setFont( myQFont );
     myQPainter.setPen( Qt::red );
     myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );

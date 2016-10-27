@@ -50,9 +50,9 @@ void QgsComposerMapOverview::createDefaultFrameSymbol()
 {
   delete mFrameSymbol;
   QgsStringMap properties;
-  properties.insert( "color", "255,0,0,255" );
-  properties.insert( "style", "solid" );
-  properties.insert( "style_border", "no" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   mFrameSymbol = QgsFillSymbol::createSimple( properties );
   mFrameSymbol->setAlpha( 0.3 );
 }
@@ -158,12 +158,12 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   }
 
   //overview map frame
-  QDomElement overviewFrameElem = doc.createElement( "ComposerMapOverview" );
+  QDomElement overviewFrameElem = doc.createElement( QStringLiteral( "ComposerMapOverview" ) );
 
-  overviewFrameElem.setAttribute( "frameMap", mFrameMapId );
-  overviewFrameElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
-  overviewFrameElem.setAttribute( "inverted", mInverted );
-  overviewFrameElem.setAttribute( "centered", mCentered );
+  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMapId );
+  overviewFrameElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( mBlendMode ) );
+  overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
+  overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
 
   QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc );
   overviewFrameElem.appendChild( frameStyleElem );
@@ -183,12 +183,12 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
 
   bool ok = QgsComposerMapItem::readXml( itemElem, doc );
 
-  setFrameMap( itemElem.attribute( "frameMap", "-1" ).toInt() );
-  mBlendMode = QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( "blendMode", "0" ).toUInt() ) );
-  mInverted = ( itemElem.attribute( "inverted", "0" ) != "0" );
-  mCentered = ( itemElem.attribute( "centered", "0" ) != "0" );
+  setFrameMap( itemElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) ).toInt() );
+  mBlendMode = QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
+  mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 
-  QDomElement frameStyleElem = itemElem.firstChildElement( "symbol" );
+  QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
@@ -384,11 +384,11 @@ bool QgsComposerMapOverviewStack::readXml( const QDomElement &elem, const QDomDo
   removeItems();
 
   //read overview stack
-  QDomNodeList mapOverviewNodeList = elem.elementsByTagName( "ComposerMapOverview" );
+  QDomNodeList mapOverviewNodeList = elem.elementsByTagName( QStringLiteral( "ComposerMapOverview" ) );
   for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
   {
     QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
-    QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( mapOverviewElem.attribute( "name" ), mComposerMap );
+    QgsComposerMapOverview* mapOverview = new QgsComposerMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), mComposerMap );
     mapOverview->readXml( mapOverviewElem, doc );
     mItems.append( mapOverview );
   }

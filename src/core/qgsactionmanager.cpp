@@ -67,7 +67,7 @@ void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultV
 {
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
-  actionScope->setVariable( "current_field", feat.attribute( defaultValueIndex ) );
+  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "current_field" ), feat.attribute( defaultValueIndex ), true ) );
   context << actionScope;
   doAction( index, feat, context );
 }
@@ -154,19 +154,19 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 
 bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
 {
-  QDomElement aActions = doc.createElement( "attributeactions" );
-  aActions.setAttribute( "default", mDefaultAction );
+  QDomElement aActions = doc.createElement( QStringLiteral( "attributeactions" ) );
+  aActions.setAttribute( QStringLiteral( "default" ), mDefaultAction );
 
   Q_FOREACH ( const QgsAction& action, mActions )
   {
-    QDomElement actionSetting = doc.createElement( "actionsetting" );
-    actionSetting.setAttribute( "type", action.type() );
-    actionSetting.setAttribute( "name", action.name() );
-    actionSetting.setAttribute( "shortTitle", action.shortTitle() );
-    actionSetting.setAttribute( "icon", action.iconPath() );
-    actionSetting.setAttribute( "action", action.action() );
-    actionSetting.setAttribute( "capture", action.capture() );
-    actionSetting.setAttribute( "showInAttributeTable", action.showInAttributeTable() );
+    QDomElement actionSetting = doc.createElement( QStringLiteral( "actionsetting" ) );
+    actionSetting.setAttribute( QStringLiteral( "type" ), action.type() );
+    actionSetting.setAttribute( QStringLiteral( "name" ), action.name() );
+    actionSetting.setAttribute( QStringLiteral( "shortTitle" ), action.shortTitle() );
+    actionSetting.setAttribute( QStringLiteral( "icon" ), action.iconPath() );
+    actionSetting.setAttribute( QStringLiteral( "action" ), action.action() );
+    actionSetting.setAttribute( QStringLiteral( "capture" ), action.capture() );
+    actionSetting.setAttribute( QStringLiteral( "showInAttributeTable" ), action.showInAttributeTable() );
     aActions.appendChild( actionSetting );
   }
   layer_node.appendChild( aActions );
@@ -178,24 +178,24 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
 {
   mActions.clear();
 
-  QDomNode aaNode = layer_node.namedItem( "attributeactions" );
+  QDomNode aaNode = layer_node.namedItem( QStringLiteral( "attributeactions" ) );
 
   if ( !aaNode.isNull() )
   {
-    mDefaultAction = aaNode.toElement().attribute( "default", 0 ).toInt();
+    mDefaultAction = aaNode.toElement().attribute( QStringLiteral( "default" ), 0 ).toInt();
 
     QDomNodeList actionsettings = aaNode.childNodes();
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
       mActions.append(
-        QgsAction( static_cast< QgsAction::ActionType >( setting.attributeNode( "type" ).value().toInt() ),
-                   setting.attributeNode( "name" ).value(),
-                   setting.attributeNode( "action" ).value(),
-                   setting.attributeNode( "icon" ).value(),
-                   setting.attributeNode( "capture" ).value().toInt() != 0,
-                   !setting.attributes().contains( "showInAttributeTable" ) || setting.attributeNode( "showInAttributeTable" ).value().toInt() != 0,
-                   setting.attributeNode( "shortTitle" ).value()
+        QgsAction( static_cast< QgsAction::ActionType >( setting.attributeNode( QStringLiteral( "type" ) ).value().toInt() ),
+                   setting.attributeNode( QStringLiteral( "name" ) ).value(),
+                   setting.attributeNode( QStringLiteral( "action" ) ).value(),
+                   setting.attributeNode( QStringLiteral( "icon" ) ).value(),
+                   setting.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0,
+                   !setting.attributes().contains( QStringLiteral( "showInAttributeTable" ) ) || setting.attributeNode( QStringLiteral( "showInAttributeTable" ) ).value().toInt() != 0,
+                   setting.attributeNode( QStringLiteral( "shortTitle" ) ).value()
                  )
       );
     }

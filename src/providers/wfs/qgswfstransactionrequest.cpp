@@ -27,7 +27,7 @@ bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serv
 
   QgsDebugMsg( doc.toString() );
 
-  if ( sendPOST( url, "text/xml", doc.toByteArray( -1 ) ) )
+  if ( sendPOST( url, QStringLiteral( "text/xml" ), doc.toByteArray( -1 ) ) )
   {
     QString errorMsg;
     if ( !serverResponse.setContent( mResponse, true, &errorMsg ) )

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -100,20 +101,23 @@ class LinesIntersection(GeoAlgorithm):
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
 
+            engine = None
             if len(lines) > 0:
                 hasIntersections = True
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
 
             if hasIntersections:
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    inFeatB = next(layerB.getFeatures(request))
+                request = QgsFeatureRequest().setFilterFids(lines)
+                for inFeatB in layerB.getFeatures(request):
                     tmpGeom = inFeatB.geometry()
 
                     points = []
                     attrsA = inFeatA.attributes()
                     attrsB = inFeatB.attributes()
 
-                    if inGeom.intersects(tmpGeom):
+                    if engine.intersects(tmpGeom.geometry()):
                         tempGeom = inGeom.intersection(tmpGeom)
                         if tempGeom.type() == QgsWkbTypes.PointGeometry:
                             if tempGeom.isMultipart():

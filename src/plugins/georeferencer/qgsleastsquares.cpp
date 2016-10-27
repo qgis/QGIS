@@ -23,8 +23,8 @@
 #include "qgsleastsquares.h"
 
 
-void QgsLeastSquares::linear( QVector<QgsPoint> mapCoords,
-                              QVector<QgsPoint> pixelCoords,
+void QgsLeastSquares::linear( const QVector<QgsPoint>& mapCoords,
+                              const QVector<QgsPoint>& pixelCoords,
                               QgsPoint& origin, double& pixelXSize, double& pixelYSize )
 {
   int n = mapCoords.size();
@@ -62,8 +62,8 @@ void QgsLeastSquares::linear( QVector<QgsPoint> mapCoords,
 }
 
 
-void QgsLeastSquares::helmert( QVector<QgsPoint> mapCoords,
-                               QVector<QgsPoint> pixelCoords,
+void QgsLeastSquares::helmert( const QVector<QgsPoint>& mapCoords,
+                               const QVector<QgsPoint>& pixelCoords,
                                QgsPoint& origin, double& pixelSize,
                                double& rotation )
 {

@@ -62,10 +62,10 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
 {
   setupUi( this );
 
-  mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
+  mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
 
   mRendererWidget = nullptr;
-  mRendererName = "singlebandgray";
+  mRendererName = QStringLiteral( "singlebandgray" );
 
   mHistoMin = 0;
   mHistoMax = 0;
@@ -76,11 +76,11 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
   mHistoMarkerMax = nullptr;
 
   QSettings settings;
-  mHistoShowMarkers = settings.value( "/Raster/histogram/showMarkers", false ).toBool();
+  mHistoShowMarkers = settings.value( QStringLiteral( "/Raster/histogram/showMarkers" ), false ).toBool();
   // mHistoLoadApplyAll = settings.value( "/Raster/histogram/loadApplyAll", false ).toBool();
-  mHistoZoomToMinMax = settings.value( "/Raster/histogram/zoomToMinMax", false ).toBool();
-  mHistoUpdateStyleToMinMax = settings.value( "/Raster/histogram/updateStyleToMinMax", true ).toBool();
-  mHistoDrawLines = settings.value( "/Raster/histogram/drawLines", true ).toBool();
+  mHistoZoomToMinMax = settings.value( QStringLiteral( "/Raster/histogram/zoomToMinMax" ), false ).toBool();
+  mHistoUpdateStyleToMinMax = settings.value( QStringLiteral( "/Raster/histogram/updateStyleToMinMax" ), true ).toBool();
+  mHistoDrawLines = settings.value( QStringLiteral( "/Raster/histogram/drawLines" ), true ).toBool();
   // mHistoShowBands = (HistoShowBands) settings.value( "/Raster/histogram/showBands", (int) ShowAll ).toInt();
   mHistoShowBands = ShowAll;
 
@@ -177,7 +177,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action->setSeparator( true );
     menu->addAction( action );
     // should we plot as histogram instead of line plot? (int data only)
-    action = new QAction( "", group );
+    action = new QAction( QLatin1String( "" ), group );
     action->setData( QVariant( "Draw lines" ) );
     if ( isInt )
     {
@@ -384,7 +384,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   // assign colors to each band, depending on the current RGB/gray band selection
   // grayscale
   QList< int > mySelectedBands = rendererSelectedBands();
-  if ( mRendererName == "singlebandgray" )
+  if ( mRendererName == QLatin1String( "singlebandgray" ) )
   {
     int myGrayBand = mySelectedBands[0];
     for ( int i = 1; i <= myBandCountInt; i++ )
@@ -410,7 +410,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     }
   }
   // RGB
-  else if ( mRendererName == "multibandcolor" )
+  else if ( mRendererName == QLatin1String( "multibandcolor" ) )
   {
     int myRedBand = mySelectedBands[0];
     int myGreenBand = mySelectedBands[1];
@@ -675,7 +675,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   stackedWidget2->setCurrentIndex( 0 );
   // icon from http://findicons.com/icon/169577/14_zoom?id=171427
-  mpPlot->canvas()->setCursor( QCursor( QgsApplication::getThemePixmap( "/mIconZoom.svg" ) ) );
+  mpPlot->canvas()->setCursor( QCursor( QgsApplication::getThemePixmap( QStringLiteral( "/mIconZoom.svg" ) ) ) );
   //  on_cboHistoBand_currentIndexChanged( -1 );
   QApplication::restoreOverrideCursor();
 }
@@ -687,7 +687,7 @@ void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
 
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   QFileInfo myInfo( myFileNameAndFilter.first );
-  if ( myInfo.baseName() != "" )
+  if ( myInfo.baseName() != QLatin1String( "" ) )
   {
     histoSaveAsImage( myFileNameAndFilter.first );
   }
@@ -784,61 +784,61 @@ void QgsRasterHistogramWidget::histoActionTriggered( QAction* action )
 
 void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool actionFlag )
 {
-  if ( actionName == "" )
+  if ( actionName == QLatin1String( "" ) )
     return;
 
   // this approach is a bit of a hack, but this way we don't have to define slots for each action
   QgsDebugMsg( QString( "band = %1 action = %2" ).arg( cboHistoBand->currentIndex() + 1 ).arg( actionName ) );
 
   // checkeable actions
-  if ( actionName == "Show markers" )
+  if ( actionName == QLatin1String( "Show markers" ) )
   {
     mHistoShowMarkers = actionFlag;
     QSettings settings;
-    settings.setValue( "/Raster/histogram/showMarkers", mHistoShowMarkers );
+    settings.setValue( QStringLiteral( "/Raster/histogram/showMarkers" ), mHistoShowMarkers );
     updateHistoMarkers();
     return;
   }
-  else if ( actionName == "Zoom min_max" )
+  else if ( actionName == QLatin1String( "Zoom min_max" ) )
   {
     mHistoZoomToMinMax = actionFlag;
     QSettings settings;
-    settings.setValue( "/Raster/histogram/zoomToMinMax", mHistoZoomToMinMax );
+    settings.setValue( QStringLiteral( "/Raster/histogram/zoomToMinMax" ), mHistoZoomToMinMax );
     return;
   }
-  else if ( actionName == "Update min_max" )
+  else if ( actionName == QLatin1String( "Update min_max" ) )
   {
     mHistoUpdateStyleToMinMax = actionFlag;
     QSettings settings;
-    settings.setValue( "/Raster/histogram/updateStyleToMinMax", mHistoUpdateStyleToMinMax );
+    settings.setValue( QStringLiteral( "/Raster/histogram/updateStyleToMinMax" ), mHistoUpdateStyleToMinMax );
     return;
   }
-  else if ( actionName == "Show all" )
+  else if ( actionName == QLatin1String( "Show all" ) )
   {
     mHistoShowBands = ShowAll;
     // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
     refreshHistogram();
     return;
   }
-  else if ( actionName == "Show selected" )
+  else if ( actionName == QLatin1String( "Show selected" ) )
   {
     mHistoShowBands = ShowSelected;
     // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
     refreshHistogram();
     return;
   }
-  else if ( actionName == "Show RGB" )
+  else if ( actionName == QLatin1String( "Show RGB" ) )
   {
     mHistoShowBands = ShowRGB;
     // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
     refreshHistogram();
     return;
   }
-  else if ( actionName == "Draw lines" )
+  else if ( actionName == QLatin1String( "Draw lines" ) )
   {
     mHistoDrawLines = actionFlag;
     QSettings settings;
-    settings.setValue( "/Raster/histogram/drawLines", mHistoDrawLines );
+    settings.setValue( QStringLiteral( "/Raster/histogram/drawLines" ), mHistoDrawLines );
     on_btnHistoCompute_clicked(); // refresh
     return;
   }
@@ -852,7 +852,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
 #endif
   // Load actions
   // TODO - separate calculations from rendererwidget so we can do them without
-  else if ( actionName.left( 5 ) == "Load " && mRendererWidget )
+  else if ( actionName.left( 5 ) == QLatin1String( "Load " ) && mRendererWidget )
   {
     QVector<int> myBands;
     bool ok = false;
@@ -917,7 +917,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
 
       // apply current item
       cboHistoBand->setCurrentIndex( theBandNo - 1 );
-      if ( !ok || actionName == "Load reset" )
+      if ( !ok || actionName == QLatin1String( "Load reset" ) )
       {
         leHistoMin->clear();
         leHistoMax->clear();
@@ -943,7 +943,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     leHistoMax->blockSignals( false );
     updateHistoMarkers();
   }
-  else if ( actionName == "Compute histogram" )
+  else if ( actionName == QLatin1String( "Compute histogram" ) )
   {
     on_btnHistoCompute_clicked();
   }
@@ -1052,7 +1052,7 @@ void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
 // this is sensitive and may not always be correct, needs more testing
 QString findClosestTickVal( double target, const QwtScaleDiv * scale, int div = 100 )
 {
-  if ( !scale ) return "";
+  if ( !scale ) return QLatin1String( "" );
 
   QList< double > minorTicks = scale->ticks( QwtScaleDiv::MinorTick );
   QList< double > majorTicks = scale->ticks( QwtScaleDiv::MajorTick );
@@ -1139,9 +1139,9 @@ void QgsRasterHistogramWidget::updateHistoMarkers()
   double maxVal = mHistoMax;
   QString minStr = leHistoMin->text();
   QString maxStr = leHistoMax->text();
-  if ( minStr != "" )
+  if ( minStr != QLatin1String( "" ) )
     minVal = minStr.toDouble();
-  if ( maxStr != "" )
+  if ( maxStr != QLatin1String( "" ) )
     maxVal = maxStr.toDouble();
 
   QPen linePen = QPen( mHistoColors.at( theBandNo ) );
@@ -1188,11 +1188,11 @@ QList< int > QgsRasterHistogramWidget::rendererSelectedBands()
     return mySelectedBands;
   }
 
-  if ( mRendererName == "singlebandgray" )
+  if ( mRendererName == QLatin1String( "singlebandgray" ) )
   {
     mySelectedBands << mRendererWidget->selectedBand();
   }
-  else if ( mRendererName == "multibandcolor" )
+  else if ( mRendererName == QLatin1String( "multibandcolor" ) )
   {
     for ( int i = 0; i <= 2; i++ )
     {
@@ -1210,7 +1210,7 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int theBandN
   if ( ! mRendererWidget )
     return myMinMax;
 
-  if ( mRendererName == "singlebandgray" )
+  if ( mRendererName == QLatin1String( "singlebandgray" ) )
   {
     if ( theBandNo == mRendererWidget->selectedBand() )
     {
@@ -1218,7 +1218,7 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int theBandN
       myMinMax.second = mRendererWidget->max();
     }
   }
-  else if ( mRendererName == "multibandcolor" )
+  else if ( mRendererName == QLatin1String( "multibandcolor" ) )
   {
     for ( int i = 0; i <= 2; i++ )
     {

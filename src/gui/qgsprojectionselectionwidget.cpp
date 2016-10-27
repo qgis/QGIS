@@ -36,17 +36,16 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
-  if ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) )
+  if ( QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
   {
     //only show project CRS if OTF reprojection is enabled - otherwise the
     //CRS stored in the project can be misleading
-    QString projectCrsString = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs" );
-    mProjectCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( projectCrsString );
+    mProjectCrs = QgsProject::instance()->crs();
     addProjectCrsOption();
   }
 
   QSettings settings;
-  QString defCrsString = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
+  QString defCrsString = settings.value( QStringLiteral( "/Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
@@ -60,7 +59,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   layout->addWidget( mCrsComboBox );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( "mActionSetProjection.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSetProjection.svg" ) ) );
   mButton->setToolTip( tr( "Select CRS" ) );
   layout->addWidget( mButton );
 

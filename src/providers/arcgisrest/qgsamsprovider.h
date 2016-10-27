@@ -38,7 +38,7 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
 
   private slots:
     void handleFinished();
-    void handleError( QString errorTitle, QString errorMsg );
+    void handleError( const QString &errorTitle, const QString &errorMsg );
 
   private:
     QgsAmsProvider* mProvider;
@@ -58,8 +58,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
 
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
-    QString name() const override { return "mapserver"; }
-    QString description() const override { return "ArcGIS MapServer data provider"; }
+    QString name() const override { return QStringLiteral( "mapserver" ); }
+    QString description() const override { return QStringLiteral( "ArcGIS MapServer data provider" ); }
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
     uint subLayerCount() const override { return mSubLayers.size(); }
     QStringList subLayers() const override { return mSubLayers; }

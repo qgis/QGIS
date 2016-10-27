@@ -239,7 +239,7 @@ void QgsSearchWidgetToolButton::updateState()
 
   if ( active )
   {
-    QString text = toolTips.join( ", " );
+    QString text = toolTips.join( QStringLiteral( ", " ) );
     setText( text );
     setToolTip( text );
   }

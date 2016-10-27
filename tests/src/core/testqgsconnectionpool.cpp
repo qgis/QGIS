@@ -74,29 +74,29 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   int nWaypoints = 100000;
   int nRoutes = 100000;
   int nRoutePts = 10;
-  QTemporaryFile testFile( "testXXXXXX.gpx" );
+  QTemporaryFile testFile( QStringLiteral( "testXXXXXX.gpx" ) );
   testFile.setAutoRemove( false );
   testFile.open();
   testFile.write( "<gpx version=\"1.1\" creator=\"qgis\">\n" );
   for ( int i = 0; i < nWaypoints; ++i )
   {
-    testFile.write( QString( "<wpt lon=\"%1\" lat=\"%1\"><name></name></wpt>\n" ).arg( i ).toLocal8Bit() );
+    testFile.write( QStringLiteral( "<wpt lon=\"%1\" lat=\"%1\"><name></name></wpt>\n" ).arg( i ).toLocal8Bit() );
   }
   for ( int i = 0; i < nRoutes; ++i )
   {
     testFile.write( "<rte><name></name><number></number>\n" );
     for ( int j = 0; j < nRoutePts; ++j )
     {
-      testFile.write( QString( "<rtept lon=\"%1\" lat=\"%2\"/>\n" ).arg( j ).arg( i ).toLocal8Bit() );
+      testFile.write( QStringLiteral( "<rtept lon=\"%1\" lat=\"%2\"/>\n" ).arg( j ).arg( i ).toLocal8Bit() );
     }
     testFile.write( "</rte>\n" );
   }
   testFile.write( "</gpx>\n" );
   testFile.close();
 
-  QgsVectorLayer* layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", "Waypoints", "ogr" );
+  QgsVectorLayer* layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", QStringLiteral( "Waypoints" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
-  QgsVectorLayer* layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", "Routes", "ogr" );
+  QgsVectorLayer* layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", QStringLiteral( "Routes" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
 
   QList<ReadJob> jobs = QList<ReadJob>() << ReadJob( layer1 ) << ReadJob( layer2 );

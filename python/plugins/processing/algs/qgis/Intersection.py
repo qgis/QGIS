@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -74,7 +75,7 @@ class Intersection(GeoAlgorithm):
         vlayerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT2))
 
-        geomType = vlayerA.wkbType()
+        geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      geomType, vlayerA.crs())
@@ -87,11 +88,17 @@ class Intersection(GeoAlgorithm):
             geom = inFeatA.geometry()
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
-            for i in intersects:
-                request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = next(vlayerB.getFeatures(request))
+            request = QgsFeatureRequest().setFilterFids(intersects)
+
+            engine = None
+            if len(intersects) > 0:
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine.prepareGeometry()
+
+            for inFeatB in vlayerB.getFeatures(request):
                 tmpGeom = inFeatB.geometry()
-                if geom.intersects(tmpGeom):
+                if engine.intersects(tmpGeom.geometry()):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:

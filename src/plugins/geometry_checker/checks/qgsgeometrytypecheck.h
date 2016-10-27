@@ -36,7 +36,7 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
              mTypeName == static_cast<QgsGeometryTypeCheckError*>( other )->mTypeName;
     }
 
-    virtual QString description() const override { return QString( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
+    virtual QString description() const override { return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
 
   private:
     QString mTypeName;
@@ -55,7 +55,7 @@ class QgsGeometryTypeCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Geometry type" ); }
-    QString errorName() const override { return "QgsGeometryTypeCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryTypeCheck" ); }
   private:
     enum ResolutionMethod { Convert, Delete, NoChange };
     int mAllowedTypes;

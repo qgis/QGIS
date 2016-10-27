@@ -54,6 +54,22 @@ class CORE_EXPORT QgsSymbolLayer
     virtual ~QgsSymbolLayer();
 
     /**
+     * Returns true if symbol layer is enabled and will be drawn.
+     * @note added in QGIS 3.0
+     * @see setEnabled()
+     */
+    bool enabled() const { return mEnabled; }
+
+    /**
+     * Sets whether symbol layer is enabled and should be drawn. Disabled
+     * layers are not drawn, but remain part of the symbol and can be re-enabled
+     * when desired.
+     * @note added in QGIS 3.0
+     * @see enabled()
+     */
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
+
+    /**
      * The fill color.
      */
     virtual QColor color() const { return mColor; }
@@ -93,7 +109,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual QgsSymbolLayer* clone() const = 0;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
@@ -262,10 +278,24 @@ class CORE_EXPORT QgsSymbolLayer
      */
     void setPaintEffect( QgsPaintEffect* effect );
 
+    /** Prepares all data defined property expressions for evaluation. This should
+     * be called prior to evaluating data defined properties.
+     * @param context symbol render context
+     * @note added in QGIS 2.12
+     */
+    virtual void prepareExpressions( const QgsSymbolRenderContext& context );
+
+    //! Data defined layer enabled string
+    static const QString EXPR_LAYER_ENABLED;
+
   protected:
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
 
     QgsSymbol::SymbolType mType;
+
+    //! True if layer is enabled and should be drawn
+    bool mEnabled;
+
     bool mLocked;
     QColor mColor;
     int mRenderingPass;
@@ -278,13 +308,6 @@ class CORE_EXPORT QgsSymbolLayer
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
-
-    /** Prepares all data defined property expressions for evaluation. This should
-     * be called prior to evaluating data defined properties.
-     * @param context symbol render context
-     * @note added in QGIS 2.12
-     */
-    virtual void prepareExpressions( const QgsSymbolRenderContext& context );
 
     /** Saves all data defined properties to a string map.
      * @param stringMap destination string map
@@ -383,17 +406,17 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Symbol horizontal anchor points
     enum HorizontalAnchorPoint
     {
-      Left, /*!< Align to left side of symbol */
-      HCenter, /*!< Align to horizontal center of symbol */
-      Right, /*!< Align to right side of symbol */
+      Left, //!< Align to left side of symbol
+      HCenter, //!< Align to horizontal center of symbol
+      Right, //!< Align to right side of symbol
     };
 
     //! Symbol vertical anchor points
     enum VerticalAnchorPoint
     {
-      Top, /*!< Align to top of symbol */
-      VCenter, /*!< Align to vertical center of symbol */
-      Bottom, /*!< Align to bottom of symbol */
+      Top, //!< Align to top of symbol
+      VCenter, //!< Align to vertical center of symbol
+      Bottom, //!< Align to bottom of symbol
     };
 
     void startRender( QgsSymbolRenderContext& context ) override;
@@ -570,7 +593,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @param props symbol layer definition (see properties())
      */
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -731,7 +754,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 
   protected:
     QgsFillSymbolLayer( bool locked = false );
-    /** Default method to render polygon*/
+    //! Default method to render polygon
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     double mAngle;

@@ -59,9 +59,9 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
-  expContext.lastScope()->setVariable( "row_number", 1 );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
 
-  expContext.setHighlightedVariables( QStringList() << "row_number" );
+  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
 
   return expContext;
 }
@@ -104,7 +104,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QSettings settings;
 
-  int size = settings.value( "/IconSize", 16 ).toInt();
+  int size = settings.value( QStringLiteral( "/IconSize" ), 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;
@@ -120,20 +120,20 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToolbar->setIconSize( QSize( size, size ) );
 
   // Initialize the window geometry
-  restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
 
   myDa = new QgsDistanceArea();
 
   myDa->setSourceCrs( mLayer->crs() );
   myDa->setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mEditorContext.setDistanceArea( *myDa );
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   QgsFeatureRequest r;
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
-       settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+       settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
@@ -195,7 +195,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   // info from table to application
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
 
-  bool myDockFlag = settings.value( "/qgis/dockAttributeTable", false ).toBool();
+  bool myDockFlag = settings.value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool();
   if ( myDockFlag )
   {
     mDock = new QgsAttributeTableDock( tr( "%1 (%n Feature(s))", "feature count", mMainView->featureCount() ).arg( mLayer->name() ), QgisApp::instance() );
@@ -207,24 +207,24 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   columnBoxInit();
   updateTitle();
 
-  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.svg" ) );
-  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( "/mActionSelectAll.svg" ) );
-  mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( "/mActionSelectedToTop.svg" ) );
-  mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.svg" ) );
-  mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.svg" ) );
-  mActionZoomMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
-  mActionPanMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( "/mActionPanToSelected.svg" ) );
-  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.svg" ) );
-  mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
-  mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
-  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
-  mActionOpenFieldCalculator->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.svg" ) );
-  mActionAddAttribute->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ) );
-  mActionRemoveAttribute->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.svg" ) );
-  mTableViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
-  mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionFormView.svg" ) );
-  mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
-  mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ) );
+  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectAll.svg" ) ) );
+  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectAll.svg" ) ) );
+  mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectedToTop.svg" ) ) );
+  mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+  mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
+  mActionZoomMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
+  mActionPanMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
+  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInvertSelection.svg" ) ) );
+  mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
+  mActionOpenFieldCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
+  mActionAddAttribute->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
+  mActionRemoveAttribute->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
+  mTableViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
+  mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
+  mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
+  mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -256,7 +256,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
 
   // Load default attribute table filter
-  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt();
+  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt();
 
   switch ( defaultFilterMode )
   {
@@ -286,10 +286,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mUpdateExpressionText->setLayer( mLayer );
   mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-  int initialView = settings.value( "/qgis/attributeTableView", -1 ).toInt();
+  int initialView = settings.value( QStringLiteral( "/qgis/attributeTableView" ), -1 ).toInt();
   if ( initialView < 0 )
   {
-    initialView = settings.value( "/qgis/attributeTableLastView", QgsDualView::AttributeTable ).toInt();
+    initialView = settings.value( QStringLiteral( "/qgis/attributeTableLastView" ), QgsDualView::AttributeTable ).toInt();
   }
   mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
   mMainViewButtonGroup->button( initialView )->setChecked( true );
@@ -324,7 +324,7 @@ void QgsAttributeTableDialog::updateTitle()
                      .arg( mMainView->featureCount() )
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
-                     .arg( mRubberBand ? tr( ", spatially limited" ) : "" )
+                     .arg( mRubberBand ? tr( ", spatially limited" ) : QLatin1String( "" ) )
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
@@ -349,7 +349,7 @@ void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
   if ( !mDock )
   {
     QSettings settings;
-    settings.setValue( "/Windows/BetterAttributeTable/geometry", saveGeometry() );
+    settings.setValue( QStringLiteral( "/Windows/BetterAttributeTable/geometry" ), saveGeometry() );
   }
 }
 
@@ -391,7 +391,7 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( idx < 0 )
       continue;
 
-    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() ).type() != "Hidden" )
+    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
     {
       QIcon icon = mLayer->fields().iconForField( idx );
       QString alias = mLayer->attributeDisplayName( idx );
@@ -434,7 +434,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  mLayer->beginEditCommand( "Field calculator" );
+  mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
   int fieldindex = layer->fields().indexFromName( fieldName );
 
@@ -471,7 +471,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
     }
 
     context.setFeature( feature );
-    context.lastScope()->setVariable( QString( "row_number" ), rownum );
+    context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
     QVariant value = exp.evaluate( &context );
     fld.convertCompatible( value );
@@ -553,13 +553,13 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mLayer );
 
-  QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based filter" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
   if ( dlg.exec() == QDialog::Accepted )
@@ -725,7 +725,7 @@ void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
     mActionSearchForm->setChecked( false );
 
   QSettings s;
-  s.setValue( "/qgis/attributeTableLastView", static_cast< int >( viewMode ) );
+  s.setValue( QStringLiteral( "/qgis/attributeTableLastView" ), static_cast< int >( viewMode ) );
 }
 
 void QgsAttributeTableDialog::on_mActionToggleEditing_toggled( bool )
@@ -881,11 +881,11 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
         break;
 
       case QgsAttributeForm::FilterAnd:
-        filter = QString( "(%1) AND (%2)" ).arg( mFilterQuery->text(), filterString );
+        filter = QStringLiteral( "(%1) AND (%2)" ).arg( mFilterQuery->text(), filterString );
         break;
 
       case QgsAttributeForm::FilterOr:
-        filter = QString( "(%1) OR (%2)" ).arg( mFilterQuery->text(), filterString );
+        filter = QStringLiteral( "(%1) OR (%2)" ).arg( mFilterQuery->text(), filterString );
         break;
     }
   }
@@ -920,7 +920,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // parse search string and build parsed tree
   QgsExpression filterExpression( filter );
@@ -990,7 +990,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 QgsAttributeTableDock::QgsAttributeTableDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
     : QgsDockWidget( title, parent, flags )
 {
-  setObjectName( "AttributeTable" ); // set object name so the position can be saved
+  setObjectName( QStringLiteral( "AttributeTable" ) ); // set object name so the position can be saved
 }
 
 void QgsAttributeTableDock::closeEvent( QCloseEvent* ev )

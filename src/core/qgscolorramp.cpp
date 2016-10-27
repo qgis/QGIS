@@ -56,14 +56,14 @@ QgsColorRamp* QgsGradientColorRamp::create( const QgsStringMap& props )
   // color1 and color2
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
   QColor color2 = DEFAULT_GRADIENT_COLOR2;
-  if ( props.contains( "color1" ) )
-    color1 = QgsSymbolLayerUtils::decodeColor( props["color1"] );
-  if ( props.contains( "color2" ) )
-    color2 = QgsSymbolLayerUtils::decodeColor( props["color2"] );
+  if ( props.contains( QStringLiteral( "color1" ) ) )
+    color1 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color1" )] );
+  if ( props.contains( QStringLiteral( "color2" ) ) )
+    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color2" )] );
 
   //stops
   QgsGradientStopsList stops;
-  if ( props.contains( "stops" ) )
+  if ( props.contains( QStringLiteral( "stops" ) ) )
   {
     Q_FOREACH ( const QString& stop, props["stops"].split( ':' ) )
     {
@@ -72,15 +72,15 @@ QgsColorRamp* QgsGradientColorRamp::create( const QgsStringMap& props )
         continue;
 
       QColor c = QgsSymbolLayerUtils::decodeColor( stop.mid( i + 1 ) );
-      stops.append( QgsGradientStop( stop.left( i ).toDouble(), c ) );
+      stops.append( QgsGradientStop( stop.leftRef( i ).toDouble(), c ) );
     }
   }
 
   // discrete vs. continuous
   bool discrete = false;
-  if ( props.contains( "discrete" ) )
+  if ( props.contains( QStringLiteral( "discrete" ) ) )
   {
-    if ( props["discrete"] == "1" )
+    if ( props[QStringLiteral( "discrete" )] == QLatin1String( "1" ) )
       discrete = true;
   }
 
@@ -89,7 +89,7 @@ QgsColorRamp* QgsGradientColorRamp::create( const QgsStringMap& props )
   for ( QgsStringMap::const_iterator it = props.constBegin();
         it != props.constEnd(); ++it )
   {
-    if ( it.key().startsWith( "info_" ) )
+    if ( it.key().startsWith( QLatin1String( "info_" ) ) )
       info[ it.key().mid( 5 )] = it.value();
   }
 
@@ -171,19 +171,19 @@ QgsGradientColorRamp* QgsGradientColorRamp::clone() const
 QgsStringMap QgsGradientColorRamp::properties() const
 {
   QgsStringMap map;
-  map["color1"] = QgsSymbolLayerUtils::encodeColor( mColor1 );
-  map["color2"] = QgsSymbolLayerUtils::encodeColor( mColor2 );
+  map[QStringLiteral( "color1" )] = QgsSymbolLayerUtils::encodeColor( mColor1 );
+  map[QStringLiteral( "color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
   if ( !mStops.isEmpty() )
   {
     QStringList lst;
     for ( QgsGradientStopsList::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
     {
-      lst.append( QString( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerUtils::encodeColor( it->color ) ) );
+      lst.append( QStringLiteral( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerUtils::encodeColor( it->color ) ) );
     }
-    map["stops"] = lst.join( ":" );
+    map[QStringLiteral( "stops" )] = lst.join( QStringLiteral( ":" ) );
   }
 
-  map["discrete"] = mDiscrete ? "1" : "0";
+  map[QStringLiteral( "discrete" )] = mDiscrete ? "1" : "0";
 
   for ( QgsStringMap::const_iterator it = mInfo.constBegin();
         it != mInfo.constEnd(); ++it )
@@ -294,13 +294,13 @@ QgsColorRamp* QgsLimitedRandomColorRamp::create( const QgsStringMap& props )
   int satMin = DEFAULT_RANDOM_SAT_MIN, satMax = DEFAULT_RANDOM_SAT_MAX;
   int valMin = DEFAULT_RANDOM_VAL_MIN, valMax = DEFAULT_RANDOM_VAL_MAX;
 
-  if ( props.contains( "count" ) ) count = props["count"].toInt();
-  if ( props.contains( "hueMin" ) ) hueMin = props["hueMin"].toInt();
-  if ( props.contains( "hueMax" ) ) hueMax = props["hueMax"].toInt();
-  if ( props.contains( "satMin" ) ) satMin = props["satMin"].toInt();
-  if ( props.contains( "satMax" ) ) satMax = props["satMax"].toInt();
-  if ( props.contains( "valMin" ) ) valMin = props["valMin"].toInt();
-  if ( props.contains( "valMax" ) ) valMax = props["valMax"].toInt();
+  if ( props.contains( QStringLiteral( "count" ) ) ) count = props[QStringLiteral( "count" )].toInt();
+  if ( props.contains( QStringLiteral( "hueMin" ) ) ) hueMin = props[QStringLiteral( "hueMin" )].toInt();
+  if ( props.contains( QStringLiteral( "hueMax" ) ) ) hueMax = props[QStringLiteral( "hueMax" )].toInt();
+  if ( props.contains( QStringLiteral( "satMin" ) ) ) satMin = props[QStringLiteral( "satMin" )].toInt();
+  if ( props.contains( QStringLiteral( "satMax" ) ) ) satMax = props[QStringLiteral( "satMax" )].toInt();
+  if ( props.contains( QStringLiteral( "valMin" ) ) ) valMin = props[QStringLiteral( "valMin" )].toInt();
+  if ( props.contains( QStringLiteral( "valMax" ) ) ) valMax = props[QStringLiteral( "valMax" )].toInt();
 
   return new QgsLimitedRandomColorRamp( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
 }
@@ -333,13 +333,13 @@ QgsLimitedRandomColorRamp* QgsLimitedRandomColorRamp::clone() const
 QgsStringMap QgsLimitedRandomColorRamp::properties() const
 {
   QgsStringMap map;
-  map["count"] = QString::number( mCount );
-  map["hueMin"] = QString::number( mHueMin );
-  map["hueMax"] = QString::number( mHueMax );
-  map["satMin"] = QString::number( mSatMin );
-  map["satMax"] = QString::number( mSatMax );
-  map["valMin"] = QString::number( mValMin );
-  map["valMax"] = QString::number( mValMax );
+  map[QStringLiteral( "count" )] = QString::number( mCount );
+  map[QStringLiteral( "hueMin" )] = QString::number( mHueMin );
+  map[QStringLiteral( "hueMax" )] = QString::number( mHueMax );
+  map[QStringLiteral( "satMin" )] = QString::number( mSatMin );
+  map[QStringLiteral( "satMax" )] = QString::number( mSatMax );
+  map[QStringLiteral( "valMin" )] = QString::number( mValMin );
+  map[QStringLiteral( "valMax" )] = QString::number( mValMax );
   return map;
 }
 
@@ -458,7 +458,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
 
 QString QgsRandomColorRamp::type() const
 {
-  return "randomcolors";
+  return QStringLiteral( "randomcolors" );
 }
 
 QgsRandomColorRamp* QgsRandomColorRamp::clone() const
@@ -485,10 +485,10 @@ QgsColorRamp* QgsColorBrewerColorRamp::create( const QgsStringMap& props )
   QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME;
   int colors = DEFAULT_COLORBREWER_COLORS;
 
-  if ( props.contains( "schemeName" ) )
-    schemeName = props["schemeName"];
-  if ( props.contains( "colors" ) )
-    colors = props["colors"].toInt();
+  if ( props.contains( QStringLiteral( "schemeName" ) ) )
+    schemeName = props[QStringLiteral( "schemeName" )];
+  if ( props.contains( QStringLiteral( "colors" ) ) )
+    colors = props[QStringLiteral( "colors" )].toInt();
 
   return new QgsColorBrewerColorRamp( schemeName, colors );
 }
@@ -533,8 +533,8 @@ QgsColorBrewerColorRamp* QgsColorBrewerColorRamp::clone() const
 QgsStringMap QgsColorBrewerColorRamp::properties() const
 {
   QgsStringMap map;
-  map["schemeName"] = mSchemeName;
-  map["colors"] = QString::number( mColors );
+  map[QStringLiteral( "schemeName" )] = mSchemeName;
+  map[QStringLiteral( "colors" )] = QString::number( mColors );
   return map;
 }
 
@@ -573,17 +573,17 @@ QgsColorRamp* QgsCptCityColorRamp::create( const QgsStringMap& props )
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;
 
-  if ( props.contains( "schemeName" ) )
-    schemeName = props["schemeName"];
-  if ( props.contains( "variantName" ) )
-    variantName = props["variantName"];
+  if ( props.contains( QStringLiteral( "schemeName" ) ) )
+    schemeName = props[QStringLiteral( "schemeName" )];
+  if ( props.contains( QStringLiteral( "variantName" ) ) )
+    variantName = props[QStringLiteral( "variantName" )];
 
   return new QgsCptCityColorRamp( schemeName, variantName );
 }
 
 QgsCptCityColorRamp* QgsCptCityColorRamp::clone() const
 {
-  QgsCptCityColorRamp* ramp = new QgsCptCityColorRamp( "", "", false );
+  QgsCptCityColorRamp* ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ), false );
   ramp->copy( this );
   return ramp;
 }
@@ -609,10 +609,10 @@ QgsGradientColorRamp* QgsCptCityColorRamp::cloneGradientRamp() const
   // add author and copyright information
   // TODO also add COPYING.xml file/link?
   QgsStringMap info = copyingInfo();
-  info["cpt-city-gradient"] = "<cpt-city>/" + mSchemeName + mVariantName + ".svg";
+  info[QStringLiteral( "cpt-city-gradient" )] = "<cpt-city>/" + mSchemeName + mVariantName + ".svg";
   QString copyingFilename = copyingFileName();
   copyingFilename.remove( QgsCptCityArchive::defaultBaseDir() );
-  info["cpt-city-license"] = "<cpt-city>" + copyingFilename;
+  info[QStringLiteral( "cpt-city-license" )] = "<cpt-city>" + copyingFilename;
   ramp->setInfo( info );
   return ramp;
 }
@@ -621,15 +621,15 @@ QgsGradientColorRamp* QgsCptCityColorRamp::cloneGradientRamp() const
 QgsStringMap QgsCptCityColorRamp::properties() const
 {
   QgsStringMap map;
-  map["schemeName"] = mSchemeName;
-  map["variantName"] = mVariantName;
+  map[QStringLiteral( "schemeName" )] = mSchemeName;
+  map[QStringLiteral( "variantName" )] = mVariantName;
   return map;
 }
 
 
 QString QgsCptCityColorRamp::fileName() const
 {
-  if ( mSchemeName == "" )
+  if ( mSchemeName == QLatin1String( "" ) )
     return QString();
   else
   {
@@ -639,13 +639,13 @@ QString QgsCptCityColorRamp::fileName() const
 
 QString QgsCptCityColorRamp::copyingFileName() const
 {
-  return QgsCptCityArchive::findFileName( "COPYING.xml", QFileInfo( fileName() ).dir().path(),
+  return QgsCptCityArchive::findFileName( QStringLiteral( "COPYING.xml" ), QFileInfo( fileName() ).dir().path(),
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
 QString QgsCptCityColorRamp::descFileName() const
 {
-  return QgsCptCityArchive::findFileName( "DESC.xml", QFileInfo( fileName() ).dir().path(),
+  return QgsCptCityArchive::findFileName( QStringLiteral( "DESC.xml" ), QFileInfo( fileName() ).dir().path(),
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
@@ -752,7 +752,7 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor>& colors 
   }
   // need at least one color
   if ( mColors.isEmpty() )
-    mColors << qMakePair( QColor( 250, 75, 60 ), QString( "#fa4b3c" ) );
+    mColors << qMakePair( QColor( 250, 75, 60 ), QStringLiteral( "#fa4b3c" ) );
 }
 
 QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList& colors )
@@ -760,7 +760,7 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList& col
 {
   // need at least one color
   if ( mColors.isEmpty() )
-    mColors << qMakePair( QColor( 250, 75, 60 ), QString( "#fa4b3c" ) );
+    mColors << qMakePair( QColor( 250, 75, 60 ), QStringLiteral( "#fa4b3c" ) );
 }
 
 QgsColorRamp* QgsPresetSchemeColorRamp::create( const QgsStringMap& properties )
@@ -768,14 +768,14 @@ QgsColorRamp* QgsPresetSchemeColorRamp::create( const QgsStringMap& properties )
   QgsNamedColorList colors;
 
   int i = 0;
-  QString colorString = properties.value( QString( "preset_color_%1" ).arg( i ), QString() );
-  QString colorName = properties.value( QString( "preset_color_name_%1" ).arg( i ), QString() );
+  QString colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() );
+  QString colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() );
   while ( !colorString.isEmpty() )
   {
     colors << qMakePair( QgsSymbolLayerUtils::decodeColor( colorString ), colorName );
     i++;
-    colorString = properties.value( QString( "preset_color_%1" ).arg( i ), QString() );
-    colorName = properties.value( QString( "preset_color_name_%1" ).arg( i ), QString() );
+    colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() );
+    colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() );
   }
 
   return new QgsPresetSchemeColorRamp( colors );
@@ -784,6 +784,7 @@ QgsColorRamp* QgsPresetSchemeColorRamp::create( const QgsStringMap& properties )
 QList<QColor> QgsPresetSchemeColorRamp::colors() const
 {
   QList< QColor > l;
+  l.reserve( mColors.count() );
   for ( int i = 0; i < mColors.count(); ++i )
   {
     l << mColors.at( i ).first;
@@ -822,8 +823,8 @@ QgsStringMap QgsPresetSchemeColorRamp::properties() const
   QgsStringMap props;
   for ( int i = 0; i < mColors.count(); ++i )
   {
-    props.insert( QString( "preset_color_%1" ).arg( i ), QgsSymbolLayerUtils::encodeColor( mColors.at( i ).first ) );
-    props.insert( QString( "preset_color_name_%1" ).arg( i ), mColors.at( i ).second );
+    props.insert( QStringLiteral( "preset_color_%1" ).arg( i ), QgsSymbolLayerUtils::encodeColor( mColors.at( i ).first ) );
+    props.insert( QStringLiteral( "preset_color_name_%1" ).arg( i ), mColors.at( i ).second );
   }
   return props;
 }

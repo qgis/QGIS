@@ -43,13 +43,13 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
 
   QToolBar* toolbar = new QToolBar( this );
   QAction* addAction = toolbar->addAction( tr( "Add" ) );
-  addAction->setIcon( QgsApplication::getThemeIcon( "symbologyAdd.svg" ) );
+  addAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyAdd.svg" ) ) );
   connect( addAction, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
   QAction* removeAction = toolbar->addAction( tr( "Remove Current" ) );
-  removeAction->setIcon( QgsApplication::getThemeIcon( "symbologyRemove.svg" ) );
+  removeAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyRemove.svg" ) ) );
   connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
   QAction* loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
-  loadFromFileAction->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
+  loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   connect( loadFromFileAction, SIGNAL( triggered() ), this, SLOT( loadStyle() ) );
   QAction* saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
   connect( saveAsDefaultAction, SIGNAL( triggered() ), this, SLOT( saveAsDefault() ) );
@@ -82,7 +82,7 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
     QString stylename = name;
 
     if ( stylename.isEmpty() )
-      stylename = "(default)";
+      stylename = QStringLiteral( "(default)" );
 
     QStandardItem* item = new QStandardItem( stylename );
     mModel->appendRow( item );
@@ -92,19 +92,19 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
   currentStyleChanged( active );
 }
 
-void QgsMapLayerStyleManagerWidget::styleClicked( QModelIndex index )
+void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
 {
   if ( !mLayer || !index.isValid() )
     return;
 
   QString name = index.data().toString();
-  if ( name == "(default)" )
-    name = "";
+  if ( name == QLatin1String( "(default)" ) )
+    name = QLatin1String( "" );
 
   mLayer->styleManager()->setCurrentStyle( name );
 }
 
-void QgsMapLayerStyleManagerWidget::currentStyleChanged( QString name )
+void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString& name )
 {
   QList<QStandardItem*> items = mModel->findItems( name );
   if ( items.isEmpty() )
@@ -115,14 +115,14 @@ void QgsMapLayerStyleManagerWidget::currentStyleChanged( QString name )
   mStyleList->setCurrentIndex( item->index() );
 }
 
-void QgsMapLayerStyleManagerWidget::styleAdded( QString name )
+void QgsMapLayerStyleManagerWidget::styleAdded( const QString& name )
 {
   QgsDebugMsg( "Style added" );
   QStandardItem* item = new QStandardItem( name );
   mModel->appendRow( item );
 }
 
-void QgsMapLayerStyleManagerWidget::styleRemoved( QString name )
+void QgsMapLayerStyleManagerWidget::styleRemoved( const QString& name )
 {
   QList<QStandardItem*> items = mModel->findItems( name );
   if ( items.isEmpty() )
@@ -132,7 +132,7 @@ void QgsMapLayerStyleManagerWidget::styleRemoved( QString name )
   mModel->removeRow( item->row() );
 }
 
-void QgsMapLayerStyleManagerWidget::styleRenamed( QString oldname, QString newname )
+void QgsMapLayerStyleManagerWidget::styleRenamed( const QString& oldname, const QString& newname )
 {
   QList<QStandardItem*> items = mModel->findItems( oldname );
   if ( items.isEmpty() )
@@ -147,7 +147,7 @@ void QgsMapLayerStyleManagerWidget::addStyle()
   bool ok;
   QString text = QInputDialog::getText( nullptr, tr( "New style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
-                                        "new style", &ok );
+                                        QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -202,7 +202,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
         case 0:
           return;
         case 2:
-          layer->saveStyleToDatabase( "", "", true, "", errorMsg );
+          layer->saveStyleToDatabase( QLatin1String( "" ), QLatin1String( "" ), true, QLatin1String( "" ), errorMsg );
           if ( errorMsg.isNull() )
           {
             return;
@@ -296,7 +296,7 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
 void QgsMapLayerStyleManagerWidget::loadStyle()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
@@ -308,7 +308,7 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
   QString myMessage;
   bool defaultLoadedFlag = false;
 
-  if ( myFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
+  if ( myFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
   {
     // load from SLD
     myMessage = mLayer->loadSldStyle( myFileName, defaultLoadedFlag );
@@ -330,6 +330,6 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
 
   QFileInfo myFI( myFileName );
   QString myPath = myFI.path();
-  myQSettings.setValue( "style/lastStyleDir", myPath );
+  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
 
 }

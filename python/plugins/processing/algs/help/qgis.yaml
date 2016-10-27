@@ -333,6 +333,9 @@ qgis:polygonize:  >
 qgis:polygonstolines: >
   This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
 
+qgis:spatialiteexecutesql: >
+  This algorithm performs a SQL database query on a Spatialite database.
+  
 qgis:postgisexecutesql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
 
@@ -394,6 +397,8 @@ qgis:refactorfields: >
 
 qgis:regularpoints:
 
+qgis:removenullgeometries: >
+  This algorithms removes any features which do not have a geometry from a vector layer. All other features will be copied unchanged.
 
 qgis:reprojectlayer: >
   This algorithm reprojects a vector layer. It creates a new layer with the same features as the input one, but with geometries reprojected to a new CRS.

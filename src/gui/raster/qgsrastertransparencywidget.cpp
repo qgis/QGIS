@@ -87,9 +87,9 @@ void QgsRasterTransparencyWidget::syncToLayer()
       bandName = provider->generateBandName( i );
 
       QString colorInterp = provider->colorInterpretationName( i );
-      if ( colorInterp != "Undefined" )
+      if ( colorInterp != QLatin1String( "Undefined" ) )
       {
-        bandName.append( QString( " (%1)" ).arg( colorInterp ) );
+        bandName.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
       }
       cboxTransparencyBand->addItem( bandName, i );
     }
@@ -237,11 +237,11 @@ void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
 void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
 {
   QSettings myQSettings;
-  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
+  QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
-    if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    if ( !myFileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
     {
       myFileName = myFileName + ".txt";
     }
@@ -287,7 +287,7 @@ void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
   bool myImportError = false;
   QString myBadLines;
   QSettings myQSettings;
-  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
+  QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
@@ -406,6 +406,7 @@ void QgsRasterTransparencyWidget::apply()
     {
       QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
       QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
+      myTransparentThreeValuePixelList.reserve( tableTransparency->rowCount() );
       for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
       {
         myTransparentPixel.red = transparencyCellValue( myListRunner, 0 );
@@ -420,6 +421,7 @@ void QgsRasterTransparencyWidget::apply()
     {
       QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
       QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+      myTransparentSingleValuePixelList.reserve( tableTransparency->rowCount() );
       for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
       {
         myTransparentPixel.min = transparencyCellValue( myListRunner, 0 );

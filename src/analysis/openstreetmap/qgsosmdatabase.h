@@ -129,7 +129,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
  * Encapsulate iteration over table of nodes/
  * @note not available in Python bindings
 */
-class ANALYSIS_EXPORT QgsOSMNodeIterator
+class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 {
   public:
     ~QgsOSMNodeIterator();
@@ -145,6 +145,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
     sqlite3_stmt* mStmt;
 
     friend class QgsOSMDatabase;
+
 };
 
 
@@ -153,7 +154,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
  * Encapsulate iteration over table of ways
  * @note not available in Python bindings
  */
-class ANALYSIS_EXPORT QgsOSMWayIterator
+class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 {
   public:
     ~QgsOSMWayIterator();
@@ -168,9 +169,8 @@ class ANALYSIS_EXPORT QgsOSMWayIterator
 
     sqlite3_stmt* mStmt;
 
-  private:
-
     friend class QgsOSMDatabase;
+
 };
 
 

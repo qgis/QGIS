@@ -43,7 +43,7 @@ QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
   //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
-  mScaleMinPixelsWidth = mRulerFontMetrics->width( "000" ) * 2.5;
+  mScaleMinPixelsWidth = mRulerFontMetrics->width( QStringLiteral( "000" ) ) * 2.5;
   //minimum ruler height is twice the font height in pixels
   mRulerMinSize = mRulerFontMetrics->height() * 1.5;
 

@@ -815,7 +815,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   return result;
 }
 
-/** Replaces a part of this geometry with another line*/
+//! Replaces a part of this geometry with another line
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
   if ( !d->geometry )
@@ -1011,7 +1011,7 @@ QString QgsGeometry::exportToGeoJSON( int precision ) const
 {
   if ( !d->geometry )
   {
-    return QString( "null" );
+    return QStringLiteral( "null" );
   }
   return d->geometry->asJSON( precision );
 }
@@ -1790,7 +1790,7 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( const QMap<QgsVectorLayer*, QSet< QgsFeatureId > >& ignoreFeatures )
+int QgsGeometry::avoidIntersections( const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   if ( !d->geometry )
   {

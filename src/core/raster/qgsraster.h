@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRaster
       PyramidsErdas = 2
     };
 
-    /** \brief Contrast enhancement limits */
+    //! \brief Contrast enhancement limits
     enum ContrastEnhancementLimits
     {
       ContrastEnhancementNone,
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsRaster
       ContrastEnhancementCumulativeCut
     };
 
-    /** \brief This enumerator describes the different kinds of drawing we can do */
+    //! \brief This enumerator describes the different kinds of drawing we can do
     enum DrawingStyle
     {
       UndefinedDrawingStyle,

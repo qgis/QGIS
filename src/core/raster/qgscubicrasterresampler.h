@@ -31,7 +31,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
     ~QgsCubicRasterResampler();
     QgsCubicRasterResampler * clone() const override;
     void resample( const QImage& srcImage, QImage& dstImage ) override;
-    QString type() const override { return "cubic"; }
+    QString type() const override { return QStringLiteral( "cubic" ); }
 
   private:
     static void xDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix );
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
                                  double* xDerivativeMatrixAlpha, double* yDerivativeMatrixRed, double* yDerivativeMatrixGreen, double* yDerivativeMatrixBlue,
                                  double* yDerivativeMatrixAlpha );
 
-    /** Use cubic curve interpoation at the borders of the raster*/
+    //! Use cubic curve interpoation at the borders of the raster
     QRgb curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue, double d1alpha, double d2red, double d2green,
                              double d2blue, double d2alpha );
 

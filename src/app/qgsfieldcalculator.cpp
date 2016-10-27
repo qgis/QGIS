@@ -44,8 +44,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mVectorLayer );
 
-  expContext.lastScope()->setVariable( "row_number", 1 );
-  expContext.setHighlightedVariables( QStringList() << "row_number" );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
+  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
 
   builder->setLayer( vl );
   builder->loadFieldNames();
@@ -60,7 +60,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   builder->setGeomCalculator( myDa );
 
   //default values for field width and precision
@@ -68,7 +68,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   mOutputFieldPrecisionSpinBox->setValue( 3 );
   setPrecisionMinMax();
 
-  if ( vl->providerType() == "ogr" && vl->storageType() == "ESRI Shapefile" )
+  if ( vl->providerType() == QLatin1String( "ogr" ) && vl->storageType() == QLatin1String( "ESRI Shapefile" ) )
   {
     mOutputFieldNameLineEdit->setMaxLength( 10 );
   }
@@ -132,25 +132,25 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   mOnlyUpdateSelectedCheckBox->setEnabled( hasselection );
   mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeatureCount() ) );
 
-  builder->loadRecent( "fieldcalc" );
+  builder->loadRecent( QStringLiteral( "fieldcalc" ) );
 
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
   setOkButtonState();
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/QgsFieldCalculator/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsFieldCalculator/geometry" ) ).toByteArray() );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
 {
   QSettings settings;
-  settings.setValue( "/Windows/QgsFieldCalculator/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/QgsFieldCalculator/geometry" ), saveGeometry() );
 }
 
 void QgsFieldCalculator::accept()
 {
-  builder->saveToRecent( "fieldcalc" );
+  builder->saveToRecent( QStringLiteral( "fieldcalc" ) );
 
   if ( !mVectorLayer )
     return;
@@ -160,7 +160,7 @@ void QgsFieldCalculator::accept()
 
   myDa.setSourceCrs( mVectorLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
@@ -196,12 +196,12 @@ void QgsFieldCalculator::accept()
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    mVectorLayer->beginEditCommand( "Field calculator" );
+    mVectorLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
     //update existing field
     if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
     {
-      if ( mExistingFieldComboBox->currentData().toString() == "geom" )
+      if ( mExistingFieldComboBox->currentData().toString() == QLatin1String( "geom" ) )
       {
         //update geometry
         mAttributeId = -1;
@@ -282,7 +282,7 @@ void QgsFieldCalculator::accept()
     while ( fit.nextFeature( feature ) )
     {
       expContext.setFeature( feature );
-      expContext.lastScope()->setVariable( QString( "row_number" ), rownum );
+      expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
       QVariant value = exp.evaluate( &expContext );
       if ( exp.hasEvalError() )
@@ -476,7 +476,7 @@ void QgsFieldCalculator::setOkButtonState()
     return;
   }
 
-  okButton->setToolTip( "" );
+  okButton->setToolTip( QLatin1String( "" ) );
   okButton->setEnabled( true );
 }
 

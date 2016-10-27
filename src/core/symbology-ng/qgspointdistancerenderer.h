@@ -74,7 +74,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QgsPointDistanceRenderer( const QString& rendererName, const QString& labelAttributeName = QString() );
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual QSet<QString> usedAttributes() const override;
     virtual Capabilities capabilities() override;

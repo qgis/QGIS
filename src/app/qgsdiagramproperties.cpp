@@ -71,13 +71,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
   mDiagramTypeComboBox->blockSignals( true );
-  QPixmap pix = QgsApplication::getThemePixmap( "diagramNone" );
+  QPixmap pix = QgsApplication::getThemePixmap( QStringLiteral( "diagramNone" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "No diagrams" ), "None" );
-  pix = QgsApplication::getThemePixmap( "pie-chart" );
+  pix = QgsApplication::getThemePixmap( QStringLiteral( "pie-chart" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
-  pix = QgsApplication::getThemePixmap( "text" );
+  pix = QgsApplication::getThemePixmap( QStringLiteral( "text" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
-  pix = QgsApplication::getThemePixmap( "histogram" );
+  pix = QgsApplication::getThemePixmap( QStringLiteral( "histogram" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
   mDiagramTypeComboBox->blockSignals( false );
 
@@ -86,12 +86,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
-  mBackgroundColorButton->setContext( "symbology" );
+  mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent background" ) );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Select pen color" ) );
   mDiagramPenColorButton->setAllowAlpha( true );
-  mDiagramPenColorButton->setContext( "symbology" );
+  mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent outline" ) );
 
@@ -161,7 +161,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   QSizePolicy policy( mDiagramOptionsListFrame->sizePolicy() );
   policy.setHorizontalStretch( 0 );
   mDiagramOptionsListFrame->setSizePolicy( policy );
-  if ( !settings.contains( QString( "/Windows/Diagrams/OptionsSplitState" ) ) )
+  if ( !settings.contains( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ) ) )
   {
     // set left list widget width on intial showing
     QList<int> splitsizes;
@@ -170,15 +170,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
 
   // restore dialog, splitters and current tab
-  mDiagramOptionsSplitter->restoreState( settings.value( QString( "/Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
-  mDiagramOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Diagrams/Tab" ), 0 ).toInt() );
+  mDiagramOptionsSplitter->restoreState( settings.value( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
+  mDiagramOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "/Windows/Diagrams/Tab" ), 0 ).toInt() );
 
   // field combo and expression button
   mSizeFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
   //insert all attributes into the combo boxes
@@ -186,7 +186,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    QString name = QString( "\"%1\"" ).arg( layerFields.at( idx ).name() );
+    QString name = QStringLiteral( "\"%1\"" ).arg( layerFields.at( idx ).name() );
     newItem->setText( 0, name );
     newItem->setData( 0, RoleAttributeExpression, name );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
@@ -246,7 +246,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   else // already a diagram renderer present
   {
     //single category renderer or interpolated one?
-    if ( dr->rendererName() == "SingleCategory" )
+    if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
     {
       mFixedSizeRadio->setChecked( true );
     }
@@ -355,7 +355,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       }
     }
 
-    if ( dr->rendererName() == "LinearlyInterpolated" )
+    if ( dr->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
     {
       const QgsLinearlyInterpolatedDiagramRenderer* lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer*>( dr );
       if ( lidr )
@@ -429,8 +429,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 QgsDiagramProperties::~QgsDiagramProperties()
 {
   QSettings settings;
-  settings.setValue( QString( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
-  settings.setValue( QString( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
+  settings.setValue( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -865,13 +865,13 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
   << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
   << QgsExpressionContextUtils::layerScope( mLayer );
 
-  QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based attribute" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
   if ( dlg.exec() == QDialog::Accepted )

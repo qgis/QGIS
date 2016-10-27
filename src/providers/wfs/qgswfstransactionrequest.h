@@ -17,14 +17,14 @@
 
 #include "qgswfsrequest.h"
 
-/** Manages the Transaction requests */
+//! Manages the Transaction requests
 class QgsWFSTransactionRequest : public QgsWfsRequest
 {
     Q_OBJECT
   public:
     explicit QgsWFSTransactionRequest( const QString& theUri );
 
-    /** Send the transaction document and return the server response */
+    //! Send the transaction document and return the server response
     bool send( const QDomDocument& doc, QDomDocument& serverResponse );
 
   protected:

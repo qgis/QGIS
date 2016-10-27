@@ -60,8 +60,8 @@ void QgsDashSpaceDialog::on_mAddButton_clicked()
   //add new (default) item
   QTreeWidgetItem* entry = new QTreeWidgetItem();
   entry->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
-  entry->setText( 0, "5" );
-  entry->setText( 1, "2" );
+  entry->setText( 0, QStringLiteral( "5" ) );
+  entry->setText( 1, QStringLiteral( "2" ) );
   mDashSpaceTreeWidget->addTopLevelItem( entry );
 }
 

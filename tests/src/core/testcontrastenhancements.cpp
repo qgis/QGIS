@@ -47,7 +47,7 @@ class TestContrastEnhancements: public QObject
 //runs before all tests
 void TestContrastEnhancements::initTestCase()
 {
-  mReport += "<h1>Raster Contrast Enhancement Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Raster Contrast Enhancement Tests</h1>\n" );
 }
 //runs after all tests
 void TestContrastEnhancements::cleanupTestCase()

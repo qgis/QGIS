@@ -45,10 +45,10 @@ class SERVER_EXPORT QgsServerInterface
 
   public:
 
-    /** Constructor */
+    //! Constructor
     QgsServerInterface();
 
-    /** Destructor */
+    //! Destructor
     virtual ~QgsServerInterface() = 0;
 
     /**
@@ -102,7 +102,7 @@ class SERVER_EXPORT QgsServerInterface
      */
     virtual void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 ) = 0;
 
-    /** Gets the registred access control filters */
+    //! Gets the registred access control filters
     virtual const QgsAccessControl* accessControls() const = 0;
 
     //! Return an enrironment variable, used to pass  environment variables to python

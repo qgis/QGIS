@@ -48,11 +48,12 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QString format() const;
     QString encoding() const;
     QString filename() const;
+    QString layername() const;
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
     QgsAttributeList selectedAttributes() const;
-    /** Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16 */
+    //! Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
     QgsAttributeList attributesAsDisplayedValues() const;
     bool addToCanvas() const;
     /** Returns type of symbology export.
@@ -100,6 +101,9 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      */
     void setIncludeZ( bool checked );
 
+    //! Returns creation action
+    QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
+
   private slots:
 
     void on_mFormatComboBox_currentIndexChanged( int idx );
@@ -126,6 +130,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsVectorLayer *mLayer;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
+    QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

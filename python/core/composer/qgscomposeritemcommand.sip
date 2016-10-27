@@ -49,9 +49,14 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       //composer label
       ComposerLabelSetText,
       ComposerLabelSetId,
+      ComposerLabelFontColor,
       //composer map
       ComposerMapRotation,
       ComposerMapAnnotationDistance,
+      ComposerMapGridFramePenColor,
+      ComposerMapGridFrameFill1Color,
+      ComposerMapGridFrameFill2Color,
+      ComposerMapGridAnnotationFontColor,
       //composer legend
       ComposerLegendText,
       LegendColumnCount,
@@ -69,8 +74,12 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       LegendBoxSpace,
       LegendColumnSpace,
       LegendRasterBorderWidth,
+      LegendFontColor,
+      LegendRasterBorderColor,
       //composer picture
       ComposerPictureRotation,
+      ComposerPictureFillColor,
+      ComposerPictureOutlineColor,
       // composer scalebar
       ScaleBarLineWidth,
       ScaleBarHeight,
@@ -81,6 +90,10 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ScaleBarMapUnitsSegment,
       ScaleBarLabelBarSize,
       ScaleBarBoxContentSpace,
+      ScaleBarFontColor,
+      ScaleBarFillColor,
+      ScaleBarFill2Color,
+      ScaleBarStrokeColor,
       // composer table
       TableMaximumFeatures,
       TableMargin,
@@ -90,9 +103,13 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ShapeOutlineWidth,
       //composer arrow
       ArrowOutlineWidth,
+      ArrowHeadFillColor,
+      ArrowHeadOutlineColor,
       ArrowHeadWidth,
       //item
       ItemOutlineWidth,
+      ItemOutlineColor,
+      ItemBackgroundColor,
       ItemMove,
       ItemRotation,
       ItemTransparency,

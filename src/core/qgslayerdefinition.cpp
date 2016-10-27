@@ -30,7 +30,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeG
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    errorMessage = QLatin1String( "Can not open file" );
+    errorMessage = QStringLiteral( "Can not open file" );
     return false;
   }
 
@@ -65,7 +65,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
     {
       clonedSorted << node.cloneNode();
     }
-    QDomNode layersNode = doc.elementsByTagName( "maplayers" ).at( 0 );
+    QDomNode layersNode = doc.elementsByTagName( QStringLiteral( "maplayers" ) ).at( 0 );
     // replace old children with new ones
     QDomNodeList childNodes = layersNode.childNodes();
     for ( int i = 0; i < childNodes.size(); i++ )
@@ -77,7 +77,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 
   // IDs of layers should be changed otherwise we may have more then one layer with the same id
   // We have to replace the IDs before we load them because it's too late once they are loaded
-  QDomNodeList ids = doc.elementsByTagName( "id" );
+  QDomNodeList ids = doc.elementsByTagName( QStringLiteral( "id" ) );
   for ( int i = 0; i < ids.size(); ++i )
   {
     QDomNode idnode = ids.at( i );
@@ -86,50 +86,50 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
     // Strip the date part because we will replace it.
     QString layername = oldid.left( oldid.length() - 17 );
     QDateTime dt = QDateTime::currentDateTime();
-    QString newid = layername + dt.toString( "yyyyMMddhhmmsszzz" ) + QString::number( qrand() );
+    QString newid = layername + dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) ) + QString::number( qrand() );
     idElem.firstChild().setNodeValue( newid );
-    QDomNodeList treeLayerNodes = doc.elementsByTagName( "layer-tree-layer" );
+    QDomNodeList treeLayerNodes = doc.elementsByTagName( QStringLiteral( "layer-tree-layer" ) );
 
     for ( int i = 0; i < treeLayerNodes.count(); ++i )
     {
       QDomNode layerNode = treeLayerNodes.at( i );
       QDomElement layerElem = layerNode.toElement();
-      if ( layerElem.attribute( "id" ) == oldid )
+      if ( layerElem.attribute( QStringLiteral( "id" ) ) == oldid )
       {
-        layerNode.toElement().setAttribute( "id", newid );
+        layerNode.toElement().setAttribute( QStringLiteral( "id" ), newid );
       }
     }
 
     // change layer IDs for vector joins
-    QDomNodeList vectorJoinNodes = doc.elementsByTagName( "join" ); // TODO: Find a better way of searching for vectorjoins, there might be other <join> elements within the project.
+    QDomNodeList vectorJoinNodes = doc.elementsByTagName( QStringLiteral( "join" ) ); // TODO: Find a better way of searching for vectorjoins, there might be other <join> elements within the project.
     for ( int j = 0; j < vectorJoinNodes.size(); ++j )
     {
       QDomNode joinNode = vectorJoinNodes.at( j );
       QDomElement joinElement = joinNode.toElement();
-      if ( joinElement.attribute( "joinLayerId" ) == oldid )
+      if ( joinElement.attribute( QStringLiteral( "joinLayerId" ) ) == oldid )
       {
-        joinNode.toElement().setAttribute( "joinLayerId", newid );
+        joinNode.toElement().setAttribute( QStringLiteral( "joinLayerId" ), newid );
       }
     }
 
     // change IDs of dependencies
-    QDomNodeList dataDeps = doc.elementsByTagName( "dataDependencies" );
+    QDomNodeList dataDeps = doc.elementsByTagName( QStringLiteral( "dataDependencies" ) );
     for ( int i = 0; i < dataDeps.size(); i++ )
     {
       QDomNodeList layers = dataDeps.at( i ).childNodes();
       for ( int j = 0; j < layers.size(); j++ )
       {
         QDomElement elt = layers.at( j ).toElement();
-        if ( elt.attribute( "id" ) == oldid )
+        if ( elt.attribute( QStringLiteral( "id" ) ) == oldid )
         {
-          elt.setAttribute( "id", newid );
+          elt.setAttribute( QStringLiteral( "id" ), newid );
         }
       }
     }
 
   }
 
-  QDomElement layerTreeElem = doc.documentElement().firstChildElement( "layer-tree-group" );
+  QDomElement layerTreeElem = doc.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   bool loadInLegend = true;
   if ( !layerTreeElem.isNull() )
   {
@@ -163,7 +163,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 
 bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage )
 {
-  if ( !path.endsWith( ".qlr" ) )
+  if ( !path.endsWith( QLatin1String( ".qlr" ) ) )
     path = path.append( ".qlr" );
 
   QFile file( path );
@@ -176,7 +176,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
 
   QFileInfo fileinfo( file );
 
-  QDomDocument doc( "qgis-layer-definition" );
+  QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
   if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, fileinfo.canonicalFilePath() ) )
     return false;
 
@@ -188,7 +188,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
 bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath )
 {
   Q_UNUSED( errorMessage );
-  QDomElement qgiselm = doc.createElement( "qlr" );
+  QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
   doc.appendChild( qgiselm );
   QList<QgsLayerTreeNode*> nodes = selectedTreeNodes;
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
@@ -199,11 +199,11 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   }
   root->writeXml( qgiselm );
 
-  QDomElement layerselm = doc.createElement( "maplayers" );
+  QDomElement layerselm = doc.createElement( QStringLiteral( "maplayers" ) );
   QList<QgsLayerTreeLayer*> layers = root->findLayers();
   Q_FOREACH ( QgsLayerTreeLayer* layer, layers )
   {
-    QDomElement layerelm = doc.createElement( "maplayer" );
+    QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
     layer->layer()->writeLayerXml( layerelm, doc, relativeBasePath );
     layerselm.appendChild( layerelm );
   }
@@ -219,25 +219,26 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
   QList< QPair<QString, QDomNode> > layersToSort;
   QStringList layerIds;
 
-  QDomNodeList nl = doc.elementsByTagName( "maplayer" );
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
+  layerIds.reserve( nl.count() );
+  QVector<QString> deps; //avoid expensive allocation for list for every iteration
   for ( int i = 0; i < nl.count(); i++ )
   {
-    QVector<QString> deps;
+    deps.resize( 0 ); // preserve capacity - don't use clear
     QDomNode node = nl.item( i );
-    QDomElement element = node.toElement();
 
-    QString id = node.namedItem( "id" ).toElement().text();
+    QString id = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
     layerIds << id;
 
     // dependencies for this layer
-    QDomElement layerDependenciesElem = node.firstChildElement( "layerDependencies" );
+    QDomElement layerDependenciesElem = node.firstChildElement( QStringLiteral( "layerDependencies" ) );
     if ( !layerDependenciesElem.isNull() )
     {
-      QDomNodeList dependencyList = layerDependenciesElem.elementsByTagName( "layer" );
+      QDomNodeList dependencyList = layerDependenciesElem.elementsByTagName( QStringLiteral( "layer" ) );
       for ( int j = 0; j < dependencyList.size(); ++j )
       {
         QDomElement depElem = dependencyList.at( j ).toElement();
-        deps << depElem.attribute( "id" );
+        deps << depElem.attribute( QStringLiteral( "id" ) );
       }
     }
     dependencies[id] = deps;

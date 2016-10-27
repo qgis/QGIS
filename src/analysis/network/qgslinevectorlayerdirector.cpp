@@ -123,7 +123,7 @@ QgsLineVectorLayerDirector::~QgsLineVectorLayerDirector()
 
 QString QgsLineVectorLayerDirector::name() const
 {
-  return QString( "Vector line" );
+  return QStringLiteral( "Vector line" );
 }
 
 void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,

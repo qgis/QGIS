@@ -22,7 +22,7 @@ QgsRuggednessFilter::QgsRuggednessFilter( const QString& inputFile, const QStrin
 
 }
 
-QgsRuggednessFilter::QgsRuggednessFilter(): QgsNineCellFilter( "", "", "" )
+QgsRuggednessFilter::QgsRuggednessFilter(): QgsNineCellFilter( QLatin1String( "" ), QLatin1String( "" ), QLatin1String( "" ) )
 {
 
 }

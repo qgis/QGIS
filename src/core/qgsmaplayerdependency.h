@@ -48,7 +48,7 @@ class CORE_EXPORT QgsMapLayerDependency
     };
 
     //! Standard constructor
-    QgsMapLayerDependency( QString layerId, Type type = DataDependency, Origin origin = FromUser ) :
+    QgsMapLayerDependency( const QString& layerId, Type type = DataDependency, Origin origin = FromUser ) :
         mType( type ),
         mOrigin( origin ),
         mLayerId( layerId )

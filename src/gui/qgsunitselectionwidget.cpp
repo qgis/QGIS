@@ -162,6 +162,10 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   {
     mUnitCombo->addItem( tr( "Millimeter" ), QgsUnitTypes::RenderMillimeters );
   }
+  if ( units.contains( QgsUnitTypes::RenderPoints ) )
+  {
+    mUnitCombo->addItem( tr( "Points" ), QgsUnitTypes::RenderPoints );
+  }
   if ( units.contains( QgsUnitTypes::RenderPixels ) )
   {
     mUnitCombo->addItem( tr( "Pixels" ), QgsUnitTypes::RenderPixels );

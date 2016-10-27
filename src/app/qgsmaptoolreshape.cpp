@@ -105,7 +105,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
           if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
           {
             //ignore all current layer features as they should be reshaped too
-            QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
+            QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
             ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
             if ( geom.avoidIntersections( ignoreFeatures ) != 0 )

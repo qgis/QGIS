@@ -230,16 +230,16 @@ void QgsRasterResampleFilter::writeXml( QDomDocument& doc, QDomElement& parentEl
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( "rasterresampler" );
+  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterresampler" ) );
 
-  rasterRendererElem.setAttribute( "maxOversampling", QString::number( mMaxOversampling ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "maxOversampling" ), QString::number( mMaxOversampling ) );
   if ( mZoomedInResampler )
   {
-    rasterRendererElem.setAttribute( "zoomedInResampler", mZoomedInResampler->type() );
+    rasterRendererElem.setAttribute( QStringLiteral( "zoomedInResampler" ), mZoomedInResampler->type() );
   }
   if ( mZoomedOutResampler )
   {
-    rasterRendererElem.setAttribute( "zoomedOutResampler", mZoomedOutResampler->type() );
+    rasterRendererElem.setAttribute( QStringLiteral( "zoomedOutResampler" ), mZoomedOutResampler->type() );
   }
   parentElem.appendChild( rasterRendererElem );
 }
@@ -251,20 +251,20 @@ void QgsRasterResampleFilter::readXml( const QDomElement& filterElem )
     return;
   }
 
-  mMaxOversampling = filterElem.attribute( "maxOversampling", "2.0" ).toDouble();
+  mMaxOversampling = filterElem.attribute( QStringLiteral( "maxOversampling" ), QStringLiteral( "2.0" ) ).toDouble();
 
-  QString zoomedInResamplerType = filterElem.attribute( "zoomedInResampler" );
-  if ( zoomedInResamplerType == "bilinear" )
+  QString zoomedInResamplerType = filterElem.attribute( QStringLiteral( "zoomedInResampler" ) );
+  if ( zoomedInResamplerType == QLatin1String( "bilinear" ) )
   {
     mZoomedInResampler = new QgsBilinearRasterResampler();
   }
-  else if ( zoomedInResamplerType == "cubic" )
+  else if ( zoomedInResamplerType == QLatin1String( "cubic" ) )
   {
     mZoomedInResampler = new QgsCubicRasterResampler();
   }
 
-  QString zoomedOutResamplerType = filterElem.attribute( "zoomedOutResampler" );
-  if ( zoomedOutResamplerType == "bilinear" )
+  QString zoomedOutResamplerType = filterElem.attribute( QStringLiteral( "zoomedOutResampler" ) );
+  if ( zoomedOutResamplerType == QLatin1String( "bilinear" ) )
   {
     mZoomedOutResampler = new QgsBilinearRasterResampler();
   }

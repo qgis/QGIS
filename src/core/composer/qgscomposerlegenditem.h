@@ -88,7 +88,7 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    /** Set symbol (takes ownership)*/
+    //! Set symbol (takes ownership)
     void setSymbol( QgsSymbol* s );
     QgsSymbol* symbol() {return mSymbol;}
 
@@ -142,7 +142,16 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
 
     ItemType itemType() const override { return LayerItem; }
 
+    /**
+     * Sets the associated layer ID.
+     * @see layerId()
+     */
     void setLayerId( const QString& id ) { mLayerID = id; }
+
+    /**
+     * Returns the ID of the associated layer.
+     * @see setLayerId()
+     */
     QString layerId() const { return mLayerID; }
 
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }

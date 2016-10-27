@@ -28,7 +28,7 @@ QgsComposerObject::QgsComposerObject( QgsComposition* composition )
 {
 
   // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::TestProperty, QString( "dataDefinedTestProperty" ) );
+  mDataDefinedNames.insert( QgsComposerObject::TestProperty, QStringLiteral( "dataDefinedTestProperty" ) );
 
   if ( mComposition )
   {

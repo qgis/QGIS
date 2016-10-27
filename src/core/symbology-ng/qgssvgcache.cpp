@@ -106,7 +106,7 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
     , mLeastRecentEntry( nullptr )
     , mMostRecentEntry( nullptr )
 {
-  mMissingSvg = QString( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+  mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }
 
 QgsSvgCache::~QgsSvgCache()
@@ -328,23 +328,23 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
 
   //find svg viewbox attribute
   //first check if docElem is svg element
-  if ( docElem.tagName() == "svg" && docElem.hasAttribute( "viewBox" ) )
+  if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
   {
-    viewBox = docElem.attribute( "viewBox", QString() );
+    viewBox = docElem.attribute( QStringLiteral( "viewBox" ), QString() );
   }
-  else if ( docElem.tagName() == "svg" && docElem.hasAttribute( "viewbox" ) )
+  else if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "viewbox" ) ) )
   {
-    viewBox = docElem.attribute( "viewbox", QString() );
+    viewBox = docElem.attribute( QStringLiteral( "viewbox" ), QString() );
   }
   else
   {
-    QDomElement svgElem = docElem.firstChildElement( "svg" ) ;
+    QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) ) ;
     if ( !svgElem.isNull() )
     {
-      if ( svgElem.hasAttribute( "viewBox" ) )
-        viewBox = svgElem.attribute( "viewBox", QString() );
-      else if ( svgElem.hasAttribute( "viewbox" ) )
-        viewBox = svgElem.attribute( "viewbox", QString() );
+      if ( svgElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
+        viewBox = svgElem.attribute( QStringLiteral( "viewBox" ), QString() );
+      else if ( svgElem.hasAttribute( QStringLiteral( "viewbox" ) ) )
+        viewBox = svgElem.attribute( QStringLiteral( "viewbox" ), QString() );
     }
   }
 
@@ -389,7 +389,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // maybe it's a url...
-  if ( !path.contains( "://" ) ) // otherwise short, relative SVG paths might be considered URLs
+  if ( !path.contains( QLatin1String( "://" ) ) ) // otherwise short, relative SVG paths might be considered URLs
   {
     return mMissingSvg;
   }
@@ -401,7 +401,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // check whether it's a url pointing to a local file
-  if ( svgUrl.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+  if ( svgUrl.scheme().compare( QLatin1String( "file" ), Qt::CaseInsensitive ) == 0 )
   {
     svgFile.setFileName( svgUrl.toLocalFile() );
     if ( svgFile.exists() )
@@ -474,7 +474,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
 
   QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
   QgsDebugMsg( "contentType: " + contentType );
-  if ( !contentType.startsWith( "image/svg+xml", Qt::CaseInsensitive ) )
+  if ( !contentType.startsWith( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) )
   {
     reply->deleteLater();
     return mMissingSvg;
@@ -632,7 +632,7 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
   {
     QDomAttr attribute = attributes.item( i ).toAttr();
     //e.g. style="fill:param(fill);param(stroke)"
-    if ( attribute.name().compare( "style", Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( QLatin1String( "style" ), Qt::CaseInsensitive ) == 0 )
     {
       //entries separated by ';'
       QString newAttributeString;
@@ -648,23 +648,23 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
         }
         QString key = keyValueSplit.at( 0 );
         QString value = keyValueSplit.at( 1 );
-        if ( value.startsWith( "param(fill)" ) )
+        if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
         {
           value = fill.name();
         }
-        else if ( value.startsWith( "param(fill-opacity)" ) )
+        else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
         {
           value = fill.alphaF();
         }
-        else if ( value.startsWith( "param(outline)" ) )
+        else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
         {
           value = outline.name();
         }
-        else if ( value.startsWith( "param(outline-opacity)" ) )
+        else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
         {
           value = outline.alphaF();
         }
-        else if ( value.startsWith( "param(outline-width)" ) )
+        else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
         {
           value = QString::number( outlineWidth );
         }
@@ -680,23 +680,23 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
     else
     {
       QString value = attribute.value();
-      if ( value.startsWith( "param(fill)" ) )
+      if ( value.startsWith( QLatin1String( "param(fill)" ) ) )
       {
         elem.setAttribute( attribute.name(), fill.name() );
       }
-      else if ( value.startsWith( "param(fill-opacity)" ) )
+      else if ( value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
       {
         elem.setAttribute( attribute.name(), fill.alphaF() );
       }
-      else if ( value.startsWith( "param(outline)" ) )
+      else if ( value.startsWith( QLatin1String( "param(outline)" ) ) )
       {
         elem.setAttribute( attribute.name(), outline.name() );
       }
-      else if ( value.startsWith( "param(outline-opacity)" ) )
+      else if ( value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
       {
         elem.setAttribute( attribute.name(), outline.alphaF() );
       }
-      else if ( value.startsWith( "param(outline-width)" ) )
+      else if ( value.startsWith( QLatin1String( "param(outline-width)" ) ) )
       {
         elem.setAttribute( attribute.name(), QString::number( outlineWidth ) );
       }
@@ -737,7 +737,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
   for ( int i = 0; i < nAttributes; ++i )
   {
     QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().compare( "style", Qt::CaseInsensitive ) == 0 )
+    if ( attribute.name().compare( QLatin1String( "style" ), Qt::CaseInsensitive ) == 0 )
     {
       //entries separated by ';'
       QStringList entryList = attribute.value().split( ';' );
@@ -751,7 +751,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
         }
         QString value = keyValueSplit.at( 1 );
         valueSplit = value.split( ' ' );
-        if ( !hasFillParam && value.startsWith( "param(fill)" ) )
+        if ( !hasFillParam && value.startsWith( QLatin1String( "param(fill)" ) ) )
         {
           hasFillParam = true;
           if ( valueSplit.size() > 1 )
@@ -760,7 +760,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             hasDefaultFill = true;
           }
         }
-        else if ( !hasFillOpacityParam && value.startsWith( "param(fill-opacity)" ) )
+        else if ( !hasFillOpacityParam && value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
         {
           hasFillOpacityParam = true;
           if ( valueSplit.size() > 1 )
@@ -774,7 +774,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             }
           }
         }
-        else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
+        else if ( !hasOutlineParam && value.startsWith( QLatin1String( "param(outline)" ) ) )
         {
           hasOutlineParam = true;
           if ( valueSplit.size() > 1 )
@@ -783,7 +783,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             hasDefaultOutline = true;
           }
         }
-        else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
+        else if ( !hasOutlineWidthParam && value.startsWith( QLatin1String( "param(outline-width)" ) ) )
         {
           hasOutlineWidthParam = true;
           if ( valueSplit.size() > 1 )
@@ -792,7 +792,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             hasDefaultOutlineWidth = true;
           }
         }
-        else if ( !hasOutlineOpacityParam && value.startsWith( "param(outline-opacity)" ) )
+        else if ( !hasOutlineOpacityParam && value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
         {
           hasOutlineOpacityParam = true;
           if ( valueSplit.size() > 1 )
@@ -812,7 +812,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
     {
       QString value = attribute.value();
       valueSplit = value.split( ' ' );
-      if ( !hasFillParam && value.startsWith( "param(fill)" ) )
+      if ( !hasFillParam && value.startsWith( QLatin1String( "param(fill)" ) ) )
       {
         hasFillParam = true;
         if ( valueSplit.size() > 1 )
@@ -821,7 +821,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           hasDefaultFill = true;
         }
       }
-      else if ( !hasFillOpacityParam && value.startsWith( "param(fill-opacity)" ) )
+      else if ( !hasFillOpacityParam && value.startsWith( QLatin1String( "param(fill-opacity)" ) ) )
       {
         hasFillOpacityParam = true;
         if ( valueSplit.size() > 1 )
@@ -835,7 +835,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           }
         }
       }
-      else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
+      else if ( !hasOutlineParam && value.startsWith( QLatin1String( "param(outline)" ) ) )
       {
         hasOutlineParam = true;
         if ( valueSplit.size() > 1 )
@@ -844,7 +844,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           hasDefaultOutline = true;
         }
       }
-      else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
+      else if ( !hasOutlineWidthParam && value.startsWith( QLatin1String( "param(outline-width)" ) ) )
       {
         hasOutlineWidthParam = true;
         if ( valueSplit.size() > 1 )
@@ -853,7 +853,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           hasDefaultOutlineWidth = true;
         }
       }
-      else if ( !hasOutlineOpacityParam && value.startsWith( "param(outline-opacity)" ) )
+      else if ( !hasOutlineOpacityParam && value.startsWith( QLatin1String( "param(outline-opacity)" ) ) )
       {
         hasOutlineOpacityParam = true;
         if ( valueSplit.size() > 1 )
@@ -953,7 +953,7 @@ void QgsSvgCache::takeEntryFromList( QgsSvgCacheEntry* entry )
 
 void QgsSvgCache::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
   QgsDebugMsg( msg );
   emit statusChanged( msg );
 }

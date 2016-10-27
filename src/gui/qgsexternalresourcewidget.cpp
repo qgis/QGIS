@@ -203,7 +203,7 @@ QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() cons
   return mRelativeStorage;
 }
 
-void QgsExternalResourceWidget::setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage )
+void QgsExternalResourceWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage )
 {
   mFileWidget->setRelativeStorage( relativeStorage );
   mRelativeStorage = relativeStorage;
@@ -218,7 +218,7 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( "about:blank" ) );
+      mWebView->setUrl( QUrl( QStringLiteral( "about:blank" ) ) );
     }
 #endif
     if ( mDocumentViewerContent == Image )

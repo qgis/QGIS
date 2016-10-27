@@ -28,7 +28,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
     QgsMultiLineString();
-    virtual QString geometryType() const override { return "MultiLineString"; }
+    virtual QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
     QgsMultiLineString* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
+    //! Adds a geometry and takes ownership. Returns true in case of success
     virtual bool addGeometry( QgsAbstractGeometry* g ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve

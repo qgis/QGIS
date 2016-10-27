@@ -47,6 +47,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import (getTempFilenameInTempFolder,
                                      getTempFilename,
+                                     removeInvalidChars,
                                      isWindows)
 
 ALL_TYPES = [-1]
@@ -211,7 +212,6 @@ def load(fileName, name=None, crs=None, style=None):
                 style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
             QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
-            iface.legendInterface().refreshLayerLegend(qgslayer)
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
@@ -273,14 +273,15 @@ def getObjectFromUri(uri, forceLoad=True):
         settings.setValue('/Projections/defaultBehaviour', '')
 
         # If is not opened, we open it
+        name = os.path.basename(uri)
         for provider in ['ogr', 'postgres', 'spatialite', 'virtual']:
-            layer = QgsVectorLayer(uri, uri, provider)
+            layer = QgsVectorLayer(uri, name, provider)
             if layer.isValid():
                 if prjSetting:
                     settings.setValue('/Projections/defaultBehaviour', prjSetting)
                 _loadedLayers[normalizeLayerSource(layer.source())] = layer
                 return layer
-        layer = QgsRasterLayer(uri, uri)
+        layer = QgsRasterLayer(uri, name)
         if layer.isValid():
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
@@ -311,6 +312,13 @@ def exportVectorLayer(layer, supported=None):
     systemEncoding = settings.value('/UI/encoding', 'System')
 
     output = getTempFilename('shp')
+    basename = removeInvalidChars(os.path.basename(layer.source()))
+    if basename:
+        if not basename.endswith("shp"):
+            basename = basename + ".shp"
+        output = getTempFilenameInTempFolder(basename)
+    else:
+        output = getTempFilename("shp")
     provider = layer.dataProvider()
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:

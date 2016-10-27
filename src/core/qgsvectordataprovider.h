@@ -61,47 +61,47 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     enum Capability
     {
-      /** Provider has no capabilities */
+      //! Provider has no capabilities
       NoCapabilities =                              0,
-      /** Allows adding features */
+      //! Allows adding features
       AddFeatures =                                 1,
-      /** Allows deletion of features */
+      //! Allows deletion of features
       DeleteFeatures =                              1 <<  1,
-      /** Allows modification of attribute values */
+      //! Allows modification of attribute values
       ChangeAttributeValues =                       1 <<  2,
-      /** Allows addition of new attributes (fields) */
+      //! Allows addition of new attributes (fields)
       AddAttributes =                               1 <<  3,
-      /** Allows deletion of attributes (fields) */
+      //! Allows deletion of attributes (fields)
       DeleteAttributes =                            1 <<  4,
-      /** Allows creation of spatial index */
+      //! Allows creation of spatial index
       CreateSpatialIndex =                          1 <<  6,
-      /** Fast access to features using their ID */
+      //! Fast access to features using their ID
       SelectAtId =                                  1 <<  7,
-      /** Allows modifications of geometries */
+      //! Allows modifications of geometries
       ChangeGeometries =                            1 <<  8,
-      /** Allows user to select encoding */
+      //! Allows user to select encoding
       SelectEncoding =                              1 << 13,
-      /** Can create indexes on provider's fields */
+      //! Can create indexes on provider's fields
       CreateAttributeIndex =                        1 << 12,
-      /** Supports simplification of geometries on provider side according to a distance tolerance */
+      //! Supports simplification of geometries on provider side according to a distance tolerance
       SimplifyGeometries =                          1 << 14,
-      /** Supports topological simplification of geometries on provider side according to a distance tolerance */
+      //! Supports topological simplification of geometries on provider side according to a distance tolerance
       SimplifyGeometriesWithTopologicalValidation = 1 << 15,
-      /** Supports transactions*/
+      //! Supports transactions
       TransactionSupport =                          1 << 16,
-      /** Supports circular geometry types (circularstring, compoundcurve, curvepolygon)*/
+      //! Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
       CircularGeometries =                          1 << 17,
       /** Supports joint updates for attributes and geometry
        * Providers supporting this should still define ChangeGeometries | ChangeAttributeValues
        */
       ChangeFeatures =                              1 << 18,
-      /** Supports renaming attributes (fields). Added in QGIS 2.16 */
+      //! Supports renaming attributes (fields). Added in QGIS 2.16
       RenameAttributes =                            1 << 19,
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
-    /** Bitmask of all provider's editing capabilities */
+    //! Bitmask of all provider's editing capabilities
     const static int EditingCapabilities = AddFeatures | DeleteFeatures |
                                            ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes |
                                            RenameAttributes;
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual bool createSpatialIndex();
 
-    /** Create an attribute index on the datasource*/
+    //! Create an attribute index on the datasource
     virtual bool createAttributeIndex( int field );
 
     /** Returns flags containing the supported capabilities
@@ -339,12 +339,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Return list of indexes of fields that make up the primary key
      */
-    virtual QgsAttributeList pkAttributeIndexes() const { return QgsAttributeList(); }
+    virtual QgsAttributeList pkAttributeIndexes() const;
 
     /**
      * Return list of indexes to names for QgsPalLabeling fix
      */
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const { return mAttrPalIndexName; }
+    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 
     /**
      * check if provider supports type of field
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual bool doesStrictFeatureTypeCheck() const { return true;}
 
-    /** Returns a list of available encodings */
+    //! Returns a list of available encodings
     static QStringList availableEncodings();
 
     /**
@@ -403,19 +403,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QStringList errors() const;
 
-
     /**
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() const { return false; }
+    virtual bool isSaveAndLoadStyleToDBSupported() const;
 
     static QVariant convertValue( QVariant::Type type, const QString& value );
 
     /**
      * Returns the transaction this data provider is included in, if any.
      */
-    virtual QgsTransaction* transaction() const { return nullptr; }
+    virtual QgsTransaction* transaction() const;
 
     /**
      * Forces a reload of the underlying datasource if the provider implements this
@@ -424,10 +423,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * This forces QGIS to reopen a file or connection.
      * This can be required if the underlying file is replaced.
      */
-    virtual void forceReload()
-    {
-      emit dataChanged();
-    }
+    virtual void forceReload();
 
     /**
      * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
@@ -444,42 +440,75 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
 
   signals:
-    /** Signals an error in this provider */
-    void raiseError( const QString& msg );
+    /**
+     * Signals an error in this provider
+     *
+     * @note Added const in QGIS 3.0
+     */
+    void raiseError( const QString& msg ) const;
 
   protected:
+    /**
+     * Invalidates the min/max cache. This will force the provider to recalculate the
+     * cache the next time it is requested.
+     */
     void clearMinMaxCache();
 
-    //! Populates the cache of minimum and maximum attribute values.
+    /**
+     * Populates the cache of minimum and maximum attribute values.
+     */
     void fillMinMaxCache() const;
 
+    /**
+     * Push a notification about errors that happened in this providers scope.
+     * Errors should be translated strings that require the users immediate
+     * attention.
+     *
+     * For general debug information use QgsMessageLog::logMessage() instead.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void pushError( const QString& msg ) const;
+
+    /**
+     * Converts the geometry to the provider type if possible / necessary
+     * @return the converted geometry or nullptr if no conversion was necessary or possible
+     */
+    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const;
+
+    /**
+     * Set the list of native types supported by this provider.
+     * Usually done in the constructor.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setNativeTypes( const QList<NativeType>& nativeTypes );
+
+    /**
+     * Get this providers encoding
+     *
+     * @note Added in QGIS 3.0
+     */
+    QTextCodec* textEncoding() const;
+
+  private:
     mutable bool mCacheMinMaxDirty;
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
 
-    /** Encoding */
+    //! Encoding
     QTextCodec* mEncoding;
 
-    /** List of attribute indices to fetch with nextFeature calls*/
+    //! List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
 
-    /** The names of the providers native types*/
+    //! The names of the providers native types
     QList< NativeType > mNativeTypes;
 
-    void pushError( const QString& msg );
-
-    /** Old-style mapping of index to name for QgsPalLabeling fix */
-    QgsAttrPalIndexNameHash mAttrPalIndexName;
-
-    /** Converts the geometry to the provider type if possible / necessary
-    @return the converted geometry or nullptr if no conversion was necessary or possible*/
-    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const;
-
-  private:
-    /** Old notation **/
+    //! Old notation *
     QMap<QString, QVariant::Type> mOldTypeList;
 
-    /** List of errors */
-    QStringList mErrors;
+    //! List of errors
+    mutable QStringList mErrors;
 
     static QStringList smEncodings;
 

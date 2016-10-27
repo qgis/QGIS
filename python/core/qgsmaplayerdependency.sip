@@ -19,7 +19,7 @@ class QgsMapLayerDependency
   };
 
   //! Standard constructor
-  QgsMapLayerDependency( QString layerId, Type type = DataDependency, Origin origin = FromUser );
+  QgsMapLayerDependency( const QString& layerId, Type type = DataDependency, Origin origin = FromUser );
 
   //! Return the dependency type
   Type type() const;

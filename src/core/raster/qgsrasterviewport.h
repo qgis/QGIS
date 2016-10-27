@@ -38,20 +38,20 @@ struct QgsRasterViewPort
    *   of the part of the raster that is to be rendered.*/
   QgsPoint mBottomRightPoint;
 
-  /** \brief Width, number of columns to be rendered */
+  //! \brief Width, number of columns to be rendered
   int mWidth;
   /** \brief Distance in map units from bottom edge to top edge for the part of
    *  the raster that is to be rendered.*/
-  /** \brief Height, number of rows to be rendered */
+  //! \brief Height, number of rows to be rendered
   int mHeight;
 
-  /** \brief Intersection of current map extent and layer extent */
+  //! \brief Intersection of current map extent and layer extent
   QgsRectangle mDrawnExtent;
 
-  /** \brief Source coordinate system */
+  //! \brief Source coordinate system
   QgsCoordinateReferenceSystem mSrcCRS;
 
-  /** \brief Target coordinate system */
+  //! \brief Target coordinate system
   QgsCoordinateReferenceSystem mDestCRS;
 
   int mSrcDatumTransform;

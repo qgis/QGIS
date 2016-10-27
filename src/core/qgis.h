@@ -42,13 +42,13 @@ class CORE_EXPORT Qgis
   public:
     // Version constants
     //
-    // Version string
+    //! Version string
     static QString QGIS_VERSION;
-    // Version number used for comparing versions using the "Check QGIS Version" function
+    //! Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
-    // Release name
+    //! Release name
     static QString QGIS_RELEASE_NAME;
-    // The development version
+    //! The development version
     static const char* QGIS_DEV_VERSION;
 
     // Enumerations
@@ -59,22 +59,20 @@ class CORE_EXPORT Qgis
      */
     enum DataType
     {
-      /** Unknown or unspecified type */                UnknownDataType = 0,
-      /** Eight bit unsigned integer (quint8) */        Byte = 1,
-      /** Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /** Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /** Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /** Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /** Thirty two bit floating point (float) */      Float32 = 6,
-      /** Sixty four bit floating point (double) */     Float64 = 7,
-      /** Complex Int16 */                              CInt16 = 8,
-      /** Complex Int32 */                              CInt32 = 9,
-      /** Complex Float32 */                            CFloat32 = 10,
-      /** Complex Float64 */                            CFloat64 = 11,
-      /** Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /** Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
+      UnknownDataType = 0, //!< Unknown or unspecified type
+      Byte = 1, //!< Eight bit unsigned integer (quint8)
+      UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
+      Int16 = 3, //!< Sixteen bit signed integer (qint16)
+      UInt32 = 4, //!< Thirty two bit unsigned integer (quint32)
+      Int32 = 5, //!< Thirty two bit signed integer (qint32)
+      Float32 = 6, //!< Thirty two bit floating point (float)
+      Float64 = 7, //!< Sixty four bit floating point (double)
+      CInt16 = 8, //!< Complex Int16
+      CInt32 = 9, //!< Complex Int32
+      CFloat32 = 10, //!< Complex Float32
+      CFloat64 = 11, //!< Complex Float64
+      ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
+      ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
 
     //! User defined event types
@@ -135,7 +133,7 @@ class CORE_EXPORT Qgis
  * @note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker
+template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
 {
   public:
 
@@ -292,21 +290,21 @@ void CORE_EXPORT qgsFree( void *ptr );
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;
 
-/** PROJ4 string that represents a geographic coord sys */
+//! PROJ4 string that represents a geographic coord sys
 extern CORE_EXPORT const QString GEOPROJ4;
-/** Magic number for a geographic coord sys in POSTGIS SRID */
+//! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
-/** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
+//! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID = 3452;
-/** Magic number for a geographic coord sys in EpsgCrsId ID format */
+//! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
-/** Geographic coord sys from EPSG authority */
+//! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-/** The length of the string "+proj=" */
+//! The length of the string "+proj="
 const int PROJ_PREFIX_LEN = 6;
-/** The length of the string "+ellps=" */
+//! The length of the string "+ellps="
 const int ELLPS_PREFIX_LEN = 7;
-/** The length of the string "+lat_1=" */
+//! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
@@ -319,11 +317,11 @@ extern CORE_EXPORT const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the default point size for point symbols */
+//! Magic number that determines the default point size for point symbols
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** Default snapping tolerance for segments */
+//! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;

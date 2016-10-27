@@ -60,7 +60,7 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
     QgsDebugMsg( QString( "uri = %1" ).arg( uri.toLocal8Bit().constData() ) );
     QgsDebugMsg( QString( "name = %1" ).arg( name.toLocal8Bit().constData() ) );
 
-    iface->addVectorLayer( uri, name, "grass" );
+    iface->addVectorLayer( uri, name, QStringLiteral( "grass" ) );
   }
 }
 
@@ -113,20 +113,20 @@ QString QgsGrassElementDialog::getItem( QString element,
 
   mLineEdit = new QLineEdit( text );
   QRegExp rx;
-  if ( element == "vector" )
+  if ( element == QLatin1String( "vector" ) )
   {
-    rx.setPattern( "[A-Za-z_][A-Za-z0-9_]+" );
+    rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
   }
   else
   {
-    rx.setPattern( "[A-Za-z0-9_.]+" );
+    rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
   }
   QRegExpValidator *val = new QRegExpValidator( rx, this );
   mLineEdit->setValidator( val );
 
   layout->addWidget( mLineEdit );
 
-  mErrorLabel = new QLabel( "X" );
+  mErrorLabel = new QLabel( QStringLiteral( "X" ) );
   layout->addWidget( mErrorLabel );
   // Intention: keep fixed size - but it does not help
   mErrorLabel->adjustSize();
@@ -160,7 +160,7 @@ void QgsGrassElementDialog::textChanged()
 
   QString text = mLineEdit->text().trimmed();
 
-  mErrorLabel->setText( "   " );
+  mErrorLabel->setText( QStringLiteral( "   " ) );
   mOkButton->setText( tr( "Ok" ) );
   mOkButton->setEnabled( true );
 

@@ -153,7 +153,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 
     //implementation of inherited methods
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
-    virtual QString geometryType() const override { return "Point"; }
+    virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
     virtual int dimension() const override { return 0; }
     virtual QgsPointV2* clone() const override;
     void clear() override;
@@ -170,6 +170,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
                     bool transformZ = false ) override;
     void transform( const QTransform& t ) override;
     virtual QgsCoordinateSequence coordinateSequence() const override;
+    virtual int nCoordinates() const override { return 1; }
     virtual QgsAbstractGeometry* boundary() const override;
 
     //low-level editing

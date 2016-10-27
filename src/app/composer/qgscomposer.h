@@ -18,6 +18,7 @@
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"
 
+#include "qgspanelwidget.h"
 class QgisApp;
 class QgsComposerArrow;
 class QgsComposerPolygon;
@@ -44,6 +45,7 @@ class QgsDockWidget;
 class QgsMapLayer;
 class QgsFeature;
 class QgsVectorLayer;
+class QgsPanelWidgetStack;
 
 class QGridLayout;
 class QDomNode;
@@ -387,43 +389,43 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save window state
     void saveWindowState();
 
-    /** Add a composer arrow to the item/widget map and creates a configuration widget for it*/
+    //! Add a composer arrow to the item/widget map and creates a configuration widget for it
     void addComposerArrow( QgsComposerArrow* arrow );
 
-    /** Add a composer polygon to the item/widget map and creates a configuration widget for it*/
+    //! Add a composer polygon to the item/widget map and creates a configuration widget for it
     void addComposerPolygon( QgsComposerPolygon* polygon );
 
-    /** Add a composer polyline to the item/widget map and creates a configuration widget for it*/
+    //! Add a composer polyline to the item/widget map and creates a configuration widget for it
     void addComposerPolyline( QgsComposerPolyline* polyline );
 
-    /** Add a composer map to the item/widget map and creates a configuration widget for it*/
+    //! Add a composer map to the item/widget map and creates a configuration widget for it
     void addComposerMap( QgsComposerMap* map );
 
-    /** Adds a composer label to the item/widget map and creates a configuration widget for it*/
+    //! Adds a composer label to the item/widget map and creates a configuration widget for it
     void addComposerLabel( QgsComposerLabel* label );
 
-    /** Adds a composer scale bar to the item/widget map and creates a configuration widget for it*/
+    //! Adds a composer scale bar to the item/widget map and creates a configuration widget for it
     void addComposerScaleBar( QgsComposerScaleBar* scalebar );
 
-    /** Adds a composer legend to the item/widget map and creates a configuration widget for it*/
+    //! Adds a composer legend to the item/widget map and creates a configuration widget for it
     void addComposerLegend( QgsComposerLegend* legend );
 
-    /** Adds a composer picture to the item/widget map and creates a configuration widget*/
+    //! Adds a composer picture to the item/widget map and creates a configuration widget
     void addComposerPicture( QgsComposerPicture* picture );
 
-    /** Adds a composer shape to the item/widget map and creates a configuration widget*/
+    //! Adds a composer shape to the item/widget map and creates a configuration widget
     void addComposerShape( QgsComposerShape* shape );
 
-    /** Adds a composer table v2 to the item/widget map and creates a configuration widget*/
+    //! Adds a composer table v2 to the item/widget map and creates a configuration widget
     void addComposerTableV2( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
 
-    /** Adds composer html and creates a configuration widget*/
+    //! Adds composer html and creates a configuration widget
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
 
-    /** Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself*/
+    //! Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself
     void deleteItem( QgsComposerItem* item );
 
-    /** Shows the configuration widget for a composer item*/
+    //! Shows the configuration widget for a composer item
     void showItemOptions( QgsComposerItem* i );
 
     //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
@@ -461,19 +463,19 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   private:
 
-    /** Establishes the signal slot connections from the QgsComposerView to the composer*/
+    //! Establishes the signal slot connections from the QgsComposerView to the composer
     void connectViewSlots();
 
-    /** Establishes the signal slot connections from the QgsComposition to the composer*/
+    //! Establishes the signal slot connections from the QgsComposition to the composer
     void connectCompositionSlots();
 
-    /** Establishes other signal slot connections for the composer*/
+    //! Establishes other signal slot connections for the composer
     void connectOtherSlots();
 
-    /** Creates the composition widget*/
+    //! Creates the composition widget
     void createCompositionWidget();
 
-    /** Sets up the compositions undo/redo connections*/
+    //! Sets up the compositions undo/redo connections
     void setupUndoView();
 
     //! True if a composer map contains a WMS layer
@@ -530,19 +532,19 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QPrinter* printer();
 
-    /** Composer title*/
+    //! Composer title
     QString mTitle;
 
-    /** Labels in status bar which shows current mouse position*/
+    //! Labels in status bar which shows current mouse position
     QLabel* mStatusCursorXLabel;
     QLabel* mStatusCursorYLabel;
     QLabel* mStatusCursorPageLabel;
-    /** Combobox in status bar which shows/adjusts current zoom level*/
+    //! Combobox in status bar which shows/adjusts current zoom level
     QComboBox* mStatusZoomCombo;
     QList<double> mStatusZoomLevelsList;
-    /** Label in status bar which shows messages from the composition*/
+    //! Label in status bar which shows messages from the composition
     QLabel* mStatusCompositionLabel;
-    /** Label in status bar which shows atlas details*/
+    //! Label in status bar which shows atlas details
     QLabel* mStatusAtlasLabel;
 
     //! Pointer to composer view
@@ -568,7 +570,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QSizeGrip *mSizeGrip;
 
     //! To know which item to show if selection changes
-    QMap<QgsComposerItem*, QWidget*> mItemWidgetMap;
+    QMap<QgsComposerItem*, QgsPanelWidget*> mItemWidgetMap;
 
     //! Window menu action to select this window
     QAction *mWindowAction;
@@ -597,8 +599,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QMap< QgsComposerMap*, int > mMapsToRestore;
 
     QgsDockWidget* mItemDock;
+    QgsPanelWidgetStack* mItemPropertiesStack;
     QgsDockWidget* mUndoDock;
     QgsDockWidget* mGeneralDock;
+    QgsPanelWidgetStack* mGeneralPropertiesStack;
     QgsDockWidget* mAtlasDock;
     QgsDockWidget* mItemsDock;
 

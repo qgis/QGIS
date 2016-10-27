@@ -313,3 +313,17 @@ QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
   feature.setValid( valid );
   return in;
 }
+
+uint qHash( const QgsFeature& key, uint seed )
+{
+  uint hash = seed;
+  Q_FOREACH ( const QVariant& attr, key.attributes() )
+  {
+    hash ^= qHash( attr.toString() );
+  }
+
+  hash ^= qHash( key.geometry().exportToWkt() );
+  hash ^= qHash( key.id() );
+
+  return hash;
+}

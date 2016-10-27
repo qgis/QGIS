@@ -54,12 +54,12 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mPositionSpinBox->setShowClearButton( false );
   btnColor1->setAllowAlpha( true );
   btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
-  btnColor1->setContext( "symbology" );
+  btnColor1->setContext( QStringLiteral( "symbology" ) );
   btnColor1->setShowNoColor( true );
   btnColor1->setNoColorString( tr( "Transparent" ) );
   btnColor2->setAllowAlpha( true );
   btnColor2->setColorDialogTitle( tr( "Select ramp color" ) );
-  btnColor2->setContext( "symbology" );
+  btnColor2->setContext( QStringLiteral( "symbology" ) );
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
   updateColorButtons();
@@ -86,7 +86,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   connect( mDeleteStopButton, SIGNAL( clicked() ), mStopEditor, SLOT( deleteSelectedStop() ) );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/GradientEditor/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/GradientEditor/geometry" ) ).toByteArray() );
 
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
@@ -102,25 +102,25 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mPlot->enableAxis( QwtPlot::yLeft, false );
 
   mLightnessCurve = new QwtPlotCurve();
-  mLightnessCurve->setTitle( "Lightness" );
+  mLightnessCurve->setTitle( QStringLiteral( "Lightness" ) );
   mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
   mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mLightnessCurve->attach( mPlot );
 
   mHueCurve = new QwtPlotCurve();
-  mHueCurve->setTitle( "Hue" );
+  mHueCurve->setTitle( QStringLiteral( "Hue" ) );
   mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ),
   mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mHueCurve->attach( mPlot );
 
   mSaturationCurve = new QwtPlotCurve();
-  mSaturationCurve->setTitle( "Saturation" );
+  mSaturationCurve->setTitle( QStringLiteral( "Saturation" ) );
   mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ),
   mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
-  mAlphaCurve->setTitle( "Alpha" );
+  mAlphaCurve->setTitle( QStringLiteral( "Alpha" ) );
   mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
   mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );
@@ -130,10 +130,10 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   connect( mPlotFilter, SIGNAL( mouseRelease( QPointF ) ), this, SLOT( plotMouseRelease( QPointF ) ) );
   connect( mPlotFilter, SIGNAL( mouseMove( QPointF ) ), this, SLOT( plotMouseMove( QPointF ) ) );
 
-  mPlotHueCheckbox->setChecked( settings.value( "/GradientEditor/plotHue", false ).toBool() );
-  mPlotLightnessCheckbox->setChecked( settings.value( "/GradientEditor/plotLightness", true ).toBool() );
-  mPlotSaturationCheckbox->setChecked( settings.value( "/GradientEditor/plotSaturation", false ).toBool() );
-  mPlotAlphaCheckbox->setChecked( settings.value( "/GradientEditor/plotAlpha", false ).toBool() );
+  mPlotHueCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotHue" ), false ).toBool() );
+  mPlotLightnessCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotLightness" ), true ).toBool() );
+  mPlotSaturationCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotSaturation" ), false ).toBool() );
+  mPlotAlphaCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotAlpha" ), false ).toBool() );
 
   mHueCurve->setVisible( mPlotHueCheckbox->isChecked() );
   mLightnessCurve->setVisible( mPlotLightnessCheckbox->isChecked() );
@@ -147,11 +147,11 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/GradientEditor/geometry", saveGeometry() );
-  settings.setValue( "/GradientEditor/plotHue", mPlotHueCheckbox->isChecked() );
-  settings.setValue( "/GradientEditor/plotLightness", mPlotLightnessCheckbox->isChecked() );
-  settings.setValue( "/GradientEditor/plotSaturation", mPlotSaturationCheckbox->isChecked() );
-  settings.setValue( "/GradientEditor/plotAlpha", mPlotAlphaCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/GradientEditor/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/GradientEditor/plotHue" ), mPlotHueCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "/GradientEditor/plotLightness" ), mPlotLightnessCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "/GradientEditor/plotSaturation" ), mPlotSaturationCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "/GradientEditor/plotAlpha" ), mPlotAlphaCheckbox->isChecked() );
 
 }
 
@@ -198,7 +198,7 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
         it != rampInfo.constEnd(); ++it )
   {
-    if ( it.key().startsWith( "cpt-city" ) )
+    if ( it.key().startsWith( QLatin1String( "cpt-city" ) ) )
       continue;
     tableInfo->setItem( i, 0, new QTableWidgetItem( it.key() ) );
     tableInfo->setItem( i, 1, new QTableWidgetItem( it.value() ) );
@@ -215,15 +215,15 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   dlg->layout()->addSpacing( 5 );
 
   // gradient file
-  QString gradientFile = mRamp.info().value( "cpt-city-gradient" );
+  QString gradientFile = mRamp.info().value( QStringLiteral( "cpt-city-gradient" ) );
   if ( ! gradientFile.isNull() )
   {
     QString fileName = gradientFile;
-    fileName.replace( "<cpt-city>", QgsCptCityArchive::defaultBaseDir() );
+    fileName.replace( QLatin1String( "<cpt-city>" ), QgsCptCityArchive::defaultBaseDir() );
     if ( ! QFile::exists( fileName ) )
     {
       fileName = gradientFile;
-      fileName.replace( "<cpt-city>", "http://soliton.vm.bytemark.co.uk/pub/cpt-city" );
+      fileName.replace( QLatin1String( "<cpt-city>" ), QLatin1String( "http://soliton.vm.bytemark.co.uk/pub/cpt-city" ) );
     }
     label = new QLabel( tr( "Gradient file : %1" ).arg( fileName ), dlg );
     label->setTextInteractionFlags( Qt::TextBrowserInteraction );
@@ -232,15 +232,15 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   }
 
   // license file
-  QString licenseFile = mRamp.info().value( "cpt-city-license" );
+  QString licenseFile = mRamp.info().value( QStringLiteral( "cpt-city-license" ) );
   if ( !licenseFile.isNull() )
   {
     QString fileName = licenseFile;
-    fileName.replace( "<cpt-city>", QgsCptCityArchive::defaultBaseDir() );
+    fileName.replace( QLatin1String( "<cpt-city>" ), QgsCptCityArchive::defaultBaseDir() );
     if ( ! QFile::exists( fileName ) )
     {
       fileName = licenseFile;
-      fileName.replace( "<cpt-city>", "http://soliton.vm.bytemark.co.uk/pub/cpt-city" );
+      fileName.replace( QLatin1String( "<cpt-city>" ), QLatin1String( "http://soliton.vm.bytemark.co.uk/pub/cpt-city" ) );
     }
     label = new QLabel( tr( "License file : %1" ).arg( fileName ), dlg );
     label->setTextInteractionFlags( Qt::TextBrowserInteraction );

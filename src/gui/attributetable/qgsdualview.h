@@ -312,9 +312,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     virtual void finished();
 
-    /** Zooms to the active feature*/
+    //! Zooms to the active feature
     void zoomToCurrentFeature();
-    /** Pans to the active feature*/
+    //! Pans to the active feature
     void panToCurrentFeature();
 
   private:

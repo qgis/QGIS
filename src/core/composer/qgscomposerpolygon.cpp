@@ -23,14 +23,14 @@
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerNodesItem( "ComposerPolygon", c )
+    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
     , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
-QgsComposerPolygon::QgsComposerPolygon( QPolygonF polygon, QgsComposition* c )
-    : QgsComposerNodesItem( "ComposerPolygon", polygon, c )
+QgsComposerPolygon::QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c )
+    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
     , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
@@ -41,7 +41,7 @@ QgsComposerPolygon::~QgsComposerPolygon()
 }
 
 bool QgsComposerPolygon::_addNode( const int indexPoint,
-                                   const QPointF &newPoint,
+                                   QPointF newPoint,
                                    const double radius )
 {
   Q_UNUSED( radius );
@@ -52,12 +52,12 @@ bool QgsComposerPolygon::_addNode( const int indexPoint,
 void QgsComposerPolygon::createDefaultPolygonStyleSymbol()
 {
   QgsStringMap properties;
-  properties.insert( "color", "white" );
-  properties.insert( "style", "solid" );
-  properties.insert( "style_border", "solid" );
-  properties.insert( "color_border", "black" );
-  properties.insert( "width_border", "0.3" );
-  properties.insert( "joinstyle", "miter" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
 
   mPolygonStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 

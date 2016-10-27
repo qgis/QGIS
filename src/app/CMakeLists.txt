@@ -44,11 +44,12 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
-  qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
+  qgssnappinglayertreemodel.cpp
+  qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
@@ -115,9 +116,7 @@ SET(QGIS_APP_SRCS
   qgsrelationadddlg.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
-  qgssubstitutionlistwidget.cpp
   qgstextannotationdialog.cpp
-  qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgstipgui.cpp
@@ -139,6 +138,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
   composer/qgscomposermanager.cpp
+  composer/qgscomposermapgridwidget.cpp
   composer/qgscomposermapwidget.cpp
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposershapewidget.cpp
@@ -220,13 +220,14 @@ SET (QGIS_APP_MOC_HDRS
   qgsidentifyresultsdialog.h
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
-  qgslabelpreview.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
   qgsmaplayerstyleguiutils.h
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
+  qgssnappinglayertreemodel.h
+  qgssnappingwidget.h
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
   qgsstatusbarscalewidget.h
@@ -289,10 +290,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
   qgsselectbyformdialog.h
-  qgssnappingdialog.h
   qgssponsors.h
   qgsstatisticalsummarydockwidget.h
-  qgssubstitutionlistwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
@@ -314,6 +313,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposerlegenditemdialog.h
   composer/qgscomposerlegendlayersdialog.h
   composer/qgscomposermanager.h
+  composer/qgscomposermapgridwidget.h
   composer/qgscomposermapwidget.h
   composer/qgscomposerpicturewidget.h
   composer/qgscomposerscalebarwidget.h

@@ -1465,7 +1465,7 @@ void QgsComposerView::copyItems( ClipboardMode mode )
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
   QDomDocument doc;
-  QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
+  QDomElement documentElement = doc.createElement( QStringLiteral( "ComposerItemClipboard" ) );
   for ( ; itemIt != composerItemList.end(); ++itemIt )
   {
     // copy each item in a group
@@ -1491,19 +1491,19 @@ void QgsComposerView::copyItems( ClipboardMode mode )
   if ( mode == ClipboardModeCopy )
   {
     // remove all uuid attributes
-    QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
+    QDomNodeList composerItemsNodes = doc.elementsByTagName( QStringLiteral( "ComposerItem" ) );
     for ( int i = 0; i < composerItemsNodes.count(); ++i )
     {
       QDomNode composerItemNode = composerItemsNodes.at( i );
       if ( composerItemNode.isElement() )
       {
-        composerItemNode.toElement().removeAttribute( "uuid" );
+        composerItemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
       }
     }
   }
 
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData( "text/xml", doc.toByteArray() );
+  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
   QClipboard *clipboard = QApplication::clipboard();
   clipboard->setMimeData( mimeData );
 }
@@ -1517,10 +1517,10 @@ void QgsComposerView::pasteItems( PasteMode mode )
 
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( "text/xml" ) ) )
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
-    if ( docElem.tagName() == "ComposerItemClipboard" )
+    if ( docElem.tagName() == QLatin1String( "ComposerItemClipboard" ) )
     {
       if ( composition() )
       {
@@ -1974,14 +1974,14 @@ void QgsComposerView::wheelEvent( QWheelEvent* event )
       {
         QSettings settings;
         //read zoom mode
-        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( "/qgis/wheel_action", 2 ).toInt();
+        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( QStringLiteral( "/qgis/wheel_action" ), 2 ).toInt();
         if ( zoomMode == QgsComposerItem::NoZoom )
         {
           //do nothing
           return;
         }
 
-        double zoomFactor = settings.value( "/qgis/zoom_factor", 2.0 ).toDouble();
+        double zoomFactor = settings.value( QStringLiteral( "/qgis/zoom_factor" ), 2.0 ).toDouble();
         if ( event->modifiers() & Qt::ControlModifier )
         {
           //holding ctrl while wheel zooming results in a finer zoom
@@ -2007,7 +2007,7 @@ void QgsComposerView::wheelZoom( QWheelEvent * event )
 {
   //get mouse wheel zoom behaviour settings
   QSettings mySettings;
-  double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
+  double zoomFactor = mySettings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
 
   if ( event->modifiers() & Qt::ControlModifier )
   {
@@ -2233,7 +2233,7 @@ QMainWindow* QgsComposerView::composerWindow()
   return nullptr;
 }
 
-void QgsComposerView::addPolygonNode( const QPointF & scenePoint )
+void QgsComposerView::addPolygonNode( QPointF scenePoint )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
   polygon.append( QPointF( scenePoint.x(), scenePoint.y() ) );
@@ -2244,7 +2244,7 @@ void QgsComposerView::addPolygonNode( const QPointF & scenePoint )
   mPolygonItem.data()->setPolygon( polygon );
 }
 
-void QgsComposerView::movePolygonNode( const QPointF & scenePoint )
+void QgsComposerView::movePolygonNode( QPointF scenePoint )
 {
   QPolygonF polygon = mPolygonItem.data()->polygon();
 

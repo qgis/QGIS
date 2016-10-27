@@ -141,10 +141,10 @@ void TestQgsRasterLayer::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', "<br />" );
+  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
   QString myFloat32FileName = mTestDataDir + "/raster/band1_float32_noct_epsg4326.tif";
@@ -184,7 +184,7 @@ void TestQgsRasterLayer::initTestCase()
 
   // add the test layer to the maprender
   mMapSettings->setLayers( QStringList() << mpRasterLayer->id() );
-  mReport += "<h1>Raster Layer Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Raster Layer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
 }
 //runs after all tests
@@ -325,7 +325,7 @@ void TestQgsRasterLayer::colorRamp1()
 
 void TestQgsRasterLayer::colorRamp2()
 {
-  QgsColorBrewerColorRamp ramp( "BrBG", 10 );
+  QgsColorBrewerColorRamp ramp( QStringLiteral( "BrBG" ), 10 );
   // ColorBrewer ramp
   QVERIFY( testColorRamp( "raster_colorRamp2",
                           &ramp,
@@ -336,7 +336,7 @@ void TestQgsRasterLayer::colorRamp3()
 {
   // cpt-city ramp, discrete
   QgsCptCityArchive::initArchives();
-  QgsCptCityColorRamp ramp( "cb/div/BrBG", "_10" );
+  QgsCptCityColorRamp ramp( QStringLiteral( "cb/div/BrBG" ), QStringLiteral( "_10" ) );
   QVERIFY( testColorRamp( "raster_colorRamp3",
                           &ramp,
                           QgsColorRampShader::DISCRETE, 10 ) );
@@ -346,7 +346,7 @@ void TestQgsRasterLayer::colorRamp3()
 void TestQgsRasterLayer::colorRamp4()
 {
   // cpt-city ramp, continuous
-  QgsCptCityColorRamp ramp( "grass/elevation", "" );
+  QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QLatin1String( "" ) );
   QVERIFY( testColorRamp( "raster_colorRamp4",
                           &ramp,
                           QgsColorRampShader::DISCRETE, 10 ) );
@@ -368,25 +368,25 @@ void TestQgsRasterLayer::landsatBasic875Qml()
   mMapSettings->setLayers( QStringList() << mpLandsatRasterLayer->id() );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
   QString msg;
-  bool result = setQml( "875", msg );
+  bool result = setQml( QStringLiteral( "875" ), msg );
   QVERIFY2( result, msg.toLocal8Bit().constData() );
   QVERIFY( render( "landsat_875" ) );
 }
 void TestQgsRasterLayer::checkDimensions()
 {
-  mReport += "<h2>Check Dimensions</h2>\n";
+  mReport += QLatin1String( "<h2>Check Dimensions</h2>\n" );
   QVERIFY( mpRasterLayer->width() == 10 );
   QVERIFY( mpRasterLayer->height() == 10 );
   // regression check for ticket #832
   // note bandStatistics call is base 1
   // TODO: elementCount is not collected by GDAL, use other stats.
   //QVERIFY( mpRasterLayer->dataProvider()->bandStatistics( 1 ).elementCount == 100 );
-  mReport += "<p>Passed</p>";
+  mReport += QLatin1String( "<p>Passed</p>" );
 }
 void TestQgsRasterLayer::checkStats()
 {
 
-  mReport += "<h2>Check Stats</h2>\n";
+  mReport += QLatin1String( "<h2>Check Stats</h2>\n" );
   QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
                                     QgsRasterBandStats::Min | QgsRasterBandStats::Max |
                                     QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
@@ -398,16 +398,16 @@ void TestQgsRasterLayer::checkStats()
   QVERIFY( qgsDoubleNear( myStatistics.mean, 4.5 ) );
   double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  mReport += QString( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
+  mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
   QVERIFY( qgsDoubleNear( myStatistics.stdDev, stdDev, 0.00000000000001 ) );
-  mReport += "<p>Passed</p>";
+  mReport += QLatin1String( "<p>Passed</p>" );
 }
 
 // test scale_factor and offset - uses netcdf file which may not be supported
 // see http://hub.qgis.org/issues/8417
 void TestQgsRasterLayer::checkScaleOffset()
 {
-  mReport += "<h2>Check Stats with scale/offset</h2>\n";
+  mReport += QLatin1String( "<h2>Check Stats with scale/offset</h2>\n" );
 
   QFileInfo myRasterFileInfo( mTestDataDir + "scaleoffset.tif" );
   QgsRasterLayer * myRasterLayer;
@@ -416,8 +416,8 @@ void TestQgsRasterLayer::checkScaleOffset()
   QVERIFY( myRasterLayer );
   if ( ! myRasterLayer->isValid() )
   {
-    qDebug() << QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
-    mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
+    qDebug() << QStringLiteral( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
+    mReport += QStringLiteral( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
     delete myRasterLayer;
     QVERIFY( false );
     return;
@@ -427,23 +427,23 @@ void TestQgsRasterLayer::checkScaleOffset()
   QgsRasterBandStats myStatistics = myRasterLayer->dataProvider()->bandStatistics( 1,
                                     QgsRasterBandStats::Min | QgsRasterBandStats::Max |
                                     QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
-  mReport += QString( "raster min: %1 max: %2 mean: %3" ).arg( myStatistics.minimumValue ).arg( myStatistics.maximumValue ).arg( myStatistics.mean );
+  mReport += QStringLiteral( "raster min: %1 max: %2 mean: %3" ).arg( myStatistics.minimumValue ).arg( myStatistics.maximumValue ).arg( myStatistics.mean );
   QVERIFY( myRasterLayer->width() == 10 );
   QVERIFY( myRasterLayer->height() == 10 );
   //QVERIFY( myStatistics.elementCount == 100 );
   double minVal = 0.0;
-  mReport += QString( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( fabs( myStatistics.minimumValue - minVal ) );
+  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( fabs( myStatistics.minimumValue - minVal ) );
   double maxVal = 9.0;
-  mReport += QString( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( fabs( myStatistics.maximumValue - maxVal ) );
+  mReport += QStringLiteral( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( fabs( myStatistics.maximumValue - maxVal ) );
   double meanVal = 4.5;
-  mReport += QString( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( fabs( myStatistics.mean - meanVal ) );
+  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( fabs( myStatistics.mean - meanVal ) );
   QVERIFY( fabs( myStatistics.minimumValue - minVal ) < 0.0000001 );
   QVERIFY( fabs( myStatistics.maximumValue - maxVal ) < 0.0000001 );
   QVERIFY( fabs( myStatistics.mean - meanVal ) < 0.0000001 );
 
   double stdDev = 2.87228615;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  mReport += QString( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( fabs( myStatistics.stdDev - stdDev ) );
+  mReport += QStringLiteral( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( fabs( myStatistics.stdDev - stdDev ) );
   QVERIFY( fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
 
   QgsRasterDataProvider* myProvider = myRasterLayer->dataProvider();
@@ -460,7 +460,7 @@ void TestQgsRasterLayer::checkScaleOffset()
       if ( values.value( bandNo ).isNull() )
       {
         valueString = tr( "no data" );
-        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
+        mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
         delete myRasterLayer;
         QVERIFY( false );
         return;
@@ -470,8 +470,8 @@ void TestQgsRasterLayer::checkScaleOffset()
         double expected = 0.99995432;
         double value = values.value( bandNo ).toDouble();
         valueString = QgsRasterBlock::printValue( value );
-        mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
-        mReport += QString( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( fabs( value - expected ) );
+        mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
+        mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( fabs( value - expected ) );
         QVERIFY( fabs( value - expected ) < 0.0000001 );
       }
     }
@@ -483,7 +483,7 @@ void TestQgsRasterLayer::checkScaleOffset()
     return;
   }
 
-  mReport += "<p>Passed</p>";
+  mReport += QLatin1String( "<p>Passed</p>" );
   delete myRasterLayer;
 }
 
@@ -514,7 +514,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   }
   //now actually make the pyramids
   QString myResult =
-    mypLayer->dataProvider()->buildPyramids( myPyramidList, "NEAREST", myFormatFlag );
+    mypLayer->dataProvider()->buildPyramids( myPyramidList, QStringLiteral( "NEAREST" ), myFormatFlag );
   qDebug( "%s", myResult.toLocal8Bit().constData() );
   QVERIFY( myResult.isEmpty() );
   //
@@ -547,11 +547,11 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
   // Test with options
   QStringList optionList;
-  optionList << "COMPRESS_OVERVIEW=DEFLATE";
-  optionList << "invalid";
+  optionList << QStringLiteral( "COMPRESS_OVERVIEW=DEFLATE" );
+  optionList << QStringLiteral( "invalid" );
 
   myResult =
-    mypLayer->dataProvider()->buildPyramids( myPyramidList, "NEAREST", myFormatFlag, optionList );
+    mypLayer->dataProvider()->buildPyramids( myPyramidList, QStringLiteral( "NEAREST" ), myFormatFlag, optionList );
   qDebug( "%s", myResult.toLocal8Bit().constData() );
   QVERIFY( myResult.isEmpty() );
   QVERIFY( QFile::exists( myTempPath + "landsat.tif.ovr" ) );
@@ -567,8 +567,8 @@ void TestQgsRasterLayer::buildExternalOverviews()
   QVERIFY( pszCompression && EQUAL( pszCompression, "DEFLATE" ) );
   GDALClose( hDS );
 
-  mReport += "<h2>Check Overviews</h2>\n";
-  mReport += "<p>Passed</p>";
+  mReport += QLatin1String( "<h2>Check Overviews</h2>\n" );
+  mReport += QLatin1String( "<p>Passed</p>" );
 }
 
 
@@ -610,7 +610,7 @@ bool TestQgsRasterLayer::setQml( const QString& theType, QString& msg )
   //load a qml style and apply to our layer
   if ( !mpLandsatRasterLayer->isValid() )
   {
-    msg = " **** setQml -> mpLandsatRasterLayer is invalid";
+    msg = QStringLiteral( " **** setQml -> mpLandsatRasterLayer is invalid" );
     return false;
   }
 
@@ -620,7 +620,7 @@ bool TestQgsRasterLayer::setQml( const QString& theType, QString& msg )
   loadStyleMsg = mpLandsatRasterLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
-    msg = QString( "Loading QML %1 failed: %2" ).arg( myFileName, loadStyleMsg );
+    msg = QStringLiteral( "Loading QML %1 failed: %2" ).arg( myFileName, loadStyleMsg );
     return false;
   }
   return true;

@@ -555,7 +555,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
       {
         int line = Vect_get_node_line( mSource->map(), lid, i );
         QgsDebugMsg( "cancel" );
-        if ( i > 0 ) lines += ",";
+        if ( i > 0 ) lines += QLatin1String( "," );
         lines += QString::number( line );
       }
       feature.setAttribute( 1, lines );
@@ -757,7 +757,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
     , mGrassType( p->mGrassType )
     , mQgisType( p->mQgisType )
     , mFields( p->fields() )
-    , mEncoding( p->mEncoding )
+    , mEncoding( p->textEncoding() )
     , mEditing( p->mEditBuffer )
 {
   Q_ASSERT( mLayer );

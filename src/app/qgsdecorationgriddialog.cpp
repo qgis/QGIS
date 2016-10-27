@@ -169,7 +169,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 QgsDecorationGridDialog::~QgsDecorationGridDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/DecorationGrid/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
   if ( mLineSymbol )
     delete mLineSymbol;
   if ( mMarkerSymbol )

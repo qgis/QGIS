@@ -41,13 +41,13 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     QgsNewMemoryLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
-    /** Returns the selected geometry type*/
+    //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
 
-    /** Returns the selected crs*/
+    //! Returns the selected crs
     QgsCoordinateReferenceSystem crs() const;
 
-    /** Returns the layer name*/
+    //! Returns the layer name
     QString layerName() const;
 
   private:

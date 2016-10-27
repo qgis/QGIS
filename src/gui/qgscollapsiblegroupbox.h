@@ -127,7 +127,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool scrollOnExpand() {return mScrollOnExpand;}
 
   signals:
-    /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
+    //! Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
     void collapsedStateChanged( bool collapsed );
 
   public slots:
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
   protected:
     void init();
 
-    /** Visual fixes for when group box is collapsed/expanded */
+    //! Visual fixes for when group box is collapsed/expanded
     void collapseExpandFixes();
 
     void showEvent( QShowEvent *event ) override;

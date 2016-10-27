@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -99,15 +100,18 @@ class SumLines(GeoAlgorithm):
             length = 0
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
+            engine = None
             if len(lines) > 0:
                 hasIntersections = True
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
 
             if hasIntersections:
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    ftLine = next(lineLayer.getFeatures(request))
+                request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([])
+                for ftLine in lineLayer.getFeatures(request):
                     tmpGeom = ftLine.geometry()
-                    if inGeom.intersects(tmpGeom):
+                    if engine.intersects(tmpGeom.geometry()):
                         outGeom = inGeom.intersection(tmpGeom)
                         length += distArea.measureLength(outGeom)
                         count += 1

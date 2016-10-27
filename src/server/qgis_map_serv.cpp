@@ -37,7 +37,7 @@ int fcgi_accept()
 
 int main( int argc, char * argv[] )
 {
-  QgsApplication app( argc, argv, getenv( "DISPLAY" ), QString(), "server" );
+  QgsApplication app( argc, argv, getenv( "DISPLAY" ), QString(), QStringLiteral( "server" ) );
   QgsServer server( false );
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )

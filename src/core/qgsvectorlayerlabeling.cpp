@@ -25,7 +25,7 @@ QgsAbstractVectorLayerLabeling::~QgsAbstractVectorLayerLabeling()
 
 QgsAbstractVectorLayerLabeling* QgsAbstractVectorLayerLabeling::create( const QDomElement& element )
 {
-  if ( element.attribute( "type" ) == "rule-based" )
+  if ( element.attribute( QStringLiteral( "type" ) ) == QLatin1String( "rule-based" ) )
   {
     return QgsRuleBasedLabeling::create( element );
   }
@@ -38,7 +38,7 @@ QgsAbstractVectorLayerLabeling* QgsAbstractVectorLayerLabeling::create( const QD
 
 QgsVectorLayerLabelProvider* QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer* layer ) const
 {
-  if ( layer->customProperty( "labeling" ).toString() == QLatin1String( "pal" ) && layer->labelsEnabled() )
+  if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) && layer->labelsEnabled() )
     return new QgsVectorLayerLabelProvider( layer, QString(), false );
 
   return nullptr;
@@ -46,14 +46,14 @@ QgsVectorLayerLabelProvider* QgsVectorLayerSimpleLabeling::provider( QgsVectorLa
 
 QString QgsVectorLayerSimpleLabeling::type() const
 {
-  return "simple";
+  return QStringLiteral( "simple" );
 }
 
 QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument& doc ) const
 {
   // all configuration is kept in layer custom properties (for compatibility)
-  QDomElement elem = doc.createElement( "labeling" );
-  elem.setAttribute( "type", "simple" );
+  QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
+  elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "simple" ) );
   return elem;
 }
 

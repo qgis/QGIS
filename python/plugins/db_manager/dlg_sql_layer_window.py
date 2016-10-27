@@ -71,6 +71,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             dbplugin = createDbPlugin('oracle', 'oracle')
         elif layer.dataProvider().name() == 'virtual':
             dbplugin = createDbPlugin('vlayers', 'virtual')
+        elif layer.dataProvider().name() == 'ogr':
+            dbplugin = createDbPlugin('gpkg', 'gpkg')
         if dbplugin:
             dbplugin.connectToUri(uri)
             db = dbplugin.db
@@ -340,7 +342,6 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             self.layer.reload()
             self.iface.actionDraw().trigger()
             self.iface.mapCanvas().refresh()
-            self.iface.legendInterface().refreshLayerLegend(layer)
         finally:
             QApplication.restoreOverrideCursor()
 

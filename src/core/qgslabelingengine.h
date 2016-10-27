@@ -51,11 +51,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
     enum Flag
     {
-      DrawLabels              = 1 << 1,  //!< whether the labels should be rendered
-      DrawAllLabels           = 1 << 2,  //!< whether all features will be labelled even though overlaps occur
-      MergeConnectedLines     = 1 << 3,  //!< whether adjacent lines (with the same label text) should be merged
-      CentroidMustBeInside    = 1 << 4,  //!< whether location of centroid must be inside of polygons
-      LabelPerFeaturePart     = 1 << 6,  //!< whether to label each part of multi-part features separately
+      DrawLabels              = 1 << 1,  //!< Whether the labels should be rendered
+      DrawAllLabels           = 1 << 2,  //!< Whether all features will be labelled even though overlaps occur
+      MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
+      CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
+      LabelPerFeaturePart     = 1 << 6,  //!< Whether to label each part of multi-part features separately
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -172,7 +172,6 @@ class CORE_EXPORT QgsLabelingEngine
       RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
-      DrawShadowRects       = 1 << 6,  //!< Whether to show debugging rectangles for drop shadows
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -197,7 +196,7 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingResults* results() const { return mResults; }
 
     //! Set flags of the labeling engine
-    void setFlags( const Flags& flags ) { mFlags = flags; }
+    void setFlags( Flags flags ) { mFlags = flags; }
     //! Get flags of the labeling engine
     Flags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled

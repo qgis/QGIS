@@ -35,7 +35,7 @@ extern "C"
 
 class QgsField;
 
-/** Spatial column types */
+//! Spatial column types
 enum QgsPostgresGeometryColumnType
 {
   sctNone,
@@ -55,7 +55,7 @@ enum QgsPostgresPrimaryKeyType
   pktFidMap
 };
 
-/** Schema properties structure */
+//! Schema properties structure
 struct QgsPostgresSchemaProperty
 {
   QString name;
@@ -63,7 +63,7 @@ struct QgsPostgresSchemaProperty
   QString owner;
 };
 
-/** Layer Property structure */
+//! Layer Property structure
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
 {
@@ -134,13 +134,13 @@ struct QgsPostgresLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
+    return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
            .arg( schemaName,
                  tableName,
                  geometryColName,
                  typeString,
                  sridString,
-                 pkCols.join( "|" ),
+                 pkCols.join( QStringLiteral( "|" ) ),
                  sql )
            .arg( nSpCols )
            .arg( force2d ? "yes" : "no" );
@@ -191,7 +191,7 @@ class QgsPostgresConn : public QObject
      *        called from a thread other than the main one.
      *        An assertion guards against such programmatic error.
      */
-    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true, bool transaction = false );
+    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
     void ref() { ++mRef; }
     void unref();
@@ -282,7 +282,7 @@ class QgsPostgresConn : public QObject
                           bool searchGeometryColumnsOnly = true,
                           bool searchPublicOnly = true,
                           bool allowGeometrylessTables = false,
-                          const QString schema = QString() );
+                          const QString &schema = QString() );
 
     /** Get the list of database schemas
      * @param schemas list to store schemas in
@@ -335,7 +335,7 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( const QString& theConnName );
     static void deleteConnection( const QString& theConnName );
 
-    /** A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback} */
+    //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
@@ -386,7 +386,7 @@ class QgsPostgresConn : public QObject
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
 
-    /** Count number of spatial columns in a given relation */
+    //! Count number of spatial columns in a given relation
     void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
 
     //! List of the supported layers

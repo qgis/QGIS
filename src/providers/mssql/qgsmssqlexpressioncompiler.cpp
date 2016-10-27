@@ -37,14 +37,14 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
     switch ( bin->op() )
     {
       case QgsExpression::boPow:
-        result = QString( "power(%1,%2)" ).arg( op1, op2 );
+        result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 
       case QgsExpression::boRegexp:
         return Fail; //not supported, regexp syntax is too different to Qt
 
       case QgsExpression::boConcat:
-        result = QString( "%1 + %2" ).arg( op1, op2 );
+        result = QStringLiteral( "%1 + %2" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 
       default:

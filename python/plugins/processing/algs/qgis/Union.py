@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -104,14 +105,18 @@ class Union(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                            self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
-                for id in intersects:
+                request = QgsFeatureRequest().setFilterFids(intersects)
+
+                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine.prepareGeometry()
+
+                for inFeatB in vlayerB.getFeatures(request):
                     count += 1
-                    request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = next(vlayerB.getFeatures(request))
+
                     atMapB = inFeatB.attributes()
                     tmpGeom = inFeatB.geometry()
 
-                    if geom.intersects(tmpGeom):
+                    if engine.intersects(tmpGeom.geometry()):
                         int_geom = geom.intersection(tmpGeom)
                         lstIntersectingB.append(tmpGeom)
 
@@ -196,13 +201,17 @@ class Union(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                            self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
-                for id in intersects:
-                    request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = next(vlayerA.getFeatures(request))
+                request = QgsFeatureRequest().setFilterFids(intersects)
+
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(diff_geom.geometry())
+                engine.prepareGeometry()
+
+                for inFeatB in vlayerA.getFeatures(request):
                     atMapB = inFeatB.attributes()
                     tmpGeom = inFeatB.geometry()
 
-                    if diff_geom.intersects(tmpGeom):
+                    if engine.intersects(tmpGeom.geometry()):
                         add = True
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
                         if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():

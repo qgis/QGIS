@@ -72,7 +72,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( '{' ).append( '}' );
+    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
@@ -191,7 +191,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   else
   {
     QSettings settings;
-    setExpression( vl.isNull() ? settings.value( "qgis/nullValue", "NULL" ).toString() : vl.toString() );
+    setExpression( vl.isNull() ? settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() : vl.toString() );
     emit valueChanged();
   }
   emit expressionChanged( mExpression );
@@ -200,19 +200,19 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
 void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
 {
   QSettings settings;
-  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  QString nullValue = settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str;
   if ( exp == nullValue )
   {
-    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
-    str = QString( "%1 = '%3'" )
+    str = QStringLiteral( "%1 = '%3'" )
           .arg( QgsExpression::quotedColumnRef( fieldName ),
-                exp.replace( '\'', "''" )
+                exp.replace( '\'', QLatin1String( "''" ) )
               );
   }
   mExpression = str;
@@ -220,11 +220,11 @@ void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
 
 QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
 {
-  if ( config( "AllowMulti" ).toBool() )
+  if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
-  else if ( config( "UseCompleter" ).toBool() )
+  else if ( config( QStringLiteral( "UseCompleter" ) ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
@@ -245,7 +245,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   if ( mComboBox )
   {
     mComboBox->addItem( tr( "Please select" ), QVariant() ); // creates an invalid to allow selecting all features
-    if ( config( "AllowNull" ).toBool() )
+    if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
@@ -272,6 +272,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   else if ( mLineEdit )
   {
     QStringList values;
+    values.reserve( mCache.size() );
     Q_FOREACH ( const ValueRelationItem& i,  mCache )
     {
       values << i.second;

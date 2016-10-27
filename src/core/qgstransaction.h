@@ -51,7 +51,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     Q_OBJECT
 
   public:
-    /** Creates a transaction for the specified connection string and provider */
+    //! Creates a transaction for the specified connection string and provider
     static QgsTransaction* create( const QString& connString, const QString& providerKey );
 
     /** Creates a transaction which includes the specified layers. Connection string
@@ -60,10 +60,10 @@ class CORE_EXPORT QgsTransaction : public QObject
 
     virtual ~QgsTransaction();
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    //! Add layer to the transaction. The layer must not be in edit mode.
     bool addLayer( const QString& layerId );
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    //! Add layer to the transaction. The layer must not be in edit mode.
     bool addLayer( QgsVectorLayer* layer );
 
     /** Begin transaction
@@ -76,13 +76,13 @@ class CORE_EXPORT QgsTransaction : public QObject
      *  Some providers might not honour the statement timeout. */
     bool begin( QString& errorMsg, int statementTimeout = 20 );
 
-    /** Commit transaction. */
+    //! Commit transaction.
     bool commit( QString& errorMsg );
 
-    /** Roll back transaction. */
+    //! Roll back transaction.
     bool rollback( QString& errorMsg );
 
-    /** Executes sql */
+    //! Executes sql
     virtual bool executeSql( const QString& sql, QString& error ) = 0;
 
     /**

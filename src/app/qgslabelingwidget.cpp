@@ -48,7 +48,7 @@ void QgsLabelingWidget::resetSettings()
 {
   if ( mOldSettings.data() )
   {
-    if ( mOldSettings->type() == "simple" )
+    if ( mOldSettings->type() == QLatin1String( "simple" ) )
     {
       mOldPalSettings.writeToLayer( mLayer );
     }
@@ -99,7 +99,7 @@ void QgsLabelingWidget::adaptToLayer()
   mLabelModeComboBox->setCurrentIndex( -1 );
 
   // pick the right mode of the layer
-  if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based" )
+  if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
     mLabelModeComboBox->setCurrentIndex( 2 );
   }

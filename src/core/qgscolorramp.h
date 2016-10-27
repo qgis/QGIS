@@ -122,7 +122,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     virtual int count() const override { return mStops.count() + 2; }
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
-    virtual QString type() const override { return "gradient"; }
+    virtual QString type() const override { return QStringLiteral( "gradient" ); }
     virtual QgsGradientColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
 
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
-    virtual QString type() const override { return "random"; }
+    virtual QString type() const override { return QStringLiteral( "random" ); }
     virtual QgsLimitedRandomColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     int count() const override { return mCount; }
@@ -423,13 +423,13 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     // QgsColorRamp interface
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
-    virtual QString type() const override { return "preset"; }
+    virtual QString type() const override { return QStringLiteral( "preset" ); }
     virtual QgsPresetSchemeColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     int count() const override;
 
     // QgsColorScheme interface
-    QString schemeName() const override { return "preset"; }
+    QString schemeName() const override { return QStringLiteral( "preset" ); }
     QgsNamedColorList fetchColors( const QString &context = QString(),
                                    const QColor &baseColor = QColor() ) override;
     bool isEditable() const override { return true; }
@@ -468,7 +468,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
-    virtual QString type() const override { return "colorbrewer"; }
+    virtual QString type() const override { return QStringLiteral( "colorbrewer" ); }
     virtual QgsColorBrewerColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     virtual int count() const override { return mColors; }
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 
     static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
 
-    virtual QString type() const override { return "cpt-city"; }
+    virtual QString type() const override { return QStringLiteral( "cpt-city" ); }
 
     virtual QgsCptCityColorRamp* clone() const override;
     void copy( const QgsCptCityColorRamp* other );

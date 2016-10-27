@@ -92,7 +92,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
     bool init( int maxFeaturesToIndex = -1 );
 
-    /** Indicate whether the data have been already indexed */
+    //! Indicate whether the data have been already indexed
     bool hasIndex() const;
 
     struct Match
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
 
   private:
-    /** Storage manager */
+    //! Storage manager
     SpatialIndex::IStorageManager* mStorage;
 
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
-    /** R-tree containing spatial index */
+    //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
     QgsVectorLayer* mLayer;
     QgsRectangle* mExtent;

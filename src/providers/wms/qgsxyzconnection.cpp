@@ -22,15 +22,15 @@
 QString QgsXyzConnection::encodedUri() const
 {
   QgsDataSourceUri uri;
-  uri.setParam( "type", "xyz" );
-  uri.setParam( "url", url );
+  uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  uri.setParam( QStringLiteral( "url" ), url );
   return uri.encodedUri();
 }
 
 QStringList QgsXyzConnectionUtils::connectionList()
 {
   QSettings settings;
-  settings.beginGroup( "/Qgis/connections-xyz" );
+  settings.beginGroup( QStringLiteral( "/Qgis/connections-xyz" ) );
   return settings.childGroups();
 }
 
@@ -41,7 +41,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 
   QgsXyzConnection conn;
   conn.name = name;
-  conn.url = settings.value( "url" ).toString();
+  conn.url = settings.value( QStringLiteral( "url" ) ).toString();
   return conn;
 }
 
@@ -55,5 +55,5 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
 {
   QSettings settings;
   settings.beginGroup( "/Qgis/connections-xyz/" + conn.name );
-  settings.setValue( "url", conn.url );
+  settings.setValue( QStringLiteral( "url" ), conn.url );
 }

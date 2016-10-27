@@ -96,4 +96,6 @@ namespace pal
 
 } // namespace
 
+Q_DECLARE_TYPEINFO( pal::Point, Q_PRIMITIVE_TYPE );
+
 #endif

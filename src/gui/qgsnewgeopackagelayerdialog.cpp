@@ -60,10 +60,10 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/NewGeoPackageLayer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
 
-  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ) );
-  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.svg" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
+  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
 #ifdef SUPPORT_GEOMETRY_LESS
   mGeometryTypeBox->addItem( tr( "Non spatial" ), wkbNone );
@@ -104,7 +104,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
@@ -139,15 +139,15 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
 QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/NewGeoPackageLayer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/NewGeoPackageLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
 {
   QString myType = mFieldTypeBox->itemData( mFieldTypeBox->currentIndex(), Qt::UserRole ).toString();
-  mFieldLengthEdit->setEnabled( myType == "text" );
-  if ( myType != "text" )
-    mFieldLengthEdit->setText( "" );
+  mFieldLengthEdit->setEnabled( myType == QLatin1String( "text" ) );
+  if ( myType != QLatin1String( "text" ) )
+    mFieldLengthEdit->setText( QLatin1String( "" ) );
 }
 
 
@@ -172,9 +172,9 @@ void QgsNewGeoPackageLayerDialog::on_mSelectDatabaseButton_clicked()
   if ( fileName.isEmpty() )
     return;
 
-  if ( !fileName.endsWith( ".gpkg", Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
-    fileName += ".gpkg";
+    fileName += QLatin1String( ".gpkg" );
   }
 
   mDatabaseEdit->setText( fileName );
@@ -437,19 +437,19 @@ bool QgsNewGeoPackageLayerDialog::apply()
     QString fieldWidth(( *it )->text( 2 ) );
 
     OGRFieldType ogrType( OFTString );
-    if ( fieldType == "text" )
+    if ( fieldType == QLatin1String( "text" ) )
       ogrType = OFTString;
-    else if ( fieldType == "integer" )
+    else if ( fieldType == QLatin1String( "integer" ) )
       ogrType = OFTInteger;
 #ifdef SUPPORT_INTEGER64
     else if ( fieldType == "integer64" )
       ogrType = OFTInteger64;
 #endif
-    else if ( fieldType == "real" )
+    else if ( fieldType == QLatin1String( "real" ) )
       ogrType = OFTReal;
-    else if ( fieldType == "date" )
+    else if ( fieldType == QLatin1String( "date" ) )
       ogrType = OFTDate;
-    else if ( fieldType == "datetime" )
+    else if ( fieldType == QLatin1String( "datetime" ) )
       ogrType = OFTDateTime;
 
     int ogrWidth = fieldWidth.toInt();
@@ -489,9 +489,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGR_DS_Destroy( hDS );
 
-  QString uri( QString( "%1|layername=%2" ).arg( mDatabaseEdit->text(), tableName ) );
+  QString uri( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseEdit->text(), tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
-  QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, "ogr" );
+  QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
   if ( layer->isValid() )
   {
     // register this layer with the central layers registry

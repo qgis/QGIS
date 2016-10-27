@@ -60,7 +60,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*authmethod.dll" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( "*authmethod.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
 #endif
 
   QgsDebugMsg( QString( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ) );
@@ -214,14 +214,14 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
   if ( asHtml )
   {
-    list += "<ol>";
+    list += QLatin1String( "<ol>" );
   }
 
   while ( it != mAuthMethods.end() )
   {
     if ( asHtml )
     {
-      list += "<li>";
+      list += QLatin1String( "<li>" );
     }
 
     list += it->second->description();
@@ -240,7 +240,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
   if ( asHtml )
   {
-    list += "</ol>";
+    list += QLatin1String( "</ol>" );
   }
 
   return list;

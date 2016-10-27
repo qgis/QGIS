@@ -36,30 +36,30 @@ void QgsMapLayerStyleManager::reset()
 
 void QgsMapLayerStyleManager::readXml( const QDomElement& mgrElement )
 {
-  mCurrentStyle = mgrElement.attribute( "current" );
+  mCurrentStyle = mgrElement.attribute( QStringLiteral( "current" ) );
 
   mStyles.clear();
-  QDomElement ch = mgrElement.firstChildElement( "map-layer-style" );
+  QDomElement ch = mgrElement.firstChildElement( QStringLiteral( "map-layer-style" ) );
   while ( !ch.isNull() )
   {
-    QString name = ch.attribute( "name" );
+    QString name = ch.attribute( QStringLiteral( "name" ) );
     QgsMapLayerStyle style;
     style.readXml( ch );
     mStyles.insert( name, style );
 
-    ch = ch.nextSiblingElement( "map-layer-style" );
+    ch = ch.nextSiblingElement( QStringLiteral( "map-layer-style" ) );
   }
 }
 
 void QgsMapLayerStyleManager::writeXml( QDomElement& mgrElement ) const
 {
   QDomDocument doc = mgrElement.ownerDocument();
-  mgrElement.setAttribute( "current", mCurrentStyle );
+  mgrElement.setAttribute( QStringLiteral( "current" ), mCurrentStyle );
 
   Q_FOREACH ( const QString& name, styles() )
   {
-    QDomElement ch = doc.createElement( "map-layer-style" );
-    ch.setAttribute( "name", name );
+    QDomElement ch = doc.createElement( QStringLiteral( "map-layer-style" ) );
+    ch.setAttribute( QStringLiteral( "name" ), name );
     mStyles[name].writeXml( ch );
     mgrElement.appendChild( ch );
   }
@@ -248,7 +248,7 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer* layer )
 
 void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const
 {
-  QDomDocument doc( "qgis" );
+  QDomDocument doc( QStringLiteral( "qgis" ) );
   if ( !doc.setContent( mXmlData ) )
   {
     QgsDebugMsg( "Failed to parse XML of previously stored XML data - this should not happen!" );

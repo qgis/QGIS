@@ -68,9 +68,9 @@ struct sqlstatement_parser_context
 
   void setWhere( QgsSQLStatement::Node* whereExp ) { this->whereExp = whereExp; }
 
-  void setJoins( QList<QgsSQLStatement::NodeJoin*> joinList ) { this->joinList = joinList; }
+  void setJoins( const QList<QgsSQLStatement::NodeJoin*>& joinList ) { this->joinList = joinList; }
 
-  void setOrderBy( QList<QgsSQLStatement::NodeColumnSorted*> orderByList ) { this->orderByList = orderByList; }
+  void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted*>& orderByList ) { this->orderByList = orderByList; }
 };
 
 #define scanner parser_ctx->flex_scanner

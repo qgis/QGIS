@@ -42,13 +42,13 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QS
   init( layerId, providerId, featureId, labelText );
 
   QSettings settings;
-  restoreGeometry( settings.value( QString( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QSettings settings;
-  settings.setValue( QString( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 
   qDeleteAll( mDataDefinedProperties );
 }
@@ -95,7 +95,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
   }
   else
   {
-    QString labelFieldName = vlayer->customProperty( "labeling/fieldName" ).toString();
+    QString labelFieldName = vlayer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
     if ( !labelFieldName.isEmpty() )
     {
       mCurLabelField = vlayer->fields().lookupField( labelFieldName );
@@ -129,18 +129,21 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
   // font is set directly from QgsLabelPosition
   updateFont( mLabelFont, false );
 
+  QgsTextFormat format = layerSettings.format();
+  QgsTextBufferSettings buffer = format.buffer();
+
   //set all the gui elements to the default layer-level values
   mLabelDistanceSpinBox->clear();
   mLabelDistanceSpinBox->setSpecialValueText( tr( "Layer default (%1)" ).arg( QString::number( layerSettings.dist, 'f', mLabelDistanceSpinBox->decimals() ) ) );
   mBufferSizeSpinBox->clear();
-  mBufferSizeSpinBox->setSpecialValueText( tr( "Layer default (%1)" ).arg( QString::number( layerSettings.bufferSize, 'f', mBufferSizeSpinBox->decimals() ) ) );
+  mBufferSizeSpinBox->setSpecialValueText( tr( "Layer default (%1)" ).arg( QString::number( buffer.size(), 'f', mBufferSizeSpinBox->decimals() ) ) );
   mRotationSpinBox->clear();
   mXCoordSpinBox->clear();
   mYCoordSpinBox->clear();
 
   mShowLabelChkbx->setChecked( true );
-  mFontColorButton->setColor( layerSettings.textColor );
-  mBufferColorButton->setColor( layerSettings.bufferColor );
+  mFontColorButton->setColor( format.color() );
+  mBufferColorButton->setColor( buffer.color() );
   mMinScaleSpinBox->setValue( layerSettings.scaleMin );
   mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );

@@ -54,9 +54,9 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     //! Columns returned by the model
     enum Columns
     {
-      Visibility = 0, /*!< Item visibility check box */
-      LockStatus, /*!< Item lock status check box */
-      ItemId, /*!< Item ID */
+      Visibility = 0, //!< Item visibility check box
+      LockStatus, //!< Item lock status check box
+      ItemId, //!< Item ID
     };
 
     /** Constructor
@@ -255,15 +255,15 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
   protected:
 
-    /** Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
+    //! Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)
     QList<QgsComposerItem*> mItemZList;
 
-    /** Cached list of items from mItemZList which are currently in the scene*/
+    //! Cached list of items from mItemZList which are currently in the scene
     QList<QgsComposerItem*> mItemsInScene;
 
   private:
 
-    /** Parent composition*/
+    //! Parent composition
     QgsComposition* mComposition;
 
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible

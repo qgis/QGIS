@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>791</width>
+    <width>857</width>
     <height>658</height>
    </rect>
   </property>
@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>723</width>
-                <height>640</height>
+                <width>712</width>
+                <height>693</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1023,8 +1023,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>607</width>
-                <height>850</height>
+                <width>601</width>
+                <height>877</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1456,8 +1456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>694</height>
+                <width>540</width>
+                <height>741</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1814,8 +1814,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>747</width>
-                <height>972</height>
+                <width>735</width>
+                <height>1038</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2612,8 +2612,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>607</height>
+                <width>148</width>
+                <height>276</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2759,8 +2759,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>607</height>
+                <width>526</width>
+                <height>354</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3102,8 +3102,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>612</height>
+                <width>639</width>
+                <height>668</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3533,8 +3533,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>607</height>
+                <width>522</width>
+                <height>591</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3802,8 +3802,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>668</height>
+                <width>670</width>
+                <height>718</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4003,58 +4003,21 @@
                   <string>Snapping</string>
                  </property>
                  <layout class="QGridLayout" name="_10">
-                  <item row="1" column="0">
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_49">
+                    <property name="text">
+                     <string>Display main dialog as (restart required)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
                    <widget class="QLabel" name="mDefaultSnapModeLabel">
                     <property name="text">
                      <string>Default snap mode</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="4" colspan="2">
-                   <widget class="QComboBox" name="mDefaultSnapModeComboBox">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0" colspan="2">
-                   <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel">
-                    <property name="text">
-                     <string>Default snapping tolerance</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="4">
-                   <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox">
-                    <property name="decimals">
-                     <number>5</number>
-                    </property>
-                    <property name="maximum">
-                     <double>99999999.989999994635582</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0" colspan="3">
-                   <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel">
-                    <property name="text">
-                     <string>Search radius for vertex edits</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="4">
-                   <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
-                    <property name="decimals">
-                     <number>5</number>
-                    </property>
-                    <property name="maximum">
-                     <double>99999999.989999994635582</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="5">
+                  <item row="3" column="6">
                    <widget class="QComboBox" name="mDefaultSnappingToleranceComboBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -4074,7 +4037,76 @@
                     </item>
                    </widget>
                   </item>
+                  <item row="4" column="4">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>61</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="3" column="3" colspan="2">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>241</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="2" column="5" colspan="2">
+                   <widget class="QComboBox" name="mDefaultSnapModeComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="5">
+                   <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
+                    <property name="decimals">
+                     <number>5</number>
+                    </property>
+                    <property name="maximum">
+                     <double>99999999.989999994635582</double>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="3" column="5">
+                   <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox">
+                    <property name="decimals">
+                     <number>5</number>
+                    </property>
+                    <property name="maximum">
+                     <double>99999999.989999994635582</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2" colspan="3">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>311</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="4" column="6">
                    <widget class="QComboBox" name="mSearchRadiusVertexEditComboBox">
                     <item>
                      <property name="text">
@@ -4088,49 +4120,20 @@
                     </item>
                    </widget>
                   </item>
-                  <item row="3" column="3">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>61</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="2" column="2" colspan="2">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>241</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1" colspan="3">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>311</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0" colspan="6">
-                   <widget class="QCheckBox" name="cbxSnappingOptionsDocked">
+                  <item row="4" column="1" colspan="3">
+                   <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel">
                     <property name="text">
-                     <string>Open snapping options in a dock window (QGIS restart required)</string>
+                     <string>Search radius for vertex edits</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="5" colspan="2">
+                   <widget class="QComboBox" name="mSnappingMainDialogComboBox"/>
+                  </item>
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel">
+                    <property name="text">
+                     <string>Default snapping tolerance</string>
                     </property>
                    </widget>
                   </item>
@@ -4347,8 +4350,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>607</height>
+                <width>457</width>
+                <height>382</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4486,8 +4489,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>644</height>
+                <width>557</width>
+                <height>677</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4732,8 +4735,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>607</height>
+                <width>302</width>
+                <height>238</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4841,8 +4844,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>737</height>
+                <width>670</width>
+                <height>793</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5540,7 +5543,6 @@
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mFillColorToolButton</tabstop>
   <tabstop>mLineGhostCheckBox</tabstop>
-  <tabstop>cbxSnappingOptionsDocked</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>

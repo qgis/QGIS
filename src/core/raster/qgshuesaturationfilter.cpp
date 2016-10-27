@@ -350,15 +350,15 @@ void QgsHueSaturationFilter::writeXml( QDomDocument& doc, QDomElement& parentEle
     return;
   }
 
-  QDomElement filterElem = doc.createElement( "huesaturation" );
+  QDomElement filterElem = doc.createElement( QStringLiteral( "huesaturation" ) );
 
-  filterElem.setAttribute( "saturation", QString::number( mSaturation ) );
-  filterElem.setAttribute( "grayscaleMode", QString::number( mGrayscaleMode ) );
-  filterElem.setAttribute( "colorizeOn", QString::number( mColorizeOn ) );
-  filterElem.setAttribute( "colorizeRed", QString::number( mColorizeColor.red() ) );
-  filterElem.setAttribute( "colorizeGreen", QString::number( mColorizeColor.green() ) );
-  filterElem.setAttribute( "colorizeBlue", QString::number( mColorizeColor.blue() ) );
-  filterElem.setAttribute( "colorizeStrength", QString::number( mColorizeStrength ) );
+  filterElem.setAttribute( QStringLiteral( "saturation" ), QString::number( mSaturation ) );
+  filterElem.setAttribute( QStringLiteral( "grayscaleMode" ), QString::number( mGrayscaleMode ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeOn" ), QString::number( mColorizeOn ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeRed" ), QString::number( mColorizeColor.red() ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeGreen" ), QString::number( mColorizeColor.green() ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeBlue" ), QString::number( mColorizeColor.blue() ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeStrength" ), QString::number( mColorizeStrength ) );
 
   parentElem.appendChild( filterElem );
 }
@@ -370,14 +370,14 @@ void QgsHueSaturationFilter::readXml( const QDomElement& filterElem )
     return;
   }
 
-  setSaturation( filterElem.attribute( "saturation", "0" ).toInt() );
-  mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( "grayscaleMode", "0" ).toInt();
+  setSaturation( filterElem.attribute( QStringLiteral( "saturation" ), QStringLiteral( "0" ) ).toInt() );
+  mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( QStringLiteral( "grayscaleMode" ), QStringLiteral( "0" ) ).toInt();
 
-  mColorizeOn = ( bool )filterElem.attribute( "colorizeOn", "0" ).toInt();
-  int mColorizeRed = filterElem.attribute( "colorizeRed", "255" ).toInt();
-  int mColorizeGreen = filterElem.attribute( "colorizeGreen", "128" ).toInt();
-  int mColorizeBlue = filterElem.attribute( "colorizeBlue", "128" ).toInt();
+  mColorizeOn = ( bool )filterElem.attribute( QStringLiteral( "colorizeOn" ), QStringLiteral( "0" ) ).toInt();
+  int mColorizeRed = filterElem.attribute( QStringLiteral( "colorizeRed" ), QStringLiteral( "255" ) ).toInt();
+  int mColorizeGreen = filterElem.attribute( QStringLiteral( "colorizeGreen" ), QStringLiteral( "128" ) ).toInt();
+  int mColorizeBlue = filterElem.attribute( QStringLiteral( "colorizeBlue" ), QStringLiteral( "128" ) ).toInt();
   setColorizeColor( QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue ) );
-  mColorizeStrength = filterElem.attribute( "colorizeStrength", "100" ).toInt();
+  mColorizeStrength = filterElem.attribute( QStringLiteral( "colorizeStrength" ), QStringLiteral( "100" ) ).toInt();
 
 }

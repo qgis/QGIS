@@ -219,7 +219,7 @@ void QgsGdalProviderBase::registerGdalDrivers()
 {
   GDALAllRegister();
   QSettings mySettings;
-  QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
+  QString myJoinedList = mySettings.value( QStringLiteral( "gdal/skipList" ), "" ).toString();
   if ( !myJoinedList.isEmpty() )
   {
     QStringList myList = myJoinedList.split( ' ' );

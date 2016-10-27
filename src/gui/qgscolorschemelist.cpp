@@ -140,8 +140,8 @@ void QgsColorSchemeList::copyColors()
 void QgsColorSchemeList::showImportColorsDialog()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
+  QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
   if ( filePath.isEmpty() )
   {
@@ -156,7 +156,7 @@ void QgsColorSchemeList::showImportColorsDialog()
     return;
   }
 
-  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastGplPaletteDir" ), fileInfo.absolutePath() );
   QFile file( filePath );
   bool importOk = importColorsFromGpl( file );
   if ( !importOk )
@@ -169,8 +169,8 @@ void QgsColorSchemeList::showImportColorsDialog()
 void QgsColorSchemeList::showExportColorsDialog()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
+  QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, QStringLiteral( "GPL (*.gpl)" ) );
   activateWindow();
   if ( fileName.isEmpty() )
   {
@@ -178,13 +178,13 @@ void QgsColorSchemeList::showExportColorsDialog()
   }
 
   // ensure filename contains extension
-  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( QLatin1String( ".gpl" ), Qt::CaseInsensitive ) )
   {
-    fileName += ".gpl";
+    fileName += QLatin1String( ".gpl" );
   }
 
   QFileInfo fileInfo( fileName );
-  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastGplPaletteDir" ), fileInfo.absolutePath() );
 
   QFile file( fileName );
   bool exportOk = exportColorsToGpl( file );
@@ -498,10 +498,10 @@ QStringList QgsColorSchemeModel::mimeTypes() const
   }
 
   QStringList types;
-  types << "text/xml";
-  types << "text/plain";
-  types << "application/x-color";
-  types << "application/x-colorobject-list";
+  types << QStringLiteral( "text/xml" );
+  types << QStringLiteral( "text/plain" );
+  types << QStringLiteral( "application/x-color" );
+  types << QStringLiteral( "application/x-colorobject-list" );
   return types;
 }
 
@@ -739,7 +739,7 @@ const QPixmap& QgsColorSwatchDelegate::transparentBackground() const
   static QPixmap transpBkgrd;
 
   if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+    transpBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
   return transpBkgrd;
 }

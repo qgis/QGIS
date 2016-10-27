@@ -86,7 +86,7 @@ class TestQgsDiagram : public QObject
       QString myPointsFileName = mTestDataDir + "points.shp";
       QFileInfo myPointFileInfo( myPointsFileName );
       mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                         myPointFileInfo.completeBaseName(), "ogr" );
+                                         myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
       // Register the layer with the registry
       QgsMapLayerRegistry::instance()->addMapLayer( mPointsLayer );
@@ -94,7 +94,7 @@ class TestQgsDiagram : public QObject
       // Create map composition to draw on
       mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
 
-      mReport += "<h1>Diagram Tests</h1>\n";
+      mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
 
     // will be called after the last testfunction was executed.
@@ -136,7 +136,7 @@ class TestQgsDiagram : public QObject
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << "\"Pilots\"" << "\"Cabin Crew\"";
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
       ds.maxScaleDenominator = -1;
       ds.minScaleDenominator = -1;
       ds.minimumSize = 0;
@@ -173,7 +173,7 @@ class TestQgsDiagram : public QObject
       col1.setAlphaF( 0.5 );
       col2.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2;
-      ds.categoryAttributes = QList<QString>() << "ln(Pilots + 1)" << "ln(\"Cabin Crew\" + 1)";
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "ln(Pilots + 1)" ) << QStringLiteral( "ln(\"Cabin Crew\" + 1)" );
       ds.maxScaleDenominator = -1;
       ds.minScaleDenominator = -1;
       ds.minimumSize = 0;
@@ -190,7 +190,7 @@ class TestQgsDiagram : public QObject
       dr->setUpperValue( 10 );
       dr->setUpperSize( QSizeF( 40, 40 ) );
       dr->setClassificationAttributeIsExpression( true );
-      dr->setClassificationAttributeExpression( "ln(Staff + 1)" );
+      dr->setClassificationAttributeExpression( QStringLiteral( "ln(Staff + 1)" ) );
       dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
 

@@ -37,7 +37,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;
 
-    virtual QString geometryType() const override { return "CompoundCurve"; }
+    virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
     virtual int dimension() const override { return 1; }
     virtual QgsCompoundCurve* clone() const override;
     virtual void clear() override;
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     void sumUpArea( double& sum ) const override;
 
-    /** Appends first point if not already closed.*/
+    //! Appends first point if not already closed.
     void close();
 
     bool hasCurvedSegments() const override;

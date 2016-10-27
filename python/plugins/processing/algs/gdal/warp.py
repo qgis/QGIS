@@ -88,11 +88,12 @@ class warp(GdalAlgorithm):
                                           0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Resampling method'), self.METHOD_OPTIONS))
-        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent')))
+        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent'), optional=True))
 
         if GdalUtils.version() >= 2000000:
             self.addParameter(ParameterCrs(self.EXT_CRS,
-                                           self.tr('CRS of the raster extent'), ''))
+                                           self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
+                                           optional=True))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
@@ -136,19 +137,19 @@ class warp(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = str(self.getParameterValue(self.TFW))
-        rastext = str(self.getParameterValue(self.RAST_EXT))
+        rastext = self.getParameterValue(self.RAST_EXT)
         rastext_crs = self.getParameterValue(self.EXT_CRS)
 
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(srccrs) > 0:
+        if srccrs:
             arguments.append('-s_srs')
             arguments.append(srccrs)
-        if len(dstcrs) > 0:
+        if dstcrs:
             arguments.append('-t_srs')
             arguments.append(dstcrs)
-        if noData and len(noData) > 0:
+        if noData:
             arguments.append('-dstnodata')
             arguments.append(noData)
         arguments.append('-r')
@@ -164,23 +165,19 @@ class warp(GdalAlgorithm):
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
             extra = str(extra)
-        regionCoords = rastext.split(',')
-        try:
-            rastext = []
-            rastext.append('-te')
-            rastext.append(regionCoords[0])
-            rastext.append(regionCoords[2])
-            rastext.append(regionCoords[1])
-            rastext.append(regionCoords[3])
-        except IndexError:
-            rastext = []
         if rastext:
-            arguments.extend(rastext)
+            regionCoords = rastext.split(',')
+            if len(regionCoords) >= 4:
+                arguments.append('-te')
+                arguments.append(regionCoords[0])
+                arguments.append(regionCoords[2])
+                arguments.append(regionCoords[1])
+                arguments.append(regionCoords[3])
 
-        if GdalUtils.version() >= 2000000:
-            if rastext and rastext_crs is not None:
-                arguments.append('-te_srs')
-                arguments.append(rastext_crs)
+                if GdalUtils.version() >= 2000000:
+                    if rastext_crs:
+                        arguments.append('-te_srs')
+                        arguments.append(rastext_crs)
 
         if extra and len(extra) > 0:
             arguments.append(extra)
@@ -200,6 +197,9 @@ class warp(GdalAlgorithm):
                 arguments.append("-co BIGTIFF=" + bigtiff)
 
             arguments.append("-wo OPTIMIZE_SIZE=TRUE")
+
+        if GdalUtils.version() in [2010000, 2010100]:
+            arguments.append("--config GDALWARP_IGNORE_BAD_CUTLINE YES")
 
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)

@@ -93,7 +93,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent* e )
 
       mRotationItem = new QgsPointRotationItem( mCanvas );
       mRotationItem->setOrientation( QgsPointRotationItem::Counterclockwise );
-      mRotationItem->setSymbol( QgsApplication::getThemePixmap( "mActionRotatePointSymbols.svg" ).toImage() );
+      mRotationItem->setSymbol( QgsApplication::getThemePixmap( QStringLiteral( "mActionRotatePointSymbols.svg" ) ).toImage() );
       mRotationItem->setPointLocation( mRotationPoint );
       mRotationItem->setSymbolRotation( mCurrentRotation );
     }
@@ -170,7 +170,7 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  vlayer->beginEditCommand( tr( "Rotated label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
+  vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
   vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation );
   vlayer->endEditCommand();
   vlayer->triggerRepaint();

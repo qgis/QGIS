@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void addVertex( const QgsPointV2& pt );
 
-    /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
+    //! Closes the line string by appending the first point to the end of the line, if it is not already closed.
     void close();
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //reimplemented methods
 
-    virtual QString geometryType() const override { return "LineString"; }
+    virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
     virtual int dimension() const override { return 1; }
     virtual QgsLineString* clone() const override;
     virtual void clear() override;
@@ -148,6 +148,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
+    virtual int nCoordinates() const override { return mX.size(); }
     void points( QgsPointSequence &pt ) const override;
 
     void draw( QPainter& p ) const override;

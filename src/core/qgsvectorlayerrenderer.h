@@ -51,7 +51,7 @@ class QgsVectorLayerDiagramProvider;
 class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
   public:
-    /** Constructor */
+    //! Constructor
     explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
     bool mustStop() const override;
   private:
@@ -93,7 +93,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
      */
     void drawRendererLevels( QgsFeatureIterator& fit );
 
-    /** Stop version 2 renderer and selected renderer (if required) */
+    //! Stop version 2 renderer and selected renderer (if required)
     void stopRenderer( QgsSingleSymbolRenderer* selRenderer );
 
 
@@ -103,7 +103,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
 
-    /** The rendered layer */
+    //! The rendered layer
     QgsVectorLayer* mLayer;
 
     QgsFields mFields; // TODO: use fields from mSource

@@ -155,7 +155,7 @@ bool QgsCurvePolygon::fromWkt( const QString& wkt )
 
   mWkbType = parts.first;
 
-  QString defaultChildWkbType = QString( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
+  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : "", isMeasure() ? "M" : "" );
 
   Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
@@ -295,20 +295,20 @@ QString QgsCurvePolygon::asWkt( int precision ) const
 QDomElement QgsCurvePolygon::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   // GML2 does not support curves
-  QDomElement elemPolygon = doc.createElementNS( ns, "Polygon" );
-  QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, "outerBoundaryIs" );
+  QDomElement elemPolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
+  QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, QStringLiteral( "outerBoundaryIs" ) );
   QgsLineString* exteriorLineString = exteriorRing()->curveToLine();
   QDomElement outerRing = exteriorLineString->asGML2( doc, precision, ns );
-  outerRing.toElement().setTagName( "LinearRing" );
+  outerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
   elemOuterBoundaryIs.appendChild( outerRing );
   delete exteriorLineString;
   elemPolygon.appendChild( elemOuterBoundaryIs );
-  QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, "innerBoundaryIs" );
+  QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QgsLineString* interiorLineString = interiorRing( i )->curveToLine();
     QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
-    innerRing.toElement().setTagName( "LinearRing" );
+    innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
     elemInnerBoundaryIs.appendChild( innerRing );
     delete interiorLineString;
   }
@@ -318,17 +318,17 @@ QDomElement QgsCurvePolygon::asGML2( QDomDocument& doc, int precision, const QSt
 
 QDomElement QgsCurvePolygon::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemCurvePolygon = doc.createElementNS( ns, "Polygon" );
-  QDomElement elemExterior = doc.createElementNS( ns, "exterior" );
+  QDomElement elemCurvePolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
+  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
   QDomElement outerRing = exteriorRing()->asGML2( doc, precision, ns );
-  outerRing.toElement().setTagName( "LinearRing" );
+  outerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
   elemExterior.appendChild( outerRing );
   elemCurvePolygon.appendChild( elemExterior );
-  QDomElement elemInterior = doc.createElementNS( ns, "interior" );
+  QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement innerRing = interiorRing( i )->asGML2( doc, precision, ns );
-    innerRing.toElement().setTagName( "LinearRing" );
+    innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
     elemInterior.appendChild( innerRing );
   }
   elemCurvePolygon.appendChild( elemInterior );
@@ -338,7 +338,7 @@ QDomElement QgsCurvePolygon::asGML3( QDomDocument& doc, int precision, const QSt
 QString QgsCurvePolygon::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
-  QString json = "{\"type\": \"Polygon\", \"coordinates\": [";
+  QString json = QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [" );
 
   QgsLineString* exteriorLineString = exteriorRing()->curveToLine();
   QgsPointSequence exteriorPts;
@@ -354,11 +354,11 @@ QString QgsCurvePolygon::asJSON( int precision ) const
     json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
     delete interiorLineString;
   }
-  if ( json.endsWith( ", " ) )
+  if ( json.endsWith( QLatin1String( ", " ) ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
-  json += "] }";
+  json += QLatin1String( "] }" );
   return json;
 }
 
@@ -630,6 +630,27 @@ QgsCoordinateSequence QgsCurvePolygon::coordinateSequence() const
   }
 
   return mCoordinateSequence;
+}
+
+int QgsCurvePolygon::nCoordinates() const
+{
+  if ( !mCoordinateSequence.isEmpty() )
+    return QgsAbstractGeometry::nCoordinates();
+
+  int count = 0;
+
+  if ( mExteriorRing )
+  {
+    count += mExteriorRing->nCoordinates();
+  }
+
+  QList<QgsCurve*>::const_iterator it = mInteriorRings.constBegin();
+  for ( ; it != mInteriorRings.constEnd(); ++it )
+  {
+    count += ( *it )->nCoordinates();
+  }
+
+  return count;
 }
 
 double QgsCurvePolygon::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const

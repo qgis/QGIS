@@ -93,15 +93,11 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
   {
     connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
     //set the current project CRS if available
-    long currentCRS = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
-    if ( currentCRS != -1 )
+    QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
+    //convert CRS id to epsg
+    if ( currentRefSys.isValid() )
     {
-      //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-      if ( currentRefSys.isValid() )
-      {
-        mSelectedCRS = currentRefSys.authid();
-      }
+      mSelectedCRS = currentRefSys.authid();
     }
   }
   else
@@ -120,14 +116,14 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
 
   QSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( "/Windows/WMSSourceSelect/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsOWSSourceSelect::~QgsOWSSourceSelect()
 {
   QSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( "/Windows/WMSSourceSelect/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsOWSSourceSelect::clearFormats()
@@ -166,14 +162,14 @@ void QgsOWSSourceSelect::populateFormats()
   //       -> enabled all formats, GDAL may be able to open them
 
   QMap<QString, QString> formatsMap;
-  formatsMap.insert( "geotiff", "tiff" );
-  formatsMap.insert( "gtiff", "tiff" );
-  formatsMap.insert( "tiff", "tiff" );
-  formatsMap.insert( "tif", "tiff" );
-  formatsMap.insert( "gif", "gif" );
-  formatsMap.insert( "jpeg", "jpeg" );
-  formatsMap.insert( "jpg", "jpeg" );
-  formatsMap.insert( "png", "png" );
+  formatsMap.insert( QStringLiteral( "geotiff" ), QStringLiteral( "tiff" ) );
+  formatsMap.insert( QStringLiteral( "gtiff" ), QStringLiteral( "tiff" ) );
+  formatsMap.insert( QStringLiteral( "tiff" ), QStringLiteral( "tiff" ) );
+  formatsMap.insert( QStringLiteral( "tif" ), QStringLiteral( "tiff" ) );
+  formatsMap.insert( QStringLiteral( "gif" ), QStringLiteral( "gif" ) );
+  formatsMap.insert( QStringLiteral( "jpeg" ), QStringLiteral( "jpeg" ) );
+  formatsMap.insert( QStringLiteral( "jpg" ), QStringLiteral( "jpeg" ) );
+  formatsMap.insert( QStringLiteral( "png" ), QStringLiteral( "png" ) );
 
   int preferred = -1;
   QStringList layersFormats = selectedLayersFormats();
@@ -181,7 +177,7 @@ void QgsOWSSourceSelect::populateFormats()
   {
     QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    QString simpleFormat = format.toLower().remove( "image/" ).remove( QRegExp( "_.*" ) );
+    QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegExp( "_.*" ) );
     QgsDebugMsg( "server simpleFormat = " + simpleFormat );
     QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );
@@ -196,7 +192,7 @@ void QgsOWSSourceSelect::populateFormats()
         label += " / " + mMimeLabelMap.value( mimeFormat );
       }
 
-      if ( simpleFormat.contains( "tif" ) ) // prefer *tif*
+      if ( simpleFormat.contains( QLatin1String( "tif" ) ) ) // prefer *tif*
       {
         if ( preferred < 0 || simpleFormat.startsWith( 'g' ) ) // prefer geotiff
         {
@@ -383,8 +379,7 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
-  QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
-  QgsCoordinateReferenceSystem defaultCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myDefaultCrs );
+  QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );
@@ -452,8 +447,8 @@ void QgsOWSSourceSelect::populateCrs()
 void QgsOWSSourceSelect::clearCrs()
 {
   mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
-  mSelectedCRS = "";
-  mSelectedCRSLabel->setText( "" );
+  mSelectedCRS = QLatin1String( "" );
+  mSelectedCRSLabel->setText( QLatin1String( "" ) );
   mChangeCRSButton->setEnabled( false );
 }
 
@@ -562,7 +557,7 @@ void QgsOWSSourceSelect::showError( QString const &theTitle, QString const &theF
   QgsMessageViewer * mv = new QgsMessageViewer( this );
   mv->setWindowTitle( theTitle );
 
-  if ( theFormat == "text/html" )
+  if ( theFormat == QLatin1String( "text/html" ) )
   {
     mv->setMessageAsHtml( theError );
   }
@@ -597,8 +592,8 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString& authId )
 void QgsOWSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
-  exampleServers["DM Solutions GMap"] = "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
-  exampleServers["Lizardtech server"] =  "http://wms.lizardtech.com/lizardtech/iserv/ows";
+  exampleServers[QStringLiteral( "DM Solutions GMap" )] = QStringLiteral( "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap" );
+  exampleServers[QStringLiteral( "Lizardtech server" )] =  QStringLiteral( "http://wms.lizardtech.com/lizardtech/iserv/ows" );
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
@@ -626,11 +621,11 @@ void QgsOWSSourceSelect::addDefaultServers()
 
 void QgsOWSSourceSelect::addWmsListRow( const QDomElement& item, int row )
 {
-  QDomElement title = item.firstChildElement( "title" );
+  QDomElement title = item.firstChildElement( QStringLiteral( "title" ) );
   addWmsListItem( title, row, 0 );
-  QDomElement description = item.firstChildElement( "description" );
+  QDomElement description = item.firstChildElement( QStringLiteral( "description" ) );
   addWmsListItem( description, row, 1 );
-  QDomElement link = item.firstChildElement( "link" );
+  QDomElement link = item.firstChildElement( QStringLiteral( "link" ) );
   addWmsListItem( link, row, 2 );
 }
 
@@ -658,7 +653,7 @@ void QgsOWSSourceSelect::on_mSearchButton_clicked()
 
   QSettings settings;
   // geopole.org (geopole.ch) 25.4.2012 : 503 Service Unavailable, archive: Recently added 20 Jul 2011
-  QString mySearchUrl = settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
+  QString mySearchUrl = settings.value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
   QUrl url( mySearchUrl.arg( mSearchTermLineEdit->text() ) );
   QgsDebugMsg( url.toString() );
 
@@ -677,13 +672,13 @@ void QgsOWSSourceSelect::searchFinished()
   if ( r->error() == QNetworkReply::NoError )
   {
     // parse results
-    QDomDocument doc( "RSS" );
+    QDomDocument doc( QStringLiteral( "RSS" ) );
     QByteArray res = r->readAll();
     QString error;
     int line, column;
     if ( doc.setContent( res, &error, &line, &column ) )
     {
-      QDomNodeList list = doc.elementsByTagName( "item" );
+      QDomNodeList list = doc.elementsByTagName( QStringLiteral( "item" ) );
       mSearchTableWidget->setRowCount( list.size() );
       for ( int i = 0; i < list.size(); i++ )
       {

@@ -39,39 +39,39 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     enum DataDefinedProperty
     {
-      NoProperty = 0, /*!< no property */
-      AllProperties, /*!< all properties for item */
-      TestProperty, /*!< dummy property with no effect on item*/
+      NoProperty = 0, //!< No property
+      AllProperties, //!< All properties for item
+      TestProperty, //!< Dummy property with no effect on item
       //composer page properties
-      PresetPaperSize, /*!< preset paper size for composition */
-      PaperWidth, /*!< paper width */
-      PaperHeight, /*!< paper height */
-      NumPages, /*!< number of pages in composition */
-      PaperOrientation, /*!< paper orientation */
+      PresetPaperSize, //!< Preset paper size for composition
+      PaperWidth, //!< Paper width
+      PaperHeight, //!< Paper height
+      NumPages, //!< Number of pages in composition
+      PaperOrientation, //!< Paper orientation
       //general composer item properties
-      PageNumber, /*!< page number for item placement */
-      PositionX, /*!< x position on page */
-      PositionY, /*!< y position on page */
-      ItemWidth, /*!< width of item */
-      ItemHeight, /*!< height of item */
-      ItemRotation, /*!< rotation of item */
-      Transparency, /*!< item transparency */
-      BlendMode, /*!< item blend mode */
-      ExcludeFromExports, /*!< exclude item from exports */
+      PageNumber, //!< Page number for item placement
+      PositionX, //!< X position on page
+      PositionY, //!< Y position on page
+      ItemWidth, //!< Width of item
+      ItemHeight, //!< Height of item
+      ItemRotation, //!< Rotation of item
+      Transparency, //!< Item transparency
+      BlendMode, //!< Item blend mode
+      ExcludeFromExports, //!< Exclude item from exports
       //composer map
-      MapRotation, /*!< map rotation */
-      MapScale, /*!< map scale */
-      MapXMin, /*!< map extent x minimum */
-      MapYMin, /*!< map extent y minimum */
-      MapXMax, /*!< map extent x maximum */
-      MapYMax, /*!< map extent y maximum */
-      MapAtlasMargin, /*!< map atlas margin*/
-      MapLayers, /*!< map layer set*/
-      MapStylePreset, /*!< layer and style map theme */
+      MapRotation, //!< Map rotation
+      MapScale, //!< Map scale
+      MapXMin, //!< Map extent x minimum
+      MapYMin, //!< Map extent y minimum
+      MapXMax, //!< Map extent x maximum
+      MapYMax, //!< Map extent y maximum
+      MapAtlasMargin, //!< Map atlas margin
+      MapLayers, //!< Map layer set
+      MapStylePreset, //!< Layer and style map theme
       //composer picture
-      PictureSource, /*!< picture source url */
+      PictureSource, //!< Picture source url
       //html item
-      SourceUrl /*!< html source url */
+      SourceUrl //!< Html source url
     };
 
     /** Specifies whether the value returned by a function should be the original, user
@@ -80,8 +80,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     enum PropertyValueType
     {
-      EvaluatedValue = 0, /*!< return the current evaluated value for the property */
-      OriginalValue /*!< return the original, user set value */
+      EvaluatedValue = 0, //!< Return the current evaluated value for the property
+      OriginalValue //!< Return the original, user set value
     };
 
     /** Constructor
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
   public slots:
 
-    /** Triggers a redraw for the item*/
+    //! Triggers a redraw for the item
     virtual void repaint();
 
     /** Refreshes a data defined property for the item by reevaluating the property's value
@@ -189,10 +189,10 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
     QgsComposition* mComposition;
 
-    /** Map of data defined properties for the item to string name to use when exporting item to xml*/
+    //! Map of data defined properties for the item to string name to use when exporting item to xml
     QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
 
-    /** Custom properties for object*/
+    //! Custom properties for object
     QgsObjectCustomProperties mCustomProperties;
 
     /** Evaluate a data defined property and return the calculated value
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
   private:
 
-    /** Map of current data defined properties*/
+    //! Map of current data defined properties
     //mutable since expressions in data defineds need to be preparable
     mutable QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 

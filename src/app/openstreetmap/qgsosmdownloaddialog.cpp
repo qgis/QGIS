@@ -155,13 +155,13 @@ void QgsOSMDownloadDialog::onCurrentLayerChanged( int index )
 void QgsOSMDownloadDialog::onBrowseClicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( "/osm/lastDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editFileName->setText( fileName );
 }
 
@@ -211,5 +211,5 @@ void QgsOSMDownloadDialog::onDownloadProgress( qint64 bytesReceived, qint64 byte
 {
   Q_UNUSED( bytesTotal ); // it's -1 anyway (= unknown)
   double mbytesReceived = ( double )bytesReceived / ( 1024 * 1024 );
-  editSize->setText( QString( "%1 MB" ).arg( QString::number( mbytesReceived, 'f', 1 ) ) );
+  editSize->setText( QStringLiteral( "%1 MB" ).arg( QString::number( mbytesReceived, 'f', 1 ) ) );
 }

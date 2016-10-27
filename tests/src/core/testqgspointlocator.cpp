@@ -79,7 +79,7 @@ class TestQgsPointLocator : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( "Polygon", "x", "memory" );
+      mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsPolygon polygon;
       QgsPolyline polyline;

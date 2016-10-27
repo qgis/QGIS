@@ -90,15 +90,11 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         self.builder.loadRecent('fieldcalc')
 
+        self.initContext()
         self.updateLayer()
 
-    def updateLayer(self):
-        self.layer = dataobjects.getObject(self.cmbInputLayer.currentText())
-
-        self.builder.setLayer(self.layer)
-        self.builder.loadFieldNames()
-
-        exp_context = QgsExpressionContext()
+    def initContext(self):
+        exp_context = self.builder.expressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
         exp_context.appendScope(QgsExpressionContextUtils.projectScope())
         exp_context.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
@@ -106,6 +102,10 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         exp_context.setHighlightedVariables(["row_number"])
         self.builder.setExpressionContext(exp_context)
 
+    def updateLayer(self):
+        self.layer = dataobjects.getObject(self.cmbInputLayer.currentText())
+        self.builder.setLayer(self.layer)
+        self.builder.loadFieldNames()
         self.populateFields()
 
     def setupSpinboxes(self, index):
@@ -173,6 +173,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         if self.layer is None:
             return
 
+        self.mExistingFieldComboBox.clear()
         fields = self.layer.fields()
         for f in fields:
             self.mExistingFieldComboBox.addItem(f.name())

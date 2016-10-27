@@ -60,16 +60,16 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegend( QgsComposition* composition );
     ~QgsComposerLegend();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** Paints the legend and calculates its size. If painter is 0, only size is calculated*/
+    //! Paints the legend and calculates its size. If painter is 0, only size is calculated
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-    /** Sets item box to the whole content*/
+    //! Sets item box to the whole content
     void adjustBoxSize();
 
     /** Sets whether the legend should automatically resize to fit its contents.
@@ -135,17 +135,17 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
-    /** Returns reference to modifiable style */
+    //! Returns reference to modifiable style
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
-    /** Returns style */
+    //! Returns style
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
     void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
     QFont styleFont( QgsComposerLegendStyle::Style s ) const;
-    /** Set style font */
+    //! Set style font
     void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
 
-    /** Set style margin*/
+    //! Set style margin
     void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
     void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
 
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap;}
 
-    /** Updates the model and all legend entries*/
+    //! Updates the model and all legend entries
     void updateLegend();
 
     /** Stores state in Dom node
@@ -259,9 +259,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     virtual QString displayName() const override;
 
   public slots:
-    /** Data changed*/
+    //! Data changed
     void synchronizeWithModel();
-    /** Sets mCompositionMap to 0 if the map is deleted*/
+    //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
 
   private slots:

@@ -60,7 +60,7 @@
   ")"
 
 Qgs25DRenderer::Qgs25DRenderer()
-    : QgsFeatureRenderer( "25dRenderer" )
+    : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
 {
   mSymbol.reset( new QgsFillSymbol() );
 
@@ -69,13 +69,13 @@ Qgs25DRenderer::Qgs25DRenderer()
   QgsSymbolLayer* floor = QgsSimpleFillSymbolLayer::create();
 
   QgsStringMap wallProperties;
-  wallProperties.insert( "geometryModifier", WALL_EXPRESSION );
-  wallProperties.insert( "symbolType", "Fill" );
+  wallProperties.insert( QStringLiteral( "geometryModifier" ), WALL_EXPRESSION );
+  wallProperties.insert( QStringLiteral( "symbolType" ), QStringLiteral( "Fill" ) );
   QgsSymbolLayer* walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
 
   QgsStringMap roofProperties;
-  roofProperties.insert( "geometryModifier", ROOF_EXPRESSION );
-  roofProperties.insert( "symbolType", "Fill" );
+  roofProperties.insert( QStringLiteral( "geometryModifier" ), ROOF_EXPRESSION );
+  roofProperties.insert( QStringLiteral( "symbolType" ), QStringLiteral( "Fill" ) );
   QgsSymbolLayer* roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );
 
   floor->setLocked( true );
@@ -96,7 +96,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   setRoofColor( QColor( "#b1a97c" ) );
   setWallColor( QColor( "#777777" ) );
 
-  wallLayer()->setDataDefinedProperty( "color", new QgsDataDefined( QString( WALL_SHADING_EXPRESSION ) ) );
+  wallLayer()->setDataDefinedProperty( QStringLiteral( "color" ), new QgsDataDefined( QString( WALL_SHADING_EXPRESSION ) ) );
 
   setShadowSpread( 4 );
   setShadowColor( QColor( "#111111" ) );
@@ -114,9 +114,9 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
 
-  rendererElem.setAttribute( "type", "25dRenderer" );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "25dRenderer" ) );
 
-  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( "symbol", mSymbol.data(), doc );
+  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.data(), doc );
 
   rendererElem.appendChild( symbolElem );
 
@@ -127,7 +127,7 @@ QgsFeatureRenderer* Qgs25DRenderer::create( QDomElement& element )
 {
   Qgs25DRenderer* renderer = new Qgs25DRenderer();
 
-  QDomNodeList symbols = element.elementsByTagName( "symbol" );
+  QDomNodeList symbols = element.elementsByTagName( QStringLiteral( "symbol" ) );
   if ( symbols.size() )
   {
     renderer->mSymbol.reset( QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement() ) );
@@ -232,12 +232,12 @@ void Qgs25DRenderer::setWallColor( const QColor& wallColor )
 
 void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
 {
-  wallLayer()->getDataDefinedProperty( "color" )->setActive( enabled );
+  wallLayer()->getDataDefinedProperty( QStringLiteral( "color" ) )->setActive( enabled );
 }
 
 bool Qgs25DRenderer::wallShadingEnabled()
 {
-  return wallLayer()->getDataDefinedProperty( "color" )->isActive();
+  return wallLayer()->getDataDefinedProperty( QStringLiteral( "color" ) )->isActive();
 }
 
 QColor Qgs25DRenderer::roofColor() const
@@ -253,7 +253,7 @@ void Qgs25DRenderer::setRoofColor( const QColor& roofColor )
 
 Qgs25DRenderer* Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer* renderer )
 {
-  if ( renderer->type() == "25dRenderer" )
+  if ( renderer->type() == QLatin1String( "25dRenderer" ) )
   {
     return static_cast<Qgs25DRenderer*>( renderer->clone() );
   }

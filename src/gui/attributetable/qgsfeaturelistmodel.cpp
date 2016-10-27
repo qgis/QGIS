@@ -27,7 +27,7 @@ QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceMo
     , mInjectNull( false )
 {
   setSourceModel( sourceModel );
-  mExpression = new QgsExpression( "" );
+  mExpression = new QgsExpression( QLatin1String( "" ) );
 }
 
 QgsFeatureListModel::~QgsFeatureListModel()
@@ -73,7 +73,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   {
     if ( role == Qt::DisplayRole )
     {
-      return QSettings().value( "qgis/nullValue", "NULL" ).toString();
+      return QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
     }
     else if ( role == QgsAttributeTableModel::FeatureIdRole )
     {

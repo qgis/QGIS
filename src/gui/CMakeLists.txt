@@ -302,12 +302,15 @@ SET(QGIS_GUI_SRCS
   qgsshortcutsmanager.cpp
   qgsslider.cpp
   qgssublayersdialog.cpp
+  qgssubstitutionlistwidget.cpp  
   qgssqlcomposerdialog.cpp
   qgssvgannotationitem.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
+  qgstextformatwidget.cpp
+  qgstextpreview.cpp
   qgstrackedvectorlayertools.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
@@ -459,8 +462,11 @@ SET(QGIS_GUI_MOC_HDRS
   qgsslider.h
   qgssqlcomposerdialog.h
   qgssublayersdialog.h
+  qgssubstitutionlistwidget.h
   qgstablewidgetbase.h
   qgstabwidget.h
+  qgstextformatwidget.h
+  qgstextpreview.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h

@@ -161,11 +161,11 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
   // Default simplify drawing settings
   QSettings settings;
-  mSimplifyMethod.setSimplifyHints( static_cast< QgsVectorSimplifyMethod::SimplifyHints >( settings.value( "/qgis/simplifyDrawingHints", static_cast< int>( mSimplifyMethod.simplifyHints() ) ).toInt() ) );
-  mSimplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( settings.value( "/qgis/simplifyAlgorithm", static_cast< int>( mSimplifyMethod.simplifyAlgorithm() ) ).toInt() ) );
-  mSimplifyMethod.setThreshold( settings.value( "/qgis/simplifyDrawingTol", mSimplifyMethod.threshold() ).toFloat() );
-  mSimplifyMethod.setForceLocalOptimization( settings.value( "/qgis/simplifyLocal", mSimplifyMethod.forceLocalOptimization() ).toBool() );
-  mSimplifyMethod.setMaximumScale( settings.value( "/qgis/simplifyMaxScale", mSimplifyMethod.maximumScale() ).toFloat() );
+  mSimplifyMethod.setSimplifyHints( static_cast< QgsVectorSimplifyMethod::SimplifyHints >( settings.value( QStringLiteral( "/qgis/simplifyDrawingHints" ), static_cast< int>( mSimplifyMethod.simplifyHints() ) ).toInt() ) );
+  mSimplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( settings.value( QStringLiteral( "/qgis/simplifyAlgorithm" ), static_cast< int>( mSimplifyMethod.simplifyAlgorithm() ) ).toInt() ) );
+  mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
+  mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "/qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
+  mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
 } // QgsVectorLayer ctor
 
 
@@ -397,7 +397,7 @@ void QgsVectorLayer::selectByIds( const QgsFeatureIds& ids, QgsVectorLayer::Sele
   emit selectionChanged( newSelection, deselectedFeatures, true );
 }
 
-void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds )
+void QgsVectorLayer::modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds& deselectIds )
 {
   QgsFeatureIds intersectingIds = selectIds & deselectIds;
   if ( !intersectingIds.isEmpty() )
@@ -602,8 +602,8 @@ bool QgsVectorLayer::labelsEnabled() const
 
   // for simple labeling the mode can be "no labels" - so we need to check
   // in properties whether we are really enabled or not
-  if ( mLabeling->type() == "simple" )
-    return customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+  if ( mLabeling->type() == QLatin1String( "simple" ) )
+    return customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool();
 
   // for other labeling implementations we always assume that labeling is enabled
   return true;
@@ -638,7 +638,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
 {
   public:
 
-    /** Constructor */
+    //! Constructor
     explicit QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures( QProgressDialog* dialog )
         : mDialog( dialog )
     {
@@ -705,7 +705,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   QWidget* mainWindow = nullptr;
   Q_FOREACH ( QWidget* widget, qApp->topLevelWidgets() )
   {
-    if ( widget->objectName() == "QgisApp" )
+    if ( widget->objectName() == QLatin1String( "QgisApp" ) )
     {
       mainWindow = widget;
       break;
@@ -1366,11 +1366,11 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   QgsDebugMsg( QString( "Datasource in QgsVectorLayer::readXml: " ) + mDataSource.toLocal8Bit().data() );
 
   //process provider key
-  QDomNode pkeyNode = layer_node.namedItem( "provider" );
+  QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );
 
   if ( pkeyNode.isNull() )
   {
-    mProviderKey = "";
+    mProviderKey = QLatin1String( "" );
   }
   else
   {
@@ -1384,13 +1384,13 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     // if the provider string isn't empty, then we successfully
     // got the stored provider
   }
-  else if ( mDataSource.contains( "dbname=" ) )
+  else if ( mDataSource.contains( QLatin1String( "dbname=" ) ) )
   {
-    mProviderKey = "postgres";
+    mProviderKey = QStringLiteral( "postgres" );
   }
   else
   {
-    mProviderKey = "ogr";
+    mProviderKey = QStringLiteral( "ogr" );
   }
 
   if ( !setDataProvider( mProviderKey ) )
@@ -1399,13 +1399,13 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
 
   QDomElement mapLayerNode = layer_node.toElement();
-  if ( mapLayerNode.attribute( "readOnly", "0" ).toInt() == 1 )
+  if ( mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
     mReadOnly = true;
 
   QDomElement pkeyElem = pkeyNode.toElement();
   if ( !pkeyElem.isNull() )
   {
-    QString encodingString = pkeyElem.attribute( "encoding" );
+    QString encodingString = pkeyElem.attribute( QStringLiteral( "encoding" ) );
     if ( !encodingString.isEmpty() )
     {
       mDataProvider->setEncoding( encodingString );
@@ -1433,16 +1433,16 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   // default expressions
   mDefaultExpressionMap.clear();
-  QDomNode defaultsNode = layer_node.namedItem( "defaults" );
+  QDomNode defaultsNode = layer_node.namedItem( QStringLiteral( "defaults" ) );
   if ( !defaultsNode.isNull() )
   {
-    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( "default" );
+    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( QStringLiteral( "default" ) );
     for ( int i = 0; i < defaultNodeList.size(); ++i )
     {
       QDomElement defaultElem = defaultNodeList.at( i ).toElement();
 
-      QString field = defaultElem.attribute( "field", QString() );
-      QString expression = defaultElem.attribute( "expression", QString() );
+      QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
+      QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
       if ( field.isEmpty() || expression.isEmpty() )
         continue;
 
@@ -1451,13 +1451,13 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
   updateFields();
 
-  QDomNode depsNode = layer_node.namedItem( "dataDependencies" );
+  QDomNode depsNode = layer_node.namedItem( QStringLiteral( "dataDependencies" ) );
   QDomNodeList depsNodes = depsNode.childNodes();
   QSet<QgsMapLayerDependency> sources;
   for ( int i = 0; i < depsNodes.count(); i++ )
   {
     QDomNode node = depsNodes.at( i );
-    QString source = depsNodes.at( i ).toElement().attribute( "id" );
+    QString source = depsNodes.at( i ).toElement().attribute( QStringLiteral( "id" ) );
     sources << QgsMapLayerDependency( source );
   }
   setDependencies( sources );
@@ -1547,7 +1547,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
-  if ( mProviderKey == "postgres" )
+  if ( mProviderKey == QLatin1String( "postgres" ) )
   {
     QgsDebugMsg( "Beautifying layer name " + name() );
 
@@ -1578,16 +1578,16 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     // deal with unnecessary schema qualification to make v.in.ogr happy
     mDataSource = mDataProvider->dataSourceUri();
   }
-  else if ( mProviderKey == "osm" )
+  else if ( mProviderKey == QLatin1String( "osm" ) )
   {
     // make sure that the "observer" has been removed from URI to avoid crashes
     mDataSource = mDataProvider->dataSourceUri();
   }
-  else if ( provider == "ogr" )
+  else if ( provider == QLatin1String( "ogr" ) )
   {
     // make sure that the /vsigzip or /vsizip is added to uri, if applicable
     mDataSource = mDataProvider->dataSourceUri();
-    if ( mDataSource.right( 10 ) == "|layerid=0" )
+    if ( mDataSource.right( 10 ) == QLatin1String( "|layerid=0" ) )
       mDataSource.chop( 10 );
   }
 
@@ -1614,16 +1614,16 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     return false;
   }
 
-  mapLayerNode.setAttribute( "type", "vector" );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "vector" ) );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", QgsWkbTypes::geometryDisplayString( geometryType() ) );
+  mapLayerNode.setAttribute( QStringLiteral( "geometry" ), QgsWkbTypes::geometryDisplayString( geometryType() ) );
 
   // add provider node
   if ( mDataProvider )
   {
-    QDomElement provider  = document.createElement( "provider" );
-    provider.setAttribute( "encoding", mDataProvider->encoding() );
+    QDomElement provider  = document.createElement( QStringLiteral( "provider" ) );
+    provider.setAttribute( QStringLiteral( "encoding" ), mDataProvider->encoding() );
     QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
@@ -1633,36 +1633,36 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mJoinBuffer->writeXml( layer_node, document );
 
   // dependencies
-  QDomElement dependenciesElement = document.createElement( "layerDependencies" );
+  QDomElement dependenciesElement = document.createElement( QStringLiteral( "layerDependencies" ) );
   Q_FOREACH ( const QgsMapLayerDependency& dep, dependencies() )
   {
     if ( dep.type() != QgsMapLayerDependency::PresenceDependency )
       continue;
-    QDomElement depElem = document.createElement( "layer" );
-    depElem.setAttribute( "id", dep.layerId() );
+    QDomElement depElem = document.createElement( QStringLiteral( "layer" ) );
+    depElem.setAttribute( QStringLiteral( "id" ), dep.layerId() );
     dependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dependenciesElement );
 
   //default expressions
-  QDomElement defaultsElem = document.createElement( "defaults" );
+  QDomElement defaultsElem = document.createElement( QStringLiteral( "defaults" ) );
   Q_FOREACH ( const QgsField& field, mFields )
   {
-    QDomElement defaultElem = document.createElement( "default" );
-    defaultElem.setAttribute( "field", field.name() );
-    defaultElem.setAttribute( "expression", field.defaultValueExpression() );
+    QDomElement defaultElem = document.createElement( QStringLiteral( "default" ) );
+    defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
+    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueExpression() );
     defaultsElem.appendChild( defaultElem );
   }
   layer_node.appendChild( defaultsElem );
 
   // change dependencies
-  QDomElement dataDependenciesElement = document.createElement( "dataDependencies" );
+  QDomElement dataDependenciesElement = document.createElement( QStringLiteral( "dataDependencies" ) );
   Q_FOREACH ( const QgsMapLayerDependency& dep, dependencies() )
   {
     if ( dep.type() != QgsMapLayerDependency::DataDependency )
       continue;
-    QDomElement depElem = document.createElement( "layer" );
-    depElem.setAttribute( "id", dep.layerId() );
+    QDomElement depElem = document.createElement( QStringLiteral( "layer" ) );
+    depElem.setAttribute( QStringLiteral( "id" ), dep.layerId() );
     dataDependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dataDependenciesElement );
@@ -1688,10 +1688,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   readStyle( node, errorMessage );
 
-  mDisplayExpression = node.namedItem( "previewExpression" ).toElement().text();
-  mMapTipTemplate = node.namedItem( "mapTip" ).toElement().text();
+  mDisplayExpression = node.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
+  mMapTipTemplate = node.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
 
-  QString displayField = node.namedItem( "displayfield" ).toElement().text();
+  QString displayField = node.namedItem( QStringLiteral( "displayfield" ) ).toElement().text();
 
   // Try to migrate pre QGIS 3.0 display field property
   if ( mFields.lookupField( displayField ) < 0 )
@@ -1709,7 +1709,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   // process the attribute actions
   mActions->readXml( node );
 
-  QDomNode annotationFormNode = node.namedItem( "annotationform" );
+  QDomNode annotationFormNode = node.namedItem( QStringLiteral( "annotationform" ) );
   if ( !annotationFormNode.isNull() )
   {
     QDomElement e = annotationFormNode.toElement();
@@ -1717,40 +1717,40 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   mAttributeAliasMap.clear();
-  QDomNode aliasesNode = node.namedItem( "aliases" );
+  QDomNode aliasesNode = node.namedItem( QStringLiteral( "aliases" ) );
   if ( !aliasesNode.isNull() )
   {
     QDomElement aliasElem;
 
-    QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( "alias" );
+    QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( QStringLiteral( "alias" ) );
     for ( int i = 0; i < aliasNodeList.size(); ++i )
     {
       aliasElem = aliasNodeList.at( i ).toElement();
 
       QString field;
-      if ( aliasElem.hasAttribute( "field" ) )
+      if ( aliasElem.hasAttribute( QStringLiteral( "field" ) ) )
       {
-        field = aliasElem.attribute( "field" );
+        field = aliasElem.attribute( QStringLiteral( "field" ) );
       }
       else
       {
-        int index = aliasElem.attribute( "index" ).toInt();
+        int index = aliasElem.attribute( QStringLiteral( "index" ) ).toInt();
 
         if ( index >= 0 && index < fields().count() )
           field = fields().at( index ).name();
       }
 
-      mAttributeAliasMap.insert( field, aliasElem.attribute( "name" ) );
+      mAttributeAliasMap.insert( field, aliasElem.attribute( QStringLiteral( "name" ) ) );
     }
   }
   updateFields();
 
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
-  QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
+  QDomNode excludeWMSNode = node.namedItem( QStringLiteral( "excludeAttributesWMS" ) );
   if ( !excludeWMSNode.isNull() )
   {
-    QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( "attribute" );
+    QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
     for ( int i = 0; i < attributeNodeList.size(); ++i )
     {
       mExcludeAttributesWMS.insert( attributeNodeList.at( i ).toElement().text() );
@@ -1758,10 +1758,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   mExcludeAttributesWFS.clear();
-  QDomNode excludeWFSNode = node.namedItem( "excludeAttributesWFS" );
+  QDomNode excludeWFSNode = node.namedItem( QStringLiteral( "excludeAttributesWFS" ) );
   if ( !excludeWFSNode.isNull() )
   {
-    QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( "attribute" );
+    QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
     for ( int i = 0; i < attributeNodeList.size(); ++i )
     {
       mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
@@ -1773,6 +1773,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   mAttributeTableConfig.readXml( node );
 
   mConditionalStyles->readXml( node );
+
+  readCustomProperties( node, QStringLiteral( "variable" ) );
 
   return true;
 }
@@ -1813,7 +1815,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
     }
 
-    QDomElement labelingElement = node.firstChildElement( "labeling" );
+    QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
     if ( !labelingElement.isNull() )
     {
       QgsAbstractVectorLayerLabeling* l = QgsAbstractVectorLayerLabeling::create( labelingElement );
@@ -1821,7 +1823,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     }
 
     // get and set the blend mode if it exists
-    QDomNode blendModeNode = node.namedItem( "blendMode" );
+    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
     {
       QDomElement e = blendModeNode.toElement();
@@ -1829,7 +1831,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     }
 
     // get and set the feature blend mode if it exists
-    QDomNode featureBlendModeNode = node.namedItem( "featureBlendMode" );
+    QDomNode featureBlendModeNode = node.namedItem( QStringLiteral( "featureBlendMode" ) );
     if ( !featureBlendModeNode.isNull() )
     {
       QDomElement e = featureBlendModeNode.toElement();
@@ -1837,7 +1839,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     }
 
     // get and set the layer transparency if it exists
-    QDomNode layerTransparencyNode = node.namedItem( "layerTransparency" );
+    QDomNode layerTransparencyNode = node.namedItem( QStringLiteral( "layerTransparency" ) );
     if ( !layerTransparencyNode.isNull() )
     {
       QDomElement e = layerTransparencyNode.toElement();
@@ -1847,25 +1849,25 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     QDomElement e = node.toElement();
 
     // get the simplification drawing settings
-    mSimplifyMethod.setSimplifyHints( static_cast< QgsVectorSimplifyMethod::SimplifyHints >( e.attribute( "simplifyDrawingHints", "1" ).toInt() ) );
-    mSimplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( e.attribute( "simplifyAlgorithm", "0" ).toInt() ) );
-    mSimplifyMethod.setThreshold( e.attribute( "simplifyDrawingTol", "1" ).toFloat() );
-    mSimplifyMethod.setForceLocalOptimization( e.attribute( "simplifyLocal", "1" ).toInt() );
-    mSimplifyMethod.setMaximumScale( e.attribute( "simplifyMaxScale", "1" ).toFloat() );
+    mSimplifyMethod.setSimplifyHints( static_cast< QgsVectorSimplifyMethod::SimplifyHints >( e.attribute( QStringLiteral( "simplifyDrawingHints" ), QStringLiteral( "1" ) ).toInt() ) );
+    mSimplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( e.attribute( QStringLiteral( "simplifyAlgorithm" ), QStringLiteral( "0" ) ).toInt() ) );
+    mSimplifyMethod.setThreshold( e.attribute( QStringLiteral( "simplifyDrawingTol" ), QStringLiteral( "1" ) ).toFloat() );
+    mSimplifyMethod.setForceLocalOptimization( e.attribute( QStringLiteral( "simplifyLocal" ), QStringLiteral( "1" ) ).toInt() );
+    mSimplifyMethod.setMaximumScale( e.attribute( QStringLiteral( "simplifyMaxScale" ), QStringLiteral( "1" ) ).toFloat() );
 
     //also restore custom properties (for labeling-ng)
-    readCustomProperties( node, "labeling" );
+    readCustomProperties( node, QStringLiteral( "labeling" ) );
 
     //diagram renderer and diagram layer settings
     delete mDiagramRenderer;
     mDiagramRenderer = nullptr;
-    QDomElement singleCatDiagramElem = node.firstChildElement( "SingleCategoryDiagramRenderer" );
+    QDomElement singleCatDiagramElem = node.firstChildElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
     if ( !singleCatDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
       mDiagramRenderer->readXml( singleCatDiagramElem, this );
     }
-    QDomElement linearDiagramElem = node.firstChildElement( "LinearlyInterpolatedDiagramRenderer" );
+    QDomElement linearDiagramElem = node.firstChildElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
     if ( !linearDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
@@ -1874,7 +1876,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
 
     if ( mDiagramRenderer )
     {
-      QDomElement diagramSettingsElem = node.firstChildElement( "DiagramLayerSettings" );
+      QDomElement diagramSettingsElem = node.firstChildElement( QStringLiteral( "DiagramLayerSettings" ) );
       if ( !diagramSettingsElem.isNull() )
       {
         delete mDiagramLayerSettings;
@@ -1897,29 +1899,29 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // still other editing settings are written here,
   // although they are not part of symbology either
 
-  QDomElement afField = doc.createElement( "annotationform" );
+  QDomElement afField = doc.createElement( QStringLiteral( "annotationform" ) );
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
   afField.appendChild( afText );
   node.appendChild( afField );
 
   //attribute aliases
-  QDomElement aliasElem = doc.createElement( "aliases" );
+  QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
   Q_FOREACH ( const QgsField& field, mFields )
   {
-    QDomElement aliasEntryElem = doc.createElement( "alias" );
-    aliasEntryElem.setAttribute( "field", field.name() );
-    aliasEntryElem.setAttribute( "index", mFields.indexFromName( field.name() ) );
-    aliasEntryElem.setAttribute( "name", field.alias() );
+    QDomElement aliasEntryElem = doc.createElement( QStringLiteral( "alias" ) );
+    aliasEntryElem.setAttribute( QStringLiteral( "field" ), field.name() );
+    aliasEntryElem.setAttribute( QStringLiteral( "index" ), mFields.indexFromName( field.name() ) );
+    aliasEntryElem.setAttribute( QStringLiteral( "name" ), field.alias() );
     aliasElem.appendChild( aliasEntryElem );
   }
   node.appendChild( aliasElem );
 
   //exclude attributes WMS
-  QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
+  QDomElement excludeWMSElem = doc.createElement( QStringLiteral( "excludeAttributesWMS" ) );
   QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
   for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
   {
-    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomElement attrElem = doc.createElement( QStringLiteral( "attribute" ) );
     QDomText attrText = doc.createTextNode( *attWMSIt );
     attrElem.appendChild( attrText );
     excludeWMSElem.appendChild( attrElem );
@@ -1927,11 +1929,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( excludeWMSElem );
 
   //exclude attributes WFS
-  QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
+  QDomElement excludeWFSElem = doc.createElement( QStringLiteral( "excludeAttributesWFS" ) );
   QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
   for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
   {
-    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomElement attrElem = doc.createElement( QStringLiteral( "attribute" ) );
     QDomText attrText = doc.createTextNode( *attWFSIt );
     attrElem.appendChild( attrText );
     excludeWFSElem.appendChild( attrElem );
@@ -1945,19 +1947,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   mConditionalStyles->writeXml( node, doc );
 
   // save expression fields
-  mExpressionFieldBuffer->writeXml( node, doc );
+  if ( !mExpressionFieldBuffer )
+  {
+    // can happen when saving style on a invalid layer
+    QgsExpressionFieldBuffer dummy;
+    dummy.writeXml( node, doc );
+  }
+  else
+    mExpressionFieldBuffer->writeXml( node, doc );
 
   // save readonly state
-  node.toElement().setAttribute( "readOnly", mReadOnly );
+  node.toElement().setAttribute( QStringLiteral( "readOnly" ), mReadOnly );
 
   // save preview expression
-  QDomElement prevExpElem = doc.createElement( "previewExpression" );
+  QDomElement prevExpElem = doc.createElement( QStringLiteral( "previewExpression" ) );
   QDomText prevExpText = doc.createTextNode( mDisplayExpression );
   prevExpElem.appendChild( prevExpText );
   node.appendChild( prevExpElem );
 
   // save map tip
-  QDomElement mapTipElem = doc.createElement( "mapTip" );
+  QDomElement mapTipElem = doc.createElement( QStringLiteral( "mapTip" ) );
   QDomText mapTipText = doc.createTextNode( mMapTipTemplate );
   mapTipElem.appendChild( mapTipText );
   node.toElement().appendChild( mapTipElem );
@@ -1986,29 +1995,29 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     }
 
     // save the simplification drawing settings
-    mapLayerNode.setAttribute( "simplifyDrawingHints", QString::number( mSimplifyMethod.simplifyHints() ) );
-    mapLayerNode.setAttribute( "simplifyAlgorithm", QString::number( mSimplifyMethod.simplifyAlgorithm() ) );
-    mapLayerNode.setAttribute( "simplifyDrawingTol", QString::number( mSimplifyMethod.threshold() ) );
-    mapLayerNode.setAttribute( "simplifyLocal", mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
-    mapLayerNode.setAttribute( "simplifyMaxScale", QString::number( mSimplifyMethod.maximumScale() ) );
+    mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingHints" ), QString::number( mSimplifyMethod.simplifyHints() ) );
+    mapLayerNode.setAttribute( QStringLiteral( "simplifyAlgorithm" ), QString::number( mSimplifyMethod.simplifyAlgorithm() ) );
+    mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingTol" ), QString::number( mSimplifyMethod.threshold() ) );
+    mapLayerNode.setAttribute( QStringLiteral( "simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
+    mapLayerNode.setAttribute( QStringLiteral( "simplifyMaxScale" ), QString::number( mSimplifyMethod.maximumScale() ) );
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
 
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( "blendMode" );
+    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
     QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 
     // add the feature blend mode field
-    QDomElement featureBlendModeElem  = doc.createElement( "featureBlendMode" );
+    QDomElement featureBlendModeElem  = doc.createElement( QStringLiteral( "featureBlendMode" ) );
     QDomText featureBlendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( featureBlendMode() ) ) );
     featureBlendModeElem.appendChild( featureBlendModeText );
     node.appendChild( featureBlendModeElem );
 
     // add the layer transparency
-    QDomElement layerTransparencyElem  = doc.createElement( "layerTransparency" );
+    QDomElement layerTransparencyElem  = doc.createElement( QStringLiteral( "layerTransparency" ) );
     QDomText layerTransparencyText = doc.createTextNode( QString::number( layerTransparency() ) );
     layerTransparencyElem.appendChild( layerTransparencyText );
     node.appendChild( layerTransparencyElem );
@@ -2026,10 +2035,10 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
 {
   // get the Name element
-  QDomElement nameElem = node.firstChildElement( "Name" );
+  QDomElement nameElem = node.firstChildElement( QStringLiteral( "Name" ) );
   if ( nameElem.isNull() )
   {
-    errorMessage = "Warning: Name element not found within NamedLayer while it's required.";
+    errorMessage = QStringLiteral( "Warning: Name element not found within NamedLayer while it's required." );
   }
 
   if ( hasGeometryType() )
@@ -2046,17 +2055,12 @@ bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
   return true;
 }
 
-bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
-{
-  return writeSld( node, doc, errorMessage, QgsStringMap() );
-}
-
-bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props ) const
+bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, const QgsStringMap& props ) const
 {
   Q_UNUSED( errorMessage );
 
   // store the Name element
-  QDomElement nameNode = doc.createElement( "se:Name" );
+  QDomElement nameNode = doc.createElement( QStringLiteral( "se:Name" ) );
   nameNode.appendChild( doc.createTextNode( name() ) );
   node.appendChild( nameNode );
 
@@ -2113,7 +2117,7 @@ void QgsVectorLayer::removeFieldAlias( int attIndex )
     return;
 
   QString name = fields().at( attIndex ).name();
-  mFields.at( attIndex ).setAlias( QString() );
+  mFields[ attIndex ].setAlias( QString() );
   if ( mAttributeAliasMap.contains( name ) )
   {
     mAttributeAliasMap.remove( name );
@@ -2125,10 +2129,41 @@ void QgsVectorLayer::removeFieldAlias( int attIndex )
 
 bool QgsVectorLayer::renameAttribute( int index, const QString& newName )
 {
-  if ( !mEditBuffer || !mDataProvider )
+  if ( index < 0 || index >= fields().count() )
     return false;
 
-  return mEditBuffer->renameAttribute( index, newName );
+  switch ( mFields.fieldOrigin( index ) )
+  {
+    case QgsFields::OriginExpression:
+    {
+      if ( mExpressionFieldBuffer )
+      {
+        int oi = mFields.fieldOriginIndex( index );
+        mExpressionFieldBuffer->renameExpression( oi, newName );
+        updateFields();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    case QgsFields::OriginProvider:
+    case QgsFields::OriginEdit:
+
+      if ( !mEditBuffer || !mDataProvider )
+        return false;
+
+      return mEditBuffer->renameAttribute( index, newName );
+
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginUnknown:
+      return false;
+
+  }
+
+  return false; // avoid warning
 }
 
 void QgsVectorLayer::setFieldAlias( int attIndex, const QString& aliasString )
@@ -2292,7 +2327,7 @@ bool QgsVectorLayer::commitChanges()
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
+    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QStringLiteral( "\n  " ) ) ) );
   }
 
   if ( mCache )
@@ -2643,17 +2678,17 @@ QString QgsVectorLayer::displayExpression() const
       // We assume that the user has organized the data with the
       // more "interesting" field names first. As such, name should
       // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
+      if ( fldName.indexOf( QLatin1String( "name" ), 0, Qt::CaseInsensitive ) > -1 )
       {
         idxName = fldName;
         break;
       }
-      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
+      if ( fldName.indexOf( QLatin1String( "descrip" ), 0, Qt::CaseInsensitive ) > -1 )
       {
         idxName = fldName;
         break;
       }
-      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
+      if ( fldName.indexOf( QLatin1String( "id" ), 0, Qt::CaseInsensitive ) > -1 )
       {
         idxName = fldName;
         break;
@@ -3374,7 +3409,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
 }
 
 
-/** Write blend mode for features */
+//! Write blend mode for features
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
@@ -3382,13 +3417,13 @@ void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlend
   emit styleChanged();
 }
 
-/** Read blend mode for layer */
+//! Read blend mode for layer
 QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 {
   return mFeatureBlendMode;
 }
 
-/** Write transparency for layer */
+//! Write transparency for layer
 void QgsVectorLayer::setLayerTransparency( int layerTransparency )
 {
   mLayerTransparency = layerTransparency;
@@ -3396,7 +3431,7 @@ void QgsVectorLayer::setLayerTransparency( int layerTransparency )
   emit styleChanged();
 }
 
-/** Read transparency for layer */
+//! Read transparency for layer
 int QgsVectorLayer::layerTransparency() const
 {
   return mLayerTransparency;
@@ -3410,14 +3445,14 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   if ( element.isNull() )
     return;
 
-  QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
+  QDomElement userStyleElem = element.firstChildElement( QStringLiteral( "UserStyle" ) );
   if ( userStyleElem.isNull() )
   {
     QgsDebugMsg( "Info: UserStyle element not found." );
     return;
   }
 
-  QDomElement featureTypeStyleElem = userStyleElem.firstChildElement( "FeatureTypeStyle" );
+  QDomElement featureTypeStyleElem = userStyleElem.firstChildElement( QStringLiteral( "FeatureTypeStyle" ) );
   if ( featureTypeStyleElem.isNull() )
   {
     QgsDebugMsg( "Info: FeatureTypeStyle element not found." );
@@ -3425,7 +3460,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   }
 
   // use last rule
-  QDomElement ruleElem = featureTypeStyleElem.lastChildElement( "Rule" );
+  QDomElement ruleElem = featureTypeStyleElem.lastChildElement( QStringLiteral( "Rule" ) );
   if ( ruleElem.isNull() )
   {
     QgsDebugMsg( "Info: Rule element not found." );
@@ -3433,7 +3468,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   }
 
   // use last text symbolizer
-  QDomElement textSymbolizerElem = ruleElem.lastChildElement( "TextSymbolizer" );
+  QDomElement textSymbolizerElem = ruleElem.lastChildElement( QStringLiteral( "TextSymbolizer" ) );
   if ( textSymbolizerElem.isNull() )
   {
     QgsDebugMsg( "Info: TextSymbolizer element not found." );
@@ -3441,45 +3476,45 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   }
 
   // Label
-  setCustomProperty( "labeling/enabled", false );
-  QDomElement labelElem = textSymbolizerElem.firstChildElement( "Label" );
+  setCustomProperty( QStringLiteral( "labeling/enabled" ), false );
+  QDomElement labelElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Label" ) );
   if ( !labelElem.isNull() )
   {
-    QDomElement propertyNameElem = labelElem.firstChildElement( "PropertyName" );
+    QDomElement propertyNameElem = labelElem.firstChildElement( QStringLiteral( "PropertyName" ) );
     if ( !propertyNameElem.isNull() )
     {
       // enable labeling
-      setCustomProperty( "labeling", "pal" );
-      setCustomProperty( "labeling/enabled", true );
+      setCustomProperty( QStringLiteral( "labeling" ), "pal" );
+      setCustomProperty( QStringLiteral( "labeling/enabled" ), true );
 
       // set labeling defaults
-      setCustomProperty( "labeling/fontFamily", "Sans-Serif" );
-      setCustomProperty( "labeling/fontItalic", false );
-      setCustomProperty( "labeling/fontSize", 10 );
-      setCustomProperty( "labeling/fontSizeInMapUnits", false );
-      setCustomProperty( "labeling/fontBold", false );
-      setCustomProperty( "labeling/fontUnderline", false );
-      setCustomProperty( "labeling/textColorR", 0 );
-      setCustomProperty( "labeling/textColorG", 0 );
-      setCustomProperty( "labeling/textColorB", 0 );
-      setCustomProperty( "labeling/textTransp", 0 );
-      setCustomProperty( "labeling/bufferDraw", false );
-      setCustomProperty( "labeling/bufferSize", 1 );
-      setCustomProperty( "labeling/bufferSizeInMapUnits", false );
-      setCustomProperty( "labeling/bufferColorR", 255 );
-      setCustomProperty( "labeling/bufferColorG", 255 );
-      setCustomProperty( "labeling/bufferColorB", 255 );
-      setCustomProperty( "labeling/bufferTransp", 0 );
-      setCustomProperty( "labeling/placement", QgsPalLayerSettings::AroundPoint );
-      setCustomProperty( "labeling/xOffset", 0 );
-      setCustomProperty( "labeling/yOffset", 0 );
-      setCustomProperty( "labeling/labelOffsetInMapUnits", false );
-      setCustomProperty( "labeling/angleOffset", 0 );
+      setCustomProperty( QStringLiteral( "labeling/fontFamily" ), "Sans-Serif" );
+      setCustomProperty( QStringLiteral( "labeling/fontItalic" ), false );
+      setCustomProperty( QStringLiteral( "labeling/fontSize" ), 10 );
+      setCustomProperty( QStringLiteral( "labeling/fontSizeInMapUnits" ), false );
+      setCustomProperty( QStringLiteral( "labeling/fontBold" ), false );
+      setCustomProperty( QStringLiteral( "labeling/fontUnderline" ), false );
+      setCustomProperty( QStringLiteral( "labeling/textColorR" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/textColorG" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/textColorB" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/textTransp" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), false );
+      setCustomProperty( QStringLiteral( "labeling/bufferSize" ), 1 );
+      setCustomProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ), false );
+      setCustomProperty( QStringLiteral( "labeling/bufferColorR" ), 255 );
+      setCustomProperty( QStringLiteral( "labeling/bufferColorG" ), 255 );
+      setCustomProperty( QStringLiteral( "labeling/bufferColorB" ), 255 );
+      setCustomProperty( QStringLiteral( "labeling/bufferTransp" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/placement" ), QgsPalLayerSettings::AroundPoint );
+      setCustomProperty( QStringLiteral( "labeling/xOffset" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/yOffset" ), 0 );
+      setCustomProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), false );
+      setCustomProperty( QStringLiteral( "labeling/angleOffset" ), 0 );
 
       // label attribute
       QString labelAttribute = propertyNameElem.text();
-      setCustomProperty( "labeling/fieldName", labelAttribute );
-      setCustomProperty( "labeling/isExpression", false );
+      setCustomProperty( QStringLiteral( "labeling/fieldName" ), labelAttribute );
+      setCustomProperty( QStringLiteral( "labeling/isExpression" ), false );
 
       int fieldIndex = mFields.lookupField( labelAttribute );
       if ( fieldIndex == -1 )
@@ -3488,7 +3523,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
         QgsExpression exp( labelAttribute );
         if ( !exp.hasEvalError() )
         {
-          setCustomProperty( "labeling/isExpression", true );
+          setCustomProperty( QStringLiteral( "labeling/isExpression" ), true );
         }
         else
         {
@@ -3509,130 +3544,130 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   }
 
   // Font
-  QDomElement fontElem = textSymbolizerElem.firstChildElement( "Font" );
+  QDomElement fontElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Font" ) );
   if ( !fontElem.isNull() )
   {
     QString cssName;
     QString elemText;
-    QDomElement cssElem = fontElem.firstChildElement( "CssParameter" );
+    QDomElement cssElem = fontElem.firstChildElement( QStringLiteral( "CssParameter" ) );
     while ( !cssElem.isNull() )
     {
-      cssName = cssElem.attribute( "name", "not_found" );
-      if ( cssName != "not_found" )
+      cssName = cssElem.attribute( QStringLiteral( "name" ), QStringLiteral( "not_found" ) );
+      if ( cssName != QLatin1String( "not_found" ) )
       {
         elemText = cssElem.text();
-        if ( cssName == "font-family" )
+        if ( cssName == QLatin1String( "font-family" ) )
         {
-          setCustomProperty( "labeling/fontFamily", elemText );
+          setCustomProperty( QStringLiteral( "labeling/fontFamily" ), elemText );
         }
-        else if ( cssName == "font-style" )
+        else if ( cssName == QLatin1String( "font-style" ) )
         {
-          setCustomProperty( "labeling/fontItalic", ( elemText == "italic" ) || ( elemText == "Italic" ) );
+          setCustomProperty( QStringLiteral( "labeling/fontItalic" ), ( elemText == QLatin1String( "italic" ) ) || ( elemText == QLatin1String( "Italic" ) ) );
         }
-        else if ( cssName == "font-size" )
+        else if ( cssName == QLatin1String( "font-size" ) )
         {
           bool ok;
           int fontSize = elemText.toInt( &ok );
           if ( ok )
           {
-            setCustomProperty( "labeling/fontSize", fontSize );
+            setCustomProperty( QStringLiteral( "labeling/fontSize" ), fontSize );
           }
         }
-        else if ( cssName == "font-weight" )
+        else if ( cssName == QLatin1String( "font-weight" ) )
         {
-          setCustomProperty( "labeling/fontBold", ( elemText == "bold" ) || ( elemText == "Bold" ) );
+          setCustomProperty( QStringLiteral( "labeling/fontBold" ), ( elemText == QLatin1String( "bold" ) ) || ( elemText == QLatin1String( "Bold" ) ) );
         }
-        else if ( cssName == "font-underline" )
+        else if ( cssName == QLatin1String( "font-underline" ) )
         {
-          setCustomProperty( "labeling/fontUnderline", ( elemText == "underline" ) || ( elemText == "Underline" ) );
+          setCustomProperty( QStringLiteral( "labeling/fontUnderline" ), ( elemText == QLatin1String( "underline" ) ) || ( elemText == QLatin1String( "Underline" ) ) );
         }
       }
 
-      cssElem = cssElem.nextSiblingElement( "CssParameter" );
+      cssElem = cssElem.nextSiblingElement( QStringLiteral( "CssParameter" ) );
     }
   }
 
   // Fill
-  QColor textColor = QgsOgcUtils::colorFromOgcFill( textSymbolizerElem.firstChildElement( "Fill" ) );
+  QColor textColor = QgsOgcUtils::colorFromOgcFill( textSymbolizerElem.firstChildElement( QStringLiteral( "Fill" ) ) );
   if ( textColor.isValid() )
   {
-    setCustomProperty( "labeling/textColorR", textColor.red() );
-    setCustomProperty( "labeling/textColorG", textColor.green() );
-    setCustomProperty( "labeling/textColorB", textColor.blue() );
-    setCustomProperty( "labeling/textTransp", 100 - static_cast< int >( 100 * textColor.alphaF() ) );
+    setCustomProperty( QStringLiteral( "labeling/textColorR" ), textColor.red() );
+    setCustomProperty( QStringLiteral( "labeling/textColorG" ), textColor.green() );
+    setCustomProperty( QStringLiteral( "labeling/textColorB" ), textColor.blue() );
+    setCustomProperty( QStringLiteral( "labeling/textTransp" ), 100 - static_cast< int >( 100 * textColor.alphaF() ) );
   }
 
   // Halo
-  QDomElement haloElem = textSymbolizerElem.firstChildElement( "Halo" );
+  QDomElement haloElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Halo" ) );
   if ( !haloElem.isNull() )
   {
-    setCustomProperty( "labeling/bufferDraw", true );
-    setCustomProperty( "labeling/bufferSize", 1 );
+    setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), true );
+    setCustomProperty( QStringLiteral( "labeling/bufferSize" ), 1 );
 
-    QDomElement radiusElem = haloElem.firstChildElement( "Radius" );
+    QDomElement radiusElem = haloElem.firstChildElement( QStringLiteral( "Radius" ) );
     if ( !radiusElem.isNull() )
     {
       bool ok;
       double bufferSize = radiusElem.text().toDouble( &ok );
       if ( ok )
       {
-        setCustomProperty( "labeling/bufferSize", bufferSize );
+        setCustomProperty( QStringLiteral( "labeling/bufferSize" ), bufferSize );
       }
     }
 
-    QColor bufferColor = QgsOgcUtils::colorFromOgcFill( haloElem.firstChildElement( "Fill" ) );
+    QColor bufferColor = QgsOgcUtils::colorFromOgcFill( haloElem.firstChildElement( QStringLiteral( "Fill" ) ) );
     if ( bufferColor.isValid() )
     {
-      setCustomProperty( "labeling/bufferColorR", bufferColor.red() );
-      setCustomProperty( "labeling/bufferColorG", bufferColor.green() );
-      setCustomProperty( "labeling/bufferColorB", bufferColor.blue() );
-      setCustomProperty( "labeling/bufferTransp", 100 - static_cast< int >( 100 * bufferColor.alphaF() ) );
+      setCustomProperty( QStringLiteral( "labeling/bufferColorR" ), bufferColor.red() );
+      setCustomProperty( QStringLiteral( "labeling/bufferColorG" ), bufferColor.green() );
+      setCustomProperty( QStringLiteral( "labeling/bufferColorB" ), bufferColor.blue() );
+      setCustomProperty( QStringLiteral( "labeling/bufferTransp" ), 100 - static_cast< int >( 100 * bufferColor.alphaF() ) );
     }
   }
 
   // LabelPlacement
-  QDomElement labelPlacementElem = textSymbolizerElem.firstChildElement( "LabelPlacement" );
+  QDomElement labelPlacementElem = textSymbolizerElem.firstChildElement( QStringLiteral( "LabelPlacement" ) );
   if ( !labelPlacementElem.isNull() )
   {
     // PointPlacement
-    QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( "PointPlacement" );
+    QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "PointPlacement" ) );
     if ( !pointPlacementElem.isNull() )
     {
-      setCustomProperty( "labeling/placement", QgsPalLayerSettings::OverPoint );
+      setCustomProperty( QStringLiteral( "labeling/placement" ), QgsPalLayerSettings::OverPoint );
 
-      QDomElement displacementElem = pointPlacementElem.firstChildElement( "Displacement" );
+      QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
       if ( !displacementElem.isNull() )
       {
-        QDomElement displacementXElem = displacementElem.firstChildElement( "DisplacementX" );
+        QDomElement displacementXElem = displacementElem.firstChildElement( QStringLiteral( "DisplacementX" ) );
         if ( !displacementXElem.isNull() )
         {
           bool ok;
           double xOffset = displacementXElem.text().toDouble( &ok );
           if ( ok )
           {
-            setCustomProperty( "labeling/xOffset", xOffset );
+            setCustomProperty( QStringLiteral( "labeling/xOffset" ), xOffset );
           }
         }
-        QDomElement displacementYElem = displacementElem.firstChildElement( "DisplacementY" );
+        QDomElement displacementYElem = displacementElem.firstChildElement( QStringLiteral( "DisplacementY" ) );
         if ( !displacementYElem.isNull() )
         {
           bool ok;
           double yOffset = displacementYElem.text().toDouble( &ok );
           if ( ok )
           {
-            setCustomProperty( "labeling/yOffset", yOffset );
+            setCustomProperty( QStringLiteral( "labeling/yOffset" ), yOffset );
           }
         }
       }
 
-      QDomElement rotationElem = pointPlacementElem.firstChildElement( "Rotation" );
+      QDomElement rotationElem = pointPlacementElem.firstChildElement( QStringLiteral( "Rotation" ) );
       if ( !rotationElem.isNull() )
       {
         bool ok;
         double rotation = rotationElem.text().toDouble( &ok );
         if ( ok )
         {
-          setCustomProperty( "labeling/angleOffset", rotation );
+          setCustomProperty( QStringLiteral( "labeling/angleOffset" ), rotation );
         }
       }
     }
@@ -3705,43 +3740,43 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
 
 QString QgsVectorLayer::metadata() const
 {
-  QString myMetadata = "<html><body>";
+  QString myMetadata = QStringLiteral( "<html><body>" );
 
   //-------------
 
-  myMetadata += "<p class=\"subheaderglossy\">";
+  myMetadata += QLatin1String( "<p class=\"subheaderglossy\">" );
   myMetadata += tr( "General" );
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   // data comment
   if ( !( dataComment().isEmpty() ) )
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Layer comment" ) + "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += QLatin1String( "<p>" );
     myMetadata += dataComment();
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "</p>\n" );
   }
 
   //storage type
   myMetadata += "<p class=\"glossy\">" + tr( "Storage type of this layer" ) + "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "<p>" );
   myMetadata += storageType();
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   if ( dataProvider() )
   {
     //provider description
     myMetadata += "<p class=\"glossy\">" + tr( "Description of this provider" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += dataProvider()->description().replace( '\n', "<br>" );
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "<p>" );
+    myMetadata += dataProvider()->description().replace( '\n', QLatin1String( "<br>" ) );
+    myMetadata += QLatin1String( "</p>\n" );
   }
 
   // data source
   myMetadata += "<p class=\"glossy\">" + tr( "Source for this layer" ) + "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "<p>" );
   myMetadata += publicSource();
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   //geom type
 
@@ -3756,43 +3791,43 @@ QString QgsVectorLayer::metadata() const
     QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
 
     myMetadata += "<p class=\"glossy\">" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
-    myMetadata += QString( "<p>%1</p>\n" ).arg( typeString );
+    myMetadata += QStringLiteral( "<p>%1</p>\n" ).arg( typeString );
   }
 
   QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += QLatin1String( "<p>" );
     Q_FOREACH ( int idx, pkAttrList )
     {
       myMetadata += fields().at( idx ).name() + ' ';
     }
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "</p>\n" );
   }
 
 
   //feature count
   myMetadata += "<p class=\"glossy\">" + tr( "The number of features in this layer" ) + "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "<p>" );
   myMetadata += QString::number( featureCount() );
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
   //capabilities
   myMetadata += "<p class=\"glossy\">" + tr( "Capabilities of this layer" ) + "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "<p>" );
   myMetadata += capabilitiesString();
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   //-------------
 
   QgsRectangle myExtent = extent();
-  myMetadata += "<p class=\"subheaderglossy\">";
+  myMetadata += QLatin1String( "<p class=\"subheaderglossy\">" );
   myMetadata += tr( "Extents" );
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
   myMetadata += "<p class=\"glossy\">" + tr( "In layer spatial reference system units" ) + "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "<p>" );
   // Try to be a bit clever over what number format we use for the
   // extents. Some people don't like it using scientific notation when the
   // numbers get large, but for small numbers this is the more practical
@@ -3809,35 +3844,35 @@ QString QgsVectorLayer::metadata() const
     double changeoverValue = 99999; // The 'largest' 5 digit number
     if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
     {
-      xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
+      xMin = QStringLiteral( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
     }
     else
     {
-      xMin = QString( "%1" ).arg( myExtent.xMinimum() );
+      xMin = QStringLiteral( "%1" ).arg( myExtent.xMinimum() );
     }
     if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
     {
-      yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
+      yMin = QStringLiteral( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
     }
     else
     {
-      yMin = QString( "%1" ).arg( myExtent.yMinimum() );
+      yMin = QStringLiteral( "%1" ).arg( myExtent.yMinimum() );
     }
     if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
     {
-      xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
+      xMax = QStringLiteral( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
     }
     else
     {
-      xMax = QString( "%1" ).arg( myExtent.xMaximum() );
+      xMax = QStringLiteral( "%1" ).arg( myExtent.xMaximum() );
     }
     if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
     {
-      yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
+      yMax = QStringLiteral( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
     }
     else
     {
-      yMax = QString( "%1" ).arg( myExtent.yMaximum() );
+      yMax = QStringLiteral( "%1" ).arg( myExtent.yMaximum() );
     }
 
     myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
@@ -3848,7 +3883,7 @@ QString QgsVectorLayer::metadata() const
     myMetadata += tr( "unknown extent" );
   }
 
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   //extents in project cs
 
@@ -3871,9 +3906,9 @@ QString QgsVectorLayer::metadata() const
     // Display layer spatial ref system
     //
     myMetadata += "<p class=\"glossy\">" + tr( "Layer Spatial Reference System" ) + "</p>\n";
-    myMetadata += "<p>";
-    myMetadata += crs().toProj4().replace( '"', " \"" );
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "<p>" );
+    myMetadata += crs().toProj4().replace( '"', QLatin1String( " \"" ) );
+    myMetadata += QLatin1String( "</p>\n" );
 
     //
     // Display project (output) spatial ref system
@@ -3893,9 +3928,9 @@ QString QgsVectorLayer::metadata() const
     QgsDebugMsg( cse.what() );
 
     myMetadata += "<p class=\"glossy\">" + tr( "In project spatial reference system units" ) + "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += QLatin1String( "<p>" );
     myMetadata += tr( "(Invalid transformation of layer extents)" );
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "</p>\n" );
 
   }
 
@@ -3951,7 +3986,7 @@ QString QgsVectorLayer::metadata() const
   myMetadata += "</table>"; //end of nested table
 #endif
 
-  myMetadata += "</body></html>";
+  myMetadata += QLatin1String( "</body></html>" );
   return myMetadata;
 }
 
@@ -4000,7 +4035,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
   if ( !listStylesExternalMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, "listStyles" );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "listStyles" ) );
     return -1;
   }
 
@@ -4021,7 +4056,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
   if ( !getStyleByIdMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, "getStyleById" );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "getStyleById" ) );
     return QObject::tr( "" );
   }
 
@@ -4046,7 +4081,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
   if ( !saveStyleExternalMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, "saveStyle" );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "saveStyle" ) );
     return;
   }
 
@@ -4079,7 +4114,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceUri dsUri( theURI );
-  if ( !loadFromLocalDB && !dsUri.database().isEmpty() )
+  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
   {
     QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
     QLibrary *myLib = pReg->providerLibrary( mProviderKey );
@@ -4092,7 +4127,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
         qml = loadStyleExternalMethod( mDataSource, errorMsg );
         if ( !qml.isEmpty() )
         {
-          QDomDocument myDocument( "qgis" );
+          QDomDocument myDocument( QStringLiteral( "qgis" ) );
           myDocument.setContent( qml );
           theResultFlag = importNamedStyle( myDocument, errorMsg );
           return QObject::tr( "Loaded from Provider" );

@@ -66,7 +66,7 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
 void QgsConfigureShortcutsDialog::saveState()
 {
   QSettings settings;
-  settings.setValue( "/Windows/ShortcutsDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
 /*!
@@ -75,7 +75,7 @@ void QgsConfigureShortcutsDialog::saveState()
 void QgsConfigureShortcutsDialog::restoreState()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ShortcutsDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()
@@ -133,9 +133,9 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
     return;
 
   // ensure the user never omitted the extension from the file name
-  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
   {
-    fileName += ".xml";
+    fileName += QLatin1String( ".xml" );
   }
 
   QFile file( fileName );
@@ -150,10 +150,10 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
 
   QSettings settings;
 
-  QDomDocument doc( "shortcuts" );
-  QDomElement root = doc.createElement( "qgsshortcuts" );
-  root.setAttribute( "version", "1.0" );
-  root.setAttribute( "locale", settings.value( "locale/userLocale", "en_US" ).toString() );
+  QDomDocument doc( QStringLiteral( "shortcuts" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  root.setAttribute( QStringLiteral( "locale" ), settings.value( QStringLiteral( "locale/userLocale" ), "en_US" ).toString() );
   doc.appendChild( root );
 
   settings.beginGroup( mManager->settingsPath() );
@@ -167,9 +167,9 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
     actionText = keys[ i ];
     actionShortcut = settings.value( actionText, "" ).toString();
 
-    QDomElement el = doc.createElement( "act" );
-    el.setAttribute( "name", actionText );
-    el.setAttribute( "shortcut", actionShortcut );
+    QDomElement el = doc.createElement( QStringLiteral( "act" ) );
+    el.setAttribute( QStringLiteral( "name" ), actionText );
+    el.setAttribute( QStringLiteral( "shortcut" ), actionShortcut );
     root.appendChild( el );
   }
 
@@ -213,7 +213,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   }
 
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsshortcuts" )
+  if ( root.tagName() != QLatin1String( "qgsshortcuts" ) )
   {
     QMessageBox::information( this, tr( "Loading shortcuts" ),
                               tr( "The file is not an shortcuts exchange file." ) );
@@ -223,17 +223,17 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QSettings settings;
   QString currentLocale;
 
-  bool localeOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
+  bool localeOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
   if ( localeOverrideFlag )
   {
-    currentLocale = settings.value( "locale/userLocale", "en_US" ).toString();
+    currentLocale = settings.value( QStringLiteral( "locale/userLocale" ), "en_US" ).toString();
   }
   else // use QGIS locale
   {
     currentLocale = QLocale::system().name();
   }
 
-  if ( root.attribute( "locale" ) != currentLocale )
+  if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )
   {
     QMessageBox::information( this, tr( "Loading shortcuts" ),
                               tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
@@ -246,8 +246,8 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QDomElement child = root.firstChildElement();
   while ( !child.isNull() )
   {
-    actionName = child.attribute( "name" );
-    actionShortcut = child.attribute( "shortcut" );
+    actionName = child.attribute( QStringLiteral( "name" ) );
+    actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
     mManager->setKeySequence( actionName, actionShortcut );
 
     child = child.nextSiblingElement();

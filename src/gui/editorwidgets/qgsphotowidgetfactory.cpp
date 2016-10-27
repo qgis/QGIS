@@ -41,8 +41,8 @@ QgsEditorWidgetConfig QgsPhotoWidgetFactory::readConfig( const QDomElement& conf
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Height", configElement.attribute( "Height", 0 ).toInt() );
-  cfg.insert( "Width", configElement.attribute( "Width", 0 ).toInt() );
+  cfg.insert( QStringLiteral( "Height" ), configElement.attribute( QStringLiteral( "Height" ), 0 ).toInt() );
+  cfg.insert( QStringLiteral( "Width" ), configElement.attribute( QStringLiteral( "Width" ), 0 ).toInt() );
 
   return cfg;
 }
@@ -53,6 +53,6 @@ void QgsPhotoWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( "Height", config.value( "Height", 0 ).toString() );
-  configElement.setAttribute( "Width", config.value( "Width", 0 ).toString() );
+  configElement.setAttribute( QStringLiteral( "Height" ), config.value( QStringLiteral( "Height" ), 0 ).toString() );
+  configElement.setAttribute( QStringLiteral( "Width" ), config.value( QStringLiteral( "Width" ), 0 ).toString() );
 }

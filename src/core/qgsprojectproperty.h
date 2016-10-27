@@ -47,12 +47,8 @@ class QDomDocument;
 class CORE_EXPORT QgsProperty
 {
   public:
-
-    QgsProperty()
-    {}
-
-    virtual ~QgsProperty()
-    {}
+    QgsProperty();
+    virtual ~QgsProperty();
 
     /** Dumps out the keys and values
      *
@@ -60,10 +56,10 @@ class CORE_EXPORT QgsProperty
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
-    /** Returns true if is a QgsPropertyKey */
+    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const = 0;
 
-    /** Returns true if is a QgsPropertyValue */
+    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const = 0;
 
     /** Returns true if a leaf node
@@ -125,12 +121,12 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
         : value_( value )
     {}
 
-    virtual ~QgsPropertyValue() {}
+    virtual ~QgsPropertyValue();
 
-    /** Returns true if is a QgsPropertyKey */
+    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return false; }
 
-    /** Returns true if is a QgsPropertyValue */
+    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const override { return true; }
 
     QVariant value() const override { return value_; }
@@ -189,26 +185,33 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
-    QgsPropertyKey( const QString &name = "" );
+    /**
+     * Create a new QgsPropertyKey with the specified identifier.
+     */
+    QgsPropertyKey( const QString& name = QString() );
     virtual ~QgsPropertyKey();
 
-    /// every key has a name
-    // @{
-    // @note not available in python bindings
+    /**
+     * The name of the property is used as identifier.
+     */
     QString name() const { return mName; }
 
-    QString &name() { return mName; }
-    // @}
+    /**
+     * The name of the property is used as identifier.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setName( const QString& name );
 
-
-    /** If this key has a value, it will be stored by its name in its
+    /**
+     * If this key has a value, it will be stored by its name in its
      * properties
      */
     QVariant value() const override;
 
 
     /// add the given property key
-    QgsPropertyKey * addKey( const QString & keyName )
+    QgsPropertyKey *addKey( const QString & keyName )
     {
       delete mProperties.take( keyName );
       mProperties.insert( keyName, new QgsPropertyKey( keyName ) );
@@ -258,10 +261,10 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// Does this property not have any subkeys or values?
     /* virtual */ bool isEmpty() const { return mProperties.isEmpty(); }
 
-    /** Returns true if is a QgsPropertyKey */
+    //! Returns true if is a QgsPropertyKey
     virtual bool isKey() const override { return true; }
 
-    /** Returns true if is a QgsPropertyValue */
+    //! Returns true if is a QgsPropertyValue
     virtual bool isValue() const override { return false; }
 
     /// return keys that do not contain other keys
@@ -279,7 +282,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// reset the QgsProperty key to prestine state
     virtual void clear()
     {
-      mName = "";
+      mName = QLatin1String( "" );
       clearKeys();
     }
 

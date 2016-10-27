@@ -62,7 +62,7 @@ class QgsDataDefinedButton : QToolButton
     QgsDataDefinedButton( QWidget* parent /TransferThis/ = 0,
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
-                          const DataTypes& datatypes = AnyType,
+                          DataTypes datatypes = AnyType,
                           const QString& description = QString() );
     ~QgsDataDefinedButton();
 
@@ -76,7 +76,7 @@ class QgsDataDefinedButton : QToolButton
      */
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = 0,
-               const DataTypes& datatypes = AnyType,
+               DataTypes datatypes = AnyType,
                const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const;

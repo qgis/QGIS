@@ -31,7 +31,7 @@ class QgsVectorLayerEditBuffer : QObject
     virtual bool deleteFeatures( const QgsFeatureIds& fid );
 
     /** Change feature's geometry */
-    virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry geom );
+    virtual bool changeGeometry( QgsFeatureId fid, const QgsGeometry& geom );
 
     /** Changed an attribute value (but does not commit it) */
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );

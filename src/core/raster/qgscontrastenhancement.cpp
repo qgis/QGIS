@@ -361,19 +361,19 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
 void QgsContrastEnhancement::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   //minimum value
-  QDomElement minElem = doc.createElement( "minValue" );
+  QDomElement minElem = doc.createElement( QStringLiteral( "minValue" ) );
   QDomText minText = doc.createTextNode( QgsRasterBlock::printValue( mMinimumValue ) );
   minElem.appendChild( minText );
   parentElem.appendChild( minElem );
 
   //maximum value
-  QDomElement maxElem = doc.createElement( "maxValue" );
+  QDomElement maxElem = doc.createElement( QStringLiteral( "maxValue" ) );
   QDomText maxText = doc.createTextNode( QgsRasterBlock::printValue( mMaximumValue ) );
   maxElem.appendChild( maxText );
   parentElem.appendChild( maxElem );
 
   //algorithm
-  QDomElement algorithmElem = doc.createElement( "algorithm" );
+  QDomElement algorithmElem = doc.createElement( QStringLiteral( "algorithm" ) );
   QDomText algorithmText = doc.createTextNode( contrastEnhancementAlgorithmString( mContrastEnhancementAlgorithm ) );
   algorithmElem.appendChild( algorithmText );
   parentElem.appendChild( algorithmElem );
@@ -381,39 +381,39 @@ void QgsContrastEnhancement::writeXml( QDomDocument& doc, QDomElement& parentEle
 
 void QgsContrastEnhancement::readXml( const QDomElement& elem )
 {
-  QDomElement minValueElem = elem.firstChildElement( "minValue" );
+  QDomElement minValueElem = elem.firstChildElement( QStringLiteral( "minValue" ) );
   if ( !minValueElem.isNull() )
   {
     mMinimumValue = minValueElem.text().toDouble();
   }
-  QDomElement maxValueElem = elem.firstChildElement( "maxValue" );
+  QDomElement maxValueElem = elem.firstChildElement( QStringLiteral( "maxValue" ) );
   if ( !maxValueElem.isNull() )
   {
     mMaximumValue = maxValueElem.text().toDouble();
   }
-  QDomElement algorithmElem = elem.firstChildElement( "algorithm" );
+  QDomElement algorithmElem = elem.firstChildElement( QStringLiteral( "algorithm" ) );
   if ( !algorithmElem.isNull() )
   {
     QString algorithmString = algorithmElem.text();
     ContrastEnhancementAlgorithm algorithm = NoEnhancement;
     // old version ( < 19 Apr 2013) was using enum directly -> for backward compatibility
-    if ( algorithmString == "0" )
+    if ( algorithmString == QLatin1String( "0" ) )
     {
       algorithm = NoEnhancement;
     }
-    else if ( algorithmString == "1" )
+    else if ( algorithmString == QLatin1String( "1" ) )
     {
       algorithm = StretchToMinimumMaximum;
     }
-    else if ( algorithmString == "2" )
+    else if ( algorithmString == QLatin1String( "2" ) )
     {
       algorithm = StretchAndClipToMinimumMaximum;
     }
-    else if ( algorithmString == "3" )
+    else if ( algorithmString == QLatin1String( "3" ) )
     {
       algorithm = ClipToMinimumMaximum;
     }
-    else if ( algorithmString == "4" )
+    else if ( algorithmString == QLatin1String( "4" ) )
     {
       algorithm = UserDefinedEnhancement;
     }
@@ -431,34 +431,34 @@ QString QgsContrastEnhancement::contrastEnhancementAlgorithmString( ContrastEnha
   switch ( algorithm )
   {
     case NoEnhancement:
-      return "NoEnhancement";
+      return QStringLiteral( "NoEnhancement" );
     case StretchToMinimumMaximum:
-      return "StretchToMinimumMaximum";
+      return QStringLiteral( "StretchToMinimumMaximum" );
     case StretchAndClipToMinimumMaximum:
-      return "StretchAndClipToMinimumMaximum";
+      return QStringLiteral( "StretchAndClipToMinimumMaximum" );
     case ClipToMinimumMaximum:
-      return "ClipToMinimumMaximum";
+      return QStringLiteral( "ClipToMinimumMaximum" );
     case UserDefinedEnhancement:
-      return "UserDefinedEnhancement";
+      return QStringLiteral( "UserDefinedEnhancement" );
   }
-  return "NoEnhancement";
+  return QStringLiteral( "NoEnhancement" );
 }
 
 QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString )
 {
-  if ( contrastEnhancementString == "StretchToMinimumMaximum" )
+  if ( contrastEnhancementString == QLatin1String( "StretchToMinimumMaximum" ) )
   {
     return StretchToMinimumMaximum;
   }
-  else if ( contrastEnhancementString == "StretchAndClipToMinimumMaximum" )
+  else if ( contrastEnhancementString == QLatin1String( "StretchAndClipToMinimumMaximum" ) )
   {
     return StretchAndClipToMinimumMaximum;
   }
-  else if ( contrastEnhancementString == "ClipToMinimumMaximum" )
+  else if ( contrastEnhancementString == QLatin1String( "ClipToMinimumMaximum" ) )
   {
     return ClipToMinimumMaximum;
   }
-  else if ( contrastEnhancementString == "UserDefinedEnhancement" )
+  else if ( contrastEnhancementString == QLatin1String( "UserDefinedEnhancement" ) )
   {
     return UserDefinedEnhancement;
   }

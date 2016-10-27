@@ -331,9 +331,9 @@ class CORE_EXPORT QgsFeature
 
 }; // class QgsFeature
 
-/** Writes the feature to stream out. QGIS version compatibility is not guaranteed. */
+//! Writes the feature to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeature& feature );
-/** Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed. */
+//! Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeature& feature );
 
 // key = feature id, value = changed attributes
@@ -348,6 +348,8 @@ typedef QSet<QgsFeatureId> QgsFeatureIds;
 typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
+
+uint qHash( const QgsFeature& key, uint seed = 0 );
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )

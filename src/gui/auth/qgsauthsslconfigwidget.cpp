@@ -76,7 +76,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
     setUpSslConfigTree();
 
     lblLoadedConfig->setVisible( false );
-    lblLoadedConfig->setText( "" );
+    lblLoadedConfig->setText( QLatin1String( "" ) );
 
     connect( leHost, SIGNAL( textChanged( QString ) ),
              this, SLOT( validateHostPortText( QString ) ) );
@@ -145,7 +145,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mProtocolCmbBx->setCurrentIndex( 0 );
   QTreeWidgetItem *protocolitem = new QTreeWidgetItem(
     mProtocolItem,
-    QStringList() << "",
+    QStringList() << QLatin1String( "" ),
     ( int )ConfigItem );
   protocolitem->setFlags( protocolitem->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->setItemWidget( protocolitem, 0, mProtocolCmbBx );
@@ -161,7 +161,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mVerifyPeerCmbBx->setCurrentIndex( 0 );
   QTreeWidgetItem *peerverifycmbxitem = new QTreeWidgetItem(
     mVerifyModeItem,
-    QStringList() << "",
+    QStringList() << QLatin1String( "" ),
     ( int )ConfigItem );
   peerverifycmbxitem->setFlags( peerverifycmbxitem->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->setItemWidget( peerverifycmbxitem, 0, mVerifyPeerCmbBx );
@@ -175,7 +175,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mVerifyDepthSpnBx->setAlignment( Qt::AlignHCenter );
   QTreeWidgetItem *peerverifyspnbxitem = new QTreeWidgetItem(
     mVerifyDepthItem,
-    QStringList() << "",
+    QStringList() << QLatin1String( "" ),
     ( int )ConfigItem );
   peerverifyspnbxitem->setFlags( peerverifyspnbxitem->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->setItemWidget( peerverifyspnbxitem, 0, mVerifyDepthSpnBx );
@@ -335,11 +335,11 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   mCert.clear();
   mConnectionCAs.clear();
   leCommonName->clear();
-  leCommonName->setStyleSheet( "" );
+  leCommonName->setStyleSheet( QLatin1String( "" ) );
   leHost->clear();
 
   lblLoadedConfig->setVisible( false );
-  lblLoadedConfig->setText( "" );
+  lblLoadedConfig->setText( QLatin1String( "" ) );
   resetSslProtocol();
   resetSslIgnoreErrors();
   resetSslPeerVerify();
@@ -547,10 +547,10 @@ bool QgsAuthSslConfigWidget::validateHostPort( const QString &txt )
 
   // TODO: add QRegex checks against valid IP and domain.tld input
   //       i.e., currently accepts unlikely (though maybe valid) host:port combo, like 'a:1'
-  QString urlbase( QString( "https://%1" ).arg( hostport ) );
+  QString urlbase( QStringLiteral( "https://%1" ).arg( hostport ) );
   QUrl url( urlbase );
   return ( !url.host().isEmpty() && QString::number( url.port() ).size() > 0
-           && QString( "https://%1:%2" ).arg( url.host() ).arg( url.port() ) == urlbase );
+           && QStringLiteral( "https://%1:%2" ).arg( url.host() ).arg( url.port() ) == urlbase );
 }
 
 void QgsAuthSslConfigWidget::validateHostPortText( const QString &txt )

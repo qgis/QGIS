@@ -40,15 +40,15 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowF
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
   radioSrcFile->setChecked( true );
-  mDataSourceType = "file";
+  mDataSourceType = QStringLiteral( "file" );
 
   //set encoding
   cmbEncodings->addItems( QgsVectorDataProvider::availableEncodings() );
 
   QSettings settings;
-  QString enc = settings.value( "/UI/encoding", "System" ).toString();
+  QString enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
 
-  restoreGeometry( settings.value( "/Windows/OpenVectorLayer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/OpenVectorLayer/geometry" ) ).toByteArray() );
 
   // The specified decoding is added if not existing alread, and then set current.
   // This should select it.
@@ -96,7 +96,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowF
 QgsOpenVectorLayerDialog::~QgsOpenVectorLayerDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/OpenVectorLayer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/OpenVectorLayer/geometry" ), saveGeometry() );
 }
 
 QStringList QgsOpenVectorLayerDialog::openFile()
@@ -105,7 +105,7 @@ QStringList QgsOpenVectorLayerDialog::openFile()
   QgsDebugMsg( "Vector file filters: " + mVectorFileFilter );
   QString enc = encoding();
   QString title = tr( "Open an OGR Supported Vector Layer" );
-  QgisGui::openFilesRememberingFilter( "lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc, title );
+  QgisGui::openFilesRememberingFilter( QStringLiteral( "lastVectorFileFilter" ), mVectorFileFilter, selectedFiles, enc, title );
 
   return selectedFiles;
 }
@@ -114,18 +114,18 @@ QString QgsOpenVectorLayerDialog::openDirectory()
 {
   QSettings settings;
 
-  bool haveLastUsedDir = settings.contains( "/UI/LastUsedDirectory" );
-  QString lastUsedDir = settings.value( "/UI/LastUsedDirectory", QDir::homePath() ).toString();
+  bool haveLastUsedDir = settings.contains( QStringLiteral( "/UI/LastUsedDirectory" ) );
+  QString lastUsedDir = settings.value( QStringLiteral( "/UI/LastUsedDirectory" ), QDir::homePath() ).toString();
   if ( !haveLastUsedDir )
-    lastUsedDir = "";
+    lastUsedDir = QLatin1String( "" );
 
   QString path = QFileDialog::getExistingDirectory( this,
                  tr( "Open Directory" ), lastUsedDir,
                  QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
 
-  settings.setValue( "/UI/LastUsedDirectory", path );
+  settings.setValue( QStringLiteral( "/UI/LastUsedDirectory" ), path );
   //process path if it is grass
-  if ( cmbDirectoryTypes->currentText() == "Grass Vector" )
+  if ( cmbDirectoryTypes->currentText() == QLatin1String( "Grass Vector" ) )
   {
 #ifdef Q_OS_WIN
     //replace backslashes with forward slashes
@@ -242,7 +242,7 @@ void QgsOpenVectorLayerDialog::setConnectionTypeListPosition()
 {
   QSettings settings;
 
-  QString toSelect = settings.value( "/ogr/connections/selectedtype" ).toString();
+  QString toSelect = settings.value( QStringLiteral( "/ogr/connections/selectedtype" ) ).toString();
   for ( int i = 0; i < cmbDatabaseTypes->count(); ++i )
     if ( cmbDatabaseTypes->itemText( i ) == toSelect )
     {
@@ -254,7 +254,7 @@ void QgsOpenVectorLayerDialog::setConnectionTypeListPosition()
 void QgsOpenVectorLayerDialog::setSelectedConnectionType()
 {
   QSettings settings;
-  QString baseKey = "/ogr/connections/";
+  QString baseKey = QStringLiteral( "/ogr/connections/" );
   settings.setValue( baseKey + "selectedtype", cmbDatabaseTypes->currentText() );
   QgsDebugMsg( "Setting selected type to" + cmbDatabaseTypes->currentText() );
 }
@@ -274,7 +274,7 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
     QStringList selected = openFile();
     if ( !selected.isEmpty() )
     {
-      inputSrcDataset->setText( selected.join( ";" ) );
+      inputSrcDataset->setText( selected.join( QStringLiteral( ";" ) ) );
       buttonBox->button( QDialogButtonBox::Open )->setFocus();
     }
   }
@@ -321,7 +321,7 @@ void QgsOpenVectorLayerDialog::accept()
     bool makeConnection = false;
     if ( pass.isEmpty() )
     {
-      if ( cmbDatabaseTypes->currentText() == "MSSQL" )
+      if ( cmbDatabaseTypes->currentText() == QLatin1String( "MSSQL" ) )
         makeConnection = true;
       else
         pass = QInputDialog::getText( this,
@@ -381,7 +381,7 @@ void QgsOpenVectorLayerDialog::accept()
   }
 
   // Save the used encoding
-  settings.setValue( "/UI/encoding", encoding() );
+  settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
 
   QDialog::accept();
 }
@@ -396,7 +396,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
-    mDataSourceType = "file";
+    mDataSourceType = QStringLiteral( "file" );
   }
 }
 
@@ -410,7 +410,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcDirectory_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
-    mDataSourceType = "directory";
+    mDataSourceType = QStringLiteral( "directory" );
   }
 }
 
@@ -427,7 +427,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcDatabase_toggled( bool checked )
     setConnectionTypeListPosition();
     populateConnectionList();
     setConnectionListPosition();
-    mDataSourceType = "database";
+    mDataSourceType = QStringLiteral( "database" );
   }
 }
 
@@ -439,7 +439,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
-    mDataSourceType = "protocol";
+    mDataSourceType = QStringLiteral( "protocol" );
   }
 }
 

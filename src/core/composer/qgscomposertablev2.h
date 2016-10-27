@@ -97,51 +97,51 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     enum HeaderHAlignment
     {
-      FollowColumn, /*!< header uses the same alignment as the column */
-      HeaderLeft, /*!< align headers left */
-      HeaderCenter, /*!< align headers to center */
-      HeaderRight /*!< align headers right */
+      FollowColumn, //!< Header uses the same alignment as the column
+      HeaderLeft, //!< Align headers left
+      HeaderCenter, //!< Align headers to center
+      HeaderRight //!< Align headers right
     };
 
     /** Controls where headers are shown in the table
      */
     enum HeaderMode
     {
-      FirstFrame = 0, /*!< header shown on first frame only */
-      AllFrames, /*!< headers shown on all frames */
-      NoHeaders /*!< no headers shown for table */
+      FirstFrame = 0, //!< Header shown on first frame only
+      AllFrames, //!< Headers shown on all frames
+      NoHeaders //!< No headers shown for table
     };
 
     /** Controls how empty tables are displayed
      */
     enum EmptyTableMode
     {
-      HeadersOnly = 0, /*!< show header rows only */
-      HideTable, /*!< hides entire table if empty */
-      ShowMessage /*!< shows preset message instead of table contents*/
+      HeadersOnly = 0, //!< Show header rows only
+      HideTable, //!< Hides entire table if empty
+      ShowMessage //!< Shows preset message instead of table contents
     };
 
     /** Controls how long strings in the table are handled
      */
     enum WrapBehaviour
     {
-      TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
-      WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
+      TruncateText = 0, //!< Text which doesn't fit inside the cell is truncated
+      WrapText //!< Text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width.
     };
 
     /** Row or column groups for cell styling
      */
     enum CellStyleGroup
     {
-      OddColumns, /*!< Style odd numbered columns */
-      EvenColumns, /*!< Style even numbered columns */
-      OddRows, /*!< Style odd numbered rows */
-      EvenRows, /*!< Style even numbered rows */
-      FirstColumn, /*!< Style first column only */
-      LastColumn, /*!< Style last column only */
-      HeaderRow, /*!< Style header row */
-      FirstRow, /*!< Style first row only */
-      LastRow /*!< Style last row only */
+      OddColumns, //!< Style odd numbered columns
+      EvenColumns, //!< Style even numbered columns
+      OddRows, //!< Style odd numbered rows
+      EvenRows, //!< Style even numbered rows
+      FirstColumn, //!< Style first column only
+      LastColumn, //!< Style last column only
+      HeaderRow, //!< Style header row
+      FirstRow, //!< Style first row only
+      LastRow //!< Style last row only
     };
 
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
@@ -338,6 +338,46 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     QColor gridColor() const { return mGridColor; }
 
+    /** Sets whether the grid's horizontal lines should be drawn in the table
+     * @param horizontalGrid set to true to draw grid's horizontal lines
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setVerticalGrid
+     * @note added in QGIS 3.0
+     */
+    void setHorizontalGrid( const bool horizontalGrid );
+
+    /** Returns whether the grid's horizontal lines are drawn in the table
+     * @returns true if grid's horizontal lines are drawn
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setVerticalGrid
+     * @note added in QGIS 3.0
+     */
+    bool horizontalGrid() const { return mHorizontalGrid; }
+
+    /** Sets whether the grid's vertical lines should be drawn in the table
+     * @param verticalGrid set to true to draw grid's vertical lines
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setHorizontalGrid
+     * @note added in QGIS 3.0
+     */
+    void setVerticalGrid( const bool verticalGrid );
+
+    /** Returns whether the grid's vertical lines are drawn in the table
+     * @returns true if grid's vertical lines are drawn
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setHorizontalGrid
+     * @note added in QGIS 3.0
+     */
+    bool verticalGrid() const { return mVerticalGrid; }
+
     /** Sets color used for background of table.
      * @param color table background color
      * @see backgroundColor
@@ -438,58 +478,64 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     void recalculateFrameSizes() override;
 
   protected:
-    /** Margin between cell borders and cell text*/
+    //! Margin between cell borders and cell text
     double mCellMargin;
 
-    /** Behaviour for empty tables*/
+    //! Behaviour for empty tables
     EmptyTableMode mEmptyTableMode;
 
-    /** String to show in empty tables*/
+    //! String to show in empty tables
     QString mEmptyTableMessage;
 
-    /** True if empty rows should be shown in the table*/
+    //! True if empty rows should be shown in the table
     bool mShowEmptyRows;
 
-    /** Header font*/
+    //! Header font
     QFont mHeaderFont;
 
-    /** Header font color*/
+    //! Header font color
     QColor mHeaderFontColor;
 
-    /** Alignment for table headers*/
+    //! Alignment for table headers
     HeaderHAlignment mHeaderHAlignment;
 
-    /** Header display mode*/
+    //! Header display mode
     HeaderMode mHeaderMode;
 
-    /** Table contents font*/
+    //! Table contents font
     QFont mContentFont;
 
-    /** Table contents font color*/
+    //! Table contents font color
     QColor mContentFontColor;
 
-    /** True if grid should be shown*/
+    //! True if grid should be shown
     bool mShowGrid;
 
-    /** Width of grid lines*/
+    //! Width of grid lines
     double mGridStrokeWidth;
 
-    /** Color for grid lines*/
+    //! Color for grid lines
     QColor mGridColor;
 
-    /** Color for table background*/
+    //! True if grid should be shown
+    bool mHorizontalGrid;
+
+    //! True if grid should be shown
+    bool mVerticalGrid;
+
+    //! Color for table background
     QColor mBackgroundColor;
 
-    /** Columns to show in table*/
+    //! Columns to show in table
     QgsComposerTableColumns mColumns;
 
-    /** Contents to show in table*/
+    //! Contents to show in table
     QgsComposerTableContents mTableContents;
 
-    /** Map of maximum width for each column*/
+    //! Map of maximum width for each column
     QMap<int, double> mMaxColumnWidthMap;
 
-    /** Map of maximum height for each row*/
+    //! Map of maximum height for each row
     QMap<int, double> mMaxRowHeightMap;
 
     QSizeF mTableSize;
@@ -595,7 +641,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     QMap< CellStyleGroup, QString > mCellStyleNames;
 
-    /** Initializes cell style map */
+    //! Initializes cell style map
     void initStyles();
 
     bool textRequiresWrapping( const QString& text, double columnWidth , const QFont &font ) const;

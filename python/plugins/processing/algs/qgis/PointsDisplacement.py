@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'July 2013'
@@ -85,11 +86,10 @@ class PointsDisplacement(GeoAlgorithm):
 
         fullPerimeter = 2 * math.pi
 
-        request = QgsFeatureRequest()
-        for (geom, fids) in duplicates.items():
+        for (geom, fids) in list(duplicates.items()):
             count = len(fids)
             if count == 1:
-                f = next(layer.getFeatures(request.setFilterFid(fids[0])))
+                f = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(fids[0])))
                 writer.addFeature(f)
             else:
                 angleStep = fullPerimeter / count
@@ -99,13 +99,13 @@ class PointsDisplacement(GeoAlgorithm):
                     currentAngle = 0
 
                 old_point = QgsGeometry.fromWkt(geom).asPoint()
-                for fid in fids:
+
+                request = QgsFeatureRequest().setFilterFids(fids).setFlags(QgsFeatureRequest.NoGeometry)
+                for f in layer.getFeatures(request):
                     sinusCurrentAngle = math.sin(currentAngle)
                     cosinusCurrentAngle = math.cos(currentAngle)
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
-
-                    f = next(layer.getFeatures(request.setFilterFid(fid)))
 
                     new_point = QgsPoint(old_point.x() + dx, old_point.y()
                                          + dy)

@@ -50,16 +50,16 @@ WIDGET, BASE = uic.loadUiType(
 
 class ExtentSelectionPanel(BASE, WIDGET):
 
-    def __init__(self, dialog, alg, default=None):
+    def __init__(self, dialog, param):
         super(ExtentSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.dialog = dialog
-        self.alg = alg
-        if alg.canUseAutoExtent():
+        self.param = param
+        if self.param.optional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
-                    self.tr('[Leave blank to use min covering extent]'))
+                    self.tr('[Use "auto" to use min covering extent]'))
 
         self.btnSelect.clicked.connect(self.selectExtent)
 
@@ -68,15 +68,15 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.tool = RectangleMapTool(canvas)
         self.tool.rectangleCreated.connect(self.updateExtent)
 
-        if default:
-            tokens = str(default).split(',')
+        if param.default:
+            tokens = param.default.split(',')
             if len(tokens) == 4:
                 try:
                     float(tokens[0])
                     float(tokens[1])
                     float(tokens[2])
                     float(tokens[3])
-                    self.leText.setText(str(default))
+                    self.leText.setText(param.default)
                 except:
                     pass
 
@@ -93,7 +93,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
 
-        if self.alg.canUseAutoExtent():
+        if self.param.optional:
             useMincoveringExtentAction = QAction(
                 self.tr('Use min covering extent from input layers'),
                 self.btnSelect)
@@ -104,7 +104,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         popupmenu.exec_(QCursor.pos())
 
     def useMinCoveringExtent(self):
-        self.leText.setText('')
+        self.leText.setText('auto')
 
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
@@ -154,8 +154,9 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
     def getValue(self):
         if str(self.leText.text()).strip() == '':
+            return str(self.leText.text())
+        else:
             return None
-        return str(self.leText.text())
 
     def setExtentFromString(self, s):
         self.leText.setText(s)

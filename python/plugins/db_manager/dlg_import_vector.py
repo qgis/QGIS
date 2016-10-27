@@ -78,6 +78,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             self.editPrimaryKey.setText(self.default_pk)
             self.editGeomColumn.setText(self.default_geom)
+
+            self.chkLowercaseFieldNames.setEnabled(self.db.hasLowercaseFieldNamesOption())
+            if not self.chkLowercaseFieldNames.isEnabled():
+                self.chkLowercaseFieldNames.setChecked(False)
         else:
             # set default values
             self.checkSupports()
@@ -107,6 +111,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
         if not self.chkSpatialIndex.isEnabled():
             self.chkSpatialIndex.setChecked(False)
+
+        self.chkLowercaseFieldNames.setEnabled(self.db.hasLowercaseFieldNamesOption())
+        if not self.chkLowercaseFieldNames.isEnabled():
+            self.chkLowercaseFieldNames.setChecked(False)
 
     def populateLayers(self):
         self.cboInputLayer.clear()
@@ -302,20 +310,25 @@ class DlgImportVector(QDialog, Ui_Dialog):
             else:
                 geom = None
 
+            options = {}
+            if self.chkLowercaseFieldNames.isEnabled() and self.chkLowercaseFieldNames.isChecked():
+                pk = pk.lower()
+                if geom:
+                    geom = geom.lower()
+                options['lowercaseFieldNames'] = True
+
             # get output params, update output URI
             self.outUri.setDataSource(schema, table, geom, "", pk)
             uri = self.outUri.uri(False)
 
             providerName = self.db.dbplugin().providerName()
-
-            options = {}
             if self.chkDropTable.isChecked():
                 options['overwrite'] = True
 
             if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
                 options['forceSinglePartGeometryType'] = True
 
-            outCrs = None
+            outCrs = QgsCoordinateReferenceSystem()
             if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
                 targetSrid = int(self.editTargetSrid.text())
                 outCrs = QgsCoordinateReferenceSystem(targetSrid)

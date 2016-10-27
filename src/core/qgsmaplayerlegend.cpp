@@ -54,9 +54,9 @@ void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, c
   QStringList orderStr;
   Q_FOREACH ( int id, order )
     orderStr << QString::number( id );
-  QString str = orderStr.isEmpty() ? "empty" : orderStr.join( "," );
+  QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QStringLiteral( "," ) );
 
-  nodeLayer->setCustomProperty( "legend/node-order", str );
+  nodeLayer->setCustomProperty( QStringLiteral( "legend/node-order" ), str );
 }
 
 static int _originalLegendNodeCount( QgsLayerTreeLayer* nodeLayer )
@@ -87,12 +87,12 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer* nodeLayer )
 
 QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer )
 {
-  QString orderStr = nodeLayer->customProperty( "legend/node-order" ).toString();
+  QString orderStr = nodeLayer->customProperty( QStringLiteral( "legend/node-order" ) ).toString();
 
   if ( orderStr.isEmpty() )
     return _makeNodeOrder( nodeLayer );
 
-  if ( orderStr == "empty" )
+  if ( orderStr == QLatin1String( "empty" ) )
     return QList<int>();
 
   int numNodes = _originalLegendNodeCount( nodeLayer );
@@ -113,7 +113,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
 
 bool QgsMapLayerLegendUtils::hasLegendNodeOrder( QgsLayerTreeLayer* nodeLayer )
 {
-  return nodeLayer->customProperties().contains( "legend/node-order" );
+  return nodeLayer->customProperties().contains( QStringLiteral( "legend/node-order" ) );
 }
 
 void QgsMapLayerLegendUtils::setLegendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex, const QString& newLabel )
@@ -191,11 +191,11 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   if ( !r )
     return nodes;
 
-  if ( nodeLayer->customProperty( "showFeatureCount", 0 ).toBool() )
+  if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool() )
     mLayer->countSymbolFeatures();
 
   QSettings settings;
-  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
+  if ( settings.value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
   {
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }

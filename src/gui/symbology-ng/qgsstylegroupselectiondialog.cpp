@@ -37,7 +37,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
+  QStandardItem *group = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
   group->setData( "groupsheader", Qt::UserRole + 2 );
   group->setEditable( false );
   group->setFlags( group->flags() & ~Qt::ItemIsSelectable );
@@ -100,46 +100,46 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
 
   Q_FOREACH ( index, deselectedItems )
   {
-    if ( index.data( Qt::UserRole + 2 ).toString() == "groupsheader" )
+    if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "groupsheader" ) )
     {
       // Ignore: it's the group header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "all" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
     {
       emit allDeselected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroupsheader" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroupsheader" ) )
     {
       // Ignore: it's the smartgroups header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroup" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroup" ) )
     {
       emit smartgroupDeselected( index.data().toString() );
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "group" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "group" ) )
     { // It's a group
       emit groupDeselected( index.data().toString() );
     }
   }
   Q_FOREACH ( index, selectedItems )
   {
-    if ( index.data( Qt::UserRole + 2 ).toString() == "groupsheader" )
+    if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "groupsheader" ) )
     {
       // Ignore: it's the group header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "all" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
     {
       emit allSelected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroupsheader" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroupsheader" ) )
     {
       // Ignore: it's the smartgroups header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroup" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroup" ) )
     {
       emit smartgroupSelected( index.data().toString() );
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "group" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "group" ) )
     {  // It's a group
       emit groupSelected( index.data().toString() );
     }

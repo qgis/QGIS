@@ -36,7 +36,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon& operator=( const QgsCurvePolygon& p );
     ~QgsCurvePolygon();
 
-    virtual QString geometryType() const override { return "CurvePolygon"; }
+    virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
     virtual int dimension() const override { return 2; }
     virtual QgsCurvePolygon* clone() const override;
     void clear() override;
@@ -76,11 +76,11 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     virtual void setExteriorRing( QgsCurve* ring );
 
-    /** Sets all interior rings (takes ownership)*/
+    //! Sets all interior rings (takes ownership)
     void setInteriorRings( const QList<QgsCurve*>& rings );
-    /** Adds an interior ring to the geometry (takes ownership)*/
+    //! Adds an interior ring to the geometry (takes ownership)
     virtual void addInteriorRing( QgsCurve* ring );
-    /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
+    //! Removes ring. Exterior ring is 0, first interior ring 1, ...
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const override;
@@ -93,6 +93,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
+    virtual int nCoordinates() const override;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 

@@ -38,6 +38,8 @@ from processing.core.alglist import algList
 from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
 from qgis.PyQt.QtGui import QPalette, QColor
 
+from qgis.gui import QgsMessageBar
+
 
 class PreconfiguredAlgorithmDialog(AlgorithmDialog):
 
@@ -77,8 +79,9 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.lblProgress.setText(
-                    self.tr('<b>Missing parameter value: %s</b>') % e.parameter.description)
+                self.parent.bar.pushMessage("", self.tr('Missing parameter value: %s')
+                                            % e.parameter.description,
+                                            level=QgsMessageBar.WARNING, duration=5)
                 return
             except:
                 QMessageBox.critical(self,

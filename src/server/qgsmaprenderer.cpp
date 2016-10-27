@@ -302,10 +302,10 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
   // set selection color
   QgsProject* prj = QgsProject::instance();
-  int myRed = prj->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
-  int myGreen = prj->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
-  int myBlue = prj->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-  int myAlpha = prj->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
+  int myRed = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
+  int myGreen = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
+  int myBlue = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
+  int myAlpha = prj->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
   mRenderContext.setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //calculate scale factor
@@ -471,7 +471,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           }
           mypFlattenedImage->fill( 0 );
           QPainter * mypPainter = new QPainter( mypFlattenedImage );
-          if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
+          if ( mySettings.value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() )
           {
             mypPainter->setRenderHint( QPainter::Antialiasing );
           }
@@ -816,7 +816,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -840,7 +840,7 @@ QgsRectangle QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -862,7 +862,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -884,7 +884,7 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
     }
     catch ( QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   return rect;
@@ -981,25 +981,25 @@ bool QgsMapRenderer::readXml( QDomNode & theNode )
   tmpSettings.readXml( theNode );
   //load coordinate transform into
   mLayerCoordinateTransformInfo.clear();
-  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( "layer_coordinate_transform_info" );
+  QDomElement layerCoordTransformInfoElem = theNode.firstChildElement( QStringLiteral( "layer_coordinate_transform_info" ) );
   if ( !layerCoordTransformInfoElem.isNull() )
   {
-    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( "layer_coordinate_transform" );
+    QDomNodeList layerCoordinateTransformList = layerCoordTransformInfoElem.elementsByTagName( QStringLiteral( "layer_coordinate_transform" ) );
     QDomElement layerCoordTransformElem;
     for ( int i = 0; i < layerCoordinateTransformList.size(); ++i )
     {
       layerCoordTransformElem = layerCoordinateTransformList.at( i ).toElement();
-      QString layerId = layerCoordTransformElem.attribute( "layerid" );
+      QString layerId = layerCoordTransformElem.attribute( QStringLiteral( "layerid" ) );
       if ( layerId.isEmpty() )
       {
         continue;
       }
 
       QgsLayerCoordinateTransform lct;
-      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
-      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
-      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
-      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
+      lct.srcAuthId = layerCoordTransformElem.attribute( QStringLiteral( "srcAuthId" ) );
+      lct.destAuthId = layerCoordTransformElem.attribute( QStringLiteral( "destAuthId" ) );
+      lct.srcDatumTransform = layerCoordTransformElem.attribute( QStringLiteral( "srcDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
+      lct.destDatumTransform = layerCoordTransformElem.attribute( QStringLiteral( "destDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
       mLayerCoordinateTransformInfo.insert( layerId, lct );
     }
   }
@@ -1026,16 +1026,16 @@ bool QgsMapRenderer::writeXml( QDomNode & theNode, QDomDocument & theDoc )
 
   tmpSettings.writeXml( theNode, theDoc );
   // layer coordinate transform infos
-  QDomElement layerCoordTransformInfo = theDoc.createElement( "layer_coordinate_transform_info" );
+  QDomElement layerCoordTransformInfo = theDoc.createElement( QStringLiteral( "layer_coordinate_transform_info" ) );
   QHash< QString, QgsLayerCoordinateTransform >::const_iterator coordIt = mLayerCoordinateTransformInfo.constBegin();
   for ( ; coordIt != mLayerCoordinateTransformInfo.constEnd(); ++coordIt )
   {
-    QDomElement layerCoordTransformElem = theDoc.createElement( "layer_coordinate_transform" );
-    layerCoordTransformElem.setAttribute( "layerid", coordIt.key() );
-    layerCoordTransformElem.setAttribute( "srcAuthId", coordIt->srcAuthId );
-    layerCoordTransformElem.setAttribute( "destAuthId", coordIt->destAuthId );
-    layerCoordTransformElem.setAttribute( "srcDatumTransform", QString::number( coordIt->srcDatumTransform ) );
-    layerCoordTransformElem.setAttribute( "destDatumTransform", QString::number( coordIt->destDatumTransform ) );
+    QDomElement layerCoordTransformElem = theDoc.createElement( QStringLiteral( "layer_coordinate_transform" ) );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "layerid" ), coordIt.key() );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "srcAuthId" ), coordIt->srcAuthId );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "destAuthId" ), coordIt->destAuthId );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "srcDatumTransform" ), QString::number( coordIt->srcDatumTransform ) );
+    layerCoordTransformElem.setAttribute( QStringLiteral( "destDatumTransform" ), QString::number( coordIt->destDatumTransform ) );
     layerCoordTransformInfo.appendChild( layerCoordTransformElem );
   }
   theNode.appendChild( layerCoordTransformInfo );
@@ -1129,10 +1129,10 @@ void QgsMapRenderer::readDefaultDatumTransformations()
   if ( envChar )
   {
     QString envString( envChar );
-    QStringList transformSplit = envString.split( ";" );
+    QStringList transformSplit = envString.split( QStringLiteral( ";" ) );
     for ( int i = 0; i < transformSplit.size(); ++i )
     {
-      QStringList slashSplit = transformSplit.at( i ).split( "/" );
+      QStringList slashSplit = transformSplit.at( i ).split( QStringLiteral( "/" ) );
       if ( slashSplit.size() < 4 )
       {
         continue;

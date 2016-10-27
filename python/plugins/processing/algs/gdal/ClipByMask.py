@@ -87,7 +87,7 @@ class ClipByMask(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.ALPHA_BAND,
                                            self.tr('Create and output alpha band'), False))
         self.addParameter(ParameterBoolean(self.CROP_TO_CUTLINE,
-                                           self.tr('Crop the extent of the target dataset to the extent of the cutline'), False))
+                                           self.tr('Crop the extent of the target dataset to the extent of the cutline'), True))
         self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
                                            self.tr('Keep resolution of output raster'), False))
 
@@ -192,6 +192,9 @@ class ClipByMask(GdalAlgorithm):
                 arguments.append("-co BIGTIFF=" + bigtiff)
 
             arguments.append("-wo OPTIMIZE_SIZE=TRUE")
+
+        if GdalUtils.version() in [2010000, 2010100]:
+            arguments.append("--config GDALWARP_IGNORE_BAD_CUTLINE YES")
 
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)

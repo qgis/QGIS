@@ -53,7 +53,6 @@ class RandomSelection(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
@@ -90,7 +89,7 @@ class RandomSelection(GeoAlgorithm):
                             "different value and try again."))
             value = int(round(value / 100.0, 4) * featureCount)
 
-        selran = random.sample(range(featureCount), value)
+        selran = random.sample(list(range(featureCount)), value)
 
         layer.selectByIds(selran)
         self.setOutputValue(self.OUTPUT, filename)

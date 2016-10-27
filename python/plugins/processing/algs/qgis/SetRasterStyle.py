@@ -69,4 +69,3 @@ class SetRasterStyle(GeoAlgorithm):
             layer.readSymbology(n, '')
             self.setOutputValue(self.OUTPUT, filename)
             iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerLegend(layer)

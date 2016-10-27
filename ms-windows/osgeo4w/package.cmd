@@ -29,7 +29,7 @@ if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
 
-set BUILDDIR=%CD%\build-%ARCH%
+set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 
 if "%OSGEO4W_ROOT%"=="" (
 	if "%ARCH%"=="x86" (
@@ -342,7 +342,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME
 	"apps/%PACKAGENAME%/bin/wms_metadata.xml" ^
 	"apps/%PACKAGENAME%/bin/schemaExtension.xsd" ^
 	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
-	"apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	"apps/%PACKAGENAME%/python/qgis/server/" ^
 	"httpd.d/httpd_%PACKAGENAME%.conf.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%-server.bat" ^
@@ -384,7 +383,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
 	"apps/%PACKAGENAME%/plugins/coordinatecaptureplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/dxf2shpconverterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
@@ -396,7 +394,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/roadgraphplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/geometrysnapperplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^

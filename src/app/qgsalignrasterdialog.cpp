@@ -55,7 +55,7 @@ static QString _rasterLayerName( const QString& filename )
 
 
 
-/** Helper class to report progress */
+//! Helper class to report progress
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
   explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
@@ -164,7 +164,7 @@ void QgsAlignRasterDialog::updateAlignedRasterInfo()
   }
 
   QSize size = mAlign->alignedRasterSize();
-  QString msg = QString( "%1 x %2" ).arg( size.width() ).arg( size.height() );
+  QString msg = QStringLiteral( "%1 x %2" ).arg( size.width() ).arg( size.height() );
   mEditOutputSize->setText( msg );
 }
 
@@ -459,16 +459,16 @@ void QgsAlignRasterLayerConfigDialog::setItem( const QString& inputFilename, con
 void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 {
   QSettings settings;
-  QString dirName = editOutput->text().isEmpty() ? settings.value( "/UI/lastRasterFileDir", QDir::homePath() ).toString() : editOutput->text();
+  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
 
   if ( !fileName.isEmpty() )
   {
     // ensure the user never ommited the extension from the file name
-    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
     {
-      fileName += ".tif";
+      fileName += QLatin1String( ".tif" );
     }
     editOutput->setText( fileName );
   }

@@ -22,7 +22,7 @@ QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
 
 }
 
-QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( QString title, QIcon icon )
+QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( const QString& title, const QIcon& icon )
     : mIcon( icon )
     , mTitle( title )
     , mSupportsDock( true )

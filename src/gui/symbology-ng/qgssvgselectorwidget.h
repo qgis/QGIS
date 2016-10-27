@@ -246,7 +246,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QLayout* selectorLayout() { return this->layout(); }
 
   public slots:
-    /** Accepts absolute and relative paths */
+    //! Accepts absolute and relative paths
     void setSvgPath( const QString& svgPath );
 
   signals:
@@ -276,8 +276,12 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsSvgSelectorDialog.
+     */
     QgsSvgSelectorDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-                          const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
+                          QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
 

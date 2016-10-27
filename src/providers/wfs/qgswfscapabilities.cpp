@@ -38,14 +38,14 @@ QgsWfsCapabilities::~QgsWfsCapabilities()
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
 {
   QUrl url( baseURL() );
-  url.addQueryItem( "REQUEST", "GetCapabilities" );
+  url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
 
   const QString& version = mUri.version();
   if ( version == QgsWFSConstants::VERSION_AUTO )
     // MapServer honours the order with the first value being the preferred one
-    url.addQueryItem( "ACCEPTVERSIONS", "2.0.0,1.1.0,1.0.0" );
+    url.addQueryItem( QStringLiteral( "ACCEPTVERSIONS" ), QStringLiteral( "2.0.0,1.1.0,1.0.0" ) );
   else
-    url.addQueryItem( "VERSION", version );
+    url.addQueryItem( QStringLiteral( "VERSION" ), version );
 
   if ( !sendGET( url, synchronous, forceRefresh ) )
   {
@@ -66,7 +66,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = "";
+  version = QLatin1String( "" );
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();
@@ -81,7 +81,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name
   if ( name.contains( ':' ) )
     return name;
   if ( setAmbiguousUnprefixedTypename.contains( name ) )
-    return "";
+    return QLatin1String( "" );
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
@@ -105,10 +105,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   QDomElement doc = capabilitiesDocument.documentElement();
 
   // handle exceptions
-  if ( doc.tagName() == "ExceptionReport" )
+  if ( doc.tagName() == QLatin1String( "ExceptionReport" ) )
   {
     QDomNode ex = doc.firstChild();
-    QString exc = ex.toElement().attribute( "exceptionCode", "Exception" );
+    QString exc = ex.toElement().attribute( QStringLiteral( "exceptionCode" ), QStringLiteral( "Exception" ) );
     QDomElement ext = ex.firstChild().toElement();
     mErrorCode = QgsWfsRequest::ServerExceptionError;
     mErrorMessage = exc + ": " + ext.firstChild().nodeValue();
@@ -119,10 +119,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   mCaps.clear();
 
   //test wfs version
-  mCaps.version = doc.attribute( "version" );
-  if ( !mCaps.version.startsWith( "1.0" ) &&
-       !mCaps.version.startsWith( "1.1" ) &&
-       !mCaps.version.startsWith( "2.0" ) )
+  mCaps.version = doc.attribute( QStringLiteral( "version" ) );
+  if ( !mCaps.version.startsWith( QLatin1String( "1.0" ) ) &&
+       !mCaps.version.startsWith( QLatin1String( "1.1" ) ) &&
+       !mCaps.version.startsWith( QLatin1String( "2.0" ) ) )
   {
     mErrorCode = WFSVersionNotSupported;
     mErrorMessage = tr( "WFS version %1 not supported" ).arg( mCaps.version );
@@ -135,52 +135,52 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   // WFS 1.1 implementation too I think, but in the examples of the GetCapabilites
   // response of the WFS 1.1 standard (and in common implementations), this is
   // explictly advertized
-  if ( mCaps.version.startsWith( "2.0" ) )
+  if ( mCaps.version.startsWith( QLatin1String( "2.0" ) ) )
     mCaps.supportsHits = true;
 
   // Note: for conveniency, we do not use the elementsByTagNameNS() method as
   // the WFS and OWS namespaces URI are not the same in all versions
 
   // find <ows:OperationsMetadata>
-  QDomElement operationsMetadataElem = doc.firstChildElement( "OperationsMetadata" );
+  QDomElement operationsMetadataElem = doc.firstChildElement( QStringLiteral( "OperationsMetadata" ) );
   if ( !operationsMetadataElem.isNull() )
   {
-    QDomNodeList contraintList = operationsMetadataElem.elementsByTagName( "Constraint" );
+    QDomNodeList contraintList = operationsMetadataElem.elementsByTagName( QStringLiteral( "Constraint" ) );
     for ( int i = 0; i < contraintList.size(); ++i )
     {
       QDomElement contraint = contraintList.at( i ).toElement();
-      if ( contraint.attribute( "name" ) == "DefaultMaxFeatures" /* WFS 1.1 */ )
+      if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "DefaultMaxFeatures" ) /* WFS 1.1 */ )
       {
-        QDomElement value = contraint.firstChildElement( "Value" );
+        QDomElement value = contraint.firstChildElement( QStringLiteral( "Value" ) );
         if ( !value.isNull() )
         {
           mCaps.maxFeatures = value.text().toInt();
           QgsDebugMsg( QString( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
         }
       }
-      else if ( contraint.attribute( "name" ) == "CountDefault" /* WFS 2.0 (e.g. MapServer) */ )
+      else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "CountDefault" ) /* WFS 2.0 (e.g. MapServer) */ )
       {
-        QDomElement value = contraint.firstChildElement( "DefaultValue" );
+        QDomElement value = contraint.firstChildElement( QStringLiteral( "DefaultValue" ) );
         if ( !value.isNull() )
         {
           mCaps.maxFeatures = value.text().toInt();
           QgsDebugMsg( QString( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
         }
       }
-      else if ( contraint.attribute( "name" ) == "ImplementsResultPaging" /* WFS 2.0 */ )
+      else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsResultPaging" ) /* WFS 2.0 */ )
       {
-        QDomElement value = contraint.firstChildElement( "DefaultValue" );
-        if ( !value.isNull() && value.text() == "TRUE" )
+        QDomElement value = contraint.firstChildElement( QStringLiteral( "DefaultValue" ) );
+        if ( !value.isNull() && value.text() == QLatin1String( "TRUE" ) )
         {
           mCaps.supportsPaging = true;
           QgsDebugMsg( "Supports paging" );
         }
       }
-      else if ( contraint.attribute( "name" ) == "ImplementsStandardJoins" ||
-                contraint.attribute( "name" ) == "ImplementsSpatialJoins" /* WFS 2.0 */ )
+      else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsStandardJoins" ) ||
+                contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsSpatialJoins" ) /* WFS 2.0 */ )
       {
-        QDomElement value = contraint.firstChildElement( "DefaultValue" );
-        if ( !value.isNull() && value.text() == "TRUE" )
+        QDomElement value = contraint.firstChildElement( QStringLiteral( "DefaultValue" ) );
+        if ( !value.isNull() && value.text() == QLatin1String( "TRUE" ) )
         {
           mCaps.supportsJoins = true;
           QgsDebugMsg( "Supports joins" );
@@ -190,19 +190,19 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 
     // In WFS 2.0, max features can also be set in Operation.GetFeature (e.g. GeoServer)
     // and we are also interested by resultType=hits for WFS 1.1
-    QDomNodeList operationList = operationsMetadataElem.elementsByTagName( "Operation" );
+    QDomNodeList operationList = operationsMetadataElem.elementsByTagName( QStringLiteral( "Operation" ) );
     for ( int i = 0; i < operationList.size(); ++i )
     {
       QDomElement operation = operationList.at( i ).toElement();
-      if ( operation.attribute( "name" ) == "GetFeature" )
+      if ( operation.attribute( QStringLiteral( "name" ) ) == QLatin1String( "GetFeature" ) )
       {
-        QDomNodeList operationContraintList = operation.elementsByTagName( "Constraint" );
+        QDomNodeList operationContraintList = operation.elementsByTagName( QStringLiteral( "Constraint" ) );
         for ( int j = 0; j < operationContraintList.size(); ++j )
         {
           QDomElement contraint = operationContraintList.at( j ).toElement();
-          if ( contraint.attribute( "name" ) == "CountDefault" )
+          if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "CountDefault" ) )
           {
-            QDomElement value = contraint.firstChildElement( "DefaultValue" );
+            QDomElement value = contraint.firstChildElement( QStringLiteral( "DefaultValue" ) );
             if ( !value.isNull() )
             {
               mCaps.maxFeatures = value.text().toInt();
@@ -212,17 +212,17 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           }
         }
 
-        QDomNodeList parameterList = operation.elementsByTagName( "Parameter" );
+        QDomNodeList parameterList = operation.elementsByTagName( QStringLiteral( "Parameter" ) );
         for ( int j = 0; j < parameterList.size(); ++j )
         {
           QDomElement parameter = parameterList.at( j ).toElement();
-          if ( parameter.attribute( "name" ) == "resultType" )
+          if ( parameter.attribute( QStringLiteral( "name" ) ) == QLatin1String( "resultType" ) )
           {
-            QDomNodeList valueList = parameter.elementsByTagName( "Value" );
+            QDomNodeList valueList = parameter.elementsByTagName( QStringLiteral( "Value" ) );
             for ( int k = 0; k < valueList.size(); ++k )
             {
               QDomElement value = valueList.at( k ).toElement();
-              if ( value.text() == "hits" )
+              if ( value.text() == QLatin1String( "hits" ) )
               {
                 mCaps.supportsHits = true;
                 QgsDebugMsg( "Support hits" );
@@ -238,7 +238,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
 
   //go to <FeatureTypeList>
-  QDomElement featureTypeListElem = doc.firstChildElement( "FeatureTypeList" );
+  QDomElement featureTypeListElem = doc.firstChildElement( QStringLiteral( "FeatureTypeList" ) );
   if ( featureTypeListElem.isNull() )
   {
     emit gotCapabilities();
@@ -247,70 +247,70 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 
   // Parse operations supported for all feature types
   bool insertCap, updateCap, deleteCap;
-  parseSupportedOperations( featureTypeListElem.firstChildElement( "Operations" ),
+  parseSupportedOperations( featureTypeListElem.firstChildElement( QStringLiteral( "Operations" ) ),
                             insertCap,
                             updateCap,
                             deleteCap );
 
   // get the <FeatureType> elements
-  QDomNodeList featureTypeList = featureTypeListElem.elementsByTagName( "FeatureType" );
+  QDomNodeList featureTypeList = featureTypeListElem.elementsByTagName( QStringLiteral( "FeatureType" ) );
   for ( int i = 0; i < featureTypeList.size(); ++i )
   {
     FeatureType featureType;
     QDomElement featureTypeElem = featureTypeList.at( i ).toElement();
 
     //Name
-    QDomNodeList nameList = featureTypeElem.elementsByTagName( "Name" );
+    QDomNodeList nameList = featureTypeElem.elementsByTagName( QStringLiteral( "Name" ) );
     if ( nameList.length() > 0 )
     {
       featureType.name = nameList.at( 0 ).toElement().text();
     }
     //Title
-    QDomNodeList titleList = featureTypeElem.elementsByTagName( "Title" );
+    QDomNodeList titleList = featureTypeElem.elementsByTagName( QStringLiteral( "Title" ) );
     if ( titleList.length() > 0 )
     {
       featureType.title = titleList.at( 0 ).toElement().text();
     }
     //Abstract
-    QDomNodeList abstractList = featureTypeElem.elementsByTagName( "Abstract" );
+    QDomNodeList abstractList = featureTypeElem.elementsByTagName( QStringLiteral( "Abstract" ) );
     if ( abstractList.length() > 0 )
     {
       featureType.abstract = abstractList.at( 0 ).toElement().text();
     }
 
     //DefaultSRS is always the first entry in the feature srs list
-    QDomNodeList defaultCRSList = featureTypeElem.elementsByTagName( "DefaultSRS" );
+    QDomNodeList defaultCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "DefaultSRS" ) );
     if ( defaultCRSList.length() == 0 )
       // In WFS 2.0, this is spelled DefaultCRS...
-      defaultCRSList = featureTypeElem.elementsByTagName( "DefaultCRS" );
+      defaultCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "DefaultCRS" ) );
     if ( defaultCRSList.length() > 0 )
     {
       QString srsname( defaultCRSList.at( 0 ).toElement().text() );
       // Some servers like Geomedia advertize EPSG:XXXX even in WFS 1.1 or 2.0
-      if ( srsname.startsWith( "EPSG:" ) )
+      if ( srsname.startsWith( QLatin1String( "EPSG:" ) ) )
         mCaps.useEPSGColumnFormat = true;
       featureType.crslist.append( NormalizeSRSName( srsname ) );
     }
 
     //OtherSRS
-    QDomNodeList otherCRSList = featureTypeElem.elementsByTagName( "OtherSRS" );
+    QDomNodeList otherCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "OtherSRS" ) );
     if ( otherCRSList.length() == 0 )
       // In WFS 2.0, this is spelled OtherCRS...
-      otherCRSList = featureTypeElem.elementsByTagName( "OtherCRS" );
+      otherCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "OtherCRS" ) );
     for ( int i = 0; i < otherCRSList.size(); ++i )
     {
       featureType.crslist.append( NormalizeSRSName( otherCRSList.at( i ).toElement().text() ) );
     }
 
     //Support <SRS> for compatibility with older versions
-    QDomNodeList srsList = featureTypeElem.elementsByTagName( "SRS" );
+    QDomNodeList srsList = featureTypeElem.elementsByTagName( QStringLiteral( "SRS" ) );
     for ( int i = 0; i < srsList.size(); ++i )
     {
       featureType.crslist.append( NormalizeSRSName( srsList.at( i ).toElement().text() ) );
     }
 
     // Get BBox WFS 1.0 way
-    QDomElement latLongBB = featureTypeElem.firstChildElement( "LatLongBoundingBox" );
+    QDomElement latLongBB = featureTypeElem.firstChildElement( QStringLiteral( "LatLongBoundingBox" ) );
     if ( latLongBB.hasAttributes() )
     {
       // Despite the name LatLongBoundingBox, the coordinates are supposed to
@@ -318,10 +318,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
       // <!-- The LatLongBoundingBox element is used to indicate the edges of
       // an enclosing rectangle in the SRS of the associated feature type.
       featureType.bbox = QgsRectangle(
-                           latLongBB.attribute( "minx" ).toDouble(),
-                           latLongBB.attribute( "miny" ).toDouble(),
-                           latLongBB.attribute( "maxx" ).toDouble(),
-                           latLongBB.attribute( "maxy" ).toDouble() );
+                           latLongBB.attribute( QStringLiteral( "minx" ) ).toDouble(),
+                           latLongBB.attribute( QStringLiteral( "miny" ) ).toDouble(),
+                           latLongBB.attribute( QStringLiteral( "maxx" ) ).toDouble(),
+                           latLongBB.attribute( QStringLiteral( "maxy" ) ).toDouble() );
       featureType.bboxSRSIsWGS84 = false;
 
       // But some servers do not honour this and systematically reproject to WGS84
@@ -336,7 +336,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         {
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
-          QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "CRS:84" );
+          QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
           QgsCoordinateTransform ct( crsWGS84, crs );
 
           QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
@@ -362,15 +362,15 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     else
     {
       // WFS 1.1 way
-      QDomElement WGS84BoundingBox = featureTypeElem.firstChildElement( "WGS84BoundingBox" );
+      QDomElement WGS84BoundingBox = featureTypeElem.firstChildElement( QStringLiteral( "WGS84BoundingBox" ) );
       if ( !WGS84BoundingBox.isNull() )
       {
-        QDomElement lowerCorner = WGS84BoundingBox.firstChildElement( "LowerCorner" );
-        QDomElement upperCorner = WGS84BoundingBox.firstChildElement( "UpperCorner" );
+        QDomElement lowerCorner = WGS84BoundingBox.firstChildElement( QStringLiteral( "LowerCorner" ) );
+        QDomElement upperCorner = WGS84BoundingBox.firstChildElement( QStringLiteral( "UpperCorner" ) );
         if ( !lowerCorner.isNull() && !upperCorner.isNull() )
         {
-          QStringList lowerCornerList = lowerCorner.text().split( " ", QString::SkipEmptyParts );
-          QStringList upperCornerList = upperCorner.text().split( " ", QString::SkipEmptyParts );
+          QStringList lowerCornerList = lowerCorner.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
+          QStringList upperCornerList = upperCorner.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
           if ( lowerCornerList.size() == 2 && upperCornerList.size() == 2 )
           {
             featureType.bbox = QgsRectangle(
@@ -385,7 +385,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     }
 
     // Parse Operations specific to the type name
-    parseSupportedOperations( featureTypeElem.firstChildElement( "Operations" ),
+    parseSupportedOperations( featureTypeElem.firstChildElement( QStringLiteral( "Operations" ) ),
                               featureType.insertCap,
                               featureType.updateCap,
                               featureType.deleteCap );
@@ -415,29 +415,29 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
 
   //go to <Filter_Capabilities>
-  QDomElement filterCapabilitiesElem = doc.firstChildElement( "Filter_Capabilities" );
+  QDomElement filterCapabilitiesElem = doc.firstChildElement( QStringLiteral( "Filter_Capabilities" ) );
   if ( !filterCapabilitiesElem.isNull() )
     parseFilterCapabilities( filterCapabilitiesElem );
 
   // Hard-coded functions
-  Function f_ST_GeometryFromText( "ST_GeometryFromText", 1, 2 );
-  f_ST_GeometryFromText.returnType = "gml:AbstractGeometryType";
-  f_ST_GeometryFromText.argumentList << Argument( "wkt", "xs:string" );
-  f_ST_GeometryFromText.argumentList << Argument( "srsname", "xs:string" );
+  Function f_ST_GeometryFromText( QStringLiteral( "ST_GeometryFromText" ), 1, 2 );
+  f_ST_GeometryFromText.returnType = QStringLiteral( "gml:AbstractGeometryType" );
+  f_ST_GeometryFromText.argumentList << Argument( QStringLiteral( "wkt" ), QStringLiteral( "xs:string" ) );
+  f_ST_GeometryFromText.argumentList << Argument( QStringLiteral( "srsname" ), QStringLiteral( "xs:string" ) );
   mCaps.functionList << f_ST_GeometryFromText;
 
-  Function f_ST_GeomFromGML( "ST_GeomFromGML", 1 );
-  f_ST_GeomFromGML.returnType = "gml:AbstractGeometryType";
-  f_ST_GeomFromGML.argumentList << Argument( "gml", "xs:string" );
+  Function f_ST_GeomFromGML( QStringLiteral( "ST_GeomFromGML" ), 1 );
+  f_ST_GeomFromGML.returnType = QStringLiteral( "gml:AbstractGeometryType" );
+  f_ST_GeomFromGML.argumentList << Argument( QStringLiteral( "gml" ), QStringLiteral( "xs:string" ) );
   mCaps.functionList << f_ST_GeomFromGML;
 
-  Function f_ST_MakeEnvelope( "ST_MakeEnvelope", 4, 5 );
-  f_ST_MakeEnvelope.returnType = "gml:AbstractGeometryType";
-  f_ST_MakeEnvelope.argumentList << Argument( "minx", "xs:double" );
-  f_ST_MakeEnvelope.argumentList << Argument( "miny", "xs:double" );
-  f_ST_MakeEnvelope.argumentList << Argument( "maxx", "xs:double" );
-  f_ST_MakeEnvelope.argumentList << Argument( "maxy", "xs:double" );
-  f_ST_MakeEnvelope.argumentList << Argument( "srsname", "xs:string" );
+  Function f_ST_MakeEnvelope( QStringLiteral( "ST_MakeEnvelope" ), 4, 5 );
+  f_ST_MakeEnvelope.returnType = QStringLiteral( "gml:AbstractGeometryType" );
+  f_ST_MakeEnvelope.argumentList << Argument( QStringLiteral( "minx" ), QStringLiteral( "xs:double" ) );
+  f_ST_MakeEnvelope.argumentList << Argument( QStringLiteral( "miny" ), QStringLiteral( "xs:double" ) );
+  f_ST_MakeEnvelope.argumentList << Argument( QStringLiteral( "maxx" ), QStringLiteral( "xs:double" ) );
+  f_ST_MakeEnvelope.argumentList << Argument( QStringLiteral( "maxy" ), QStringLiteral( "xs:double" ) );
+  f_ST_MakeEnvelope.argumentList << Argument( QStringLiteral( "srsname" ), QStringLiteral( "xs:string" ) );
   mCaps.functionList << f_ST_MakeEnvelope;
 
   emit gotCapabilities();
@@ -462,7 +462,7 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 int QgsWfsCapabilities::defaultExpirationInSec()
 {
   QSettings s;
-  return s.value( "/qgis/defaultCapabilitiesExpiry", "24" ).toInt() * 60 * 60;
+  return s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
 }
 
 void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
@@ -475,7 +475,7 @@ void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operations
   deleteCap = false;
 
   // TODO: remove me when WFS-T 1.1 or 2.0 is done
-  if ( !mCaps.version.startsWith( "1.0" ) )
+  if ( !mCaps.version.startsWith( QLatin1String( "1.0" ) ) )
     return;
 
   if ( operationsElem.isNull() )
@@ -489,31 +489,31 @@ void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operations
     QDomElement elt = childList.at( i ).toElement();
     QString elemName = elt.tagName();
     /* WFS 1.0 */
-    if ( elemName == "Insert" )
+    if ( elemName == QLatin1String( "Insert" ) )
     {
       insertCap = true;
     }
-    else if ( elemName == "Update" )
+    else if ( elemName == QLatin1String( "Update" ) )
     {
       updateCap = true;
     }
-    else if ( elemName == "Delete" )
+    else if ( elemName == QLatin1String( "Delete" ) )
     {
       deleteCap = true;
     }
     /* WFS 1.1 */
-    else if ( elemName == "Operation" )
+    else if ( elemName == QLatin1String( "Operation" ) )
     {
       QString elemText = elt.text();
-      if ( elemText == "Insert" )
+      if ( elemText == QLatin1String( "Insert" ) )
       {
         insertCap = true;
       }
-      else if ( elemText == "Update" )
+      else if ( elemText == QLatin1String( "Update" ) )
       {
         updateCap = true;
       }
-      else if ( elemText == "Delete" )
+      else if ( elemText == QLatin1String( "Delete" ) )
       {
         deleteCap = true;
       }
@@ -525,25 +525,25 @@ static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
 {
   QgsWfsCapabilities::Function f;
   // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
-  if ( name == "Intersect" )
-    f.name = "ST_Intersects";
+  if ( name == QLatin1String( "Intersect" ) )
+    f.name = QStringLiteral( "ST_Intersects" );
   else
-    f.name = ( name == "BBOX" ) ? "BBOX" : "ST_" + name;
-  f.returnType = "xs:boolean";
-  if ( name == "DWithin" || name == "Beyond" )
+    f.name = ( name == QLatin1String( "BBOX" ) ) ? QStringLiteral( "BBOX" ) : "ST_" + name;
+  f.returnType = QStringLiteral( "xs:boolean" );
+  if ( name == QLatin1String( "DWithin" ) || name == QLatin1String( "Beyond" ) )
   {
     f.minArgs = 3;
     f.maxArgs = 3;
-    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWfsCapabilities::Argument( "distance" );
+    f.argumentList << QgsWfsCapabilities::Argument( QStringLiteral( "geometry" ), QStringLiteral( "gml:AbstractGeometryType" ) );
+    f.argumentList << QgsWfsCapabilities::Argument( QStringLiteral( "geometry" ), QStringLiteral( "gml:AbstractGeometryType" ) );
+    f.argumentList << QgsWfsCapabilities::Argument( QStringLiteral( "distance" ) );
   }
   else
   {
     f.minArgs = 2;
     f.maxArgs = 2;
-    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
-    f.argumentList << QgsWfsCapabilities::Argument( "geometry", "gml:AbstractGeometryType" );
+    f.argumentList << QgsWfsCapabilities::Argument( QStringLiteral( "geometry" ), QStringLiteral( "gml:AbstractGeometryType" ) );
+    f.argumentList << QgsWfsCapabilities::Argument( QStringLiteral( "geometry" ), QStringLiteral( "gml:AbstractGeometryType" ) );
   }
   return f;
 }
@@ -551,7 +551,7 @@ static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
 void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
 {
   // WFS 1.0
-  QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( "Spatial_Capabilities" ).firstChildElement( "Spatial_Operators" );
+  QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Spatial_Capabilities" ) ).firstChildElement( QStringLiteral( "Spatial_Operators" ) );
   QDomElement spatial_Operator = spatial_Operators.firstChildElement();
   while ( !spatial_Operator.isNull() )
   {
@@ -564,30 +564,30 @@ void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
   }
 
   // WFS 1.1 and 2.0
-  QDomElement spatialOperators = filterCapabilitiesElem.firstChildElement( "Spatial_Capabilities" ).firstChildElement( "SpatialOperators" );
-  QDomElement spatialOperator = spatialOperators.firstChildElement( "SpatialOperator" );
+  QDomElement spatialOperators = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Spatial_Capabilities" ) ).firstChildElement( QStringLiteral( "SpatialOperators" ) );
+  QDomElement spatialOperator = spatialOperators.firstChildElement( QStringLiteral( "SpatialOperator" ) );
   while ( !spatialOperator.isNull() )
   {
-    QString name = spatialOperator.attribute( "name" );
+    QString name = spatialOperator.attribute( QStringLiteral( "name" ) );
     if ( !name.isEmpty() )
     {
       mCaps.spatialPredicatesList << getSpatialPredicate( name );
     }
-    spatialOperator = spatialOperator.nextSiblingElement( "SpatialOperator" );
+    spatialOperator = spatialOperator.nextSiblingElement( QStringLiteral( "SpatialOperator" ) );
   }
 
   // WFS 1.0
-  QDomElement function_Names = filterCapabilitiesElem.firstChildElement( "Scalar_Capabilities" )
-                               .firstChildElement( "Arithmetic_Operators" )
-                               .firstChildElement( "Functions" )
-                               .firstChildElement( "Function_Names" );
-  QDomElement function_NameElem = function_Names.firstChildElement( "Function_Name" );
+  QDomElement function_Names = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Scalar_Capabilities" ) )
+                               .firstChildElement( QStringLiteral( "Arithmetic_Operators" ) )
+                               .firstChildElement( QStringLiteral( "Functions" ) )
+                               .firstChildElement( QStringLiteral( "Function_Names" ) );
+  QDomElement function_NameElem = function_Names.firstChildElement( QStringLiteral( "Function_Name" ) );
   while ( !function_NameElem.isNull() )
   {
     Function f;
     f.name = function_NameElem.text();
     bool ok;
-    int nArgs = function_NameElem.attribute( "nArgs" ).toInt( &ok );
+    int nArgs = function_NameElem.attribute( QStringLiteral( "nArgs" ) ).toInt( &ok );
     if ( ok )
     {
       if ( nArgs >= 0 )
@@ -601,21 +601,21 @@ void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
       }
     }
     mCaps.functionList << f;
-    function_NameElem = function_NameElem.nextSiblingElement( "Function_Name" );
+    function_NameElem = function_NameElem.nextSiblingElement( QStringLiteral( "Function_Name" ) );
   }
 
   // WFS 1.1
-  QDomElement functionNames = filterCapabilitiesElem.firstChildElement( "Scalar_Capabilities" )
-                              .firstChildElement( "ArithmeticOperators" )
-                              .firstChildElement( "Functions" )
-                              .firstChildElement( "FunctionNames" );
-  QDomElement functionNameElem = functionNames.firstChildElement( "FunctionName" );
+  QDomElement functionNames = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Scalar_Capabilities" ) )
+                              .firstChildElement( QStringLiteral( "ArithmeticOperators" ) )
+                              .firstChildElement( QStringLiteral( "Functions" ) )
+                              .firstChildElement( QStringLiteral( "FunctionNames" ) );
+  QDomElement functionNameElem = functionNames.firstChildElement( QStringLiteral( "FunctionName" ) );
   while ( !functionNameElem.isNull() )
   {
     Function f;
     f.name = functionNameElem.text();
     bool ok;
-    int nArgs = functionNameElem.attribute( "nArgs" ).toInt( &ok );
+    int nArgs = functionNameElem.attribute( QStringLiteral( "nArgs" ) ).toInt( &ok );
     if ( ok )
     {
       if ( nArgs >= 0 )
@@ -629,35 +629,35 @@ void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
       }
     }
     mCaps.functionList << f;
-    functionNameElem = functionNameElem.nextSiblingElement( "FunctionName" );
+    functionNameElem = functionNameElem.nextSiblingElement( QStringLiteral( "FunctionName" ) );
   }
 
-  QDomElement functions = filterCapabilitiesElem.firstChildElement( "Functions" );
-  QDomElement functionElem = functions.firstChildElement( "Function" );
+  QDomElement functions = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Functions" ) );
+  QDomElement functionElem = functions.firstChildElement( QStringLiteral( "Function" ) );
   while ( !functionElem.isNull() )
   {
-    QString name = functionElem.attribute( "name" );
+    QString name = functionElem.attribute( QStringLiteral( "name" ) );
     if ( !name.isEmpty() )
     {
       Function f;
       f.name = name;
-      QDomElement returnsElem = functionElem.firstChildElement( "Returns" );
+      QDomElement returnsElem = functionElem.firstChildElement( QStringLiteral( "Returns" ) );
       f.returnType = returnsElem.text();
-      QDomElement argumentsElem = functionElem.firstChildElement( "Arguments" );
-      QDomElement argumentElem = argumentsElem.firstChildElement( "Argument" );
+      QDomElement argumentsElem = functionElem.firstChildElement( QStringLiteral( "Arguments" ) );
+      QDomElement argumentElem = argumentsElem.firstChildElement( QStringLiteral( "Argument" ) );
       while ( !argumentElem.isNull() )
       {
         Argument arg;
-        arg.name = argumentElem.attribute( "name" );
-        arg.type = argumentElem.firstChildElement( "Type" ).text();
+        arg.name = argumentElem.attribute( QStringLiteral( "name" ) );
+        arg.type = argumentElem.firstChildElement( QStringLiteral( "Type" ) ).text();
         f.argumentList << arg;
-        argumentElem = argumentElem.nextSiblingElement( "Argument" );
+        argumentElem = argumentElem.nextSiblingElement( QStringLiteral( "Argument" ) );
       }
       f.minArgs = f.argumentList.count();
       f.maxArgs = f.argumentList.count();
       mCaps.functionList << f;
     }
-    functionElem = functionElem.nextSiblingElement( "Function" );
+    functionElem = functionElem.nextSiblingElement( QStringLiteral( "Function" ) );
   }
 }
 

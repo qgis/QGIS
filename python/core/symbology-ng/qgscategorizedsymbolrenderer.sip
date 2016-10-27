@@ -28,7 +28,7 @@ class QgsRendererCategory
     // debugging
     QString dump() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
   protected:
 

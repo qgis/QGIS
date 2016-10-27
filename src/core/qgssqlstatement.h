@@ -83,7 +83,7 @@ class CORE_EXPORT QgsSQLStatement
      * otherwise the original string.
      * @see quotedString(), quotedIdentifier()
      */
-    static QString quotedIdentifierIfNeeded( QString name );
+    static QString quotedIdentifierIfNeeded( const QString &name );
 
     /** Remove double quotes from an identifier.
      * @see quotedIdentifier()
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsSQLStatement
 
     class Visitor; // visitor interface is defined below
 
-    /** Node type */
+    //! Node type
     enum NodeType
     {
       ntUnaryOperator,
@@ -243,27 +243,27 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeList
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeList()  {}
         virtual ~NodeList() { qDeleteAll( mList ); }
 
-        /** Takes ownership of the provided node */
+        //! Takes ownership of the provided node
         void append( Node* node ) { mList.append( node ); }
 
-        /** Return list */
+        //! Return list
         QList<Node*> list() { return mList; }
 
         /** Returns the number of nodes in the list.
          */
         int count() const { return mList.count(); }
 
-        /** Accept visitor */
+        //! Accept visitor
         void accept( Visitor& v ) const { Q_FOREACH ( Node* node, mList ) { node->accept( v ); } }
 
-        /** Creates a deep copy of this list. Ownership is transferred to the caller */
+        //! Creates a deep copy of this list. Ownership is transferred to the caller
         NodeList* clone() const;
 
-        /** Dump list */
+        //! Dump list
         virtual QString dump() const;
 
       protected:
@@ -275,14 +275,14 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeUnaryOperator( UnaryOperator op, Node* operand ) : mOp( op ), mOperand( operand ) {}
         ~NodeUnaryOperator() { delete mOperand; }
 
-        /** Operator */
+        //! Operator
         UnaryOperator op() const { return mOp; }
 
-        /** Operand */
+        //! Operand
         Node* operand() const { return mOperand; }
 
         virtual NodeType nodeType() const override { return ntUnaryOperator; }
@@ -301,17 +301,17 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight ) : mOp( op ), mOpLeft( opLeft ), mOpRight( opRight ) {}
         ~NodeBinaryOperator() { delete mOpLeft; delete mOpRight; }
 
-        /** Operator */
+        //! Operator
         BinaryOperator op() const { return mOp; }
 
-        /** Left operand */
+        //! Left operand
         Node* opLeft() const { return mOpLeft; }
 
-        /** Right operand */
+        //! Right operand
         Node* opRight() const { return mOpRight; }
 
         virtual NodeType nodeType() const override { return ntBinaryOperator; }
@@ -320,10 +320,10 @@ class CORE_EXPORT QgsSQLStatement
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
-        /** Precedence */
+        //! Precedence
         int precedence() const;
 
-        /** Is left associative ? */
+        //! Is left associative ?
         bool leftAssociative() const;
 
       protected:
@@ -338,17 +338,17 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeInOperator( Node* node, NodeList* list, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
         virtual ~NodeInOperator() { delete mNode; delete mList; }
 
-        /** Variable at the left of IN */
+        //! Variable at the left of IN
         Node* node() const { return mNode; }
 
-        /** Whether this is a NOT IN operator */
+        //! Whether this is a NOT IN operator
         bool isNotIn() const { return mNotIn; }
 
-        /** Values list */
+        //! Values list
         NodeList* list() const { return mList; }
 
         virtual NodeType nodeType() const override { return ntInOperator; }
@@ -368,20 +368,20 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeBetweenOperator : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeBetweenOperator( Node* node, Node* minVal, Node* maxVal, bool notBetween = false ) : mNode( node ), mMinVal( minVal ), mMaxVal( maxVal ), mNotBetween( notBetween ) {}
         virtual ~NodeBetweenOperator() { delete mNode; delete mMinVal; delete mMaxVal; }
 
-        /** Variable at the left of BETWEEN */
+        //! Variable at the left of BETWEEN
         Node* node() const { return mNode; }
 
-        /** Whether this is a NOT BETWEEN operator */
+        //! Whether this is a NOT BETWEEN operator
         bool isNotBetween() const { return mNotBetween; }
 
-        /** Minimum bound */
+        //! Minimum bound
         Node* minVal() const { return mMinVal; }
 
-        /** Maximum bound */
+        //! Maximum bound
         Node* maxVal() const { return mMaxVal; }
 
         virtual NodeType nodeType() const override { return ntBetweenOperator; }
@@ -402,14 +402,14 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
-        /** Constructor */
-        NodeFunction( QString name, NodeList* args ) : mName( name ), mArgs( args ) {}
+        //! Constructor
+        NodeFunction( const QString& name, NodeList* args ) : mName( name ), mArgs( args ) {}
         virtual ~NodeFunction() { delete mArgs; }
 
-        /** Return function name */
+        //! Return function name
         QString name() const { return mName; }
 
-        /** Return arguments */
+        //! Return arguments
         NodeList* args() const { return mArgs; }
 
         virtual NodeType nodeType() const override { return ntFunction; }
@@ -429,10 +429,10 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeLiteral( const QVariant& value ) : mValue( value ) {}
 
-        /** The value of the literal. */
+        //! The value of the literal.
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
@@ -450,24 +450,24 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
-        /** Constructor with colum name only */
+        //! Constructor with colum name only
         NodeColumnRef( const QString& name, bool star ) : mName( name ), mDistinct( false ), mStar( star ) {}
-        /** Constructor with table and column name */
+        //! Constructor with table and column name
         NodeColumnRef( const QString& tableName, const QString& name, bool star ) : mTableName( tableName ), mName( name ), mDistinct( false ), mStar( star ) {}
 
-        /** Set whether this is prefixed by DISTINCT */
+        //! Set whether this is prefixed by DISTINCT
         void setDistinct( bool distinct = true ) { mDistinct = distinct; }
 
-        /** The name of the table. May be empty. */
+        //! The name of the table. May be empty.
         QString tableName() const { return mTableName; }
 
-        /** The name of the column. */
+        //! The name of the column.
         QString name() const { return mName; }
 
-        /** Whether this is the * column */
+        //! Whether this is the * column
         bool star() const { return mStar; }
 
-        /** Whether this is prefixed by DISTINCT */
+        //! Whether this is prefixed by DISTINCT
         bool distinct() const { return mDistinct; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
@@ -475,7 +475,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
-        /** Clone with same type return */
+        //! Clone with same type return
         NodeColumnRef* cloneThis() const;
 
       protected:
@@ -490,17 +490,17 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeSelectedColumn : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeSelectedColumn( Node* node ) : mColumnNode( node ) {}
         virtual ~NodeSelectedColumn() { delete mColumnNode; }
 
-        /** Set alias name */
+        //! Set alias name
         void setAlias( const QString& alias ) { mAlias = alias; }
 
-        /** Column that is refered to */
+        //! Column that is refered to
         Node* column() const { return mColumnNode; }
 
-        /** Alias name */
+        //! Alias name
         QString alias() const { return mAlias; }
 
         virtual NodeType nodeType() const override { return ntSelectedColumn; }
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
-        /** Clone with same type return */
+        //! Clone with same type return
         NodeSelectedColumn* cloneThis() const;
 
       protected:
@@ -521,14 +521,14 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeCast : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeCast( Node* node, const QString& type ) : mNode( node ), mType( type ) {}
         virtual ~NodeCast() { delete mNode; }
 
-        /** Node that is refered to */
+        //! Node that is refered to
         Node* node() const { return mNode; }
 
-        /** Type */
+        //! Type
         QString type() const { return mType; }
 
         virtual NodeType nodeType() const override { return ntCast; }
@@ -547,15 +547,15 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeTableDef : public Node
     {
       public:
-        /** Constructor with table name */
+        //! Constructor with table name
         NodeTableDef( const QString& name ) : mName( name ) {}
-        /** Constructor with table name and alias */
+        //! Constructor with table name and alias
         NodeTableDef( const QString& name, const QString& alias ) : mName( name ), mAlias( alias ) {}
 
-        /** Table name */
+        //! Table name
         QString name() const { return mName; }
 
-        /** Table alias */
+        //! Table alias
         QString alias() const { return mAlias; }
 
         virtual NodeType nodeType() const override { return ntTableDef; }
@@ -563,7 +563,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
-        /** Clone with same type return */
+        //! Clone with same type return
         NodeTableDef* cloneThis() const;
 
       protected:
@@ -576,22 +576,22 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeJoin : public Node
     {
       public:
-        /** Constructor with table definition, ON expression */
+        //! Constructor with table definition, ON expression
         NodeJoin( NodeTableDef* tabledef, Node* onExpr, JoinType type ) : mTableDef( tabledef ), mOnExpr( onExpr ), mType( type ) {}
-        /** Constructor with table definition and USING columns */
-        NodeJoin( NodeTableDef* tabledef, QList<QString> usingColumns, JoinType type ) : mTableDef( tabledef ), mOnExpr( nullptr ), mUsingColumns( usingColumns ), mType( type ) {}
+        //! Constructor with table definition and USING columns
+        NodeJoin( NodeTableDef* tabledef, const QList<QString>& usingColumns, JoinType type ) : mTableDef( tabledef ), mOnExpr( nullptr ), mUsingColumns( usingColumns ), mType( type ) {}
         virtual ~NodeJoin() { delete mTableDef; delete mOnExpr; }
 
-        /** Table definition */
+        //! Table definition
         NodeTableDef* tableDef() const { return mTableDef; }
 
-        /** On expression. Will be nullptr if usingColumns() is not empty */
+        //! On expression. Will be nullptr if usingColumns() is not empty
         Node* onExpr() const { return mOnExpr; }
 
-        /** Columns referenced by USING */
+        //! Columns referenced by USING
         QList<QString> usingColumns() const { return mUsingColumns; }
 
-        /** Join type */
+        //! Join type
         JoinType type() const { return mType; }
 
         virtual NodeType nodeType() const override { return ntJoin; }
@@ -599,7 +599,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
-        /** Clone with same type return */
+        //! Clone with same type return
         NodeJoin* cloneThis() const;
 
       protected:
@@ -614,14 +614,14 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeColumnSorted : public Node
     {
       public:
-        /** Constructor */
+        //! Constructor
         NodeColumnSorted( NodeColumnRef* column, bool asc ) : mColumn( column ), mAsc( asc ) {}
         ~NodeColumnSorted() { delete mColumn; }
 
-        /** The name of the column. */
+        //! The name of the column.
         NodeColumnRef* column() const { return mColumn; }
 
-        /** Whether the column is sorted in ascending order */
+        //! Whether the column is sorted in ascending order
         bool ascending() const { return mAsc; }
 
         virtual NodeType nodeType() const override { return ntColumnSorted; }
@@ -629,7 +629,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
-        /** Clone with same type return */
+        //! Clone with same type return
         NodeColumnSorted* cloneThis() const;
 
       protected:
@@ -642,30 +642,30 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeSelect : public Node
     {
       public:
-        /** Constructor */
-        NodeSelect( QList<NodeTableDef*> tableList, QList<NodeSelectedColumn*> columns, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
+        //! Constructor
+        NodeSelect( const QList<NodeTableDef*>& tableList, const QList<NodeSelectedColumn*>& columns, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
         virtual ~NodeSelect() { qDeleteAll( mTableList ); qDeleteAll( mColumns ); qDeleteAll( mJoins ); delete mWhere; qDeleteAll( mOrderBy ); }
 
-        /** Set joins */
-        void setJoins( QList<NodeJoin*> joins ) { qDeleteAll( mJoins ); mJoins = joins; }
-        /** Append a join */
+        //! Set joins
+        void setJoins( const QList<NodeJoin*>& joins ) { qDeleteAll( mJoins ); mJoins = joins; }
+        //! Append a join
         void appendJoin( NodeJoin* join ) { mJoins.append( join ); }
-        /** Set where clause */
+        //! Set where clause
         void setWhere( Node* where ) { delete mWhere; mWhere = where; }
-        /** Set order by columns */
-        void setOrderBy( QList<NodeColumnSorted*> orderBy ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
+        //! Set order by columns
+        void setOrderBy( const QList<NodeColumnSorted*>& orderBy ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
 
-        /** Return the list of tables */
+        //! Return the list of tables
         QList<NodeTableDef*> tables() const { return mTableList; }
-        /** Return the list of columns */
+        //! Return the list of columns
         QList<NodeSelectedColumn*> columns() const { return mColumns; }
-        /** Return if the SELECT is DISTINCT */
+        //! Return if the SELECT is DISTINCT
         bool distinct() const { return mDistinct; }
-        /** Return the list of joins */
+        //! Return the list of joins
         QList<NodeJoin*> joins() const { return mJoins; }
-        /** Return the where clause */
+        //! Return the where clause
         Node* where() const { return mWhere; }
-        /** Return the list of order by columns */
+        //! Return the list of order by columns
         QList<NodeColumnSorted*> orderBy() const { return mOrderBy; }
 
         virtual NodeType nodeType() const override { return ntSelect; }
@@ -692,31 +692,31 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         virtual ~Visitor() {}
-        /** Visit NodeUnaryOperator */
+        //! Visit NodeUnaryOperator
         virtual void visit( const NodeUnaryOperator& n ) = 0;
-        /** Visit NodeBinaryOperator */
+        //! Visit NodeBinaryOperator
         virtual void visit( const NodeBinaryOperator& n ) = 0;
-        /** Visit NodeInOperator */
+        //! Visit NodeInOperator
         virtual void visit( const NodeInOperator& n ) = 0;
-        /** Visit NodeBetweenOperator */
+        //! Visit NodeBetweenOperator
         virtual void visit( const NodeBetweenOperator& n ) = 0;
-        /** Visit NodeFunction */
+        //! Visit NodeFunction
         virtual void visit( const NodeFunction& n ) = 0;
-        /** Visit NodeLiteral */
+        //! Visit NodeLiteral
         virtual void visit( const NodeLiteral& n ) = 0;
-        /** Visit NodeColumnRef */
+        //! Visit NodeColumnRef
         virtual void visit( const NodeColumnRef& n ) = 0;
-        /** Visit NodeSelectedColumn */
+        //! Visit NodeSelectedColumn
         virtual void visit( const NodeSelectedColumn& n ) = 0;
-        /** Visit NodeTableDef */
+        //! Visit NodeTableDef
         virtual void visit( const NodeTableDef& n ) = 0;
-        /** Visit NodeSelect */
+        //! Visit NodeSelect
         virtual void visit( const NodeSelect& n ) = 0;
-        /** Visit NodeJoin */
+        //! Visit NodeJoin
         virtual void visit( const NodeJoin& n ) = 0;
-        /** Visit NodeColumnSorted */
+        //! Visit NodeColumnSorted
         virtual void visit( const NodeColumnSorted& n ) = 0;
-        /** Visit NodeCast */
+        //! Visit NodeCast
         virtual void visit( const NodeCast& n ) = 0;
     };
 
@@ -725,7 +725,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT RecursiveVisitor: public QgsSQLStatement::Visitor
     {
       public:
-        /** Constructor */
+        //! Constructor
         RecursiveVisitor() {}
 
         void visit( const QgsSQLStatement::NodeUnaryOperator& n ) override { n.operand()->accept( *this ); }
@@ -743,7 +743,7 @@ class CORE_EXPORT QgsSQLStatement
         void visit( const QgsSQLStatement::NodeCast& n ) override { n.node()->accept( *this ); }
     };
 
-    /** Entry function for the visitor pattern */
+    //! Entry function for the visitor pattern
     void acceptVisitor( Visitor& v ) const;
 
   protected:

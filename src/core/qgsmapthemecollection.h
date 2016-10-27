@@ -37,134 +37,193 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY( QStringList mapThemes READ mapThemes NOTIFY mapThemesChanged )
+
   public:
 
-    /** \ingroup core
-     * Individual preset record of visible layers and styles.
+    /**
+     * \ingroup core
+     * Individual map theme record of visible layers and styles.
+     *
+     * @note Added in QGIS 3.0, Previously called PresetRecord
      */
-    class PresetRecord
+    class MapThemeRecord
     {
       public:
 
-        bool operator==( const PresetRecord& other ) const
+        bool operator==( const MapThemeRecord& other ) const
         {
-          return mVisibleLayerIDs.toSet() == other.mVisibleLayerIDs.toSet()
+          return mVisibleLayerIds.toSet() == other.mVisibleLayerIds.toSet()
                  && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols
                  && mPerLayerCurrentStyle == other.mPerLayerCurrentStyle;
         }
-        bool operator!=( const PresetRecord& other ) const
+        bool operator!=( const MapThemeRecord& other ) const
         {
           return !( *this == other );
         }
 
-        //! Ordered list of layers that are visible
-        QStringList mVisibleLayerIDs;
-        /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
-         * @note not available in Python bindings
+        /**
+         * Ordered list of visible layers
+         * @note Added in QGIS 3.0
          */
+        QStringList visibleLayerIds() const;
+
+        /**
+         * Ordered list of visible layers
+         * @note Added in QGIS 3.0
+         */
+        void setVisibleLayerIds( const QStringList& visibleLayerIds );
+
+        /**
+         * Lists which legend symbols are checked for layers which support this and where
+         * not all symbols are checked.
+         * @note not available in Python bindings
+         * @note Added in QGIS 3.0
+         */
+        QMap<QString, QSet<QString> > perLayerCheckedLegendSymbols() const;
+
+        /**
+         * Lists which legend symbols are checked for layers which support this and where
+         * not all symbols are checked.
+         * @note not available in Python bindings
+         * @note Added in QGIS 3.0
+         */
+        void setPerLayerCheckedLegendSymbols( const QMap<QString, QSet<QString> >& perLayerCheckedLegendSymbols );
+
+        /**
+         * The currently used style name for layers with multiple styles.
+         * The map has layer ids as keys and style names as values.
+         * @note Added in QGIS 3.0
+         */
+        QMap<QString, QString> perLayerCurrentStyle() const;
+
+        /**
+         * The currently used style name for layers with multiple styles.
+         * The map has layer ids as keys and style names as values.
+         * @note Added in QGIS 3.0
+         */
+        void setPerLayerCurrentStyle( const QMap<QString, QString>& perLayerCurrentStyle );
+
+      private:
+        QStringList mVisibleLayerIds;
         QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
-        //! For layers that use multiple styles - which one is currently selected
         QMap<QString, QString> mPerLayerCurrentStyle;
+
+        friend class QgsMapThemeCollection;
     };
 
     QgsMapThemeCollection();
 
-    /** Returns whether a preset with a matching name exists.
-     * @param name name of preset to check
-     * @returns true if preset exists
+    /**
+     * Returns whether a map theme with a matching name exists.
+     * @note Added in QGIS 3.0
      */
-    bool hasPreset( const QString& name ) const;
+    bool hasMapTheme( const QString& name ) const;
 
-    /** Inserts a new preset to the collection.
-     * @param name name of preset
-     * @param state preset record
+    /**
+     * Inserts a new map theme to the collection.
      * @see update()
      */
-    void insert( const QString& name, const PresetRecord& state );
+    void insert( const QString& name, const MapThemeRecord& state );
 
-    /** Updates a preset within the collection.
-     * @param name name of preset to update
-     * @param state preset record to replace existing preset
+    /**
+     * Updates a map theme within the collection.
+     * @param name name of map theme to update
+     * @param state map theme record to replace existing map theme
      * @see insert()
      */
-    void update( const QString& name, const PresetRecord& state );
+    void update( const QString& name, const MapThemeRecord& state );
 
-    /** Remove existing preset from collection.
-     * @param name preset name
+    /**
+     * Remove an existing map theme from collection.
+     * @note Added in QGIS 3.0
      */
-    void removePreset( const QString& name );
+    void removeMapTheme( const QString& name );
 
-    //! Remove all presets from the collection.
+    //! Remove all map themes from the collection.
     void clear();
 
-    //! Returns a list of existing preset names.
-    QStringList presets() const;
-
-    /** Returns the recorded state of a preset.
-     * @param name name of preset
+    /**
+     * Returns a list of existing map theme names.
+     * @note Added in QGIS 3.0
      */
-    PresetRecord presetState( const QString& name ) const { return mPresets[name]; }
+    QStringList mapThemes() const;
 
-    /** Returns the list of layer IDs that should be visible for the specified preset.
+    /**
+     * Returns the recorded state of a map theme.
+     * @note Added in QGIS 3.0
+     */
+    MapThemeRecord mapThemeState( const QString& name ) const { return mMapThemes[name]; }
+
+    /**
+     * Returns the list of layer IDs that are visible for the specified map theme.
+     *
      * @note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
-     * @param name preset name
+     * @note Added in QGIS 3.0
      */
-    QStringList presetVisibleLayers( const QString& name ) const;
+    QStringList mapThemeVisibleLayers( const QString& name ) const;
 
-    /** Apply check states of legend nodes of a given layer as defined in the preset.
-     * @param name preset name
-     * @param layerID layer ID
+    /**
+     * Apply check states of legend nodes of a given layer as defined in the map theme.
+     * @note Added in QGIS 3.0
      */
-    void applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
+    void applyMapThemeCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
 
-    /** Get layer style overrides (for QgsMapSettings) of the visible layers for given preset.
-     * @param name preset name
+    /**
+     * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
+     * @note Added in QGIS 3.0
      */
-    QMap<QString, QString> presetStyleOverrides( const QString& name );
+    QMap<QString, QString> mapThemeStyleOverride( const QString& name );
 
-    /** Reads the preset collection state from XML
+    /**
+     * Reads the map theme collection state from XML
      * @param doc DOM document
      * @see writeXml
      */
     void readXml( const QDomDocument& doc );
 
-    /** Writes the preset collection state to XML.
+    /** Writes the map theme collection state to XML.
      * @param doc DOM document
      * @see readXml
      */
     void writeXml( QDomDocument& doc );
 
-    /** Static method for adding visible layers from a layer tree group to a preset
+    /**
+     * Static method for adding visible layers from a layer tree group to a map theme
      * record.
      * @param parent layer tree group parent
-     * @param rec preset record to amend
+     * @param rec map theme record to amend
      */
-    static void addVisibleLayersToPreset( QgsLayerTreeGroup* parent, PresetRecord& rec );
+    static void addVisibleLayersToMapTheme( QgsLayerTreeGroup* parent, MapThemeRecord& rec );
 
   signals:
 
-    /** Emitted when presets within the collection are changed.
+    /**
+     * Emitted when map themes within the collection are changed.
+     * @note Added in QGIS 3.0
      */
-    void presetsChanged();
+    void mapThemesChanged();
 
-  protected slots:
+  private slots:
 
-    /** Handles updates of the preset collection when layers are removed from the registry
+    /**
+     * Handles updates of the map theme collection when layers are removed from the registry
      */
     void registryLayersRemoved( const QStringList& layerIDs );
 
     //! Update style name if a stored style gets renamed
     void layerStyleRenamed( const QString& oldName, const QString& newName );
 
-  protected:
+  private:
 
-    /** Reconnects all preset layers to handle style renames
+    /**
+     * Reconnects all map theme layers to handle style renames
      */
     void reconnectToLayersStyleManager();
 
-    typedef QMap<QString, PresetRecord> PresetRecordMap;
-    PresetRecordMap mPresets;
+    typedef QMap<QString, MapThemeRecord> MapThemeRecordMap;
+    MapThemeRecordMap mMapThemes;
 };
 
 

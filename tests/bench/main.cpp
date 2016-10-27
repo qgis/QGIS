@@ -105,7 +105,7 @@ void usage( std::string const & appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behaviour will cause QGIS to autoload a project
-static QString myProjectFileName = "";
+static QString myProjectFileName = QLatin1String( "" );
 
 // This is the 'leftover' arguments collection
 static QStringList myFileList;
@@ -131,22 +131,22 @@ int main( int argc, char *argv[] )
   //
 
   int myIterations = 1;
-  QString mySnapshotFileName = "";
-  QString myLogFileName = "";
-  QString myPrefixPath = "";
+  QString mySnapshotFileName = QLatin1String( "" );
+  QString myLogFileName = QLatin1String( "" );
+  QString myPrefixPath = QLatin1String( "" );
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
-  QString myQuality = "";
+  QString myQuality = QLatin1String( "" );
   bool myParallel = false;
-  QString myPrintTime = "total";
+  QString myPrintTime = QStringLiteral( "total" );
 
   // This behaviour will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = "";
+  QString myInitialExtent = QLatin1String( "" );
   if ( argc == 1 )
-    myInitialExtent = "-1,-1,1,1";
+    myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QSettings INI file
@@ -392,9 +392,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QgsApplication::setOrganizationName( "QGIS" );
-  QgsApplication::setOrganizationDomain( "qgis.org" );
-  QgsApplication::setApplicationName( "QGIS3" );
+  QgsApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
@@ -475,7 +475,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < argc; i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.contains( ".qgs" ) )
+      if ( arg.contains( QLatin1String( ".qgs" ) ) )
       {
         myProjectFileName = arg;
         break;
@@ -501,10 +501,10 @@ int main( int argc, char *argv[] )
     QStringList list = myQuality.split( ',' );
     Q_FOREACH ( const QString& q, list )
     {
-      if ( q == "Antialiasing" ) hints |= QPainter::Antialiasing;
-      else if ( q == "TextAntialiasing" ) hints |= QPainter::TextAntialiasing;
-      else if ( q == "SmoothPixmapTransform" ) hints |= QPainter::SmoothPixmapTransform;
-      else if ( q == "NonCosmeticDefaultPen" ) hints |= QPainter::NonCosmeticDefaultPen;
+      if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
+      else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
+      else if ( q == QLatin1String( "SmoothPixmapTransform" ) ) hints |= QPainter::SmoothPixmapTransform;
+      else if ( q == QLatin1String( "NonCosmeticDefaultPen" ) ) hints |= QPainter::NonCosmeticDefaultPen;
       else
       {
         fprintf( stderr, "Unknown quality option\n" );
@@ -526,7 +526,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( ".qgs" ) )
+    if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -557,7 +557,7 @@ int main( int argc, char *argv[] )
         break;
       }
 
-      coords[i] = QString( myInitialExtent.mid( posOld, pos - posOld ) ).toDouble( &ok );
+      coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
       if ( !ok )
         break;
 
@@ -566,7 +566,7 @@ int main( int argc, char *argv[] )
 
     // parse last coordinate
     if ( ok )
-      coords[3] = QString( myInitialExtent.mid( posOld ) ).toDouble( &ok );
+      coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
 
     if ( !ok )
     {
@@ -582,12 +582,12 @@ int main( int argc, char *argv[] )
 
   qbench->render();
 
-  if ( mySnapshotFileName != "" )
+  if ( mySnapshotFileName != QLatin1String( "" ) )
   {
     qbench->saveSnapsot( mySnapshotFileName );
   }
 
-  if ( myLogFileName != "" )
+  if ( myLogFileName != QLatin1String( "" ) )
   {
     qbench->saveLog( myLogFileName );
   }

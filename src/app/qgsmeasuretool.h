@@ -103,9 +103,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     //! Returns the snapped (map) coordinate
     //@param p (pixel) coordinate
-    QgsPoint snapPoint( const QPoint& p );
+    QgsPoint snapPoint( QPoint p );
 
-    /** Removes the last vertex from mRubberBand*/
+    //! Removes the last vertex from mRubberBand
     void undo();
 };
 

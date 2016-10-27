@@ -52,7 +52,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );
   mFieldExpression->setGeomCalculator( myDa );
@@ -81,7 +81,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );
   mFieldExpression->setGeomCalculator( myDa );
@@ -144,7 +144,7 @@ void QgsAttributeActionPropertiesDialog::insertExpressionOrField()
   QString selText = mActionText->selectedText();
 
   // edit the selected expression if there's one
-  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
   mActionText->insertText( "[%" + mFieldExpression->currentField() + "%]" );
@@ -155,9 +155,9 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
   QList<QByteArray> list = QImageWriter::supportedImageFormats();
   QStringList formatList;
   Q_FOREACH ( const QByteArray& format, list )
-    formatList << QString( "*.%1" ).arg( QString( format ) );
+    formatList << QStringLiteral( "*.%1" ).arg( QString( format ) );
 
-  QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( " " ) );
+  QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QStringLiteral( " " ) ) );
   QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon..." ), mActionIcon->text(), filter );
 
   if ( !icon.isNull() )

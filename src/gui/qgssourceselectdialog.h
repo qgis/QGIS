@@ -33,20 +33,20 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     Q_OBJECT
 
   public:
-    /** Whether the dialog is for a map service or a feature service */
+    //! Whether the dialog is for a map service or a feature service
     enum ServiceType { MapService, FeatureService };
 
-    /** Constructor */
+    //! Constructor
     QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl );
-    /** Destructor */
+    //! Destructor
     ~QgsSourceSelectDialog();
-    /** Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent */
+    //! Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
     void setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
 
   signals:
-    /** Emitted when a layer is added from the dialog */
+    //! Emitted when a layer is added from the dialog
     void addLayer( QString uri, QString typeName );
-    /** Emitted when the connections for the service were changed */
+    //! Emitted when the connections for the service were changed
     void connectionsChanged();
 
   protected:
@@ -63,20 +63,20 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     QgsRectangle mCanvasExtent;
     QgsCoordinateReferenceSystem mCanvasCrs;
 
-    /** To be implemented in the child class. Called when a new connection is initiated. */
+    //! To be implemented in the child class. Called when a new connection is initiated.
     virtual bool connectToService( const QgsOwsConnection& connection ) = 0;
-    /** May be implemented in child classes for services which support customized queries. */
+    //! May be implemented in child classes for services which support customized queries.
     virtual void buildQuery( const QgsOwsConnection&, const QModelIndex& ) {}
-    /** To be implemented in the child class. Constructs an URI for the specified service layer. */
+    //! To be implemented in the child class. Constructs an URI for the specified service layer.
     virtual QString getLayerURI( const QgsOwsConnection& connection,
                                  const QString& layerTitle,
                                  const QString& layerName,
                                  const QString& crs = QString(),
                                  const QString& filter = QString(),
                                  const QgsRectangle& bBox = QgsRectangle() ) const = 0;
-    /** Updates the UI for the list of available image encodings from the specified list. */
+    //! Updates the UI for the list of available image encodings from the specified list.
     void populateImageEncodings( const QStringList& availableEncodings );
-    /** Returns the selected image encoding. */
+    //! Returns the selected image encoding.
     QString getSelectedImageEncoding() const;
 
   private:
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     void changeCrs();
     void changeCrsFilter();
     void connectToServer();
-    void filterChanged( QString text );
+    void filterChanged( const QString &text );
     void on_btnLoad_clicked();
     void on_btnSave_clicked();
     void on_cmbConnections_activated( int index );

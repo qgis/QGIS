@@ -54,7 +54,7 @@ class CORE_EXPORT QgsObjectCustomProperties
      */
     void readXml( const QDomNode& parentNode, const QString& keyStartsWith = QString() );
 
-    /** Write store contents to XML */
+    //! Write store contents to XML
     void writeXml( QDomNode& parentNode, QDomDocument& doc ) const;
 
 

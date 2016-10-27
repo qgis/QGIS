@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -87,8 +88,6 @@ class RandomPointsLayer(GeoAlgorithm):
         index = QgsSpatialIndex()
         points = dict()
 
-        request = QgsFeatureRequest()
-
         random.seed()
 
         while nIterations < maxIterations and nPoints < pointCount:
@@ -100,8 +99,8 @@ class RandomPointsLayer(GeoAlgorithm):
             ids = idxLayer.intersects(geom.buffer(5, 5).boundingBox())
             if len(ids) > 0 and \
                     vector.checkMinDistance(pnt, index, minDistance, points):
-                for i in ids:
-                    f = next(layer.getFeatures(request.setFilterFid(i)))
+                request = QgsFeatureRequest().setFilterFids(ids).setSubsetOfAttributes([])
+                for f in layer.getFeatures(request):
                     tmpGeom = f.geometry()
                     if geom.within(tmpGeom):
                         f = QgsFeature(nPoints)

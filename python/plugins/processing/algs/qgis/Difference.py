@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -68,7 +69,7 @@ class Difference(GeoAlgorithm):
             self.getParameterValue(Difference.OVERLAY))
         ignoreInvalid = self.getParameterValue(Difference.IGNORE_INVALID)
 
-        geomType = layerA.wkbType()
+        geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
             Difference.OUTPUT).getVectorWriter(layerA.fields(),
                                                geomType,
@@ -84,9 +85,9 @@ class Difference(GeoAlgorithm):
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
             intersections = index.intersects(geom.boundingBox())
-            for i in intersections:
-                request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = next(layerB.getFeatures(request))
+
+            request = QgsFeatureRequest().setFilterFids(intersections).setSubsetOfAttributes([])
+            for inFeatB in layerB.getFeatures(request):
                 tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))

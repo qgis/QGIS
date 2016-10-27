@@ -20,7 +20,7 @@
 #include <QSettings>
 
 QgsWfsConnection::QgsWfsConnection( const QString & theConnName )
-    : QgsOwsConnection( "WFS", theConnName )
+    : QgsOwsConnection( QStringLiteral( "WFS" ), theConnName )
 {
   const QString& key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
 
@@ -43,20 +43,20 @@ QgsWfsConnection::QgsWfsConnection( const QString & theConnName )
 
 QStringList QgsWfsConnection::connectionList()
 {
-  return QgsOwsConnection::connectionList( "WFS" );
+  return QgsOwsConnection::connectionList( QStringLiteral( "WFS" ) );
 }
 
 void QgsWfsConnection::deleteConnection( const QString & name )
 {
-  QgsOwsConnection::deleteConnection( "WFS", name );
+  QgsOwsConnection::deleteConnection( QStringLiteral( "WFS" ), name );
 }
 
 QString QgsWfsConnection::selectedConnection()
 {
-  return QgsOwsConnection::selectedConnection( "WFS" );
+  return QgsOwsConnection::selectedConnection( QStringLiteral( "WFS" ) );
 }
 
 void QgsWfsConnection::setSelectedConnection( const QString & name )
 {
-  QgsOwsConnection::setSelectedConnection( "WFS", name );
+  QgsOwsConnection::setSelectedConnection( QStringLiteral( "WFS" ), name );
 }

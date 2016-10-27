@@ -163,7 +163,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             if self.chkDropTable.isChecked():
                 options['overwrite'] = True
 
-            outCrs = None
+            outCrs = QgsCoordinateReferenceSystem()
             if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
                 targetSrid = int(self.editTargetSrid.text())
                 outCrs = QgsCoordinateReferenceSystem(targetSrid)

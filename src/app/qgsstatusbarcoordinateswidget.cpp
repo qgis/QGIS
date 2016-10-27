@@ -37,7 +37,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 {
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
-  mLabel->setObjectName( "mCoordsLabel" );
+  mLabel->setObjectName( QStringLiteral( "mCoordsLabel" ) );
   mLabel->setMinimumWidth( 10 );
   //mCoordsLabel->setMaximumHeight( 20 );
   mLabel->setMargin( 3 );
@@ -64,7 +64,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( this );
-  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.svg" ) );
+  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
   mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
   mToggleExtentsViewButton->setCheckable( true );
   mToggleExtentsViewButton->setAutoRaise( true );
@@ -116,7 +116,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     return;
   }
-  if ( mLineEdit->text() == "dizzy" )
+  if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
   {
     // sometimes you may feel a bit dizzy...
     if ( mDizzyTimer->isActive() )
@@ -131,7 +131,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     }
     return;
   }
-  else if ( mLineEdit->text() == "retro" )
+  else if ( mLineEdit->text() == QLatin1String( "retro" ) )
   {
     mMapCanvas->setProperty( "retro", !mMapCanvas->property( "retro" ).toBool() );
     refreshMapCanvas();
@@ -142,7 +142,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   bool  yOk = false;
   double x = 0., y = 0.;
   QString coordText = mLineEdit->text();
-  coordText.replace( QRegExp( " {2,}" ), " " );
+  coordText.replace( QRegExp( " {2,}" ), QStringLiteral( " " ) );
 
   QStringList parts = coordText.split( ',' );
   if ( parts.size() == 2 )
@@ -193,7 +193,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool theFlag )
   if ( theFlag )
   {
     //extents view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "extents.svg" ) );
+    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ) );
     mLineEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
     mLineEdit->setReadOnly( true );
     showExtent();
@@ -201,7 +201,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool theFlag )
   else
   {
     //mouse cursor pos view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.svg" ) );
+    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
     mLabel->setText( tr( "Coordinate:" ) );

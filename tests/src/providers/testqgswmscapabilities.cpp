@@ -44,7 +44,7 @@ class TestQgsWmsCapabilities: public QObject
     {
       QgsWmsCapabilities capabilities;
 
-      QFile file( QString( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
       QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
       const QByteArray content = file.readAll();
       QVERIFY( content.size() > 0 );

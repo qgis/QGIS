@@ -37,8 +37,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     //! Item data roles
     enum ItemDataRole
     {
-      LayerIdRole = Qt::UserRole + 1, /*!< Stores the map layer ID */
-      LayerRole, /*!< Stores pointer to the map layer itself */
+      LayerIdRole = Qt::UserRole + 1, //!< Stores the map layer ID
+      LayerRole, //!< Stores pointer to the map layer itself
     };
 
     /**

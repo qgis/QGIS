@@ -38,7 +38,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeos( const QgsAbstractGeometry* geometry, double precision = 0 );
     ~QgsGeos();
 
-    /** Removes caches*/
+    //! Removes caches
     void geometryChanged() override;
     void prepareGeometry() override;
 
@@ -207,12 +207,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 /// @cond PRIVATE
 
-class GEOSException
+class GEOSException // clazy:exclude=rule-of-three
 {
   public:
     explicit GEOSException( const QString& theMsg )
     {
-      if ( theMsg == "Unknown exception thrown" && lastMsg().isNull() )
+      if ( theMsg == QLatin1String( "Unknown exception thrown" ) && lastMsg().isNull() )
       {
         msg = theMsg;
       }

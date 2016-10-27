@@ -96,7 +96,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   // unless it's a VRT data source filtered by geometry as we don't know which
   // attributes make up the geometry and OGR won't fetch them to evaluate the
   // filter if we choose to ignore them (fixes #11223)
-  if (( mSource->mDriverName != "VRT" && mSource->mDriverName != "OGR_VRT" ) || mRequest.filterRect().isNull() )
+  if (( mSource->mDriverName != QLatin1String( "VRT" ) && mSource->mDriverName != QLatin1String( "OGR_VRT" ) ) || mRequest.filterRect().isNull() )
   {
     QgsOgrProviderUtils::setRelevantFields( ogrLayer, mSource->mFields.count(), mFetchGeometry, attrs, mSource->mFirstFieldIsFid );
   }
@@ -114,10 +114,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
-       && QSettings().value( "/qgis/compileExpressions", true ).toBool() )
+       && QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
     QgsSqlExpressionCompiler* compiler;
-    if ( source->mDriverName == "SQLite" || source->mDriverName == "GPKG" )
+    if ( source->mDriverName == QLatin1String( "SQLite" ) || source->mDriverName == QLatin1String( "GPKG" ) )
     {
       compiler = new QgsSQLiteExpressionCompiler( source->mFields );
     }
@@ -311,8 +311,13 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) 
     else
       feature.clearGeometry();
 
-    if (( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mRequest.filterRect() ) ) )
-        || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
+    if ( mSource->mOgrGeometryTypeFilter == wkbGeometryCollection &&
+         geom && wkbFlatten( OGR_G_GetGeometryType( geom ) ) == wkbGeometryCollection )
+    {
+      // OK
+    }
+    else if (( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mRequest.filterRect() ) ) )
+             || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
@@ -353,13 +358,13 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
   mLayerName = p->layerName();
   mLayerIndex = p->layerIndex();
   mSubsetString = p->mSubsetString;
-  mEncoding = p->mEncoding; // no copying - this is a borrowed pointer from Qt
+  mEncoding = p->textEncoding(); // no copying - this is a borrowed pointer from Qt
   mFields = p->mAttributeFields;
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );
   mDriverName = p->ogrDriverName;
   mFirstFieldIsFid = p->mFirstFieldIsFid;
-  mOgrGeometryTypeFilter = wkbFlatten( p->mOgrGeometryTypeFilter );
+  mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 

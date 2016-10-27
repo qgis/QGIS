@@ -48,24 +48,24 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     enum LegendNodeRoles
     {
-      RuleKeyRole = Qt::UserRole,     //!< rule key of the node (QString)
-      SymbolLegacyRuleKeyRole,      //!< for QgsSymbolLegendNode only - legacy rule key (void ptr, to be cast to QgsSymbol ptr)
-      ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      RuleKeyRole = Qt::UserRole,     //!< Rule key of the node (QString)
+      SymbolLegacyRuleKeyRole,      //!< For QgsSymbolLegendNode only - legacy rule key (void ptr, to be cast to QgsSymbol ptr)
+      ParentRuleKeyRole               //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
-    /** Return pointer to the parent layer node */
+    //! Return pointer to the parent layer node
     QgsLayerTreeLayer* layerNode() const { return mLayerNode; }
 
-    /** Return pointer to model owning this legend node */
+    //! Return pointer to model owning this legend node
     QgsLayerTreeModel* model() const;
 
-    /** Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled. */
+    //! Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled.
     virtual Qt::ItemFlags flags() const;
 
-    /** Return data associated with the item. Must be implemented in derived class. */
+    //! Return data associated with the item. Must be implemented in derived class.
     virtual QVariant data( int role ) const = 0;
 
-    /** Set some data associated with the item. Default implementation does nothing and returns false. */
+    //! Set some data associated with the item. Default implementation does nothing and returns false.
     virtual bool setData( const QVariant& value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     void dataChanged();
 
   protected:
-    /** Construct the node with pointer to its parent layer node */
+    //! Construct the node with pointer to its parent layer node
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = nullptr );
 
   protected:
@@ -171,9 +171,22 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize iconSize() const { return mIconSize; }
 
-    //! Get the minimum icon size to prevent cropping
-    //! @note added in 2.10
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and use the variant which accepts a QgsRenderContext
+     * argument.
+     * @note added in 2.10
+     */
     QSize minimumIconSize() const;
+
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and call this method instead of minimumIconSize().
+     * @note added in QGIS 2.18
+     */
+    QSize minimumIconSize( QgsRenderContext* context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()

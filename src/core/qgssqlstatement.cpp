@@ -68,10 +68,10 @@ QString QgsSQLStatement::dump() const
 
 QString QgsSQLStatement::quotedIdentifier( QString name )
 {
-  return QString( "\"%1\"" ).arg( name.replace( '\"', "\"\"" ) );
+  return QStringLiteral( "\"%1\"" ).arg( name.replace( '\"', QLatin1String( "\"\"" ) ) );
 }
 
-QString QgsSQLStatement::quotedIdentifierIfNeeded( QString name )
+QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString& name )
 {
   // This might not be complete, but it must be at least what we recognize
   static const char* const reservedKeyWords[] =
@@ -100,18 +100,18 @@ QString QgsSQLStatement::stripQuotedIdentifier( QString text )
     text = text.mid( 1, text.length() - 2 );
 
     // make single "double quotes" from double "double quotes"
-    text.replace( "\"\"", "\"" );
+    text.replace( QLatin1String( "\"\"" ), QLatin1String( "\"" ) );
   }
   return text;
 }
 
 QString QgsSQLStatement::quotedString( QString text )
 {
-  text.replace( '\'', "''" );
-  text.replace( '\\', "\\\\" );
-  text.replace( '\n', "\\n" );
-  text.replace( '\t', "\\t" );
-  return QString( "'%1'" ).arg( text );
+  text.replace( '\'', QLatin1String( "''" ) );
+  text.replace( '\\', QLatin1String( "\\\\" ) );
+  text.replace( '\n', QLatin1String( "\\n" ) );
+  text.replace( '\t', QLatin1String( "\\t" ) );
+  return QStringLiteral( "'%1'" ).arg( text );
 }
 
 QgsSQLStatement::QgsSQLStatement( const QString& expr )
@@ -231,13 +231,13 @@ bool QgsSQLStatement::doBasicValidationChecks( QString& errorMsgOut ) const
   QgsSQLStatementCollectTableNames v;
   mRootNode->accept( v );
 
-  Q_FOREACH ( QgsSQLStatementCollectTableNames::TableColumnPair pair, v.tableNamesReferenced )
+  Q_FOREACH ( const QgsSQLStatementCollectTableNames::TableColumnPair& pair, v.tableNamesReferenced )
   {
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {
       if ( !errorMsgOut.isEmpty() )
-        errorMsgOut += " ";
-      errorMsgOut += QString( tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ) ).arg( pair.first ).arg( pair.second );
+        errorMsgOut += QLatin1String( " " );
+      errorMsgOut += QString( tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ) ).arg( pair.first, pair.second );
     }
   }
 
@@ -264,7 +264,7 @@ QString QgsSQLStatement::NodeList::dump() const
   bool first = true;
   Q_FOREACH ( Node* n, mList )
   {
-    if ( !first ) msg += ", ";
+    if ( !first ) msg += QLatin1String( ", " );
     else first = false;
     msg += n->dump();
   }
@@ -276,7 +276,7 @@ QString QgsSQLStatement::NodeList::dump() const
 
 QString QgsSQLStatement::NodeUnaryOperator::dump() const
 {
-  return QString( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
+  return QStringLiteral( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
 }
 
 QgsSQLStatement::Node*QgsSQLStatement::NodeUnaryOperator::clone() const
@@ -384,13 +384,13 @@ QString QgsSQLStatement::NodeBinaryOperator::dump() const
   if ( leftAssociative() )
   {
     fmt += lOp && ( lOp->precedence() < precedence() ) ? "(%1)" : "%1";
-    fmt += " %2 ";
+    fmt += QLatin1String( " %2 " );
     fmt += rOp && ( rOp->precedence() <= precedence() ) ? "(%3)" : "%3";
   }
   else
   {
     fmt += lOp && ( lOp->precedence() <= precedence() ) ? "(%1)" : "%1";
-    fmt += " %2 ";
+    fmt += QLatin1String( " %2 " );
     fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
   }
 
@@ -406,7 +406,7 @@ QgsSQLStatement::Node* QgsSQLStatement::NodeBinaryOperator::clone() const
 
 QString QgsSQLStatement::NodeInOperator::dump() const
 {
-  return QString( "%1 %2IN (%3)" ).arg( mNode->dump(), mNotIn ? "NOT " : "", mList->dump() );
+  return QStringLiteral( "%1 %2IN (%3)" ).arg( mNode->dump(), mNotIn ? "NOT " : "", mList->dump() );
 }
 
 QgsSQLStatement::Node* QgsSQLStatement::NodeInOperator::clone() const
@@ -418,7 +418,7 @@ QgsSQLStatement::Node* QgsSQLStatement::NodeInOperator::clone() const
 
 QString QgsSQLStatement::NodeBetweenOperator::dump() const
 {
-  return QString( "%1 %2BETWEEN %3 AND %4" ).arg( mNode->dump(), mNotBetween ? "NOT " : "", mMinVal->dump(), mMaxVal->dump() );
+  return QStringLiteral( "%1 %2BETWEEN %3 AND %4" ).arg( mNode->dump(), mNotBetween ? "NOT " : "", mMinVal->dump(), mMaxVal->dump() );
 }
 
 QgsSQLStatement::Node* QgsSQLStatement::NodeBetweenOperator::clone() const
@@ -430,7 +430,7 @@ QgsSQLStatement::Node* QgsSQLStatement::NodeBetweenOperator::clone() const
 
 QString QgsSQLStatement::NodeFunction::dump() const
 {
-  return QString( "%1(%2)" ).arg( mName, mArgs ? mArgs->dump() : QString() ); // function
+  return QStringLiteral( "%1(%2)" ).arg( mName, mArgs ? mArgs->dump() : QString() ); // function
 }
 
 QgsSQLStatement::Node* QgsSQLStatement::NodeFunction::clone() const
@@ -443,7 +443,7 @@ QgsSQLStatement::Node* QgsSQLStatement::NodeFunction::clone() const
 QString QgsSQLStatement::NodeLiteral::dump() const
 {
   if ( mValue.isNull() )
-    return "NULL";
+    return QStringLiteral( "NULL" );
 
   switch ( mValue.type() )
   {
@@ -473,7 +473,7 @@ QString QgsSQLStatement::NodeColumnRef::dump() const
 {
   QString ret;
   if ( mDistinct )
-    ret += "DISTINCT ";
+    ret += QLatin1String( "DISTINCT " );
   if ( !mTableName.isEmpty() )
   {
     ret += quotedIdentifierIfNeeded( mTableName );
@@ -503,7 +503,7 @@ QString QgsSQLStatement::NodeSelectedColumn::dump() const
   ret += mColumnNode->dump();
   if ( !mAlias.isEmpty() )
   {
-    ret += " AS ";
+    ret += QLatin1String( " AS " );
     ret += quotedIdentifierIfNeeded( mAlias );
   }
   return ret;
@@ -528,7 +528,7 @@ QString QgsSQLStatement::NodeTableDef::dump() const
   ret = quotedIdentifierIfNeeded( mName );
   if ( !mAlias.isEmpty() )
   {
-    ret += " AS ";
+    ret += QLatin1String( " AS " );
     ret += quotedIdentifierIfNeeded( mAlias );
   }
   return ret;
@@ -548,23 +548,23 @@ QgsSQLStatement::Node* QgsSQLStatement::NodeTableDef::clone() const
 
 QString QgsSQLStatement::NodeSelect::dump() const
 {
-  QString ret = "SELECT ";
+  QString ret = QStringLiteral( "SELECT " );
   if ( mDistinct )
-    ret += "DISTINCT ";
+    ret += QLatin1String( "DISTINCT " );
   bool bFirstColumn = true;
   Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn* column, mColumns )
   {
     if ( !bFirstColumn )
-      ret += ", ";
+      ret += QLatin1String( ", " );
     bFirstColumn = false;
     ret += column->dump();
   }
-  ret += " FROM ";
+  ret += QLatin1String( " FROM " );
   bool bFirstTable = true;
   Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, mTableList )
   {
     if ( !bFirstTable )
-      ret += ", ";
+      ret += QLatin1String( ", " );
     bFirstTable = false;
     ret += table->dump();
   }
@@ -575,17 +575,17 @@ QString QgsSQLStatement::NodeSelect::dump() const
   }
   if ( mWhere != nullptr )
   {
-    ret += " WHERE ";
+    ret += QLatin1String( " WHERE " );
     ret += mWhere->dump();
   }
   if ( !mOrderBy.isEmpty() )
   {
-    ret += " ORDER BY ";
+    ret += QLatin1String( " ORDER BY " );
     bool bFirst = true;
     Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* orderBy, mOrderBy )
     {
       if ( !bFirst )
-        ret += ", ";
+        ret += QLatin1String( ", " );
       bFirst = false;
       ret += orderBy->dump();
     }
@@ -631,27 +631,27 @@ QString QgsSQLStatement::NodeJoin::dump() const
   if ( mType != jtDefault )
   {
     ret += JoinTypeText[mType];
-    ret += " ";
+    ret += QLatin1String( " " );
   }
-  ret += "JOIN ";
+  ret += QLatin1String( "JOIN " );
   ret += mTableDef->dump();
   if ( mOnExpr != nullptr )
   {
-    ret += " ON ";
+    ret += QLatin1String( " ON " );
     ret += mOnExpr->dump();
   }
   else
   {
-    ret += " USING (";
+    ret += QLatin1String( " USING (" );
     bool first = true;
     Q_FOREACH ( QString column, mUsingColumns )
     {
       if ( !first )
-        ret += ", ";
+        ret += QLatin1String( ", " );
       first = false;
       ret += quotedIdentifierIfNeeded( column );
     }
-    ret += ")";
+    ret += QLatin1String( ")" );
   }
   return ret;
 }
@@ -676,7 +676,7 @@ QString QgsSQLStatement::NodeColumnSorted::dump() const
   QString ret;
   ret = mColumn->dump();
   if ( !mAsc )
-    ret += " DESC";
+    ret += QLatin1String( " DESC" );
   return ret;
 }
 
@@ -694,9 +694,9 @@ QgsSQLStatement::NodeColumnSorted* QgsSQLStatement::NodeColumnSorted::cloneThis(
 
 QString QgsSQLStatement::NodeCast::dump() const
 {
-  QString ret( "CAST(" );
+  QString ret( QStringLiteral( "CAST(" ) );
   ret += mNode->dump();
-  ret += " AS ";
+  ret += QLatin1String( " AS " );
   ret += mType;
   ret += ')';
   return ret;

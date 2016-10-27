@@ -213,6 +213,12 @@ class QgsConnectionPoolGroup
     QMutex connMutex;
     QSemaphore sem;
     QTimer* expirationTimer;
+
+  private:
+
+    QgsConnectionPoolGroup( const QgsConnectionPoolGroup& other );
+    QgsConnectionPoolGroup& operator=( const QgsConnectionPoolGroup& other );
+
 };
 
 

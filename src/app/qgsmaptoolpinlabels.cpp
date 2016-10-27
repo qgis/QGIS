@@ -189,7 +189,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 
     if ( isPinned() )
     {
-      QString labelStringID = QString( "%0|%1|%2" ).arg( QString::number( pos.isDiagram ), pos.layerID, QString::number( pos.featureId ) );
+      QString labelStringID = QStringLiteral( "%0|%1|%2" ).arg( QString::number( pos.isDiagram ), pos.layerID, QString::number( pos.featureId ) );
 
       // don't highlight again
       if ( mHighlights.contains( labelStringID ) )
@@ -370,7 +370,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
       labelY = transformedPoint.y();
     }
 
-    vlayer->beginEditCommand( tr( "Pinned label" ) + QString( " '%1'" ).arg( labelText ) );
+    vlayer->beginEditCommand( tr( "Pinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
     if ( !vlayer->changeAttributeValue( fid, yCol, labelY ) )
       writeFailed = true;
@@ -383,7 +383,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Unpinned label" ) + QString( " '%1'" ).arg( labelText ) );
+    vlayer->beginEditCommand( tr( "Unpinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
     if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
       writeFailed = true;
@@ -464,7 +464,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
       labelY = transformedPoint.y();
     }
 
-    vlayer->beginEditCommand( tr( "Pinned diagram" ) + QString( " '%1'" ).arg( labelText ) );
+    vlayer->beginEditCommand( tr( "Pinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
     if ( !vlayer->changeAttributeValue( fid, yCol, labelY ) )
       writeFailed = true;
@@ -472,7 +472,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QString( " '%1'" ).arg( labelText ) );
+    vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
     if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
       writeFailed = true;

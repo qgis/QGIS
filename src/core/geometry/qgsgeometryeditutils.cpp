@@ -225,7 +225,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry* geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures )
+QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
 {
   QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( geomEngine.isNull() )
@@ -241,10 +241,8 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     return nullptr;
   }
 
-  //read avoid intersections list from project properties
-  bool listReadOk;
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &listReadOk );
-  if ( !listReadOk )
+  QStringList avoidIntersectionsList = QgsProject::instance()->avoidIntersectionsList();
+  if ( avoidIntersectionsList.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
   QList< QgsAbstractGeometry* > nearGeometries;
@@ -258,7 +256,7 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     if ( currentLayer )
     {
       QgsFeatureIds ignoreIds;
-      QMap<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+      QHash<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
       if ( ignoreIt != ignoreFeatures.constEnd() )
         ignoreIds = ignoreIt.value();
 

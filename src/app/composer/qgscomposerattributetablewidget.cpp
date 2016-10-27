@@ -39,6 +39,7 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     , mFrame( frame )
 {
   setupUi( this );
+  setPanelTitle( tr( "Table properties" ) );
 
   blockAllSignals( true );
 
@@ -65,21 +66,21 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 
   mComposerMapComboBox->setComposition( mComposerTable->composition() );
   mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-  connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+  connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
   mHeaderFontColorButton->setAllowAlpha( true );
-  mHeaderFontColorButton->setContext( "composer" );
+  mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
   mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
   mContentFontColorButton->setAllowAlpha( true );
-  mContentFontColorButton->setContext( "composer" );
+  mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
   mGridColorButton->setAllowAlpha( true );
-  mGridColorButton->setContext( "composer" );
+  mGridColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setDefaultColor( Qt::black );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
-  mBackgroundColorButton->setContext( "composer" );
+  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No background" ) );
 
@@ -175,7 +176,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
   }
 }
 
-void QgsComposerAttributeTableWidget::composerMapChanged( const QgsComposerItem* item )
+void QgsComposerAttributeTableWidget::composerMapChanged( QgsComposerItem* item )
 {
   if ( !mComposerTable )
   {
@@ -268,7 +269,7 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( co
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font color" ), QgsComposerMultiFrameMergeCommand::TableHeaderFontColor );
   }
   mComposerTable->setHeaderFontColor( newColor );
   if ( composition )
@@ -309,7 +310,7 @@ void QgsComposerAttributeTableWidget::on_mContentFontColorButton_colorChanged( c
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font color" ), QgsComposerMultiFrameMergeCommand::TableContentFontColor );
   }
   mComposerTable->setContentFontColor( newColor );
   if ( composition )
@@ -347,9 +348,47 @@ void QgsComposerAttributeTableWidget::on_mGridColorButton_colorChanged( const QC
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table grid color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table grid color" ), QgsComposerMultiFrameMergeCommand::TableGridColor );
   }
   mComposerTable->setGridColor( newColor );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mDrawHorizontalGrid_toggled( bool state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table horizontal grid toggled" ) );
+  }
+  mComposerTable->setHorizontalGrid( state );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mDrawVerticalGrid_toggled( bool state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table vertical grid toggled" ) );
+  }
+  mComposerTable->setVerticalGrid( state );
   if ( composition )
   {
     composition->endMultiFrameCommand();
@@ -385,7 +424,7 @@ void QgsComposerAttributeTableWidget::on_mBackgroundColorButton_colorChanged( co
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table background color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table background color" ), QgsComposerMultiFrameMergeCommand::TableBackgroundColor );
   }
   mComposerTable->setBackgroundColor( newColor );
   if ( composition )
@@ -427,6 +466,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mMarginSpinBox->setValue( mComposerTable->cellMargin() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
   mGridColorButton->setColor( mComposerTable->gridColor() );
+  mDrawHorizontalGrid->setChecked( mComposerTable->horizontalGrid() );
+  mDrawVerticalGrid->setChecked( mComposerTable->verticalGrid() );
   if ( mComposerTable->showGrid() )
   {
     mShowGridGroupCheckBox->setChecked( true );
@@ -567,6 +608,8 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
   mBackgroundColorButton->blockSignals( b );
+  mDrawHorizontalGrid->blockSignals( b );
+  mDrawVerticalGrid->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
   mUniqueOnlyCheckBox->blockSignals( b );
@@ -742,7 +785,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
   }
 
   QgsExpressionContext context = mComposerTable->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, "generic", context );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

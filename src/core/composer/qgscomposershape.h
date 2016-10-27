@@ -42,10 +42,10 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
     ~QgsComposerShape();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerShape; }
 
-    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Stores state in Dom element
@@ -64,9 +64,9 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     QgsComposerShape::Shape shapeType() const { return mShape; }
     void setShapeType( QgsComposerShape::Shape s );
 
-    /** Sets radius for rounded rectangle corners. Added in v2.1 */
+    //! Sets radius for rounded rectangle corners. Added in v2.1
     void setCornerRadius( double radius );
-    /** Returns the radius for rounded rectangle corners*/
+    //! Returns the radius for rounded rectangle corners
     double cornerRadius() const { return mCornerRadius; }
 
     /** Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     void refreshSymbol();
 
   private:
-    /** Ellipse, rectangle or triangle*/
+    //! Ellipse, rectangle or triangle
     Shape mShape;
 
     double mCornerRadius;
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     QgsFillSymbol* mShapeStyleSymbol;
     double mMaxSymbolBleed;
-    /** Current bounding rectangle of shape*/
+    //! Current bounding rectangle of shape
     QRectF mCurrentRectangle;
 
     /* draws the custom shape */
@@ -130,10 +130,10 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /* creates the default shape symbol */
     void createDefaultShapeStyleSymbol();
 
-    /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
 
-    /** Updates the bounding rect of this item*/
+    //! Updates the bounding rect of this item
     void updateBoundingRect();
 };
 

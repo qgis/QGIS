@@ -9,7 +9,6 @@
 
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "coordinatecaptureplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "diagramoverlay" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "dxf2shpconverterplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "evis" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "georefplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "globeplugin" "false"
@@ -23,6 +22,5 @@ WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "rasterterrainplugin
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "roadgraphplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "spatialqueryplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "topolplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "zonalstatisticsplugin" "true"
 
 ###############################  reg2nsis end  #################################

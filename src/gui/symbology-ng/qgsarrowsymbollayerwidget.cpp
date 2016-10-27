@@ -34,7 +34,7 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, 
 
 void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
-  if ( !layer || layer->layerType() != "ArrowLine" )
+  if ( !layer || layer->layerType() != QLatin1String( "ArrowLine" ) )
   {
     return;
   }
@@ -66,13 +66,13 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   mCurvedArrowChck->setChecked( mLayer->isCurved() );
   mRepeatArrowChck->setChecked( mLayer->isRepeated() );
 
-  registerDataDefinedButton( mArrowWidthDDBtn, "arrow_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mArrowStartWidthDDBtn, "arrow_start_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadWidthDDBtn, "head_length", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadHeightDDBtn, "head_thickness", QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeadTypeDDBtn, "head_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
-  registerDataDefinedButton( mArrowTypeDDBtn, "arrow_type", QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
-  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mArrowWidthDDBtn, QStringLiteral( "arrow_width" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mArrowStartWidthDDBtn, QStringLiteral( "arrow_start_width" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadWidthDDBtn, QStringLiteral( "head_length" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadHeightDDBtn, QStringLiteral( "head_thickness" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeadTypeDDBtn, QStringLiteral( "head_type" ), QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
+  registerDataDefinedButton( mArrowTypeDDBtn, QStringLiteral( "arrow_type" ), QgsDataDefinedButton::Int, QgsDataDefinedButton::intDesc() );
+  registerDataDefinedButton( mOffsetDDBtn, QStringLiteral( "offset" ), QgsDataDefinedButton::String, QgsDataDefinedButton::doubleDesc() );
 }
 
 

@@ -74,26 +74,26 @@ void TestQgsComposerMap::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/landsat.tif" );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  QFileInfo pointFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                     pointFileInfo.completeBaseName(), "ogr" );
+                                     pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
-  QFileInfo polyFileInfo( QString( TEST_DATA_DIR ) + "/polys.shp" );
+  QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
-                                    polyFileInfo.completeBaseName(), "ogr" );
+                                    polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolysLayer );
 
-  QFileInfo lineFileInfo( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
   mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
-                                    lineFileInfo.completeBaseName(), "ogr" );
+                                    lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mLinesLayer );
 }
 
@@ -124,7 +124,7 @@ void TestQgsComposerMap::init()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 
-  mReport = "<h1>Composer Map Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
 }
 
 void TestQgsComposerMap::cleanup()
@@ -136,8 +136,8 @@ void TestQgsComposerMap::cleanup()
 void TestQgsComposerMap::render()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  QgsCompositionChecker checker( "composermap_render", mComposition );
-  checker.setControlPathPrefix( "composer_map" );
+  QgsCompositionChecker checker( QStringLiteral( "composermap_render" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
 
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
@@ -145,7 +145,7 @@ void TestQgsComposerMap::render()
 void TestQgsComposerMap::uniqueId()
 {
   QDomDocument doc;
-  QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
+  QDomElement documentElement = doc.createElement( QStringLiteral( "ComposerItemClipboard" ) );
   mComposerMap->writeXml( documentElement, doc );
   mComposition->addItemsFromXml( documentElement, doc, 0, false );
 
@@ -270,17 +270,17 @@ void TestQgsComposerMap::dataDefinedLayers()
   mComposition->addComposerMap( mComposerMap );
 
   //test malformed layer set string
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, "'x'", QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QStringLiteral( "'x'" ), QString() );
   QStringList result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, "'x|'", QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QStringLiteral( "'x|'" ), QString() );
   result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
   //test subset of valid layers
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ), QString() );
+                                        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mPolysLayer->id() ) );
@@ -288,7 +288,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test non-existant layer
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
+                                        QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer->id() ) );
@@ -296,18 +296,18 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test no layers
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "''" ), QString() );
+                                        QStringLiteral( "''" ), QString() );
   result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
 
   //test with atlas feature evaluation
-  QgsVectorLayer* atlasLayer = new QgsVectorLayer( "Point?field=col1:string", "atlas", "memory" );
+  QgsVectorLayer* atlasLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
   QVERIFY( atlasLayer->isValid() );
   QgsFeature f1( atlasLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "col1", mLinesLayer->name() );
+  f1.setAttribute( QStringLiteral( "col1" ), mLinesLayer->name() );
   QgsFeature f2( atlasLayer->dataProvider()->fields(), 1 );
-  f2.setAttribute( "col1", mPointsLayer->name() );
+  f2.setAttribute( QStringLiteral( "col1" ), mPointsLayer->name() );
   atlasLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
   mComposition->atlasComposition().setCoverageLayer( atlasLayer );
   mComposition->atlasComposition().setEnabled( true );
@@ -315,7 +315,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   mComposition->atlasComposition().beginRender();
   mComposition->atlasComposition().prepareForFeature( 0 );
 
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QString( "\"col1\"" ), QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, QStringLiteral( "\"col1\"" ), QString() );
   result = mComposerMap->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mLinesLayer->id() );
@@ -328,11 +328,11 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //render test
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ), QString() );
+                                        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ), QString() );
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
-  QgsCompositionChecker checker( "composermap_ddlayers", mComposition );
-  checker.setControlPathPrefix( "composer_map" );
+  QgsCompositionChecker checker( QStringLiteral( "composermap_ddlayers" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -349,26 +349,25 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 
-  QgsMapThemeCollection::PresetRecord rec;
-  rec.mVisibleLayerIDs << mPointsLayer->id();
-  rec.mVisibleLayerIDs << mLinesLayer->id();
+  QgsMapThemeCollection::MapThemeRecord rec;
+  rec.setVisibleLayerIds( QStringList() << mPointsLayer->id() << mLinesLayer->id() );
 
-  QgsProject::instance()->mapThemeCollection()->insert( "test preset", rec );
+  QgsProject::instance()->mapThemeCollection()->insert( QStringLiteral( "test preset" ), rec );
 
   // test following of preset
   mComposerMap->setFollowVisibilityPreset( true );
-  mComposerMap->setFollowVisibilityPresetName( "test preset" );
+  mComposerMap->setFollowVisibilityPresetName( QStringLiteral( "test preset" ) );
   QSet<QString> result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result.count(), 2 );
   mComposerMap->setFollowVisibilityPresetName( QString() );
 
   //test malformed style string
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, "5", QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QStringLiteral( "5" ), QString() );
   result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result, ms.layers().toSet() );
 
   //test valid preset
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QString( "'test preset'" ), QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QStringLiteral( "'test preset'" ), QString() );
   result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer->id() ) );
@@ -376,14 +375,14 @@ void TestQgsComposerMap::dataDefinedStyles()
 
   //test non-existant preset
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
-                                        QString( "'bad preset'" ), QString() );
+                                        QStringLiteral( "'bad preset'" ), QString() );
   result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result, ms.layers().toSet() );
 
   //test that dd layer set overrides style layers
-  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QString( "'test preset'" ), QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QStringLiteral( "'test preset'" ), QString() );
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
-                                        QString( "'%1'" ).arg( mPolysLayer->name() ), QString() );
+                                        QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ), QString() );
   result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result.count(), 1 );
   QVERIFY( result.contains( mPolysLayer->id() ) );
@@ -391,11 +390,11 @@ void TestQgsComposerMap::dataDefinedStyles()
 
   //render test
   mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
-                                        QString( "'test preset'" ), QString() );
+                                        QStringLiteral( "'test preset'" ), QString() );
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
-  QgsCompositionChecker checker( "composermap_ddstyles", mComposition );
-  checker.setControlPathPrefix( "composer_map" );
+  QgsCompositionChecker checker( QStringLiteral( "composermap_ddstyles" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 

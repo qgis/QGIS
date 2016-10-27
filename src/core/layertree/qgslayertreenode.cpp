@@ -50,9 +50,9 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
 QgsLayerTreeNode* QgsLayerTreeNode::readXml( QDomElement& element )
 {
   QgsLayerTreeNode* node = nullptr;
-  if ( element.tagName() == "layer-tree-group" )
+  if ( element.tagName() == QLatin1String( "layer-tree-group" ) )
     node = QgsLayerTreeGroup::readXml( element );
-  else if ( element.tagName() == "layer-tree-layer" )
+  else if ( element.tagName() == QLatin1String( "layer-tree-layer" ) )
     node = QgsLayerTreeLayer::readXml( element );
 
   return node;

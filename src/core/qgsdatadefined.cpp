@@ -50,19 +50,19 @@ QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString 
   QString prefix;
   if ( !baseName.isEmpty() )
   {
-    prefix.append( QString( "%1_dd_" ).arg( baseName ) );
+    prefix.append( QStringLiteral( "%1_dd_" ).arg( baseName ) );
   }
 
-  if ( !map.contains( QString( "%1expression" ).arg( prefix ) ) )
+  if ( !map.contains( QStringLiteral( "%1expression" ).arg( prefix ) ) )
   {
     //requires at least the expression value
     return nullptr;
   }
 
-  bool active = ( map.value( QString( "%1active" ).arg( prefix ), "1" ) != QLatin1String( "0" ) );
-  QString expression = map.value( QString( "%1expression" ).arg( prefix ) );
-  bool useExpression = ( map.value( QString( "%1useexpr" ).arg( prefix ), "1" ) != QLatin1String( "0" ) );
-  QString field = map.value( QString( "%1field" ).arg( prefix ), QString() );
+  bool active = ( map.value( QStringLiteral( "%1active" ).arg( prefix ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  QString expression = map.value( QStringLiteral( "%1expression" ).arg( prefix ) );
+  bool useExpression = ( map.value( QStringLiteral( "%1useexpr" ).arg( prefix ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  QString field = map.value( QStringLiteral( "%1field" ).arg( prefix ), QString() );
 
   return new QgsDataDefined( active, useExpression, expression, field );
 }
@@ -139,7 +139,7 @@ void QgsDataDefined::setExpressionString( const QString &expr )
 
 QString QgsDataDefined::expressionOrField() const
 {
-  return d->useExpression ? d->expressionString : QString( "\"%1\"" ).arg( d->field );
+  return d->useExpression ? d->expressionString : QStringLiteral( "\"%1\"" ).arg( d->field );
 }
 
 bool QgsDataDefined::prepareExpression( const QgsExpressionContext& context )
@@ -232,13 +232,13 @@ QgsStringMap QgsDataDefined::toMap( const QString &baseName ) const
   QString prefix;
   if ( !baseName.isEmpty() )
   {
-    prefix.append( QString( "%1_dd_" ).arg( baseName ) );
+    prefix.append( QStringLiteral( "%1_dd_" ).arg( baseName ) );
   }
 
-  map.insert( QString( "%1active" ).arg( prefix ), ( d->active ? "1" : "0" ) );
-  map.insert( QString( "%1useexpr" ).arg( prefix ), ( d->useExpression ? "1" : "0" ) );
-  map.insert( QString( "%1expression" ).arg( prefix ), d->expressionString );
-  map.insert( QString( "%1field" ).arg( prefix ), d->field );
+  map.insert( QStringLiteral( "%1active" ).arg( prefix ), ( d->active ? "1" : "0" ) );
+  map.insert( QStringLiteral( "%1useexpr" ).arg( prefix ), ( d->useExpression ? "1" : "0" ) );
+  map.insert( QStringLiteral( "%1expression" ).arg( prefix ), d->expressionString );
+  map.insert( QStringLiteral( "%1field" ).arg( prefix ), d->field );
 
   return map;
 }
@@ -246,10 +246,10 @@ QgsStringMap QgsDataDefined::toMap( const QString &baseName ) const
 QDomElement QgsDataDefined::toXmlElement( QDomDocument &document, const QString& elementName ) const
 {
   QDomElement element = document.createElement( elementName );
-  element.setAttribute( "active", d->active ? "true" : "false" );
-  element.setAttribute( "useExpr", d->useExpression ? "true" : "false" );
-  element.setAttribute( "expr", d->expressionString );
-  element.setAttribute( "field", d->field );
+  element.setAttribute( QStringLiteral( "active" ), d->active ? "true" : "false" );
+  element.setAttribute( QStringLiteral( "useExpr" ), d->useExpression ? "true" : "false" );
+  element.setAttribute( QStringLiteral( "expr" ), d->expressionString );
+  element.setAttribute( QStringLiteral( "field" ), d->field );
   return element;
 }
 
@@ -261,10 +261,10 @@ bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
   }
 
   d.detach();
-  d->active = element.attribute( "active" ).compare( "true", Qt::CaseInsensitive ) == 0;
-  d->useExpression = element.attribute( "useExpr" ).compare( "true", Qt::CaseInsensitive ) == 0;
-  d->field = element.attribute( "field" );
-  d->expressionString = element.attribute( "expr" );
+  d->active = element.attribute( QStringLiteral( "active" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  d->useExpression = element.attribute( QStringLiteral( "useExpr" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  d->field = element.attribute( QStringLiteral( "field" ) );
+  d->expressionString = element.attribute( QStringLiteral( "expr" ) );
   d->expressionPrepared = false;
   d->exprRefColumns.clear();
   return true;

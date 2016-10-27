@@ -279,16 +279,16 @@ bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
   QgsCoordinateReferenceSystem crs = layer->crs();
 
   QgsFields fields;
-  fields.append( QgsField( QString( "MINX" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "MINY" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "MAXX" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "MAXY" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "CNTX" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "CNTY" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "AREA" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "PERIM" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "HEIGHT" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "WIDTH" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "MINX" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "MINY" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "MAXX" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "MAXY" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "CNTX" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "CNTY" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "AREA" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "PERIM" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "HEIGHT" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "WIDTH" ), QVariant::Double ) );
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, crs );
 
@@ -381,9 +381,9 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
     useField = true;
   }
   QgsFields fields;
-  fields.append( QgsField( QString( "UID" ), QVariant::String ) );
-  fields.append( QgsField( QString( "AREA" ), QVariant::Double ) );
-  fields.append( QgsField( QString( "PERIM" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "UID" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "AREA" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "PERIM" ), QVariant::Double ) );
 
   QgsWkbTypes::Type outputType = QgsWkbTypes::Polygon;
   QgsCoordinateReferenceSystem crs = layer->crs();

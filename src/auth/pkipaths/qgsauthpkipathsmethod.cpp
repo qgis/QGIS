@@ -31,8 +31,8 @@
 #include "qgslogger.h"
 
 
-static const QString AUTH_METHOD_KEY = "PKI-Paths";
-static const QString AUTH_METHOD_DESCRIPTION = "PKI paths authentication";
+static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
+static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI paths authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::mPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -43,11 +43,11 @@ QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList()
-                    << "ows"
-                    << "wfs"  // convert to lowercase
-                    << "wcs"
-                    << "wms"
-                    << "postgres" );
+                    << QStringLiteral( "ows" )
+                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wcs" )
+                    << QStringLiteral( "wms" )
+                    << QStringLiteral( "postgres" ) );
 }
 
 QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
@@ -120,7 +120,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   }
   QgsDebugMsg( "Update URI items: PKI bundle valid" );
 
-  QString pkiTempFileBase = "tmppki_%1.pem";
+  QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
 
   // save client cert to temp file
   QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
@@ -208,15 +208,15 @@ void QgsAuthPkiPathsMethod::clearCachedConfig( const QString &authcfg )
 
 void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  if ( mconfig.hasConfig( "oldconfigstyle" ) )
+  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
     QgsDebugMsg( "Updating old style auth method config" );
 
-    QStringList conflist = mconfig.config( "oldconfigstyle" ).split( "|||" );
-    mconfig.setConfig( "certpath", conflist.at( 0 ) );
-    mconfig.setConfig( "keypath", conflist.at( 1 ) );
-    mconfig.setConfig( "keypass", conflist.at( 2 ) );
-    mconfig.removeConfig( "oldconfigstyle" );
+    QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
+    mconfig.setConfig( QStringLiteral( "certpath" ), conflist.at( 0 ) );
+    mconfig.setConfig( QStringLiteral( "keypath" ), conflist.at( 1 ) );
+    mconfig.setConfig( QStringLiteral( "keypass" ), conflist.at( 2 ) );
+    mconfig.removeConfig( QStringLiteral( "oldconfigstyle" ) );
   }
 
   // TODO: add updates as method version() increases due to config storage changes
@@ -248,7 +248,7 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
 
   // init client cert
   // Note: if this is not valid, no sense continuing
-  QSslCertificate clientcert( QgsAuthCertUtils::certFromFile( mconfig.config( "certpath" ) ) );
+  QSslCertificate clientcert( QgsAuthCertUtils::certFromFile( mconfig.config( QStringLiteral( "certpath" ) ) ) );
   if ( !clientcert.isValid() )
   {
     QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not valid" ).arg( authcfg ) );
@@ -256,7 +256,7 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
   }
 
   // init key
-  QSslKey clientkey = QgsAuthCertUtils::keyFromFile( mconfig.config( "keypath" ), mconfig.config( "keypass" ) );
+  QSslKey clientkey = QgsAuthCertUtils::keyFromFile( mconfig.config( QStringLiteral( "keypath" ) ), mconfig.config( QStringLiteral( "keypass" ) ) );
 
   if ( clientkey.isNull() )
   {

@@ -173,6 +173,28 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       changedIds << attIt.key();
     }
     mChangedFeaturesRequest.setFilterFids( changedIds );
+
+    if ( mChangedFeaturesRequest.limit() > 0 )
+    {
+      int providerLimit = mProviderRequest.limit();
+
+      // features may be deleted in buffer, so increase limit sent to provider
+      providerLimit += mSource->mDeletedFeatureIds.size();
+
+      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
+      {
+        // attribute changes may mean some features no longer match expression, so increase limit sent to provider
+        providerLimit += mSource->mChangedAttributeValues.size();
+      }
+
+      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression || mProviderRequest.filterType() == QgsFeatureRequest::FilterRect )
+      {
+        // geometry changes may mean some features no longer match expression or rect, so increase limit sent to provider
+        providerLimit += mSource->mChangedGeometries.size();
+      }
+
+      mProviderRequest.setLimit( providerLimit );
+    }
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
@@ -526,7 +548,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrsId );
   da.setEllipsoidalMode( true );
-  da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );
@@ -771,11 +793,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   else
     joinFieldName = joinInfo->joinFieldName;
 
-  subsetString.append( QString( "\"%1\"" ).arg( joinFieldName ) );
+  subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
 
   if ( joinValue.isNull() )
   {
-    subsetString += " IS NULL";
+    subsetString += QLatin1String( " IS NULL" );
   }
   else
   {
@@ -789,7 +811,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QVariant::String:
-        v.replace( '\'', "''" );
+        v.replace( '\'', QLatin1String( "''" ) );
         v.prepend( '\'' ).append( '\'' );
         break;
     }

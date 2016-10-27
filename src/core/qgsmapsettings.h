@@ -171,7 +171,7 @@ class CORE_EXPORT QgsMapSettings
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Set combination of flags that will be used for rendering
-    void setFlags( const QgsMapSettings::Flags& flags );
+    void setFlags( QgsMapSettings::Flags flags );
     //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
     //! Return combination of flags used for rendering
@@ -284,12 +284,12 @@ class CORE_EXPORT QgsMapSettings
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
-    /** Gets the segmentation tolerance applied when rendering curved geometries*/
+    //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
-    /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
+    //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
   protected:
@@ -324,8 +324,8 @@ class CORE_EXPORT QgsMapSettings
 
 
     // derived properties
-    bool mValid; //!< whether the actual settings are valid (set in updateDerived())
-    QgsRectangle mVisibleExtent; //!< extent with some additional white space that matches the output aspect ratio
+    bool mValid; //!< Whether the actual settings are valid (set in updateDerived())
+    QgsRectangle mVisibleExtent; //!< Extent with some additional white space that matches the output aspect ratio
     double mMapUnitsPerPixel;
     double mScale;
 

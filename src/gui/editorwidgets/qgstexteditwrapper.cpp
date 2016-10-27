@@ -35,7 +35,7 @@ QVariant QgsTextEditWrapper::value() const
 
   if ( mTextEdit )
   {
-    if ( config( "UseHtml" ).toBool() )
+    if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
     {
       v = mTextEdit->toHtml();
     }
@@ -56,7 +56,7 @@ QVariant QgsTextEditWrapper::value() const
   }
 
   if (( v.isEmpty() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) ) ||
-      v == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+      v == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
     return QVariant( field().type() );
 
   if ( !defaultValue().isNull() && v == defaultValue().toString() )
@@ -83,9 +83,9 @@ QVariant QgsTextEditWrapper::value() const
 
 QWidget* QgsTextEditWrapper::createWidget( QWidget* parent )
 {
-  if ( config( "IsMultiline" ).toBool() )
+  if ( config( QStringLiteral( "IsMultiline" ) ).toBool() )
   {
-    if ( config( "UseHtml" ).toBool() )
+    if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
     {
       return new QTextEdit( parent );
     }
@@ -119,7 +119,7 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
     QVariant defVal = defaultValue();
     if ( defVal.isNull() )
     {
-      defVal = QSettings().value( "qgis/nullValue", "NULL" );
+      defVal = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
     }
 
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
@@ -162,7 +162,7 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->setPlaceholderText( QString() );
   }
 
-  setWidgetValue( QString( "" ) );
+  setWidgetValue( QLatin1String( "" ) );
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );
@@ -215,7 +215,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant& val )
   if ( val.isNull() )
   {
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
-      v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+      v = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
   }
   else
     v = val.toString();
@@ -224,7 +224,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant& val )
   {
     if ( val != value() )
     {
-      if ( config( "UseHtml" ).toBool() )
+      if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
         mTextEdit->setHtml( v );
       else
         mTextEdit->setPlainText( v );

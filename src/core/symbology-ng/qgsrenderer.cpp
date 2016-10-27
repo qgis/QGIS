@@ -112,7 +112,7 @@ void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbol
 
 QString QgsFeatureRenderer::dump() const
 {
-  return "UNKNOWN RENDERER\n";
+  return QStringLiteral( "UNKNOWN RENDERER\n" );
 }
 
 QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
@@ -123,7 +123,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
     return nullptr;
 
   // load renderer
-  QString rendererType = element.attribute( "type" );
+  QString rendererType = element.attribute( QStringLiteral( "type" ) );
 
   QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
   if ( !m )
@@ -132,20 +132,20 @@ QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
   QgsFeatureRenderer* r = m->createRenderer( element );
   if ( r )
   {
-    r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
-    r->setForceRasterRender( element.attribute( "forceraster", "0" ).toInt() );
+    r->setUsingSymbolLevels( element.attribute( QStringLiteral( "symbollevels" ), QStringLiteral( "0" ) ).toInt() );
+    r->setForceRasterRender( element.attribute( QStringLiteral( "forceraster" ), QStringLiteral( "0" ) ).toInt() );
 
     //restore layer effect
-    QDomElement effectElem = element.firstChildElement( "effect" );
+    QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
     if ( !effectElem.isNull() )
     {
       r->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
     }
 
     // restore order by
-    QDomElement orderByElem = element.firstChildElement( "orderby" );
+    QDomElement orderByElem = element.firstChildElement( QStringLiteral( "orderby" ) );
     r->mOrderBy.load( orderByElem );
-    r->setOrderByEnabled( element.attribute( "enableorderby", "0" ).toInt() );
+    r->setOrderByEnabled( element.attribute( QStringLiteral( "enableorderby" ), QStringLiteral( "0" ) ).toInt() );
   }
   return r;
 }
@@ -154,18 +154,18 @@ QDomElement QgsFeatureRenderer::save( QDomDocument& doc )
 {
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
   if ( !mOrderBy.isEmpty() )
   {
-    QDomElement orderBy = doc.createElement( "orderby" );
+    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
   return rendererElem;
 }
 
@@ -176,19 +176,19 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     return nullptr;
 
   // get the UserStyle element
-  QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
+  QDomElement userStyleElem = element.firstChildElement( QStringLiteral( "UserStyle" ) );
   if ( userStyleElem.isNull() )
   {
     // UserStyle element not found, nothing will be rendered
-    errorMessage = "Info: UserStyle element not found.";
+    errorMessage = QStringLiteral( "Info: UserStyle element not found." );
     return nullptr;
   }
 
   // get the FeatureTypeStyle element
-  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( "FeatureTypeStyle" );
+  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( QStringLiteral( "FeatureTypeStyle" ) );
   if ( featTypeStyleElem.isNull() )
   {
-    errorMessage = "Info: FeatureTypeStyle element not found.";
+    errorMessage = QStringLiteral( "Info: FeatureTypeStyle element not found." );
     return nullptr;
   }
 
@@ -198,7 +198,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   bool needRuleRenderer = false;
   int ruleCount = 0;
 
-  QDomElement ruleElem = featTypeStyleElem.firstChildElement( "Rule" );
+  QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
   while ( !ruleElem.isNull() )
   {
     ruleCount++;
@@ -215,9 +215,9 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     while ( !ruleChildElem.isNull() )
     {
       // rule has filter or min/max scale denominator, use the RuleRenderer
-      if ( ruleChildElem.localName() == "Filter" ||
-           ruleChildElem.localName() == "MinScaleDenominator" ||
-           ruleChildElem.localName() == "MaxScaleDenominator" )
+      if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
+           ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
+           ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
       {
         QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
         needRuleRenderer = true;
@@ -232,17 +232,17 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
       break;
     }
 
-    ruleElem = ruleElem.nextSiblingElement( "Rule" );
+    ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
   }
 
   QString rendererType;
   if ( needRuleRenderer )
   {
-    rendererType = "RuleRenderer";
+    rendererType = QStringLiteral( "RuleRenderer" );
   }
   else
   {
-    rendererType = "singleSymbol";
+    rendererType = QStringLiteral( "singleSymbol" );
   }
   QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
 
@@ -250,7 +250,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
   if ( !m )
   {
-    errorMessage = QString( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
+    errorMessage = QStringLiteral( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
     return nullptr;
   }
 
@@ -258,15 +258,15 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   return r;
 }
 
-QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props ) const
+QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap& props ) const
 {
-  QDomElement userStyleElem = doc.createElement( "UserStyle" );
+  QDomElement userStyleElem = doc.createElement( QStringLiteral( "UserStyle" ) );
 
-  QDomElement nameElem = doc.createElement( "se:Name" );
+  QDomElement nameElem = doc.createElement( QStringLiteral( "se:Name" ) );
   nameElem.appendChild( doc.createTextNode( styleName ) );
   userStyleElem.appendChild( nameElem );
 
-  QDomElement featureTypeStyleElem = doc.createElement( "se:FeatureTypeStyle" );
+  QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
   toSld( doc, featureTypeStyleElem, props );
   userStyleElem.appendChild( featureTypeStyleElem );
 

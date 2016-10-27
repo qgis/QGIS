@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2015'
@@ -72,7 +73,7 @@ class SelectByAttributeSum(GeoAlgorithm):
         geom = ft.geometry()
         attrSum = ft[fieldName]
 
-        idx = QgsSpatialIndex(layer.getFeatures())
+        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])))
         req = QgsFeatureRequest()
         completed = False
         while not completed:
@@ -81,8 +82,8 @@ class SelectByAttributeSum(GeoAlgorithm):
                 progress.setInfo(self.tr('No adjacent features found.'))
                 break
 
-            for i in intersected:
-                ft = next(layer.getFeatures(req.setFilterFid(i)))
+            req = QgsFeatureRequest().setFilterFids(intersected).setSubsetOfAttributes([fieldName], layer.fields())
+            for ft in layer.getFeatures(req):
                 tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)

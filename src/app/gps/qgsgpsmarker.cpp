@@ -24,8 +24,8 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
-  mSvg.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
   if ( ! mSvg.isValid() )
   {
     qDebug( "GPS marker not found!" );

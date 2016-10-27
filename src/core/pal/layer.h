@@ -82,7 +82,7 @@ namespace pal
        */
       int featureCount() { return mHashtable.size(); }
 
-      /** Returns pointer to the associated provider */
+      //! Returns pointer to the associated provider
       QgsAbstractLabelProvider* provider() const { return mProvider; }
 
       /** Returns the layer's name.
@@ -113,7 +113,7 @@ namespace pal
        * @param flags arrangement flags
        * @see arrangementFlags
        */
-      void setArrangementFlags( const LineArrangementFlags& flags ) { mArrangementFlags = flags; }
+      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
       /**
        * \brief Sets whether the layer is currently active.
@@ -228,7 +228,7 @@ namespace pal
        */
       bool registerFeature( QgsLabelFeature* label );
 
-      /** Join connected features with the same label text */
+      //! Join connected features with the same label text
       void joinConnectedFeatures();
 
       /** Returns the connected feature ID for a label feature ID, which is unique for all features
@@ -237,17 +237,17 @@ namespace pal
        */
       int connectedFeatureId( QgsFeatureId featureId ) const;
 
-      /** Chop layer features at the repeat distance **/
+      //! Chop layer features at the repeat distance *
       void chopFeaturesAtRepeatDistance();
 
     protected:
       QgsAbstractLabelProvider* mProvider; // not owned
       QString mName;
 
-      /** List of feature parts */
+      //! List of feature parts
       QLinkedList<FeaturePart*> mFeatureParts;
 
-      /** List of obstacle parts */
+      //! List of obstacle parts
       QList<FeaturePart*> mObstacleParts;
 
       Pal *pal;
@@ -260,7 +260,7 @@ namespace pal
       bool mDisplayAll;
       bool mCentroidInside;
 
-      /** Optional flags used for some placement methods */
+      //! Optional flags used for some placement methods
       QgsPalLayerSettings::Placement mArrangement;
       LineArrangementFlags mArrangementFlags;
       LabelMode mMode;
@@ -297,10 +297,10 @@ namespace pal
        */
       Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
-      /** Add newly created feature part into r tree and to the list */
+      //! Add newly created feature part into r tree and to the list
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
 
-      /** Add newly created obstacle part into r tree and to the list */
+      //! Add newly created obstacle part into r tree and to the list
       void addObstaclePart( FeaturePart* fpart );
 
   };

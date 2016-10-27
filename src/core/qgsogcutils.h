@@ -65,10 +65,10 @@ class CORE_EXPORT QgsOgcUtils
       */
     static QgsGeometry geometryFromGML( const QDomNode& geometryNode );
 
-    /** Read rectangle from GML2 Box */
+    //! Read rectangle from GML2 Box
     static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
 
-    /** Read rectangle from GML3 Envelope */
+    //! Read rectangle from GML3 Envelope
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode& envelopeNode );
 
     /** Exports the geometry to GML
@@ -121,10 +121,10 @@ class CORE_EXPORT QgsOgcUtils
         int precision = 17 );
 
 
-    /** Parse XML with OGC fill into QColor */
+    //! Parse XML with OGC fill into QColor
     static QColor colorFromOgcFill( const QDomElement& fillElement );
 
-    /** Parse XML with OGC filter into QGIS expression */
+    //! Parse XML with OGC filter into QGIS expression
     static QgsExpression* expressionFromOgcFilter( const QDomElement& element );
 
     /** Creates OGC filter XML element. Supports minimum standard filter
@@ -189,14 +189,14 @@ class CORE_EXPORT QgsOgcUtils
     class LayerProperties
     {
       public:
-        /** Constructor */
+        //! Constructor
         LayerProperties() {}
 
-        /** Layer name */
+        //! Layer name
         QString mName;
-        /** Geometry attribute name */
+        //! Geometry attribute name
         QString mGeometryAttribute;
-        /** SRS name */
+        //! SRS name
         QString mSRSName;
     };
 
@@ -229,17 +229,17 @@ class CORE_EXPORT QgsOgcUtils
 
   private:
 
-    /** Static method that creates geometry from GML Point */
+    //! Static method that creates geometry from GML Point
     static QgsGeometry geometryFromGMLPoint( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML LineString */
+    //! Static method that creates geometry from GML LineString
     static QgsGeometry geometryFromGMLLineString( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML Polygon */
+    //! Static method that creates geometry from GML Polygon
     static QgsGeometry geometryFromGMLPolygon( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML MultiPoint */
+    //! Static method that creates geometry from GML MultiPoint
     static QgsGeometry geometryFromGMLMultiPoint( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML MultiLineString */
+    //! Static method that creates geometry from GML MultiLineString
     static QgsGeometry geometryFromGMLMultiLineString( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML MultiPolygon */
+    //! Static method that creates geometry from GML MultiPolygon
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsOgcUtils
 class QgsOgcUtilsExprToFilter
 {
   public:
-    /** Constructor */
+    //! Constructor
     QgsOgcUtilsExprToFilter( QDomDocument& doc,
                              QgsOgcUtils::GMLVersion gmlVersion,
                              QgsOgcUtils::FilterVersion filterVersion,
@@ -303,13 +303,13 @@ class QgsOgcUtilsExprToFilter
                              bool honourAxisOrientation,
                              bool invertAxisOrientation );
 
-    /** Convert an expression to a OGC filter */
+    //! Convert an expression to a OGC filter
     QDomElement expressionNodeToOgcFilter( const QgsExpression::Node* node );
 
-    /** Return whether the gml: namespace is used */
+    //! Return whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    /** Return the error message. */
+    //! Return the error message.
     const QString& errorMessage() const { return mErrorMessage; }
 
   private:
@@ -340,7 +340,7 @@ class QgsOgcUtilsExprToFilter
 class QgsOgcUtilsSQLStatementToFilter
 {
   public:
-    /** Constructor */
+    //! Constructor
     QgsOgcUtilsSQLStatementToFilter( QDomDocument& doc,
                                      QgsOgcUtils::GMLVersion gmlVersion,
                                      QgsOgcUtils::FilterVersion filterVersion,
@@ -349,13 +349,13 @@ class QgsOgcUtilsSQLStatementToFilter
                                      bool invertAxisOrientation,
                                      const QMap< QString, QString>& mapUnprefixedTypenameToPrefixedTypename );
 
-    /** Convert a SQL statement to a OGC filter */
+    //! Convert a SQL statement to a OGC filter
     QDomElement toOgcFilter( const QgsSQLStatement::Node* node );
 
-    /** Return whether the gml: namespace is used */
+    //! Return whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    /** Return the error message. */
+    //! Return the error message.
     const QString& errorMessage() const { return mErrorMessage; }
 
   private:

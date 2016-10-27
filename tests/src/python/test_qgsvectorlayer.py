@@ -1058,6 +1058,16 @@ class TestQgsVectorLayer(unittest.TestCase):
         #layer.undoStack().redo()
         #checkFieldNames(['fldint'])
 
+    def test_RenameExpressionField(self):
+        layer = createLayerWithOnePoint()
+        exp_field_idx = layer.addExpressionField('1+1', QgsField('math_is_hard', QVariant.Int))
+
+        #rename and check
+        self.assertTrue(layer.renameAttribute(exp_field_idx, 'renamed'))
+        self.assertEqual(layer.fields()[exp_field_idx].name(), 'renamed')
+        f = next(layer.getFeatures())
+        self.assertEqual(f.fields()[exp_field_idx].name(), 'renamed')
+
     def test_fields(self):
         layer = createLayerWithOnePoint()
 
@@ -1762,6 +1772,47 @@ class TestQgsVectorLayer(unittest.TestCase):
         # bad expression
         layer.setDefaultValueExpression(1, 'not a valid expression')
         self.assertFalse(layer.defaultValue(1))
+
+    def testGetFeatureLimitWithEdits(self):
+        """ test getting features with a limit, when edits are present """
+        layer = createLayerWithOnePoint()
+        # now has one feature with id 0
+
+        pr = layer.dataProvider()
+
+        f1 = QgsFeature(1)
+        f1.setAttributes(["test", 3])
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(300, 200)))
+        f2 = QgsFeature(2)
+        f2.setAttributes(["test", 3])
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+        f3 = QgsFeature(3)
+        f3.setAttributes(["test", 3])
+        f3.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+        self.assertTrue(pr.addFeatures([f1, f2, f3]))
+
+        req = QgsFeatureRequest().setLimit(2)
+        self.assertEqual(len(list(layer.getFeatures(req))), 2)
+
+        # now delete feature f1
+        layer.startEditing()
+        self.assertTrue(layer.deleteFeature(1))
+        req = QgsFeatureRequest().setLimit(2)
+        self.assertEqual(len(list(layer.getFeatures(req))), 2)
+        layer.rollBack()
+
+        # change an attribute value required by filter
+        layer.startEditing()
+        req = QgsFeatureRequest().setFilterExpression('fldint=3').setLimit(2)
+        self.assertTrue(layer.changeAttributeValue(2, 1, 4))
+        self.assertEqual(len(list(layer.getFeatures(req))), 2)
+        layer.rollBack()
+
+        layer.startEditing()
+        req = QgsFeatureRequest().setFilterRect(QgsRectangle(50, 100, 150, 300)).setLimit(2)
+        self.assertTrue(layer.changeGeometry(2, QgsGeometry.fromPoint(QgsPoint(500, 600))))
+        self.assertEqual(len(list(layer.getFeatures(req))), 2)
+        layer.rollBack()
 
 
 # TODO:

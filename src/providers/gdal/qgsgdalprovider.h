@@ -67,7 +67,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QgsGdalProvider( QString const & uri = QString(), bool update = false );
 
-    /** Create invalid provider with error */
+    //! Create invalid provider with error
     QgsGdalProvider( QString const & uri, QgsError error );
 
     //! Destructor
@@ -160,7 +160,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString generateBandName( int theBandNumber ) const override;
 
-    /** Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    //! Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
     QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
@@ -181,7 +181,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QString metadata() override;
 
-    /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
+    //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     QStringList subLayers() const override;
     static QStringList subLayers( GDALDatasetH dataset );
 
@@ -217,21 +217,21 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                            const QStringList & theCreateOptions = QStringList() ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
-    /** \brief Close data set and release related data */
+    //! \brief Close data set and release related data
     void closeDataset();
 
-    /** Emit a signal to notify of the progress event. */
-    void emitProgress( int theType, double theProgress, QString theMessage );
+    //! Emit a signal to notify of the progress event.
+    void emitProgress( int theType, double theProgress, const QString &theMessage );
     void emitProgressUpdate( int theProgress );
 
     static QMap<QString, QString> supportedMimes();
 
-    /** Writes into the provider datasource*/
+    //! Writes into the provider datasource
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset ) override;
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
 
-    /** Remove dataset*/
+    //! Remove dataset
     bool remove() override;
 
     QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
@@ -245,7 +245,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
-    /** Do some initialization on the dataset (e.g. handling of south-up datasets)*/
+    //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
 
     /**
@@ -253,7 +253,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     bool mValid;
 
-    /** \brief Whether this raster has overviews / pyramids or not */
+    //! \brief Whether this raster has overviews / pyramids or not
     bool mHasPyramids;
 
     /** \brief Gdal data types used to represent data in in QGIS,
@@ -276,20 +276,20 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // List of estimated max values, index 0 for band 1
     //mutable QList<double> mMaximum;
 
-    /** \brief Pointer to the gdaldataset */
+    //! \brief Pointer to the gdaldataset
     GDALDatasetH mGdalBaseDataset;
 
-    /** \brief Pointer to the gdaldataset (possibly warped vrt) */
+    //! \brief Pointer to the gdaldataset (possibly warped vrt)
     GDALDatasetH mGdalDataset;
 
-    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
+    //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
     double mGeoTransform[6];
 
     QgsCoordinateReferenceSystem mCrs;
 
     QList<QgsRasterPyramid> mPyramidList;
 
-    /** \brief sublayers list saved for subsequent access */
+    //! \brief sublayers list saved for subsequent access
     QStringList mSubLayers;
 };
 

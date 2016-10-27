@@ -50,7 +50,6 @@ class TableFieldsDelegate(QItemDelegate):
         if index.column() == 1:
             cbo = QComboBox(parent)
             cbo.setEditable(True)
-            cbo.setAutoCompletion(True)
             cbo.setFrame(False)
             for item in self.fieldTypes:
                 cbo.addItem(item)

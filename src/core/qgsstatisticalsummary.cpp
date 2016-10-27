@@ -25,7 +25,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsStatisticalSummary::QgsStatisticalSummary( const Statistics& stats )
+QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
     : mStatistics( stats )
 {
   reset();

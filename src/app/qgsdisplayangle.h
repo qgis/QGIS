@@ -20,7 +20,7 @@
 
 class QgsMapToolMeasureAngle;
 
-/** A class that displays results of angle measurements with the proper unit*/
+//! A class that displays results of angle measurements with the proper unit
 class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
 {
     Q_OBJECT

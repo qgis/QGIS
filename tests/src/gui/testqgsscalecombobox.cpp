@@ -68,7 +68,7 @@ void TestQgsScaleComboBox::init()
 void TestQgsScaleComboBox::basic()
 {
   // Testing conversion from "1:nnn".
-  enterScale( "1:2345" );
+  enterScale( QStringLiteral( "1:2345" ) );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 2345 ) ) );
   QCOMPARE( s->scale(), 1.0 / 2345.0 );
 
@@ -83,15 +83,15 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scale(), 1.0 / 42.0 );
 
   // Testing conversion from number to "1:x,000"
-  QString str = QString( "1%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  QString str = QStringLiteral( "1%01000%01000" ).arg( QLocale::system().groupSeparator() );
   enterScale( str );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( str ) );
   QCOMPARE( s->scale(), 1.0 / 1000000.0 );
 
   // Testing conversion from number to "1:x,000" with wonky separators
   //(eg four digits between thousands, which should be fixed automatically)
-  str = QString( "1%010000%01000" ).arg( QLocale::system().groupSeparator() );
-  QString fixedStr = QString( "10%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  str = QStringLiteral( "1%010000%01000" ).arg( QLocale::system().groupSeparator() );
+  QString fixedStr = QStringLiteral( "10%01000%01000" ).arg( QLocale::system().groupSeparator() );
   enterScale( str );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( fixedStr ) );
   QCOMPARE( s->scale(), 1.0 / 10000000.0 );
@@ -100,7 +100,7 @@ void TestQgsScaleComboBox::basic()
 
   enterScale( 0.24 );
 
-  enterScale( "1:x:2" );
+  enterScale( QStringLiteral( "1:x:2" ) );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 4 ) ) );
   QCOMPARE( s->scale(), 0.25 );
 
@@ -110,12 +110,12 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scale(), 0.2 );
 
   // Test setting programatically
-  s->setScaleString( QString( "1:240" ) );
+  s->setScaleString( QStringLiteral( "1:240" ) );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
   QCOMPARE( s->scale(), 1.0 / 240.0 );
 
   // Test setting programatically illegal string
-  s->setScaleString( QString( "1:2" ) + QLocale::system().decimalPoint() + "4" );
+  s->setScaleString( QStringLiteral( "1:2" ) + QLocale::system().decimalPoint() + "4" );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
   QCOMPARE( s->scale(), 1.0 / 240.0 );
 
@@ -153,7 +153,7 @@ void TestQgsScaleComboBox::min_test()
 void TestQgsScaleComboBox::enterScale( const QString& scale )
 {
   QLineEdit *l = s->lineEdit();
-  l->setText( "" );
+  l->setText( QLatin1String( "" ) );
   QTest::keyClicks( l, scale );
   QTest::keyClick( l, Qt::Key_Return );
 }

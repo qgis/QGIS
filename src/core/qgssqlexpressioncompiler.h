@@ -34,13 +34,13 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 {
   public:
 
-    /** Possible results from expression compilation */
+    //! Possible results from expression compilation
     enum Result
     {
-      None, /*!< No expression */
-      Complete, /*!< Expression was successfully compiled and can be completely delegated to provider */
-      Partial, /*!< Expression was partially compiled, but provider will return extra records and results must be double-checked using QGIS' expression engine*/
-      Fail /*!< Provider cannot handle expression */
+      None, //!< No expression
+      Complete, //!< Expression was successfully compiled and can be completely delegated to provider
+      Partial, //!< Expression was partially compiled, but provider will return extra records and results must be double-checked using QGIS' expression engine
+      Fail //!< Provider cannot handle expression
     };
 
     /** Enumeration of flags for how provider handles SQL clauses
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * @param fields fields from provider
      * @param flags flags which control how expression is compiled
      */
-    explicit QgsSqlExpressionCompiler( const QgsFields& fields, const Flags& flags = Flags() );
+    explicit QgsSqlExpressionCompiler( const QgsFields& fields, QgsSqlExpressionCompiler::Flags flags = Flags() );
     virtual ~QgsSqlExpressionCompiler();
 
     /** Compiles an expression and returns the result of the compilation.

@@ -1,6 +1,5 @@
 usr/lib/qgis/plugins/libgeorefplugin.so
 usr/lib/qgis/plugins/libgpsimporterplugin.so
-usr/lib/qgis/plugins/libdxf2shpconverterplugin.so
 usr/lib/qgis/plugins/libinterpolationplugin.so 
 usr/lib/qgis/plugins/libcoordinatecaptureplugin.so
 usr/lib/qgis/plugins/liboracleplugin.so
@@ -9,7 +8,6 @@ usr/lib/qgis/plugins/librasterterrainplugin.so
 usr/lib/qgis/plugins/libspatialqueryplugin.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so
 usr/lib/qgis/plugins/libroadgraphplugin.so
-usr/lib/qgis/plugins/libzonalstatisticsplugin.so
 usr/lib/qgis/plugins/libheatmapplugin.so
 usr/lib/qgis/plugins/libtopolplugin.so
 usr/lib/qgis/plugins/libgeometrycheckerplugin.so

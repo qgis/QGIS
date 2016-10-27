@@ -27,7 +27,7 @@ QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget* parent )
 
   // set default tool button icon properties
   setFixedSize( 22, 22 );
-  setStyleSheet( QString( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
+  setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
   setIconSize( QSize( 16, 16 ) );
   setPopupMode( QToolButton::InstantPopup );
 
@@ -97,15 +97,15 @@ void QgsMultiEditToolButton::updateState()
   switch ( mState )
   {
     case Default:
-      icon = QgsApplication::getThemeIcon( "/multieditSameValues.svg" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
       tooltip = tr( "All features in selection have equal value for '%1'" ).arg( mField.name() );
       break;
     case MixedValues:
-      icon = QgsApplication::getThemeIcon( "/multieditMixedValues.svg" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
       tooltip = tr( "Some features in selection have different values for '%1'" ).arg( mField.name() );
       break;
     case Changed:
-      icon = QgsApplication::getThemeIcon( "/multieditChangedValues.svg" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditChangedValues.svg" ) );
       tooltip = tr( "Values for '%1' have unsaved changes" ).arg( mField.name() );
       break;
   }

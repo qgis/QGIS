@@ -89,14 +89,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
         QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.geometry().type() );
         QSettings settings;
         QColor color(
-          settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
-          settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
-          settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
-        double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 30 ).toInt() / 255.0 ;
+          settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
+          settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
+          settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
+        double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 30 ).toInt() / 255.0 ;
         color.setAlphaF( myAlpha );
         rb->setOutlineColor( color );
         rb->setBrushStyle( Qt::NoBrush );
-        rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
+        rb->setOutlineWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
         QgsAbstractGeometry* rbGeom = feature.geometry().geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
           rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -124,7 +124,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
     if ( mMoveRubberBands.empty() )
     {
       QSettings settings;
-      bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();
+      bool ghostLine = settings.value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool();
       if ( !ghostLine )
       {
         delete mSelectRubberBand;
@@ -132,14 +132,14 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       }
       QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, mSelectedFeature->geometry()->type() );
       QColor color(
-        settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
-        settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
-        settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
-      double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 30 ).toInt() / 255.0 ;
+        settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
+        settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
+        settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
+      double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 30 ).toInt() / 255.0 ;
       color.setAlphaF( myAlpha );
       rb->setOutlineColor( color );
       rb->setBrushStyle( Qt::NoBrush );
-      rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
+      rb->setOutlineWidth( settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
       QgsAbstractGeometry* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
       if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
         rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
@@ -150,7 +150,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
         if ( vertexEntry->isSelected() )
           mMoveVertices[mSelectedFeature->featureId()].append( qMakePair( vertexEntry->vertexId(), toMapCoordinates( vlayer, vertexEntry->point() ) ) );
       }
-      if ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) )
+      if ( QgsProject::instance()->topologicalEditing() )
       {
         createTopologyRubberBands();
       }
@@ -396,10 +396,10 @@ void QgsMapToolNodeTool::updateSelectFeature( const QgsGeometry &geom )
 
     QSettings settings;
     QColor color(
-      settings.value( "/qgis/digitizing/fill_color_red", 255 ).toInt(),
-      settings.value( "/qgis/digitizing/fill_color_green", 0 ).toInt(),
-      settings.value( "/qgis/digitizing/fill_color_blue", 0 ).toInt() );
-    double myAlpha = settings.value( "/qgis/digitizing/fill_color_alpha", 30 ).toInt() / 255.0 ;
+      settings.value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt(),
+      settings.value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt(),
+      settings.value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
+    double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
     color.setAlphaF( myAlpha );
     mSelectRubberBand->setFillColor( color );
 
@@ -424,7 +424,7 @@ void QgsMapToolNodeTool::selectedFeatureDestroyed()
 void QgsMapToolNodeTool::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   QSettings settings;
-  bool ghostLine = settings.value( "/qgis/digitizing/line_ghost", false ).toBool();
+  bool ghostLine = settings.value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool();
   if ( !ghostLine && mSelectedFeature && ( mSelectedFeature->featureId() == fid ) )
   {
     updateSelectFeature( geom );
@@ -492,10 +492,9 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
       {
         pressLayerCoords = toLayerCoordinates( vlayer, mClosestMapVertex );
 
-        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-        if ( topologicalEditing )
+        if ( QgsProject::instance()->topologicalEditing() )
         {
-          //insert vertices for snap, but don't add them to features which already has a vertex being moved
+          //insert vertices for snap, but don't add them to features which already have a vertex being moved
           insertSegmentVerticesForSnap( snapResults, vlayer, movedFids );
         }
       }
@@ -608,7 +607,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
   Q_ASSERT( vlayer );
 
-  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
   QList<QgsSnappingResult> snapResults;

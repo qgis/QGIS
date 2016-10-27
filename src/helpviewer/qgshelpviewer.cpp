@@ -112,11 +112,11 @@ void QgsHelpViewer::resizeEvent( QResizeEvent *event )
 void QgsHelpViewer::restorePosition()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/HelpViewer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/HelpViewer/geometry" ) ).toByteArray() );
 }
 
 void QgsHelpViewer::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/HelpViewer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/HelpViewer/geometry" ), saveGeometry() );
 }

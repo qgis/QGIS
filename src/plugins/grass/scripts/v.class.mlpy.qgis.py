@@ -20,7 +20,7 @@
 ############################################################################
 
 #%module
-#% description: Vector supervised classification tool which uses attributes as classification parametres (order of columns matters, names not), cat column identifies feature, class_column is excluded from classification parametres.
+#% description: Vector supervised classification tool which uses attributes as classification parameters (order of columns matters, names not), cat column identifies feature, class_column is excluded from classification parameters.
 #% keyword: vector
 #% keyword: classification
 #% keyword: supervised

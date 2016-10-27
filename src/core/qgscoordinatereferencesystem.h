@@ -186,6 +186,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 {
     Q_GADGET
 
+    Q_PROPERTY( QgsUnitTypes::DistanceUnit mapUnits READ mapUnits )
+
   public:
 
     //! Enumeration of types of IDs accepted in createFromId() method
@@ -196,7 +198,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       EpsgCrsId       //!< EPSG code
     };
 
-    /** Constructs an invalid CRS object */
+    //! Constructs an invalid CRS object
     QgsCoordinateReferenceSystem();
 
     ~QgsCoordinateReferenceSystem();
@@ -396,7 +398,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static void setupESRIWktFix();
 
-    /** Returns whether this CRS is correctly initialized and usable */
+    //! Returns whether this CRS is correctly initialized and usable
     bool isValid() const;
 
     /** Perform some validation on this CRS. If the CRS doesn't validate the
@@ -557,7 +559,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool saveAsUserCrs( const QString& name );
 
-    /** Returns auth id of related geographic CRS*/
+    //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
     /** Returns a list of recently used projections
@@ -635,7 +637,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     void debugPrint();
 
-    /** A string based associative array used for passing records around */
+    //! A string based associative array used for passing records around
     typedef QMap<QString, QString> RecordMap;
     /** Get a record from the srs.db or qgis.db backends, given an sql statment.
      * @note only handles queries that return a single record.
@@ -695,44 +697,44 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 //! Output stream operator
 inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenceSystem &r )
 {
-  QString mySummary( "\n\tSpatial Reference System:" );
-  mySummary += "\n\t\tDescription : ";
+  QString mySummary( QStringLiteral( "\n\tSpatial Reference System:" ) );
+  mySummary += QLatin1String( "\n\t\tDescription : " );
   if ( !r.description().isNull() )
   {
     mySummary += r.description();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
-  mySummary += "\n\t\tProjection  : ";
+  mySummary += QLatin1String( "\n\t\tProjection  : " );
   if ( !r.projectionAcronym().isNull() )
   {
     mySummary += r.projectionAcronym();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
 
-  mySummary += "\n\t\tEllipsoid   : ";
+  mySummary += QLatin1String( "\n\t\tEllipsoid   : " );
   if ( !r.ellipsoidAcronym().isNull() )
   {
     mySummary += r.ellipsoidAcronym();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
 
-  mySummary += "\n\t\tProj4String  : ";
+  mySummary += QLatin1String( "\n\t\tProj4String  : " );
   if ( !r.toProj4().isNull() )
   {
     mySummary += r.toProj4();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;

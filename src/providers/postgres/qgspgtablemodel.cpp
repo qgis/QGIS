@@ -87,7 +87,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QLatin1String( "" ) );
     sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN );
     if ( sridItem->isEditable() )
     {
@@ -95,7 +95,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
-    QStandardItem *pkItem = new QStandardItem( "" );
+    QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
     if ( !layerProperty.pkCols.isEmpty() )
     {
       pkItem->setText( tr( "Select..." ) );
@@ -107,7 +107,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
     pkItem->setData( "", Qt::UserRole + 2 );
 
-    QStandardItem *selItem = new QStandardItem( "" );
+    QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -132,14 +132,14 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       if ( tip.isEmpty() )
       {
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( "" );
+        item->setToolTip( QLatin1String( "" ) );
       }
       else
       {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
         if ( item == schemaNameItem )
-          item->setData( QgsApplication::getThemeIcon( "/mIconWarning.svg" ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
         if ( item == schemaNameItem || item == tableItem || item == geomItem )
         {
@@ -294,14 +294,14 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
         }
 
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( "" );
+        item->setToolTip( QLatin1String( "" ) );
       }
       else
       {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
         if ( i == dbtmSchema )
-          item->setData( QgsApplication::getThemeIcon( "/mIconWarning.svg" ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
         if ( i == dbtmSchema || i == dbtmTable || i == dbtmGeomCol )
         {
@@ -371,7 +371,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( "," ) );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( QStringLiteral( "," ) ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );

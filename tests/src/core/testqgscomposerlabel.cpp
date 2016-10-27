@@ -73,10 +73,10 @@ void TestQgsComposerLabel::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
-                                     "ogr" );
+                                     QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
@@ -127,15 +127,15 @@ void TestQgsComposerLabel::evaluation()
   {
     // $CURRENT_DATE evaluation
     QString expected = "__" + QDate::currentDate().toString() + "__";
-    mComposerLabel->setText( "__$CURRENT_DATE__" );
+    mComposerLabel->setText( QStringLiteral( "__$CURRENT_DATE__" ) );
     QString evaluated = mComposerLabel->displayText();
     QCOMPARE( evaluated, expected );
   }
   {
     // $CURRENT_DATE() evaluation
     QDateTime now = QDateTime::currentDateTime();
-    QString expected = "__" + now.toString( "dd" ) + "(ok)__";
-    mComposerLabel->setText( "__$CURRENT_DATE(dd)(ok)__" );
+    QString expected = "__" + now.toString( QStringLiteral( "dd" ) ) + "(ok)__";
+    mComposerLabel->setText( QStringLiteral( "__$CURRENT_DATE(dd)(ok)__" ) );
     QString evaluated = mComposerLabel->displayText();
     QCOMPARE( evaluated, expected );
   }
@@ -144,15 +144,15 @@ void TestQgsComposerLabel::evaluation()
     QDate now = QDate::currentDate();
     int dd = now.day();
 
-    QString expected = "__" + QString( "%1" ).arg( dd + 1 ) + "(ok)__";
-    mComposerLabel->setText( "__[%$CURRENT_DATE(dd) + 1%](ok)__" );
+    QString expected = "__" + QStringLiteral( "%1" ).arg( dd + 1 ) + "(ok)__";
+    mComposerLabel->setText( QStringLiteral( "__[%$CURRENT_DATE(dd) + 1%](ok)__" ) );
     QString evaluated = mComposerLabel->displayText();
     QCOMPARE( evaluated, expected );
   }
   {
     // expression evaluation (without feature)
-    QString expected = "__[NAME_1]42__";
-    mComposerLabel->setText( "__[%\"NAME_1\"%][%21*2%]__" );
+    QString expected = QStringLiteral( "__[NAME_1]42__" );
+    mComposerLabel->setText( QStringLiteral( "__[%\"NAME_1\"%][%21*2%]__" ) );
     QString evaluated = mComposerLabel->displayText();
     QCOMPARE( evaluated, expected );
   }
@@ -166,17 +166,17 @@ void TestQgsComposerLabel::feature_evaluation()
   mComposition->atlasComposition().prepareForFeature( 0 );
   {
     // evaluation with a feature
-    mComposerLabel->setText( "[%\"NAME_1\"||'_ok'%]" );
+    mComposerLabel->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
     QString evaluated = mComposerLabel->displayText();
-    QString expected = "Basse-Normandie_ok";
+    QString expected = QStringLiteral( "Basse-Normandie_ok" );
     QCOMPARE( evaluated, expected );
   }
   mComposition->atlasComposition().prepareForFeature( 1 );
   {
     // evaluation with a feature
-    mComposerLabel->setText( "[%\"NAME_1\"||'_ok'%]" );
+    mComposerLabel->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
     QString evaluated = mComposerLabel->displayText();
-    QString expected = "Bretagne_ok";
+    QString expected = QStringLiteral( "Bretagne_ok" );
     QCOMPARE( evaluated, expected );
   }
   mComposition->atlasComposition().setEnabled( false );
@@ -186,9 +186,9 @@ void TestQgsComposerLabel::page_evaluation()
 {
   mComposition->setNumPages( 2 );
   {
-    mComposerLabel->setText( "[%@layout_page||'/'||@layout_numpages%]" );
+    mComposerLabel->setText( QStringLiteral( "[%@layout_page||'/'||@layout_numpages%]" ) );
     QString evaluated = mComposerLabel->displayText();
-    QString expected = "1/2";
+    QString expected = QStringLiteral( "1/2" );
     QCOMPARE( evaluated, expected );
 
     // move to the second page and re-evaluate
@@ -213,7 +213,7 @@ void TestQgsComposerLabel::marginMethods()
   //test reading label margins from pre 2.7 projects
   QDomDocument labelDoc;
   QString labelXml;
-  labelXml = "<ComposerLabel margin=\"9\"><ComposerItem></ComposerItem></ComposerLabel";
+  labelXml = QStringLiteral( "<ComposerLabel margin=\"9\"><ComposerItem></ComposerItem></ComposerLabel" );
   labelDoc.setContent( labelXml );
   QgsComposerLabel label2( mComposition );
   label2.readXml( labelDoc.firstChildElement(), labelDoc );
@@ -221,7 +221,7 @@ void TestQgsComposerLabel::marginMethods()
   QCOMPARE( label2.marginY(), 9.0 );
 
   //test reading label margins from >=2.7 projects
-  labelXml = "<ComposerLabel marginX=\"11\" marginY=\"12\"><ComposerItem></ComposerItem></ComposerLabel";
+  labelXml = QStringLiteral( "<ComposerLabel marginX=\"11\" marginY=\"12\"><ComposerItem></ComposerItem></ComposerLabel" );
   labelDoc.setContent( labelXml );
   QgsComposerLabel label3( mComposition );
   label3.readXml( labelDoc.firstChildElement(), labelDoc );
@@ -231,44 +231,44 @@ void TestQgsComposerLabel::marginMethods()
 
 void TestQgsComposerLabel::render()
 {
-  mComposerLabel->setText( "test label" );
-  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( "Bold", 48 ) );
+  mComposerLabel->setText( QStringLiteral( "test label" ) );
+  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 48 ) );
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
 
-  QgsCompositionChecker checker( "composerlabel_render", mComposition );
-  checker.setControlPathPrefix( "composer_label" );
+  QgsCompositionChecker checker( QStringLiteral( "composerlabel_render" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
 void TestQgsComposerLabel::renderAsHtml()
 {
   mComposerLabel->setFontColor( QColor( 200, 40, 60 ) );
-  mComposerLabel->setText( "test <i>html</i>" );
-  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( "Bold", 48 ) );
+  mComposerLabel->setText( QStringLiteral( "test <i>html</i>" ) );
+  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 48 ) );
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setHtmlState( 1 );
   mComposerLabel->update();
 
-  QgsCompositionChecker checker( "composerlabel_renderhtml", mComposition );
-  checker.setControlPathPrefix( "composer_label" );
+  QgsCompositionChecker checker( QStringLiteral( "composerlabel_renderhtml" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
   QVERIFY( checker.testComposition( mReport, 0, 10 ) );
 }
 
 void TestQgsComposerLabel::renderAsHtmlRelative()
 {
-  QgsProject::instance()->setFileName( QString( TEST_DATA_DIR ) +  QDir::separator() + "test.qgs" );
+  QgsProject::instance()->setFileName( QStringLiteral( TEST_DATA_DIR ) +  QDir::separator() + "test.qgs" );
   mComposerLabel->setFontColor( QColor( 200, 40, 60 ) );
-  mComposerLabel->setText( "test <img src=\"small_sample_image.png\" />" );
-  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( "Bold", 48 ) );
+  mComposerLabel->setText( QStringLiteral( "test <img src=\"small_sample_image.png\" />" ) );
+  mComposerLabel->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 48 ) );
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setHtmlState( 1 );
   mComposerLabel->update();
 
-  QgsCompositionChecker checker( "composerlabel_renderhtmlrelative", mComposition );
-  checker.setControlPathPrefix( "composer_label" );
+  QgsCompositionChecker checker( QStringLiteral( "composerlabel_renderhtmlrelative" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 

@@ -35,7 +35,7 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
 
   public:
 
-    /** Command kind, and state */
+    //! Command kind, and state
     enum State
     {
       Grouped = 0,
@@ -58,9 +58,9 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
     void undo() override;
 
   signals:
-    /** Signals addition of an item (the group) */
+    //! Signals addition of an item (the group)
     void itemAdded( QgsComposerItem* item );
-    /** Signals removal of an item (the group) */
+    //! Signals removal of an item (the group)
     void itemRemoved( QgsComposerItem* item );
 
   private:

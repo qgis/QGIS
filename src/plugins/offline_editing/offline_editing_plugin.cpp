@@ -34,7 +34,7 @@ static const QString sDescription = QObject::tr( "Allow offline editing and sync
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
+static const QString sPluginIcon = QStringLiteral( ":/offline_editing/offline_editing_copy.png" );
 
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
@@ -57,7 +57,7 @@ void QgsOfflineEditingPlugin::initGui()
 
   // Create the action for tool
   mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to offline project" ), this );
-  mActionConvertProject->setObjectName( "mActionConvertProject" );
+  mActionConvertProject->setObjectName( QStringLiteral( "mActionConvertProject" ) );
   // Set the what's this text
   mActionConvertProject->setWhatsThis( tr( "Create offline copies of selected layers and save as offline project" ) );
   // Connect the action to the run
@@ -68,7 +68,7 @@ void QgsOfflineEditingPlugin::initGui()
   mActionConvertProject->setEnabled( false );
 
   mActionSynchronize = new QAction( QIcon( ":/offline_editing/offline_editing_sync.png" ), tr( "Synchronize" ), this );
-  mActionSynchronize->setObjectName( "mActionSynchronize" );
+  mActionSynchronize->setObjectName( QStringLiteral( "mActionSynchronize" ) );
   mActionSynchronize->setWhatsThis( tr( "Synchronize offline project with remote layers" ) );
   connect( mActionSynchronize, SIGNAL( triggered() ), this, SLOT( synchronize() ) );
   mQGisIface->addDatabaseToolBarIcon( mActionSynchronize );
@@ -167,7 +167,7 @@ void QgsOfflineEditingPlugin::setLayerProgress( int layer, int numLayers )
 
 void QgsOfflineEditingPlugin::setProgressMode( QgsOfflineEditing::ProgressMode mode, int maximum )
 {
-  QString format = "";
+  QString format = QLatin1String( "" );
   switch ( mode )
   {
     case QgsOfflineEditing::CopyFeatures:

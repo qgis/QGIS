@@ -49,14 +49,14 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   QToolButton* btnImpExp = new QToolButton;
   btnImpExp->setAutoRaise( true );
   btnImpExp->setToolTip( tr( "Import/Export Bookmarks" ) );
-  btnImpExp->setIcon( QgsApplication::getThemeIcon( "/mActionSharing.svg" ) );
+  btnImpExp->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharing.svg" ) ) );
   btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
   QMenu *share = new QMenu( this );
   QAction *btnExport = share->addAction( tr( "&Export" ) );
   QAction *btnImport = share->addAction( tr( "&Import" ) );
-  btnExport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingExport.svg" ) );
-  btnImport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingImport.svg" ) );
+  btnExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ) );
+  btnImport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ) );
   connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXml() ) );
   connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXml() ) );
   btnImpExp->setMenu( share );
@@ -68,7 +68,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mBookmarkToolbar->addWidget( btnImpExp );
 
   // open the database
-  QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "bookmarks" );
+  QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), QStringLiteral( "bookmarks" ) );
   db.setDatabaseName( QgsApplication::qgisUserDbFilePath() );
   if ( !db.open() )
   {
@@ -83,7 +83,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   }
 
   mQgisModel = new QSqlTableModel( this, db );
-  mQgisModel->setTable( "tbl_bookmarks" );
+  mQgisModel->setTable( QStringLiteral( "tbl_bookmarks" ) );
   mQgisModel->setSort( 0, Qt::AscendingOrder );
   mQgisModel->select();
   mQgisModel->setEditStrategy( QSqlTableModel::OnFieldChange );
@@ -104,7 +104,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   lstBookmarks->setModel( mModel.data() );
 
   QSettings settings;
-  lstBookmarks->header()->restoreState( settings.value( "/Windows/Bookmarks/headerstate" ).toByteArray() );
+  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "/Windows/Bookmarks/headerstate" ) ).toByteArray() );
 
 #ifndef QGISDEBUG
   lstBookmarks->setColumnHidden( 0, true );
@@ -115,21 +115,21 @@ QgsBookmarks::~QgsBookmarks()
 {
   delete mQgisModel;
   delete mProjectModel;
-  QSqlDatabase::removeDatabase( "bookmarks" );
+  QSqlDatabase::removeDatabase( QStringLiteral( "bookmarks" ) );
   saveWindowLocation();
 }
 
 void QgsBookmarks::restorePosition()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/Bookmarks/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/Bookmarks/geometry" ) ).toByteArray() );
 }
 
 void QgsBookmarks::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Bookmarks/headerstate", lstBookmarks->header()->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/Bookmarks/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::addClicked()
@@ -144,7 +144,7 @@ void QgsBookmarks::addClicked()
                    "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
                    mQgisModel->database() );
 
-  QString projStr( "" );
+  QString projStr( QLatin1String( "" ) );
   if ( QgsProject::instance() )
   {
     if ( !QgsProject::instance()->title().isEmpty() )
@@ -154,17 +154,17 @@ void QgsBookmarks::addClicked()
     else if ( !QgsProject::instance()->fileName().isEmpty() )
     {
       QFileInfo fi( QgsProject::instance()->fileName() );
-      projStr = fi.exists() ? fi.fileName() : "";
+      projStr = fi.exists() ? fi.fileName() : QLatin1String( "" );
     }
   }
 
-  query.bindValue( ":name", tr( "New bookmark" ) );
-  query.bindValue( ":project_name", projStr );
-  query.bindValue( ":xmin", canvas->extent().xMinimum() );
-  query.bindValue( ":ymin", canvas->extent().yMinimum() );
-  query.bindValue( ":xmax", canvas->extent().xMaximum() );
-  query.bindValue( ":ymax", canvas->extent().yMaximum() );
-  query.bindValue( ":projection_srid", QVariant::fromValue( canvas->mapSettings().destinationCrs().srsid() ) );
+  query.bindValue( QStringLiteral( ":name" ), tr( "New bookmark" ) );
+  query.bindValue( QStringLiteral( ":project_name" ), projStr );
+  query.bindValue( QStringLiteral( ":xmin" ), canvas->extent().xMinimum() );
+  query.bindValue( QStringLiteral( ":ymin" ), canvas->extent().yMinimum() );
+  query.bindValue( QStringLiteral( ":xmax" ), canvas->extent().xMaximum() );
+  query.bindValue( QStringLiteral( ":ymax" ), canvas->extent().yMaximum() );
+  query.bindValue( QStringLiteral( ":projection_srid" ), QVariant::fromValue( canvas->mapSettings().destinationCrs().srsid() ) );
   if ( query.exec() )
   {
     mQgisModel->setSort( 0, Qt::AscendingOrder );
@@ -252,7 +252,7 @@ void QgsBookmarks::importFromXml()
 {
   QSettings settings;
 
-  QString lastUsedDir = settings.value( "/Windows/Bookmarks/LastUsedDirectory", QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
@@ -274,7 +274,7 @@ void QgsBookmarks::importFromXml()
   f.close();
 
   QDomElement docElem = doc.documentElement();
-  QDomNodeList nodeList = docElem.elementsByTagName( "bookmark" );
+  QDomNodeList nodeList = docElem.elementsByTagName( QStringLiteral( "bookmark" ) );
 
   Q_ASSERT( mModel );
 
@@ -283,13 +283,13 @@ void QgsBookmarks::importFromXml()
   for ( int i = 0;i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
-    QDomElement name = bookmark.firstChildElement( "name" );
-    QDomElement prjname = bookmark.firstChildElement( "project" );
-    QDomElement xmin = bookmark.firstChildElement( "xmin" );
-    QDomElement xmax = bookmark.firstChildElement( "xmax" );
-    QDomElement ymin = bookmark.firstChildElement( "ymin" );
-    QDomElement ymax = bookmark.firstChildElement( "ymax" );
-    QDomElement srid = bookmark.firstChildElement( "sr_id" );
+    QDomElement name = bookmark.firstChildElement( QStringLiteral( "name" ) );
+    QDomElement prjname = bookmark.firstChildElement( QStringLiteral( "project" ) );
+    QDomElement xmin = bookmark.firstChildElement( QStringLiteral( "xmin" ) );
+    QDomElement xmax = bookmark.firstChildElement( QStringLiteral( "xmax" ) );
+    QDomElement ymin = bookmark.firstChildElement( QStringLiteral( "ymin" ) );
+    QDomElement ymax = bookmark.firstChildElement( QStringLiteral( "ymax" ) );
+    QDomElement srid = bookmark.firstChildElement( QStringLiteral( "sr_id" ) );
 
     queries += "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
                "  VALUES (NULL,"
@@ -327,7 +327,7 @@ void QgsBookmarks::exportToXml()
 {
   QSettings settings;
 
-  QString lastUsedDir = settings.value( "/Windows/Bookmarks/LastUsedDirectory", QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
                      tr( "XML files( *.xml *.XML )" ) );
   if ( fileName.isEmpty() )
@@ -336,25 +336,25 @@ void QgsBookmarks::exportToXml()
   }
 
   // ensure the user never ommited the extension from the file name
-  if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
   {
-    fileName += ".xml";
+    fileName += QLatin1String( ".xml" );
   }
 
-  QDomDocument doc( "qgis_bookmarks" );
-  QDomElement root = doc.createElement( "qgis_bookmarks" );
+  QDomDocument doc( QStringLiteral( "qgis_bookmarks" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgis_bookmarks" ) );
   doc.appendChild( root );
 
   int rowCount = mModel->rowCount();
   int colCount = mModel->columnCount();
 
   QList<QString> headerList;
-  headerList << "id" << "name" << "project" << "xmin"
-  << "ymin" << "xmax" << "ymax" << "sr_id";
+  headerList << QStringLiteral( "id" ) << QStringLiteral( "name" ) << QStringLiteral( "project" ) << QStringLiteral( "xmin" )
+  << QStringLiteral( "ymin" ) << QStringLiteral( "xmax" ) << QStringLiteral( "ymax" ) << QStringLiteral( "sr_id" );
 
   for ( int i = 0; i < rowCount; ++i )
   {
-    QDomElement bookmark = doc.createElement( "bookmark" );
+    QDomElement bookmark = doc.createElement( QStringLiteral( "bookmark" ) );
     root.appendChild( bookmark );
     for ( int j = 0; j < colCount; j++ )
     {
@@ -383,7 +383,7 @@ void QgsBookmarks::exportToXml()
   doc.save( out, 2 );
   f.close();
 
-  settings.setValue( "/Windows/Bookmarks/LastUsedDirectory", QFileInfo( fileName ).path() );
+  settings.setValue( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
 
 
@@ -398,7 +398,7 @@ int QgsProjectBookmarksTableModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
 
-  return QgsProject::instance()->readNumEntry( "Bookmarks", "/count" );
+  return QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
 }
 
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex& parent ) const
@@ -416,19 +416,19 @@ QVariant QgsProjectBookmarksTableModel::data( const QModelIndex& index, int role
   switch ( index.column() )
   {
     case 1:
-      return QgsProject::instance()->readEntry( "Bookmarks", QString( "/Row-%1/Name" ).arg( index.row() ) );
+      return QgsProject::instance()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ) );
     case 2:
-      return QgsProject::instance()->readEntry( "Bookmarks", QString( "/Row-%1/Project" ).arg( index.row() ) );
+      return QgsProject::instance()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ) );
     case 3:
-      return QgsProject::instance()->readDoubleEntry( "Bookmarks", QString( "/Row-%1/MinX" ).arg( index.row() ) );
+      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ) );
     case 4:
-      return QgsProject::instance()->readDoubleEntry( "Bookmarks", QString( "/Row-%1/MinY" ).arg( index.row() ) );
+      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( index.row() ) );
     case 5:
-      return QgsProject::instance()->readDoubleEntry( "Bookmarks", QString( "/Row-%1/MaxX" ).arg( index.row() ) );
+      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( index.row() ) );
     case 6:
-      return QgsProject::instance()->readDoubleEntry( "Bookmarks", QString( "/Row-%1/MaxY" ).arg( index.row() ) );
+      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ) );
     case 7:
-      return QgsProject::instance()->readNumEntry( "Bookmarks", QString( "/Row-%1/SRID" ).arg( index.row() ) );
+      return QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ) );
     default:
       return QVariant();
   }
@@ -442,25 +442,25 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex& index, const QVa
   switch ( index.column() )
   {
     case 1:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/Name" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.value<QString>() );
       return true;
     case 2:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/Project" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.value<QString>() );
       return true;
     case 3:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
       return true;
     case 4:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/MinY" ).arg( index.row() ), value.toDouble() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( index.row() ), value.toDouble() );
       return true;
     case 5:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/MaxX" ).arg( index.row() ), value.toDouble() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( index.row() ), value.toDouble() );
       return true;
     case 6:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/MaxY" ).arg( index.row() ), value.toDouble() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ), value.toDouble() );
       return true;
     case 7:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/SRID" ).arg( index.row() ), value.toInt() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ), value.toInt() );
       return true;
     default:
       return false;
@@ -472,7 +472,7 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
   Q_UNUSED( row );
   Q_UNUSED( parent );
 
-  return QgsProject::instance()->writeEntry( "Bookmarks", "/count", QgsProject::instance()->readNumEntry( "Bookmarks", "/count" ) + count );
+  return QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) + count );
 }
 
 bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModelIndex& parent )
@@ -488,10 +488,10 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
   }
   for ( int newRow = rowCount() - count ; newRow < rowCount() ; newRow++ )
   {
-    QgsProject::instance()->removeEntry( "Bookmarks", QString( "/Row-%1" ).arg( newRow ) );
+    QgsProject::instance()->removeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1" ).arg( newRow ) );
   }
 
-  QgsProject::instance()->writeEntry( "Bookmarks", "/count", QgsProject::instance()->readNumEntry( "Bookmarks", "/count" ) - count );
+  QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) - count );
 
   return true;
 }
@@ -674,13 +674,13 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel& modelFrom,
                      "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
                      qgisModel->database() );
 
-    query.bindValue( ":name", modelFrom.data( modelFrom.index( row, 1 ) ).value<QString>() );
-    query.bindValue( ":project_name", modelFrom.data( modelFrom.index( row, 2 ) ).value<QString>() );
-    query.bindValue( ":xmin", modelFrom.data( modelFrom.index( row, 3 ) ).toDouble() );
-    query.bindValue( ":ymin", modelFrom.data( modelFrom.index( row, 4 ) ).toDouble() );
-    query.bindValue( ":xmax", modelFrom.data( modelFrom.index( row, 5 ) ).toDouble() );
-    query.bindValue( ":ymax", modelFrom.data( modelFrom.index( row, 6 ) ).toDouble() );
-    query.bindValue( ":projection_srid", modelFrom.data( modelFrom.index( row, 7 ) ).toInt() );
+    query.bindValue( QStringLiteral( ":name" ), modelFrom.data( modelFrom.index( row, 1 ) ).toString() );
+    query.bindValue( QStringLiteral( ":project_name" ), modelFrom.data( modelFrom.index( row, 2 ) ).toString() );
+    query.bindValue( QStringLiteral( ":xmin" ), modelFrom.data( modelFrom.index( row, 3 ) ).toDouble() );
+    query.bindValue( QStringLiteral( ":ymin" ), modelFrom.data( modelFrom.index( row, 4 ) ).toDouble() );
+    query.bindValue( QStringLiteral( ":xmax" ), modelFrom.data( modelFrom.index( row, 5 ) ).toDouble() );
+    query.bindValue( QStringLiteral( ":ymax" ), modelFrom.data( modelFrom.index( row, 6 ) ).toDouble() );
+    query.bindValue( QStringLiteral( ":projection_srid" ), modelFrom.data( modelFrom.index( row, 7 ) ).toInt() );
 
     if ( !query.exec() )
     {

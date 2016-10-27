@@ -28,6 +28,14 @@ END { die "header files not empty" if @inc; }
 # Also fix doxygen comments
 s#^(\s*)/\*[*!]\s*([^\s*].*)\s*$#$1/** \u$2\n#;
 
+# Convert single line doxygent blocks:
+#  /*!< comment */   to   //!< comment
+#  /** comment */    to   //! comment
+s#\/\*[!\*](?!\*)(<*)\h*(.*?)\h*\*\/\h*$#//!$1 $2#;
+
+# Uppercase initial character in //!< comment
+s#\/\/!<\s*(.)(.*)#//!< \u$1$2#;
+
 if( /^\s*#include/ ) {
 	push @inc, $_ unless exists $inc{$_};
 	$inc{$_}=1;

@@ -139,12 +139,12 @@ QString QgsScaleExpression::createExpression( Type type, const QString & baseExp
   switch ( type )
   {
     case Linear:
-      return QString( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
+      return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Area:
     case Flannery:
     case Exponential:
-      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
+      return QStringLiteral( "coalesce(scale_exp(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
 
     case Unknown:
       break;

@@ -49,7 +49,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! deactive the tool
     virtual void deactivate() override;
 
-    /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
+    //! Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
     int addCurve( QgsCurve* c );
 
     /**
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * @note added in 2.14
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int fetchLayerPoint( QgsPointLocator::Match match, QgsPointV2& layerPoint );
+    int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2& layerPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
@@ -132,9 +132,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
      * @note added in 2.14
      */
-    int addVertex( const QgsPoint& mapPoint, QgsPointLocator::Match match );
+    int addVertex( const QgsPoint& mapPoint, const QgsPointLocator::Match &match );
 
-    /** Removes the last vertex from mRubberBand and mCaptureList*/
+    //! Removes the last vertex from mRubberBand and mCaptureList
     void undo();
 
     /**
@@ -190,16 +190,16 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool tracingAddVertex( const QgsPoint& point );
 
   private:
-    /** Flag to indicate a map canvas capture operation is taking place */
+    //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing;
 
-    /** Rubber band for polylines and polygons */
+    //! Rubber band for polylines and polygons
     QgsRubberBand* mRubberBand;
 
-    /** Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position */
+    //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
     QgsRubberBand* mTempRubberBand;
 
-    /** List to store the points of digitised lines and polygons (in layer coordinates)*/
+    //! List to store the points of digitised lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
 
     void validateGeometry();

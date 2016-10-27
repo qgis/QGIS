@@ -58,7 +58,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     /** Constructor for QgsStringStatistics
      * @param stats flags for statistics to calculate
      */
-    QgsStringStatisticalSummary( const QgsStringStatisticalSummary::Statistics& stats = All );
+    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg count).
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const Statistics& stats ) { mStatistics = stats; }
+    void setStatistics( Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */

@@ -23,7 +23,7 @@ static const QString sDescription = QObject::tr( "Access Oracle Spatial GeoRaste
 static const QString sCategory = QObject::tr( "Layers" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/oracleplugin/oracleraster.svg";
+static const QString sPluginIcon = QStringLiteral( ":/oracleplugin/oracleraster.svg" );
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -56,7 +56,7 @@ void QgsOraclePlugin::initGui()
 {
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleraster.svg" ), tr( "Add Oracle GeoRaster Layer..." ), this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Add a Oracle Spatial GeoRaster..." ) );
   // Connect the action to the run

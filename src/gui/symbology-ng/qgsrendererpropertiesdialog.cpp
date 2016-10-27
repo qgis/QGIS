@@ -69,16 +69,16 @@ static void _initRendererWidgetFunctions()
   if ( initialized )
     return;
 
-  _initRenderer( "singleSymbol", QgsSingleSymbolRendererWidget::create, "rendererSingleSymbol.svg" );
-  _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererWidget::create, "rendererCategorizedSymbol.svg" );
-  _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererWidget::create, "rendererGraduatedSymbol.svg" );
-  _initRenderer( "RuleRenderer", QgsRuleBasedRendererWidget::create, "rendererRuleBasedSymbol.svg" );
-  _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create, "rendererPointDisplacementSymbol.svg" );
-  _initRenderer( "pointCluster", QgsPointClusterRendererWidget::create, "rendererPointClusterSymbol.svg" );
-  _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create, "rendererInvertedSymbol.svg" );
-  _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create, "rendererHeatmapSymbol.svg" );
-  _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "renderer25dSymbol.svg" );
-  _initRenderer( "nullSymbol", QgsNullSymbolRendererWidget::create, "rendererNullSymbol.svg" );
+  _initRenderer( QStringLiteral( "singleSymbol" ), QgsSingleSymbolRendererWidget::create, QStringLiteral( "rendererSingleSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "categorizedSymbol" ), QgsCategorizedSymbolRendererWidget::create, QStringLiteral( "rendererCategorizedSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "graduatedSymbol" ), QgsGraduatedSymbolRendererWidget::create, QStringLiteral( "rendererGraduatedSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "RuleRenderer" ), QgsRuleBasedRendererWidget::create, QStringLiteral( "rendererRuleBasedSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "pointDisplacement" ), QgsPointDisplacementRendererWidget::create, QStringLiteral( "rendererPointDisplacementSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "pointCluster" ), QgsPointClusterRendererWidget::create, QStringLiteral( "rendererPointClusterSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "invertedPolygonRenderer" ), QgsInvertedPolygonRendererWidget::create, QStringLiteral( "rendererInvertedSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "heatmapRenderer" ), QgsHeatmapRendererWidget::create, QStringLiteral( "rendererHeatmapSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "25dRenderer" ), Qgs25DRendererWidget::create, QStringLiteral( "renderer25dSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "nullSymbol" ), QgsNullSymbolRendererWidget::create, QStringLiteral( "rendererNullSymbol.svg" ) );
   initialized = true;
 }
 
@@ -91,7 +91,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer,
     , mMapCanvas( nullptr )
 {
   setupUi( this );
-  mLayerRenderingGroupBox->setSettingGroup( "layerRenderingGroupBox" );
+  mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
 
   // can be embedded in vector layer properties
   if ( embedded )
@@ -137,7 +137,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer,
   connect( mEffectWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
 }
 
-void QgsRendererPropertiesDialog::connectValueChanged( QList<QWidget *> widgets, const char *slot )
+void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *>& widgets, const char *slot )
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {
@@ -318,7 +318,7 @@ void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
     QgsDebugMsg( "DIALOG MODE" );
     // Show the dialog version if no one is connected
     QDialog* dlg = new QDialog();
-    QString key =  QString( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

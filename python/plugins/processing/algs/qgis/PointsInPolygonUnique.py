@@ -90,7 +90,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
             classes = set()
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                request = QgsFeatureRequest().setFilterFids(points)
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([classFieldIndex])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):

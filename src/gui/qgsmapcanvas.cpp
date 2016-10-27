@@ -147,12 +147,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
 
   //segmentation parameters
   QSettings settings;
-  double segmentationTolerance = settings.value( "/qgis/segmentationTolerance", "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( "/qgis/segmentationToleranceType", 0 ).toInt() );
+  double segmentationTolerance = settings.value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "/qgis/segmentationToleranceType" ), 0 ).toInt() );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
 
-  mWheelZoomFactor = settings.value( "/qgis/zoom_factor", 2 ).toDouble();
+  mWheelZoomFactor = settings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
@@ -226,8 +226,8 @@ void QgsMapCanvas::setMagnificationFactor( double factor )
 {
   // do not go higher or lower than min max magnification ratio
   QSettings settings;
-  double magnifierMin = settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
-  double magnifierMax = settings.value( "/qgis/magnifier_factor_max", 10 ).toDouble();
+  double magnifierMin = settings.value( QStringLiteral( "/qgis/magnifier_factor_min" ), 0.1 ).toDouble();
+  double magnifierMax = settings.value( QStringLiteral( "/qgis/magnifier_factor_max" ), 10 ).toDouble();
   factor = qBound( magnifierMin, factor, magnifierMax );
 
   // the magnifier widget is in integer percent
@@ -642,7 +642,7 @@ void QgsMapCanvas::rendererJobFinished()
     emit renderComplete( &p );
 
     QSettings settings;
-    if ( settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() )
+    if ( settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
     {
       QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
       QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
@@ -660,7 +660,7 @@ void QgsMapCanvas::rendererJobFinished()
       p.setBrush( QColor( 0, 0, 0, 110 ) );
       p.drawRect( r );
       p.setPen( Qt::white );
-      QString msg = QString( "%1 :: %2 ms" ).arg( mUseParallelRendering ? "PARALLEL" : "SEQUENTIAL" ).arg( mJob->renderingTime() );
+      QString msg = QStringLiteral( "%1 :: %2 ms" ).arg( mUseParallelRendering ? "PARALLEL" : "SEQUENTIAL" ).arg( mJob->renderingTime() );
       p.drawText( r, msg, QTextOption( Qt::AlignCenter ) );
     }
 
@@ -741,7 +741,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   {
     item = i.previous();
 
-    if ( !item || item->data( 0 ).toString() != "AnnotationItem" )
+    if ( !item || item->data( 0 ).toString() != QLatin1String( "AnnotationItem" ) )
     {
       continue;
     }
@@ -766,9 +766,9 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   //Pixel XDim
   myHeader += qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
   //Rotation on y axis - hard coded
-  myHeader += "0 \r\n";
+  myHeader += QLatin1String( "0 \r\n" );
   //Rotation on x axis - hard coded
-  myHeader += "0 \r\n";
+  myHeader += QLatin1String( "0 \r\n" );
   //Pixel YDim - almost always negative - see
   //http://en.wikipedia.org/wiki/World_file#cite_note-2
   myHeader += '-' + qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
@@ -1540,7 +1540,7 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
 
 
 
-/** Sets the map tool currently being used on the canvas */
+//! Sets the map tool currently being used on the canvas
 void QgsMapCanvas::setMapTool( QgsMapTool* tool )
 {
   if ( !tool )
@@ -1596,7 +1596,7 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
   }
 }
 
-/** Write property of QColor bgColor. */
+//! Write property of QColor bgColor.
 void QgsMapCanvas::setCanvasColor( const QColor & theColor )
 {
   // background of map's pixmap
@@ -1864,7 +1864,7 @@ void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils* utils )
 
 void QgsMapCanvas::readProject( const QDomDocument & doc )
 {
-  QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
+  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
@@ -1891,7 +1891,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
 {
   // create node "mapcanvas" and call mMapRenderer->writeXml()
 
-  QDomNodeList nl = doc.elementsByTagName( "qgis" );
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
     QgsDebugMsg( "Unable to find qgis element in project file" );
@@ -1899,14 +1899,14 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
 
-  QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
+  QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );
   // TODO: store only units, extent, projections, dest CRS
 }
 
-/** Ask user which datum transform to use*/
+//! Ask user which datum transform to use
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
   if ( !ml )
@@ -1928,7 +1928,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
   QgsCoordinateReferenceSystem srcCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srcAuthId );
   QgsCoordinateReferenceSystem destCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( destAuthId );
 
-  if ( !s.value( "/Projections/showDatumTransformDialog", false ).toBool() )
+  if ( !s.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool() )
   {
     // just use the default transform
     mSettings.datumTransformStore().addEntry( ml->id(), srcAuthId, destAuthId, -1, -1 );

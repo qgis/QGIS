@@ -55,7 +55,9 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )
-        : QgsExpression::Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull, isContextual )
+        : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
+        , mUsesGeometry( usesGeometry )
+        , mReferencedColumns( referencedColumns )
     {}
 
     virtual ~QgsScopedExpressionFunction() {}
@@ -66,6 +68,13 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
      */
     virtual QgsScopedExpressionFunction* clone() const = 0;
 
+    virtual bool usesGeometry( const QgsExpression::NodeFunction* node ) const override;
+
+    virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction* node ) const override;
+
+  private:
+    bool mUsesGeometry;
+    QSet<QString> mReferencedColumns;
 };
 
 
@@ -100,13 +109,13 @@ class CORE_EXPORT QgsExpressionContextScope
           , readOnly( readOnly )
       {}
 
-      /** Variable name */
+      //! Variable name
       QString name;
 
-      /** Variable value */
+      //! Variable value
       QVariant value;
 
-      /** True if variable should not be editable by users */
+      //! True if variable should not be editable by users
       bool readOnly;
     };
 
@@ -264,9 +273,7 @@ class CORE_EXPORT QgsExpressionContext
 
     QgsExpressionContext& operator=( const QgsExpressionContext& other );
 
-#ifdef HAS_MOVE_SEMANTICS
     QgsExpressionContext& operator=( QgsExpressionContext && other );
-#endif
 
     ~QgsExpressionContext();
 
@@ -583,7 +590,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
      */
-    static QgsExpressionContextScope* layerScope( const QgsMapLayer *layer );
+    static QgsExpressionContextScope* layerScope( const QgsMapLayer* layer );
 
     /** Sets a layer context variable. This variable will be contained within scopes retrieved via
      * layerScope().

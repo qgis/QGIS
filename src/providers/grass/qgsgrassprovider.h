@@ -59,7 +59,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   public:
     static int LAST_TYPE;
 
-    QgsGrassProvider( QString uri = QString() );
+    QgsGrassProvider( const QString &uri = QString() );
 
     virtual ~QgsGrassProvider();
 
@@ -93,7 +93,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ! Key (category) field index
     int keyField();
 
-    /** Restart reading features from previous select operation */
+    //! Restart reading features from previous select operation
     void rewind();
 
     QVariant minimumValue( int index ) const override;
@@ -108,7 +108,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     void update();
 
-    /** Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map */
+    //! Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map
     void loadMapInfo();
 
     bool isValid() const override;
@@ -155,10 +155,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     //void startEditing( QgsVectorLayerEditBuffer* buffer );
     void startEditing( QgsVectorLayer *vectorLayer );
 
-    /** Freeze vector. */
+    //! Freeze vector.
     void freeze();
 
-    /** Thaw vector. */
+    //! Thaw vector.
     void thaw();
 
     /** Close editing. Rebuild topology, GMAP.update = false
@@ -324,32 +324,32 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /* Following functions work only until first edit operation! (category index used) */
 
-    /** Get number of fields in category index */
+    //! Get number of fields in category index
     int cidxGetNumFields( void );
 
-    /** Get field number for index */
+    //! Get field number for index
     int cidxGetFieldNumber( int idx );
 
-    /** Get maximum category for field index */
+    //! Get maximum category for field index
     int cidxGetMaxCat( int idx );
 
-    /** Returns GRASS layer number */
+    //! Returns GRASS layer number
     int grassLayer();
 
     /** Returns GRASS layer number for given layer name or -1 if cannot
      *  get layer number
      */
-    static int grassLayer( QString );
+    static int grassLayer( const QString & );
 
     /** Returns GRASS layer type (GV_POINT, GV_LINES, GV_AREA) for
      *  given layer name or -1 if cannot get layer type
      */
-    static int grassLayerType( QString );
+    static int grassLayerType( const QString & );
 
-    /** Return a provider name */
+    //! Return a provider name
     QString name() const override;
 
-    /** Return description */
+    //! Return description
     QString description() const override;
 
     // Layer type (layerType)
@@ -432,10 +432,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static char *attribute( int layerId, int cat, int column );
 
-    /** Check if provider is outdated and update if necessary */
+    //! Check if provider is outdated and update if necessary
     void ensureUpdated() const;
 
-    /** Check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
+    //! Check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE
     bool isTopoType() const;
 
     static bool isTopoType( int layerType );
@@ -447,7 +447,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // Get other edited layer, returns 0 if layer does not exist
     QgsGrassVectorMapLayer * otherEditLayer( int layerField );
 
-    /** Fields used for topo layers */
+    //! Fields used for topo layers
     QgsFields mTopoFields;
 
     //QgsFields mEditFields;

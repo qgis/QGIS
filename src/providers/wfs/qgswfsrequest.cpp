@@ -61,14 +61,14 @@ bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   mResponse.clear();
 
   QUrl modifiedUrl( url );
-  if ( modifiedUrl.toString().contains( "fake_qgis_http_endpoint" ) )
+  if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     // Just for testing with local files instead of http:// ressources
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
     QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
-    modifiedUrlString = modifiedUrlString.mid( QString( "http://" ).size() );
+    modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
     if ( modifiedUrlString.size() > 256 )
     {
@@ -76,16 +76,16 @@ bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
     }
     else
     {
-      args.replace( "?", "_" );
-      args.replace( "&", "_" );
-      args.replace( "<", "_" );
-      args.replace( ">", "_" );
-      args.replace( "'", "_" );
-      args.replace( "\"", "_" );
-      args.replace( " ", "_" );
-      args.replace( ":", "_" );
-      args.replace( "/", "_" );
-      args.replace( "\n", "_" );
+      args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+      args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
     }
 #ifdef Q_OS_WIN
     // Passing "urls" like "http://c:/path" to QUrl 'eats' the : after c,
@@ -116,6 +116,13 @@ bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !mUri.auth().setAuthorizationReply( mReply ) )
+  {
+    mErrorCode = QgsWfsRequest::NetworkError;
+    mErrorMessage = errorMessageFailedAuth();
+    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+    return false;
+  }
   connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
   connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
 
@@ -145,7 +152,7 @@ bool QgsWfsRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   {
     // Hack for testing purposes
     QUrl modifiedUrl( url );
-    modifiedUrl.addQueryItem( "POSTDATA", QString::fromUtf8( data ) );
+    modifiedUrl.addQueryItem( QStringLiteral( "POSTDATA" ), QString::fromUtf8( data ) );
     return sendGET( modifiedUrl, true, true, false );
   }
 
@@ -160,6 +167,13 @@ bool QgsWfsRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
 
   mReply = QgsNetworkAccessManager::instance()->post( request, data );
+  if ( !mUri.auth().setAuthorizationReply( mReply ) )
+  {
+    mErrorCode = QgsWfsRequest::NetworkError;
+    mErrorMessage = errorMessageFailedAuth();
+    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+    return false;
+  }
   connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
   connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
 
@@ -243,6 +257,15 @@ void QgsWfsRequest::replyFinished()
 
           QgsDebugMsg( QString( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mReply = QgsNetworkAccessManager::instance()->get( request );
+          if ( !mUri.auth().setAuthorizationReply( mReply ) )
+          {
+            mResponse.clear();
+            mErrorMessage = errorMessageFailedAuth();
+            mErrorCode = QgsWfsRequest::NetworkError;
+            QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+            emit downloadFinished();
+            return;
+          }
           connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
           connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
           return;

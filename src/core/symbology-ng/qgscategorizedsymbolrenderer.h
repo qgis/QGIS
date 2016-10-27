@@ -89,7 +89,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QSet<QString> usedAttributes() const override;
     virtual QString dump() const override;
     virtual QgsCategorizedSymbolRenderer* clone() const override;
-    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
     virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
   private:
 
-    /** Returns calculated classification value for a feature */
+    //! Returns calculated classification value for a feature
     QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 
 };

@@ -96,13 +96,13 @@ class TopolError
      * @param fl1 first FeatureLayer pair
      * @param fl2 second FeatureLayer pair
      */
-    bool fixMove( FeatureLayer fl1, FeatureLayer fl2 );
+    bool fixMove( const FeatureLayer &fl1, const FeatureLayer &fl2 );
     /**
      * Unions features to the first one
      * @param fl1 first FeatureLayer pair
      * @param fl2 second FeatureLayer pair
      */
-    bool fixUnion( FeatureLayer fl1, FeatureLayer fl2 );
+    bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
   public:
     /**

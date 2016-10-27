@@ -54,7 +54,7 @@ void QgsColorRampComboBox::populate( QgsStyle* style )
   {
     QScopedPointer< QgsColorRamp > ramp( style->colorRamp( *it ) );
 
-    if ( !mShowGradientOnly || ramp->type() == "gradient" )
+    if ( !mShowGradientOnly || ramp->type() == QLatin1String( "gradient" ) )
     {
       QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), rampIconSize );
 
@@ -76,7 +76,7 @@ QgsColorRamp* QgsColorRampComboBox::currentColorRamp() const
   {
     return new QgsRandomColorRamp();
   }
-  else if ( rampName == "[source]" && mSourceColorRamp )
+  else if ( rampName == QLatin1String( "[source]" ) && mSourceColorRamp )
     return mSourceColorRamp->clone();
   else
     return mStyle->colorRamp( rampName );
@@ -94,10 +94,10 @@ void QgsColorRampComboBox::setSourceColorRamp( QgsColorRamp* sourceRamp )
   mSourceColorRamp = sourceRamp->clone();
 
   QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( mSourceColorRamp, rampIconSize );
-  if ( itemText( 0 ) == "[source]" )
+  if ( itemText( 0 ) == QLatin1String( "[source]" ) )
     setItemIcon( 0, icon );
   else
-    insertItem( 0, icon, "[source]" );
+    insertItem( 0, icon, QStringLiteral( "[source]" ) );
   setCurrentIndex( 0 );
 }
 
@@ -114,7 +114,7 @@ void QgsColorRampComboBox::colorRampChanged( int index )
   }
   else
   {
-    rampName = QgsStyleManagerDialog::addColorRampStatic( this, mStyle, "Gradient" );
+    rampName = QgsStyleManagerDialog::addColorRampStatic( this, mStyle, QStringLiteral( "Gradient" ) );
   }
   if ( rampName.isEmpty() )
     return;
@@ -143,7 +143,7 @@ void QgsColorRampComboBox::editSourceRamp()
   if ( !currentRamp )
     return;
 
-  if ( currentRamp->type() == "gradient" )
+  if ( currentRamp->type() == QLatin1String( "gradient" ) )
   {
     QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( currentRamp.data() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
@@ -153,7 +153,7 @@ void QgsColorRampComboBox::editSourceRamp()
       emit sourceRampEdited();
     }
   }
-  else if ( currentRamp->type() == "random" )
+  else if ( currentRamp->type() == QLatin1String( "random" ) )
   {
     QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( currentRamp.data() );
     if ( panelMode )
@@ -173,7 +173,7 @@ void QgsColorRampComboBox::editSourceRamp()
       }
     }
   }
-  else if ( currentRamp->type() == "preset" )
+  else if ( currentRamp->type() == QLatin1String( "preset" ) )
   {
     QgsPresetSchemeColorRamp* presetRamp = static_cast<QgsPresetSchemeColorRamp*>( currentRamp.data() );
     if ( panelMode )
@@ -193,7 +193,7 @@ void QgsColorRampComboBox::editSourceRamp()
       }
     }
   }
-  else if ( currentRamp->type() == "colorbrewer" )
+  else if ( currentRamp->type() == QLatin1String( "colorbrewer" ) )
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( currentRamp.data() );
     if ( panelMode )
@@ -213,7 +213,7 @@ void QgsColorRampComboBox::editSourceRamp()
       }
     }
   }
-  else if ( currentRamp->type() == "cpt-city" )
+  else if ( currentRamp->type() == QLatin1String( "cpt-city" ) )
   {
     QgsCptCityColorRamp* cptCityRamp = static_cast<QgsCptCityColorRamp*>( currentRamp.data() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );

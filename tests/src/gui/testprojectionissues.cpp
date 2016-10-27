@@ -53,7 +53,7 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84

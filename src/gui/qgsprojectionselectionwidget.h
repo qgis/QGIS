@@ -41,11 +41,11 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     enum CrsOption
     {
-      LayerCrs, /*!< optional layer CRS */
-      ProjectCrs, /*!< current project CRS (if OTF reprojection enabled) */
-      CurrentCrs, /*!< current user selected CRS */
-      DefaultCrs, /*!< global default QGIS CRS */
-      RecentCrs /*!< recently used CRS */
+      LayerCrs, //!< Optional layer CRS
+      ProjectCrs, //!< Current project CRS (if OTF reprojection enabled)
+      CurrentCrs, //!< Current user selected CRS
+      DefaultCrs, //!< Global default QGIS CRS
+      RecentCrs //!< Recently used CRS
     };
 
     explicit QgsProjectionSelectionWidget( QWidget *parent = nullptr );

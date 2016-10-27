@@ -36,10 +36,9 @@
 QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
     : QgsDataProvider( uri )
     , mCacheMinMaxDirty( true )
-    , mAttrPalIndexName( QgsAttrPalIndexNameHash() )
 {
   QSettings settings;
-  setEncoding( settings.value( "/UI/encoding", "System" ).toString() );
+  setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
 }
 
 
@@ -49,7 +48,7 @@ QgsVectorDataProvider::~QgsVectorDataProvider()
 
 QString QgsVectorDataProvider::storageType() const
 {
-  return "Generic vector file";
+  return QStringLiteral( "Generic vector file" );
 }
 
 QString QgsVectorDataProvider::dataComment() const
@@ -134,7 +133,7 @@ void QgsVectorDataProvider::setEncoding( const QString& e )
 {
   mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
 
-  if ( !mEncoding && e != "System" )
+  if ( !mEncoding && e != QLatin1String( "System" ) )
   {
     QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
@@ -153,7 +152,7 @@ QString QgsVectorDataProvider::encoding() const
     return mEncoding->name();
   }
 
-  return "";
+  return QLatin1String( "" );
 }
 
 QString QgsVectorDataProvider::capabilitiesString() const
@@ -253,7 +252,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     QgsDebugMsg( "Supports circular geometry types (circularstring, compoundcurve, curvepolygon)" );
   }
 
-  return abilitiesList.join( ", " );
+  return abilitiesList.join( QStringLiteral( ", " ) );
 }
 
 
@@ -280,35 +279,45 @@ QgsAttributeList QgsVectorDataProvider::attributeIndexes() const
   return fields().allAttributesList();
 }
 
+QgsAttributeList QgsVectorDataProvider::pkAttributeIndexes() const
+{
+  return QgsAttributeList();
+}
+
 const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeTypes() const
 {
   return mNativeTypes;
 }
 
+QgsAttrPalIndexNameHash QgsVectorDataProvider::palAttributeIndexNames() const
+{
+  return QgsAttrPalIndexNameHash();
+}
+
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
-  int i;
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
-  for ( i = 0; i < mNativeTypes.size(); i++ )
+
+  Q_FOREACH ( const NativeType& nativeType, mNativeTypes )
   {
     QgsDebugMsgLevel( QString( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
-                      .arg( QVariant::typeToName( mNativeTypes[i].mType ) )
-                      .arg( mNativeTypes[i].mMinLen )
-                      .arg( mNativeTypes[i].mMaxLen )
-                      .arg( mNativeTypes[i].mMinPrec )
-                      .arg( mNativeTypes[i].mMaxPrec ), 2 );
+                      .arg( QVariant::typeToName( nativeType.mType ) )
+                      .arg( nativeType.mMinLen )
+                      .arg( nativeType.mMaxLen )
+                      .arg( nativeType.mMinPrec )
+                      .arg( nativeType.mMaxPrec ), 2 );
 
-    if ( field.type() != mNativeTypes[i].mType )
+    if ( field.type() != nativeType.mType )
       continue;
 
     if ( field.length() == -1 )
     {
       // source length unlimited
-      if ( mNativeTypes[i].mMinLen > -1 || mNativeTypes[i].mMaxLen > -1 )
+      if ( nativeType.mMinLen > -1 || nativeType.mMaxLen > -1 )
       {
         // destination limited
         continue;
@@ -317,8 +326,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     else
     {
       // source length limited
-      if ( mNativeTypes[i].mMinLen > -1 && mNativeTypes[i].mMaxLen > -1 &&
-           ( field.length() < mNativeTypes[i].mMinLen || field.length() > mNativeTypes[i].mMaxLen ) )
+      if ( nativeType.mMinLen > -1 && nativeType.mMaxLen > -1 &&
+           ( field.length() < nativeType.mMinLen || field.length() > nativeType.mMaxLen ) )
       {
         // source length exceeds destination limits
         continue;
@@ -328,7 +337,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     if ( field.precision() == -1 )
     {
       // source precision unlimited / n/a
-      if ( mNativeTypes[i].mMinPrec > -1 || mNativeTypes[i].mMaxPrec > -1 )
+      if ( nativeType.mMinPrec > -1 || nativeType.mMaxPrec > -1 )
       {
         // destination limited
         continue;
@@ -337,8 +346,8 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     else
     {
       // source precision unlimited / n/a
-      if ( mNativeTypes[i].mMinPrec > -1 && mNativeTypes[i].mMaxPrec > -1 &&
-           ( field.precision() < mNativeTypes[i].mMinPrec || field.precision() > mNativeTypes[i].mMaxPrec ) )
+      if ( nativeType.mMinPrec > -1 && nativeType.mMaxPrec > -1 &&
+           ( field.precision() < nativeType.mMinPrec || field.precision() > nativeType.mMaxPrec ) )
       {
         // source precision exceeds destination limits
         continue;
@@ -523,6 +532,16 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString
   return v;
 }
 
+QgsTransaction* QgsVectorDataProvider::transaction() const
+{
+  return nullptr;
+}
+
+void QgsVectorDataProvider::forceReload()
+{
+  emit dataChanged();
+}
+
 static bool _compareEncodings( const QString& s1, const QString& s2 )
 {
   return s1.toLower() < s2.toLower();
@@ -606,7 +625,12 @@ QStringList QgsVectorDataProvider::errors() const
   return mErrors;
 }
 
-void QgsVectorDataProvider::pushError( const QString& msg )
+bool QgsVectorDataProvider::isSaveAndLoadStyleToDBSupported() const
+{
+  return false;
+}
+
+void QgsVectorDataProvider::pushError( const QString& msg ) const
 {
   QgsDebugMsg( msg );
   mErrors << msg;
@@ -715,6 +739,16 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
     return new QgsGeometry( outputGeom );
   }
   return nullptr;
+}
+
+void QgsVectorDataProvider::setNativeTypes( const QList<NativeType>& nativeTypes )
+{
+  mNativeTypes = nativeTypes;
+}
+
+QTextCodec* QgsVectorDataProvider::textEncoding() const
+{
+  return mEncoding;
 }
 
 QStringList QgsVectorDataProvider::smEncodings;

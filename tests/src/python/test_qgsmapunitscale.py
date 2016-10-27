@@ -140,6 +140,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertAlmostEqual(sf, 0.5, places=5)
         sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
+        sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 33.4800668, places=5)
         sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -150,6 +152,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
+        sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 33.4800668, places=5)
         sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
         c.minScale = 0
@@ -161,6 +165,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
+        sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 33.4800668, places=5)
         sf = QgsSymbolLayerUtils.lineWidthScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -182,6 +188,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertAlmostEqual(size, 1.0, places=5)
         size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 23.622047, places=5)
+        size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 66.9601332, places=5)
         size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
@@ -193,6 +201,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 23.622047, places=5)
+        size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 66.9601332, places=5)
         size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
         c.minSizeMMEnabled = False
@@ -205,6 +215,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 23.622047, places=5)
+        size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 66.9601332, places=5)
         size = QgsSymbolLayerUtils.convertToPainterUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
@@ -226,6 +238,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertEqual(size, 2.0)
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerUtils.convertToMapUnits(r, 5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833, places=5)
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
 
@@ -237,6 +251,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerUtils.convertToMapUnits(r, 5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833, places=5)
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.minSizeMMEnabled = False
@@ -249,6 +265,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerUtils.convertToMapUnits(r, 5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833, places=5)
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.maxSizeMMEnabled = False
@@ -260,6 +278,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerUtils.convertToMapUnits(r, 5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833, places=5)
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.minScale = 0
@@ -271,6 +291,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
+        size = QgsSymbolLayerUtils.convertToMapUnits(r, 5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833, places=5)
         size = QgsSymbolLayerUtils.convertToMapUnits(r, 2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.maxScale = 0
@@ -293,6 +315,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertAlmostEqual(sf, 0.5, places=5)
         sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
+        sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 33.48006689762, places=5)
         sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -303,6 +327,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 11.811023, places=5)
+        sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 33.48006689762, places=5)
         sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
         c.minScale = 0
@@ -314,6 +340,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # only conversion from mapunits should be affected
         sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 11.8110236, places=5)
+        sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 33.48006689762, places=5)
         sf = QgsSymbolLayerUtils.pixelSizeScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
@@ -333,6 +361,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
         sf = QgsSymbolLayerUtils.mapUnitScaleFactor(r, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(sf, 23.622047, places=5)
+        sf = QgsSymbolLayerUtils.mapUnitScaleFactor(r, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 66.9601332, places=5)
         sf = QgsSymbolLayerUtils.mapUnitScaleFactor(r, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 2.0, places=5)
 

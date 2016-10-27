@@ -44,7 +44,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     explicit QgsFieldComboBox( QWidget *parent = nullptr );
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( const QgsFieldProxyModel::Filters& filters );
+    void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }

@@ -34,7 +34,7 @@
 #include <QDomElement>
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol* symbol )
-    : QgsFeatureRenderer( "singleSymbol" )
+    : QgsFeatureRenderer( QStringLiteral( "singleSymbol" ) )
     , mSymbol( symbol )
 {
   Q_ASSERT( symbol );
@@ -93,7 +93,7 @@ void QgsSingleSymbolRenderer::setSymbol( QgsSymbol* s )
 
 QString QgsSingleSymbolRenderer::dump() const
 {
-  return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "";
+  return mSymbol.data() ? QStringLiteral( "SINGLE: %1" ).arg( mSymbol->dump() ) : QLatin1String( "" );
 }
 
 QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::clone() const
@@ -104,18 +104,20 @@ QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::clone() const
   return r;
 }
 
-void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
 {
-  QDomElement ruleElem = doc.createElement( "se:Rule" );
+  QgsStringMap newProps = props;
+
+  QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
 
-  QDomElement nameElem = doc.createElement( "se:Name" );
-  nameElem.appendChild( doc.createTextNode( "Single symbol" ) );
+  QDomElement nameElem = doc.createElement( QStringLiteral( "se:Name" ) );
+  nameElem.appendChild( doc.createTextNode( QStringLiteral( "Single symbol" ) ) );
   ruleElem.appendChild( nameElem );
 
-  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
+  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, newProps );
 
-  if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
+  if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, newProps );
 }
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
@@ -129,32 +131,32 @@ QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
 
 QgsFeatureRenderer* QgsSingleSymbolRenderer::create( QDomElement& element )
 {
-  QDomElement symbolsElem = element.firstChildElement( "symbols" );
+  QDomElement symbolsElem = element.firstChildElement( QStringLiteral( "symbols" ) );
   if ( symbolsElem.isNull() )
     return nullptr;
 
   QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
 
-  if ( !symbolMap.contains( "0" ) )
+  if ( !symbolMap.contains( QStringLiteral( "0" ) ) )
     return nullptr;
 
-  QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer( symbolMap.take( "0" ) );
+  QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer( symbolMap.take( QStringLiteral( "0" ) ) );
 
   // delete symbols if there are any more
   QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
 
-  QDomElement rotationElem = element.firstChildElement( "rotation" );
-  if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
+  QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
+  if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    convertSymbolRotation( r->mSymbol.data(), rotationElem.attribute( "field" ) );
+    convertSymbolRotation( r->mSymbol.data(), rotationElem.attribute( QStringLiteral( "field" ) ) );
   }
 
-  QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
+  QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
+  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
     convertSymbolSizeScale( r->mSymbol.data(),
-                            QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
-                            sizeScaleElem.attribute( "field" ) );
+                            QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
+                            sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
   }
 
   // TODO: symbol levels
@@ -166,7 +168,7 @@ QgsFeatureRenderer* QgsSingleSymbolRenderer::createFromSld( QDomElement& element
   // XXX this renderer can handle only one Rule!
 
   // get the first Rule element
-  QDomElement ruleElem = element.firstChildElement( "Rule" );
+  QDomElement ruleElem = element.firstChildElement( QStringLiteral( "Rule" ) );
   if ( ruleElem.isNull() )
   {
     QgsDebugMsg( "no Rule elements found!" );
@@ -180,39 +182,39 @@ QgsFeatureRenderer* QgsSingleSymbolRenderer::createFromSld( QDomElement& element
   QDomElement childElem = ruleElem.firstChildElement();
   while ( !childElem.isNull() )
   {
-    if ( childElem.localName() == "Name" )
+    if ( childElem.localName() == QLatin1String( "Name" ) )
     {
       // <se:Name> tag contains the rule identifier,
       // so prefer title tag for the label property value
       if ( label.isEmpty() )
         label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == "Description" )
+    else if ( childElem.localName() == QLatin1String( "Description" ) )
     {
       // <se:Description> can contains a title and an abstract
-      QDomElement titleElem = childElem.firstChildElement( "Title" );
+      QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
       if ( !titleElem.isNull() )
       {
         label = titleElem.firstChild().nodeValue();
       }
 
-      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
+      QDomElement abstractElem = childElem.firstChildElement( QStringLiteral( "Abstract" ) );
       if ( !abstractElem.isNull() )
       {
         description = abstractElem.firstChild().nodeValue();
       }
     }
-    else if ( childElem.localName() == "Abstract" )
+    else if ( childElem.localName() == QLatin1String( "Abstract" ) )
     {
       // <sld:Abstract> (v1.0)
       description = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == "Title" )
+    else if ( childElem.localName() == QLatin1String( "Title" ) )
     {
       // <sld:Title> (v1.0)
       label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName().endsWith( "Symbolizer" ) )
+    else if ( childElem.localName().endsWith( QLatin1String( "Symbolizer" ) ) )
     {
       // create symbol layers for this symbolizer
       QgsSymbolLayerUtils::createSymbolLayerListFromSld( childElem, geomType, layers );
@@ -252,19 +254,19 @@ QgsFeatureRenderer* QgsSingleSymbolRenderer::createFromSld( QDomElement& element
 QDomElement QgsSingleSymbolRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( "type", "singleSymbol" );
-  rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singleSymbol" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
 
   QgsSymbolMap symbols;
-  symbols["0"] = mSymbol.data();
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
+  symbols[QStringLiteral( "0" )] = mSymbol.data();
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc );
   rendererElem.appendChild( symbolsElem );
 
-  QDomElement rotationElem = doc.createElement( "rotation" );
+  QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
   rendererElem.appendChild( rotationElem );
 
-  QDomElement sizeScaleElem = doc.createElement( "sizescale" );
+  QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
   rendererElem.appendChild( sizeScaleElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
@@ -272,11 +274,11 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument& doc )
 
   if ( !mOrderBy.isEmpty() )
   {
-    QDomElement orderBy = doc.createElement( "orderby" );
+    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }
@@ -348,17 +350,17 @@ void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString& key, QgsSymbol
 QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   QgsSingleSymbolRenderer* r = nullptr;
-  if ( renderer->type() == "singleSymbol" )
+  if ( renderer->type() == QLatin1String( "singleSymbol" ) )
   {
     r = dynamic_cast<QgsSingleSymbolRenderer*>( renderer->clone() );
   }
-  else if ( renderer->type() == "pointDisplacement" || renderer->type() == "pointCluster" )
+  else if ( renderer->type() == QLatin1String( "pointDisplacement" ) || renderer->type() == QLatin1String( "pointCluster" ) )
   {
     const QgsPointDistanceRenderer* pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer*>( renderer );
     if ( pointDistanceRenderer )
       r = convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
   }
-  else if ( renderer->type() == "invertedPolygonRenderer" )
+  else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
     if ( invertedPolygonRenderer )

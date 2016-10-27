@@ -90,7 +90,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
-    if ( *it != "pointDisplacement" && *it != "pointCluster" && *it != "heatmapRenderer" )
+    if ( *it != QLatin1String( "pointDisplacement" ) && *it != QLatin1String( "pointCluster" ) && *it != QLatin1String( "heatmapRenderer" ) )
     {
       QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
@@ -98,11 +98,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   mCircleColorButton->setColorDialogTitle( tr( "Select color" ) );
-  mCircleColorButton->setContext( "symbology" );
+  mCircleColorButton->setContext( QStringLiteral( "symbology" ) );
   mCircleColorButton->setAllowAlpha( true );
   mCircleColorButton->setShowNoColor( true );
   mCircleColorButton->setNoColorString( tr( "No outline" ) );
-  mLabelColorButton->setContext( "symbology" );
+  mLabelColorButton->setContext( QStringLiteral( "symbology" ) );
   mLabelColorButton->setColorDialogTitle( tr( "Select color" ) );
   mLabelColorButton->setAllowAlpha( true );
 
@@ -171,7 +171,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChan
   {
     if ( text == tr( "None" ) )
     {
-      mRenderer->setLabelAttributeName( "" );
+      mRenderer->setLabelAttributeName( QLatin1String( "" ) );
     }
     else
     {
@@ -218,8 +218,8 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
     QgsSymbolWidgetContext context = mContext;
 
     QgsExpressionContextScope scope;
-    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
-    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+    scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
+    scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
     QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
     scopes << scope;
     context.setAdditionalExpressionContextScopes( scopes );
@@ -311,7 +311,7 @@ void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateC
 {
   if ( state == Qt::Unchecked )
   {
-    mMaxScaleDenominatorEdit->setText( "-1" );
+    mMaxScaleDenominatorEdit->setText( QStringLiteral( "-1" ) );
     mMaxScaleDenominatorEdit->setEnabled( false );
   }
   else
@@ -366,8 +366,8 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   QgsSymbolWidgetContext context = mContext;
 
   QgsExpressionContextScope scope;
-  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
-  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
   QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
   scopes << scope;
   context.setAdditionalExpressionContextScopes( scopes );

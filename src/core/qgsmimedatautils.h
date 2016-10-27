@@ -76,5 +76,7 @@ class CORE_EXPORT QgsMimeDataUtils
 
 };
 
+Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList );
+
 #endif // QGSMIMEDATAUTILS_H
 

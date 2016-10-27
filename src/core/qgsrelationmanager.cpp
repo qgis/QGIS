@@ -155,7 +155,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
 {
   mRelations.clear();
 
-  QDomNodeList nodes = doc.elementsByTagName( "relations" );
+  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "relations" ) );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
@@ -177,7 +177,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
 
 void QgsRelationManager::writeProject( QDomDocument & doc )
 {
-  QDomNodeList nl = doc.elementsByTagName( "qgis" );
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
     QgsDebugMsg( "Unable to find qgis element in project file" );
@@ -185,7 +185,7 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one
 
-  QDomElement relationsNode = doc.createElement( "relations" );
+  QDomElement relationsNode = doc.createElement( QStringLiteral( "relations" ) );
   qgisNode.appendChild( relationsNode );
 
   Q_FOREACH ( const QgsRelation& relation, mRelations )

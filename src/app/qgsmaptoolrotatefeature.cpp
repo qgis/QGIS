@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
 #include "qgsvertexmarker.h"
@@ -57,7 +56,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *pare
   mAngleSpinBox = new QgsDoubleSpinBox( this );
   mAngleSpinBox->setMinimum( -360 );
   mAngleSpinBox->setMaximum( 360 );
-  mAngleSpinBox->setSuffix( QString::fromUtf8( "°" ) );
+  mAngleSpinBox->setSuffix( QStringLiteral( "°" ) );
   mAngleSpinBox->setSingleStep( 1 );
   mAngleSpinBox->setValue( 0 );
   mAngleSpinBox->setShowClearButton( false );
@@ -67,7 +66,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *pare
   mMagnetSpinBox->setMinimum( 0 );
   mMagnetSpinBox->setMaximum( 180 );
   mMagnetSpinBox->setPrefix( tr( "Snap to " ) );
-  mMagnetSpinBox->setSuffix( QString::fromUtf8( "°" ) );
+  mMagnetSpinBox->setSuffix( QStringLiteral( "°" ) );
   mMagnetSpinBox->setSingleStep( 15 );
   mMagnetSpinBox->setValue( 0 );
   mMagnetSpinBox->setClearValue( 0, tr( "No snapping" ) );
@@ -463,7 +462,7 @@ void QgsMapToolRotateFeature::createRotationWidget()
 
   deleteRotationWidget();
 
-  mRotationWidget = new QgsAngleMagnetWidget( "Rotation:" );
+  mRotationWidget = new QgsAngleMagnetWidget( QStringLiteral( "Rotation:" ) );
   QgisApp::instance()->addUserInputWidget( mRotationWidget );
   mRotationWidget->setFocus( Qt::TabFocusReason );
 

@@ -71,7 +71,7 @@
 #include <QVector>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl )
+    : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
     // Constant that signals property not used.
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
     , mDefaultStandardDeviation( 0 )
@@ -151,12 +151,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.png" ) );
 
-  pbnAddValuesManually->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
-  pbnAddValuesFromDisplay->setIcon( QgsApplication::getThemeIcon( "/mActionContextHelp.png" ) );
-  pbnRemoveSelectedRow->setIcon( QgsApplication::getThemeIcon( "/symbologyRemove.svg" ) );
-  pbnDefaultValues->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
-  pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
-  pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
+  pbnAddValuesManually->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+  pbnAddValuesFromDisplay->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionContextHelp.png" ) ) );
+  pbnRemoveSelectedRow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+  pbnDefaultValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
+  pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
+  pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -207,13 +207,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       if ( myRasterPyramidIterator->exists )
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                        QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
+                                        QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
                                         QString::number( myRasterPyramidIterator->yDim ) ) );
       }
       else
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                        QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
+                                        QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
                                         QString::number( myRasterPyramidIterator->yDim ) ) );
       }
     }
@@ -238,7 +238,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mCrsSelector->setCrs( mRasterLayer->crs() );
 
   // Set text for pyramid info box
-  QString pyramidFormat( "<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>" );
+  QString pyramidFormat( QStringLiteral( "<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>" ) );
   QString pyramidHeader    = tr( "Description" );
   QString pyramidSentence1 = tr( "Large resolution raster layers can slow navigation in QGIS." );
   QString pyramidSentence2 = tr( "By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom." );
@@ -269,11 +269,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
     {
-      if ( zoomedInResampler->type() == "bilinear" )
+      if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
       {
         mZoomedInResamplingComboBox->setCurrentIndex( 1 );
       }
-      else if ( zoomedInResampler->type() == "cubic" )
+      else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
       {
         mZoomedInResamplingComboBox->setCurrentIndex( 2 );
       }
@@ -286,7 +286,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     const QgsRasterResampler* zoomedOutResampler = resampleFilter->zoomedOutResampler();
     if ( zoomedOutResampler )
     {
-      if ( zoomedOutResampler->type() == "bilinear" ) //bilinear resampler does averaging when zooming out
+      if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
       {
         mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
       }
@@ -299,7 +299,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   }
 
   btnColorizeColor->setColorDialogTitle( tr( "Select color" ) );
-  btnColorizeColor->setContext( "symbology" );
+  btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
 
   // Hue and saturation color control
   const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
@@ -333,9 +333,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       bandName = provider->generateBandName( i );
 
       QString colorInterp = provider->colorInterpretationName( i );
-      if ( colorInterp != "Undefined" )
+      if ( colorInterp != QLatin1String( "Undefined" ) )
       {
-        bandName.append( QString( " (%1)" ).arg( colorInterp ) );
+        bandName.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
       }
       cboxTransparencyBand->addItem( bandName, i );
     }
@@ -362,11 +362,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   }
 
   //insert renderer widgets into registry
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "paletted", QgsPalettedRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "multibandcolor", QgsMultiBandColorRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandpseudocolor", QgsSingleBandPseudoColorRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandgray", QgsSingleBandGrayRendererWidget::create );
-  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "hillshade", QgsHillshadeRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "paletted" ), QgsPalettedRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "multibandcolor" ), QgsMultiBandColorRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
@@ -374,8 +374,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
     {
-      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != "singlebandcolordata" ) ||
-          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == "singlebandcolordata" ) )
+      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
+          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == QLatin1String( "singlebandcolordata" ) ) )
       {
         mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
       }
@@ -403,7 +403,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
     }
 #endif
-    if ( rendererType == "singlebandcolordata" && mRenderTypeComboBox->count() == 1 )
+    if ( rendererType == QLatin1String( "singlebandcolordata" ) && mRenderTypeComboBox->count() == 1 )
     {
       // no band rendering options for singlebandcolordata, so minimize group box
       QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
@@ -421,13 +421,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QString( "/Windows/RasterLayerProperties/tab" ) ) )
+  if ( !settings.contains( QStringLiteral( "/Windows/RasterLayerProperties/tab" ) ) )
   {
-    settings.setValue( QString( "/Windows/RasterLayerProperties/tab" ),
+    settings.setValue( QStringLiteral( "/Windows/RasterLayerProperties/tab" ),
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.svg" ) );
+  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
 
   QString title = QString( tr( "Layer Properties - %1" ) ).arg( lyr->name() );
   restoreOptionsBaseUi( title );
@@ -686,7 +686,7 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    leNoDataValue->insert( "" );
+    leNoDataValue->insert( QLatin1String( "" ) );
   }
 
   populateTransparencyTable( mRasterLayer->renderer() );
@@ -1035,28 +1035,28 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   disconnect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
   if ( !res.isNull() )
   {
-    if ( res == "ERROR_WRITE_ACCESS" )
+    if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
     {
       QMessageBox::warning( this, tr( "Write access denied" ),
                             tr( "Write access denied. Adjust the file permissions and try again." ) );
     }
-    else if ( res == "ERROR_WRITE_FORMAT" )
+    else if ( res == QLatin1String( "ERROR_WRITE_FORMAT" ) )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "The file was not writable. Some formats do not "
                                 "support pyramid overviews. Consult the GDAL documentation if in doubt." ) );
     }
-    else if ( res == "FAILED_NOT_SUPPORTED" )
+    else if ( res == QLatin1String( "FAILED_NOT_SUPPORTED" ) )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building pyramid overviews is not supported on this type of raster." ) );
     }
-    else if ( res == "ERROR_JPEG_COMPRESSION" )
+    else if ( res == QLatin1String( "ERROR_JPEG_COMPRESSION" ) )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." ) );
     }
-    else if ( res == "ERROR_VIRTUAL" )
+    else if ( res == QLatin1String( "ERROR_VIRTUAL" ) )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building pyramid overviews is not supported on this type of raster." ) );
@@ -1081,13 +1081,13 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     if ( myRasterPyramidIterator->exists )
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                      QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
+                                      QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
                                       QString::number( myRasterPyramidIterator->yDim ) ) );
     }
     else
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                      QString::number( myRasterPyramidIterator->xDim ) + QLatin1String( " x " ) +
+                                      QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( " x " ) +
                                       QString::number( myRasterPyramidIterator->yDim ) ) );
     }
   }
@@ -1271,11 +1271,11 @@ void QgsRasterLayerProperties::adjustTransparencyCellWidth( int row, int column 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 {
   QSettings myQSettings;
-  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
+  QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
-    if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    if ( !myFileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
     {
       myFileName = myFileName + ".txt";
     }
@@ -1437,7 +1437,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
   bool myImportError = false;
   QString myBadLines;
   QSettings myQSettings;
-  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", QDir::homePath() ).toString();
+  QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
@@ -1730,7 +1730,7 @@ void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 void QgsRasterLayerProperties::loadStyle_clicked()
 {
   QSettings settings;
-  QString lastUsedDir = settings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName(
                        this,
@@ -1741,8 +1741,8 @@ void QgsRasterLayerProperties::loadStyle_clicked()
     return;
 
   // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( ".qml", Qt::CaseInsensitive ) )
-    fileName += ".qml";
+  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".qml" );
 
   mOldStyle = mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() );
 
@@ -1750,7 +1750,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
   QString message = mRasterLayer->loadNamedStyle( fileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
   {
-    settings.setValue( "style/lastStyleDir", QFileInfo( fileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
     syncToLayer();
   }
   else
@@ -1763,7 +1763,7 @@ void QgsRasterLayerProperties::loadStyle_clicked()
 void QgsRasterLayerProperties::saveStyleAs_clicked()
 {
   QSettings settings;
-  QString lastUsedDir = settings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,
@@ -1774,15 +1774,15 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
     return;
 
   // ensure the user never omits the extension from the file name
-  if ( !outputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
-    outputFileName += ".qml";
+  if ( !outputFileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
+    outputFileName += QLatin1String( ".qml" );
 
   apply(); // make sure the style to save is uptodate
 
   bool defaultLoadedFlag = false;
   QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
-    settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
   else
     QMessageBox::information( this, tr( "Saved Style" ), message );
 }
@@ -1821,7 +1821,7 @@ void QgsRasterLayerProperties::onCancel()
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())
     QString myMessage;
-    QDomDocument doc( "qgis" );
+    QDomDocument doc( QStringLiteral( "qgis" ) );
     int errorLine, errorColumn;
     doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
     mRasterLayer->importNamedStyle( doc, myMessage );

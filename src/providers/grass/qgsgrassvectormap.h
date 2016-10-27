@@ -93,19 +93,19 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QgsAbstractGeometry * nodeGeometry( int id );
     QgsAbstractGeometry * areaGeometry( int id );
 
-    /** Open map if not yet open. Open/close lock */
+    //! Open map if not yet open. Open/close lock
     bool open();
 
-    /** Close map. All iterators are closed first. Open/close lock. */
+    //! Close map. All iterators are closed first. Open/close lock.
     void close();
 
-    /** Open GRASS map, no open/close locking */
+    //! Open GRASS map, no open/close locking
     bool openMap();
 
-    /** Close GRASS map, no open/close locking */
+    //! Close GRASS map, no open/close locking
     void closeMap();
 
-    /** Reload layers from (reopened) map. The layers keep field/type. */
+    //! Reload layers from (reopened) map. The layers keep field/type.
     void reloadLayers();
 
     bool startEdit();
@@ -136,7 +136,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
      */
     bool attributesOutdated();
 
-    /** Map descripton for debugging */
+    //! Map descripton for debugging
     QString toString();
 
     /** Get topology symbol code
@@ -144,7 +144,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
      * @param type geometry type */
     TopoSymbol topoSymbol( int lid );
 
-    static QString topoSymbolFieldName() { return "topo_symbol" ; }
+    static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
 
     void printDebug();
 
@@ -153,14 +153,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
      * Qt::DirectConnection (non blocking) */
     void cancelIterators();
 
-    /** Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection */
+    //! Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection
     void closeIterators();
 
-    /** Emitted when data were reloaded */
+    //! Emitted when data were reloaded
     void dataChanged();
 
   private:
-    /** Close iterators, blocking */
+    //! Close iterators, blocking
     void closeAllIterators();
 
     QgsGrassObject mGrassObject;
@@ -231,7 +231,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     QgsGrassVectorMap * openMap( const QgsGrassObject & grassObject );
 
   private:
-    /** Open vector maps */
+    //! Open vector maps
     QList<QgsGrassVectorMap*> mMaps;
 
     // Lock open/close map

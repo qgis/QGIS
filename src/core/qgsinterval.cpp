@@ -39,7 +39,7 @@ QgsInterval::QgsInterval( double seconds )
     , mValid( true )
 { }
 
-bool QgsInterval::operator==( const QgsInterval& other ) const
+bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )
     return true;
@@ -63,13 +63,13 @@ QgsInterval QgsInterval::fromString( const QString& string )
   }
 
   QMap<int, QStringList> map;
-  map.insert( 1, QStringList() << "second" << "seconds" << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' ) );
-  map.insert( 0 + MINUTE, QStringList() << "minute" << "minutes" << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( '|' ) );
-  map.insert( 0 + HOUR, QStringList() << "hour" << "hours" << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' ) );
-  map.insert( 0 + DAY, QStringList() << "day" << "days" << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( '|' ) );
-  map.insert( 0 + WEEKS, QStringList() << "week" << "weeks" << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' ) );
-  map.insert( 0 + MONTHS, QStringList() << "month" << "months" << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
-  map.insert( 0 + YEARS, QStringList() << "year" << "years" << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
+  map.insert( 1, QStringList() << QStringLiteral( "second" ) << QStringLiteral( "seconds" ) << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' ) );
+  map.insert( 0 + MINUTE, QStringList() << QStringLiteral( "minute" ) << QStringLiteral( "minutes" ) << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( '|' ) );
+  map.insert( 0 + HOUR, QStringList() << QStringLiteral( "hour" ) << QStringLiteral( "hours" ) << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' ) );
+  map.insert( 0 + DAY, QStringList() << QStringLiteral( "day" ) << QStringLiteral( "days" ) << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( '|' ) );
+  map.insert( 0 + WEEKS, QStringList() << QStringLiteral( "week" ) << QStringLiteral( "weeks" ) << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' ) );
+  map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
+  map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
   Q_FOREACH ( const QString& match, list )
   {
@@ -125,18 +125,18 @@ QgsInterval operator-( const QDateTime& dt1, const QDateTime& dt2 )
   return QgsInterval( mSeconds / 1000.0 );
 }
 
-QDateTime operator+( const QDateTime& start, const QgsInterval& interval )
+QDateTime operator+( const QDateTime& start, QgsInterval interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }
 
-QgsInterval operator-( const QDate& date1, const QDate& date2 )
+QgsInterval operator-( QDate date1, QDate date2 )
 {
   qint64 seconds = static_cast< qint64 >( date2.daysTo( date1 ) ) * 24 * 60 * 60;
   return QgsInterval( seconds );
 }
 
-QgsInterval operator-( const QTime& time1, const QTime& time2 )
+QgsInterval operator-( QTime time1, QTime time2 )
 {
   qint64 mSeconds = time2.msecsTo( time1 );
   return QgsInterval( mSeconds / 1000.0 );

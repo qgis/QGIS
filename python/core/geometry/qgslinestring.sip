@@ -120,6 +120,7 @@ class QgsLineString: public QgsCurve
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     int numPoints() const;
+    virtual int nCoordinates() const;
     void points( QList<QgsPointV2>& pt ) const;
 
     void draw( QPainter& p ) const;

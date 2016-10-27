@@ -48,7 +48,7 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
   }
 
   // Add an empty widget at the end
-  setRow( i, QgsFeatureRequest::OrderByClause( "" ) );
+  setRow( i, QgsFeatureRequest::OrderByClause( QLatin1String( "" ) ) );
 }
 
 QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
@@ -103,7 +103,7 @@ void QgsOrderByDialog::onExpressionChanged( const QString& expression )
   else if ( !expression.isEmpty() && row == mOrderByTableWidget->rowCount() - 1 )
   {
     mOrderByTableWidget->insertRow( mOrderByTableWidget->rowCount() );
-    setRow( row + 1, QgsFeatureRequest::OrderByClause( "" ) );
+    setRow( row + 1, QgsFeatureRequest::OrderByClause( QLatin1String( "" ) ) );
   }
 }
 

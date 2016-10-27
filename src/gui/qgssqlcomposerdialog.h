@@ -134,7 +134,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void addApis( const QStringList& list );
 
     //! set if multiple tables/joins are supported. Default is false
-    void setSupportMultipleTables( bool bMultipleTables, QString mainTypename = QString() );
+    void setSupportMultipleTables( bool bMultipleTables, const QString &mainTypename = QString() );
 
     /** Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.

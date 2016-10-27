@@ -23,6 +23,7 @@
 #include <QDomDocument>
 #include <QCoreApplication>
 #include <QSet>
+#include <functional>
 
 #include "qgis.h"
 #include "qgsunittypes.h"
@@ -180,10 +181,17 @@ class CORE_EXPORT QgsExpression
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
      * @see referencedAttributeIndexes()
-     *
-     * TODO QGIS3: Return QSet<QString>
      */
     QSet<QString> referencedColumns() const;
+
+    /**
+     * Return a list of all variables which are used in this expression.
+     * If the list contains a NULL QString, there is a variable name used
+     * which is determined at runtime.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<QString> referencedVariables() const;
 
     /**
      * Return a list of field name indexes obtained from the provided fields.
@@ -438,6 +446,8 @@ class CORE_EXPORT QgsExpression
      */
     typedef QVariant( *FcnEval )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
+    class NodeFunction;
+
     /** \ingroup core
       * A abstract base class for defining QgsExpression functions.
       */
@@ -450,17 +460,33 @@ class CORE_EXPORT QgsExpression
                   int params,
                   const QString& group,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
             : mName( fnname )
             , mParams( params )
-            , mUsesGeometry( usesGeometry )
-            , mGroup( group )
+            , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
             , mHelpText( helpText )
-            , mReferencedColumns( referencedColumns )
+            , mLazyEval( lazyEval )
+            , mHandlesNull( handlesNull )
+            , mIsContextual( isContextual )
+        {
+        }
+
+        /** Constructor for function which uses unnamed parameters and group list
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  int params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+            : mName( fnname )
+            , mParams( params )
+            , mGroups( groups )
+            , mHelpText( helpText )
             , mLazyEval( lazyEval )
             , mHandlesNull( handlesNull )
             , mIsContextual( isContextual )
@@ -474,18 +500,34 @@ class CORE_EXPORT QgsExpression
                   const ParameterList& params,
                   const QString& group,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
             : mName( fnname )
             , mParams( 0 )
             , mParameterList( params )
-            , mUsesGeometry( usesGeometry )
-            , mGroup( group )
+            , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
             , mHelpText( helpText )
-            , mReferencedColumns( referencedColumns )
+            , mLazyEval( lazyEval )
+            , mHandlesNull( handlesNull )
+            , mIsContextual( isContextual )
+        {}
+
+        /** Constructor for function which uses named parameter list and group list.
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  const ParameterList& params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+            : mName( fnname )
+            , mParams( 0 )
+            , mParameterList( params )
+            , mGroups( groups )
+            , mHelpText( helpText )
             , mLazyEval( lazyEval )
             , mHandlesNull( handlesNull )
             , mIsContextual( isContextual )
@@ -493,13 +535,13 @@ class CORE_EXPORT QgsExpression
 
         virtual ~Function() {}
 
-        /** The name of the function. */
+        //! The name of the function.
         QString name() const { return mName; }
 
-        /** The number of parameters this function takes. */
+        //! The number of parameters this function takes.
         int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
 
-        /** The mininum number of parameters this function takes. */
+        //! The mininum number of parameters this function takes.
         int minParams() const
         {
           if ( mParameterList.isEmpty() )
@@ -519,8 +561,8 @@ class CORE_EXPORT QgsExpression
         */
         const ParameterList& parameters() const { return mParameterList; }
 
-        /** Does this function use a geometry object. */
-        bool usesGeometry() const { return mUsesGeometry; }
+        //! Does this function use a geometry object.
+        virtual bool usesGeometry( const NodeFunction* node ) const;
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -534,17 +576,39 @@ class CORE_EXPORT QgsExpression
          * Functions are non lazy default and will be given the node return value when called **/
         bool lazyEval() const { return mLazyEval; }
 
-        virtual QSet<QString> referencedColumns() const { return mReferencedColumns; }
+        /**
+         * Returns a set of field names which are required for this function.
+         * May contain QgsFeatureRequest::AllAttributes to signal that all
+         * attributes are required.
+         * If in doubt this will return more fields than strictly required.
+         *
+         * @note Added in QGIS 3.0
+         */
+        virtual QSet<QString> referencedColumns( const NodeFunction* node ) const;
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
          */
         bool isContextual() const { return mIsContextual; }
 
-        /** The group the function belongs to. */
-        QString group() const { return mGroup; }
+        /** Returns true if the function is deprecated and should not be presented as a valid option
+         * to users in expression builders.
+         * @note added in QGIS 3.0
+         */
+        virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( QStringLiteral( "deprecated" ) ); }
 
-        /** The help text for the function. */
+        /** Returns the first group which the function belongs to.
+         * @note consider using groups() instead, as some functions naturally belong in multiple groups
+        */
+        QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
+
+        /** Returns a list of the groups the function belongs to.
+         * @note added in QGIS 3.0
+         * @see group()
+        */
+        QStringList groups() const { return mGroups; }
+
+        //! The help text for the function.
         const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
 
         /** Returns result of evaluating the function.
@@ -563,10 +627,8 @@ class CORE_EXPORT QgsExpression
         QString mName;
         int mParams;
         ParameterList mParameterList;
-        bool mUsesGeometry;
-        QString mGroup;
+        QStringList mGroups;
         QString mHelpText;
-        QSet<QString> mReferencedColumns;
         bool mLazyEval;
         bool mHandlesNull;
         bool mIsContextual; //if true function is only available through an expression context
@@ -592,9 +654,11 @@ class CORE_EXPORT QgsExpression
                         bool lazyEval = false,
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            : Function( fnname, params, group, helpText, lazyEval, handlesNull )
             , mFnc( fcn )
             , mAliases( aliases )
+            , mUsesGeometry( usesGeometry )
+            , mReferencedColumns( referencedColumns )
         {}
 
         /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
@@ -609,9 +673,53 @@ class CORE_EXPORT QgsExpression
                         bool lazyEval = false,
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            : Function( fnname, params, group, helpText, lazyEval, handlesNull )
             , mFnc( fcn )
             , mAliases( aliases )
+            , mUsesGeometry( usesGeometry )
+            , mReferencedColumns( referencedColumns )
+        {}
+
+        /**
+         * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
+         *
+         * Lambda functions can be provided that will be called to determine if a geometry is used an which
+         * columns are referenced.
+         * This is only required if this cannot be determined by calling each parameter node's usesGeometry() or
+         * referencedColumns() method. For example, an aggregate expression requires the geometry and all columns
+         * if the parent variable is used.
+         * If a nullptr is passed as a node to these functions, they should stay on the safe side and return if they
+         * could potentially require a geometry or columns.
+         */
+        StaticFunction( const QString& fnname,
+                        const ParameterList& params,
+                        FcnEval fcn,
+                        const QString& group,
+                        const QString& helpText,
+                        std::function < bool ( const NodeFunction* node ) > usesGeometry,
+                        std::function < QSet<QString>( const NodeFunction* node ) > referencedColumns,
+                        bool lazyEval = false,
+                        const QStringList& aliases = QStringList(),
+                        bool handlesNull = false );
+
+        /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
+         * of groups.
+         */
+        StaticFunction( const QString& fnname,
+                        const ParameterList& params,
+                        FcnEval fcn,
+                        const QStringList& groups,
+                        const QString& helpText = QString(),
+                        bool usesGeometry = false,
+                        const QSet<QString>& referencedColumns = QSet<QString>(),
+                        bool lazyEval = false,
+                        const QStringList& aliases = QStringList(),
+                        bool handlesNull = false )
+            : Function( fnname, params, groups, helpText, lazyEval, handlesNull )
+            , mFnc( fcn )
+            , mAliases( aliases )
+            , mUsesGeometry( usesGeometry )
+            , mReferencedColumns( referencedColumns )
         {}
 
         virtual ~StaticFunction() {}
@@ -629,9 +737,17 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList aliases() const override { return mAliases; }
 
+        virtual bool usesGeometry( const QgsExpression::NodeFunction* node ) const override;
+
+        virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction* node ) const override;
+
       private:
         FcnEval mFnc;
         QStringList mAliases;
+        bool mUsesGeometry;
+        std::function < bool( const NodeFunction* node ) > mUsesGeometryFunc;
+        std::function < QSet<QString>( const NodeFunction* node ) > mReferencedColumnsFunc;
+        QSet<QString> mReferencedColumns;
     };
 
     //! @note not available in Python bindings
@@ -778,6 +894,11 @@ class CORE_EXPORT QgsExpression
         virtual QSet<QString> referencedColumns() const = 0;
 
         /**
+         * Return a list of all variables which are used in this expression.
+         */
+        virtual QSet<QString> referencedVariables() const = 0;
+
+        /**
          * Abstract virtual method which returns if the geometry is required to evaluate
          * this expression.
          *
@@ -818,7 +939,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeList() : mHasNamedNodes( false ) {}
         virtual ~NodeList() { qDeleteAll( mList ); }
-        /** Takes ownership of the provided node */
+        //! Takes ownership of the provided node
         void append( Node* node ) { mList.append( node ); mNameList.append( QString() ); }
 
         /** Adds a named node. Takes ownership of the provided node.
@@ -834,13 +955,23 @@ class CORE_EXPORT QgsExpression
         //! @note added in QGIS 2.16
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
+        /**
+         * Get a list of all the nodes.
+         */
         QList<Node*> list() { return mList; }
+
+        /**
+         * Get the node at position i in the list.
+         *
+         * @note Added in QGIS 3.0
+         */
+        Node* at( int i ) { return mList.at( i ); }
 
         //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
         //! @note added in QGIS 2.16
         QStringList names() const { return mNameList; }
 
-        /** Creates a deep copy of this list. Ownership is transferred to the caller */
+        //! Creates a deep copy of this list. Ownership is transferred to the caller
         NodeList* clone() const;
 
         virtual QString dump() const;
@@ -873,7 +1004,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QSet<QString> referencedColumns() const override { return mOperand->referencedColumns(); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
         virtual Node* clone() const override;
 
@@ -904,6 +1036,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -948,6 +1081,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -975,13 +1109,14 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
         //! Tests whether the provided argument list is valid for the matching function
         static bool validateParams( int fnIndex, NodeList* args, QString& error );
 
-      protected:
+      private:
         int mFnIndex;
         NodeList* mArgs;
 
@@ -996,7 +1131,7 @@ class CORE_EXPORT QgsExpression
             : mValue( value )
         {}
 
-        /** The value of the literal. */
+        //! The value of the literal.
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
@@ -1004,7 +1139,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QSet<QString> referencedColumns() const override { return QSet<QString>(); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
         virtual Node* clone() const override;
 
@@ -1022,7 +1158,7 @@ class CORE_EXPORT QgsExpression
             , mIndex( -1 )
         {}
 
-        /** The name of the column. */
+        //! The name of the column.
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
@@ -1030,7 +1166,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QSet<QString> referencedColumns() const override { return QSet<QString>() << mName; }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
 
         virtual Node* clone() const override;
@@ -1082,6 +1219,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 

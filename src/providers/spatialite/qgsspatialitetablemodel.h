@@ -28,31 +28,31 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
 
     QgsSpatiaLiteTableModel();
     ~QgsSpatiaLiteTableModel();
-    /** Adds entry for one database table to the model*/
+    //! Adds entry for one database table to the model
     void addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql );
-    /** Sets an sql statement that belongs to a cell specified by a model index*/
+    //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex& index, const QString& sql );
     /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is dectected later by thread*/
     void setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type );
-    /** Returns the number of tables in the model*/
+    //! Returns the number of tables in the model
     int tableCount() const
     {
       return mTableCount;
     }
-    /** Sets the SQLite DB full path*/
+    //! Sets the SQLite DB full path
     void setSqliteDb( const QString & dbName )
     {
       mSqliteDb = dbName;
     }
 
   private:
-    /** Number of tables in the model*/
+    //! Number of tables in the model
     int mTableCount;
     QString mSqliteDb;
 
     QIcon iconForType( QgsWkbTypes::Type type ) const;
     QString displayStringForType( QgsWkbTypes::Type type ) const;
-    /** Returns qgis wkbtype from database typename*/
+    //! Returns qgis wkbtype from database typename
     QgsWkbTypes::Type qgisTypeFromDbType( const QString & dbType ) const;
 };

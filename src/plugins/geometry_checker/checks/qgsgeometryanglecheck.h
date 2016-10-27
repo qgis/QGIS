@@ -31,7 +31,7 @@ class QgsGeometryAngleCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal angle" ); }
-    QString errorName() const override { return "QgsGeometryAngleCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryAngleCheck" ); }
   private:
     enum ResolutionMethod { DeleteNode, NoChange };
     double mMinAngle;

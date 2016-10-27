@@ -241,7 +241,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   if ( string.isEmpty() )
     return features;
 
-  QString randomFileName = QString( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
+  QString randomFileName = QStringLiteral( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
 
   // create memory file system object from string buffer
   QByteArray ba = string.toUtf8();
@@ -274,7 +274,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   }
 
   OGR_DS_Destroy( hDS );
-  VSIUnlink( "/vsimem/clipboard.dat" );
+  VSIUnlink( TO8( randomFileName ) );
 
   return features;
 }
@@ -285,7 +285,7 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
   if ( string.isEmpty() )
     return fields;
 
-  QString randomFileName = QString( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
+  QString randomFileName = QStringLiteral( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
 
   // create memory file system object from buffer
   QByteArray ba = string.toUtf8();

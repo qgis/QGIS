@@ -56,10 +56,10 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 
   //create vector file writer
   QgsFields outputFields;
-  outputFields.append( QgsField( "id", QVariant::Int ) );
-  outputFields.append( QgsField( "station_id", QVariant::Int ) );
-  outputFields.append( QgsField( "stratum_id", QVariant::Int ) );
-  QgsVectorFileWriter writer( mOutputLayer, "UTF-8",
+  outputFields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "station_id" ), QVariant::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "stratum_id" ), QVariant::Int ) );
+  QgsVectorFileWriter writer( mOutputLayer, QStringLiteral( "UTF-8" ),
                               outputFields,
                               QgsWkbTypes::Point,
                               mInputLayer->crs() );
@@ -124,9 +124,9 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
     {
       //add feature to writer
       QgsFeature f( mNCreatedPoints );
-      f.setAttribute( "id", mNCreatedPoints + 1 );
-      f.setAttribute( "station_id", points + 1 );
-      f.setAttribute( "stratum_id", inputFeature.id() );
+      f.setAttribute( QStringLiteral( "id" ), mNCreatedPoints + 1 );
+      f.setAttribute( QStringLiteral( "station_id" ), points + 1 );
+      f.setAttribute( QStringLiteral( "stratum_id" ), inputFeature.id() );
       f.setGeometry( ptGeom );
       writer.addFeature( f );
       sIndex.insertFeature( f );

@@ -346,7 +346,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   }
   else
   {
-    visibleLayers = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( name ).toSet();
+    visibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( name ).toSet();
   }
 
   if ( visibleLayers.isEmpty() )
@@ -444,24 +444,24 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   //last dxf symbology mode
   QSettings s;
-  mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( "dxf", "/lastDxfSymbologyMode", s.value( "qgis/lastDxfSymbologyMode", "2" ).toString() ).toInt() );
+  mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), s.value( QStringLiteral( "qgis/lastDxfSymbologyMode" ), "2" ).toString() ).toInt() );
 
   //last symbol scale
   mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mScaleWidget->setScale( QgsProject::instance()->readEntry( "dxf", "/lastSymbologyExportScale", s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toString() ).toDouble() );
-  mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfLayerTitleAsName", s.value( "qgis/lastDxfLayerTitleAsName", "false" ).toString() ) != "false" );
-  mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfMapRectangle", s.value( "qgis/lastDxfMapRectangle", "false" ).toString() ) != "false" );
+  mScaleWidget->setScale( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), s.value( QStringLiteral( "qgis/lastSymbologyExportScale" ), "1/50000" ).toString() ).toDouble() );
+  mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfLayerTitleAsName" ), s.value( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), "false" ).toString() ) != QLatin1String( "false" ) );
+  mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfMapRectangle" ), s.value( QStringLiteral( "qgis/lastDxfMapRectangle" ), "false" ).toString() ) != QLatin1String( "false" ) );
 
-  QStringList ids = QgsProject::instance()->mapThemeCollection()->presets();
-  ids.prepend( "" );
+  QStringList ids = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  ids.prepend( QLatin1String( "" ) );
   mVisibilityPresets->addItems( ids );
-  mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( "dxf", "/lastVisibliltyPreset", "" ) ) );
+  mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastVisibliltyPreset" ), QLatin1String( "" ) ) ) );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  restoreGeometry( s.value( "/Windows/DxfExport/geometry" ).toByteArray() );
+  restoreGeometry( s.value( QStringLiteral( "/Windows/DxfExport/geometry" ) ).toByteArray() );
 
-  long crsid = QgsProject::instance()->readEntry( "dxf", "/lastDxfCrs",
-               s.value( "qgis/lastDxfCrs", QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toString()
+  long crsid = QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ),
+               s.value( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toString()
                                                 ).toLong();
   mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
   mCrsSelector->setCrs( mCRS );
@@ -470,7 +470,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
                                           "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncoding->addItems( QgsDxfExport::encodings() );
-  mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( "dxf", "/lastDxfEncoding", s.value( "qgis/lastDxfEncoding", "CP1252" ).toString() ) ) );
+  mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), s.value( QStringLiteral( "qgis/lastDxfEncoding" ), "CP1252" ).toString() ) ) );
 }
 
 
@@ -478,7 +478,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 {
   delete mLayerTreeGroup;
 
-  QSettings().setValue( "/Windows/DxfExport/geometry", saveGeometry() );
+  QSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
 }
 
 void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
@@ -567,7 +567,7 @@ void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 {
   //get last dxf save directory
   QSettings s;
-  QString lastSavePath = s.value( "qgis/lastDxfDir", QDir::homePath() ).toString();
+  QString lastSavePath = s.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString();
 
   QString filePath = QFileDialog::getSaveFileName( nullptr, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
   if ( !filePath.isEmpty() )
@@ -606,21 +606,21 @@ void QgsDxfExportDialog::saveSettings()
 {
   QSettings s;
   QFileInfo dxfFileInfo( mFileLineEdit->text() );
-  s.setValue( "qgis/lastDxfDir", dxfFileInfo.absolutePath() );
-  s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
-  s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
-  s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
-  s.setValue( "qgis/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
-  s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
-  s.setValue( "qgis/lastDxfCrs", QString::number( mCRS.srsid() ) );
+  s.setValue( QStringLiteral( "qgis/lastDxfDir" ), dxfFileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
+  s.setValue( QStringLiteral( "qgis/lastSymbologyExportScale" ), mScaleWidget->scale() );
+  s.setValue( QStringLiteral( "qgis/lastDxfMapRectangle" ), mMapExtentCheckBox->isChecked() );
+  s.setValue( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), mLayerTitleAsName->isChecked() );
+  s.setValue( QStringLiteral( "qgis/lastDxfEncoding" ), mEncoding->currentText() );
+  s.setValue( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
 
-  QgsProject::instance()->writeEntry( "dxf", "/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastSymbologyExportScale", mScaleWidget->scale() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastDxfEncoding", mEncoding->currentText() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastVisibilityPreset", mVisibilityPresets->currentText() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastDxfCrs", QString::number( mCRS.srsid() ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), mScaleWidget->scale() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfLayerTitleAsName" ), mLayerTitleAsName->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfMapRectangle" ), mMapExtentCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), mEncoding->currentText() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastVisibilityPreset" ), mVisibilityPresets->currentText() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
 }
 
 

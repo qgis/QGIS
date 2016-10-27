@@ -21,8 +21,8 @@
 #include "qgsafssourceselect.h"
 #include "qgsowsconnection.h"
 
-const QString AFS_KEY = "arcgisfeatureserver";
-const QString AFS_DESCRIPTION = "ArcGIS Feature Server data provider";
+const QString AFS_KEY = QStringLiteral( "arcgisfeatureserver" );
+const QString AFS_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
 
 
 QGISEXTERN QgsAfsProvider * classFactory( const QString *uri )
@@ -59,17 +59,17 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 {
   if ( thePath.isEmpty() )
   {
-    return new QgsAfsRootItem( parentItem, "ArcGisFeatureServer", "arcgisfeatureserver:" );
+    return new QgsAfsRootItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), QStringLiteral( "arcgisfeatureserver:" ) );
   }
 
   // path schema: afs:/connection name (used by OWS)
-  if ( thePath.startsWith( "afs:/" ) )
+  if ( thePath.startsWith( QLatin1String( "afs:/" ) ) )
   {
     QString connectionName = thePath.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( "ArcGisFeatureServer" ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "ArcGisFeatureServer" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( "ArcGisFeatureServer", connectionName );
-      return new QgsAfsConnectionItem( parentItem, "ArcGisFeatureServer", thePath, connection.uri().param( "url" ) );
+      QgsOwsConnection connection( QStringLiteral( "ArcGisFeatureServer" ), connectionName );
+      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), thePath, connection.uri().param( QStringLiteral( "url" ) ) );
     }
   }
 

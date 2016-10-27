@@ -28,10 +28,10 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
     , mPyFormVarName( pyFormName )
 {
   static int sLayerCounter = 0;
-  mPyLayerVarName = QString( "_qgis_layer_%1_%2" ).arg( form->layer()->id() ).arg( sLayerCounter++ );
-  mPyLayerVarName.replace( QRegExp( "[^a-zA-Z0-9_]" ), "_" ); // clean identifier
+  mPyLayerVarName = QStringLiteral( "_qgis_layer_%1_%2" ).arg( form->layer()->id() ).arg( sLayerCounter++ );
+  mPyLayerVarName.replace( QRegExp( "[^a-zA-Z0-9_]" ), QStringLiteral( "_" ) ); // clean identifier
 
-  QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
+  QString initLayer = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
                       .arg( mPyLayerVarName )
                       .arg(( unsigned long ) form->layer() );
 
@@ -40,7 +40,7 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
 
 QgsAttributeFormLegacyInterface::~QgsAttributeFormLegacyInterface()
 {
-  QString delLayer = QString( "del %1" ).arg( mPyLayerVarName );
+  QString delLayer = QStringLiteral( "del %1" ).arg( mPyLayerVarName );
   QgsPythonRunner::run( delLayer );
 }
 
@@ -58,14 +58,14 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   // Generate the unique ID of this feature. We used to use feature ID but some providers
   // return a ID that is an invalid python variable when we have new unsaved features.
   QDateTime dt = QDateTime::currentDateTime();
-  QString pyFeatureVarName = QString( "_qgis_feature_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
-  QString initFeature = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
+  QString pyFeatureVarName = QStringLiteral( "_qgis_feature_%1" ).arg( dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) ) );
+  QString initFeature = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
                         .arg( pyFeatureVarName )
                         .arg(( unsigned long ) & form()->feature() );
 
   QgsPythonRunner::run( initFeature );
 
-  QString expr = QString( "%1( %2, %3, %4)" )
+  QString expr = QStringLiteral( "%1( %2, %3, %4)" )
                  .arg( mPyFunctionName,
                        mPyFormVarName,
                        mPyLayerVarName,
@@ -73,6 +73,6 @@ void QgsAttributeFormLegacyInterface::featureChanged()
 
   QgsPythonRunner::run( expr );
 
-  QString delFeature = QString( "del %1" ).arg( pyFeatureVarName );
+  QString delFeature = QStringLiteral( "del %1" ).arg( pyFeatureVarName );
   QgsPythonRunner::run( delFeature );
 }

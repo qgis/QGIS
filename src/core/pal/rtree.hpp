@@ -444,6 +444,11 @@ namespace pal
         ASSERT( m_file );
         return fread( static_cast< void* >( a_array ), sizeof( TYPE ) * a_count, 1, m_file );
       }
+
+    private:
+
+      RTFileStream( const RTFileStream& other );
+      RTFileStream& operator=( const RTFileStream& other );
   };
 
 

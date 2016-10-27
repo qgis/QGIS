@@ -33,7 +33,7 @@ class QgsGeometryAreaCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal area" ); }
-    QString errorName() const override { return "QgsGeometryAreaCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryAreaCheck" ); }
   private:
     enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
 

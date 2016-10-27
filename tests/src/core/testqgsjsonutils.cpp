@@ -32,7 +32,7 @@ class TestQgsJSONUtils : public QObject
       }
 
       {
-        list << "one" << "<',\"\\>" << "two";
+        list << QStringLiteral( "one" ) << QStringLiteral( "<',\"\\>" ) << QStringLiteral( "two" );
         const QString json = QgsJSONUtils::encodeValue( list );
         QCOMPARE( json, QString( "[\"one\",\"<',\\\"\\\\>\",\"two\"]" ) );
         const QVariant back = QgsJSONUtils::parseArray( json, QVariant::String );
@@ -54,7 +54,7 @@ class TestQgsJSONUtils : public QObject
       }
 
       { // check invalid entries are ignored
-        const QVariantList back = QgsJSONUtils::parseArray( "[1,\"a\",-2]", QVariant::Int );
+        const QVariantList back = QgsJSONUtils::parseArray( QStringLiteral( "[1,\"a\",-2]" ), QVariant::Int );
         QCOMPARE( back, list );
       }
     }

@@ -32,8 +32,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      */
     enum Placement
     {
-      Ring, /*!< Place points in a single ring around group*/
-      ConcentricRings /*!< Place points in concentric rings around group*/
+      Ring, //!< Place points in a single ring around group
+      ConcentricRings //!< Place points in concentric rings around group
     };
 
     /** Constructor for QgsPointDisplacementRenderer.

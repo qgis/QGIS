@@ -124,10 +124,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
-    bool mSnapOnPress;       //!< snap on press
-    bool mSnapOnRelease;     //!< snap on release
-    bool mSnapOnMove;        //!< snap on move
-    bool mSnapOnDoubleClick; //!< snap on double click
+    bool mSnapOnPress;       //!< Snap on press
+    bool mSnapOnRelease;     //!< Snap on release
+    bool mSnapOnMove;        //!< Snap on move
+    bool mSnapOnDoubleClick; //!< Snap on double click
 
   private slots:
     /**

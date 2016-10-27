@@ -44,13 +44,13 @@ QString QgsColorRampShader::colorRampTypeAsQString()
   switch ( mColorRampType )
   {
     case INTERPOLATED:
-      return QString( "INTERPOLATED" );
+      return QStringLiteral( "INTERPOLATED" );
     case DISCRETE:
-      return QString( "DISCRETE" );
+      return QStringLiteral( "DISCRETE" );
     case EXACT:
-      return QString( "EXACT" );
+      return QStringLiteral( "EXACT" );
   }
-  return QString( "Unknown" );
+  return QStringLiteral( "Unknown" );
 }
 
 void QgsColorRampShader::setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList )
@@ -68,11 +68,11 @@ void QgsColorRampShader::setColorRampType( QgsColorRampShader::ColorRamp_TYPE th
 
 void QgsColorRampShader::setColorRampType( const QString& theType )
 {
-  if ( theType == "INTERPOLATED" )
+  if ( theType == QLatin1String( "INTERPOLATED" ) )
   {
     mColorRampType = INTERPOLATED;
   }
-  else if ( theType == "DISCRETE" )
+  else if ( theType == QLatin1String( "DISCRETE" ) )
   {
     mColorRampType = DISCRETE;
   }

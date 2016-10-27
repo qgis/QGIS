@@ -88,7 +88,7 @@ void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
   close();
 
   //reset the layer name line edit
-  leLayerName->setText( "" );
+  leLayerName->setText( QLatin1String( "" ) );
 }
 
 /**
@@ -97,5 +97,5 @@ void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
 void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_rejected()
 {
   close();
-  leLayerName->setText( "" );
+  leLayerName->setText( QLatin1String( "" ) );
 }

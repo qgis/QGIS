@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
@@ -73,7 +74,10 @@ class ConcaveHull(GeoAlgorithm):
         # Get max edge length from Delaunay triangles
         progress.setText(self.tr('Computing edges max length...'))
         features = delaunay_layer.getFeatures()
-        counter = 50. / delaunay_layer.featureCount()
+        if len(features) == 0:
+            raise GeoAlgorithmExecutionException(self.tr('No Delaunay triangles created.'))
+
+        counter = 50. / len(features)
         lengths = []
         edges = {}
         for feat in features:
@@ -89,7 +93,7 @@ class ConcaveHull(GeoAlgorithm):
         counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in edges.items():
+        for id, max_len in list(edges.items()):
             if max_len > alpha * max_length:
                 ids.append(id)
             progress.setPercentage(50 + i * counter)

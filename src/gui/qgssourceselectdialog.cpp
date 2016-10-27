@@ -43,7 +43,7 @@
 class QgsSourceSelectItemDelegate : public QItemDelegate
 {
   public:
-    /** Constructor */
+    //! Constructor
     QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
@@ -53,7 +53,7 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, Servic
     : QDialog( parent, fl ), mServiceName( serviceName ), mServiceType( serviceType ), mBuildQueryButton( 0 ), mImageEncodingGroup( 0 )
 {
   setupUi( this );
-  setWindowTitle( QString( "Add %1 Layer from a Server" ).arg( mServiceName ) );
+  setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
 
   mAddButton = buttonBox->addButton( tr( "&Add" ), QDialogButtonBox::ActionRole );
   mAddButton->setEnabled( false );
@@ -80,17 +80,17 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, Servic
   treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/SourceSelectDialog/geometry" ).toByteArray() );
-  cbxUseTitleLayerName->setChecked( settings.value( "/Windows/SourceSelectDialog/UseTitleLayerName", false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
-  mModel->setHorizontalHeaderItem( 0, new QStandardItem( "Title" ) );
-  mModel->setHorizontalHeaderItem( 1, new QStandardItem( "Name" ) );
-  mModel->setHorizontalHeaderItem( 2, new QStandardItem( "Abstract" ) );
+  mModel->setHorizontalHeaderItem( 0, new QStandardItem( QStringLiteral( "Title" ) ) );
+  mModel->setHorizontalHeaderItem( 1, new QStandardItem( QStringLiteral( "Name" ) ) );
+  mModel->setHorizontalHeaderItem( 2, new QStandardItem( QStringLiteral( "Abstract" ) ) );
   if ( serviceType == FeatureService )
   {
-    mModel->setHorizontalHeaderItem( 3, new QStandardItem( "Cache Feature" ) );
-    mModel->setHorizontalHeaderItem( 4, new QStandardItem( "Filter" ) );
+    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Cache Feature" ) ) );
+    mModel->setHorizontalHeaderItem( 4, new QStandardItem( QStringLiteral( "Filter" ) ) );
     gbImageEncoding->hide();
   }
   else
@@ -111,8 +111,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, Servic
 QgsSourceSelectDialog::~QgsSourceSelectDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/SourceSelectDialog/geometry", saveGeometry() );
-  settings.setValue( "/Windows/SourceSelectDialog/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 
   delete mProjectionSelector;
   delete mModel;
@@ -190,13 +190,12 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString>& crsSet ) co
 {
   if ( crsSet.size() < 1 )
   {
-    return "";
+    return QLatin1String( "" );
   }
 
   //first: project CRS
-  long ProjectCRSID = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
+  QgsCoordinateReferenceSystem projectRefSys = QgsProject::instance()->crs();
   //convert to EPSG
-  QgsCoordinateReferenceSystem projectRefSys = QgsCoordinateReferenceSystem::fromSrsId( ProjectCRSID );
   QString ProjectCRS;
   if ( projectRefSys.isValid() )
   {
@@ -221,7 +220,7 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString>& crsSet ) co
 void QgsSourceSelectDialog::addEntryToServerList()
 {
 
-  QgsNewHttpConnection nc( 0, QString( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a new %1 connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -233,7 +232,7 @@ void QgsSourceSelectDialog::addEntryToServerList()
 
 void QgsSourceSelectDialog::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, QString( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -346,7 +345,7 @@ void QgsSourceSelectDialog::addButtonClicked()
     QString layerTitle = mModel->item( row, 0 )->text(); //layer title/id
     QString layerName = mModel->item( row, 1 )->text(); //layer name
     bool cacheFeatures = mServiceType == FeatureService ? mModel->item( row, 3 )->checkState() == Qt::Checked : false;
-    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : ""; //optional filter specified by user
+    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : QLatin1String( "" ); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
       layerName = layerTitle;
@@ -421,7 +420,7 @@ void QgsSourceSelectDialog::on_btnSave_clicked()
 
 void QgsSourceSelectDialog::on_btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QStringLiteral( "." ),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -460,7 +459,7 @@ void QgsSourceSelectDialog::buildQueryButtonClicked()
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }
 
-void QgsSourceSelectDialog::filterChanged( QString text )
+void QgsSourceSelectDialog::filterChanged( const QString& text )
 {
   QgsDebugMsg( "FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );

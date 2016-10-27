@@ -41,22 +41,22 @@ class CORE_EXPORT QgsAuthMethodRegistry
 {
 
   public:
-    /** Means of accessing canonical single instance  */
+    //! Means of accessing canonical single instance
     static QgsAuthMethodRegistry* instance( const QString& pluginPath = QString::null );
 
-    /** Virtual dectructor */
+    //! Virtual dectructor
     virtual ~QgsAuthMethodRegistry();
 
-    /** Return path for the library of the auth method */
+    //! Return path for the library of the auth method
     QString library( const QString & authMethodKey ) const;
 
-    /** Return list of auth method plugins found */
+    //! Return list of auth method plugins found
     QString pluginList( bool asHtml = false ) const;
 
-    /** Return library directory where plugins are found */
+    //! Return library directory where plugins are found
     const QDir & libraryDirectory() const;
 
-    /** Set library directory where to search for plugins */
+    //! Set library directory where to search for plugins
     void setLibraryDirectory( const QDir & path );
 
     /** Create an instance of the auth method
@@ -94,28 +94,28 @@ class CORE_EXPORT QgsAuthMethodRegistry
                     const QString & functionName );
 #endif
 
-    /** Return the library object associated with an auth method key */
+    //! Return the library object associated with an auth method key
     QLibrary *authMethodLibrary( const QString & authMethodKey ) const;
 
-    /** Return list of available auth methods by their keys */
+    //! Return list of available auth methods by their keys
     QStringList authMethodList() const;
 
-    /** Return metadata of the auth method or nullptr if not found */
+    //! Return metadata of the auth method or nullptr if not found
     const QgsAuthMethodMetadata* authMethodMetadata( const QString& authMethodKey ) const;
 
 //    void registerGuis( QWidget *widget );
 
-    /** Type for auth method metadata associative container */
+    //! Type for auth method metadata associative container
     typedef std::map<QString, QgsAuthMethodMetadata*> AuthMethods;
 
   private:
-    /** Ctor private since instance() creates it */
+    //! Ctor private since instance() creates it
     QgsAuthMethodRegistry( const QString& pluginPath );
 
-    /** Associative container of auth method metadata handles */
+    //! Associative container of auth method metadata handles
     AuthMethods mAuthMethods;
 
-    /** Directory in which auth method plugins are installed */
+    //! Directory in which auth method plugins are installed
     QDir mLibraryDirectory;
 };
 

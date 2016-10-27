@@ -44,7 +44,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   mColormapTreeWidget->setColumnWidth( ColorColumn, 50 );
 
-  QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+  QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
 
   mColorRampComboBox->populate( QgsStyle::defaultStyle() );
 
@@ -218,7 +218,7 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
   }
 }
 
-/** Extract the unit out of the current labels and set the unit field. */
+//! Extract the unit out of the current labels and set the unit field.
 void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
 {
   QgsColorRampShader::ColorRamp_TYPE interpolation = static_cast< QgsColorRampShader::ColorRamp_TYPE >( mColorInterpolationComboBox->currentData().toInt() );
@@ -286,7 +286,7 @@ void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
 void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
 {
   QgsTreeWidgetItemObject* newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
-  newItem->setText( ValueColumn, "0" );
+  newItem->setText( ValueColumn, QStringLiteral( "0" ) );
   newItem->setBackground( ColorColumn, QBrush( QColor( Qt::magenta ) ) );
   newItem->setText( LabelColumn, QString() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -522,7 +522,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexC
 {
   Q_UNUSED( index );
   QSettings settings;
-  settings.setValue( "/Raster/defaultPalette", mColorRampComboBox->currentText() );
+  settings.setValue( QStringLiteral( "/Raster/defaultPalette" ), mColorRampComboBox->currentText() );
 
   QScopedPointer< QgsColorRamp > ramp( mColorRampComboBox->currentColorRamp() );
   if ( !ramp )
@@ -582,7 +582,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
   bool importError = false;
   QString badLines;
   QSettings settings;
-  QString lastDir = settings.value( "lastColorMapDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir, tr( "Textfile (*.txt)" ) );
   QFile inputFile( fileName );
   if ( inputFile.open( QFile::ReadOnly ) )
@@ -604,16 +604,16 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
       {
         if ( !inputLine.simplified().startsWith( '#' ) )
         {
-          if ( inputLine.contains( "INTERPOLATION", Qt::CaseInsensitive ) )
+          if ( inputLine.contains( QLatin1String( "INTERPOLATION" ), Qt::CaseInsensitive ) )
           {
             inputStringComponents = inputLine.split( ':' );
             if ( inputStringComponents.size() == 2 )
             {
-              if ( inputStringComponents[1].trimmed().toUpper().compare( "INTERPOLATED", Qt::CaseInsensitive ) == 0 )
+              if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "INTERPOLATED" ), Qt::CaseInsensitive ) == 0 )
               {
                 mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::INTERPOLATED ) );
               }
-              else if ( inputStringComponents[1].trimmed().toUpper().compare( "DISCRETE", Qt::CaseInsensitive ) == 0 )
+              else if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "DISCRETE" ), Qt::CaseInsensitive ) == 0 )
               {
                 mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::DISCRETE ) );
               }
@@ -652,7 +652,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
     populateColormapTreeWidget( colorRampItems );
 
     QFileInfo fileInfo( fileName );
-    settings.setValue( "lastColorMapDir", fileInfo.absoluteDir().absolutePath() );
+    settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 
     if ( importError )
     {
@@ -669,11 +669,11 @@ void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
 void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
 {
   QSettings settings;
-  QString lastDir = settings.value( "lastColorMapDir", QDir::homePath() ).toString();
+  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
     {
       fileName = fileName + ".txt";
     }
@@ -724,7 +724,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
       outputFile.close();
 
       QFileInfo fileInfo( fileName );
-      settings.setValue( "lastColorMapDir", fileInfo.absoluteDir().absolutePath() );
+      settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
     }
     else
     {
@@ -743,7 +743,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   if ( column == ColorColumn )
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QgsColorDialog::getColor( item->background( column ).color(), this, "Change color", true );
+    QColor newColor = QgsColorDialog::getColor( item->background( column ).color(), this, QStringLiteral( "Change color" ), true );
     if ( newColor.isValid() )
     {
       item->setBackground( ColorColumn, QBrush( newColor ) );
@@ -761,7 +761,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   }
 }
 
-/** Update the colormap table after manual edit. */
+//! Update the colormap table after manual edit.
 void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column )
 {
   Q_UNUSED( item );

@@ -152,7 +152,7 @@ void QgsPanelWidgetStack::updateBreadcrumb()
   QString breadcrumb;
   Q_FOREACH ( QString title, mTitles )
   {
-    breadcrumb += QString( " %1 >" ).arg( title );
+    breadcrumb += QStringLiteral( " %1 >" ).arg( title );
   }
   // Remove the last
   breadcrumb.chop( 1 );

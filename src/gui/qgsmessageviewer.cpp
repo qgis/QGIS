@@ -30,16 +30,16 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
   setCheckBoxVisible( false );
   setCheckBoxState( Qt::Unchecked );
 
-  mCheckBoxQSettingsLabel = "";
+  mCheckBoxQSettingsLabel = QLatin1String( "" );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/MessageViewer/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/MessageViewer/geometry" ) ).toByteArray() );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
 {
   QSettings settings;
-  settings.setValue( "/Windows/MessageViewer/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/MessageViewer/geometry" ), saveGeometry() );
 }
 
 void QgsMessageViewer::setMessageAsHtml( const QString &msg )

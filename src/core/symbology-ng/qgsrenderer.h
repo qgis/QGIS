@@ -186,10 +186,10 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     enum Capability
     {
-      SymbolLevels          = 1,      //!< rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      MoreSymbolsPerFeature = 1 << 2, //!< may use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter                = 1 << 3, //!< features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent        = 1 << 4  //!< depends on scale if feature will be rendered (rule based )
+      SymbolLevels          = 1,      //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      MoreSymbolsPerFeature = 1 << 2, //!< May use more than one symbol to render a feature: symbolsForFeature() will return them
+      Filter                = 1 << 3, //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent        = 1 << 4  //!< Depends on scale if feature will be rendered (rule based )
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! @note added in 2.8
-    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props = QgsStringMap() ) const;
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap &props = QgsStringMap() ) const;
 
     /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
@@ -240,9 +240,9 @@ class CORE_EXPORT QgsFeatureRenderer
     static QgsFeatureRenderer* loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage );
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const
     {
-      element.appendChild( doc.createComment( QString( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
+      element.appendChild( doc.createComment( QStringLiteral( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
       ( void ) props; // warning avoidance
     }
 
@@ -426,9 +426,9 @@ class CORE_EXPORT QgsFeatureRenderer
 
     bool mUsingSymbolLevels;
 
-    /** The current type of editing marker */
+    //! The current type of editing marker
     int mCurrentVertexMarkerType;
-    /** The current size of editing marker */
+    //! The current size of editing marker
     int mCurrentVertexMarkerSize;
 
     QgsPaintEffect* mPaintEffect;

@@ -157,6 +157,7 @@ class QgsPointV2: public QgsAbstractGeometry
                     bool transformZ = false );
     void transform( const QTransform& t );
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
+    virtual int nCoordinates() const;
     virtual QgsAbstractGeometry* boundary() const /Factory/;
 
     //low-level editing

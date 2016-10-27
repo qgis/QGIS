@@ -66,7 +66,7 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
     connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshIdentitiesView() ) );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QString( "identitiessortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -208,11 +208,11 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
 
     QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )identype ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificate.svg" ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -374,7 +374,7 @@ void QgsAuthIdentitiesEditor::on_btnInfoIdentity_clicked()
 
 void QgsAuthIdentitiesEditor::on_btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "identitiessortby" ), QVariant( checked ) ) )
+  if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( checked ) ) )
   {
     authMessageOut( QObject::tr( "Could not store sort by preference" ),
                     QObject::tr( "Authentication Identities" ),
@@ -406,5 +406,5 @@ QgsMessageBar * QgsAuthIdentitiesEditor::messageBar()
 int QgsAuthIdentitiesEditor::messageTimeout()
 {
   QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }

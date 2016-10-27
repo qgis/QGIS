@@ -95,16 +95,16 @@ QStandardItem* QgsComposerSymbolItem::clone() const
 
 void QgsComposerSymbolItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
-  QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
+  QDomElement vectorClassElem = doc.createElement( QStringLiteral( "VectorClassificationItemNg" ) );
   if ( mSymbol )
   {
     QgsSymbolMap saveSymbolMap;
-    saveSymbolMap.insert( "classificationSymbol", mSymbol );
-    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( saveSymbolMap, "symbols", doc );
+    saveSymbolMap.insert( QStringLiteral( "classificationSymbol" ), mSymbol );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( saveSymbolMap, QStringLiteral( "symbols" ), doc );
     vectorClassElem.appendChild( symbolsElem );
   }
-  vectorClassElem.setAttribute( "text", text() );
-  vectorClassElem.setAttribute( "userText", userText() );
+  vectorClassElem.setAttribute( QStringLiteral( "text" ), text() );
+  vectorClassElem.setAttribute( QStringLiteral( "userText" ), userText() );
   elem.appendChild( vectorClassElem );
 }
 
@@ -115,9 +115,9 @@ void QgsComposerSymbolItem::readXml( const QDomElement& itemElem, bool xServerAv
     return;
   }
 
-  setText( itemElem.attribute( "text", "" ) );
-  setUserText( itemElem.attribute( "userText", "" ) );
-  QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
+  setText( itemElem.attribute( QStringLiteral( "text" ), QLatin1String( "" ) ) );
+  setUserText( itemElem.attribute( QStringLiteral( "userText" ), QLatin1String( "" ) ) );
+  QDomElement symbolsElem = itemElem.firstChildElement( QStringLiteral( "symbols" ) );
   if ( !symbolsElem.isNull() )
   {
     QgsSymbolMap loadSymbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
@@ -172,11 +172,11 @@ QStandardItem* QgsComposerRasterSymbolItem::clone() const
 
 void QgsComposerRasterSymbolItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
-  QDomElement rasterClassElem = doc.createElement( "RasterClassificationItem" );
-  rasterClassElem.setAttribute( "layerId", mLayerID );
-  rasterClassElem.setAttribute( "text", text() );
-  rasterClassElem.setAttribute( "userText", userText() );
-  rasterClassElem.setAttribute( "color", mColor.name() );
+  QDomElement rasterClassElem = doc.createElement( QStringLiteral( "RasterClassificationItem" ) );
+  rasterClassElem.setAttribute( QStringLiteral( "layerId" ), mLayerID );
+  rasterClassElem.setAttribute( QStringLiteral( "text" ), text() );
+  rasterClassElem.setAttribute( QStringLiteral( "userText" ), userText() );
+  rasterClassElem.setAttribute( QStringLiteral( "color" ), mColor.name() );
   elem.appendChild( rasterClassElem );
 }
 
@@ -186,10 +186,10 @@ void QgsComposerRasterSymbolItem::readXml( const QDomElement& itemElem, bool xSe
   {
     return;
   }
-  setText( itemElem.attribute( "text", "" ) );
-  setUserText( itemElem.attribute( "userText", "" ) );
-  setLayerId( itemElem.attribute( "layerId", "" ) );
-  setColor( QColor( itemElem.attribute( "color" ) ) );
+  setText( itemElem.attribute( QStringLiteral( "text" ), QLatin1String( "" ) ) );
+  setUserText( itemElem.attribute( QStringLiteral( "userText" ), QLatin1String( "" ) ) );
+  setLayerId( itemElem.attribute( QStringLiteral( "layerId" ), QLatin1String( "" ) ) );
+  setColor( QColor( itemElem.attribute( QStringLiteral( "color" ) ) ) );
 
   if ( xServerAvailable )
   {
@@ -225,12 +225,12 @@ QStandardItem* QgsComposerLayerItem::clone() const
 
 void QgsComposerLayerItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
-  QDomElement layerItemElem = doc.createElement( "LayerItem" );
-  layerItemElem.setAttribute( "layerId", mLayerID );
-  layerItemElem.setAttribute( "text", text() );
-  layerItemElem.setAttribute( "userText", userText() );
-  layerItemElem.setAttribute( "showFeatureCount", showFeatureCount() );
-  layerItemElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
+  QDomElement layerItemElem = doc.createElement( QStringLiteral( "LayerItem" ) );
+  layerItemElem.setAttribute( QStringLiteral( "layerId" ), mLayerID );
+  layerItemElem.setAttribute( QStringLiteral( "text" ), text() );
+  layerItemElem.setAttribute( QStringLiteral( "userText" ), userText() );
+  layerItemElem.setAttribute( QStringLiteral( "showFeatureCount" ), showFeatureCount() );
+  layerItemElem.setAttribute( QStringLiteral( "style" ), QgsComposerLegendStyle::styleName( mStyle ) );
   writeXmlChildren( layerItemElem, doc );
   elem.appendChild( layerItemElem );
 }
@@ -241,11 +241,11 @@ void QgsComposerLayerItem::readXml( const QDomElement& itemElem, bool xServerAva
   {
     return;
   }
-  setText( itemElem.attribute( "text", "" ) );
-  setUserText( itemElem.attribute( "userText", "" ) );
-  setLayerId( itemElem.attribute( "layerId", "" ) );
-  setShowFeatureCount( itemElem.attribute( "showFeatureCount", "" ) == "1" ? true : false );
-  setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "subgroup" ) ) );
+  setText( itemElem.attribute( QStringLiteral( "text" ), QLatin1String( "" ) ) );
+  setUserText( itemElem.attribute( QStringLiteral( "userText" ), QLatin1String( "" ) ) );
+  setLayerId( itemElem.attribute( QStringLiteral( "layerId" ), QLatin1String( "" ) ) );
+  setShowFeatureCount( itemElem.attribute( QStringLiteral( "showFeatureCount" ), QLatin1String( "" ) ) == QLatin1String( "1" ) ? true : false );
+  setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( QStringLiteral( "style" ), QStringLiteral( "subgroup" ) ) ) );
 
   //now call readXml for all the child items
   QDomNodeList childList = itemElem.childNodes();
@@ -264,15 +264,15 @@ void QgsComposerLayerItem::readXml( const QDomElement& itemElem, bool xServerAva
 
     currentElem = currentNode.toElement();
     QString elemTag = currentElem.tagName();
-    if ( elemTag == "VectorClassificationItem" )
+    if ( elemTag == QLatin1String( "VectorClassificationItem" ) )
     {
       continue; // legacy - unsupported
     }
-    else if ( elemTag == "VectorClassificationItemNg" )
+    else if ( elemTag == QLatin1String( "VectorClassificationItemNg" ) )
     {
       currentChildItem = new QgsComposerSymbolItem();
     }
-    else if ( elemTag == "RasterClassificationItem" )
+    else if ( elemTag == QLatin1String( "RasterClassificationItem" ) )
     {
       currentChildItem = new QgsComposerRasterSymbolItem();
     }
@@ -331,11 +331,11 @@ QStandardItem* QgsComposerGroupItem::clone() const
 
 void QgsComposerGroupItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
-  QDomElement layerGroupElem = doc.createElement( "GroupItem" );
+  QDomElement layerGroupElem = doc.createElement( QStringLiteral( "GroupItem" ) );
   // text is always user text, but for forward compatibility for now write both
-  layerGroupElem.setAttribute( "text", text() );
-  layerGroupElem.setAttribute( "userText", userText() );
-  layerGroupElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
+  layerGroupElem.setAttribute( QStringLiteral( "text" ), text() );
+  layerGroupElem.setAttribute( QStringLiteral( "userText" ), userText() );
+  layerGroupElem.setAttribute( QStringLiteral( "style" ), QgsComposerLegendStyle::styleName( mStyle ) );
   writeXmlChildren( layerGroupElem, doc );
   elem.appendChild( layerGroupElem );
 }
@@ -347,15 +347,15 @@ void QgsComposerGroupItem::readXml( const QDomElement& itemElem, bool xServerAva
     return;
   }
   // text is always user text but for backward compatibility we read also text
-  QString userText = itemElem.attribute( "userText", "" );
+  QString userText = itemElem.attribute( QStringLiteral( "userText" ), QLatin1String( "" ) );
   if ( userText.isEmpty() )
   {
-    userText = itemElem.attribute( "text", "" );
+    userText = itemElem.attribute( QStringLiteral( "text" ), QLatin1String( "" ) );
   }
   setText( userText );
   setUserText( userText );
 
-  setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "group" ) ) );
+  setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( QStringLiteral( "style" ), QStringLiteral( "group" ) ) ) );
 
   //now call readXml for all the child items
   QDomNodeList childList = itemElem.childNodes();
@@ -375,11 +375,11 @@ void QgsComposerGroupItem::readXml( const QDomElement& itemElem, bool xServerAva
     currentElem = currentNode.toElement();
     QString elemTag = currentElem.tagName();
 
-    if ( elemTag == "GroupItem" )
+    if ( elemTag == QLatin1String( "GroupItem" ) )
     {
       currentChildItem = new QgsComposerGroupItem();
     }
-    else if ( elemTag == "LayerItem" )
+    else if ( elemTag == QLatin1String( "LayerItem" ) )
     {
       currentChildItem = new QgsComposerLayerItem();
     }

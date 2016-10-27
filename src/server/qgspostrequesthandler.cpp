@@ -30,7 +30,7 @@ QgsPostRequestHandler::~QgsPostRequestHandler()
 
 void QgsPostRequestHandler::parseInput()
 {
-  QgsMessageLog::logMessage( "QgsPostRequestHandler::parseInput" );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsPostRequestHandler::parseInput" ) );
 
   QString inputString = readPostBody();
   QgsMessageLog::logMessage( inputString );
@@ -44,7 +44,7 @@ void QgsPostRequestHandler::parseInput()
   {
     queryString = QString( qs );
     requestStringToParameterMap( queryString, getParameters );
-    mapParameter = getParameters.value( "MAP" );
+    mapParameter = getParameters.value( QStringLiteral( "MAP" ) );
   }
 
   QDomDocument doc;
@@ -56,7 +56,7 @@ void QgsPostRequestHandler::parseInput()
     char* requestMethod = getenv( "REQUEST_METHOD" );
     if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
     {
-      QgsMessageLog::logMessage( QString( "Error at line %1, column %2: %3." ).arg( line ).arg( column ).arg( errorMsg ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Error at line %1, column %2: %3." ).arg( line ).arg( column ).arg( errorMsg ) );
     }
     requestStringToParameterMap( inputString, mParameterMap );
   }
@@ -71,23 +71,23 @@ void QgsPostRequestHandler::parseInput()
     }
     else
     {
-      QgsMessageLog::logMessage( "error, no query string found but a QDomDocument" );
+      QgsMessageLog::logMessage( QStringLiteral( "error, no query string found but a QDomDocument" ) );
       return; //no query string? something must be wrong...
     }
 
     requestStringToParameterMap( queryString, mParameterMap );
 
     QDomElement docElem = doc.documentElement();
-    if ( docElem.hasAttribute( "version" ) )
-      mParameterMap.insert( "VERSION", docElem.attribute( "version" ) );
-    if ( docElem.hasAttribute( "service" ) )
-      mParameterMap.insert( "SERVICE", docElem.attribute( "service" ) );
-    mParameterMap.insert( "REQUEST", docElem.tagName() );
-    mParameterMap.insert( "REQUEST_BODY", inputString );
+    if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
+      mParameterMap.insert( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
+    if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
+      mParameterMap.insert( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
+    mParameterMap.insert( QStringLiteral( "REQUEST" ), docElem.tagName() );
+    mParameterMap.insert( QStringLiteral( "REQUEST_BODY" ), inputString );
   }
 
-  if ( !mapParameter.isEmpty() && !mParameterMap.contains( "MAP" ) )
+  if ( !mapParameter.isEmpty() && !mParameterMap.contains( QStringLiteral( "MAP" ) ) )
   {
-    mParameterMap.insert( "MAP", mapParameter );
+    mParameterMap.insert( QStringLiteral( "MAP" ), mapParameter );
   }
 }

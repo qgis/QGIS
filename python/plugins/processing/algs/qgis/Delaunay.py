@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -80,13 +81,19 @@ class Delaunay(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = inFeat.geometry()
-            point = geom.asPoint()
-            x = point.x()
-            y = point.y()
-            pts.append((x, y))
-            ptNdx += 1
-            ptDict[ptNdx] = inFeat.id()
+            geom = QgsGeometry(inFeat.geometry())
+            if geom.isEmpty():
+                continue
+            if geom.isMultipart():
+                points = geom.asMultiPoint()
+            else:
+                points = [geom.asPoint()]
+            for n, point in enumerate(points):
+                x = point.x()
+                y = point.y()
+                pts.append((x, y))
+                ptNdx += 1
+                ptDict[ptNdx] = (inFeat.id(), n)
             progress.setPercentage(int(current * total))
 
         if len(pts) < 3:
@@ -110,10 +117,14 @@ class Delaunay(GeoAlgorithm):
             attrs = []
             step = 0
             for index in indicies:
-                request = QgsFeatureRequest().setFilterFid(ptDict[ids[index]])
+                fid, n = ptDict[ids[index]]
+                request = QgsFeatureRequest().setFilterFid(fid)
                 inFeat = next(layer.getFeatures(request))
-                geom = inFeat.geometry()
-                point = QgsPoint(geom.asPoint())
+                geom = QgsGeometry(inFeat.geometry())
+                if geom.isMultipart():
+                    point = QgsPoint(geom.asMultiPoint()[n])
+                else:
+                    point = QgsPoint(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:
                     attrs.append(ids[index])

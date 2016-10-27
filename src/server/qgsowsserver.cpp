@@ -22,10 +22,10 @@
 #include "qgsvectordataprovider.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-/** Apply filter from AccessControl */
+//! Apply filter from AccessControl
 void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const
 {
-  if ( QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mapLayer ) )
+  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mapLayer ) )
   {
     QString sql = mAccessControl->extraSubsetString( layer );
     if ( !sql.isEmpty() )
@@ -41,20 +41,20 @@ void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<
       }
       if ( !layer->setSubsetString( sql ) )
       {
-        QgsMessageLog::logMessage( "Layer does not support Subset String" );
+        QgsMessageLog::logMessage( QStringLiteral( "Layer does not support Subset String" ) );
       }
     }
   }
 }
 #endif
 
-/** Restore layer filter as original */
+//! Restore layer filter as original
 void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap )
 {
   QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )
   {
-    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filterIt.key() );
+    QgsVectorLayer* filteredLayer = qobject_cast<QgsVectorLayer*>( filterIt.key() );
     if ( filteredLayer )
     {
       QgsVectorDataProvider* dp = filteredLayer->dataProvider();

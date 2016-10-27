@@ -69,7 +69,7 @@ bool QgsFeatureSelectionModel::isSelected( const QModelIndex &index )
   return isSelected( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
 }
 
-void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, const QItemSelectionModel::SelectionFlags& command )
+void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command )
 {
   QgsFeatureIds ids;
 

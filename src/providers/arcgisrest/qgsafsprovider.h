@@ -36,11 +36,11 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAfsProvider( const QString& uri );
     ~QgsAfsProvider() {}
 
-    bool getFeature( const QgsFeatureId& id, QgsFeature& f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle filterRect = QgsRectangle() );
+    bool getFeature( QgsFeatureId id, QgsFeature& f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource* featureSource() const override;
-    QString storageType() const override { return "ESRI ArcGIS Feature Server"; }
+    QString storageType() const override { return QStringLiteral( "ESRI ArcGIS Feature Server" ); }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
     QgsWkbTypes::Type wkbType() const override { return static_cast<QgsWkbTypes::Type>( mGeometryType ); }
     long featureCount() const override { return mObjectIds.size(); }

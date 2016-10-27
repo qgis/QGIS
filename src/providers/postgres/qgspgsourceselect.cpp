@@ -38,7 +38,7 @@ email                : sherman at mrcc.com
 #include <QStringList>
 #include <QStyledItemDelegate>
 
-/** Used to create an editor for when the user tries to change the contents of a cell */
+//! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
@@ -144,7 +144,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     bool ok;
     value.toInt( &ok );
     if ( index.column() == QgsPgTableModel::dbtmSrid && !ok )
-      value = "";
+      value = QLatin1String( "" );
 
     le->setText( value );
   }
@@ -174,7 +174,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select..." ) : cols.join( ", " ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select..." ) : cols.join( QStringLiteral( ", " ) ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -255,7 +255,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   QSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( "/qgis/addPostgisDC", false ).toBool() ?
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -263,12 +263,12 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( "/Windows/PgSourceSelect/geometry" ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( "/Windows/PgSourceSelect/HoldDialogOpen", false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/PgSourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QString( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   //hide the search options by default
@@ -281,7 +281,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 // Slot for adding a new connection
 void QgsPgSourceSelect::on_btnNew_clicked()
 {
@@ -339,7 +339,7 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-/** End Autoconnected SLOTS **/
+//! End Autoconnected SLOTS *
 
 // Remember which database is selected
 void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )
@@ -370,7 +370,7 @@ void QgsPgSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QSettings settings;
-  if ( settings.value( "/qgis/addPostgisDC", false ).toBool() )
+  if ( settings.value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() )
   {
     addTables();
   }
@@ -385,7 +385,7 @@ void QgsPgSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
+  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
 void QgsPgSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
@@ -461,12 +461,12 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
   }
 
   QSettings settings;
-  settings.setValue( "/Windows/PgSourceSelect/geometry", saveGeometry() );
-  settings.setValue( "/Windows/PgSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QString( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -508,7 +508,7 @@ void QgsPgSourceSelect::addTables()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, "postgres" );
+    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "postgres" ) );
     if ( !mHoldDialogOpen->isChecked() )
     {
       accept();
@@ -609,7 +609,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, "postgres" );
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ) );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
@@ -629,7 +629,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 
 QString QgsPgSourceSelect::fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type )
 {
-  QString full_desc = "";
+  QString full_desc = QLatin1String( "" );
   if ( !schema.isEmpty() )
     full_desc = QgsPostgresConn::quotedIdentifier( schema ) + '.';
   full_desc += QgsPostgresConn::quotedIdentifier( table ) + " (" + column + ") " + type;

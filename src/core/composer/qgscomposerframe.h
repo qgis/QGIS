@@ -108,9 +108,9 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     QgsComposerMultiFrame* mMultiFrame;
     QRectF mSection;
 
-    /** If true, composition will not export page if this frame is empty*/
+    //! If true, composition will not export page if this frame is empty
     bool mHidePageIfEmpty;
-    /** If true, background and outside frame will not be drawn if frame is empty*/
+    //! If true, background and outside frame will not be drawn if frame is empty
     bool mHideBackgroundIfEmpty;
 
 };

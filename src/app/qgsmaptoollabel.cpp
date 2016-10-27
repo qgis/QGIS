@@ -88,10 +88,10 @@ void QgsMapToolLabel::createRubberBands()
       if ( !geom.isEmpty() )
       {
         QSettings settings;
-        int r = settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt();
-        int g = settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt();
-        int b = settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt();
-        int a = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
+        int r = settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt();
+        int g = settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt();
+        int b = settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt();
+        int a = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt();
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
@@ -136,7 +136,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
 {
   if ( !mCurrentLabel.valid )
   {
-    return "";
+    return QLatin1String( "" );
   }
   QgsPalLayerSettings& labelSettings = mCurrentLabel.settings;
 
@@ -147,7 +147,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     if ( trunc > 0 && labelText.length() > trunc )
     {
       labelText.truncate( trunc );
-      labelText += "...";
+      labelText += QLatin1String( "..." );
     }
     return labelText;
   }
@@ -156,10 +156,10 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     QgsVectorLayer* vlayer = mCurrentLabel.layer;
     if ( !vlayer )
     {
-      return "";
+      return QLatin1String( "" );
     }
 
-    QString labelField = vlayer->customProperty( "labeling/fieldName" ).toString();
+    QString labelField = vlayer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
     if ( !labelField.isEmpty() )
     {
       int labelFieldId = vlayer->fields().lookupField( labelField );
@@ -170,19 +170,19 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
         if ( trunc > 0 && labelText.length() > trunc )
         {
           labelText.truncate( trunc );
-          labelText += "...";
+          labelText += QLatin1String( "..." );
         }
         return labelText;
       }
     }
   }
-  return "";
+  return QLatin1String( "" );
 }
 
 void QgsMapToolLabel::currentAlignment( QString& hali, QString& vali )
 {
-  hali = "Left";
-  vali = "Bottom";
+  hali = QStringLiteral( "Left" );
+  vali = QStringLiteral( "Bottom" );
 
   QgsVectorLayer* vlayer = mCurrentLabel.layer;
   if ( !vlayer )
@@ -229,9 +229,10 @@ QFont QgsMapToolLabel::currentLabelFont()
   QgsPalLayerSettings& labelSettings = mCurrentLabel.settings;
   QgsVectorLayer* vlayer = mCurrentLabel.layer;
 
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   if ( mCurrentLabel.valid && vlayer )
   {
-    font = labelSettings.textFont;
+    font = labelSettings.format().font();
 
     QgsFeature f;
     if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
@@ -240,15 +241,9 @@ QFont QgsMapToolLabel::currentLabelFont()
       int sizeIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Size, mCurrentLabel.settings, vlayer );
       if ( sizeIndx != -1 )
       {
-        if ( labelSettings.fontSizeInMapUnits )
-        {
-          font.setPixelSize( labelSettings.sizeToPixel( f.attribute( sizeIndx ).toDouble(),
-                             QgsRenderContext(), QgsPalLayerSettings::MapUnits, true ) );
-        }
-        else
-        {
-          font.setPointSizeF( f.attribute( sizeIndx ).toDouble() );
-        }
+        font.setPixelSize( QgsTextRenderer::sizeToPixel( f.attribute( sizeIndx ).toDouble(),
+                           context, labelSettings.format().sizeUnit(), true,
+                           labelSettings.format().sizeMapUnitScale() ) );
       }
 
       //family
@@ -335,8 +330,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPoint& pos, bool ignoreUpsid
   // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
   if ( rotatingUnpinned )
   {
-    haliString = "Center";
-    valiString = "Half";
+    haliString = QStringLiteral( "Center" );
+    valiString = QStringLiteral( "Half" );
   }
 
 //  QFont labelFont = labelFontCurrentFeature();
@@ -356,27 +351,27 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPoint& pos, bool ignoreUpsid
   double xdiff = 0;
   double ydiff = 0;
 
-  if ( haliString.compare( "Center", Qt::CaseInsensitive ) == 0 )
+  if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
   {
     xdiff = labelSizeX / 2.0;
   }
-  else if ( haliString.compare( "Right", Qt::CaseInsensitive ) == 0 )
+  else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
   {
     xdiff = labelSizeX;
   }
 
-  if ( valiString.compare( "Top", Qt::CaseInsensitive ) == 0 || valiString.compare( "Cap", Qt::CaseInsensitive ) == 0 )
+  if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 || valiString.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
   {
     ydiff = labelSizeY;
   }
   else
   {
     double descentRatio = 1 / labelFontMetrics.ascent() / labelFontMetrics.height();
-    if ( valiString.compare( "Base", Qt::CaseInsensitive ) == 0 )
+    if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
     {
       ydiff = labelSizeY * descentRatio;
     }
-    else if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
+    else if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
     {
       ydiff = labelSizeY * 0.5 * ( 1 - descentRatio );
     }

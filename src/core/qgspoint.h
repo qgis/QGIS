@@ -110,6 +110,11 @@ class CORE_EXPORT QgsVector
  */
 class CORE_EXPORT QgsPoint
 {
+    Q_GADGET
+
+    Q_PROPERTY( double x READ x WRITE setX )
+    Q_PROPERTY( double y READ y WRITE setY )
+
   public:
     /// Default constructor
     QgsPoint()
@@ -117,7 +122,7 @@ class CORE_EXPORT QgsPoint
         , m_y( 0.0 )
     {}
 
-    /** Create a point from another point */
+    //! Create a point from another point
     QgsPoint( const QgsPoint& p );
 
     /** Create a point from x,y coordinates
@@ -166,7 +171,7 @@ class CORE_EXPORT QgsPoint
       m_y = y;
     }
 
-    /** Sets the x and y value of the point */
+    //! Sets the x and y value of the point
     void set( double x, double y )
     {
       m_x = x;
@@ -255,10 +260,10 @@ class CORE_EXPORT QgsPoint
     */
     double distance( const QgsPoint& other ) const;
 
-    /** Returns the minimum distance between this point and a segment */
+    //! Returns the minimum distance between this point and a segment
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /** Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
+    //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPoint& other ) const;
 
     /** Returns a new point which correponds to this point projected by a specified distance

@@ -73,19 +73,19 @@ class QgsMSLayerCache: public QObject
     //for debugging
     void logCacheContents() const;
 
-    /** Expose method for use in server interface */
+    //! Expose method for use in server interface
     void removeProjectLayers( const QString& path );
 
   protected:
-    /** Protected singleton constructor*/
+    //! Protected singleton constructor
     QgsMSLayerCache();
     /** Goes through the list and removes entries and layers
      depending on their time stamps and the number of other
     layers*/
     void updateEntries();
-    /** Removes the cash entry with the lowest 'lastUsedTime'*/
+    //! Removes the cash entry with the lowest 'lastUsedTime'
     void removeLeastUsedEntry();
-    /** Frees memory and removes temporary files of an entry*/
+    //! Frees memory and removes temporary files of an entry
     void freeEntryRessources( QgsMSLayerCacheEntry& entry );
 
   private:
@@ -94,21 +94,21 @@ class QgsMSLayerCache: public QObject
       layer names*/
     QMultiHash<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
 
-    /** Config files used in the cache (with reference counter)*/
+    //! Config files used in the cache (with reference counter)
     QHash< QString, int > mConfigFiles;
 
-    /** Check for configuration file updates (remove layers from cache if configuration file changes)*/
+    //! Check for configuration file updates (remove layers from cache if configuration file changes)
     QFileSystemWatcher mFileSystemWatcher;
 
-    /** Maximum number of layers in the cache*/
+    //! Maximum number of layers in the cache
     int mDefaultMaxLayers;
 
-    /** Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger*/
+    //! Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger
     int mProjectMaxLayers;
 
   private slots:
 
-    /** Removes entries from a project (e.g. if a project file has changed)*/
+    //! Removes entries from a project (e.g. if a project file has changed)
     void removeProjectFileLayers( const QString& project );
 };
 

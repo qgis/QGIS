@@ -60,7 +60,7 @@ static const QString sDescription = QObject::tr( "Creates a Heatmap raster for t
 static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 0.2" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/heatmap/heatmap.png";
+static const QString sPluginIcon = QStringLiteral( ":/heatmap/heatmap.png" );
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer
@@ -90,7 +90,7 @@ void Heatmap::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/heatmap/heatmap.png" ), tr( "Heatmap..." ), this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Creates a heatmap raster for the input point vector." ) );
   // Connect the action to the run

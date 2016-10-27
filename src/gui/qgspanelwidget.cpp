@@ -28,7 +28,7 @@ QgsPanelWidget::QgsPanelWidget( QWidget *parent )
 {
 }
 
-void QgsPanelWidget::connectChildPanels( QList<QgsPanelWidget *> panels )
+void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *>& panels )
 {
   Q_FOREACH ( QgsPanelWidget* widget, panels )
   {
@@ -55,6 +55,13 @@ QgsPanelWidget*QgsPanelWidget::findParentPanel( QWidget* widget )
     if ( QgsPanelWidget* panel = qobject_cast< QgsPanelWidget* >( p ) )
       return panel;
 
+    if ( p->window() == p )
+    {
+      // break on encountering a window - eg a dialog opened from a panel should not inline
+      // widgets inside the parent panel
+      return nullptr;
+    }
+
     p = p->parentWidget();
   }
   return nullptr;
@@ -73,7 +80,7 @@ void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
   {
     // Show the dialog version if no one is connected
     QDialog* dlg = new QDialog();
-    QString key =  QString( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

@@ -37,10 +37,10 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
   public:
 
-    /** Constructor */
+    //! Constructor
     explicit QgsAppLegendInterface( QgsLayerTreeView * layerTreeView );
 
-    /** Destructor */
+    //! Destructor
     ~QgsAppLegendInterface();
 
     //! Return a string list of groups

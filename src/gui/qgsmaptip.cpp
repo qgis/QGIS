@@ -149,7 +149,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   {
     // Get the content size
     QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-                              "#QgsWebViewContainer" );
+                              QStringLiteral( "#QgsWebViewContainer" ) );
     int width = container.geometry().width() + 5 + scrollbarWidth;
     int height = container.geometry().height() + 5 + scrollbarHeight;
 

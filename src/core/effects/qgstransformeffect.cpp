@@ -69,35 +69,35 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
 QgsStringMap QgsTransformEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( "reflect_x", mReflectX ? "1" : "0" );
-  props.insert( "reflect_y", mReflectY ? "1" : "0" );
-  props.insert( "scale_x", QString::number( mScaleX ) );
-  props.insert( "scale_y", QString::number( mScaleY ) );
-  props.insert( "rotation", QString::number( mRotation ) );
-  props.insert( "shear_x", QString::number( mShearX ) );
-  props.insert( "shear_y", QString::number( mShearY ) );
-  props.insert( "translate_x", QString::number( mTranslateX ) );
-  props.insert( "translate_y", QString::number( mTranslateY ) );
-  props.insert( "translate_unit", QgsUnitTypes::encodeUnit( mTranslateUnit ) );
-  props.insert( "translate_unit_scale", QgsSymbolLayerUtils::encodeMapUnitScale( mTranslateMapUnitScale ) );
-  props.insert( "enabled", mEnabled ? "1" : "0" );
-  props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
+  props.insert( QStringLiteral( "reflect_x" ), mReflectX ? "1" : "0" );
+  props.insert( QStringLiteral( "reflect_y" ), mReflectY ? "1" : "0" );
+  props.insert( QStringLiteral( "scale_x" ), QString::number( mScaleX ) );
+  props.insert( QStringLiteral( "scale_y" ), QString::number( mScaleY ) );
+  props.insert( QStringLiteral( "rotation" ), QString::number( mRotation ) );
+  props.insert( QStringLiteral( "shear_x" ), QString::number( mShearX ) );
+  props.insert( QStringLiteral( "shear_y" ), QString::number( mShearY ) );
+  props.insert( QStringLiteral( "translate_x" ), QString::number( mTranslateX ) );
+  props.insert( QStringLiteral( "translate_y" ), QString::number( mTranslateY ) );
+  props.insert( QStringLiteral( "translate_unit" ), QgsUnitTypes::encodeUnit( mTranslateUnit ) );
+  props.insert( QStringLiteral( "translate_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mTranslateMapUnitScale ) );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   return props;
 }
 
 void QgsTransformEffect::readProperties( const QgsStringMap &props )
 {
-  mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
-  mReflectX = props.value( "reflect_x", "0" ).toInt();
-  mReflectY = props.value( "reflect_y", "0" ).toInt();
-  mScaleX = props.value( "scale_x", "1.0" ).toDouble();
-  mScaleY = props.value( "scale_y", "1.0" ).toDouble();
-  mRotation = props.value( "rotation", "0.0" ).toDouble();
-  mTranslateX = props.value( "translate_x", "0.0" ).toDouble();
-  mTranslateY = props.value( "translate_y", "0.0" ).toDouble();
-  mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( "translate_unit" ) );
-  mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( "translate_unit_scale" ) );
+  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mReflectX = props.value( QStringLiteral( "reflect_x" ), QStringLiteral( "0" ) ).toInt();
+  mReflectY = props.value( QStringLiteral( "reflect_y" ), QStringLiteral( "0" ) ).toInt();
+  mScaleX = props.value( QStringLiteral( "scale_x" ), QStringLiteral( "1.0" ) ).toDouble();
+  mScaleY = props.value( QStringLiteral( "scale_y" ), QStringLiteral( "1.0" ) ).toDouble();
+  mRotation = props.value( QStringLiteral( "rotation" ), QStringLiteral( "0.0" ) ).toDouble();
+  mTranslateX = props.value( QStringLiteral( "translate_x" ), QStringLiteral( "0.0" ) ).toDouble();
+  mTranslateY = props.value( QStringLiteral( "translate_y" ), QStringLiteral( "0.0" ) ).toDouble();
+  mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "translate_unit" ) ) );
+  mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "translate_unit_scale" ) ) );
 }
 
 QgsTransformEffect* QgsTransformEffect::clone() const

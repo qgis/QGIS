@@ -31,12 +31,12 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
 
   btnChangeColorFill->setAllowAlpha( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
-  btnChangeColorFill->setContext( "symbology" );
+  btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
   btnChangeColorBorder->setAllowAlpha( true );
   btnChangeColorBorder->setColorDialogTitle( tr( "Select border color" ) );
-  btnChangeColorBorder->setContext( "symbology" );
+  btnChangeColorBorder->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorBorder->setShowNoColor( true );
   btnChangeColorBorder->setNoColorString( tr( "Transparent border" ) );
 
@@ -45,7 +45,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
   mRotationSpinBox->setClearValue( 0.0 );
 
   QStringList names;
-  names << "circle" << "rectangle" << "diamond" << "cross" << "triangle" << "right_half_triangle" << "left_half_triangle" << "semi_circle";
+  names << QStringLiteral( "circle" ) << QStringLiteral( "rectangle" ) << QStringLiteral( "diamond" ) << QStringLiteral( "cross" ) << QStringLiteral( "triangle" ) << QStringLiteral( "right_half_triangle" ) << QStringLiteral( "left_half_triangle" ) << QStringLiteral( "semi_circle" );
   QSize iconSize = mShapeListWidget->iconSize();
 
   Q_FOREACH ( const QString& name, names )
@@ -57,7 +57,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
     lyr->setSymbolWidth( 4 );
     lyr->setSymbolHeight( 2 );
     QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, iconSize );
-    QListWidgetItem* item = new QListWidgetItem( icon, "", mShapeListWidget );
+    QListWidgetItem* item = new QListWidgetItem( icon, QLatin1String( "" ), mShapeListWidget );
     item->setToolTip( name );
     item->setData( Qt::UserRole, name );
     delete lyr;
@@ -70,7 +70,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
 
 void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 {
-  if ( !layer || layer->layerType() != "EllipseMarker" )
+  if ( !layer || layer->layerType() != QLatin1String( "EllipseMarker" ) )
   {
     return;
   }
@@ -108,18 +108,18 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   blockComboSignals( false );
 
-  registerDataDefinedButton( mSymbolWidthDDBtn, "width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mSymbolHeightDDBtn, "height", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mRotationDDBtn, "rotation", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
-  registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mFillColorDDBtn, "fill_color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
-  registerDataDefinedButton( mBorderColorDDBtn, "outline_color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
-  registerDataDefinedButton( mOutlineStyleDDBtn, "outline_style", QgsDataDefinedButton::String, QgsDataDefinedButton::lineStyleDesc() );
-  registerDataDefinedButton( mJoinStyleDDBtn, "join_style", QgsDataDefinedButton::String, QgsDataDefinedButton::penJoinStyleDesc() );
-  registerDataDefinedButton( mShapeDDBtn, "symbol_name", QgsDataDefinedButton::String, QgsDataDefinedButton::markerStyleDesc() );
-  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
+  registerDataDefinedButton( mSymbolWidthDDBtn, QStringLiteral( "width" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mSymbolHeightDDBtn, QStringLiteral( "height" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mRotationDDBtn, QStringLiteral( "rotation" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
+  registerDataDefinedButton( mOutlineWidthDDBtn, QStringLiteral( "outline_width" ), QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mFillColorDDBtn, QStringLiteral( "fill_color" ), QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mBorderColorDDBtn, QStringLiteral( "outline_color" ), QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mOutlineStyleDDBtn, QStringLiteral( "outline_style" ), QgsDataDefinedButton::String, QgsDataDefinedButton::lineStyleDesc() );
+  registerDataDefinedButton( mJoinStyleDDBtn, QStringLiteral( "join_style" ), QgsDataDefinedButton::String, QgsDataDefinedButton::penJoinStyleDesc() );
+  registerDataDefinedButton( mShapeDDBtn, QStringLiteral( "symbol_name" ), QgsDataDefinedButton::String, QgsDataDefinedButton::markerStyleDesc() );
+  registerDataDefinedButton( mOffsetDDBtn, QStringLiteral( "offset" ), QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QStringLiteral( "horizontal_anchor_point" ), QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QStringLiteral( "vertical_anchor_point" ), QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
 
 }
 

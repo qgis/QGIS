@@ -45,7 +45,7 @@
 #include "qgsruntimeprofiler.h"
 
 
-QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsMapLayerConfigWidgetFactory*> pages, QWidget *parent )
+QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<QgsMapLayerConfigWidgetFactory*>& pages, QWidget *parent )
     : QWidget( parent )
     , mNotSupportedPage( 0 )
     , mLayerPage( 1 )
@@ -61,14 +61,14 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, QList<QgsMap
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QgsMapLayer* ) ), this, SLOT( layerAboutToBeRemoved( QgsMapLayer* ) ) );
 
   QSettings settings;
-  mLiveApplyCheck->setChecked( settings.value( "UI/autoApplyStyling", true ).toBool() );
+  mLiveApplyCheck->setChecked( settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() );
 
   mAutoApplyTimer = new QTimer( this );
   mAutoApplyTimer->setSingleShot( true );
 
   mUndoWidget = new QgsUndoWidget( this, mMapCanvas );
   mUndoWidget->setAutoDelete( false );
-  mUndoWidget->setObjectName( "Undo Styles" );
+  mUndoWidget->setObjectName( QStringLiteral( "Undo Styles" ) );
   mUndoWidget->hide();
 
   mStyleManagerFactory = new QgsLayerStyleManagerWidgetFactory();
@@ -94,7 +94,7 @@ QgsLayerStylingWidget::~QgsLayerStylingWidget()
   delete mStyleManagerFactory;
 }
 
-void QgsLayerStylingWidget::setPageFactories( QList<QgsMapLayerConfigWidgetFactory *> factories )
+void QgsLayerStylingWidget::setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *>& factories )
 {
   mPageFactories = factories;
   // Always append the style manager factory at the bottom of the list
@@ -153,29 +153,29 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mUserPages.clear();
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
-    QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), QString() );
+    QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
     symbolItem->setData( Qt::UserRole, Symbology );
     symbolItem->setToolTip( tr( "Symbology" ) );
     mOptionsListWidget->addItem( symbolItem );
-    QListWidgetItem* labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( "labelingSingle.svg" ), QString() );
+    QListWidgetItem* labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
     labelItem->setData( Qt::UserRole, VectorLabeling );
     labelItem->setToolTip( tr( "Labels" ) );
     mOptionsListWidget->addItem( labelItem );
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/symbology.svg" ), QString() );
+    QListWidgetItem* symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
     symbolItem->setData( Qt::UserRole, Symbology );
     symbolItem->setToolTip( tr( "Symbology" ) );
     mOptionsListWidget->addItem( symbolItem );
-    QListWidgetItem* transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/transparency.png" ), QString() );
+    QListWidgetItem* transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/transparency.png" ) ), QString() );
     transparencyItem->setToolTip( tr( "Transparency" ) );
     transparencyItem->setData( Qt::UserRole, RasterTransparency );
     mOptionsListWidget->addItem( transparencyItem );
 
     if ( static_cast<QgsRasterLayer*>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
     {
-      QListWidgetItem* histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), QString() );
+      QListWidgetItem* histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.png" ) ), QString() );
       histogramItem->setData( Qt::UserRole, RasterHistogram );
       mOptionsListWidget->addItem( histogramItem );
       histogramItem->setToolTip( tr( "Histogram" ) );
@@ -193,7 +193,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       mUserPages[row] = factory;
     }
   }
-  QListWidgetItem* historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( "mActionHistory.svg" ), QString() );
+  QListWidgetItem* historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "mActionHistory.svg" ) ), QString() );
   historyItem->setData( Qt::UserRole, History );
   historyItem->setToolTip( tr( "History" ) );
   mOptionsListWidget->addItem( historyItem );
@@ -211,8 +211,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mStackedWidget->setCurrentIndex( 1 );
 
   QString errorMsg;
-  QDomDocument doc( "style" );
-  mLastStyleXml = doc.createElement( "style" );
+  QDomDocument doc( QStringLiteral( "style" ) );
+  mLastStyleXml = doc.createElement( QStringLiteral( "style" ) );
   doc.appendChild( mLastStyleXml );
   mCurrentLayer->writeStyle( mLastStyleXml, doc, errorMsg );
 }
@@ -224,7 +224,7 @@ void QgsLayerStylingWidget::apply()
 
   disconnect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
 
-  QString undoName = "Style Change";
+  QString undoName = QStringLiteral( "Style Change" );
 
   QWidget* current = mWidgetStack->mainPanel();
 
@@ -233,7 +233,7 @@ void QgsLayerStylingWidget::apply()
   {
     widget->apply();
     styleWasChanged = true;
-    undoName = "Label Change";
+    undoName = QStringLiteral( "Label Change" );
   }
   if ( QgsPanelWidgetWrapper* wrapper = qobject_cast<QgsPanelWidgetWrapper*>( current ) )
   {
@@ -242,7 +242,7 @@ void QgsLayerStylingWidget::apply()
       widget->apply();
       QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
       QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( layer->renderer()->type() );
-      undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
+      undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
       styleWasChanged = true;
     }
   }
@@ -456,14 +456,14 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer* layer )
 void QgsLayerStylingWidget::liveApplyToggled( bool value )
 {
   QSettings settings;
-  settings.setValue( "UI/autoApplyStyling", value );
+  settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), value );
 }
 
 void QgsLayerStylingWidget::pushUndoItem( const QString &name )
 {
   QString errorMsg;
-  QDomDocument doc( "style" );
-  QDomElement rootNode = doc.createElement( "qgis" );
+  QDomDocument doc( QStringLiteral( "style" ) );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   doc.appendChild( rootNode );
   mCurrentLayer->writeStyle( rootNode, doc, errorMsg );
   mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml ) );
@@ -507,7 +507,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand* other )
   // only merge commands if they are created shortly after each other
   // (e.g. user keeps modifying one property)
   QSettings settings;
-  int timeout = settings.value( "/UI/styleUndoMergeTimeout", 500 ).toInt();
+  int timeout = settings.value( QStringLiteral( "/UI/styleUndoMergeTimeout" ), 500 ).toInt();
   if ( mTime.msecsTo( otherCmd->mTime ) > timeout )
     return false;
 
@@ -518,7 +518,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand* other )
 
 QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
 {
-  setIcon( QgsApplication::getThemeIcon( "propertyicons/stylepreset.svg" ) );
+  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/stylepreset.svg" ) ) );
   setTitle( QObject::tr( "Style Manager" ) );
 }
 

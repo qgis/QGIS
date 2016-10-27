@@ -36,7 +36,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;
 
-    virtual QString geometryType() const override { return "CircularString"; }
+    virtual QString geometryType() const override { return QStringLiteral( "CircularString" ); }
     virtual int dimension() const override { return 1; }
     virtual QgsCircularString* clone() const override;
     virtual void clear() override;

@@ -256,9 +256,9 @@ class TableItem(TreeItem):
             if geom_type is not None:
                 if geom_type.find('POINT') != -1:
                     return self.layerPointIcon
-                elif geom_type.find('LINESTRING') != -1:
+                elif geom_type.find('LINESTRING') != -1 or geom_type in ('CIRCULARSTRING', 'COMPOUNDCURVE', 'MULTICURVE'):
                     return self.layerLineIcon
-                elif geom_type.find('POLYGON') != -1:
+                elif geom_type.find('POLYGON') != -1 or geom_type == 'MULTISURFACE':
                     return self.layerPolygonIcon
                 return self.layerUnknownIcon
 
@@ -300,6 +300,7 @@ class DBModel(QAbstractItemModel):
             self.importVector.connect(self.vectorImport)
 
         self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
+        self.hasGPKGSupport = "gpkg" in supportedDbTypes()
 
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
@@ -401,7 +402,7 @@ class DBModel(QAbstractItemModel):
                     flags |= Qt.ItemIsDropEnabled
 
             # SL/Geopackage db files can be dropped everywhere in the tree
-            if self.hasSpatialiteSupport:
+            if self.hasSpatialiteSupport or self.hasGPKGSupport:
                 flags |= Qt.ItemIsDropEnabled
 
         return flags

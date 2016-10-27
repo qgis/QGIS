@@ -113,17 +113,18 @@ class QgsPropertyKey : QgsProperty
 %End
 
   public:
-    QgsPropertyKey( const QString name = "" );
-    virtual ~ QgsPropertyKey();
+    QgsPropertyKey( const QString& name = QString() );
+    virtual ~QgsPropertyKey();
 
-    /// every key has a name
-    // @{
-    // @note not available in python bindings
-    // QString name() const;
+    /**
+     * The name of the property is used as identifier.
+     */
+    QString name() const;
 
-    QString &name();
-    // @}
-
+    /**
+     * The name of the property is used as identifier.
+     */
+    void setName( const QString& name );
 
     /** If this key has a value, it will be stored by its name in its
      * properties

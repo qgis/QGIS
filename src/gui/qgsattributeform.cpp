@@ -47,6 +47,7 @@
 #include <QSettings>
 #include <QToolButton>
 #include <QMenu>
+#include <QSvgWidget>
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -188,20 +189,17 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     case QgsAttributeForm::SingleEditMode:
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
-      mInvalidConstraintMessage->show();
       break;
 
     case QgsAttributeForm::AddFeatureMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
-      mInvalidConstraintMessage->show();
       break;
 
     case QgsAttributeForm::MultiEditMode:
       resetMultiEdit( false );
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
-      mInvalidConstraintMessage->show();
       break;
 
     case QgsAttributeForm::SearchMode:
@@ -214,7 +212,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       }
       else
       {
-        mInvalidConstraintMessage->hide();
+        mTopMessageWidget->hide();
       }
       break;
   }
@@ -396,7 +394,7 @@ void QgsAttributeForm::resetMultiEdit( bool promptToSave )
 void QgsAttributeForm::multiEditMessageClicked( const QString& link )
 {
   clearMultiEditMessages();
-  resetMultiEdit( link == "#apply" );
+  resetMultiEdit( link == QLatin1String( "#apply" ) );
 }
 
 void QgsAttributeForm::filterTriggered()
@@ -631,7 +629,7 @@ QString QgsAttributeForm::createFilterExpression() const
   if ( filters.isEmpty() )
     return QString();
 
-  QString filter = filters.join( ") AND (" ).prepend( '(' ).append( ')' );
+  QString filter = filters.join( QStringLiteral( ") AND (" ) ).prepend( '(' ).append( ')' );
   return filter;
 }
 
@@ -690,12 +688,12 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       if ( value.isNull() )
       {
         // not good
-        buddy->setText( QString( "%1<font color=\"red\">❌</font>" ).arg( text ) );
+        buddy->setText( QStringLiteral( "%1<font color=\"red\">❌</font>" ).arg( text ) );
       }
       else
       {
         // good
-        buddy->setText( QString( "%1<font color=\"green\">✔</font>" ).arg( text ) );
+        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
       }
     }
   }
@@ -754,7 +752,11 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
   Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
-    if ( eww && dst.count() > eww->fieldIdx() )
+
+    if ( !eww )
+      continue;
+
+    if ( dst.count() > eww->fieldIdx() )
     {
       QVariant dstVar = dst.at( eww->fieldIdx() );
       QVariant srcVar = eww->value();
@@ -777,9 +779,8 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
 
 void QgsAttributeForm::clearInvalidConstraintsMessage()
 {
-  mInvalidConstraintMessage->hide();
+  mTopMessageWidget->hide();
   mInvalidConstraintMessage->clear();
-  mInvalidConstraintMessage->setStyleSheet( QString() );
 }
 
 void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
@@ -792,16 +793,12 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
   int size = f.size() > max ? max : f.size();
   QString descriptions;
   for ( int i = 0; i < size; i++ )
-    descriptions += QString( "<li>%1: <i>%2</i></li>" ).arg( f[i] ).arg( d[i] );
+    descriptions += QStringLiteral( "<li>%1: <i>%2</i></li>" ).arg( f[i], d[i] );
 
-  QString icPath = QgsApplication::iconPath( "/mIconWarning.svg" );
+  QString msg = QStringLiteral( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions ) ;
 
-  QString title = QString( "<img src=\"%1\">     <b>%2:" ).arg( icPath ).arg( tr( "Invalid fields" ) );
-  QString msg = QString( "%1</b><ul>%2</ul>" ).arg( title ).arg( descriptions ) ;
-
-  mInvalidConstraintMessage->show();
   mInvalidConstraintMessage->setText( msg );
-  mInvalidConstraintMessage->setStyleSheet( "QLabel { background-color : #ffc800; }" );
+  mTopMessageWidget->show();
 }
 
 void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::ContainerInformation* info )
@@ -917,12 +914,12 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
     if ( !ok )
     {
       // not good
-      buddy->setText( QString( "%1<font color=\"red\">*</font>" ).arg( text ) );
+      buddy->setText( QStringLiteral( "%1<font color=\"red\">*</font>" ).arg( text ) );
     }
     else
     {
       // good
-      buddy->setText( QString( "%1<font color=\"green\">*</font>" ).arg( text ) );
+      buddy->setText( QStringLiteral( "%1<font color=\"green\">*</font>" ).arg( text ) );
     }
   }
 }
@@ -1057,9 +1054,18 @@ void QgsAttributeForm::init()
   mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   vl->addWidget( mMessageBar );
 
+  mTopMessageWidget = new QWidget();
+  mTopMessageWidget->hide();
+  mTopMessageWidget->setLayout( new QHBoxLayout() );
+
+  QSvgWidget* warningIcon = new QSvgWidget( QgsApplication::iconPath( QStringLiteral( "/mIconWarning.svg" ) ) );
+  warningIcon->setFixedSize( 48, 48 );
+  mTopMessageWidget->layout()->addWidget( warningIcon );
   mInvalidConstraintMessage = new QLabel( this );
-  mInvalidConstraintMessage->hide();
-  vl->addWidget( mInvalidConstraintMessage );
+  mTopMessageWidget->layout()->addWidget( mInvalidConstraintMessage );
+  mTopMessageWidget->hide();
+
+  vl->addWidget( mTopMessageWidget );
 
   setLayout( vl );
 
@@ -1228,7 +1234,7 @@ void QgsAttributeForm::init()
 
       const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() );
 
-      if ( widgetSetup.type() == "Hidden" )
+      if ( widgetSetup.type() == QLatin1String( "Hidden" ) )
         continue;
 
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
@@ -1249,7 +1255,7 @@ void QgsAttributeForm::init()
       }
       else
       {
-        w = new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetSetup.type() ) );
+        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetSetup.type() ) );
       }
 
 
@@ -1293,7 +1299,7 @@ void QgsAttributeForm::init()
   if ( !mButtonBox )
   {
     mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-    mButtonBox->setObjectName( "buttonBox" );
+    mButtonBox->setObjectName( QStringLiteral( "buttonBox" ) );
     layout->addWidget( mButtonBox, layout->rowCount(), 0, 1, layout->columnCount() );
   }
   mButtonBox->setVisible( buttonBoxVisible );
@@ -1305,7 +1311,7 @@ void QgsAttributeForm::init()
     boxLayout->setMargin( 0 );
     boxLayout->setContentsMargins( 0, 0, 0, 0 );
     mSearchButtonBox->setLayout( boxLayout );
-    mSearchButtonBox->setObjectName( "searchButtonBox" );
+    mSearchButtonBox->setObjectName( QStringLiteral( "searchButtonBox" ) );
 
     QPushButton* clearButton = new QPushButton( tr( "&Reset form" ), mSearchButtonBox );
     connect( clearButton, SIGNAL( clicked( bool ) ), this, SLOT( resetSearch() ) );
@@ -1387,7 +1393,7 @@ void QgsAttributeForm::cleanPython()
 {
   if ( !mPyFormVarName.isNull() )
   {
-    QString expr = QString( "if locals().has_key('%1'): del %1\n" ).arg( mPyFormVarName );
+    QString expr = QStringLiteral( "if locals().has_key('%1'): del %1\n" ).arg( mPyFormVarName );
     QgsPythonRunner::run( expr );
   }
 }
@@ -1422,12 +1428,12 @@ void QgsAttributeForm::initPython()
           }
           else // The file couldn't be opened
           {
-            QgsLogger::warning( QString( "The external python file path %1 could not be opened!" ).arg( initFilePath ) );
+            QgsLogger::warning( QStringLiteral( "The external python file path %1 could not be opened!" ).arg( initFilePath ) );
           }
         }
         else
         {
-          QgsLogger::warning( QString( "The external python file path is empty!" ) );
+          QgsLogger::warning( QStringLiteral( "The external python file path is empty!" ) );
         }
         break;
 
@@ -1435,7 +1441,7 @@ void QgsAttributeForm::initPython()
         initCode = mLayer->editFormConfig().initCode();
         if ( initCode.isEmpty() )
         {
-          QgsLogger::warning( QString( "The python code provided in the dialog is empty!" ) );
+          QgsLogger::warning( QStringLiteral( "The python code provided in the dialog is empty!" ) );
         }
         break;
 
@@ -1452,16 +1458,16 @@ void QgsAttributeForm::initPython()
       QgsPythonRunner::run( initCode );
     }
 
-    QgsPythonRunner::run( "import inspect" );
+    QgsPythonRunner::run( QStringLiteral( "import inspect" ) );
     QString numArgs;
 
     // Check for eval result
-    if ( QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( initFunction ), numArgs ) )
+    if ( QgsPythonRunner::eval( QStringLiteral( "len(inspect.getargspec(%1)[0])" ).arg( initFunction ), numArgs ) )
     {
       static int sFormId = 0;
-      mPyFormVarName = QString( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
+      mPyFormVarName = QStringLiteral( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
 
-      QString form = QString( "%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )" )
+      QString form = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )" )
                      .arg( mPyFormVarName )
                      .arg(( unsigned long ) this );
 
@@ -1470,7 +1476,7 @@ void QgsAttributeForm::initPython()
       QgsDebugMsg( QString( "running featureForm init: %1" ).arg( mPyFormVarName ) );
 
       // Legacy
-      if ( numArgs == "3" )
+      if ( numArgs == QLatin1String( "3" ) )
       {
         addInterface( new QgsAttributeFormLegacyInterface( initFunction, mPyFormVarName, this ) );
       }
@@ -1890,7 +1896,7 @@ void QgsAttributeForm::setMessageBar( QgsMessageBar* messageBar )
 int QgsAttributeForm::messageTimeout()
 {
   QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
 }
 
 void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext* expressionContext )

@@ -55,8 +55,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     enum CadCapacity
     {
       AbsoluteAngle = 1, //!< Azimuth
-      RelativeAngle = 2, //!< also for parallel and perpendicular
-      RelativeCoordinates = 4, //!< this corresponds to distance and relative coordinates
+      RelativeAngle = 2, //!< Also for parallel and perpendicular
+      RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
 

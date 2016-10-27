@@ -187,14 +187,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param expression The expression which should be used for sorting
      * @param order      The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
-    void sort( QString expression, Qt::SortOrder order = Qt::AscendingOrder );
+    void sort( const QString& expression, Qt::SortOrder order = Qt::AscendingOrder );
 
     /**
      * The expression which is used to sort the attribute table.
      */
     QString sortExpression() const;
 
-    /** Returns the map canvas*/
+    //! Returns the map canvas
     QgsMapCanvas* mapCanvas() const { return mCanvas; }
 
     virtual QVariant data( const QModelIndex& index, int role ) const override;

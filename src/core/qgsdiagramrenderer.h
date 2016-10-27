@@ -390,7 +390,7 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
     double lowerValue;
     double upperValue;
 
-    /** Index of the classification attribute*/
+    //! Index of the classification attribute
     //TODO QGIS 3.0 - don't store index, store field name
     int classificationAttribute;
 
@@ -415,12 +415,12 @@ class CORE_EXPORT QgsDiagramRenderer
      * @note added in 2.4 */
     virtual QgsDiagramRenderer* clone() const = 0;
 
-    /** Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error*/
+    //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
     virtual QSizeF sizeMapUnits( const QgsFeature& feature, const QgsRenderContext& c ) const;
 
     virtual QString rendererName() const = 0;
 
-    /** Returns attribute indices needed for diagram rendering*/
+    //! Returns attribute indices needed for diagram rendering
     virtual QList<QString> diagramAttributes() const = 0;
 
     /** Returns the set of any fields required for diagram rendering
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsDiagramRenderer
     void setDiagram( QgsDiagram* d );
     QgsDiagram* diagram() const { return mDiagram; }
 
-    /** Returns list with all diagram settings in the renderer*/
+    //! Returns list with all diagram settings in the renderer
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
     virtual void readXml( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
@@ -506,20 +506,20 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) const = 0;
 
-    /** Returns size of the diagram (in painter units) or an invalid size in case of error*/
+    //! Returns size of the diagram (in painter units) or an invalid size in case of error
     virtual QSizeF diagramSize( const QgsFeature& features, const QgsRenderContext& c ) const = 0;
 
-    /** Converts size from mm to map units*/
+    //! Converts size from mm to map units
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
 
-    /** Returns the paint device dpi (or -1 in case of error*/
+    //! Returns the paint device dpi (or -1 in case of error
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
     void _readXml( const QDomElement& elem, const QgsVectorLayer* layer );
     void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
-    /** Reference to the object that does the real diagram rendering*/
+    //! Reference to the object that does the real diagram rendering
     QgsDiagram* mDiagram;
 
     //! Whether to show an attribute legend for the diagrams
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 
     QgsSingleCategoryDiagramRenderer* clone() const override;
 
-    QString rendererName() const override { return "SingleCategory"; }
+    QString rendererName() const override { return QStringLiteral( "SingleCategory" ); }
 
     QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QgsLinearlyInterpolatedDiagramRenderer* clone() const override;
 
-    /** Returns list with all diagram settings in the renderer*/
+    //! Returns list with all diagram settings in the renderer
     QList<QgsDiagramSettings> diagramSettings() const override;
 
     void setDiagramSettings( const QgsDiagramSettings& s ) { mSettings = s; }
@@ -585,7 +585,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const override;
 
-    QString rendererName() const override { return "LinearlyInterpolated"; }
+    QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
     double lowerValue() const { return mInterpolationSettings.lowerValue; }

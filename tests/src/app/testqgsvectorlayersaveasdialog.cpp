@@ -71,21 +71,21 @@ void TestQgsVectorLayerSaveAsDialog::cleanupTestCase()
 void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 {
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "none?field=code:int&field=regular:string", "vl", "memory" ) );
+  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
   // Set a widget
   QgsEditFormConfig editFormConfig = tempLayer->editFormConfig();
-  editFormConfig.setWidgetType( 0, "ValueRelation" );
+  editFormConfig.setWidgetType( 0, QStringLiteral( "ValueRelation" ) );
   tempLayer->setEditFormConfig( editFormConfig );
 
   QgsVectorLayerSaveAsDialog d( tempLayer.data() );
 
-  QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( "mDeselectAllAttributes" );
+  QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( QStringLiteral( "mDeselectAllAttributes" ) );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( "mAttributeTable" );
-  QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( "mReplaceRawFieldValues" );
+  QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( QStringLiteral( "mAttributeTable" ) );
+  QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( QStringLiteral( "mReplaceRawFieldValues" ) );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->columnCount(), 3 );

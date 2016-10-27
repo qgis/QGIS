@@ -191,6 +191,16 @@ class SymbolLayerItem : public QStandardItem
           }
         }
       }
+      else if ( role == Qt::ForegroundRole && mIsLayer )
+      {
+        QBrush brush( Qt::black, Qt::SolidPattern );
+        if ( !mLayer->enabled() )
+        {
+          brush.setColor( Qt::lightGray );
+        }
+        return brush;
+      }
+
 //      if ( role == Qt::SizeHintRole )
 //        return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
@@ -226,10 +236,10 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* s
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   QIcon iconLock;
-  iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Normal, QIcon::On );
-  iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Active, QIcon::On );
-  iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Normal, QIcon::Off );
-  iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Active, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
   btnLock->setIcon( iconLock );
   btnDuplicate->setIcon( QIcon( QgsApplication::iconPath( "mActionDuplicateLayer.svg" ) ) );
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
@@ -682,7 +692,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mButtonBox );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/SymbolSelectorWidget/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/SymbolSelectorWidget/geometry" ) ).toByteArray() );
 
   // can be embedded in renderer properties dialog
   if ( embedded )
@@ -696,7 +706,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
 QgsSymbolSelectorDialog::~QgsSymbolSelectorDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/SymbolSelectorWidget/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/SymbolSelectorWidget/geometry" ), saveGeometry() );
 }
 
 QMenu *QgsSymbolSelectorDialog::advancedMenu()

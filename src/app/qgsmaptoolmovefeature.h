@@ -18,7 +18,7 @@
 
 #include "qgsmaptooladvanceddigitizing.h"
 
-/** Map tool for translating feature position by mouse drag*/
+//! Map tool for translating feature position by mouse drag
 class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
@@ -34,13 +34,13 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     void deactivate() override;
 
   private:
-    /** Start point of the move in map coordinates*/
+    //! Start point of the move in map coordinates
     QgsPoint mStartPointMapCoords;
 
-    /** Rubberband that shows the feature being moved*/
+    //! Rubberband that shows the feature being moved
     QgsRubberBand* mRubberBand;
 
-    /** Id of moved feature*/
+    //! Id of moved feature
     QgsFeatureIds mMovedFeatures;
 
     QPoint mPressPos;

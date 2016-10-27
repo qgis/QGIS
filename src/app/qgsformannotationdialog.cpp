@@ -75,7 +75,7 @@ void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, "*.ui" );
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
   mFileLineEdit->setText( filename );
 }
 

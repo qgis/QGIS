@@ -176,14 +176,14 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   QNetworkRequest *pReq( const_cast< QNetworkRequest * >( &req ) ); // hack user agent
 
-  QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
+  QString userAgent = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
-  userAgent += QString( "QGIS/%1" ).arg( Qgis::QGIS_VERSION );
+  userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
 #ifndef QT_NO_OPENSSL
-  bool ishttps = pReq->url().scheme().toLower() == "https";
+  bool ishttps = pReq->url().scheme().toLower() == QLatin1String( "https" );
   if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
   {
     QgsDebugMsg( "Adding trusted CA certs to request" );
@@ -191,7 +191,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
 
     // check for SSL cert custom config
-    QString hostport( QString( "%1:%2" )
+    QString hostport( QStringLiteral( "%1:%2" )
                       .arg( pReq->url().host().trimmed() )
                       .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
     QgsAuthConfigSslServer servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
@@ -216,10 +216,10 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
   // uploadProgress.
   QTimer *timer = new QTimer( reply );
-  timer->setObjectName( "timeoutTimer" );
+  timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
   connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
   timer->setSingleShot( true );
-  timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
+  timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
 
   connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
   connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
@@ -251,34 +251,34 @@ QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoa
   switch ( theControl )
   {
     case QNetworkRequest::AlwaysNetwork:
-      return "AlwaysNetwork";
+      return QStringLiteral( "AlwaysNetwork" );
     case QNetworkRequest::PreferNetwork:
-      return "PreferNetwork";
+      return QStringLiteral( "PreferNetwork" );
     case QNetworkRequest::PreferCache:
-      return "PreferCache";
+      return QStringLiteral( "PreferCache" );
     case QNetworkRequest::AlwaysCache:
-      return "AlwaysCache";
+      return QStringLiteral( "AlwaysCache" );
     default:
       break;
   }
-  return "PreferNetwork";
+  return QStringLiteral( "PreferNetwork" );
 }
 
 QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromName( const QString &theName )
 {
-  if ( theName == "AlwaysNetwork" )
+  if ( theName == QLatin1String( "AlwaysNetwork" ) )
   {
     return QNetworkRequest::AlwaysNetwork;
   }
-  else if ( theName == "PreferNetwork" )
+  else if ( theName == QLatin1String( "PreferNetwork" ) )
   {
     return QNetworkRequest::PreferNetwork;
   }
-  else if ( theName == "PreferCache" )
+  else if ( theName == QLatin1String( "PreferCache" ) )
   {
     return QNetworkRequest::PreferCache;
   }
-  else if ( theName == "AlwaysCache" )
+  else if ( theName == QLatin1String( "AlwaysCache" ) )
   {
     return QNetworkRequest::AlwaysCache;
   }
@@ -317,20 +317,20 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   QNetworkProxy proxy;
   QStringList excludes;
 
-  bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
+  bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {
-    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( '|', QString::SkipEmptyParts );
+    excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toString().split( '|', QString::SkipEmptyParts );
 
     //read type, host, port, user, passw from settings
-    QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
-    int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
-    QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
-    QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+    QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
+    int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), "" ).toString().toInt();
+    QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), "" ).toString();
+    QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString();
 
-    QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
+    QString proxyTypeString = settings.value( QStringLiteral( "proxy/proxyType" ), "" ).toString();
 
-    if ( proxyTypeString == "DefaultProxy" )
+    if ( proxyTypeString == QLatin1String( "DefaultProxy" ) )
     {
       mUseSystemProxy = true;
       QNetworkProxyFactory::setUseSystemConfiguration( true );
@@ -344,19 +344,19 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     else
     {
       QNetworkProxy::ProxyType proxyType = QNetworkProxy::DefaultProxy;
-      if ( proxyTypeString == "Socks5Proxy" )
+      if ( proxyTypeString == QLatin1String( "Socks5Proxy" ) )
       {
         proxyType = QNetworkProxy::Socks5Proxy;
       }
-      else if ( proxyTypeString == "HttpProxy" )
+      else if ( proxyTypeString == QLatin1String( "HttpProxy" ) )
       {
         proxyType = QNetworkProxy::HttpProxy;
       }
-      else if ( proxyTypeString == "HttpCachingProxy" )
+      else if ( proxyTypeString == QLatin1String( "HttpCachingProxy" ) )
       {
         proxyType = QNetworkProxy::HttpCachingProxy;
       }
-      else if ( proxyTypeString == "FtpCachingProxy" )
+      else if ( proxyTypeString == QLatin1String( "FtpCachingProxy" ) )
       {
         proxyType = QNetworkProxy::FtpCachingProxy;
       }
@@ -375,10 +375,10 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   if ( !newcache )
     newcache = new QgsNetworkDiskCache( this );
 
-  QString cacheDirectory = settings.value( "cache/directory" ).toString();
+  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
   QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ) );

@@ -71,7 +71,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
         selection << item->data( Qt::UserRole ).toString();
     }
 
-    v = selection.join( "," ).prepend( '{' ).append( '}' );
+    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
   }
 
   if ( mLineEdit )
@@ -91,11 +91,11 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
 QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
 {
-  if ( config( "AllowMulti" ).toBool() )
+  if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
     return new QListWidget( parent );
   }
-  else if ( config( "UseCompleter" ).toBool() )
+  else if ( config( QStringLiteral( "UseCompleter" ) ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
@@ -114,7 +114,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    if ( config( "AllowNull" ).toBool() )
+    if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
     }
@@ -141,6 +141,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   else if ( mLineEdit )
   {
     QStringList values;
+    values.reserve( mCache.size() );
     Q_FOREACH ( const ValueRelationItem& i,  mCache )
     {
       values << i.second;
@@ -192,21 +193,21 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
 {
   ValueRelationCache cache;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( "Layer" ).toString() ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
 
   if ( !layer )
     return cache;
 
-  int ki = layer->fields().lookupField( config.value( "Key" ).toString() );
-  int vi = layer->fields().lookupField( config.value( "Value" ).toString() );
+  int ki = layer->fields().lookupField( config.value( QStringLiteral( "Key" ) ).toString() );
+  int vi = layer->fields().lookupField( config.value( QStringLiteral( "Value" ) ).toString() );
 
   QgsFeatureRequest request;
 
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
-  if ( !config.value( "FilterExpression" ).toString().isEmpty() )
+  if ( !config.value( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
   {
-    request.setFilterExpression( config.value( "FilterExpression" ).toString() );
+    request.setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -217,7 +218,7 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
     cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
   }
 
-  if ( config.value( "OrderByValue" ).toBool() )
+  if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )
   {
     qSort( cache.begin(), cache.end(), orderByValueLessThan );
   }

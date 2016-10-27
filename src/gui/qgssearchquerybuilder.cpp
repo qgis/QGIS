@@ -130,7 +130,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  /** MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  //! MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems
   QSet<QString> insertedValues;
 
   while ( fit.nextFeature( feat ) &&
@@ -141,7 +141,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     if ( !numeric )
     {
       // put string in single quotes and escape single quotes in the string
-      value = '\'' + value.replace( '\'', "''" ) + '\'';
+      value = '\'' + value.replace( '\'', QLatin1String( "''" ) ) + '\'';
     }
 
     // add item only if it's not there already
@@ -269,37 +269,37 @@ void QgsSearchQueryBuilder::on_btnOk_clicked()
 
 void QgsSearchQueryBuilder::on_btnEqual_clicked()
 {
-  txtSQL->insertText( " = " );
+  txtSQL->insertText( QStringLiteral( " = " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnLessThan_clicked()
 {
-  txtSQL->insertText( " < " );
+  txtSQL->insertText( QStringLiteral( " < " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
 {
-  txtSQL->insertText( " > " );
+  txtSQL->insertText( QStringLiteral( " > " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnPct_clicked()
 {
-  txtSQL->insertText( "%" );
+  txtSQL->insertText( QStringLiteral( "%" ) );
 }
 
 void QgsSearchQueryBuilder::on_btnIn_clicked()
 {
-  txtSQL->insertText( " IN " );
+  txtSQL->insertText( QStringLiteral( " IN " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnNotIn_clicked()
 {
-  txtSQL->insertText( " NOT IN " );
+  txtSQL->insertText( QStringLiteral( " NOT IN " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnLike_clicked()
 {
-  txtSQL->insertText( " LIKE " );
+  txtSQL->insertText( QStringLiteral( " LIKE " ) );
 }
 
 QString QgsSearchQueryBuilder::searchString()
@@ -324,32 +324,32 @@ void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index
 
 void QgsSearchQueryBuilder::on_btnLessEqual_clicked()
 {
-  txtSQL->insertText( " <= " );
+  txtSQL->insertText( QStringLiteral( " <= " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterEqual_clicked()
 {
-  txtSQL->insertText( " >= " );
+  txtSQL->insertText( QStringLiteral( " >= " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnNotEqual_clicked()
 {
-  txtSQL->insertText( " != " );
+  txtSQL->insertText( QStringLiteral( " != " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnAnd_clicked()
 {
-  txtSQL->insertText( " AND " );
+  txtSQL->insertText( QStringLiteral( " AND " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnNot_clicked()
 {
-  txtSQL->insertText( " NOT " );
+  txtSQL->insertText( QStringLiteral( " NOT " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnOr_clicked()
 {
-  txtSQL->insertText( " OR " );
+  txtSQL->insertText( QStringLiteral( " OR " ) );
 }
 
 void QgsSearchQueryBuilder::on_btnClear_clicked()
@@ -359,23 +359,23 @@ void QgsSearchQueryBuilder::on_btnClear_clicked()
 
 void QgsSearchQueryBuilder::on_btnILike_clicked()
 {
-  txtSQL->insertText( " ILIKE " );
+  txtSQL->insertText( QStringLiteral( " ILIKE " ) );
 }
 
 void QgsSearchQueryBuilder::saveQuery()
 {
   QSettings s;
-  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", QDir::homePath() ).toString();
+  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
   //save as qqt (QGIS query file)
-  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save query to file" ), lastQueryFileDir, "*.qqf" );
+  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save query to file" ), lastQueryFileDir, QStringLiteral( "*.qqf" ) );
   if ( saveFileName.isNull() )
   {
     return;
   }
 
-  if ( !saveFileName.endsWith( ".qqf", Qt::CaseInsensitive ) )
+  if ( !saveFileName.endsWith( QLatin1String( ".qqf" ), Qt::CaseInsensitive ) )
   {
-    saveFileName += ".qqf";
+    saveFileName += QLatin1String( ".qqf" );
   }
 
   QFile saveFile( saveFileName );
@@ -386,7 +386,7 @@ void QgsSearchQueryBuilder::saveQuery()
   }
 
   QDomDocument xmlDoc;
-  QDomElement queryElem = xmlDoc.createElement( "Query" );
+  QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
   QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->text() );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
@@ -395,13 +395,13 @@ void QgsSearchQueryBuilder::saveQuery()
   xmlDoc.save( fileStream, 2 );
 
   QFileInfo fi( saveFile );
-  s.setValue( "/UI/lastQueryFileDir", fi.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastQueryFileDir" ), fi.absolutePath() );
 }
 
 void QgsSearchQueryBuilder::loadQuery()
 {
   QSettings s;
-  QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", QDir::homePath() ).toString();
+  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
 
   QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
@@ -422,7 +422,7 @@ void QgsSearchQueryBuilder::loadQuery()
     return;
   }
 
-  QDomElement queryElem = queryDoc.firstChildElement( "Query" );
+  QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
   if ( queryElem.isNull() )
   {
     QMessageBox::critical( nullptr, tr( "Error" ), tr( "File is not a valid query document" ) );

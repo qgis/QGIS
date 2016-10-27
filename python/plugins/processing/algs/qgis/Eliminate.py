@@ -5,7 +5,7 @@
     Eliminate.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2013 by Bernhard Str�bl
+    Copyright            : (C) 2013 by Bernhard Ströbl
     Email                : bernhard.stroebl@jena.de
 ***************************************************************************
 *                                                                         *
@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QLocale, QDate
+from qgis.PyQt.QtCore import QLocale, QDate, QVariant
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 
@@ -115,26 +115,26 @@ class Eliminate(GeoAlgorithm):
             selectType = processLayer.fields()[selectindex].type()
             selectionError = False
 
-            if selectType == 2:
+            if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                 try:
                     y = int(comparisonvalue)
                 except ValueError:
                     selectionError = True
                     msg = self.tr('Cannot convert "%s" to integer' % str(comparisonvalue))
-            elif selectType == 6:
+            elif selectType == QVariant.Double:
                 try:
                     y = float(comparisonvalue)
                 except ValueError:
                     selectionError = True
                     msg = self.tr('Cannot convert "%s" to float' % str(comparisonvalue))
-            elif selectType == 10:
+            elif selectType == QVariant.String:
                 # 10: string, boolean
                 try:
                     y = str(comparisonvalue)
                 except ValueError:
                     selectionError = True
                     msg = self.tr('Cannot convert "%s" to unicode' % str(comparisonvalue))
-            elif selectType == 14:
+            elif selectType == QVariant.Date:
                 # date
                 dateAndFormat = comparisonvalue.split(' ')
 
@@ -159,7 +159,7 @@ class Eliminate(GeoAlgorithm):
                     msg += self.tr('Enter the date and the date format, e.g. "07.26.2011" "MM.dd.yyyy".')
 
             if (comparison == 'begins with' or comparison == 'contains') \
-               and selectType != 10:
+               and selectType != QVariant.String:
                 selectionError = True
                 msg = self.tr('"%s" can only be used with string fields' % comparison)
 
@@ -175,14 +175,14 @@ class Eliminate(GeoAlgorithm):
                     if aValue is None:
                         continue
 
-                    if selectType == 2:
+                    if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                         x = int(aValue)
-                    elif selectType == 6:
+                    elif selectType == QVariant.Double:
                         x = float(aValue)
-                    elif selectType == 10:
+                    elif selectType == QVariant.String:
                         # 10: string, boolean
                         x = str(aValue)
-                    elif selectType == 14:
+                    elif selectType == QVariant.Date:
                         # date
                         x = aValue  # should be date
 
@@ -246,17 +246,21 @@ class Eliminate(GeoAlgorithm):
                 geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
                 fit = processLayer.getFeatures(
-                    QgsFeatureRequest().setFilterRect(bbox))
+                    QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes([]))
                 mergeWithFid = None
                 mergeWithGeom = None
                 max = 0
                 min = -1
                 selFeat = QgsFeature()
 
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine.prepareGeometry()
+
                 while fit.nextFeature(selFeat):
                     selGeom = selFeat.geometry()
 
-                    if geom2Eliminate.intersects(selGeom):
+                    if engine.intersects(selGeom.geometry()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 

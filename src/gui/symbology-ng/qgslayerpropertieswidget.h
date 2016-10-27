@@ -35,7 +35,7 @@ class SymbolLayerItem;
 /** \ingroup gui
  * \class QgsLayerPropertiesWidget
  */
-class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::LayerPropertiesWidget
+class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, protected QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT
 
@@ -74,6 +74,8 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
     void populateLayerTypes();
     void updateSymbolLayerWidget( QgsSymbolLayer* layer );
 
+    QgsExpressionContext createExpressionContext() const override;
+
   protected: // data
     QgsSymbolLayer* mLayer;
 
@@ -82,6 +84,9 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
 
   private slots:
     void reloadLayer();
+    void on_mEnabledCheckBox_toggled( bool enabled );
+
+    void updateDataDefinedEnable();
 
   private:
 

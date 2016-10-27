@@ -871,7 +871,6 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-
   - algorithm: qgis:extractnodes
     name: Test (qgis:extractnodes)
     params:
@@ -992,4 +991,225 @@ tests:
     results:
       OUTPUT_LAYER:
         name: expected/smoothed_lines_max_angle.gml
+        type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Add Geometry PointZ
+    params:
+      CALC_METHOD: '0'
+      INPUT:
+        name: pointsz.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_geometry_pointz.gml
+        type: vector
+
+  - algorithm: qgis:countpointsinpolygon
+    name: Count points in polygon
+    params:
+      FIELD: NUMPOINTS
+      POINTS:
+        name: points_in_polys.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_in_polys.gml
+        type: vector
+
+  - algorithm: qgis:aspect
+    name: Aspect from QGIS analysis library
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
+        type: rasterhash
+
+  - algorithm: qgis:slope
+    name: Slope from QGIS analysis library
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 151ea76a21b286c16567eb6b4b692925a84145b65561a0017effb1a1
+        type: rasterhash
+
+  - algorithm: qgis:ruggednessindex
+    name: Ruggedness index from QGIS analysis library
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: ff630246e8dc19c7217d81261c6b64f965c17fa04d3e41d7979c1f1e
+        type: rasterhash
+
+  - algorithm: qgis:hillshade
+    name: Hillshade from QGIS analysis library
+    params:
+      AZIMUTH: 300.0
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      V_ANGLE: 40.0
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
+        type: rasterhash
+
+  - algorithm: qgis:reliefautomaticcolors
+    name: Relief (automatic colors calculation)
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
+        type: rasterhash
+
+  - algorithm: qgis:lineintersections
+    name: Line Intersection
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: simplify_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection.gml
+        type: vector
+
+  - algorithm: qgis:sumlinelengths
+    name: Sum line lengths
+    params:
+      COUNT_FIELD: line_count
+      LEN_FIELD: line_len
+      LINES:
+        name: lines.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/sum_line_length.gml
+        type: vector
+
+  - algorithm: qgis:delaunaytriangulation
+    name: Delaunay triangulation (multipoint data)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/multipoint_delaunay.gml
+        type: vector
+
+  - algorithm: qgis:idwinterpolationusingattribute
+    name: IDW interpolation using attribute
+    params:
+      ATTRIBUTE: elev
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        type: rasterhash
+
+  - algorithm: qgis:idwinterpolationusingzvalues
+    name: IDW interpolation using Z value
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolationusingattribute
+    name: TIN interpolation using attribute
+    params:
+      ATTRIBUTE: elev
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      METHOD: '0'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        type: rasterhash
+      #TRIANULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
+
+  - algorithm: qgis:tininterpolationusingzvalues
+    name: TIN interpolation using Z value
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      METHOD: '1'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        type: rasterhash
+      #TRIANULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
+
+  - algorithm: qgis:removenullgeometries
+    name: Remove null geometries
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/remove_null_polys.gml
         type: vector

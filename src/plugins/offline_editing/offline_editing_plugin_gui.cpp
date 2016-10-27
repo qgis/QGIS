@@ -74,7 +74,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
 
   restoreState();
 
-  mOfflineDbFile = "offline.sqlite";
+  mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
   QgsLayerTreeGroup* rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
@@ -88,8 +88,8 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
   QSettings settings;
-  settings.setValue( "Plugin-OfflineEditing/geometry", saveGeometry() );
-  settings.setValue( "Plugin-OfflineEditing/offline_data_path", mOfflineDataPath );
+  settings.setValue( QStringLiteral( "Plugin-OfflineEditing/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), mOfflineDataPath );
 }
 
 QString QgsOfflineEditingPluginGui::offlineDataPath()
@@ -122,9 +122,9 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
 
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.endsWith( ".sqlite", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) )
     {
-      fileName += ".sqlite";
+      fileName += QLatin1String( ".sqlite" );
     }
     mOfflineDbFile = QFileInfo( fileName ).fileName();
     mOfflineDataPath = QFileInfo( fileName ).absolutePath();
@@ -174,8 +174,8 @@ void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 void QgsOfflineEditingPluginGui::restoreState()
 {
   QSettings settings;
-  mOfflineDataPath = settings.value( "Plugin-OfflineEditing/offline_data_path", QDir::homePath() ).toString();
-  restoreGeometry( settings.value( "Plugin-OfflineEditing/geometry" ).toByteArray() );
+  mOfflineDataPath = settings.value( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), QDir::homePath() ).toString();
+  restoreGeometry( settings.value( QStringLiteral( "Plugin-OfflineEditing/geometry" ) ).toByteArray() );
 }
 
 void QgsOfflineEditingPluginGui::selectAll()

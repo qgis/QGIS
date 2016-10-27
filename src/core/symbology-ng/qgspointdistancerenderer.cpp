@@ -44,7 +44,7 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString& rendererName,
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
 }
 
-void QgsPointDistanceRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsPointDistanceRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
 {
   mRenderer->toSld( doc, element, props );
 }
@@ -449,15 +449,15 @@ QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const Clu
 
     if ( groupColor.isValid() )
     {
-      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QgsSymbolLayerUtils::encodeColor( groupColor ) );
+      clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QgsSymbolLayerUtils::encodeColor( groupColor ), true ) );
     }
     else
     {
       //mixed colors
-      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
+      clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QVariant(), true ) );
     }
 
-    clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size() );
+    clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size(), true ) );
   }
   return clusterScope;
 }

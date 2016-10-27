@@ -105,8 +105,8 @@ QgsExpressionContext QgsComposerColumnSourceDelegate::createExpressionContext() 
   }
 
   QgsExpressionContext expContext = mComposerObject->createExpressionContext();
-  expContext.lastScope()->setVariable( "row_number", 1 );
-  expContext.setHighlightedVariables( QStringList() << "row_number" );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
+  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
   return expContext;
 }
 
@@ -283,7 +283,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/AttributeSelectionDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
 
   if ( mComposerTable )
   {
@@ -322,7 +322,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/AttributeSelectionDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()

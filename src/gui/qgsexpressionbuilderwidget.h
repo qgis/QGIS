@@ -148,14 +148,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
 
-    /** Sets geometry calculator used in distance/area calculations. */
+    //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea & da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
     QString expressionText();
 
-    /** Sets the expression string for the widget */
+    //! Sets the expression string for the widget
     void setExpressionText( const QString& expression );
 
     /** Returns the expression context for the widget. The context is used for the expression
@@ -280,6 +280,20 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString helpStylesheet() const;
 
     void loadExpressionContext();
+
+    /** Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
+      * @param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
+      * @param label The label that is show to the user for the item in the tree.
+      * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
+      * @param helpText The help text that the user will see when item is selected.
+      * @param type The type of the expression item.
+      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * @param sortOrder sort ranking for item
+      */
+    void registerItemForAllGroups( const QStringList& groups, const QString& label, const QString& expressionText,
+                                   const QString& helpText = "",
+                                   QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+                                   bool highlightedItem = false, int sortOrder = 1 );
 
     bool mAutoSave;
     QString mFunctionsPath;

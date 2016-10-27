@@ -104,7 +104,7 @@ QgsVector QgsVector::normalized() const
 
   if ( len == 0.0 )
   {
-    throw QgsException( "normalized vector of null vector undefined" );
+    throw QgsException( QStringLiteral( "normalized vector of null vector undefined" ) );
   }
 
   return *this / len;
@@ -139,7 +139,7 @@ QString QgsPoint::toString( int thePrecision ) const
 {
   QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', thePrecision ) : QObject::tr( "infinite" );
   QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', thePrecision ) : QObject::tr( "infinite" );
-  return QString( "%1,%2" ).arg( x, y );
+  return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffix, const bool padded ) const
@@ -238,12 +238,12 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision, const bool useSuffi
     myXHemisphere = QString();
   }
   //pad minutes with leading digits if required
-  QString myMinutesX = padded ? QString( "%1" ).arg( myIntMinutesX, 2, 10, QChar( '0' ) ) : QString::number( myIntMinutesX );
-  QString myMinutesY = padded ? QString( "%1" ).arg( myIntMinutesY, 2, 10, QChar( '0' ) ) : QString::number( myIntMinutesY );
+  QString myMinutesX = padded ? QStringLiteral( "%1" ).arg( myIntMinutesX, 2, 10, QChar( '0' ) ) : QString::number( myIntMinutesX );
+  QString myMinutesY = padded ? QStringLiteral( "%1" ).arg( myIntMinutesY, 2, 10, QChar( '0' ) ) : QString::number( myIntMinutesY );
   //pad seconds with leading digits if required
   int digits = 2 + ( thePrecision == 0 ? 0 : 1 + thePrecision ); //1 for decimal place if required
-  QString myStrSecondsX = padded ? QString( "%1" ).arg( mySecondsX, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsX, 'f', thePrecision );
-  QString myStrSecondsY = padded ? QString( "%1" ).arg( mySecondsY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsY, 'f', thePrecision );
+  QString myStrSecondsX = padded ? QStringLiteral( "%1" ).arg( mySecondsX, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsX, 'f', thePrecision );
+  QString myStrSecondsY = padded ? QStringLiteral( "%1" ).arg( mySecondsY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( mySecondsY, 'f', thePrecision );
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myMinutesX + QChar( 0x2032 ) +
@@ -328,8 +328,8 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
   //pad minutes with leading digits if required
   int digits = 2 + ( thePrecision == 0 ? 0 : 1 + thePrecision ); //1 for decimal place if required
-  QString myStrMinutesX = padded ? QString( "%1" ).arg( myFloatMinutesX, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesX, 'f', thePrecision );
-  QString myStrMinutesY = padded ? QString( "%1" ).arg( myFloatMinutesY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesY, 'f', thePrecision );
+  QString myStrMinutesX = padded ? QStringLiteral( "%1" ).arg( myFloatMinutesX, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesX, 'f', thePrecision );
+  QString myStrMinutesY = padded ? QStringLiteral( "%1" ).arg( myFloatMinutesY, digits, 'f', thePrecision, QChar( '0' ) ) : QString::number( myFloatMinutesY, 'f', thePrecision );
 
   QString rep = myXSign + QString::number( myDegreesX ) + QChar( 176 ) +
                 myStrMinutesX + QChar( 0x2032 ) +
@@ -342,7 +342,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision, const bool useSuffix, cons
 
 QString QgsPoint::wellKnownText() const
 {
-  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ), qgsDoubleToString( m_y ) );
+  return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ), qgsDoubleToString( m_y ) );
 }
 
 double QgsPoint::sqrDist( double x, double y ) const

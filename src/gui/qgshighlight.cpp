@@ -182,8 +182,8 @@ void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & contex
       {
         simpleFill->setBorderWidth( getSymbolWidth( context, simpleFill->borderWidth(), simpleFill->outputUnit() ) );
       }
-      symbolLayer->removeDataDefinedProperty( "color" );
-      symbolLayer->removeDataDefinedProperty( "color_border" );
+      symbolLayer->removeDataDefinedProperty( QStringLiteral( "color" ) );
+      symbolLayer->removeDataDefinedProperty( QStringLiteral( "color_border" ) );
     }
   }
 }

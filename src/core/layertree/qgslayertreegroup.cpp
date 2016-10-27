@@ -242,14 +242,14 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::findGroup( const QString& name )
 
 QgsLayerTreeGroup* QgsLayerTreeGroup::readXml( QDomElement& element )
 {
-  if ( element.tagName() != "layer-tree-group" )
+  if ( element.tagName() != QLatin1String( "layer-tree-group" ) )
     return nullptr;
 
-  QString name = element.attribute( "name" );
-  bool isExpanded = ( element.attribute( "expanded", "1" ) == "1" );
-  Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( "checked" ) );
-  bool isMutuallyExclusive = element.attribute( "mutually-exclusive", "0" ) == "1";
-  int mutuallyExclusiveChildIndex = element.attribute( "mutually-exclusive-child", "-1" ).toInt();
+  QString name = element.attribute( QStringLiteral( "name" ) );
+  bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
+  Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
+  bool isMutuallyExclusive = element.attribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
+  int mutuallyExclusiveChildIndex = element.attribute( QStringLiteral( "mutually-exclusive-child" ), QStringLiteral( "-1" ) ).toInt();
 
   QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( name, checked );
   groupNode->setExpanded( isExpanded );
@@ -266,14 +266,14 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::readXml( QDomElement& element )
 void QgsLayerTreeGroup::writeXml( QDomElement& parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement( "layer-tree-group" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "expanded", mExpanded ? "1" : "0" );
-  elem.setAttribute( "checked", QgsLayerTreeUtils::checkStateToXml( mChecked ) );
+  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
+  elem.setAttribute( QStringLiteral( "name" ), mName );
+  elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
+  elem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( mChecked ) );
   if ( mMutuallyExclusive )
   {
-    elem.setAttribute( "mutually-exclusive", "1" );
-    elem.setAttribute( "mutually-exclusive-child", mMutuallyExclusiveChildIndex );
+    elem.setAttribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "1" ) );
+    elem.setAttribute( QStringLiteral( "mutually-exclusive-child" ), mMutuallyExclusiveChildIndex );
   }
 
   writeCommonXml( elem );
@@ -302,13 +302,13 @@ void QgsLayerTreeGroup::readChildrenFromXml( QDomElement& element )
 
 QString QgsLayerTreeGroup::dump() const
 {
-  QString header = QString( "GROUP: %1 visible=%2 expanded=%3\n" ).arg( name() ).arg( mChecked ).arg( mExpanded );
+  QString header = QStringLiteral( "GROUP: %1 visible=%2 expanded=%3\n" ).arg( name() ).arg( mChecked ).arg( mExpanded );
   QStringList childrenDump;
   Q_FOREACH ( QgsLayerTreeNode* node, mChildren )
     childrenDump << node->dump().split( '\n' );
   for ( int i = 0; i < childrenDump.count(); ++i )
     childrenDump[i].prepend( "  " );
-  return header + childrenDump.join( "\n" );
+  return header + childrenDump.join( QStringLiteral( "\n" ) );
 }
 
 QgsLayerTreeGroup* QgsLayerTreeGroup::clone() const

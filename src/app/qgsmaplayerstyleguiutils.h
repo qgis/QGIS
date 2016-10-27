@@ -23,7 +23,7 @@ class QgsMapLayer;
 class QAction;
 class QMenu;
 
-/** Various GUI utility functions for dealing with map layer's style manager */
+//! Various GUI utility functions for dealing with map layer's style manager
 class QgsMapLayerStyleGuiUtils : public QObject
 {
     Q_OBJECT

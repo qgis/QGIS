@@ -37,7 +37,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
     , mJob( nullptr )
 {
   setAutoFillBackground( true );
-  setObjectName( "theOverviewCanvas" );
+  setObjectName( QStringLiteral( "theOverviewCanvas" ) );
   mPanningWidget = new QgsPanningWidget( this );
 
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
@@ -282,7 +282,7 @@ QStringList QgsMapOverviewCanvas::layerSet() const
 QgsPanningWidget::QgsPanningWidget( QWidget* parent )
     : QWidget( parent )
 {
-  setObjectName( "panningWidget" );
+  setObjectName( QStringLiteral( "panningWidget" ) );
   setMinimumSize( 5, 5 );
   setAttribute( Qt::WA_NoSystemBackground );
 }
@@ -291,6 +291,11 @@ void QgsPanningWidget::setPolygon( const QPolygon& p )
 {
   if ( p == mPoly ) return;
   mPoly = p;
+
+  //ensure polygon is closed
+  if ( mPoly.at( 0 ) != mPoly.at( mPoly.length() - 1 ) )
+    mPoly.append( mPoly.at( 0 ) );
+
   setGeometry( p.boundingRect() );
   update();
 }
@@ -303,7 +308,13 @@ void QgsPanningWidget::paintEvent( QPaintEvent* pe )
   p.begin( this );
   p.setPen( Qt::red );
   QPolygonF t = mPoly.translated( -mPoly.boundingRect().left(), -mPoly.boundingRect().top() );
-  p.drawConvexPolygon( t );
+
+  // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
+  // instead of rectangles! (Same cause as #13343)
+  QPainterPath path;
+  path.addPolygon( t );
+  p.drawPath( path );
+
   p.end();
 }
 

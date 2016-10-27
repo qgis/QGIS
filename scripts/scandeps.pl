@@ -64,11 +64,13 @@ for my $dist (@dists) {
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
 	my @deps;
+	my %deps;
 	foreach my $p (split /,/, $deps) {
 		$p =~ s/^\s+//;
 		$p =~ s/\s+.*$//;
 		next if $p =~ /^(debhelper|subversion|python-central)$/;
-		push @deps, $p;
+		push @deps, $p if not exists $deps{$p};
+		$deps{$p} = 1;
 	}
 
 	my $dep="";

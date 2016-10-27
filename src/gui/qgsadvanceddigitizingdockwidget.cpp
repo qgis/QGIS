@@ -93,8 +93,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
     , mCurrentMapToolSupportsCad( false )
     , mCadEnabled( false )
     , mConstructionMode( false )
-    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( "/Cad/SnappingMode", QgsMapMouseEvent::SnapProjectConfig ).toInt() )
-    , mCommonAngleConstraint( QSettings().value( "/Cad/CommonAngle", 90 ).toInt() )
+    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
+    , mCommonAngleConstraint( QSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
     , mSnappedToVertex( false )
     , mSessionActive( false )
     , mErrorMessage( nullptr )
@@ -118,7 +118,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   // this action is also used in the advanced digitizing tool bar
   mEnableAction = new QAction( this );
   mEnableAction->setText( tr( "Enable advanced digitizing tools" ) );
-  mEnableAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.svg" ) );
+  mEnableAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/cadtools/cad.svg" ) ) );
   mEnableAction->setCheckable( true );
   mEnabledButton->addAction( mEnableAction );
   mEnabledButton->setDefaultAction( mEnableAction );
@@ -164,9 +164,9 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   mCommonAngleActions = QMap<QAction*, int>();
   QList< QPair< int, QString > > commonAngles;
   commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
-  commonAngles << QPair<int, QString>( 30, tr( "Snap to 30%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
-  commonAngles << QPair<int, QString>( 45, tr( "Snap to 45%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
-  commonAngles << QPair<int, QString>( 90, tr( "Snap to 90%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
+  commonAngles << QPair<int, QString>( 30, tr( "Snap to 30%1 angles" ).arg( QStringLiteral( "°" ) ) );
+  commonAngles << QPair<int, QString>( 45, tr( "Snap to 45%1 angles" ).arg( QStringLiteral( "°" ) ) );
+  commonAngles << QPair<int, QString>( 90, tr( "Snap to 90%1 angles" ).arg( QStringLiteral( "°" ) ) );
   for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); ++it )
   {
     QAction* action = new QAction( it->second, menu );
@@ -301,7 +301,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
   {
     isn.key()->setChecked( true );
     mSnappingMode = isn.value();
-    QSettings().setValue( "/Cad/SnappingMode", ( int )isn.value() );
+    QSettings().setValue( QStringLiteral( "/Cad/SnappingMode" ), ( int )isn.value() );
     return;
   }
 
@@ -311,7 +311,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
   {
     ica.key()->setChecked( true );
     mCommonAngleConstraint = ica.value();
-    QSettings().setValue( "/Cad/CommonAngle", ica.value() );
+    QSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
     return;
   }
 }

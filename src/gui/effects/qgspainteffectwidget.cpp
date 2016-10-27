@@ -40,7 +40,7 @@ QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
 
 void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "drawSource" )
+  if ( !effect || effect->type() != QLatin1String( "drawSource" ) )
     return;
 
   mEffect = static_cast<QgsDrawSourceEffect*>( effect );
@@ -132,7 +132,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 
 void QgsBlurWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "blur" )
+  if ( !effect || effect->type() != QLatin1String( "blur" ) )
     return;
 
   mEffect = static_cast<QgsBlurEffect*>( effect );
@@ -252,7 +252,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 
   mShadowColorBtn->setAllowAlpha( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
-  mShadowColorBtn->setContext( "symbology" );
+  mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
 
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
 
@@ -261,7 +261,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 
 void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || ( effect->type() != "dropShadow" && effect->type() != "innerShadow" ) )
+  if ( !effect || ( effect->type() != QLatin1String( "dropShadow" ) && effect->type() != QLatin1String( "innerShadow" ) ) )
     return;
 
   mEffect = static_cast<QgsShadowEffect*>( effect );
@@ -417,7 +417,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
   mColorBtn->setAllowAlpha( false );
   mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
-  mColorBtn->setContext( "symbology" );
+  mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
 
@@ -434,7 +434,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
 void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || ( effect->type() != "outerGlow" && effect->type() != "innerGlow" ) )
+  if ( !effect || ( effect->type() != QLatin1String( "outerGlow" ) && effect->type() != QLatin1String( "innerGlow" ) ) )
     return;
 
   mEffect = static_cast<QgsGlowEffect*>( effect );
@@ -626,7 +626,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
 
 void QgsTransformWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "transform" )
+  if ( !effect || effect->type() != QLatin1String( "transform" ) )
     return;
 
   mEffect = static_cast<QgsTransformEffect*>( effect );
@@ -804,7 +804,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
 
 void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "color" )
+  if ( !effect || effect->type() != QLatin1String( "color" ) )
     return;
 
   mEffect = static_cast<QgsColorEffect*>( effect );

@@ -17,7 +17,7 @@ class QgsPanelWidget : public QWidget
      * Set the title of the panel when shown in the interface.
      * @param panelTitle The panel title.
      */
-    void setPanelTitle( QString panelTitle );
+    void setPanelTitle( const QString& panelTitle );
 
     /**
      * The title of the panel.
@@ -32,7 +32,7 @@ class QgsPanelWidget : public QWidget
     * Use this method if you have children widgets that need to show a panel to the user.
     * @param panels A list of panel widgets to connect.
     */
-    void connectChildPanels( QList<QgsPanelWidget*> panels );
+    void connectChildPanels( const QList<QgsPanelWidget*>& panels );
 
     /**
      * Connect the given sub panel widgets showPanel signals to this current panels

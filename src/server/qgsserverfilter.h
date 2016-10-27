@@ -46,9 +46,9 @@ class SERVER_EXPORT QgsServerFilter
      * and must be passed to QgsServerFilter instances.
      */
     QgsServerFilter( QgsServerInterface* serverInterface );
-    /** Destructor */
+    //! Destructor
     virtual ~QgsServerFilter();
-    /** Return the QgsServerInterface instance*/
+    //! Return the QgsServerInterface instance
     QgsServerInterface* serverInterface() { return mServerInterface; }
     /** Method called when the QgsRequestHandler is ready and populated with
     * parameters, just before entering the main switch for core services.*/

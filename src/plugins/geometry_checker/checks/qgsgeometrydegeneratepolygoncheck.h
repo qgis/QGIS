@@ -29,7 +29,7 @@ class QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Polygon with less than three nodes" ); }
-    QString errorName() const override { return "QgsGeometryDegeneratePolygonCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryDegeneratePolygonCheck" ); }
 
   private:
     enum ResolutionMethod { DeleteRing, NoChange };

@@ -209,7 +209,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       return mIsValid;
     }
 
-    /** Removes +nadgrids and +towgs84 from proj4 string*/
+    //! Removes +nadgrids and +towgs84 from proj4 string
     QString stripDatumTransform( const QString& proj4 ) const
     {
       QStringList parameterSplit = proj4.split( '+', QString::SkipEmptyParts );
@@ -219,8 +219,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
       for ( int i = 0; i < parameterSplit.size(); ++i )
       {
         currentParameter = parameterSplit.at( i );
-        if ( !currentParameter.startsWith( "towgs84", Qt::CaseInsensitive )
-             && !currentParameter.startsWith( "nadgrids", Qt::CaseInsensitive ) )
+        if ( !currentParameter.startsWith( QLatin1String( "towgs84" ), Qt::CaseInsensitive )
+             && !currentParameter.startsWith( QLatin1String( "nadgrids" ), Qt::CaseInsensitive ) )
         {
           newProjString.append( '+' );
           newProjString.append( currentParameter );
@@ -243,7 +243,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       }
 
       sqlite3_stmt* stmt;
-      QString sql = QString( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
+      QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
       int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
       if ( prepareRes != SQLITE_OK )
       {
@@ -262,7 +262,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         }
         else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
         {
-          transformString += "+towgs84=";
+          transformString += QLatin1String( "+towgs84=" );
           double p1 = sqlite3_column_double( stmt, 1 );
           double p2 = sqlite3_column_double( stmt, 2 );
           double p3 = sqlite3_column_double( stmt, 3 );
@@ -272,11 +272,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
           double p7 = sqlite3_column_double( stmt, 7 );
           if ( methodCode == 9603 ) //3 parameter transformation
           {
-            transformString += QString( "%1,%2,%3" ).arg( p1 ).arg( p2 ).arg( p3 );
+            transformString += QStringLiteral( "%1,%2,%3" ).arg( p1 ).arg( p2 ).arg( p3 );
           }
           else //7 parameter transformation
           {
-            transformString += QString( "%1,%2,%3,%4,%5,%6,%7" ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
+            transformString += QStringLiteral( "%1,%2,%3,%4,%5,%6,%7" ).arg( p1 ).arg( p2 ).arg( p3 ).arg( p4 ).arg( p5 ).arg( p6 ).arg( p7 );
           }
         }
       }
@@ -286,30 +286,30 @@ class QgsCoordinateTransformPrivate : public QSharedData
       return transformString;
     }
 
-    /** In certain situations, null grid shifts have to be added to src / dst proj string*/
+    //! In certain situations, null grid shifts have to be added to src / dst proj string
     void addNullGridShifts( QString& srcProjString, QString& destProjString ) const
     {
       //if one transformation uses ntv2, the other one needs to be null grid shift
-      if ( mDestinationDatumTransform == -1 && srcProjString.contains( "+nadgrids" ) ) //add null grid if source transformation is ntv2
+      if ( mDestinationDatumTransform == -1 && srcProjString.contains( QLatin1String( "+nadgrids" ) ) ) //add null grid if source transformation is ntv2
       {
-        destProjString += " +nadgrids=@null";
+        destProjString += QLatin1String( " +nadgrids=@null" );
         return;
       }
-      if ( mSourceDatumTransform == -1 && destProjString.contains( "+nadgrids" ) )
+      if ( mSourceDatumTransform == -1 && destProjString.contains( QLatin1String( "+nadgrids" ) ) )
       {
-        srcProjString += " +nadgrids=@null";
+        srcProjString += QLatin1String( " +nadgrids=@null" );
         return;
       }
 
       //add null shift grid for google mercator
       //(see e.g. http://trac.osgeo.org/proj/wiki/FAQ#ChangingEllipsoidWhycantIconvertfromWGS84toGoogleEarthVirtualGlobeMercator)
-      if ( mSourceCRS.authid().compare( "EPSG:3857", Qt::CaseInsensitive ) == 0 && mSourceDatumTransform == -1 )
+      if ( mSourceCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && mSourceDatumTransform == -1 )
       {
-        srcProjString += " +nadgrids=@null";
+        srcProjString += QLatin1String( " +nadgrids=@null" );
       }
-      if ( mDestCRS.authid().compare( "EPSG:3857", Qt::CaseInsensitive ) == 0 && mDestinationDatumTransform == -1 )
+      if ( mDestCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && mDestinationDatumTransform == -1 )
       {
-        destProjString += " +nadgrids=@null";
+        destProjString += QLatin1String( " +nadgrids=@null" );
       }
     }
 

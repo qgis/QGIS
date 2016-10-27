@@ -102,8 +102,8 @@ my $branch = `git rev-parse --abbrev-ref HEAD 2>/dev/null`;
 $branch =~ s/\s+$//;
 pod2usage("Not on a branch") unless $branch;
 pod2usage("Current branch is $branch. master or a release branch expected") if $branch !~ /^(master.*|release-(\d+)_(\d+))$/;
-pod2usage("Version mismatch ($2.$3 in branch $branch vs. $major.$minor in CMakeLists.txt)") if $branch ne "master" && ( $major != $2 || $minor != $3 );
-pod2usage("Release name Master expected on master branch" ) if $branch eq "master" && $releasename ne "Master";
+pod2usage("Version mismatch ($2.$3) in branch $branch vs. $major.$minor in CMakeLists.txt)") if $branch !~ /master/ && ( $major != $2 || $minor != $3 );
+pod2usage("Release name Master expected on master branch" ) if $branch =~ /^master/ && $releasename ne "Master";
 
 if( $branch =~ /^master.*/ ) {
 	pod2usage("No point releases on master branch") if $dopoint;
@@ -136,9 +136,9 @@ if( $domajor ) {
 my $splashwidth;
 unless( $dopoint ) {
 	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
-	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp";
-	my $welcomeformat = `identify -format '%wx%h %m' ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp`;
-	pod2usage("NSIS Image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp mis-sized [$welcomeformat vs. 164x314 BMP3]") unless $welcomeformat =~ /^164x314 /;
+	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png";
+	my $welcomeformat = `identify -format '%wx%h %m' ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png`;
+	pod2usage("NSIS Image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png mis-sized [$welcomeformat vs. 164x314 BMP3]") unless $welcomeformat =~ /^164x314 /;
 }
 
 print "Last pull rebase...\n";
@@ -182,7 +182,7 @@ run( "cp debian/changelog /tmp", "backup changelog failed" );
 
 unless( $dopoint ) {
 	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
-	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
+	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 
 	if( -f "images/splash/splash-release.xcf.bz2" ) {
 		run( "cp -v images/splash/splash-$newmajor.$newminor.xcf.bz2 images/splash/splash.xcf.bz2", "splash xcf switch failed" );
@@ -207,7 +207,7 @@ unless( $dopoint ) {
 	$newminor++;
 
 	print "Updating master...\n";
-	run( "git checkout master", "checkout master failed" );
+	run( "git checkout $branch", "checkout master failed" );
 
 	if($dopremajor) {
 		print " Creating master_$newmajor...\n";
@@ -230,7 +230,7 @@ unless( $dopoint ) {
 	run( "dch --newversion $newmajor.$newminor.0 'New development version $newmajor.$newminor after branch of $release'", "dch failed" );
 	run( "git commit -a -m 'Bump version to $newmajor.$newminor'", "bump version failed" );
 
-	push @topush, "master";
+	push @topush, $branch;
 }
 
 push @topush, $relbranch;

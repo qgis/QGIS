@@ -30,7 +30,7 @@
 #include <QDomElement>
 
 QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer* subRenderer )
-    : QgsFeatureRenderer( "invertedPolygonRenderer" )
+    : QgsFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ) )
     , mPreprocessingEnabled( false )
 {
   if ( subRenderer )
@@ -259,8 +259,12 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     return;
   }
 
+  QgsMultiPolygon finalMulti; //avoid expensive allocation for list for every feature
+  QgsPolygon newPoly;
+
   Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
+    finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
     if ( mPreprocessingEnabled )
     {
@@ -283,7 +287,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       //
       // No validity check is done, on purpose, it will be very slow and painting
       // operations do not need geometries to be valid
-      QgsMultiPolygon finalMulti;
+
       finalMulti.append( mExtentPolygon );
       Q_FOREACH ( const QgsGeometry& geom, cit.geometries )
       {
@@ -312,9 +316,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
           // add interior rings as new polygons
           for ( int j = 1; j < multi[i].size(); j++ )
           {
-            QgsPolygon new_poly;
-            new_poly.append( multi[i][j] );
-            finalMulti.append( new_poly );
+            newPoly.resize( 0 ); //preserve capacity - don't use clear!
+            newPoly.append( multi[i][j] );
+            finalMulti.append( newPoly );
           }
         }
       }
@@ -352,7 +356,7 @@ QString QgsInvertedPolygonRenderer::dump() const
 {
   if ( !mSubRenderer )
   {
-    return "INVERTED: NULL";
+    return QStringLiteral( "INVERTED: NULL" );
   }
   return "INVERTED [" + mSubRenderer->dump() + ']';
 }
@@ -377,22 +381,22 @@ QgsFeatureRenderer* QgsInvertedPolygonRenderer::create( QDomElement& element )
 {
   QgsInvertedPolygonRenderer* r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
-  QDomElement embeddedRendererElem = element.firstChildElement( "renderer-v2" );
+  QDomElement embeddedRendererElem = element.firstChildElement( QStringLiteral( "renderer-v2" ) );
   if ( !embeddedRendererElem.isNull() )
   {
     QgsFeatureRenderer* renderer = QgsFeatureRenderer::load( embeddedRendererElem );
     r->setEmbeddedRenderer( renderer );
   }
-  r->setPreprocessingEnabled( element.attribute( "preprocessing", "0" ).toInt() == 1 );
+  r->setPreprocessingEnabled( element.attribute( QStringLiteral( "preprocessing" ), QStringLiteral( "0" ) ).toInt() == 1 );
   return r;
 }
 
 QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( "type", "invertedPolygonRenderer" );
-  rendererElem.setAttribute( "preprocessing", preprocessingEnabled() ? "1" : "0" );
-  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invertedPolygonRenderer" ) );
+  rendererElem.setAttribute( QStringLiteral( "preprocessing" ), preprocessingEnabled() ? "1" : "0" );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
 
   if ( mSubRenderer )
   {
@@ -405,11 +409,11 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
 
   if ( !mOrderBy.isEmpty() )
   {
-    QDomElement orderBy = doc.createElement( "orderby" );
+    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( "enableorderby", ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
 
   return rendererElem;
 }
@@ -502,15 +506,15 @@ bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderC
 
 QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  if ( renderer->type() == "invertedPolygonRenderer" )
+  if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
     return dynamic_cast<QgsInvertedPolygonRenderer*>( renderer->clone() );
   }
 
-  if ( renderer->type() == "singleSymbol" ||
-       renderer->type() == "categorizedSymbol" ||
-       renderer->type() == "graduatedSymbol" ||
-       renderer->type() == "RuleRenderer" )
+  if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
+       renderer->type() == QLatin1String( "categorizedSymbol" ) ||
+       renderer->type() == QLatin1String( "graduatedSymbol" ) ||
+       renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
     return new QgsInvertedPolygonRenderer( renderer->clone() );
   }

@@ -29,7 +29,7 @@ class QgsGeometryHoleCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Polygon with hole" ); }
-    QString errorName() const override { return "QgsGeometryHoleCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryHoleCheck" ); }
   private:
     enum ResolutionMethod { RemoveHoles, NoChange };
 };

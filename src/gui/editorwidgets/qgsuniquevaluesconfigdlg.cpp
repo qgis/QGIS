@@ -27,12 +27,12 @@ QgsEditorWidgetConfig QgsUniqueValuesConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Editable", editableUniqueValues->isChecked() );
+  cfg.insert( QStringLiteral( "Editable" ), editableUniqueValues->isChecked() );
 
   return cfg;
 }
 
 void QgsUniqueValuesConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  editableUniqueValues->setChecked( config.value( "Editable", false ).toBool() );
+  editableUniqueValues->setChecked( config.value( QStringLiteral( "Editable" ), false ).toBool() );
 }

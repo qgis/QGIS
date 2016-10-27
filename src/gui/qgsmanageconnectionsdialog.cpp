@@ -99,9 +99,9 @@ void QgsManageConnectionsDialog::doExportImport()
     }
 
     // ensure the user never ommited the extension from the file name
-    if ( !fileName.endsWith( ".xml", Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
     {
-      fileName += ".xml";
+      fileName += QLatin1String( ".xml" );
     }
 
     mFileName = fileName;
@@ -110,7 +110,7 @@ void QgsManageConnectionsDialog::doExportImport()
     switch ( mConnectionType )
     {
       case WMS:
-        doc = saveOWSConnections( items, "WMS" );
+        doc = saveOWSConnections( items, QStringLiteral( "WMS" ) );
         break;
       case WFS:
         doc = saveWfsConnections( items );
@@ -122,7 +122,7 @@ void QgsManageConnectionsDialog::doExportImport()
         doc = saveMssqlConnections( items );
         break;
       case WCS:
-        doc = saveOWSConnections( items, "WCS" );
+        doc = saveOWSConnections( items, QStringLiteral( "WCS" ) );
         break;
       case Oracle:
         doc = saveOracleConnections( items );
@@ -175,7 +175,7 @@ void QgsManageConnectionsDialog::doExportImport()
     switch ( mConnectionType )
     {
       case WMS:
-        loadOWSConnections( doc, items, "WMS" );
+        loadOWSConnections( doc, items, QStringLiteral( "WMS" ) );
         break;
       case WFS:
         loadWfsConnections( doc, items );
@@ -187,7 +187,7 @@ void QgsManageConnectionsDialog::doExportImport()
         loadMssqlConnections( doc, items );
         break;
       case WCS:
-        loadOWSConnections( doc, items, "WCS" );
+        loadOWSConnections( doc, items, QStringLiteral( "WCS" ) );
         break;
       case Oracle:
         loadOracleConnections( doc, items );
@@ -201,7 +201,7 @@ void QgsManageConnectionsDialog::doExportImport()
     accept();
   }
 
-  mFileName = "";
+  mFileName = QLatin1String( "" );
 }
 
 bool QgsManageConnectionsDialog::populateConnections()
@@ -213,25 +213,25 @@ bool QgsManageConnectionsDialog::populateConnections()
     switch ( mConnectionType )
     {
       case WMS:
-        settings.beginGroup( "/Qgis/connections-wms" );
+        settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
         break;
       case WFS:
-        settings.beginGroup( "/Qgis/connections-wfs" );
+        settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
         break;
       case WCS:
-        settings.beginGroup( "/Qgis/connections-wcs" );
+        settings.beginGroup( QStringLiteral( "/Qgis/connections-wcs" ) );
         break;
       case PostGIS:
-        settings.beginGroup( "/PostgreSQL/connections" );
+        settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
         break;
       case MSSQL:
-        settings.beginGroup( "/MSSQL/connections" );
+        settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
         break;
       case Oracle:
-        settings.beginGroup( "/Oracle/connections" );
+        settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
         break;
       case DB2:
-        settings.beginGroup( "/DB2/connections" );
+        settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
         break;
     }
     QStringList keys = settings.childGroups();
@@ -277,7 +277,7 @@ bool QgsManageConnectionsDialog::populateConnections()
     switch ( mConnectionType )
     {
       case WMS:
-        if ( root.tagName() != "qgsWMSConnections" )
+        if ( root.tagName() != QLatin1String( "qgsWMSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an WMS connections exchange file." ) );
@@ -286,7 +286,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
 
       case WFS:
-        if ( root.tagName() != "qgsWFSConnections" )
+        if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an WFS connections exchange file." ) );
@@ -295,7 +295,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
 
       case WCS:
-        if ( root.tagName() != "qgsWCSConnections" )
+        if ( root.tagName() != QLatin1String( "qgsWCSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an WCS connections exchange file." ) );
@@ -304,7 +304,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
 
       case PostGIS:
-        if ( root.tagName() != "qgsPgConnections" )
+        if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an PostGIS connections exchange file." ) );
@@ -313,7 +313,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
 
       case MSSQL:
-        if ( root.tagName() != "qgsMssqlConnections" )
+        if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an MSSQL connections exchange file." ) );
@@ -321,7 +321,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         }
         break;
       case Oracle:
-        if ( root.tagName() != "qgsOracleConnections" )
+        if ( root.tagName() != QLatin1String( "qgsOracleConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an Oracle connections exchange file." ) );
@@ -329,7 +329,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         }
         break;
       case DB2:
-        if ( root.tagName() != "qgsDb2Connections" )
+        if ( root.tagName() != QLatin1String( "qgsDb2Connections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an DB2 connections exchange file." ) );
@@ -342,7 +342,7 @@ bool QgsManageConnectionsDialog::populateConnections()
     while ( !child.isNull() )
     {
       QListWidgetItem *item = new QListWidgetItem();
-      item->setText( child.attribute( "name" ) );
+      item->setText( child.attribute( QStringLiteral( "name" ) ) );
       listConnections->addItem( item );
       child = child.nextSiblingElement();
     }
@@ -352,9 +352,9 @@ bool QgsManageConnectionsDialog::populateConnections()
 
 QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString & service )
 {
-  QDomDocument doc( "connections" );
+  QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( "qgs" + service.toUpper() + "Connections" );
-  root.setAttribute( "version", "1.0" );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   QSettings settings;
@@ -363,23 +363,23 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   {
     path = "/Qgis/connections-" + service.toLower() + '/';
     QDomElement el = doc.createElement( service.toLower() );
-    el.setAttribute( "name", connections[ i ] );
-    el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
 
-    if ( service == "WMS" )
+    if ( service == QLatin1String( "WMS" ) )
     {
-      el.setAttribute( "ignoreGetMapURI", settings.value( path + connections[i] + "/ignoreGetMapURI", false ).toBool() ? "true" : "false" );
-      el.setAttribute( "ignoreGetFeatureInfoURI", settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
-      el.setAttribute( "ignoreAxisOrientation", settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
-      el.setAttribute( "invertAxisOrientation", settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
-      el.setAttribute( "referer", settings.value( path + connections[ i ] + "/referer", "" ).toString() );
-      el.setAttribute( "smoothPixmapTransform", settings.value( path + connections[i] + "/smoothPixmapTransform", false ).toBool() ? "true" : "false" );
-      el.setAttribute( "dpiMode", settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
+      el.setAttribute( QStringLiteral( "ignoreGetMapURI" ), settings.value( path + connections[i] + "/ignoreGetMapURI", false ).toBool() ? "true" : "false" );
+      el.setAttribute( QStringLiteral( "ignoreGetFeatureInfoURI" ), settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
+      el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
+      el.setAttribute( QStringLiteral( "invertAxisOrientation" ), settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
+      el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer", "" ).toString() );
+      el.setAttribute( QStringLiteral( "smoothPixmapTransform" ), settings.value( path + connections[i] + "/smoothPixmapTransform", false ).toBool() ? "true" : "false" );
+      el.setAttribute( QStringLiteral( "dpiMode" ), settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
     }
 
     path = "/Qgis/" + service.toUpper() + '/';
-    el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
-    el.setAttribute( "password", settings.value( path + connections[ i ] + "/password", "" ).toString() );
+    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
+    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
   }
 
@@ -388,25 +388,25 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
 
 QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &connections )
 {
-  QDomDocument doc( "connections" );
-  QDomElement root = doc.createElement( "qgsWFSConnections" );
-  root.setAttribute( "version", "1.0" );
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsWFSConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   QSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Qgis/connections-wfs/";
-    QDomElement el = doc.createElement( "wfs" );
-    el.setAttribute( "name", connections[ i ] );
-    el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
+    path = QStringLiteral( "/Qgis/connections-wfs/" );
+    QDomElement el = doc.createElement( QStringLiteral( "wfs" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
 
-    el.setAttribute( "referer", settings.value( path + connections[ i ] + "/referer", "" ).toString() );
+    el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer", "" ).toString() );
 
-    path = "/Qgis/WFS/";
-    el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
-    el.setAttribute( "password", settings.value( path + connections[ i ] + "/password", "" ).toString() );
+    path = QStringLiteral( "/Qgis/WFS/" );
+    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
+    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
   }
 
@@ -415,9 +415,9 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
 
 QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &connections )
 {
-  QDomDocument doc( "connections" );
-  QDomElement root = doc.createElement( "qgsPgConnections" );
-  root.setAttribute( "version", "1.0" );
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsPgConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   QSettings settings;
@@ -425,27 +425,27 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/PostgreSQL/connections/" + connections[ i ];
-    QDomElement el = doc.createElement( "postgis" );
-    el.setAttribute( "name", connections[ i ] );
-    el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
-    el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
-    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( "service", settings.value( path + "/service", "" ).toString() );
-    el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
-    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
+    QDomElement el = doc.createElement( QStringLiteral( "postgis" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( QStringLiteral( "service" ), settings.value( path + "/service", "" ).toString() );
+    el.setAttribute( QStringLiteral( "sslmode" ), settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
 
-    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
     }
 
-    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
 
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
     }
 
     root.appendChild( el );
@@ -456,9 +456,9 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
 
 QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList &connections )
 {
-  QDomDocument doc( "connections" );
-  QDomElement root = doc.createElement( "qgsMssqlConnections" );
-  root.setAttribute( "version", "1.0" );
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsMssqlConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   QSettings settings;
@@ -466,27 +466,27 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/MSSQL/connections/" + connections[ i ];
-    QDomElement el = doc.createElement( "mssql" );
-    el.setAttribute( "name", connections[ i ] );
-    el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
-    el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
-    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( "service", settings.value( path + "/service", "" ).toString() );
-    el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
-    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
+    QDomElement el = doc.createElement( QStringLiteral( "mssql" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( QStringLiteral( "service" ), settings.value( path + "/service", "" ).toString() );
+    el.setAttribute( QStringLiteral( "sslmode" ), settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
 
-    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
     }
 
-    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
 
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
     }
 
     root.appendChild( el );
@@ -497,9 +497,9 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
 
 QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringList &connections )
 {
-  QDomDocument doc( "connections" );
-  QDomElement root = doc.createElement( "qgsOracleConnections" );
-  root.setAttribute( "version", "1.0" );
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsOracleConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   QSettings settings;
@@ -507,30 +507,30 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/Oracle/connections/" + connections[ i ];
-    QDomElement el = doc.createElement( "oracle" );
-    el.setAttribute( "name", connections[ i ] );
-    el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
-    el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
-    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( "dboptions", settings.value( path + "/dboptions", "" ).toString() );
-    el.setAttribute( "dbworkspace", settings.value( path + "/dbworkspace", "" ).toString() );
-    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
-    el.setAttribute( "userTablesOnly", settings.value( path + "/userTablesOnly", "0" ).toString() );
-    el.setAttribute( "geometryColumnsOnly", settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
-    el.setAttribute( "allowGeometrylessTables", settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
+    QDomElement el = doc.createElement( QStringLiteral( "oracle" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( QStringLiteral( "dboptions" ), settings.value( path + "/dboptions", "" ).toString() );
+    el.setAttribute( QStringLiteral( "dbworkspace" ), settings.value( path + "/dbworkspace", "" ).toString() );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "userTablesOnly" ), settings.value( path + "/userTablesOnly", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
 
-    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
     }
 
-    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
 
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
     }
 
     root.appendChild( el );
@@ -541,9 +541,9 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
 
 QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &connections )
 {
-  QDomDocument doc( "connections" );
-  QDomElement root = doc.createElement( "qgsDb2Connections" );
-  root.setAttribute( "version", "1.0" );
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsDb2Connections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
   QSettings settings;
@@ -551,27 +551,27 @@ QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/DB2/connections/" + connections[ i ];
-    QDomElement el = doc.createElement( "db2" );
-    el.setAttribute( "name", connections[ i ] );
-    el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
-    el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
-    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( "service", settings.value( path + "/service", "" ).toString() );
-    el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
-    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
+    QDomElement el = doc.createElement( QStringLiteral( "db2" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( QStringLiteral( "service" ), settings.value( path + "/service", "" ).toString() );
+    el.setAttribute( QStringLiteral( "sslmode" ), settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
 
-    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
     }
 
-    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
 
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
     }
 
     root.appendChild( el );
@@ -601,7 +601,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( "name" );
+    connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
@@ -646,21 +646,21 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/Qgis/connections-" + service.toLower() );
-    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( "url" ) );
-    settings.setValue( QString( '/' + connectionName + "/ignoreGetMapURI" ), child.attribute( "ignoreGetMapURI" ) == "true" );
-    settings.setValue( QString( '/' + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
-    settings.setValue( QString( '/' + connectionName + "/ignoreAxisOrientation" ), child.attribute( "ignoreAxisOrientation" ) == "true" );
-    settings.setValue( QString( '/' + connectionName + "/invertAxisOrientation" ), child.attribute( "invertAxisOrientation" ) == "true" );
-    settings.setValue( QString( '/' + connectionName + "/referer" ), child.attribute( "referer" ) );
-    settings.setValue( QString( '/' + connectionName + "/smoothPixmapTransform" ), child.attribute( "smoothPixmapTransform" ) == "true" );
-    settings.setValue( QString( '/' + connectionName + "/dpiMode" ), child.attribute( "dpiMode", "7" ).toInt() );
+    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/ignoreGetMapURI" ), child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ) );
+    settings.setValue( QString( '/' + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ) );
+    settings.setValue( QString( '/' + connectionName + "/ignoreAxisOrientation" ), child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) == QLatin1String( "true" ) );
+    settings.setValue( QString( '/' + connectionName + "/invertAxisOrientation" ), child.attribute( QStringLiteral( "invertAxisOrientation" ) ) == QLatin1String( "true" ) );
+    settings.setValue( QString( '/' + connectionName + "/referer" ), child.attribute( QStringLiteral( "referer" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/smoothPixmapTransform" ), child.attribute( QStringLiteral( "smoothPixmapTransform" ) ) == QLatin1String( "true" ) );
+    settings.setValue( QString( '/' + connectionName + "/dpiMode" ), child.attribute( QStringLiteral( "dpiMode" ), QStringLiteral( "7" ) ).toInt() );
     settings.endGroup();
 
-    if ( !child.attribute( "username" ).isEmpty() )
+    if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
       settings.beginGroup( "/Qgis/" + service.toUpper() + '/' + connectionName );
-      settings.setValue( "/username", child.attribute( "username" ) );
-      settings.setValue( "/password", child.attribute( "password" ) );
+      settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+      settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
       settings.endGroup();
     }
     child = child.nextSiblingElement();
@@ -670,7 +670,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsWFSConnections" )
+  if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
                               tr( "The file is not an WFS connections exchange file." ) );
@@ -679,7 +679,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 
   QString connectionName;
   QSettings settings;
-  settings.beginGroup( "/Qgis/connections-wfs" );
+  settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -688,7 +688,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( "name" );
+    connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
@@ -732,15 +732,15 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( "/Qgis/connections-wfs" );
-    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( "url" ) );
+    settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.endGroup();
 
-    if ( !child.attribute( "username" ).isEmpty() )
+    if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
       settings.beginGroup( "/Qgis/WFS/" + connectionName );
-      settings.setValue( "/username", child.attribute( "username" ) );
-      settings.setValue( "/password", child.attribute( "password" ) );
+      settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+      settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
       settings.endGroup();
     }
     child = child.nextSiblingElement();
@@ -751,7 +751,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsPgConnections" )
+  if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
@@ -761,7 +761,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
   QString connectionName;
   QSettings settings;
-  settings.beginGroup( "/PostgreSQL/connections" );
+  settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -770,7 +770,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( "name" );
+    connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
@@ -815,23 +815,23 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/PostgreSQL/connections/" + connectionName );
 
-    settings.setValue( "/host", child.attribute( "host" ) );
-    settings.setValue( "/port", child.attribute( "port" ) );
-    settings.setValue( "/database", child.attribute( "database" ) );
-    if ( child.hasAttribute( "service" ) )
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    if ( child.hasAttribute( QStringLiteral( "service" ) ) )
     {
-      settings.setValue( "/service", child.attribute( "service" ) );
+      settings.setValue( QStringLiteral( "/service" ), child.attribute( QStringLiteral( "service" ) ) );
     }
     else
     {
-      settings.setValue( "/service", "" );
+      settings.setValue( QStringLiteral( "/service" ), "" );
     }
-    settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
-    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
-    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
-    settings.setValue( "/username", child.attribute( "username" ) );
-    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
-    settings.setValue( "/password", child.attribute( "password" ) );
+    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
+    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -841,7 +841,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsMssqlConnections" )
+  if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
@@ -851,7 +851,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
 
   QString connectionName;
   QSettings settings;
-  settings.beginGroup( "/MSSQL/connections" );
+  settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -860,7 +860,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( "name" );
+    connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
@@ -905,23 +905,23 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/MSSQL/connections/" + connectionName );
 
-    settings.setValue( "/host", child.attribute( "host" ) );
-    settings.setValue( "/port", child.attribute( "port" ) );
-    settings.setValue( "/database", child.attribute( "database" ) );
-    if ( child.hasAttribute( "service" ) )
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    if ( child.hasAttribute( QStringLiteral( "service" ) ) )
     {
-      settings.setValue( "/service", child.attribute( "service" ) );
+      settings.setValue( QStringLiteral( "/service" ), child.attribute( QStringLiteral( "service" ) ) );
     }
     else
     {
-      settings.setValue( "/service", "" );
+      settings.setValue( QStringLiteral( "/service" ), "" );
     }
-    settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
-    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
-    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
-    settings.setValue( "/username", child.attribute( "username" ) );
-    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
-    settings.setValue( "/password", child.attribute( "password" ) );
+    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
+    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -931,7 +931,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
 void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsOracleConnections" )
+  if ( root.tagName() != QLatin1String( "qgsOracleConnections" ) )
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
@@ -941,7 +941,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
 
   QString connectionName;
   QSettings settings;
-  settings.beginGroup( "/Oracle/connections" );
+  settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -950,7 +950,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( "name" );
+    connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
@@ -995,19 +995,19 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/Oracle/connections/" + connectionName );
 
-    settings.setValue( "/host", child.attribute( "host" ) );
-    settings.setValue( "/port", child.attribute( "port" ) );
-    settings.setValue( "/database", child.attribute( "database" ) );
-    settings.setValue( "/dboptions", child.attribute( "dboptions" ) );
-    settings.setValue( "/dbworkspace", child.attribute( "dbworkspace" ) );
-    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
-    settings.setValue( "/userTablesOnly", child.attribute( "userTablesOnly" ) );
-    settings.setValue( "/geometryColumnsOnly", child.attribute( "geometryColumnsOnly" ) );
-    settings.setValue( "/allowGeometrylessTables", child.attribute( "allowGeometrylessTables" ) );
-    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
-    settings.setValue( "/username", child.attribute( "username" ) );
-    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
-    settings.setValue( "/password", child.attribute( "password" ) );
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    settings.setValue( QStringLiteral( "/dboptions" ), child.attribute( QStringLiteral( "dboptions" ) ) );
+    settings.setValue( QStringLiteral( "/dbworkspace" ), child.attribute( QStringLiteral( "dbworkspace" ) ) );
+    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
+    settings.setValue( QStringLiteral( "/userTablesOnly" ), child.attribute( QStringLiteral( "userTablesOnly" ) ) );
+    settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ) ) );
+    settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -1017,7 +1017,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
 void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, const QStringList &items )
 {
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsDb2Connections" )
+  if ( root.tagName() != QLatin1String( "qgsDb2Connections" ) )
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
@@ -1027,7 +1027,7 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
 
   QString connectionName;
   QSettings settings;
-  settings.beginGroup( "/DB2/connections" );
+  settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -1036,7 +1036,7 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
 
   while ( !child.isNull() )
   {
-    connectionName = child.attribute( "name" );
+    connectionName = child.attribute( QStringLiteral( "name" ) );
     if ( !items.contains( connectionName ) )
     {
       child = child.nextSiblingElement();
@@ -1081,23 +1081,23 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/DB2/connections/" + connectionName );
 
-    settings.setValue( "/host", child.attribute( "host" ) );
-    settings.setValue( "/port", child.attribute( "port" ) );
-    settings.setValue( "/database", child.attribute( "database" ) );
-    if ( child.hasAttribute( "service" ) )
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    if ( child.hasAttribute( QStringLiteral( "service" ) ) )
     {
-      settings.setValue( "/service", child.attribute( "service" ) );
+      settings.setValue( QStringLiteral( "/service" ), child.attribute( QStringLiteral( "service" ) ) );
     }
     else
     {
-      settings.setValue( "/service", "" );
+      settings.setValue( QStringLiteral( "/service" ), "" );
     }
-    settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
-    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
-    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
-    settings.setValue( "/username", child.attribute( "username" ) );
-    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
-    settings.setValue( "/password", child.attribute( "password" ) );
+    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
+    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();

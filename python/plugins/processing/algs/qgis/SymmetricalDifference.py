@@ -65,7 +65,7 @@ class SymmetricalDifference(GeoAlgorithm):
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.OVERLAY))
 
-        geomType = layerA.wkbType()
+        geomType = QgsWkbTypes.multiType(layerA.wkbType())
         fields = vector.combineVectorFields(layerA, layerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, geomType, layerA.crs())
@@ -88,8 +88,8 @@ class SymmetricalDifference(GeoAlgorithm):
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
-            for i in intersects:
-                layerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+            for featB in layerB.getFeatures(request):
                 tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
@@ -123,8 +123,8 @@ class SymmetricalDifference(GeoAlgorithm):
             attrs = featA.attributes()
             attrs = [NULL] * length + attrs
             intersects = indexB.intersects(geom.boundingBox())
-            for i in intersects:
-                layerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+            for featB in layerA.getFeatures(request):
                 tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))

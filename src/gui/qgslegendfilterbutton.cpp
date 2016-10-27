@@ -38,7 +38,7 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent )
   mMenu->addAction( mClearExpressionAction );
 
   setCheckable( true );
-  setIcon( QgsApplication::getThemeIcon( "/mIconExpressionFilter.svg" ) );
+  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionFilter.svg" ) ) );
   setPopupMode( QToolButton::MenuButtonPopup );
 
   setMenu( mMenu );
@@ -87,7 +87,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
 void QgsLegendFilterButton::onClearFilterExpression()
 {
   mClearExpressionAction->setEnabled( false );
-  setExpressionText( "" );
+  setExpressionText( QLatin1String( "" ) );
 
   setChecked( false );
 }

@@ -45,7 +45,7 @@
 
 QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( nullptr )
-    , mMimeFormat( "application/x-qgsgraduatedsymbolrendererv2model" )
+    , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
 {
 }
 
@@ -433,7 +433,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsGraduatedSymbolRenderer( "", QgsRangeList() );
+    mRenderer = new QgsGraduatedSymbolRenderer( QLatin1String( "" ), QgsRangeList() );
   }
 
   // setup user interface
@@ -452,8 +452,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MaxPrecision );
 
   // set project default color ramp
-  QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
-  if ( defaultColorRamp != "" )
+  QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
+  if ( defaultColorRamp != QLatin1String( "" ) )
   {
     int index = cboGraduatedColorRamp->findText( defaultColorRamp, Qt::MatchCaseSensitive );
     if ( index >= 0 )
@@ -466,16 +466,16 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   mGraduatedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
   methodComboBox->blockSignals( true );
-  methodComboBox->addItem( "Color" );
+  methodComboBox->addItem( QStringLiteral( "Color" ) );
   if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
-    methodComboBox->addItem( "Size" );
+    methodComboBox->addItem( QStringLiteral( "Size" ) );
     minSizeSpinBox->setValue( 1 );
     maxSizeSpinBox->setValue( 8 );
   }
   else if ( mGraduatedSymbol->type() == QgsSymbol::Line )
   {
-    methodComboBox->addItem( "Size" );
+    methodComboBox->addItem( QStringLiteral( "Size" ) );
     minSizeSpinBox->setValue( .1 );
     maxSizeSpinBox->setValue( 2 );
   }

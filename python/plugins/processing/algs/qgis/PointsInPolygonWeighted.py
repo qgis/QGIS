@@ -98,7 +98,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
                 progress.setText(str(len(points)))
-                request = QgsFeatureRequest().setFilterFids(points)
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([fieldIdx])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):

@@ -47,7 +47,7 @@
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( nullptr )
-    , mMimeFormat( "application/x-qgscategorizedsymbolrendererv2model" )
+    , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
 {
 }
 
@@ -399,7 +399,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsCategorizedSymbolRenderer( "", QgsCategoryList() );
+    mRenderer = new QgsCategorizedSymbolRenderer( QLatin1String( "" ), QgsCategoryList() );
   }
 
   QString attrName = mRenderer->classAttribute();
@@ -419,8 +419,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
 
   // set project default color ramp
-  QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
-  if ( defaultColorRamp != "" )
+  QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
+  if ( defaultColorRamp != QLatin1String( "" ) )
   {
     int index = cboCategorizedColorRamp->findText( defaultColorRamp, Qt::MatchCaseSensitive );
     if ( index >= 0 )
@@ -934,7 +934,7 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle* style )
 void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
 {
   QSettings settings;
-  QString openFileDir = settings.value( "UI/lastMatchToSymbolsDir", QDir::homePath() ).toString();
+  QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to symbols from file" ), openFileDir,
                      tr( "XML files (*.xml *XML)" ) );
@@ -944,7 +944,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   }
 
   QFileInfo openFileInfo( fileName );
-  settings.setValue( "UI/lastMatchToSymbolsDir", openFileInfo.absolutePath() );
+  settings.setValue( QStringLiteral( "UI/lastMatchToSymbolsDir" ), openFileInfo.absolutePath() );
 
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )

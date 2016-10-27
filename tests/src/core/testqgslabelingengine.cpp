@@ -58,12 +58,12 @@ class TestQgsLabelingEngine : public QObject
 
 void TestQgsLabelingEngine::initTestCase()
 {
-  mReport += "<h1>Labeling Engine Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Labeling Engine Tests</h1>\n" );
 
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  QgsFontUtils::loadStandardTestFonts( QStringList() << "Bold" );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsLabelingEngine::cleanupTestCase()
@@ -81,8 +81,8 @@ void TestQgsLabelingEngine::cleanupTestCase()
 
 void TestQgsLabelingEngine::init()
 {
-  QString filename = QString( TEST_DATA_DIR ) + "/points.shp";
-  vl = new QgsVectorLayer( filename, "points", "ogr" );
+  QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  vl = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   Q_ASSERT( vl->isValid() );
   QgsMapLayerRegistry::instance()->addMapLayer( vl );
 }
@@ -95,11 +95,12 @@ void TestQgsLabelingEngine::cleanup()
 
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsVectorLayer* layer )
 {
-  layer->setCustomProperty( "labeling/fontFamily", QgsFontUtils::getStandardTestFont( "Bold" ).family() );
-  layer->setCustomProperty( "labeling/namedStyle", "Bold" );
-  layer->setCustomProperty( "labeling/textColorR", "200" );
-  layer->setCustomProperty( "labeling/textColorG", "0" );
-  layer->setCustomProperty( "labeling/textColorB", "200" );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), 12 );
+  layer->setCustomProperty( QStringLiteral( "labeling/namedStyle" ), "Bold" );
+  layer->setCustomProperty( QStringLiteral( "labeling/textColorR" ), "200" );
+  layer->setCustomProperty( QStringLiteral( "labeling/textColorG" ), "0" );
+  layer->setCustomProperty( QStringLiteral( "labeling/textColorB" ), "200" );
 }
 
 void TestQgsLabelingEngine::testBasic()
@@ -123,9 +124,9 @@ void TestQgsLabelingEngine::testBasic()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  vl->setCustomProperty( "labeling", "pal" );
-  vl->setCustomProperty( "labeling/enabled", true );
-  vl->setCustomProperty( "labeling/fieldName", "Class" );
+  vl->setCustomProperty( QStringLiteral( "labeling" ), "pal" );
+  vl->setCustomProperty( QStringLiteral( "labeling/enabled" ), true );
+  vl->setCustomProperty( QStringLiteral( "labeling/fieldName" ), "Class" );
   setDefaultLabelParams( vl );
 
   QgsLabelingEngine engine;
@@ -145,7 +146,7 @@ void TestQgsLabelingEngine::testBasic()
   job.waitForFinished();
   QImage img2 = job.renderedImage();
 
-  vl->setCustomProperty( "labeling/enabled", false );
+  vl->setCustomProperty( QStringLiteral( "labeling/enabled" ), false );
 
   QVERIFY( imageCheck( "labeling_basic", img2, 20 ) );
 }
@@ -173,7 +174,7 @@ void TestQgsLabelingEngine::testDiagrams()
   context.setPainter( &p );
 
   bool res;
-  vl->loadNamedStyle( QString( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
+  vl->loadNamedStyle( QStringLiteral( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
   Q_ASSERT( res );
 
   QgsLabelingEngine engine;
@@ -209,12 +210,15 @@ void TestQgsLabelingEngine::testRuleBased()
 
   QgsPalLayerSettings s1;
   s1.enabled = true;
-  s1.fieldName = "Class";
+  s1.fieldName = QStringLiteral( "Class" );
   s1.obstacle = false;
   s1.dist = 2;
   s1.distInMapUnits = false;
-  s1.textColor = QColor( 200, 0, 200 );
-  s1.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
+  QgsTextFormat format = s1.format();
+  format.setColor( QColor( 200, 0, 200 ) );
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 12 );
+  s1.setFormat( format );
   s1.placement = QgsPalLayerSettings::OverPoint;
   s1.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
   s1.displayAll = true;
@@ -223,17 +227,19 @@ void TestQgsLabelingEngine::testRuleBased()
 
   QgsPalLayerSettings s2;
   s2.enabled = true;
-  s2.fieldName = "Class";
+  s2.fieldName = QStringLiteral( "Class" );
   s2.obstacle = false;
   s2.dist = 2;
-  s2.textColor = Qt::red;
-  s2.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
+  format = s2.format();
+  format.setColor( Qt::red );
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  s2.setFormat( format );
   s2.placement = QgsPalLayerSettings::OverPoint;
   s2.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
   s2.displayAll = true;
-  s2.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, "18", QString() );
+  s2.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, QStringLiteral( "18" ), QString() );
 
-  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, "Class = 'Jet'" ) );
+  root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
   setDefaultLabelParams( vl );
@@ -295,15 +301,18 @@ void TestQgsLabelingEngine::zOrder()
 
   QgsPalLayerSettings pls1;
   pls1.enabled = true;
-  pls1.fieldName = "Class";
+  pls1.fieldName = QStringLiteral( "Class" );
   pls1.placement = QgsPalLayerSettings::OverPoint;
   pls1.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
   pls1.displayAll = true;
-  pls1.textFont = QgsFontUtils::getStandardTestFont( "Bold" );
-  pls1.textFont.setPointSizeF( 70 );
+  QgsTextFormat format = pls1.format();
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 70 );
+  pls1.setFormat( format );
+
   //use data defined coloring and font size so that stacking order of labels can be determined
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::Color, true, true, "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end", QString() );
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end", QString() );
+  pls1.setDataDefinedProperty( QgsPalLayerSettings::Color, true, true, QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ), QString() );
+  pls1.setDataDefinedProperty( QgsPalLayerSettings::Size, true, true, QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ), QString() );
 
   QgsVectorLayerLabelProvider* provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   QgsLabelingEngine engine;
@@ -320,7 +329,7 @@ void TestQgsLabelingEngine::zOrder()
   img = job.renderedImage();
 
   //test data defined z-index
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end", QString() );
+  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ), QString() );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
   p.begin( &img );
@@ -333,19 +342,23 @@ void TestQgsLabelingEngine::zOrder()
   img = job.renderedImage();
 
   pls1.removeAllDataDefinedProperties();
-  pls1.textColor = QColor( 255, 50, 100 );
-  pls1.textFont.setPointSizeF( 30 );
+  format = pls1.format();
+  format.setColor( QColor( 255, 50, 100 ) );
+  format.setSize( 30 );
+  pls1.setFormat( format );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
 
   //add a second layer
-  QString filename = QString( TEST_DATA_DIR ) + "/points.shp";
-  QgsVectorLayer* vl2 = new QgsVectorLayer( filename, "points", "ogr" );
+  QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  QgsVectorLayer* vl2 = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   Q_ASSERT( vl2->isValid() );
   QgsMapLayerRegistry::instance()->addMapLayer( vl2 );
 
   QgsPalLayerSettings pls2( pls1 );
-  pls2.textColor = QColor( 0, 0, 0 );
+  format = pls2.format();
+  format.setColor( QColor( 0, 0, 0 ) );
+  pls2.setFormat( format );
   QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl2, QString(), true, &pls2 );
   engine.addProvider( provider2 );
 
@@ -373,7 +386,7 @@ void TestQgsLabelingEngine::zOrder()
 
   //try mixing layer order and z-index
   engine.removeProvider( provider1 );
-  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, "if(\"Class\"='Jet',3,0)", QString() );
+  pls1.setDataDefinedProperty( QgsPalLayerSettings::ZIndex, true, true, QStringLiteral( "if(\"Class\"='Jet',3,0)" ), QString() );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
 
@@ -409,7 +422,7 @@ void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
   QCOMPARE( decoded, original );
 
   //test decoding with a messy string
-  decoded = QgsLabelingUtils::decodePredefinedPositionOrder( ",tr,x,BSR, L, t,," );
+  decoded = QgsLabelingUtils::decodePredefinedPositionOrder( QStringLiteral( ",tr,x,BSR, L, t,," ) );
   QVector< QgsPalLayerSettings::PredefinedPointPosition > expected;
   expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
   << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
@@ -420,12 +433,12 @@ void TestQgsLabelingEngine::testSubstitutions()
 {
   QgsPalLayerSettings settings;
   settings.useSubstitutions = false;
-  QgsStringReplacementCollection collection( QList< QgsStringReplacement >() << QgsStringReplacement( "aa", "bb" ) );
+  QgsStringReplacementCollection collection( QList< QgsStringReplacement >() << QgsStringReplacement( QStringLiteral( "aa" ), QStringLiteral( "bb" ) ) );
   settings.substitutions = collection;
-  settings.fieldName = QString( "'aa label'" );
+  settings.fieldName = QStringLiteral( "'aa label'" );
   settings.isExpression = true;
 
-  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, "test", true, &settings );
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl->fields(), 1 );
   f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
 
@@ -448,7 +461,7 @@ void TestQgsLabelingEngine::testSubstitutions()
 
   //with substitution
   settings.useSubstitutions = true;
-  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl, "test2", true, &settings );
+  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test2" ), true, &settings );
   engine.addProvider( provider2 );
   provider2->prepare( context, attributes );
 
@@ -475,13 +488,15 @@ void TestQgsLabelingEngine::testCapitalization()
 
   // no change
   QgsPalLayerSettings settings;
-  QFont font = settings.textFont;
+  QgsTextFormat format = settings.format();
+  QFont font = format.font();
   font.setCapitalization( QFont::MixedCase );
-  settings.textFont = font;
-  settings.fieldName = QString( "'a teSt LABEL'" );
+  format.setFont( font );
+  settings.setFormat( format );
+  settings.fieldName = QStringLiteral( "'a teSt LABEL'" );
   settings.isExpression = true;
 
-  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, "test", true, &settings );
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
   engine.addProvider( provider );
   provider->prepare( context, attributes );
   provider->registerFeature( f, context );
@@ -489,8 +504,9 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //uppercase
   font.setCapitalization( QFont::AllUppercase );
-  settings.textFont = font;
-  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl, "test2", true, &settings );
+  format.setFont( font );
+  settings.setFormat( format );
+  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test2" ), true, &settings );
   engine.addProvider( provider2 );
   provider2->prepare( context, attributes );
   provider2->registerFeature( f, context );
@@ -498,8 +514,9 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //lowercase
   font.setCapitalization( QFont::AllLowercase );
-  settings.textFont = font;
-  QgsVectorLayerLabelProvider* provider3 = new QgsVectorLayerLabelProvider( vl, "test3", true, &settings );
+  format.setFont( font );
+  settings.setFormat( format );
+  QgsVectorLayerLabelProvider* provider3 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test3" ), true, &settings );
   engine.addProvider( provider3 );
   provider3->prepare( context, attributes );
   provider3->registerFeature( f, context );
@@ -507,8 +524,9 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //first letter uppercase
   font.setCapitalization( QFont::Capitalize );
-  settings.textFont = font;
-  QgsVectorLayerLabelProvider* provider4 = new QgsVectorLayerLabelProvider( vl, "test4", true, &settings );
+  format.setFont( font );
+  settings.setFormat( format );
+  QgsVectorLayerLabelProvider* provider4 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );
   engine.addProvider( provider4 );
   provider4->prepare( context, attributes );
   provider4->registerFeature( f, context );
@@ -529,7 +547,7 @@ bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, 
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( "labelingengine" );
+  checker.setControlPathPrefix( QStringLiteral( "labelingengine" ) );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );

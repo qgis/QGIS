@@ -52,11 +52,11 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     //methods inherited from QgsAbstractGeometry
     virtual int dimension() const override;
-    virtual QString geometryType() const override { return "GeometryCollection"; }
+    virtual QString geometryType() const override { return QStringLiteral( "GeometryCollection" ); }
     virtual void clear() override;
     virtual QgsAbstractGeometry* boundary() const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success.*/
+    //! Adds a geometry and takes ownership. Returns true in case of success.
     virtual bool addGeometry( QgsAbstractGeometry* g );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
@@ -91,6 +91,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const override;
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
+    virtual int nCoordinates() const override;
+
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 

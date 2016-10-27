@@ -38,7 +38,7 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ColorDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ColorDialog/geometry" ) ).toByteArray() );
 
   if ( mPreviousColor.isValid() )
   {
@@ -86,7 +86,7 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   QSettings settings;
 
   //using native color dialogs?
-  bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
+  bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
     QColorDialog* liveDialog = new QColorDialog( initialColor, parent );
@@ -130,7 +130,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
 
   QSettings settings;
   //using native color dialogs?
-  bool useNative = settings.value( "/qgis/native_color_dialogs", false ).toBool();
+  bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
     return QColorDialog::getColor( initialColor, parent, dialogTitle, allowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
@@ -183,7 +183,7 @@ void QgsColorDialog::discardColor()
 void QgsColorDialog::saveSettings()
 {
   QSettings settings;
-  settings.setValue( "/Windows/ColorDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ColorDialog/geometry" ), saveGeometry() );
 }
 
 void QgsColorDialog::setColor( const QColor &color )

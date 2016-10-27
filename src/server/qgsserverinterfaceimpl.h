@@ -38,10 +38,10 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
   public:
 
-    /** Constructor */
+    //! Constructor
     explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
 
-    /** Destructor */
+    //! Destructor
     ~QgsServerInterfaceImpl();
 
     void setRequestHandler( QgsRequestHandler* requestHandler ) override;
@@ -51,7 +51,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsRequestHandler*  requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
-    /** Register an access control filter */
+    //! Register an access control filter
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
     /** Gets the helper over all the registered access control filters
      * @return the access control helper

@@ -71,14 +71,14 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
   QSettings settings;
-  mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+  mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), false ).toBool();
 
-  QString markerTypeString = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
-  if ( markerTypeString == "Cross" )
+  QString markerTypeString = settings.value( QStringLiteral( "/qgis/digitizing/marker_style" ), "Cross" ).toString();
+  if ( markerTypeString == QLatin1String( "Cross" ) )
   {
     mVertexMarkerStyle = QgsVectorLayer::Cross;
   }
-  else if ( markerTypeString == "SemiTransparentCircle" )
+  else if ( markerTypeString == QLatin1String( "SemiTransparentCircle" ) )
   {
     mVertexMarkerStyle = QgsVectorLayer::SemiTransparentCircle;
   }
@@ -87,7 +87,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     mVertexMarkerStyle = QgsVectorLayer::NoMarker;
   }
 
-  mVertexMarkerSize = settings.value( "/qgis/digitizing/marker_size", 3 ).toInt();
+  mVertexMarkerSize = settings.value( QStringLiteral( "/qgis/digitizing/marker_size" ), 3 ).toInt();
 
   if ( !mRenderer )
     return;
@@ -165,7 +165,7 @@ bool QgsVectorLayerRenderer::render()
   {
     featureFilterProvider->filterFeatures( mLayer, featureRequest );
   }
-  if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE" )
+  if ( !rendererFilter.isEmpty() && rendererFilter != QLatin1String( "TRUE" ) )
   {
     featureRequest.combineFilterExpression( rendererFilter );
   }
@@ -326,7 +326,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
           }
         }
         // new labeling engine
-        if ( mContext.labelingEngineV2() )
+        if ( mContext.labelingEngineV2() && ( mLabelProvider || mDiagramProvider ) )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );

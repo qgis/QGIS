@@ -159,7 +159,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
 void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map )
 {
   QStringList constraints;
-  constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name";
+  constraints << QStringLiteral( "tag" ) << QStringLiteral( "group" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!group" ) << QStringLiteral( "!name" );
 
   // clear any defaults
   Q_FOREACH ( int id, mConditionMap.keys() )

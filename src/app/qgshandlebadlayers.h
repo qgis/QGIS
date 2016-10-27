@@ -19,6 +19,7 @@
 
 #include "ui_qgshandlebadlayersbase.h"
 #include "qgsproject.h"
+#include "qgsprojectbadlayerhandler.h"
 
 class APP_EXPORT QgsHandleBadLayersHandler
       : public QObject
@@ -29,8 +30,8 @@ class APP_EXPORT QgsHandleBadLayersHandler
   public:
     QgsHandleBadLayersHandler();
 
-    /** Implementation of the handler */
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
+    //! Implementation of the handler
+    virtual void handleBadLayers( const QList<QDomNode>& layers ) override;
 };
 
 
@@ -43,7 +44,7 @@ class APP_EXPORT QgsHandleBadLayers
     Q_OBJECT
 
   public:
-    QgsHandleBadLayers( const QList<QDomNode> &layers, const QDomDocument &dom );
+    QgsHandleBadLayers( const QList<QDomNode>& layers );
     ~QgsHandleBadLayers();
 
     int layerCount();

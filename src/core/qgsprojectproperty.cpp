@@ -21,6 +21,18 @@
 #include <QDomDocument>
 #include <QStringList>
 
+QgsProperty::QgsProperty()
+{
+}
+
+QgsProperty::~QgsProperty()
+{
+}
+
+QgsPropertyValue::~QgsPropertyValue()
+{
+}
+
 void QgsPropertyValue::dump( int tabs ) const
 {
   QString tabString;
@@ -48,7 +60,7 @@ bool QgsPropertyValue::readXml( QDomNode & keyNode )
   QDomElement subkeyElement = keyNode.toElement();
 
   // get the type so that we can properly parse the key value
-  QString typeString = subkeyElement.attribute( "type" );
+  QString typeString = subkeyElement.attribute( QStringLiteral( "type" ) );
 
   if ( QString::null == typeString )
   {
@@ -230,7 +242,7 @@ bool QgsPropertyValue::writeXml( QString const & nodeName,
   QDomElement valueElement = document.createElement( nodeName );
 
   // remember the type so that we can rebuild it when the project is read in
-  valueElement.setAttribute( "type", value_.typeName() );
+  valueElement.setAttribute( QStringLiteral( "type" ), value_.typeName() );
 
 
   // we handle string lists differently from other types in that we
@@ -245,7 +257,7 @@ bool QgsPropertyValue::writeXml( QString const & nodeName,
           i != sl.end();
           ++i )
     {
-      QDomElement stringListElement = document.createElement( "value" );
+      QDomElement stringListElement = document.createElement( QStringLiteral( "value" ) );
       QDomText valueText = document.createTextNode( *i );
       stringListElement.appendChild( valueText );
 
@@ -358,7 +370,7 @@ bool QgsPropertyKey::readXml( QDomNode & keyNode )
     // a subkey
     if ( subkeys.item( i ).hasAttributes() && // if we have attributes
          subkeys.item( i ).isElement() && // and we're an element
-         subkeys.item( i ).toElement().hasAttribute( "type" ) ) // and we have a "type" attribute
+         subkeys.item( i ).toElement().hasAttribute( QStringLiteral( "type" ) ) ) // and we have a "type" attribute
     {                   // then we're a key value
       delete mProperties.take( subkeys.item( i ).nodeName() );
       mProperties.insert( subkeys.item( i ).nodeName(), new QgsPropertyValue );
@@ -470,4 +482,9 @@ bool QgsPropertyKey::isLeaf() const
   }
 
   return false;
+}
+
+void QgsPropertyKey::setName( const QString& name )
+{
+  mName = name;
 } // QgsPropertyKey::isLeaf

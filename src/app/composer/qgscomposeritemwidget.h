@@ -20,30 +20,43 @@
 
 #include "ui_qgscomposeritemwidgetbase.h"
 #include "qgscomposeritem.h"
+#include "qgspanelwidget.h"
 
 class QgsComposerItem;
 class QgsAtlasComposition;
 class QgsDataDefinedButton;
 
-/** A base class for property widgets for composer items. All composer item widgets should inherit from
- * this base class.
+
+// NOTE - the inheritance here is tricky, as we need to avoid the multiple inheritance
+// diamond problem and the ideal base object (QgsComposerConfigObject) MUST be a QObject
+// because of its slots.
+
+// So here we go:
+// QgsComposerItemWidget is just a QWidget which is embedded inside specific item property
+// widgets and contains common settings like position and rotation of the items. While the
+// actual individual item type widgets MUST be QgsPanelWidgets unfortunately QgsComposerItemWidget
+// CANNOT be a QgsPanelWidget and must instead be a generic QWidget (otherwise a QgsPanelWidget
+// contains a child QgsPanelWidget, which breaks lots of assumptions made in QgsPanelWidget
+// and related classes).
+// So QgsComposerItemWidget HAS a QgsComposerConfigObject to handle these common tasks.
+// Specific item property widgets (eg QgsComposerMapWidget) should inherit from QgsComposerItemBaseWidget
+// (which is a QgsPanelWidget) and also HAS a QgsComposerConfigObject, with protected methods
+// which are just proxied through to the QgsComposerConfigObject.
+// phew!
+// long story short - don't change this without good reason. If you add a new item type, inherit
+// from QgsComposerItemWidget and trust that everything else has been done for you.
+
+/** An object for property widgets for composer items. All composer config type widgets should contain
+ * this object.
 */
-class QgsComposerItemBaseWidget: public QWidget
+class QgsComposerConfigObject: public QObject
 {
     Q_OBJECT
   public:
-    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject );
-    ~QgsComposerItemBaseWidget();
+    QgsComposerConfigObject( QWidget* parent, QgsComposerObject* composerObject );
+    ~QgsComposerConfigObject();
 
-  protected slots:
-    /** Must be called when a data defined button changes*/
-    void updateDataDefinedProperty();
-
-    //! Updates data defined buttons to reflect current state of atlas (eg coverage layer)
-    void updateDataDefinedButtons();
-
-  protected:
-    /** Sets a data defined property for the item from its current data defined button settings*/
+    //! Sets a data defined property for the item from its current data defined button settings
     void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
 
     /** Registers a data defined button, setting up its initial value, connections and description.
@@ -55,30 +68,72 @@ class QgsComposerItemBaseWidget: public QWidget
     void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
                                     QgsDataDefinedButton::DataType type, const QString& description );
 
-    /** Returns the current atlas coverage layer (if set)*/
+    //! Returns the current atlas coverage layer (if set)
     QgsVectorLayer* atlasCoverageLayer() const;
 
-    /** Returns the atlas for the composition*/
+    //! Returns the atlas for the composition
     QgsAtlasComposition *atlasComposition() const;
+
+  private slots:
+    //! Must be called when a data defined button changes
+    void updateDataDefinedProperty();
+
+    //! Updates data defined buttons to reflect current state of atlas (eg coverage layer)
+    void updateDataDefinedButtons();
+
+  private:
 
     QgsComposerObject* mComposerObject;
 };
 
+/**
+ * A base class for property widgets for composer items. All composer item widgets should inherit from
+ * this base class.
+ */
+class QgsComposerItemBaseWidget: public QgsPanelWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject );
+
+  protected:
+
+    /** Registers a data defined button, setting up its initial value, connections and description.
+     * @param button button to register
+     * @param property correponding data defined property
+     * @param type valid data types for button
+     * @param description user visible description for data defined property
+     */
+    void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
+                                    QgsDataDefinedButton::DataType type, const QString& description );
+
+    //! Returns the current atlas coverage layer (if set)
+    QgsVectorLayer* atlasCoverageLayer() const;
+
+    //! Returns the atlas for the composition
+    QgsAtlasComposition *atlasComposition() const;
+
+  private:
+
+    QgsComposerConfigObject* mConfigObject;
+};
+
 /** A class to enter generic properties for composer items (e.g. background, outline, frame).
  This widget can be embedded into other item widgets*/
-class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerItemWidgetBase
+class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
 {
     Q_OBJECT
   public:
     QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
     ~QgsComposerItemWidget();
 
-    /** A combination of upper/middle/lower and left/middle/right*/
+    //! A combination of upper/middle/lower and left/middle/right
     QgsComposerItem::ItemPositionMode positionMode() const;
 
-    /** Toggles display of the background group*/
+    //! Toggles display of the background group
     void showBackgroundGroup( bool showGroup );
-    /** Toggles display of the frame group*/
+    //! Toggles display of the frame group
     void showFrameGroup( bool showGroup );
 
   public slots:
@@ -128,13 +183,13 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void setValuesForGuiNonPositionElements();
 
   protected slots:
-    /** Initializes data defined buttons to current atlas coverage layer*/
+    //! Initializes data defined buttons to current atlas coverage layer
     void populateDataDefinedButtons();
 
   private:
-    QgsComposerItemWidget();
 
     QgsComposerItem* mItem;
+    QgsComposerConfigObject* mConfigObject;
 
     bool mFreezeXPosSpin;
     bool mFreezeYPosSpin;

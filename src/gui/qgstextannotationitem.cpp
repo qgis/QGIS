@@ -88,10 +88,10 @@ void QgsTextAnnotationItem::writeXml( QDomDocument& doc ) const
   {
     return;
   }
-  QDomElement annotationElem = doc.createElement( "TextAnnotationItem" );
+  QDomElement annotationElem = doc.createElement( QStringLiteral( "TextAnnotationItem" ) );
   if ( mDocument )
   {
-    annotationElem.setAttribute( "document", mDocument->toHtml() );
+    annotationElem.setAttribute( QStringLiteral( "document" ), mDocument->toHtml() );
   }
   _writeXml( doc, annotationElem );
   documentElem.appendChild( annotationElem );
@@ -101,8 +101,8 @@ void QgsTextAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
 {
   delete mDocument;
   mDocument = new QTextDocument;
-  mDocument->setHtml( itemElem.attribute( "document", QObject::tr( "" ) ) );
-  QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
+  mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QObject::tr( "" ) ) );
+  QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
     _readXml( doc, annotationElem );

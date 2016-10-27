@@ -27,6 +27,8 @@
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
+  setPanelTitle( tr( "Scalebar properties" ) );
+
   connectUpdateSignal();
 
   //add widget for general composer item properties
@@ -60,23 +62,23 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mFillColorButton->setAllowAlpha( true );
-  mFillColorButton->setContext( "composer" );
+  mFillColorButton->setContext( QStringLiteral( "composer" ) );
   mFillColorButton->setNoColorString( tr( "Transparent fill" ) );
   mFillColorButton->setShowNoColor( true );
 
   mFillColor2Button->setColorDialogTitle( tr( "Select alternate fill color" ) );
   mFillColor2Button->setAllowAlpha( true );
-  mFillColor2Button->setContext( "composer" );
+  mFillColor2Button->setContext( QStringLiteral( "composer" ) );
   mFillColor2Button->setNoColorString( tr( "Transparent fill" ) );
   mFillColor2Button->setShowNoColor( true );
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setAllowAlpha( true );
-  mFontColorButton->setContext( "composer" );
+  mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   mStrokeColorButton->setColorDialogTitle( tr( "Select line color" ) );
   mStrokeColorButton->setAllowAlpha( true );
-  mStrokeColorButton->setContext( "composer" );
+  mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
   mStrokeColorButton->setNoColorString( tr( "Transparent line" ) );
   mStrokeColorButton->setShowNoColor( true );
 
@@ -261,7 +263,7 @@ void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor& 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ), QgsComposerMergeCommand::ScaleBarFontColor );
   disconnectUpdateSignal();
   mComposerScaleBar->setFontColor( newColor );
   mComposerScaleBar->update();
@@ -276,7 +278,7 @@ void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor& 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ), QgsComposerMergeCommand::ScaleBarFillColor );
   disconnectUpdateSignal();
   QBrush newBrush = mComposerScaleBar->brush();
   newBrush.setColor( newColor );
@@ -293,7 +295,7 @@ void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar secondary color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar secondary color changed" ), QgsComposerMergeCommand::ScaleBarFill2Color );
   disconnectUpdateSignal();
   QBrush newBrush = mComposerScaleBar->brush2();
   newBrush.setColor( newColor );
@@ -310,7 +312,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar line color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar line color changed" ), QgsComposerMergeCommand::ScaleBarStrokeColor );
   disconnectUpdateSignal();
   QPen newPen = mComposerScaleBar->pen();
   newPen.setColor( newColor );
@@ -362,31 +364,31 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
   QString untranslatedStyleName;
   if ( text == tr( "Single Box" ) )
   {
-    untranslatedStyleName = "Single Box";
+    untranslatedStyleName = QStringLiteral( "Single Box" );
   }
   else if ( text == tr( "Double Box" ) )
   {
-    untranslatedStyleName = "Double Box";
+    untranslatedStyleName = QStringLiteral( "Double Box" );
   }
   else if ( text == tr( "Line Ticks Middle" ) )
   {
-    untranslatedStyleName = "Line Ticks Middle";
+    untranslatedStyleName = QStringLiteral( "Line Ticks Middle" );
   }
   else if ( text == tr( "Line Ticks Middle" ) )
   {
-    untranslatedStyleName = "Line Ticks Middle";
+    untranslatedStyleName = QStringLiteral( "Line Ticks Middle" );
   }
   else if ( text == tr( "Line Ticks Down" ) )
   {
-    untranslatedStyleName = "Line Ticks Down";
+    untranslatedStyleName = QStringLiteral( "Line Ticks Down" );
   }
   else if ( text == tr( "Line Ticks Up" ) )
   {
-    untranslatedStyleName = "Line Ticks Up";
+    untranslatedStyleName = QStringLiteral( "Line Ticks Up" );
   }
   else if ( text == tr( "Numeric" ) )
   {
-    untranslatedStyleName = "Numeric";
+    untranslatedStyleName = QStringLiteral( "Numeric" );
   }
 
   //disable or enable controls which apply to specific scale bar styles
@@ -400,7 +402,7 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
 
 void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& style )
 {
-  if ( style == "Numeric" )
+  if ( style == QLatin1String( "Numeric" ) )
   {
     //Disable controls which don't apply to numeric scale bars
     mGroupBoxUnits->setEnabled( false );
@@ -425,7 +427,7 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& styl
     mFillColorButton->setEnabled( true );
     mFillColor2Button->setEnabled( true );
     mStrokeColorButton->setEnabled( true );
-    if ( style == "Single Box" || style == "Double Box" )
+    if ( style == QLatin1String( "Single Box" ) || style == QLatin1String( "Double Box" ) )
     {
       mLineJoinStyleCombo->setEnabled( true );
       mLineCapStyleCombo->setEnabled( false );

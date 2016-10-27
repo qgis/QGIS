@@ -176,13 +176,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual bool hasTiles() const;
 #endif
 
-    /** Returns the GetMap url */
+    //! Returns the GetMap url
     virtual QString getMapUrl() const;
 
-    /** Returns the GetFeatureInfo url */
+    //! Returns the GetFeatureInfo url
     virtual QString getFeatureInfoUrl() const;
 
-    /** Return the GetTile url */
+    //! Return the GetTile url
     virtual QString getTileUrl() const;
 
     /** Return the GetLegendGraphic url
@@ -212,7 +212,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QStringList subLayerStyles() const override;
 
-    /** \brief Returns whether the provider supplies a legend graphic */
+    //! \brief Returns whether the provider supplies a legend graphic
     bool supportsLegendGraphic() const override { return true; }
 
 
@@ -366,7 +366,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     typedef struct TilePosition
     {
       TilePosition( int r, int c ): row( r ), col( c ) {}
-      bool operator==( const TilePosition& other ) const { return row == other.row && col == other.col; }
+      bool operator==( TilePosition other ) const { return row == other.row && col == other.col; }
       int row;
       int col;
     } TilePosition;
@@ -374,7 +374,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   signals:
 
-    /** \brief emit a signal to notify of a progress event */
+    //! \brief emit a signal to notify of a progress event
     void progressChanged( int theProgress, int theTotalSteps );
 
     void dataChanged();
@@ -459,9 +459,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( QRectF r, QImage i ): rect( r ), img( i ) {}
-      QRectF rect; //!< destination rectangle for a tile (in screen coordinates)
-      QImage img;  //!< cached tile to be drawn
+      TileImage( const QRectF& r, const QImage& i ): rect( r ), img( i ) {}
+      QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+      QImage img;  //!< Cached tile to be drawn
     } TileImage;
     //! Get tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle& viewExtent, int imageWidth, QList<QRectF>& missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
@@ -586,7 +586,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 };
 
 
-/** Handler for downloading of non-tiled WMS requests, the data are written to the given image */
+//! Handler for downloading of non-tiled WMS requests, the data are written to the given image
 class QgsWmsImageDownloadHandler : public QObject
 {
     Q_OBJECT
@@ -615,7 +615,7 @@ class QgsWmsImageDownloadHandler : public QObject
 };
 
 
-/** Handler for tiled WMS-C/WMTS requests, the data are written to the given image */
+//! Handler for tiled WMS-C/WMTS requests, the data are written to the given image
 class QgsWmsTiledImageDownloadHandler : public QObject
 {
     Q_OBJECT
@@ -661,7 +661,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 };
 
 
-/** Class keeping simple statistics for WMS provider - per unique URI */
+//! Class keeping simple statistics for WMS provider - per unique URI
 class QgsWmsStatistics
 {
   public:
@@ -684,6 +684,7 @@ class QgsWmsStatistics
     static QMap<QString, Stat> sData;
 };
 
+Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
 #endif
 

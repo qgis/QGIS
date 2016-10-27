@@ -131,6 +131,7 @@ from .RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
 from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .PointsToPaths import PointsToPaths
+from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .SetVectorStyle import SetVectorStyle
@@ -158,6 +159,17 @@ from .PolygonCentroids import PolygonCentroids
 from .Translate import Translate
 from .SingleSidedBuffer import SingleSidedBuffer
 from .PointsAlongGeometry import PointsAlongGeometry
+from .Aspect import Aspect
+from .Slope import Slope
+from .Ruggedness import Ruggedness
+from .Hillshade import Hillshade
+from .ReliefAuto import ReliefAuto
+from .IdwInterpolationZValue import IdwInterpolationZValue
+from .IdwInterpolationAttribute import IdwInterpolationAttribute
+from .TinInterpolationZValue import TinInterpolationZValue
+from .TinInterpolationAttribute import TinInterpolationAttribute
+from .ZonalStatisticsQgis import ZonalStatisticsQgis
+from .RemoveNullGeometry import RemoveNullGeometry
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -202,6 +214,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
+                        SpatialiteExecuteSQL(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
@@ -212,9 +225,13 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RectanglesOvalsDiamondsVariable(),
                         RectanglesOvalsDiamondsFixed(), MergeLines(),
                         BoundingBox(), Boundary(), PointOnSurface(),
-                        OffsetLine(), PolygonCentroids(),
-                        Translate(), SingleSidedBuffer(),
-                        PointsAlongGeometry()
+                        OffsetLine(), PolygonCentroids(), Translate(),
+                        SingleSidedBuffer(), PointsAlongGeometry(),
+                        Aspect(), Slope(), Ruggedness(), Hillshade(),
+                        ReliefAuto(), ZonalStatisticsQgis(),
+                        IdwInterpolationZValue(), IdwInterpolationAttribute(),
+                        TinInterpolationZValue(), TinInterpolationAttribute(),
+                        RemoveNullGeometry()
                         ]
 
         if hasMatplotlib:

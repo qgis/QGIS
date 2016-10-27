@@ -71,7 +71,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
   }
 
   // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::SourceUrl, QString( "dataDefinedSourceUrl" ) );
+  mDataDefinedNames.insert( QgsComposerObject::SourceUrl, QStringLiteral( "dataDefinedSourceUrl" ) );
 
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
@@ -210,7 +210,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   //inject JSON feature
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
-    mWebPage->mainFrame()->evaluateJavaScript( QString( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
+    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
     //needs an extra process events here to give javascript a chance to execute
     qApp->processEvents();
   }
@@ -475,15 +475,15 @@ QString QgsComposerHtml::displayName() const
 
 bool QgsComposerHtml::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
-  QDomElement htmlElem = doc.createElement( "ComposerHtml" );
-  htmlElem.setAttribute( "contentMode", QString::number( static_cast< int >( mContentMode ) ) );
-  htmlElem.setAttribute( "url", mUrl.toString() );
-  htmlElem.setAttribute( "html", mHtml );
-  htmlElem.setAttribute( "evaluateExpressions", mEvaluateExpressions ? "true" : "false" );
-  htmlElem.setAttribute( "useSmartBreaks", mUseSmartBreaks ? "true" : "false" );
-  htmlElem.setAttribute( "maxBreakDistance", QString::number( mMaxBreakDistance ) );
-  htmlElem.setAttribute( "stylesheet", mUserStylesheet );
-  htmlElem.setAttribute( "stylesheetEnabled", mEnableUserStylesheet ? "true" : "false" );
+  QDomElement htmlElem = doc.createElement( QStringLiteral( "ComposerHtml" ) );
+  htmlElem.setAttribute( QStringLiteral( "contentMode" ), QString::number( static_cast< int >( mContentMode ) ) );
+  htmlElem.setAttribute( QStringLiteral( "url" ), mUrl.toString() );
+  htmlElem.setAttribute( QStringLiteral( "html" ), mHtml );
+  htmlElem.setAttribute( QStringLiteral( "evaluateExpressions" ), mEvaluateExpressions ? "true" : "false" );
+  htmlElem.setAttribute( QStringLiteral( "useSmartBreaks" ), mUseSmartBreaks ? "true" : "false" );
+  htmlElem.setAttribute( QStringLiteral( "maxBreakDistance" ), QString::number( mMaxBreakDistance ) );
+  htmlElem.setAttribute( QStringLiteral( "stylesheet" ), mUserStylesheet );
+  htmlElem.setAttribute( QStringLiteral( "stylesheetEnabled" ), mEnableUserStylesheet ? "true" : "false" );
 
   bool state = _writeXml( htmlElem, doc, ignoreFrames );
   elem.appendChild( htmlElem );
@@ -504,20 +504,20 @@ bool QgsComposerHtml::readXml( const QDomElement& itemElem, const QDomDocument& 
   }
 
   bool contentModeOK;
-  mContentMode = static_cast< QgsComposerHtml::ContentMode >( itemElem.attribute( "contentMode" ).toInt( &contentModeOK ) );
+  mContentMode = static_cast< QgsComposerHtml::ContentMode >( itemElem.attribute( QStringLiteral( "contentMode" ) ).toInt( &contentModeOK ) );
   if ( !contentModeOK )
   {
     mContentMode = QgsComposerHtml::Url;
   }
-  mEvaluateExpressions = itemElem.attribute( "evaluateExpressions", "true" ) == "true" ? true : false;
-  mUseSmartBreaks = itemElem.attribute( "useSmartBreaks", "true" ) == "true" ? true : false;
-  mMaxBreakDistance = itemElem.attribute( "maxBreakDistance", "10" ).toDouble();
-  mHtml = itemElem.attribute( "html" );
-  mUserStylesheet = itemElem.attribute( "stylesheet" );
-  mEnableUserStylesheet = itemElem.attribute( "stylesheetEnabled", "false" ) == "true" ? true : false;
+  mEvaluateExpressions = itemElem.attribute( QStringLiteral( "evaluateExpressions" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) ? true : false;
+  mUseSmartBreaks = itemElem.attribute( QStringLiteral( "useSmartBreaks" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) ? true : false;
+  mMaxBreakDistance = itemElem.attribute( QStringLiteral( "maxBreakDistance" ), QStringLiteral( "10" ) ).toDouble();
+  mHtml = itemElem.attribute( QStringLiteral( "html" ) );
+  mUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheet" ) );
+  mEnableUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheetEnabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
 
   //finally load the set url
-  QString urlString = itemElem.attribute( "url" );
+  QString urlString = itemElem.attribute( QStringLiteral( "url" ) );
   if ( !urlString.isEmpty() )
   {
     mUrl = urlString;
@@ -548,7 +548,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   {
     mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
   }
-  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  mDistanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // create JSON representation of feature
   QgsJSONExporter exporter( layer );

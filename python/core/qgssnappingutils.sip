@@ -25,10 +25,11 @@ class QgsSnappingUtils : QObject
 
     /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
     void setMapSettings( const QgsMapSettings& settings );
-    const QgsMapSettings& mapSettings() const;
+    QgsMapSettings mapSettings() const;
 
     /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer* layer );
+    /** The current layer used if mode is SnapCurrentLayer */
     QgsVectorLayer* currentLayer() const;
 
 
@@ -42,11 +43,6 @@ class QgsSnappingUtils : QObject
       SnapAdvanced,        //!< snap according to the configuration set in setLayers()
     };
 
-    /** Set how the snapping to map is done */
-    void setSnapToMapMode( SnapToMapMode mode );
-    /** Find out how the snapping to map is done */
-    SnapToMapMode snapToMapMode() const;
-
     enum IndexingStrategy
     {
       IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
@@ -58,11 +54,6 @@ class QgsSnappingUtils : QObject
     void setIndexingStrategy( IndexingStrategy strategy );
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const;
-
-    /** Configure options used when the mode is snap to current layer or to all layers */
-    void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** Query options used when the mode is snap to current layer or to all layers */
-    void defaultSettings( int& type /Out/, double& tolerance /Out/, QgsTolerance::UnitType& unit /Out/ );
 
     /**
      * Configures how a certain layer should be handled in a snapping operation
@@ -84,28 +75,27 @@ class QgsSnappingUtils : QObject
       QgsTolerance::UnitType unit;
     };
 
-    /** Set layers which will be used for snapping */
-    void setLayers( const QList<QgsSnappingUtils::LayerConfig>& layers );
     /** Query layers used for snapping */
     QList<QgsSnappingUtils::LayerConfig> layers() const;
-
-    /** Set whether to consider intersections of nearby segments for snapping */
-    void setSnapOnIntersections( bool enabled );
-    /** Query whether to consider intersections of nearby segments for snapping */
-    bool snapOnIntersections() const;
 
     /** Get extra information about the instance
      * @note added in QGIS 2.14
      */
     QString dump();
 
-  public slots:
-    /** Read snapping configuration from the project */
-    void readConfigFromProject();
+    /**
+     * The snapping configuration controls the behavior of this object
+     */
+    QgsSnappingConfig config() const;
+
+    /**
+     * The snapping configuration controls the behavior of this object
+     */
+    void setConfig( const QgsSnappingConfig& snappingConfig );
 
   signals:
-    /** Emitted when snapping configuration has been changed
-     * @note added in QGIS 2.14
+    /**
+     * Emitted when the snapping settings object changes.
      */
     void configChanged();
 

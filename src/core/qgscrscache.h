@@ -43,7 +43,7 @@ class CORE_EXPORT QgsCoordinateTransformCache
      */
     QgsCoordinateTransform transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
 
-    /** Removes transformations where a changed crs is involved from the cache*/
+    //! Removes transformations where a changed crs is involved from the cache
     void invalidateCrs( const QString& crsAuthId );
 
   private:

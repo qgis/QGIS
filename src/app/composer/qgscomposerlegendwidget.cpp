@@ -47,6 +47,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     , mLegend( legend )
 {
   setupUi( this );
+  setPanelTitle( tr( "Legend properties" ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -57,11 +58,11 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mFontColorButton->setContext( "composer" );
+  mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   mRasterBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
   mRasterBorderColorButton->setAllowAlpha( true );
-  mRasterBorderColorButton->setContext( "composer " );
+  mRasterBorderColorButton->setContext( QStringLiteral( "composer " ) );
 
   mMapComboBox->setComposition( legend->composition() );
   mMapComboBox->setItemType( QgsComposerItem::ComposerMap );
@@ -405,7 +406,7 @@ void QgsComposerLegendWidget::on_mFontColorButton_colorChanged( const QColor& ne
     return;
   }
 
-  mLegend->beginCommand( tr( "Legend font color changed" ) );
+  mLegend->beginCommand( tr( "Legend font color changed" ), QgsComposerMergeCommand::LegendFontColor );
   mLegend->setFontColor( newFontColor );
   mLegend->update();
   mLegend->endCommand();
@@ -469,7 +470,7 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
   if ( !node && !legendNode )
     return;
 
-  mLegend->beginCommand( "Moved legend item down" );
+  mLegend->beginCommand( QStringLiteral( "Moved legend item down" ) );
 
   if ( node )
   {
@@ -506,7 +507,7 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
   if ( !node && !legendNode )
     return;
 
-  mLegend->beginCommand( "Moved legend item up" );
+  mLegend->beginCommand( QStringLiteral( "Moved legend item up" ) );
 
   if ( node )
   {
@@ -528,7 +529,7 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
 
 void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
 {
-  mLegend->beginCommand( "Auto update changed" );
+  mLegend->beginCommand( QStringLiteral( "Auto update changed" ) );
 
   mLegend->setAutoUpdateModel( state == Qt::Checked );
 
@@ -623,7 +624,7 @@ void QgsComposerLegendWidget::on_mRasterBorderColorButton_colorChanged( const QC
     return;
   }
 
-  mLegend->beginCommand( tr( "Legend raster border color" ) );
+  mLegend->beginCommand( tr( "Legend raster border color" ), QgsComposerMergeCommand::LegendRasterBorderColor );
   mLegend->setRasterBorderColor( newColor );
   mLegend->update();
   mLegend->endCommand();
@@ -653,7 +654,7 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
       QgsMapLayer* layer = addDialog.selectedLayer();
       if ( layer )
       {
-        mLegend->beginCommand( "Legend item added" );
+        mLegend->beginCommand( QStringLiteral( "Legend item added" ) );
         mLegend->model()->rootGroup()->addLayer( layer );
         mLegend->endCommand();
       }
@@ -674,7 +675,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
     return;
   }
 
-  mLegend->beginCommand( "Legend item removed" );
+  mLegend->beginCommand( QStringLiteral( "Legend item removed" ) );
 
   QList<QPersistentModelIndex> indexes;
   Q_FOREACH ( const QModelIndex &index, selectionModel->selectedIndexes() )
@@ -761,7 +762,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
 
   Q_FOREACH ( const QString& key, nodeLayer->customProperties() )
   {
-    if ( key.startsWith( "legend/" ) )
+    if ( key.startsWith( QLatin1String( "legend/" ) ) )
       nodeLayer->removeCustomProperty( key );
   }
 
@@ -792,7 +793,7 @@ void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
     return;
 
   mLegend->beginCommand( tr( "Legend updated" ) );
-  currentNode->setCustomProperty( "showFeatureCount", checked ? 1 : 0 );
+  currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
   mLegend->updateItem();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
@@ -931,7 +932,7 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
   if ( !vl )
     return;
 
-  mCountToolButton->setChecked( currentNode->customProperty( "showFeatureCount", 0 ).toInt() );
+  mCountToolButton->setChecked( currentNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
   mCountToolButton->setEnabled( true );
 
   bool exprEnabled;
@@ -979,7 +980,7 @@ void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex 
   else if ( QgsLayerTree::isLayer( currentNode ) )
   {
     currentText = QgsLayerTree::toLayer( currentNode )->layerName();
-    QVariant v = currentNode->customProperty( "legend/title-label" );
+    QVariant v = currentNode->customProperty( QStringLiteral( "legend/title-label" ) );
     if ( !v.isNull() )
       currentText = v.toString();
   }
@@ -1002,7 +1003,7 @@ void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex 
   }
   else if ( QgsLayerTree::isLayer( currentNode ) )
   {
-    currentNode->setCustomProperty( "legend/title-label", newText );
+    currentNode->setCustomProperty( QStringLiteral( "legend/title-label" ), newText );
 
     // force update of label of the legend node with embedded icon (a bit clumsy i know)
     QList<QgsLayerTreeModelLegendNode*> nodes = model->layerLegendNodes( QgsLayerTree::toLayer( currentNode ) );

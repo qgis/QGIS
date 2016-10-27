@@ -28,7 +28,7 @@
 QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()
@@ -38,7 +38,7 @@ QgsOWSConnectionItem::~QgsOWSConnectionItem()
 QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 {
   QVector<QgsDataItem*> children;
-  QMap<QgsDataItem*, QString> serviceItems; // service/provider key
+  QHash<QgsDataItem*, QString> serviceItems; // service/provider key
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
@@ -93,7 +93,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
-        replacePath( subItem, providerKey.toLower() + ":/", "ows:/" );
+        replacePath( subItem, providerKey.toLower() + ":/", QStringLiteral( "ows:/" ) );
         children.append( subItem );
       }
       delete item;
@@ -173,7 +173,7 @@ QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path 
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconOws.svg";
+  mIconName = QStringLiteral( "mIconOws.svg" );
   populate();
 }
 
@@ -259,7 +259,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
   {
-    return new QgsOWSRootItem( parentItem, "OWS", "ows:" );
+    return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }
   return nullptr;
 }

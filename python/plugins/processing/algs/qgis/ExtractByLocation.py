@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -83,9 +84,8 @@ class ExtractByLocation(GeoAlgorithm):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
             intersects = index.intersects(bbox)
-            for i in intersects:
-                request = QgsFeatureRequest().setFilterFid(i)
-                feat = next(layer.getFeatures(request))
+            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+            for feat in layer.getFeatures(request):
                 tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
                 res = False
                 for predicate in predicates:

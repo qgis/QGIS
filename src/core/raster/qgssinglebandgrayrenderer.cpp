@@ -24,7 +24,7 @@
 #include <QColor>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
-    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
+    QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
 {
 }
 
@@ -53,16 +53,16 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
     return nullptr;
   }
 
-  int grayBand = elem.attribute( "grayBand", "-1" ).toInt();
+  int grayBand = elem.attribute( QStringLiteral( "grayBand" ), QStringLiteral( "-1" ) ).toInt();
   QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( input, grayBand );
   r->readXml( elem );
 
-  if ( elem.attribute( "gradient" ) == "WhiteToBlack" )
+  if ( elem.attribute( QStringLiteral( "gradient" ) ) == QLatin1String( "WhiteToBlack" ) )
   {
     r->setGradient( WhiteToBlack );  // BlackToWhite is default
   }
 
-  QDomElement contrastEnhancementElem = elem.firstChildElement( "contrastEnhancement" );
+  QDomElement contrastEnhancementElem = elem.firstChildElement( QStringLiteral( "contrastEnhancement" ) );
   if ( !contrastEnhancementElem.isNull() )
   {
     QgsContrastEnhancement* ce = new QgsContrastEnhancement(( Qgis::DataType )(
@@ -184,25 +184,25 @@ void QgsSingleBandGrayRenderer::writeXml( QDomDocument& doc, QDomElement& parent
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
   _writeXml( doc, rasterRendererElem );
 
-  rasterRendererElem.setAttribute( "grayBand", mGrayBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "grayBand" ), mGrayBand );
 
   QString gradient;
   if ( mGradient == BlackToWhite )
   {
-    gradient = "BlackToWhite";
+    gradient = QStringLiteral( "BlackToWhite" );
   }
   else
   {
-    gradient = "WhiteToBlack";
+    gradient = QStringLiteral( "WhiteToBlack" );
   }
-  rasterRendererElem.setAttribute( "gradient", gradient );
+  rasterRendererElem.setAttribute( QStringLiteral( "gradient" ), gradient );
 
   if ( mContrastEnhancement )
   {
-    QDomElement contrastElem = doc.createElement( "contrastEnhancement" );
+    QDomElement contrastElem = doc.createElement( QStringLiteral( "contrastEnhancement" ) );
     mContrastEnhancement->writeXml( doc, contrastElem );
     rasterRendererElem.appendChild( contrastElem );
   }

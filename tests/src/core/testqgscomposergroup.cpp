@@ -52,7 +52,7 @@ class TestQgsComposerGroup : public QObject
 
   private:
 
-    void dumpUndoStack( const QUndoStack&, QString prefix = "" ) const;
+    void dumpUndoStack( const QUndoStack&, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
 
     QgsComposition *mComposition;
     QgsMapSettings *mMapSettings;
@@ -65,12 +65,12 @@ class TestQgsComposerGroup : public QObject
 // private
 void TestQgsComposerGroup::dumpUndoStack( const QUndoStack& us, QString prefix ) const
 {
-  if ( ! prefix.isEmpty() ) prefix += ": ";
+  if ( ! prefix.isEmpty() ) prefix += QLatin1String( ": " );
   for ( int i = 0; i < us.count(); ++i )
   {
     QgsDebugMsg( QString( "%4US %1: %2%3" )
-                 .arg( i ). arg( i >= us.index() ? "-" : "" )
-                 .arg( us.text( i ) ) .arg( prefix ) );
+                 .arg( i ). arg( i >= us.index() ? "-" : "",
+                                 us.text( i ), prefix ) );
   }
 }
 
@@ -91,7 +91,7 @@ void TestQgsComposerGroup::initTestCase()
 
   mGroup = 0;
 
-  mReport = "<h1>Composer Grouped Item Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Grouped Item Tests</h1>\n" );
 }
 
 void TestQgsComposerGroup::cleanupTestCase()
@@ -250,7 +250,7 @@ void TestQgsComposerGroup::undoRedo()
 
   //move group
   QgsDebugMsg( QString( "moving group" ) );
-  mGroup->beginCommand( "move group" );
+  mGroup->beginCommand( QStringLiteral( "move group" ) );
   mGroup->move( 10.0, 20.0 );
   mGroup->endCommand();
   QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
