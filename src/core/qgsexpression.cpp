@@ -312,14 +312,19 @@ static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* paren
 
 QgsVectorLayer* getVectorLayer( const QVariant& value, QgsExpression* )
 {
-  QString layerString = value.toString();
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerString ) ); //search by id first
+  QgsVectorLayer* vl = value.value<QgsVectorLayer*>();
   if ( !vl )
   {
-    QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerString );
-    if ( !layersByName.isEmpty() )
+    QString layerString = value.toString();
+    vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerString ) ); //search by id first
+
+    if ( !vl )
     {
-      vl = qobject_cast<QgsVectorLayer*>( layersByName.at( 0 ) );
+      QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerString );
+      if ( !layersByName.isEmpty() )
+      {
+        vl = qobject_cast<QgsVectorLayer*>( layersByName.at( 0 ) );
+      }
     }
   }
 
@@ -707,8 +712,7 @@ static QVariant fcnAggregateRelation( const QVariantList& values, const QgsExpre
   }
 
   // first step - find current layer
-  QString layerId = context->variable( QStringLiteral( "layer_id" ) ).toString();
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* vl = getVectorLayer( context->variable( "layer" ), parent );
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use relation aggregate function in this context" ) );
@@ -810,8 +814,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   }
 
   // first step - find current layer
-  QString layerId = context->variable( QStringLiteral( "layer_id" ) ).toString();
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer* vl = getVectorLayer( context->variable( "layer" ), parent );
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use aggregate function in this context" ) );
@@ -1306,6 +1309,63 @@ static QVariant fcnAttribute( const QVariantList& values, const QgsExpressionCon
 
   return feat.attribute( attr );
 }
+
+static QVariant fcnIsSelected( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
+{
+  QgsVectorLayer* layer = nullptr;
+  QgsFeature feature;
+
+  if ( values.isEmpty() )
+  {
+    feature = context->feature();
+    layer = getVectorLayer( context->variable( "layer" ), parent );
+  }
+  else if ( values.size() == 1 )
+  {
+    layer = getVectorLayer( context->variable( "layer" ), parent );
+    feature = getFeature( values.at( 0 ), parent );
+  }
+  else if ( values.size() == 2 )
+  {
+    layer = getVectorLayer( values.at( 0 ), parent );
+    feature = getFeature( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `is_selected` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
+
+  if ( !layer || !feature.isValid() )
+  {
+    return QVariant( QVariant::Bool );
+  }
+
+  return layer->selectedFeaturesIds().contains( feature.id() );
+}
+
+static QVariant fcnNumSelected( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
+{
+  QgsVectorLayer* layer = nullptr;
+
+  if ( values.isEmpty() )
+    layer = getVectorLayer( context->variable( "layer" ), parent );
+  else if ( values.count() == 1 )
+    layer = getVectorLayer( values.at( 0 ), parent );
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
+
+  if ( !layer )
+  {
+    return QVariant( QVariant::LongLong );
+  }
+
+  return layer->selectedFeatureCount();
+}
+
 static QVariant fcnConcat( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QString concat;
@@ -3613,10 +3673,37 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
                            << Parameter( QStringLiteral( "vertex" ) ), fcnAngleAtVertex, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "distance_to_vertex" ), ParameterList() << Parameter( QStringLiteral( "geometry" ) )
                            << Parameter( QStringLiteral( "vertex" ) ), fcnDistanceToVertex, QStringLiteral( "GeometryGroup" ) )
+
+
+    // **Record** functions
+
     << new StaticFunction( QStringLiteral( "$id" ), 0, fcnFeatureId, QStringLiteral( "Record" ) )
     << new StaticFunction( QStringLiteral( "$currentfeature" ), 0, fcnFeature, QStringLiteral( "Record" ) )
     << new StaticFunction( QStringLiteral( "uuid" ), 0, fcnUuid, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$uuid" ) )
     << new StaticFunction( QStringLiteral( "get_feature" ), 3, fcnGetFeature, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "getFeature" ) )
+
+    << new StaticFunction(
+      QStringLiteral( "is_selected" ),
+      -1,
+      fcnIsSelected,
+      QStringLiteral( "Record" ),
+      QString(),
+      false,
+      QSet<QString>()
+    )
+
+    << new StaticFunction(
+      QStringLiteral( "num_selected" ),
+      -1,
+      fcnNumSelected,
+      QStringLiteral( "Record" ),
+      QString(),
+      false,
+      QSet<QString>()
+    )
+
+    // **General** functions
+
     << new StaticFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
     << new StaticFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) )
 
@@ -5238,6 +5325,7 @@ void QgsExpression::initVariableHelp()
   //layer variables
   gVariableHelpTexts.insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
   gVariableHelpTexts.insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
+  gVariableHelpTexts.insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
 
   //composition variables
   gVariableHelpTexts.insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
