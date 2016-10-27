@@ -960,3 +960,15 @@ void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor() );
 }
+
+bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction* node ) const
+{
+  Q_UNUSED( node )
+  return mUsesGeometry;
+}
+
+QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpression::NodeFunction* node ) const
+{
+  Q_UNUSED( node )
+  return mReferencedColumns;
+}

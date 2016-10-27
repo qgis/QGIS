@@ -765,9 +765,6 @@ version instead.
 removed. Use QgsExpressionContext variables instead.
 - The replaceExpressionText version which accepts a QgsFeature argument has been removed. Use the QgsExpressionContext
 version instead.
-- QgsExpression::Function::func has been modified to use a QgsExpressionContext argument rather than a QgsFeature.
-- QgsExpression::Function::usesgeometry() has been renamed to usesGeometry()
-- QgsExpression::Function::helptext() has been renamed to helpText()
 - The QgsExpression::Node::eval and prepare versions which take a QgsFeature has been removed, use the QgsExpressionContext versions instead.
 - QgsExpression::Interval has been removed. Use QgsInterval instead.
 - replaceExpressionText() no longer accepts a substitution map parameter. Use expression context variables instead.
@@ -776,7 +773,14 @@ version instead.
 - acceptVisitor() has been removed
 - QgsExpression::referencedColumns() returns QSet<QString> instead of QStringList
 - QgsExpression::Node::referencedColumns() returns QSet<QString> instead of QStringList
-- QgsExpression::Function::referencedColumns() returns QSet<QString> instead of QStringList
+
+QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
+-----------------------
+
+- `QgsExpression::Function::func` has been modified to use a `QgsExpressionContext` argument rather than a `QgsFeature`.
+- `QgsExpression::Function::usesgeometry()` has been renamed to `QgsExpression::Function::usesGeometry( const NodeFunction* node )`
+- `QStringList QgsExpression::Function::referencedColumns()` has been changed to `QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* node )`
+- `QgsExpression::Function::helptext()` has been renamed to `helpText()`
 
 
 QgsFeature        {#qgis_api_break_3_0_QgsFeature}

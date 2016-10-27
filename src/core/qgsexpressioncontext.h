@@ -55,7 +55,9 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )
-        : QgsExpression::Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull, isContextual )
+        : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
+        , mUsesGeometry( usesGeometry )
+        , mReferencedColumns( referencedColumns )
     {}
 
     virtual ~QgsScopedExpressionFunction() {}
@@ -66,6 +68,13 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
      */
     virtual QgsScopedExpressionFunction* clone() const = 0;
 
+    virtual bool usesGeometry( const QgsExpression::NodeFunction* node ) const override;
+
+    virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction* node ) const override;
+
+  private:
+    bool mUsesGeometry;
+    QSet<QString> mReferencedColumns;
 };
 
 

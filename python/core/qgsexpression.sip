@@ -306,8 +306,6 @@ class QgsExpression
                   int params,
                   const QString& group,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -319,8 +317,6 @@ class QgsExpression
                   int params,
                   const QStringList& groups,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -332,8 +328,6 @@ class QgsExpression
                   const QgsExpression::ParameterList& params,
                   const QString& group,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -345,8 +339,6 @@ class QgsExpression
                   const QgsExpression::ParameterList& params,
                   const QStringList& groups,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -366,8 +358,8 @@ class QgsExpression
         */
         const QgsExpression::ParameterList& parameters() const;
 
-        /** Does this function use a geometry object. */
-        bool usesGeometry() const;
+        //! Does this function use a geometry object.
+        virtual bool usesGeometry( const QgsExpression::NodeFunction* node ) const;
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -382,7 +374,15 @@ class QgsExpression
          */
         bool lazyEval() const;
 
-        virtual QSet<QString> referencedColumns() const;
+        /**
+         * Returns a set of field names which are required for this function.
+         * May contain QgsFeatureRequest::AllAttributes to signal that all
+         * attributes are required.
+         * If in doubt this will return more fields than strictly required.
+         *
+         * @note Added in QGIS 3.0
+         */
+        virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction* node ) const;
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
@@ -622,7 +622,17 @@ class QgsExpression
         //! @note added in QGIS 2.16
         bool hasNamedNodes() const;
 
-        const QList<QgsExpression::Node*>& list();
+        /**
+         * Get a list of all the nodes.
+         */
+        QList<QgsExpression::Node*> list();
+
+        /**
+         * Get the node at position i in the list.
+         *
+         * @note Added in QGIS 3.0
+         */
+        QgsExpression::Node* at( int i );
 
         //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
         //! @note added in QGIS 2.16

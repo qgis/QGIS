@@ -69,10 +69,12 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
     """
     class QgsExpressionFunction(QgsExpression.Function):
 
-        def __init__(self, func, name, args, group, helptext='', usesgeometry=True, referencedColumns=QgsFeatureRequest.AllAttributes, expandargs=False):
-            QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry, referencedColumns)
+        def __init__(self, func, name, args, group, helptext='', usesGeometry=True, referencedColumns=QgsFeatureRequest.AllAttributes, expandargs=False):
+            QgsExpression.Function.__init__(self, name, args, group, helptext)
             self.function = func
             self.expandargs = expandargs
+            self.uses_geometry = usesGeometry
+            self.referenced_columns = referencedColumns
 
         def func(self, values, context, parent):
             feature = None
@@ -88,6 +90,12 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
             except Exception as ex:
                 parent.setEvalErrorString(str(ex))
                 return None
+
+        def usesGeometry(self, node):
+            return self.uses_geometry
+
+        def referencedColumns(self, node):
+            return self.referenced_columns
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
