@@ -67,9 +67,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
   connect( mFollowVisibilityPresetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( followVisibilityPresetSelected( int ) ) );
-  connect( QgsProject::instance()->mapThemeCollection(), SIGNAL( presetsChanged() ),
-           this, SLOT( onPresetsChanged() ) );
-  onPresetsChanged();
+  connect( QgsProject::instance()->mapThemeCollection(), SIGNAL( mapThemesChanged() ),
+           this, SLOT( onMapThemesChanged() ) );
+  onMapThemesChanged();
 
   // keep layers from preset button
   QMenu* menuKeepLayers = new QMenu( this );
@@ -213,7 +213,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
   }
 }
 
-void QgsComposerMapWidget::onPresetsChanged()
+void QgsComposerMapWidget::onMapThemesChanged()
 {
   if ( QStringListModel* model = qobject_cast<QStringListModel*>( mFollowVisibilityPresetCombo->model() ) )
   {
