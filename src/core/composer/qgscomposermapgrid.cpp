@@ -1502,8 +1502,8 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   }
   else if ( mGridAnnotationFormat == CustomFormat )
   {
-    expressionContext.lastScope()->setVariable( "grid_number", value );
-    expressionContext.lastScope()->setVariable( "grid_axis", coord == QgsComposerMapGrid::Longitude ? "x" : "y" );
+    expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "grid_number" ), value, true ) );
+    expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "grid_axis" ), coord == QgsComposerMapGrid::Longitude ? "x" : "y", true ) );
     if ( !mGridAnnotationExpression.data() )
     {
       mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
@@ -2238,8 +2238,8 @@ QgsExpressionContext* QgsComposerMapGrid::createExpressionContext() const
 {
   QgsExpressionContext* context = QgsComposerObject::createExpressionContext();
   context->appendScope( new QgsExpressionContextScope( tr( "Grid" ) ) );
-  context->lastScope()->setVariable( "grid_number", 0 );
-  context->lastScope()->setVariable( "grid_axis", "x" );
+  context->lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "grid_number" ), 0, true ) );
+  context->lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "grid_axis" ), "x", true ) );
   context->setHighlightedVariables( QStringList() << "grid_number" << "grid_axis" );
   return context;
 }
