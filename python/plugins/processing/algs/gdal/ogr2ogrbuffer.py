@@ -111,7 +111,7 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         if field is not None and multi:
             arguments.append('-explodecollections')
 
-        if len(options) > 0:
+        if options is not None and len(options) > 0:
             arguments.append(options)
 
         commands = []

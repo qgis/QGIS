@@ -72,3 +72,17 @@ tests:
           - 'Geometry: Line String'
           - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
 
+  - algorithm: gdalogr:buffervectors
+    name: OGR buffer lines
+    params:
+      DISSOLVEALL: false
+      DISTANCE: '1'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_lines.gml
+        type: vector

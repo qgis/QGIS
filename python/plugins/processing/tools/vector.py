@@ -538,7 +538,6 @@ def ogrConnectionString(uri):
     return '"' + ogrstr + '"'
 
 
-#
 # The uri parameter is an URI from any QGIS provider,
 # so could have different formats.
 # Example formats:
@@ -623,7 +622,7 @@ class VectorWriter(object):
 
         if encoding is None:
             settings = QSettings()
-            encoding = settings.value('/Processing/encoding', 'System', type=str)
+            encoding = settings.value('/Processing/encoding', 'System', str)
 
         if self.destination.startswith(self.MEMORY_LAYER_PREFIX):
             self.isNotFileBased = True
@@ -650,8 +649,6 @@ class VectorWriter(object):
                 QgsCredentials.instance().put(connInfo, user, passwd)
             else:
                 raise GeoAlgorithmExecutionException("Couldn't connect to database")
-            # fix_print_with_import
-            print(uri.uri())
             try:
                 db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
                                    dbname=uri.database(), user=user, passwd=passwd)
@@ -682,8 +679,6 @@ class VectorWriter(object):
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
             uri = QgsDataSourceUri(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
-            # fix_print_with_import
-            print(uri.uri())
             try:
                 db = spatialite.GeoDB(uri=uri)
             except spatialite.DbError as e:
