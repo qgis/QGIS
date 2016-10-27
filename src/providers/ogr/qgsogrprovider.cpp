@@ -677,9 +677,11 @@ QStringList QgsOgrProvider::subLayers() const
       continue;
     }
 
-    if ( !mIsSubLayer && theLayerName == "layer_styles" )
+    if ( !mIsSubLayer && ( theLayerName == "layer_styles" ||
+                           theLayerName == "qgis_projects" ) )
     {
-      // Ignore layer_styles layer
+      // Ignore layer_styles (coming from QGIS styling support) and
+      // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
       continue;
     }
 
