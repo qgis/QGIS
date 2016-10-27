@@ -331,7 +331,8 @@ static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* paren
 
 QgsVectorLayer* getVectorLayer( const QVariant& value, QgsExpression* )
 {
-  QgsVectorLayer* vl = value.value<QgsVectorLayer*>();
+  QgsMapLayer* ml = value.value< QPointer<QgsMapLayer> >().data();
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vl )
   {
     QString layerString = value.toString();
