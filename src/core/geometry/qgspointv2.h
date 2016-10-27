@@ -169,6 +169,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
                     bool transformZ = false ) override;
     void transform( const QTransform& t ) override;
     virtual QgsCoordinateSequenceV2 coordinateSequence() const override;
+    virtual int nCoordinates() const override { return 1; }
     virtual QgsAbstractGeometryV2* boundary() const override;
 
     //low-level editing

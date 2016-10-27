@@ -16,6 +16,7 @@ class QgsMultiPointV2: public QgsGeometryCollectionV2
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QString asJSON( int precision = 17 ) const;
 
+    virtual int nCoordinates() const;
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );

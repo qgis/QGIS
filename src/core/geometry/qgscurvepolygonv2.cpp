@@ -632,6 +632,27 @@ QgsCoordinateSequenceV2 QgsCurvePolygonV2::coordinateSequence() const
   return mCoordinateSequence;
 }
 
+int QgsCurvePolygonV2::nCoordinates() const
+{
+  if ( !mCoordinateSequence.isEmpty() )
+    return QgsAbstractGeometryV2::nCoordinates();
+
+  int count = 0;
+
+  if ( mExteriorRing )
+  {
+    count += mExteriorRing->nCoordinates();
+  }
+
+  QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+  for ( ; it != mInteriorRings.constEnd(); ++it )
+  {
+    count += ( *it )->nCoordinates();
+  }
+
+  return count;
+}
+
 double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )

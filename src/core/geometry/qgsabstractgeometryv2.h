@@ -232,7 +232,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     /** Returns the number of nodes contained in the geometry
      */
-    int nCoordinates() const;
+    virtual int nCoordinates() const;
 
     /** Returns the point corresponding to a specified vertex id
      */
