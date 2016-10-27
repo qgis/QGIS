@@ -27,23 +27,6 @@ tests:
 #        hash: f1fedeb6782f9389cf43590d4c85ada9155ab61fef6dc285aaeb54d6
 #        type: rasterhash
 
-
-  - name: GDAL ogrinfo
-    algorithm: gdalogr:information
-    params:
-      INPUT:
-        name: lines.gml
-        type: vector
-      SUMMARY_ONLY: 'True'
-    results:
-      OUTPUT:
-        name: expected/gdal/vector_info.html
-        type: regex
-        rules:
-          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
-          - 'Geometry: Line String'
-          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
-
   - algorithm: gdalorg:rasterinfo
     name: GDAL gdalinfo
     params:
@@ -60,3 +43,32 @@ tests:
           - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
           - '  NoData Value=-32768'
+
+  - algorithm: gdalogr:polygonize
+    name: GDAL polygonize
+    params:
+      FIELD: DN
+      INPUT:
+        name: raster.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/gdal/polygonize.gml
+        type: vector
+
+  - algorithm: gdalogr:information
+    name: GDAL ogrinfo
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
