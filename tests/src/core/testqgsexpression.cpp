@@ -2172,7 +2172,7 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
 
       QVariantList builderExpected;
-      QCOMPARE( QgsExpression( "array()" ).evaluate( &context ), QVariant( ) );
+      QCOMPARE( QgsExpression( "array()" ).evaluate( &context ), QVariant( builderExpected ) );
       builderExpected << "hello";
       QCOMPARE( QgsExpression( "array('hello')" ).evaluate( &context ), QVariant( builderExpected ) );
       builderExpected << "world";
@@ -2298,7 +2298,7 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
 
       QVariantMap builderExpected;
-      QCOMPARE( QgsExpression( "map()" ).evaluate( &context ), QVariant( ) );
+      QCOMPARE( QgsExpression( "map()" ).evaluate( &context ), QVariant( builderExpected ) );
       builderExpected[QStringLiteral( "1" )] = "hello";
       QCOMPARE( QgsExpression( "map('1', 'hello')" ).evaluate( &context ), QVariant( builderExpected ) );
       builderExpected[QStringLiteral( "2" )] = "world";
