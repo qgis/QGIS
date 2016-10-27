@@ -3395,6 +3395,43 @@ static QVariant fcnArrayIntersect( const QVariantList& values, const QgsExpressi
   return QVariant( false );
 }
 
+static QVariant fcnArrayToString( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList array = getListValue( values.at( 0 ), parent );
+  QString delimiter = getStringValue( values.at( 1 ), parent );
+  QString empty = getStringValue( values.at( 2 ), parent );
+
+  QString str;
+
+  for ( QVariantList::const_iterator it = array.constBegin(); it != array.constEnd(); ++it )
+  {
+    str += ( *it ).toString().isEmpty() == false ? ( *it ).toString() : empty;
+    if ( it != ( array.constEnd() - 1 ) )
+    {
+      str += delimiter;
+    }
+  }
+
+  return QVariant( str );
+}
+
+static QVariant fcnStringToArray( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString delimiter = getStringValue( values.at( 1 ), parent );
+  QString empty = getStringValue( values.at( 2 ), parent );
+
+  QStringList list = str.split( delimiter );
+  QVariantList array;
+
+  for ( QStringList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
+  {
+    array += ( *it ).isEmpty() == false ? *it : empty;
+  }
+
+  return array;
+}
+
 static QVariant fcnMap( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QVariantMap result;
@@ -3778,6 +3815,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "array_remove_all" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayRemoveAll, QStringLiteral( "Arrays" ) )
     << new StaticFunction( QStringLiteral( "array_cat" ), -1, fcnArrayCat, QStringLiteral( "Arrays" ) )
     << new StaticFunction( QStringLiteral( "array_intersect" ), ParameterList() << Parameter( QStringLiteral( "array1" ) ) << Parameter( QStringLiteral( "array2" ) ), fcnArrayIntersect, QStringLiteral( "Arrays" ) )
+    << new StaticFunction( QStringLiteral( "array_to_string" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "delimiter" ), true, "," ) << Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnArrayToString, QStringLiteral( "Arrays" ) )
+    << new StaticFunction( QStringLiteral( "string_to_array" ), ParameterList() << Parameter( QStringLiteral( "string" ) ) << Parameter( QStringLiteral( "delimiter" ), true, "," ) << Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnStringToArray, QStringLiteral( "Arrays" ) )
 
     //functions for maps
     << new StaticFunction( QStringLiteral( "map" ), -1, fcnMap, QStringLiteral( "Maps" ) )
