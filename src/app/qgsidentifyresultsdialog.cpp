@@ -75,6 +75,20 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
 #ifdef QGISDEBUG
   settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
+  page()->setForwardUnsupportedContent( true );
+  connect( page(), SIGNAL( downloadRequested( QNetworkRequest ) ), this, SLOT( download( QNetworkRequest ) ) );
+  connect( page(), SIGNAL( unsupportedContent( QNetworkReply* ) ), this, SLOT( unsupportedContent( QNetworkReply* ) ) );
+
+}
+
+void QgsIdentifyResultsWebView::download( QNetworkRequest request )
+{
+  qDebug() << "Download Requested: " << request.url();
+}
+
+void QgsIdentifyResultsWebView::unsupportedContent( QNetworkReply *reply )
+{
+  qDebug() << "Unsupported Content: " << reply->url();
 }
 
 void QgsIdentifyResultsWebView::print()
@@ -589,6 +603,7 @@ void QgsIdentifyResultsDialog::mapLayerActionDestroyed()
       ++it;
   }
 }
+
 
 QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
     QwtPlot* plot, const QString &title, QColor color )
