@@ -576,6 +576,14 @@ class CORE_EXPORT QgsExpression
          * Functions are non lazy default and will be given the node return value when called **/
         bool lazyEval() const { return mLazyEval; }
 
+        /**
+         * Returns a set of field names which are required for this function.
+         * May contain QgsFeatureRequest::AllAttributes to signal that all
+         * attributes are required.
+         * If in doubt this will return more fields than strictly required.
+         *
+         * @note Added in QGIS 3.0
+         */
         virtual QSet<QString> referencedColumns( const NodeFunction* node ) const;
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
@@ -947,9 +955,16 @@ class CORE_EXPORT QgsExpression
         //! @note added in QGIS 2.16
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
+        /**
+         * Get a list of all the nodes.
+         */
         QList<Node*> list() { return mList; }
 
-        //! Get the node at position i in the list
+        /**
+         * Get the node at position i in the list.
+         *
+         * @note Added in QGIS 3.0
+         */
         Node* at( int i ) { return mList.at( i ); }
 
         //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
