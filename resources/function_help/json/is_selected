@@ -3,8 +3,18 @@
   "type": "function",
   "description": "Returns if a feature is selected. If called with no parameters checks the current feature.",
   "arguments": [
-        {"arg":"feature","description":"The feature which should be checked for selection"},
-        {"arg":"layer","description":"The layer (or its id or name) on which the selection will be checked"}
+        {
+          "arg":"feature",
+          "optional": true,
+          "default": "current feature",
+          "description":"The feature which should be checked for selection."
+        },
+        {
+          "arg": "layer",
+          "optional": true,
+          "default": "current layer",
+          "description": "The layer (or its id or name) on which the selection will be checked."
+        }
   ],
   "examples": [
 	{ "expression":"is_selected()", "returns" : "True if the current feature is selected."},
