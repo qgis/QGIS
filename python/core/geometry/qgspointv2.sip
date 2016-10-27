@@ -156,6 +156,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
+    virtual int nCoordinates() const;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
