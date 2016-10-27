@@ -1355,6 +1355,55 @@ class TestQgsExpression: public QObject
       QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 16 );
     }
 
+    void selection()
+    {
+      QFETCH( QgsFeatureIds, selectedFeatures );
+      QFETCH( QString, expression );
+      QFETCH( QVariant, result );
+      QFETCH( QgsFeature, feature );
+      QFETCH( QgsVectorLayer*, layer );
+
+      QgsExpressionContext context;
+      if ( layer )
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+
+      QgsFeatureIds backupSelection = mMemoryLayer->selectedFeaturesIds();
+      context.setFeature( feature );
+
+      mMemoryLayer->selectByIds( selectedFeatures );
+
+      QgsExpression exp( expression );
+      QCOMPARE( exp.parserErrorString(), QString( "" ) );
+      exp.prepare( &context );
+      QVariant res = exp.evaluate( &context );
+      QCOMPARE( res, result );
+
+      mMemoryLayer->selectByIds( backupSelection );
+    }
+
+    void selection_data()
+    {
+      QTest::addColumn<QString>( "expression" );
+      QTest::addColumn<QgsFeatureIds>( "selectedFeatures" );
+      QTest::addColumn<QgsFeature>( "feature" );
+      QTest::addColumn<QgsVectorLayer*>( "layer" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QgsFeature firstFeature = mMemoryLayer->getFeature( 1 );
+      QgsVectorLayer* noLayer = nullptr;
+
+      QTest::newRow( "empty selection num_selected" ) << "num_selected()" << QgsFeatureIds() << firstFeature << mMemoryLayer << QVariant( 0 );
+      QTest::newRow( "empty selection is_selected" ) << "is_selected()" << QgsFeatureIds() << firstFeature << mMemoryLayer << QVariant( false );
+      QTest::newRow( "two_selected" ) << "num_selected()" << ( QgsFeatureIds() << 1 << 2 ) << firstFeature << mMemoryLayer << QVariant( 2 );
+      QTest::newRow( "is_selected" ) << "is_selected()" << ( QgsFeatureIds() << 1 << 2 ) << firstFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "not_selected" ) << "is_selected()" << ( QgsFeatureIds() << 4 << 2 ) << firstFeature << mMemoryLayer << QVariant( false );
+      QTest::newRow( "no layer num_selected" ) << "num_selected()" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( QVariant::LongLong );
+      QTest::newRow( "no layer is_selected" ) << "is_selected()" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( QVariant::Bool );
+      QTest::newRow( "no layer num_selected" ) << "num_selected()" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( QVariant::LongLong );
+      QTest::newRow( "is_selected with params" ) << "is_selected('test', get_feature('test', 'col1', 10))" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( QVariant::Bool );
+      QTest::newRow( "num_selected with params" ) << "num_selected('test')" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( 2 );
+    }
+
     void layerAggregates()
     {
       QgsExpressionContext context;
