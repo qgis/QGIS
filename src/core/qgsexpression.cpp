@@ -3563,8 +3563,56 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "to_interval" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToInterval, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tointerval" ) )
     << new StaticFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
     << new StaticFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), False, QSet<QString>(), true )
-    << new StaticFunction( QStringLiteral( "aggregate" ), ParameterList() << Parameter( QStringLiteral( "layer" ) ) << Parameter( QStringLiteral( "aggregate" ) ) << Parameter( QStringLiteral( "expression" ) )
-                           << Parameter( QStringLiteral( "filter" ), true ) << Parameter( QStringLiteral( "concatenator" ), true ), fcnAggregate, QStringLiteral( "Aggregates" ), QString(), true, QSet<QString>() << QgsFeatureRequest::AllAttributes, true )
+
+    << new StaticFunction( QStringLiteral( "aggregate" ),
+                           ParameterList()
+                           << Parameter( QStringLiteral( "layer" ) )
+                           << Parameter( QStringLiteral( "aggregate" ) )
+                           << Parameter( QStringLiteral( "expression" ) )
+                           << Parameter( QStringLiteral( "filter" ), true )
+                           << Parameter( QStringLiteral( "concatenator" ), true ),
+                           fcnAggregate,
+                           QStringLiteral( "Aggregates" ),
+                           QString(),
+                           []( const QgsExpression::NodeFunction* node )
+    {
+      // usesGeometry callback: return true if @parent variable is referenced
+
+      if ( !node )
+        return true;
+
+      if ( !node->args() || node->args()->count() < 4 )
+        return false;
+      else
+      {
+        QgsExpression::Node* filterNode = node->args()->at( 3 );
+        QSet<QString> referencedVars = filterNode->referencedVariables();
+        return referencedVars.contains( "parent" ) || referencedVars.contains( QString() );
+      }
+    },
+    []( const QgsExpression::NodeFunction* node )
+    {
+      // referencedColumns callback: return AllAttributes if @parent variable is referenced
+
+      if ( !node )
+        return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+
+      if ( !node->args() || node->args()->count() < 4 )
+        return QSet<QString>();
+      else
+      {
+        QgsExpression::Node* filterNode = node->args()->at( 3 );
+        QSet<QString> referencedVars = filterNode->referencedVariables();
+
+        if ( referencedVars.contains( "parent" ) || referencedVars.contains( QString() ) )
+          return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+        else
+          return QSet<QString>();
+      }
+    },
+    true
+                         )
+
     << new StaticFunction( QStringLiteral( "relation_aggregate" ), ParameterList() << Parameter( QStringLiteral( "relation" ) ) << Parameter( QStringLiteral( "aggregate" ) ) << Parameter( QStringLiteral( "expression" ) ) << Parameter( QStringLiteral( "concatenator" ), true ),
                            fcnAggregateRelation, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>() << QgsFeatureRequest::AllAttributes, true )
 
@@ -4291,14 +4339,14 @@ QSet<QString> QgsExpression::NodeUnaryOperator::referencedVariables() const
   return mOperand->referencedVariables();
 }
 
-QgsExpression::Node*QgsExpression::NodeUnaryOperator::clone() const
+QgsExpression::Node* QgsExpression::NodeUnaryOperator::clone() const
 {
   return new NodeUnaryOperator( mOp, mOperand->clone() );
 }
 
 //
 
-QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const QgsExpressionContext *context )
+QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const QgsExpressionContext* context )
 {
   QVariant vL = mOpLeft->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
@@ -4970,7 +5018,7 @@ QString QgsExpression::NodeFunction::dump() const
 QSet<QString> QgsExpression::NodeFunction::referencedColumns() const
 {
   Function* fd = Functions()[mFnIndex];
-  QSet<QString> functionColumns = fd->referencedColumns();
+  QSet<QString> functionColumns = fd->referencedColumns( this );
 
   if ( !mArgs )
   {
@@ -5005,7 +5053,7 @@ QSet<QString> QgsExpression::NodeFunction::referencedVariables() const
 
 bool QgsExpression::NodeFunction::needsGeometry() const
 {
-  bool needs = Functions()[mFnIndex]->usesGeometry();
+  bool needs = Functions()[mFnIndex]->usesGeometry( this );
   if ( mArgs )
   {
     Q_FOREACH ( Node* n, mArgs->list() )
@@ -5671,10 +5719,47 @@ QSet<QString> QgsExpression::NodeInOperator::referencedVariables() const
   return lst;
 }
 
+bool QgsExpression::Function::usesGeometry( const QgsExpression::NodeFunction* node ) const
+{
+  Q_UNUSED( node )
+  return true;
+}
+
+QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* node ) const
+{
+  Q_UNUSED( node )
+  return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+}
+
 bool QgsExpression::Function::operator==( const QgsExpression::Function& other ) const
 {
   if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
     return true;
 
   return false;
+}
+
+QgsExpression::StaticFunction::StaticFunction( const QString& fnname, const QgsExpression::ParameterList& params, QgsExpression::FcnEval fcn, const QString& group, const QString& helpText, std::function < bool ( const NodeFunction* node ) > usesGeometry, std::function < QSet<QString>( const NodeFunction* node ) > referencedColumns, bool lazyEval, const QStringList& aliases, bool handlesNull )
+    : Function( fnname, params, group, helpText, lazyEval, handlesNull )
+    , mFnc( fcn )
+    , mAliases( aliases )
+    , mUsesGeometryFunc( usesGeometry )
+    , mReferencedColumnsFunc( referencedColumns )
+{
+}
+
+bool QgsExpression::StaticFunction::usesGeometry( const NodeFunction* node ) const
+{
+  if ( mUsesGeometryFunc )
+    return mUsesGeometryFunc( node );
+  else
+    return mUsesGeometry;
+}
+
+QSet<QString> QgsExpression::StaticFunction::referencedColumns( const NodeFunction* node ) const
+{
+  if ( mReferencedColumnsFunc )
+    return mReferencedColumnsFunc( node );
+  else
+    return mReferencedColumns;
 }

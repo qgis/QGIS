@@ -1596,6 +1596,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "case 1" ) << "case when $area > 0 then 1 end" << true;
       QTest::newRow( "case 2" ) << "case when 1 then $area end" << true;
       QTest::newRow( "case 3" ) << "case when 1 then 0 else $area end" << true;
+      QTest::newRow( "aggregate with parent" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\", filter:=intersects(geometry(@parent), make_point(1, 1)))" << true;
+      QTest::newRow( "aggregate without parent" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\", filter:=\"c\" = 2)" << false;
     }
 
     void needs_geometry()
