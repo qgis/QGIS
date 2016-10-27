@@ -171,7 +171,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
     def populateFields(self):
         if self.layer is None:
             return
-        
+
         self.mExistingFieldComboBox.clear()
         fields = self.layer.pendingFields()
         for f in fields:
