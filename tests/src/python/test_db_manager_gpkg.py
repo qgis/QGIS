@@ -127,7 +127,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         table = tables[0]
         self.assertEqual(table.name, 'testLayer')
         info = table.info()
-        expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>1&nbsp;</td></tr></table></div></div><div class="section"><h2>GeoPackage</h2><div><table><tr><td>Column:&nbsp;</td><td>geom&nbsp;</td></tr><tr><td>Geometry:&nbsp;</td><td>LINE STRING&nbsp;</td></tr><tr><td>Dimension:&nbsp;</td><td>XY&nbsp;</td></tr><tr><td>Spatial ref:&nbsp;</td><td>Undefined (-1)&nbsp;</td></tr><tr><td>Extent:&nbsp;</td><td>1.00000, 2.00000 - 3.00000, 4.00000&nbsp;</td></tr></table><p><warning> No spatial index defined (<a href="action:spatialindex/create">create it</a>)</p></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">fid&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>geom&nbsp;</td><td>LINESTRING&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>2&nbsp;</td><td>text_field&nbsp;</td><td>TEXT&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr></table></div></div>"""
+        expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>1&nbsp;</td></tr></table></div></div><div class="section"><h2>GeoPackage</h2><div><table><tr><td>Column:&nbsp;</td><td>geom&nbsp;</td></tr><tr><td>Geometry:&nbsp;</td><td>LINESTRING&nbsp;</td></tr><tr><td>Dimension:&nbsp;</td><td>XY&nbsp;</td></tr><tr><td>Spatial ref:&nbsp;</td><td>Undefined (-1)&nbsp;</td></tr><tr><td>Extent:&nbsp;</td><td>1.00000, 2.00000 - 3.00000, 4.00000&nbsp;</td></tr></table><p><warning> No spatial index defined (<a href="action:spatialindex/create">create it</a>)</p></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">fid&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>geom&nbsp;</td><td>LINESTRING&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>2&nbsp;</td><td>text_field&nbsp;</td><td>TEXT&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr></table></div></div>"""
         self.assertEqual(info.toHtml(), expected_html, info.toHtml())
 
         connection.remove()
@@ -386,6 +386,46 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         info = table.info()
         expected_html = """<div class="section"><h2>General info</h2><div><table><tr><td>Relation type:&nbsp;</td><td>Table&nbsp;</td></tr><tr><td>Rows:&nbsp;</td><td>1&nbsp;</td></tr></table></div></div><div class="section"><h2>Fields</h2><div><table class="header"><tr><th>#&nbsp;</th><th>Name&nbsp;</th><th>Type&nbsp;</th><th>Null&nbsp;</th><th>Default&nbsp;</th></tr><tr><td>0&nbsp;</td><td class="underline">fid&nbsp;</td><td>INTEGER&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr><tr><td>1&nbsp;</td><td>text_field&nbsp;</td><td>TEXT&nbsp;</td><td>Y&nbsp;</td><td>&nbsp;</td></tr></table></div></div>"""
         self.assertEqual(info.toHtml(), expected_html, info.toHtml())
+
+        connection.remove()
+
+    def testAllGeometryTypes(self):
+
+        connection_name = 'testAllGeometryTypes'
+        plugin = createDbPlugin('gpkg')
+        uri = QgsDataSourceURI()
+
+        test_gpkg = os.path.join(self.basetestpath, 'testAllGeometryTypes.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(test_gpkg)
+        ds.CreateLayer('testPoint', geom_type=ogr.wkbPoint)
+        ds.CreateLayer('testLineString', geom_type=ogr.wkbLineString)
+        ds.CreateLayer('testPolygon', geom_type=ogr.wkbPolygon)
+        ds.CreateLayer('testMultiPoint', geom_type=ogr.wkbMultiPoint)
+        ds.CreateLayer('testMultiLineString', geom_type=ogr.wkbMultiLineString)
+        ds.CreateLayer('testMultiPolygon', geom_type=ogr.wkbMultiPolygon)
+        ds.CreateLayer('testGeometryCollection', geom_type=ogr.wkbGeometryCollection)
+
+        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(2, 0, 0):
+            ds.CreateLayer('testCircularString', geom_type=ogr.wkbCircularString)
+            ds.CreateLayer('testCompoundCurve', geom_type=ogr.wkbCompoundCurve)
+            ds.CreateLayer('testCurvePolygon', geom_type=ogr.wkbCurvePolygon)
+            ds.CreateLayer('testMultiCurve', geom_type=ogr.wkbMultiCurve)
+            ds.CreateLayer('testMultiSurface', geom_type=ogr.wkbMultiSurface)
+        ds = None
+
+        uri.setDatabase(test_gpkg)
+        self.assertTrue(plugin.addConnection(connection_name, uri))
+
+        connection = createDbPlugin('gpkg', connection_name)
+        connection.connect()
+
+        db = connection.database()
+        self.assertIsNotNone(db)
+
+        tables = db.tables()
+        for i in range(len(tables)):
+            table = tables[i]
+            info = table.info()
 
         connection.remove()
 

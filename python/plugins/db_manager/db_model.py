@@ -254,9 +254,9 @@ class TableItem(TreeItem):
             if geom_type is not None:
                 if geom_type.find('POINT') != -1:
                     return self.layerPointIcon
-                elif geom_type.find('LINESTRING') != -1:
+                elif geom_type.find('LINESTRING') != -1 or geom_type in ('CIRCULARSTRING', 'COMPOUNDCURVE', 'MULTICURVE'):
                     return self.layerLineIcon
-                elif geom_type.find('POLYGON') != -1:
+                elif geom_type.find('POLYGON') != -1 or geom_type == 'MULTISURFACE':
                     return self.layerPolygonIcon
                 return self.layerUnknownIcon
 

@@ -299,7 +299,31 @@ class GPKGDBConnector(DBConnector):
                 geomtype_flatten = ogr.GT_Flatten(geomtype)
             else:
                 geomtype_flatten = geomtype
-            geomname = ogr.GeometryTypeToName(geomtype_flatten).upper()
+            if geomtype_flatten == ogr.wkbPoint:
+                geomname = 'POINT'
+            elif geomtype_flatten == ogr.wkbLineString:
+                geomname = 'LINESTRING'
+            elif geomtype_flatten == ogr.wkbPolygon:
+                geomname = 'POLYGON'
+            elif geomtype_flatten == ogr.wkbMultiPoint:
+                geomname = 'MULTIPOINT'
+            elif geomtype_flatten == ogr.wkbMultiLineString:
+                geomname = 'MULTILINESTRING'
+            elif geomtype_flatten == ogr.wkbMultiPolygon:
+                geomname = 'MULTIPOLYGON'
+            elif geomtype_flatten == ogr.wkbGeometryCollection:
+                geomname = 'GEOMETRYCOLLECTION'
+            if self.gdal2:
+                if geomtype_flatten == ogr.wkbCircularString:
+                    geomname = 'CIRCULARSTRING'
+                elif geomtype_flatten == ogr.wkbCompoundCurve:
+                    geomname = 'COMPOUNDCURVE'
+                elif geomtype_flatten == ogr.wkbCurvePolygon:
+                    geomname = 'CURVEPOLYGON'
+                elif geomtype_flatten == ogr.wkbMultiCurve:
+                    geomname = 'MULTICURVE'
+                elif geomtype_flatten == ogr.wkbMultiSurface:
+                    geomname = 'MULTISURFACE'
             geomdim = 'XY'
             if hasattr(ogr, 'GT_HasZ') and ogr.GT_HasZ(lyr.GetGeomType()):
                 geomdim += 'Z'
