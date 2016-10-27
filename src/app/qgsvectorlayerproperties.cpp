@@ -181,7 +181,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                       this, SLOT( loadStyleMenuTriggered( QAction * ) ) );
 
     //for saving
-    mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( mLayer->providerType() ) );
+    QString providerName = mLayer->providerType();
+    if ( providerName == "ogr" )
+    {
+      providerName = mLayer->dataProvider()->storageType();
+      if ( providerName == "GPKG" )
+        providerName = "GeoPackage";
+    }
+    mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
   }
 
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
