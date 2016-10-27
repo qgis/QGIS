@@ -67,7 +67,7 @@ void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultV
 {
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
-  actionScope->setVariable( "current_field", feat.attribute( defaultValueIndex ) );
+  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "current_field" ), feat.attribute( defaultValueIndex ), true ) );
   context << actionScope;
   doAction( index, feat, context );
 }

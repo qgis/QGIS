@@ -195,7 +195,7 @@ void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
 bool QgsConditionalStyle::matches( const QVariant& value, QgsExpressionContext& context ) const
 {
   QgsExpression exp( mRule );
-  context.lastScope()->setVariable( "value", value );
+  context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "value" ), value, true ) );
   return exp.evaluate( &context ).toBool();
 }
 

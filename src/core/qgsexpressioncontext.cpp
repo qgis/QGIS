@@ -193,12 +193,12 @@ void QgsExpressionContextScope::addFunction( const QString& name, QgsScopedExpre
 
 void QgsExpressionContextScope::setFeature( const QgsFeature &feature )
 {
-  setVariable( QgsExpressionContext::EXPR_FEATURE, QVariant::fromValue( feature ) );
+  addVariable( StaticVariable( QgsExpressionContext::EXPR_FEATURE, QVariant::fromValue( feature ), true ) );
 }
 
 void QgsExpressionContextScope::setFields( const QgsFields &fields )
 {
-  setVariable( QgsExpressionContext::EXPR_FIELDS, QVariant::fromValue( fields ) );
+  addVariable( StaticVariable( QgsExpressionContext::EXPR_FIELDS, QVariant::fromValue( fields ), true ) );
 }
 
 

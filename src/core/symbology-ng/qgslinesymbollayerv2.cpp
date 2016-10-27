@@ -1010,7 +1010,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
-      scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum );
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
       mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
       c = 1; // reset c (if wasn't 1 already)
     }
@@ -1044,7 +1044,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
   QgsExpressionContextScope* scope = new QgsExpressionContextScope();
   context.renderContext().expressionContext().appendScope( scope );
-  scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size(), true ) );
 
   double offsetAlongLine = mOffsetAlongLine;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET_ALONG_LINE ) )
@@ -1071,7 +1071,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     int pointNum = 0;
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
-      scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum );
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
       if (( placement == Vertex && vId.type == QgsVertexId::SegmentVertex )
           || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
@@ -1137,7 +1137,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   int pointNum = 0;
   for ( ; i < maxCount; ++i )
   {
-    scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
     if ( isRing && placement == Vertex && i == points.count() - 1 )
     {

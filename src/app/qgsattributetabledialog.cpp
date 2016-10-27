@@ -58,7 +58,7 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   if ( layer )
     expContext << QgsExpressionContextUtils::layerScope( layer );
 
-  expContext.lastScope()->setVariable( "row_number", 1 );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "row_number" ), 1, true ) );
 
   expContext.setHighlightedVariables( QStringList() << "row_number" );
 
@@ -472,7 +472,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
     }
 
     context.setFeature( feature );
-    context.lastScope()->setVariable( QString( "row_number" ), rownum );
+    context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QString( "row_number" ), rownum, true ) );
 
     QVariant value = exp.evaluate( &context );
     fld.convertCompatible( value );
