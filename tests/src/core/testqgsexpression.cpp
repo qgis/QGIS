@@ -859,6 +859,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
       QTest::newRow( "concat function single" ) << "concat('a')" << false << QVariant( "a" );
       QTest::newRow( "concat function with NULL" ) << "concat(NULL,'a','b')" << false << QVariant( "ab" );
+      QTest::newRow( "array_to_string" ) << "array_to_string(array(1,2,3),',')" << false << QVariant( "1,2,3" );
+      QTest::newRow( "array_to_string with custom empty value" ) << "array_to_string(array(1,'',3),',','*')" << false << QVariant( "1,*,3" );
+      QTest::newRow( "array_to_string fail passing non-array" ) << "array_to_string('non-array',',')" << true << QVariant();
 
       //fuzzy matching
       QTest::newRow( "levenshtein" ) << "levenshtein('kitten','sitting')" << false << QVariant( 3 );
@@ -2180,8 +2183,10 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "array()" ).evaluate( &context ), QVariant( ) );
       builderExpected << "hello";
       QCOMPARE( QgsExpression( "array('hello')" ).evaluate( &context ), QVariant( builderExpected ) );
+      QCOMPARE( QgsExpression( "string_to_array('hello',',')" ).evaluate( &context ), QVariant( builderExpected ) );
       builderExpected << "world";
       QCOMPARE( QgsExpression( "array('hello', 'world')" ).evaluate( &context ), QVariant( builderExpected ) );
+      QCOMPARE( QgsExpression( "string_to_array('hello,world',',')" ).evaluate( &context ), QVariant( builderExpected ) );
 
       QCOMPARE( QgsExpression( "array_length(\"strings\")" ).evaluate( &context ), QVariant( 2 ) );
 
