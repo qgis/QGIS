@@ -116,7 +116,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void followVisibilityPresetSelected( int currentIndex );
     void keepLayersVisibilityPresetSelected();
 
-    void onPresetsChanged();
+    void onMapThemesChanged();
 
     void updateOverviewFrameStyleFromWidget();
     void cleanUpOverviewFrameStyleSelector( QgsPanelWidget* container );
