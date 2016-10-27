@@ -3,7 +3,12 @@
   "type": "function",
   "description": "Returns the number of selected features on a given layer. By default works on the layer on which the expression is evaluated.",
   "arguments": [
-        {"arg":"layer","description":"The layer (or its id or name) on which the selection will be checked"}
+        {
+          "arg": "layer",
+          "optional": true,
+          "default": "current layer",
+          "description": "The layer (or its id or name) on which the selection will be checked."
+        }
   ],
   "examples": [
 	{ "expression":"num_selected()", "returns":"The number of selected features on the current layer."},
