@@ -324,7 +324,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
           }
         }
         // new labeling engine
-        if ( mContext.labelingEngineV2() )
+        if ( mContext.labelingEngineV2() && ( mLabelProvider || mDiagramProvider ) )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
           QgsSymbolV2List symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
