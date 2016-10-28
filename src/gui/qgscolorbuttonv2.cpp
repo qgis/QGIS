@@ -400,6 +400,7 @@ void QgsColorButtonV2::panelAccepted( QgsPanelWidget* widget )
   if ( QgsCompoundColorWidget* colorWidget = qobject_cast< QgsCompoundColorWidget* >( widget ) )
   {
     addRecentColor( colorWidget->color() );
+    colorWidget->deleteLater();
   }
 }
 
