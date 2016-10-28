@@ -97,9 +97,16 @@ void QgsColorButton::showColorDialog()
   QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color(), QgsCompoundColorWidget::LayoutVertical );
+    QColor currentColor = color();
+    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( mColorDialogTitle );
     colorWidget->setAllowAlpha( mAllowAlpha );
+
+    if ( currentColor.isValid() )
+    {
+      colorWidget->setPreviousColor( currentColor );
+    }
+
     connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( setValidTemporaryColor( QColor ) ) );
     panel->openPanel( colorWidget );
     return;
