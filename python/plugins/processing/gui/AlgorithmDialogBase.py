@@ -64,9 +64,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.setWindowTitle(self.alg.displayName())
 
-        #~ desktop = QDesktopWidget()
-        #~ if desktop.physicalDpiX() > 96:
-        #~ self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+        # ~ desktop = QDesktopWidget()
+        # ~ if desktop.physicalDpiX() > 96:
+        # ~ self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
         algHelp = self.alg.shortHelp()
         if algHelp is None:
@@ -139,6 +139,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnClose.setEnabled(True)
 
     def setInfo(self, msg, error=False):
+        msg = msg.replace("<", "&lt;").replace(">", "&gt;")
         if error:
             self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
         else:
