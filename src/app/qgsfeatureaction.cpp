@@ -100,7 +100,9 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
 
   QgsAttributeDialog *dialog = newDialog( true );
   dialog->setHighlight( h );
-  dialog->show(); // will also delete the dialog on close (show() is overridden)
+  // delete the dialog when it is closed
+  dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->show();
 
   return true;
 }
@@ -110,22 +112,27 @@ bool QgsFeatureAction::editFeature( bool showModal )
   if ( !mLayer )
     return false;
 
-  QgsAttributeDialog *dialog = newDialog( false );
-
-  if ( !mFeature->isValid() )
-    dialog->setMode( QgsAttributeForm::AddFeatureMode );
-
   if ( showModal )
   {
-    dialog->setAttribute( Qt::WA_DeleteOnClose );
-    int rv = dialog->exec();
+    QScopedPointer<QgsAttributeDialog> dialog( newDialog( false ) );
 
+    if ( !mFeature->isValid() )
+      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+
+    int rv = dialog->exec();
     mFeature->setAttributes( dialog->feature()->attributes() );
     return rv;
   }
   else
   {
-    dialog->show(); // will also delete the dialog on close (show() is overridden)
+    QgsAttributeDialog* dialog = newDialog( false );
+
+    if ( !mFeature->isValid() )
+      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+
+    // delete the dialog when it is closed
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
+    dialog->show();
   }
 
   return true;
@@ -205,6 +212,8 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   else
   {
     QgsAttributeDialog *dialog = newDialog( false );
+    // delete the dialog when it is closed
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->setMode( QgsAttributeForm::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
@@ -213,12 +222,11 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     if ( !showModal )
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
-      dialog->show(); // will also delete the dialog on close (show() is overridden)
+      dialog->show();
       mFeature = nullptr;
       return true;
     }
 
-    dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->exec();
   }
 

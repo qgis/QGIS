@@ -81,11 +81,8 @@ void QgsAttributeDialog::accept()
   QDialog::accept();
 }
 
-void QgsAttributeDialog::show( bool autoDelete )
+void QgsAttributeDialog::show()
 {
-  if ( autoDelete )
-    setAttribute( Qt::WA_DeleteOnClose );
-
   QDialog::show();
   raise();
   activateWindow();
