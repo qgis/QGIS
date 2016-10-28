@@ -183,7 +183,7 @@ class CORE_EXPORT QWebPage : public QObject
 
   signals:
 
-   void loadFinished( bool ok );
+    void loadFinished( bool ok );
 
   public slots:
 
