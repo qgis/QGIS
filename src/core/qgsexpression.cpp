@@ -3404,6 +3404,24 @@ static QVariant fcnArrayIntersect( const QVariantList& values, const QgsExpressi
   return QVariant( false );
 }
 
+
+static QVariant fcnArrayDistinct( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList array = getListValue( values.at( 0 ), parent );
+
+  QVariantList distinct;
+
+  for ( QVariantList::const_iterator it = array.constBegin(); it != array.constEnd(); ++it )
+  {
+    if ( !distinct.contains( *it ) )
+    {
+      distinct += ( *it );
+    }
+  }
+
+  return distinct;
+}
+
 static QVariant fcnArrayToString( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QVariantList array = getListValue( values.at( 0 ), parent );
@@ -3872,6 +3890,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "array_remove_all" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayRemoveAll, QStringLiteral( "Arrays" ) )
     << new StaticFunction( QStringLiteral( "array_cat" ), -1, fcnArrayCat, QStringLiteral( "Arrays" ) )
     << new StaticFunction( QStringLiteral( "array_intersect" ), ParameterList() << Parameter( QStringLiteral( "array1" ) ) << Parameter( QStringLiteral( "array2" ) ), fcnArrayIntersect, QStringLiteral( "Arrays" ) )
+    << new StaticFunction( QStringLiteral( "array_distinct" ), 1, fcnArrayDistinct, QStringLiteral( "Arrays" ) )
     << new StaticFunction( QStringLiteral( "array_to_string" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "delimiter" ), true, "," ) << Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnArrayToString, QStringLiteral( "Arrays" ) )
     << new StaticFunction( QStringLiteral( "string_to_array" ), ParameterList() << Parameter( QStringLiteral( "string" ) ) << Parameter( QStringLiteral( "delimiter" ), true, "," ) << Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnStringToArray, QStringLiteral( "Arrays" ) )
 
