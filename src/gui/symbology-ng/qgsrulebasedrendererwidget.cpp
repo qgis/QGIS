@@ -180,7 +180,6 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex& index )
   QgsRuleBasedRenderer::Rule* rule = mModel->ruleForIndex( index );
 
   QgsRendererRulePropsWidget* widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
-  widget->setDockMode( true );
   widget->setPanelTitle( tr( "Edit rule" ) );
   connect( widget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( ruleWidgetPanelAccepted( QgsPanelWidget* ) ) );
   connect( widget, SIGNAL( widgetChanged() ), this, SLOT( liveUpdateRuleFromPanel() ) );
@@ -817,7 +816,7 @@ void QgsRendererRulePropsWidget::apply()
 void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
-  mSymbolSelector->setDockMode( true );
+  mSymbolSelector->setDockMode( dockMode );
 }
 
 ////////
