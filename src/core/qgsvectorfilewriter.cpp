@@ -1897,6 +1897,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         // OGR_F_SetFieldInteger64( poFeature, ogrField, attrValue.toLongLong() );
         // break;
       case QVariant::String:
+         printf( "-I-> QgsVectorFileWriter::createFeature  value[%s]\n", mCodec->fromUnicode( attrValue.toString() ).constData() );
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
 #else

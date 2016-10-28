@@ -288,53 +288,19 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             # Points
             vl_test_geom = QgsVectorLayer(u'{}|layerid=1|layername=test1|featurescount=1|geometrytype=Point25D|ogrgettype=0'.format(datasource), u'test_pointz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'POINT Z\' EWKT[%s] count[%d]' % ('SRID=4326;POINT(1 2 3)',vl_test_geom.featureCount()))
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'POINT Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POINT(1 2 3)',vl_test_geom.featureCount(),len(features_vl_test)))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
             # self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointZ)
             self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z()), (1,2,3))
             del test_geom
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=2|layername=test2|featurescount=1|geometrytype=PointM|ogrgettype=0'.format(datasource), u'test_pointm', u'ogr')
-            self.assertTrue(vl_test_geom.isValid())
-            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
-            print('-I-> Testing type/values of a \'POINT M\' EWKT[%s] count[%d] HasGeometryType[%d]' % ('SRID=4326;POINTM(1 2 3)',vl_test_geom.featureCount(), vl_test_geom.hasGeometryType()))
-            test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                print('-I-> Using version of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
-                # build gdal.1 running with gdal 1: -I-> Sublayer[2] : [2:test2:1:Point:0]
-                self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
-                self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,0))
-            else:
-                # build gdal.1+2 running with gdal 2: -I-> Sublayer[2] : [2:test2:1:PointM:0]
-                self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
-                self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,3))
-            del test_geom
-            del features_vl_test
-            del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=3|layername=test3|featurescount=1|geometrytype=PointZM|ogrgettype=0'.format(datasource), u'test_pointzm', u'ogr')
-            self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'POINT ZM\' EWKT[%s] count[%d]' % ('SRID=4326;POINT(1 2 3 4)',vl_test_geom.featureCount()))
-            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
-            test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                print('-I-> Using version of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
-                # build gdal.1 running with gdal 1: I-> Sublayer[3] : [3:test3:1:Point25D:0]
-                self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
-                self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,0))
-            else:
-                # build gdal.1+2 running with gdal 2: -I-> Sublayer[3] : [3:test3:1:PointZM:0]
-                self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
-                self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,4))
-            del test_geom
-            del features_vl_test
-            del vl_test_geom
             # MultiPoints
             vl_test_geom = QgsVectorLayer(u'{}|layerid=22|layername=test22|featurescount=1|geometrytype=MultiPoint25D|ogrgettype=0'.format(datasource), u'test_multipointz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'MULTIPOINT Z\' EWKT[%s] count[%d]' % ('SRID=4326;MULTIPOINT(1 2 3,4 5 6)',vl_test_geom.featureCount()))
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'MULTIPOINT Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;MULTIPOINT(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
             count_features=len(features_vl_test)
             print('-I-> count_features[%d]' % (count_features))
             #test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
@@ -354,8 +320,8 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             # Linestrings
             vl_test_geom = QgsVectorLayer(u'{}|layerid=8|layername=test8|featurescount=1|geometrytype=LineString25D|ogrgettype=0'.format(datasource), u'test_linestringz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'LINESTRING Z\' EWKT[%s] count[%d]' % ('SRID=4326;LINESTRING(1 2 3,4 5 6)',vl_test_geom.featureCount()))
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'LINESTRING Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRING(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
             self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineString25D)
             self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),
@@ -364,50 +330,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del test_geom
             del features_vl_test
             del vl_test_geom
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=10|layername=test10|featurescount=1|geometrytype=LineStringM|ogrgettype=0'.format(datasource), u'test_linestringm', u'ogr')
-            self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'LINESTRING M\' EWKT[%s] count[%d]' % ('SRID=4326;LINESTRINGM(1 2 3,4 5 6)',vl_test_geom.featureCount()))
-            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
-            test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                print('-I-> Using version of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
-                # build gdal.1 running with gdal 1:  -I-> Sublayer[10] : [10:test10:1:LineString:0]
-                self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
-                self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
-                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
-                                        (1,2,0,4,5,0))
-            else:
-                # build gdal.1+2 running with gdal 2: -I-> Sublayer[10] : [10:test10:1:LineStringM:0]
-                self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
-                self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
-                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
-                                        (1,2,3,4,5,6))
-            vl_test_geom = QgsVectorLayer(u'{}|layerid=12|layername=test12|featurescount=1|geometrytype=LineStringZM|ogrgettype=0'.format(datasource), u'test_linestringm', u'ogr')
-            self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'LINESTRING ZM\' EWKT[%s] count[%d]' % ('SRID=4326;LINESTRING(1 2 3 4,5 6 7 8)',vl_test_geom.featureCount()))
-            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
-            test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                print('-I-> Using version of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
-                # build gdal.1 running with gdal: 1 -I-> Sublayer[12] : [12:test12:1:LineString25D:0]
-                self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
-                self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
-                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z(),test_geom.pointN(1).m()),
-                                        (1,2,3,0,5,6,7,0))
-            else:
-                # build gdal.1+2 running with gdal 2: -I-> Sublayer[12] : [12:test12:1:LineStringZM:0]
-                self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
-                self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
-                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z(),test_geom.pointN(1).m()),
-                                        (1,2,3,4,5,6,7,8))
-            del test_geom
-            del features_vl_test
-            del vl_test_geom
             # Polygons
             vl_test_geom = QgsVectorLayer(u'{}|layerid=16|layername=test16|featurescount=1|geometrytype=Polygon25D|ogrgettype=0'.format(datasource), u'test_polygonz', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
-            print('-I-> Testing type/values of a \'POLYGON Z\' EWKT[%s] count[%d]' % ('SRID=4326;POLYGON((1 2 10,1 3 -10,2 3 20,2 2 -20,1 2 10))',vl_test_geom.featureCount()))
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'POLYGON Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POLYGON((1 2 10,1 3 -10,2 3 20,2 2 -20,1 2 10))',vl_test_geom.featureCount(),len(features_vl_test)))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
             self.assertEqual(test_geom.wkbType(), QgsWKBTypes.Polygon25D)
             self.assertEqual((test_geom.exteriorRing().pointN(0).x(), test_geom.exteriorRing().pointN(0).y(),test_geom.exteriorRing().pointN(0).z(),
@@ -417,6 +344,98 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                                          test_geom.exteriorRing().pointN(4).x(), test_geom.exteriorRing().pointN(4).y(),test_geom.exteriorRing().pointN(4).z()),
                                         (1,2,10,1,3,-10,2,3,20,2,2,-20,1,2,10))
             del test_geom
+            del features_vl_test
+            del vl_test_geom
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=2|layername=test2|featurescount=1|geometrytype=PointM|ogrgettype=0'.format(datasource), u'test_pointm', u'ogr')
+            self.assertTrue(vl_test_geom.isValid())
+            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'POINT M\' EWKT[%s] count[%d,%d] HasGeometryType[%d]' % ('SRID=4326;POINTM(1 2 3)',vl_test_geom.featureCount(),len(features_vl_test) , vl_test_geom.hasGeometryType()))
+            # pprint(getmembers(features_vl_test))
+            if (len(features_vl_test) > 0):
+                test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
+                if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
+                    print('-I-> Using version [build gdal.2.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    # build gdal.1 running with gdal 1: -I-> Sublayer[2] : [2:test2:1:Point:0]
+                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
+                    self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,0))
+                else:
+                    # build gdal.1+2 running with gdal 2: -I-> Sublayer[2] : [2:test2:1:PointM:0]
+                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
+                    self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,3))
+                del test_geom
+            else:
+             print('-I-> Using version [build gdal.1.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+
+            del features_vl_test
+            del vl_test_geom
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=3|layername=test3|featurescount=1|geometrytype=PointZM|ogrgettype=0'.format(datasource), u'test_pointzm', u'ogr')
+            self.assertTrue(vl_test_geom.isValid())
+            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'POINT ZM\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POINT(1 2 3 4)',vl_test_geom.featureCount(),len(features_vl_test)))
+            if (len(features_vl_test) > 0):
+                test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
+                if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
+                    print('-I-> Using version [build gdal.2.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    # build gdal.1 running with gdal 1: I-> Sublayer[3] : [3:test3:1:Point25D:0]
+                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
+                    self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,0))
+                else:
+                    # build gdal.1+2 running with gdal 2: -I-> Sublayer[3] : [3:test3:1:PointZM:0]
+                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
+                    self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,4))
+                del test_geom
+            else:
+             print('-I-> Using version [build gdal.1.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+
+            del features_vl_test
+            del vl_test_geom
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=10|layername=test10|featurescount=1|geometrytype=LineStringM|ogrgettype=0'.format(datasource), u'test_linestringm', u'ogr')
+            self.assertTrue(vl_test_geom.isValid())
+            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'LINESTRING M\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRINGM(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
+            if (len(features_vl_test) > 0):
+                test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
+                if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
+                    print('-I-> Using version [build gdal.2.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    # build gdal.1 running with gdal 1:  -I-> Sublayer[10] : [10:test10:1:LineString:0]
+                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
+                    self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
+                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
+                                        (1,2,0,4,5,0))
+                else:
+                    # build gdal.1+2 running with gdal 2: -I-> Sublayer[10] : [10:test10:1:LineStringM:0]
+                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
+                    self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
+                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
+                                        (1,2,3,4,5,6))
+            else:
+             print('-I-> Using version [build gdal.1.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+
+            del features_vl_test
+            del vl_test_geom
+            vl_test_geom = QgsVectorLayer(u'{}|layerid=12|layername=test12|featurescount=1|geometrytype=LineStringZM|ogrgettype=0'.format(datasource), u'test_linestringm', u'ogr')
+            self.assertTrue(vl_test_geom.isValid())
+            features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
+            print('-I-> Testing type/values of a \'LINESTRING ZM\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRING(1 2 3 4,5 6 7 8)',vl_test_geom.featureCount(),len(features_vl_test)))
+            if (len(features_vl_test) > 0):
+                test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
+                if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
+                    print('-I-> Using version [build gdal.2.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    # build gdal.1 running with gdal: 1 -I-> Sublayer[12] : [12:test12:1:LineString25D:0]
+                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
+                    self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
+                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z(),test_geom.pointN(1).m()),
+                                        (1,2,3,0,5,6,7,0))
+                else:
+                    # build gdal.1+2 running with gdal 2: -I-> Sublayer[12] : [12:test12:1:LineStringZM:0]
+                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
+                    self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
+                                         test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z(),test_geom.pointN(1).m()),
+                                        (1,2,3,4,5,6,7,8))
+                del test_geom
+            else:
+             print('-I-> Using version [build gdal.1.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+
             del features_vl_test
             del vl_test_geom
             test_geom = None
@@ -666,8 +685,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
 ###############################################################################
 # Test sqlite Integer64
-# - created [as 'sqlite_test.db']  and filled  with gdal autotest/auto/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
-# contains 7 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
+# - created [as 'sqlite_test.db']  and filled  with gdal autotest/ogr/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
+# contains 13 tables, 7 layers (skipping: geometry_columns, spatial_ref_sys, a_layer, wgs84layer, wgs84layer_approx, testtypes)
+# Table 'tpoly' contains 2 fields with BIGINT (Integer64) which will be tested
 
     def test_05_OgrInteger64(self):
         self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
@@ -690,9 +710,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             for index in range(count_fields):
                 print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_tpoly.fields()[index].name(), vl_layer_tpoly.fields()[index].typeName()))
 
-            # Integer64 [Max-Integer32: 2147483647] 
+            # Integer64 [Max-Integer32: 2147483647]  1234567890123/2147483647=574,890473251 ; 2147483647*0.890473251=1912276744,613426397
             gdal_2_value=1234567890123
+            gdal_2_value_update=1851851835185
             gdal_1_value=1912276171
+            max_integer_32=2147483647
             print('-I-> Retrieving record 7 of layername[%s], checking returned area and int64 test values [%2.3f,%ld]' % ('tpoly',268597.625, gdal_2_value))
             got = [(f.attribute('ogc_fid'), f.attribute('area'), f.attribute('int64')) for f in vl_layer_tpoly.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 7"))]
             if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
@@ -700,6 +722,18 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             else:
                 print('-I-> Using version of gdal/ogr[%d], result will be [%d] instead of [%ld].' % (self.gdal_version_num,gdal_1_value,gdal_2_value))
                 self.assertEqual(got, [(7, 268597.625, gdal_1_value)])
+
+            self.assertTrue(vl_layer_tpoly.startEditing())
+            self.assertTrue(vl_layer_tpoly.dataProvider().changeAttributeValues({8: {5: gdal_2_value_update}}))
+            # self.assertTrue(vl_positions_1955.commitChanges())
+            got = [(f.attribute('ogc_fid'), f.attribute('area'), f.attribute('int64')) for f in vl_layer_tpoly.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 8"))]
+            if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
+                self.assertEqual(got, [(8, 1634833.375, gdal_2_value_update)])
+            else:
+                print('-I-> Using version of gdal/ogr[%d], result will be [%d] instead of [%ld].' % (self.gdal_version_num,720930609,gdal_2_value_update))
+                self.assertEqual(got, [(8, 1634833.375, 720930609)])
+
+            vl_layer_tpoly.rollBack(True)
 
 
 if __name__ == '__main__':
