@@ -130,9 +130,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
   public slots:
     void accept() override;
 
-    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
-    //! closed.
-    void show( bool autoDelete = true );
+    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form
+    void show();
 
   private:
     void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context );
