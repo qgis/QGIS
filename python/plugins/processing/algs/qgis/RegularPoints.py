@@ -65,7 +65,7 @@ class RegularPoints(GeoAlgorithm):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.SPACING,
-                                          self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
+                                          self.tr('Point spacing/count'), 100, 999999999.999999999, 100))
         self.addParameter(ParameterNumber(self.INSET,
                                           self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
         self.addParameter(ParameterBoolean(self.RANDOMIZE,
