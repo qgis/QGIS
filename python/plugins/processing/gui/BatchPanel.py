@@ -347,13 +347,7 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setCellWidget(row, column, item)
 
     def removeRows(self):
-        # ~ self.tblParameters.setUpdatesEnabled(False)
-        # ~ indexes = self.tblParameters.selectionModel().selectedIndexes()
-        # ~ indexes.sort()
-        # ~ for i in reversed(indexes):
-            # ~ self.tblParameters.model().removeRow(i.row())
-        # ~ self.tblParameters.setUpdatesEnabled(True)
-        if self.tblParameters.rowCount() > 2:
+        if self.tblParameters.rowCount() > 1:
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
 
     def fillParameterValues(self, column):
