@@ -2983,7 +2983,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
             QString crsType = result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "type" ) ).toString();
             QString crsText;
             if ( crsType == QLatin1String( "name" ) )
-              crsText = result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "name" ) ).toString();
+              crsText = result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "properties" ) ).property( QStringLiteral( "name" ) ).toString();
             else if ( crsType == QLatin1String( "EPSG" ) )
               crsText = QStringLiteral( "%1:%2" ).arg( crsType, result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "properties" ) ).property( QStringLiteral( "code" ) ).toString() );
             else
@@ -3080,6 +3080,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         catch ( const QString &err )
         {
           QgsDebugMsg( QString( "JSON error: %1\nResult: %2" ).arg( err, QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) ) ) );
+          results.insert( results.size(), err );  // string returned for format type "feature" means error
         }
 
         results.insert( results.size(), qVariantFromValue( featureStoreList ) );
