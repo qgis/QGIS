@@ -862,6 +862,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_to_string" ) << "array_to_string(array(1,2,3),',')" << false << QVariant( "1,2,3" );
       QTest::newRow( "array_to_string with custom empty value" ) << "array_to_string(array(1,'',3),',','*')" << false << QVariant( "1,*,3" );
       QTest::newRow( "array_to_string fail passing non-array" ) << "array_to_string('non-array',',')" << true << QVariant();
+      QTest::newRow( "array_unique" ) << "array_to_string(array_distinct(array('hello','world','world','hello')))" << false << QVariant( "hello,world" );
+      QTest::newRow( "array_unique fail passing non-array" ) << "array_distinct('non-array')" << true << QVariant();
 
       //fuzzy matching
       QTest::newRow( "levenshtein" ) << "levenshtein('kitten','sitting')" << false << QVariant( 3 );
