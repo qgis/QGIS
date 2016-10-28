@@ -56,6 +56,7 @@ from .VectorGridPolygons import VectorGridPolygons
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .ExtractByLocation import ExtractByLocation
+from .ExtractByExpression import ExtractByExpression
 from .PointsInPolygon import PointsInPolygon
 from .PointsInPolygonUnique import PointsInPolygonUnique
 from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -231,7 +232,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ReliefAuto(), ZonalStatisticsQgis(),
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
-                        RemoveNullGeometry()
+                        RemoveNullGeometry(), ExtractByExpression()
                         ]
 
         if hasMatplotlib:

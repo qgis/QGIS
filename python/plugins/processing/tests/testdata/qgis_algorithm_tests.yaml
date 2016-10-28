@@ -1213,3 +1213,15 @@ tests:
       OUTPUT_LAYER:
         name: expected/remove_null_polys.gml
         type: vector
+
+  - algorithm: qgis:extractbyexpression
+    name: Extract by Expression
+    params:
+      EXPRESSION: left( "Name",1)='A'
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_expression.gml
+        type: vector

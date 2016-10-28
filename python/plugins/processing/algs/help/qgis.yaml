@@ -159,10 +159,15 @@ qgis:exportaddgeometrycolumns: >
   Depending on the geometry type of the vector layer, the attributes added to the table will be different.
 
 qgis:extractbyattribute: >
-  This algorithms creates new vector layer that only contain certain features from an input layer. The criteria for adding features to the resulting layer is defined based on the values of an attribute from the input layer.
+  This algorithms creates a new vector layer that only contains matching features from an input layer. The criteria for adding features to the resulting layer is defined based on the values of an attribute from the input layer.
+
+qgis:extractbyexpression: >
+  This algorithms creates a new vector layer that only contains matching features from an input layer. The criteria for adding features to the resulting layer is based on a QGIS expression.
+
+  For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
 qgis:extractbylocation: >
-  This algorithms creates new vector layer that only contain certain features from an input layer. The criteria for adding features to the resulting layer is defined based on the spatial relationship between each feature and the features in an additional layer.
+  This algorithms creates a new vector layer that only contains matching features from an input layer. The criteria for adding features to the resulting layer is defined based on the spatial relationship between each feature and the features in an additional layer.
 
 qgis:extractnodes: >
   This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
@@ -419,7 +424,7 @@ qgis:selectbyattributesum:
 qgis:selectbyexpression: >
   This algorithms creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
-  For more information about expressions see the<a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
+  For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
 
 qgis:selectbylocation: >
