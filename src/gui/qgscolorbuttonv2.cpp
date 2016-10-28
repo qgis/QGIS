@@ -94,12 +94,19 @@ const QPixmap& QgsColorButtonV2::transparentBackground()
 
 void QgsColorButtonV2::showColorDialog()
 {
+  QColor currentColor = color();
   if ( QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color(), panel->dockMode() ? QgsCompoundColorWidget::LayoutVertical :
+    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, currentColor, panel->dockMode() ? QgsCompoundColorWidget::LayoutVertical :
         QgsCompoundColorWidget::LayoutDefault );
     colorWidget->setPanelTitle( mColorDialogTitle );
     colorWidget->setAllowAlpha( mAllowAlpha );
+
+    if ( currentColor.isValid() )
+    {
+      colorWidget->setPreviousColor( currentColor );
+    }
+
     connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( setValidTemporaryColor( QColor ) ) );
     connect( colorWidget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( panelAccepted( QgsPanelWidget* ) ) );
     panel->openPanel( colorWidget );
