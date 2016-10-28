@@ -1082,9 +1082,27 @@ tests:
         hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
         type: rasterhash
 
+  # Case 1: Keep all fields
   - algorithm: qgis:lineintersections
-    name: Line Intersection
+    name: Line Intersection Keep All Fields from Both
     params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: simplify_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection.gml
+        type: vector
+  
+  # Case 2: Keep fid field from both layers
+  - algorithm: qgis:lineintersections
+    name: Line Intersection Keep fid from Both
+    params:
+      FIELD_A: fid
+      FIELD_B: fid
       INPUT_A:
         name: lines.gml
         type: vector

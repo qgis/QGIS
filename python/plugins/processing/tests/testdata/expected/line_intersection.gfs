@@ -2,6 +2,7 @@
   <GMLFeatureClass>
     <Name>line_intersection</Name>
     <ElementPath>line_intersection</ElementPath>
+    <!--POINT-->
     <GeometryType>1</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
@@ -11,5 +12,10 @@
       <ExtentYMin>-0.22085</ExtentYMin>
       <ExtentYMax>3.22098</ExtentYMax>
     </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>fid_1</Name>
+      <ElementPath>fid_1</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>
