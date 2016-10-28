@@ -1027,7 +1027,7 @@ static QVariant fcnFeature( const QVariantList&, const QgsExpressionContext* con
   if ( !context )
     return QVariant();
 
-  return context->feature();
+  return context->variable( QgsExpressionContext::EXPR_FEATURE );
 }
 static QVariant fcnAttribute( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
