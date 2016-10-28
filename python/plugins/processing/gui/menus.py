@@ -19,13 +19,13 @@ vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'qgis:sumlinelengths': analysisToolsMenu,
-                           'qgis:pointsinpolygon': analysisToolsMenu,
+                           'qgis:countpointsinpolygon': analysisToolsMenu,
                            'qgis:listuniquevalues': analysisToolsMenu,
                            'qgis:basicstatisticsfornumericfields': analysisToolsMenu,
                            'qgis:basicstatisticsfortextfields': analysisToolsMenu,
                            'qgis:nearestneighbouranalysis': analysisToolsMenu,
                            'qgis:meancoordinates': analysisToolsMenu,
-                           'qgis:lineintersecions': analysisToolsMenu})
+                           'qgis:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
 defaultMenuEntries.update({'qgis:randomselection': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,
