@@ -682,8 +682,8 @@ static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionCon
   {
     QString cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter );
 
-    QgsExpression subExp( subExpression );
-    if ( subExp.referencedVariables().contains( "parent" ) || subExp.referencedVariables().contains( QString() ) )
+    QgsExpression filterExp( parameters.filter );
+    if ( filterExp.referencedVariables().contains( "parent" ) || filterExp.referencedVariables().contains( QString() ) )
     {
       cacheKey += ':' + qHash( context->feature() );
     }
@@ -5106,7 +5106,19 @@ QSet<QString> QgsExpression::NodeFunction::referencedVariables() const
     return QSet<QString>() << QString();
   }
   else
-    return QSet<QString>();
+  {
+    QSet<QString> functionVariables = QSet<QString>();
+
+    if ( !mArgs )
+      return functionVariables;
+
+    Q_FOREACH ( Node* n, mArgs->list() )
+    {
+      functionVariables.unite( n->referencedVariables() );
+    }
+
+    return functionVariables;
+  }
 }
 
 bool QgsExpression::NodeFunction::needsGeometry() const

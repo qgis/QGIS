@@ -1571,6 +1571,17 @@ class TestQgsExpression: public QObject
       QCOMPARE( refColsSet, expectedCols );
     }
 
+    void referenced_variables()
+    {
+      QSet<QString> expectedVars;
+      expectedVars << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) << QStringLiteral( "ppp" ) << QStringLiteral( "qqq" ) << QStringLiteral( "rrr" );
+      QgsExpression exp( QStringLiteral( "CASE WHEN intersects(@bar, $geometry) THEN @ppp ELSE @qqq * @rrr END + @foo IN (1, 2, 3)" ) );
+      QCOMPARE( exp.hasParserError(), false );
+      QSet<QString> refVar = exp.referencedVariables();
+
+      QCOMPARE( refVar, expectedVars );
+    }
+
     void referenced_columns_all_attributes()
     {
       QgsExpression exp( QStringLiteral( "attribute($currentfeature,'test')" ) );
