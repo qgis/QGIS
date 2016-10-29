@@ -1,0 +1,10 @@
+{
+  "name": "extend",
+  "type": "function",
+  "description": "Extends the start and end of a linestring geometry by a specified amount. Lines are extended using the bearing of the first and last segment in the line. Distances are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geometry","description":"a (multi)linestring geometry"},
+                 {"arg":"start_distance","description":"distance to extend the start of the line"},
+                 {"arg":"end_distance","description":"distance to extend the end of the line."}],
+  "examples": [ { "expression":"geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2))", "returns":"LineString (-1 0, 1 0, 1 3)"}]
+}
+

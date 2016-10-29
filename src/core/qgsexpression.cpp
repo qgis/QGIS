@@ -2460,6 +2460,17 @@ static QVariant fcnSingleSidedBuffer( const QVariantList& values, const QgsExpre
   return result;
 }
 
+static QVariant fcnExtend( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double distStart = getDoubleValue( values.at( 1 ), parent );
+  double distEnd = getDoubleValue( values.at( 2 ), parent );
+
+  QgsGeometry geom = fGeom.extendLine( distStart, distEnd );
+  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnTranslate( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -3791,6 +3802,10 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
                            << Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
                            << Parameter( QStringLiteral( "mitre_limit" ), true, 2.0 ),
                            fcnSingleSidedBuffer, QStringLiteral( "GeometryGroup" ) )
+    << new StaticFunction( QStringLiteral( "extend" ), ParameterList() << Parameter( QStringLiteral( "geometry" ) )
+                           << Parameter( QStringLiteral( "start_distance" ) )
+                           << Parameter( QStringLiteral( "end_distance" ) ),
+                           fcnExtend, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "centroid" ), 1, fcnCentroid, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "point_on_surface" ), 1, fcnPointOnSurface, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "reverse" ), 1, fcnReverse, QStringLiteral( "GeometryGroup" ) )
