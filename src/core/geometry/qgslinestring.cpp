@@ -583,6 +583,32 @@ QgsAbstractGeometry* QgsLineString::toCurveType() const
   return compoundCurve;
 }
 
+void QgsLineString::extend( double startDistance, double endDistance )
+{
+  if ( mX.size() < 2 || mY.size() < 2 )
+    return;
+
+  // start of line
+  if ( startDistance > 0 )
+  {
+    double currentLen = sqrt( qPow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
+                              qPow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
+    double newLen = currentLen + startDistance;
+    mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
+    mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
+  }
+  // end of line
+  if ( endDistance > 0 )
+  {
+    int last = mX.size() - 1;
+    double currentLen = sqrt( qPow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
+                              qPow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
+    double newLen = currentLen + endDistance;
+    mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
+    mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
+  }
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

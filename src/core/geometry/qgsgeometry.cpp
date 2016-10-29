@@ -1452,6 +1452,45 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
   }
 }
 
+QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
+{
+  if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.extendLine( startDistance, endDistance );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( & result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsLineString* line = dynamic_cast< QgsLineString* >( d->geometry );
+    if ( !line )
+      return QgsGeometry();
+
+    QgsLineString* newLine = line->clone();
+    newLine->extend( startDistance, endDistance );
+    return QgsGeometry( newLine );
+  }
+}
+
 QgsGeometry QgsGeometry::simplify( double tolerance ) const
 {
   if ( !d->geometry )

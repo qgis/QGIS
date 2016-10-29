@@ -558,6 +558,14 @@ class CORE_EXPORT QgsGeometry
                                    JoinStyle joinStyle = JoinStyleRound,
                                    double mitreLimit = 2.0 ) const;
 
+    /**
+     * Extends a (multi)line geometry by extrapolating out the start or end of the line
+     * by a specified distance. Lines are extended using the bearing of the first or last
+     * segment in the line.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry extendLine( double startDistance, double endDistance ) const;
+
     //! Returns a simplified version of this geometry using a specified tolerance value
     QgsGeometry simplify( double tolerance ) const;
 

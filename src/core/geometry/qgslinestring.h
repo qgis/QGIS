@@ -120,6 +120,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const override;
 
+    /**
+     * Extends the line geometry by extrapolating out the start or end of the line
+     * by a specified distance. Lines are extended using the bearing of the first or last
+     * segment in the line.
+     * @note added in QGIS 3.0
+     */
+    void extend( double startDistance, double endDistance );
+
     //reimplemented methods
 
     virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
