@@ -607,7 +607,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   smInstance = this;
   mProfiler = QgsRuntimeProfiler::instance();
-
+  QGis::ogrRuntimeSupport();
   namSetup();
 
   // load GUI: actions, menus, toolbars
@@ -3424,8 +3424,8 @@ void QgisApp::about()
 
     versionString += "</tr><tr>";
 
-    versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
-    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
+    versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + QGis::GDAL_BUILD_VERSION + "</td>";
+    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + QGis::GDAL_RUNTIME_VERSION + "</td>";
 
     versionString += "</tr><tr>";
 

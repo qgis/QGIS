@@ -17,7 +17,7 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes, QgsFeatureRequest
+from qgis.core import QGis, QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes, QgsFeatureRequest
 from qgis.PyQt.QtCore import QDate
 from qgis.testing import (
     start_app,
@@ -62,11 +62,27 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
     ogr_spatialview_changegeonetries=0
     gdal_version_num=0
     gdal_build_num=0
+    gdal_build_version=""
+
+    def setUp(self):
+        """Run before each test."""
+        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
+        try:
+            QGis.GDAL_BUILD_VERSION
+        except AttributeError:
+            self.gdal_build_num = self.gdal_version_num
+            self.gdal_build_version = gdal.VersionInfo('VERSION_NUM')
+        else:
+            self.gdal_build_version = QGis.GDAL_BUILD_VERSION
+            self.gdal_build_num = (QGis.GDAL_BUILD_VERSION_MAJOR*1000000)+(QGis.GDAL_BUILD_VERSION_MINOR*10000)+(QGis.GDAL_BUILD_VERSION_REV*100)
+
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%d,%s]' % (self.gdal_version_num, self.gdal_build_num,self.gdal_build_version))
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        
+
+      
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
         cls.dirs_to_cleanup = [cls.basetestpath]
@@ -85,11 +101,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 #
 
     def test_00_OgrSpatialiteViewsWritable(self):
-        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
-        # TODO: retrieve GDAL_RELEASE_NAME at build time
-        self.gdal_build_num = 1110200
+        
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-            print('-I-> Using version of gdal/ogr[%d]' % (self.gdal_version_num))
+            print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s] ' % (self.gdal_version_num, self.gdal_build_version))
             print('-W-> Note: when qgis is compiled with gdal 2.*\n\tthe application may be killed with: \'symbol lookup error\'\n\t\t undefined symbol: OGR_GT_HasM \n')
             print('-W-> Note: when qgis is compiled with gdal 2.*\n\ttpython-scripts may fail with: \' libqgis_core.so.2.17.0:\'')
             print('\t\t undefined symbol: OGR_F_GetFieldAsInteger64\n\t\t undefined symbol: OGR_F_SetFieldInteger64\n\t\t undefined symbol: OGR_G_ExportToIsoWkb \n')
@@ -148,7 +162,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> SpatialView(%s) contains 3 rows and TRIGGERs for INSERT, UPDATE and DELETE[%d] with [%d] rows' % ('positions_1999',self.ogr_spatialview_delete,vl_positions_1999.featureCount()))
 
         if (self.ogr_spatialview_insert and self.ogr_spatialview_update and self.ogr_spatialview_delete):
-            print('-I-> This version of gdal/ogr[%d] supports writable SpatialViews.' % (self.gdal_version_num))
+            print('-I-> This version of gdal/ogr[%d] qgis built with gdal[%s] supports writable SpatialViews.' % (self.gdal_version_num))
             print('-I-> Can SpatialView(%s) SelectAtId[%d] ChangeGeometries[%d]' % ('positions_1999',self.ogr_spatialview_selectatid,self.ogr_spatialview_changegeonetries))
             caps = vl_positions_1925.dataProvider().capabilities()
             self.assertTrue(caps & QgsVectorDataProvider.EditingCapabilities)
@@ -182,10 +196,10 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             # vl_positions_1999.rollBack(True)
             print('-I-> SpatialView(%s) should now again show 2: [%d] rows' % ('positions_1955',vl_positions_1955.featureCount()))
         else:
-           print('-W-> This version of gdal/ogr[%d] does not support writable SpatialViews.' % (self.gdal_version_num))
+           print('-W-> This version of gdal/ogr[%d] qgis built with gdal[%s] does not support writable SpatialViews.' % (self.gdal_version_num, self.gdal_build_version))
 
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-            print('-I-> Using version of gdal/ogr[%d]\n\t Note: this test has not failed. ' % (self.gdal_version_num))
+            print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s]\n\t Note: this test has not failed. ' % (self.gdal_version_num, self.gdal_build_version))
 
         # Should delete the retrieved layers
         del vl_positions
@@ -194,18 +208,17 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         del vl_positions_1999
 
 ###############################################################################
-# Test spatialite SpatialTable with more than 1 geometry
+# Test Spatialite SpatialTable with more than 1 geometry
 # - created with gdal autotest/auto/ogr_sql_sqlite.py spatialite_8()
 # contains 1 SpatialTable with 2 geometries and 2 SpatialViews showing each geometry
 
     def test_01_OgrSpatialTableMultipleGeometries(self):
-        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_8_2_geometries.sqlite')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spatialite_8 = QgsVectorLayer(u'{}'.format(datasource), u'spatialite_8', u'ogr')
         self.assertTrue(vl_spatialite_8.isValid())
         count_layers=len(vl_spatialite_8.dataProvider().subLayers())
-        print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
         for index in range(count_layers):
             if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0) and count_layers == 5 and index == 0):
                 # Sublayer[0] : [0:test:1:Point] ; should be : [0:test(geom1):1:Point]
@@ -267,18 +280,17 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_view_linestring
 
 ###############################################################################
-# Test spatialite SpatialTables with XYZM values
+# Test Spatialite SpatialTables with XYZM values
 # - created with gdal autotest/auto/ogr_sql_sqlite.py spatialite_5()
 # contains 47 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
 
     def test_02_OgrSpatialTableXYZM(self):
-        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_5_ZM.sqlite')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spatialite_5 = QgsVectorLayer(u'{}'.format(datasource), u'spatialite_5', u'ogr')
         self.assertTrue(vl_spatialite_5.isValid())
         count_layers=len(vl_spatialite_5.dataProvider().subLayers())
-        print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
         for index in range(count_layers):
                 print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_spatialite_5.dataProvider().subLayers()[index]))
 
@@ -354,7 +366,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (len(features_vl_test) > 0):
                 test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                    print('-I-> Using version [build gdal.2.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    print('-I-> Using version [build gdal %s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
                     # build gdal.1 running with gdal 1: -I-> Sublayer[2] : [2:test2:1:Point:0]
                     self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,0))
@@ -364,7 +376,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,3))
                 del test_geom
             else:
-             print('-I-> Using version [build gdal.1.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+             print('-I-> Using version [build gdal %s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
@@ -375,7 +387,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (len(features_vl_test) > 0):
                 test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                    print('-I-> Using version [build gdal.2.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
                     # build gdal.1 running with gdal 1: I-> Sublayer[3] : [3:test3:1:Point25D:0]
                     self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,0))
@@ -385,7 +397,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,4))
                 del test_geom
             else:
-             print('-I-> Using version [build gdal.1.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+             print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
@@ -396,7 +408,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (len(features_vl_test) > 0):
                 test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                    print('-I-> Using version [build gdal.2.*] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
                     # build gdal.1 running with gdal 1:  -I-> Sublayer[10] : [10:test10:1:LineString:0]
                     self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
@@ -409,7 +421,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
                                         (1,2,3,4,5,6))
             else:
-             print('-I-> Using version [build gdal.1.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+             print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
@@ -420,7 +432,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (len(features_vl_test) > 0):
                 test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                    print('-I-> Using version [build gdal.2.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+                    print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
                     # build gdal.1 running with gdal: 1 -I-> Sublayer[12] : [12:test12:1:LineString25D:0]
                     self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
@@ -434,7 +446,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                                         (1,2,3,4,5,6,7,8))
                 del test_geom
             else:
-             print('-I-> Using version [build gdal.1.*]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_version_num))
+             print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
@@ -452,13 +464,12 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # --> 7+6=13 Polygons and 4 InternalRings
 
     def test_03_OgrGMLMutiPolygon(self):
-        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.ogr_bezirk_Spandau_1938.3068.gml')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spandau_1938 = QgsVectorLayer(u'{}'.format(datasource), u'spandau_1938', u'ogr')
         self.assertTrue(vl_spandau_1938.isValid())
         count_layers=len(vl_spandau_1938.dataProvider().subLayers())
-        print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
         for index in range(count_layers):
                 print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_spandau_1938.dataProvider().subLayers()[index]))
 
@@ -618,14 +629,13 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # 
 
     def test_04_OgrKMLDuplicatelayerNames(self):
-        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.qgis_bugreport_15168.zk.kmz')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_bugreport_15168 = QgsVectorLayer(u'{}'.format(datasource), u'bugreport_15168', u'ogr')
         self.assertTrue(vl_bugreport_15168.isValid())
         count_layers=len(vl_bugreport_15168.dataProvider().subLayers())
-        print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
-        # Note: when using 'ctest', the unicode chinese charaters will cause the script to fail
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
+        # Note: when using 'ctest', the unicode chinese characters will cause the script to fail
         # for index in range(count_layers):
         #        print(u'-I-> Sublayer[{0}] : [{1}]'.format(index,vl_bugreport_15168.dataProvider().subLayers()[index]))
 
@@ -685,18 +695,17 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
 ###############################################################################
 # Test sqlite Integer64
-# - created [as 'sqlite_test.db']  and filled  with gdal autotest/ogr/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
+# - created [as 'sqlite_test.db'] and filled with gdal autotest/ogr/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
 # contains 13 tables, 7 layers (skipping: geometry_columns, spatial_ref_sys, a_layer, wgs84layer, wgs84layer_approx, testtypes)
 # Table 'tpoly' contains 2 fields with BIGINT (Integer64) which will be tested
 
     def test_05_OgrInteger64(self):
-        self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_sqlite_test.db')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_sqlite_test = QgsVectorLayer(u'{}'.format(datasource), u'sqlite_test', u'ogr')
         self.assertTrue(vl_sqlite_test.isValid())
         count_layers=len(vl_sqlite_test.dataProvider().subLayers())
-        print('-I-> Using version of gdal/ogr[%d], [%d] layers were found.' % (self.gdal_version_num,count_layers))
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
         for index in range(count_layers):
                 print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_sqlite_test.dataProvider().subLayers()[index]))
 
@@ -720,7 +729,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
                 self.assertEqual(got, [(7, 268597.625, gdal_2_value)])
             else:
-                print('-I-> Using version of gdal/ogr[%d], result will be [%d] instead of [%ld].' % (self.gdal_version_num,gdal_1_value,gdal_2_value))
+                print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], result will be [%d] instead of [%ld].' % (self.gdal_version_num, self.gdal_build_version,gdal_1_value,gdal_2_value))
                 self.assertEqual(got, [(7, 268597.625, gdal_1_value)])
 
             self.assertTrue(vl_layer_tpoly.startEditing())
@@ -730,7 +739,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
                 self.assertEqual(got, [(8, 1634833.375, gdal_2_value_update)])
             else:
-                print('-I-> Using version of gdal/ogr[%d], result will be [%d] instead of [%ld].' % (self.gdal_version_num,720930609,gdal_2_value_update))
+                print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], result will be [%d] instead of [%ld].' % (self.gdal_version_num, self.gdal_build_version,720930609,gdal_2_value_update))
                 self.assertEqual(got, [(8, 1634833.375, 720930609)])
 
             vl_layer_tpoly.rollBack(True)

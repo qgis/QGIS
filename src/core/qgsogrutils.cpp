@@ -30,11 +30,6 @@
 #define FROM8(x) QString::fromLocal8Bit(x)
 #endif
 
-static int mGdalVersionMajor = GDAL_VERSION_MAJOR;
-static int mGdalVersionMinor = GDAL_VERSION_MINOR;
-static int mGdalVersionRevision = GDAL_VERSION_REV;
-static QString GDAL_VERSION_RUNTIME = QString::null;
-
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fields, QTextCodec* encoding )
 {
   QgsFeature feature;
@@ -114,22 +109,6 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
 
 QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields& fields, int attIndex, QTextCodec* encoding , bool* ok )
 {
-  if ( GDAL_VERSION_RUNTIME.isNull() )
-  { // do this only once
-    GDAL_VERSION_RUNTIME = QString( "%1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) );
-    // Remove non-numeric characters (with the excetion of '.') : '2.2.0dev' to '2.2.0'
-    QString s_GdalVersionInfo = GDAL_VERSION_RUNTIME;
-    s_GdalVersionInfo.remove( QRegExp( QString::fromUtf8( "[-`~!@#$%^&*()_—+=|:;<>«»,?/{a-zA-Z}\'\"\\[\\]\\\\]" ) ) );
-    QStringList sa_split = s_GdalVersionInfo.split( '.' );
-    if ( sa_split.size() > 0 )
-    { // setting gdal-runtime version
-      mGdalVersionMajor = sa_split[0].toInt();
-      if ( sa_split.size() > 1 )
-        mGdalVersionMinor = sa_split[1].toInt();
-      if ( sa_split.size() > 2 )
-        mGdalVersionRevision = sa_split[2].toInt();
-    }
-  }
   if ( !ogrFet || attIndex < 0 || attIndex >= fields.count() )
   {
     if ( ok )
@@ -170,7 +149,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
-        switch ( mGdalVersionMajor )
+        switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
         { // when called with gdal 1.*: ImportError: ../lib/libqgis_core.so.2.19.0: undefined symbol: OGR_F_GetFieldAsInteger64
           case 1:
           default:
@@ -178,7 +157,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
             QVariant value_double=QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
             value=value_double.toLongLong(&b_ok);
             // value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
-            printf( "-I-> QgsOgrUtils::getOgrFeatureAttribute gdal[%d,%d,%d,%s] value[%s] value_double[%s]\n", mGdalVersionMajor, mGdalVersionMinor, mGdalVersionRevision, GDAL_VERSION_RUNTIME.toLocal8Bit().constData(), value.toString().toLocal8Bit().constData(), value_double.toString().toLocal8Bit().constData() );
+            printf( "-I-> QgsOgrUtils::getOgrFeatureAttribute gdal[%d,%d,%d,%s] value[%s] value_double[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), value.toString().toLocal8Bit().constData(), value_double.toString().toLocal8Bit().constData() );
            break;
           }
         break;

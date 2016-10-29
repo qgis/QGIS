@@ -50,6 +50,24 @@ class CORE_EXPORT QGis
     static QString QGIS_RELEASE_NAME;
     // The development version
     static const char* QGIS_DEV_VERSION;
+    // Gdal Version string at build/compile time
+    static QString GDAL_BUILD_VERSION;
+    static const int GDAL_BUILD_VERSION_MAJOR;
+    static const int GDAL_BUILD_VERSION_MINOR;
+    static const int GDAL_BUILD_VERSION_REV;
+    // Gdal Version string runtime
+    static QString GDAL_RUNTIME_VERSION;
+    static int GDAL_RUNTIME_VERSION_MAJOR;
+    static int GDAL_RUNTIME_VERSION_MINOR;
+    static int GDAL_RUNTIME_VERSION_REV;
+    static int GDAL_OGR_RUNTIME_SUPPORTED;
+    static int GDAL_RASTER_RUNTIME_SUPPORTED;
+
+    /** Set, when needed, the gdal Runtime Version
+     * Determin if the runtime version should be supported
+     * @returns true if QgsOgrProvider supports the runtime Version of gdal/ogr
+     */
+    static bool ogrRuntimeSupport();
 
     // Enumerations
     //

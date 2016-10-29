@@ -48,6 +48,18 @@ const int QGis::QGIS_VERSION_INT = VERSION_INT;
 // Release name
 QString QGis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
 
+// Gdal Version string at build/compile time
+QString QGis::GDAL_BUILD_VERSION( QString::fromUtf8( GDAL_RELEASE_NAME ) );
+const int QGis::GDAL_BUILD_VERSION_MAJOR = GDAL_VERSION_MAJOR;
+const int QGis::GDAL_BUILD_VERSION_MINOR = GDAL_VERSION_MINOR;
+const int QGis::GDAL_BUILD_VERSION_REV = GDAL_VERSION_REV;
+QString QGis::GDAL_RUNTIME_VERSION = QString::null;
+int QGis::GDAL_RUNTIME_VERSION_MAJOR = -1;
+int QGis::GDAL_RUNTIME_VERSION_MINOR = -1;
+int QGis::GDAL_RUNTIME_VERSION_REV = -1;
+int QGis::GDAL_OGR_RUNTIME_SUPPORTED=0;
+int QGis::GDAL_RASTER_RUNTIME_SUPPORTED=0;
+
 #if GDAL_VERSION_NUM >= 1800
 const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
 #else
@@ -102,6 +114,35 @@ const char* QGis::qgisUnitTypes[] =
   QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
   QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
 };
+
+bool QGis::ogrRuntimeSupport()
+{
+  if ( QGis::GDAL_RUNTIME_VERSION.isNull() )
+  { // do this only once
+    QGis::GDAL_RUNTIME_VERSION = QString( "%1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) );
+    // Remove non-numeric characters (with the excetion of '.') : '2.2.0dev' to '2.2.0'
+    QString s_GdalVersionInfo = QGis::GDAL_RUNTIME_VERSION;
+    s_GdalVersionInfo.remove( QRegExp( QString::fromUtf8( "[-`~!@#$%^&*()_—+=|:;<>«»,?/{a-zA-Z}\'\"\\[\\]\\\\]" ) ) );
+    QStringList sa_split = s_GdalVersionInfo.split( '.' );
+    if ( sa_split.size() > 0 )
+    { // setting gdal-runtime version
+      QGis::GDAL_RUNTIME_VERSION_MAJOR = sa_split[0].toInt();
+      if ( sa_split.size() > 1 )
+        QGis::GDAL_RUNTIME_VERSION_MINOR = sa_split[1].toInt();
+      if ( sa_split.size() > 2 )
+        QGis::GDAL_RUNTIME_VERSION_REV = sa_split[2].toInt();
+    }
+    if (QGis::GDAL_RUNTIME_VERSION_MAJOR >= 1)
+    { // For QGIS 3.*: set mininmal gdal to 2
+       QGis::GDAL_OGR_RUNTIME_SUPPORTED=1;
+    }
+    if (QGis::GDAL_RUNTIME_VERSION_MAJOR >= 1)
+    { // For QGIS 3.*: this can remain 1
+       QGis::GDAL_RASTER_RUNTIME_SUPPORTED=1;
+    }
+  }
+  return (bool)QGis::GDAL_OGR_RUNTIME_SUPPORTED;
+}
 
 QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )
 {

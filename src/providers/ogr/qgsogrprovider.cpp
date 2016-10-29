@@ -66,11 +66,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDALVersionInfo( "RELEASE_NAME" )
   + ')';
 
-static int mGdalVersionMajor = GDAL_VERSION_MAJOR;
-static int mGdalVersionMinor = GDAL_VERSION_MINOR;
-static int mGdalVersionRevision = GDAL_VERSION_REV;
-static QString GDAL_VERSION_RUNTIME = QString::null;
-
 class QgsCPLErrorHandler
 {
     static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
@@ -103,7 +98,7 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
   {
     case QVariant::LongLong:
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-      switch ( mGdalVersionMajor )
+      switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
       {
         case 1:
           ogrType = OFTString;
@@ -310,6 +305,10 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , mUpdateModeStackDepth( 0 )
     , mCapabilities( 0 )
 {
+  mOgrGetType = -1;
+  mSubLayerString = QString::null;
+  if ( !QGis::ogrRuntimeSupport() )
+    return;
   QgsApplication::registerOgrDrivers();
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
 // https://www.qgis.org/en/site/getinvolved/development/qgisdevelopersguide/codingstandards.html
@@ -333,25 +332,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 // this has been compiled with gdal-version < 2.0
 // - but when it is running with >= 2.0, the 1.* functions must be used
 #endif
-  if ( GDAL_VERSION_RUNTIME.isNull() )
-  { // do this only once
-    GDAL_VERSION_RUNTIME = QString( "%1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) );
-    // Remove non-numeric characters (with the excetion of '.') : '2.2.0dev' to '2.2.0'
-    QString s_GdalVersionInfo = GDAL_VERSION_RUNTIME;
-    s_GdalVersionInfo.remove( QRegExp( QString::fromUtf8( "[-`~!@#$%^&*()_—+=|:;<>«»,?/{a-zA-Z}\'\"\\[\\]\\\\]" ) ) );
-    QStringList sa_split = s_GdalVersionInfo.split( '.' );
-    if ( sa_split.size() > 0 )
-    { // setting gdal-runtime version
-      mGdalVersionMajor = sa_split[0].toInt();
-      if ( sa_split.size() > 1 )
-        mGdalVersionMinor = sa_split[1].toInt();
-      if ( sa_split.size() > 2 )
-        mGdalVersionRevision = sa_split[2].toInt();
-    }
-  }
-  mOgrGetType = -1;
-  mSubLayerString = QString::null;
-
   QSettings settings;
   CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : nullptr );
 
@@ -419,7 +399,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       }
       if ( field == "geometrytype" )
       {
-        mOgrGeometryTypeFilter = (OGRwkbGeometryType)QgsOgrProviderUtils::wkbGeometryTypeFromName( value );
+        mOgrGeometryTypeFilter = ( OGRwkbGeometryType )QgsOgrProviderUtils::wkbGeometryTypeFromName( value );
       }
       if ( field == "ogrgettype" )
       {
@@ -437,7 +417,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 );
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-  switch ( mGdalVersionMajor )
+  switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
   {
     case 1:
       break;
@@ -660,7 +640,7 @@ void QgsOgrProvider::loadFields()
           break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
         case OFTInteger64:
-          switch ( mGdalVersionMajor )
+          switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
           {
             case 1:
               varType = QVariant::String; // other unsupported, leave it as a string
@@ -928,7 +908,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
     return OGR_G_ForceToMultiLineString( hGeom );
   }
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-  switch ( mGdalVersionMajor )
+  switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
   {
     case 1:
       return hGeom;
@@ -1020,7 +1000,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
         case OFTInteger64:
-          switch ( mGdalVersionMajor )
+          switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
           {
             case 1:
               // gdal[1.11.2] avoid symbol lookup error
@@ -1162,7 +1142,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
       case QVariant::LongLong:
       {
-        switch ( mGdalVersionMajor )
+        switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
         {
           case 1:
             // gdal[1.11.2] avoid symbol lookup error
@@ -1405,7 +1385,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
           case OFTInteger64:
-            switch ( mGdalVersionMajor )
+            switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
             {
               case 1:
                 // gdal[1.11.2] avoid symbol lookup error
@@ -2571,8 +2551,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1310
   if ( reference )
   {
-    if (( mGdalVersionMajor > 1 ) || (( mGdalVersionMajor == 1 ) && ( mGdalVersionMinor > 3 ) ) ||
-        (( mGdalVersionMajor == 1 ) && ( mGdalVersionMinor == 3 )  && ( mGdalVersionRevision > 1 ) ) )
+    if (( QGis::GDAL_RUNTIME_VERSION_MAJOR > 1 ) || (( QGis::GDAL_RUNTIME_VERSION_MAJOR == 1 ) && ( QGis::GDAL_RUNTIME_VERSION_MINOR > 3 ) ) ||
+        (( QGis::GDAL_RUNTIME_VERSION_MAJOR == 1 ) && ( QGis::GDAL_RUNTIME_VERSION_MINOR == 3 )  && ( QGis::GDAL_RUNTIME_VERSION_REV > 1 ) ) )
     {
       OSRRelease( reference );
     }
@@ -2889,7 +2869,7 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
       geom = "GeometryCollection25D";
       break;
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-    //  ISO SQL/MM Part 3. GDAL &gt;= 2.0
+      //  ISO SQL/MM Part 3. GDAL &gt;= 2.0
     case wkbCircularString:
       geom = "CircularString";
       break;
@@ -2953,7 +2933,7 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
       break;
 #endif
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
-    // ISO SQL/MM Part 3. GDAL &gt;= 2.1
+      // ISO SQL/MM Part 3. GDAL &gt;= 2.1
     case wkbPointM:
       geom = "PointM";
       break;
@@ -3104,7 +3084,7 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
       break;
 #endif
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
-    // ISO SQL/MM Part 3. GDAL &gt;= 2.1
+      // ISO SQL/MM Part 3. GDAL &gt;= 2.1
     case wkbCurve:
     case wkbSurface:
     case wkbCurveZ:
@@ -3113,7 +3093,7 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
     case wkbSurfaceM:
     case wkbCurveZM:
     case wkbSurfaceZM:
-    // Reserved in GDAL &gt;= 2.1 but not yet implemented
+      // Reserved in GDAL &gt;= 2.1 but not yet implemented
     case wkbPolyhedralSurface:
     case wkbTIN:
     case wkbTriangle:
@@ -3150,7 +3130,7 @@ QgsWKBTypes::Type QgsOgrProviderUtils::wkbGeometryTypeFromName( const QString& t
   else if ( typeName == "MultiPoint25D" ) return QgsWKBTypes::MultiPoint25D;
   else if ( typeName == "MultiLineString25D" ) return QgsWKBTypes::MultiLineString25D;
   else if ( typeName == "MultiPolygon25D" ) return QgsWKBTypes::MultiPolygon25D;
-  else if ( typeName == "GeometryCollection25D" ) return QgsWKBTypes::GeometryCollection25D;     
+  else if ( typeName == "GeometryCollection25D" ) return QgsWKBTypes::GeometryCollection25D;
   else if ( typeName == "CircularString" ) return QgsWKBTypes::CircularString;
   else if ( typeName == "CompoundCurve" ) return QgsWKBTypes::CompoundCurve;
   else if ( typeName == "CurvePolygon" ) return QgsWKBTypes::CurvePolygon;
@@ -3161,8 +3141,8 @@ QgsWKBTypes::Type QgsOgrProviderUtils::wkbGeometryTypeFromName( const QString& t
   else if ( typeName == "CurvePolygonZ" ) return QgsWKBTypes::CurvePolygonZ;
   else if ( typeName == "MultiCurveZ" ) return QgsWKBTypes::MultiCurveZ;
   else if ( typeName == "MultiSurfaceZ" ) return QgsWKBTypes::MultiSurfaceZ;
-      // Note: [build with gdal 2.*] when running with gdal 1.*, these values are not returned - thus not queried -no failures
-      // Note: [build with gdal 1.*] when running with gdal 2.*, these values are returned - but unknown al build time -no failures
+  // Note: [build with gdal 2.*] when running with gdal 1.*, these values are not returned - thus not queried -no failures
+  // Note: [build with gdal 1.*] when running with gdal 2.*, these values are returned - but unknown al build time -no failures
   else if ( typeName == "PointM" ) return QgsWKBTypes::PointM;
   else if ( typeName == "LineStringM" ) return QgsWKBTypes::LineStringM;
   else if ( typeName == "PolygonM" ) return QgsWKBTypes::PolygonM;
@@ -3187,7 +3167,7 @@ QgsWKBTypes::Type QgsOgrProviderUtils::wkbGeometryTypeFromName( const QString& t
   else if ( typeName == "CurvePolygonZM" ) return QgsWKBTypes::CurvePolygonZM;
   else if ( typeName == "MultiCurveZM" ) return QgsWKBTypes::MultiCurveZM;
   else if ( typeName == "MultiSurfaceZM" ) return QgsWKBTypes::MultiSurfaceZM;
-  return QgsWKBTypes::Unknown; 
+  return QgsWKBTypes::Unknown;
 }
 
 OGRwkbGeometryType QgsOgrProviderUtils::wkbSingleFlattenWrapper( OGRwkbGeometryType type )
@@ -3214,7 +3194,7 @@ OGRwkbGeometryType QgsOgrProviderUtils::wkbSingleFlattenWrapper( OGRwkbGeometryT
 }
 OGRwkbGeometryType QgsOgrProviderUtils::wkbFlattenWrapper( OGRwkbGeometryType eType )
 {
-  switch ( mGdalVersionMajor )
+  switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
   {
     case 1:
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
@@ -3243,7 +3223,7 @@ OGRwkbGeometryType QgsOgrProviderUtils::wkbFlattenWrapper( OGRwkbGeometryType eT
 
 int QgsOgrProviderUtils::wkbHasZWrapper( OGRwkbGeometryType eType )
 {
-  switch ( mGdalVersionMajor )
+  switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
   {
     case 1:
       // gdal[1.11.2] symbol lookup error / libogrprovider.so: undefined symbol: OGR_GT_HasZ, use original-code of OGR_GT_HasZ
@@ -3265,7 +3245,7 @@ int QgsOgrProviderUtils::wkbHasZWrapper( OGRwkbGeometryType eType )
 
 int QgsOgrProviderUtils::wkbHasMWrapper( OGRwkbGeometryType eType )
 {
-  switch ( mGdalVersionMajor )
+  switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
   {
     case 1:
       // gdal[1.11.2] symbol lookup error / libogrprovider.so: undefined symbol: OGR_GT_HasM, use original-code of OGR_GT_HasM
@@ -3403,7 +3383,7 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
       QStringList sa_list_sublayer = s_sublayer.split( ":" );
       lLayerIndex = sa_list_sublayer[0].toLong( &ok, 10 );
       mFeaturesCounted = sa_list_sublayer[2].toLong( &ok, 10 );
-      mOgrGeometryTypeFilter = (OGRwkbGeometryType)QgsOgrProviderUtils::wkbGeometryTypeFromName( sa_list_sublayer[3] );
+      mOgrGeometryTypeFilter = ( OGRwkbGeometryType )QgsOgrProviderUtils::wkbGeometryTypeFromName( sa_list_sublayer[3] );
       if (( !sLayerName.isNull() ) && ( lLayerIndex < 0 ) )
       {
         ogrLayer = QgsOgrProviderUtils::OGRGetLayerNameWrapper( ogrDataSource, sLayerName );
@@ -3477,7 +3457,7 @@ QString QgsOgrProviderUtils::OGRGetSubLayerWrapper( QString sLayerName, long& lL
   { // In cases with duplicate names, the name with the given the id will be used
     s_sublayer = sa_list_id[0];
   }
-  if (( sLayerName.endsWith( QString( ")" ) ) ) && ( mGdalVersionMajor < 2 ) )
+  if (( sLayerName.endsWith( QString( ")" ) ) ) && ( QGis::GDAL_RUNTIME_VERSION_MAJOR < 2 ) )
   { // the ogr naming convention 'table(field-name)' may only be used in gdal2.* with GetLayerByName
     replace_id = false;
   }
@@ -3509,7 +3489,7 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
           QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
           long layer_feature_count = QgsOgrProviderUtils::OGRGetFeatureCountWrapper( layer, 0 ); // Fetch the feature count in this layer.
           int field_count = OGR_FD_GetGeomFieldCount( fdef ); // count of geometry fields
-          if (( mGdalVersionMajor < 2 ) && ( field_count > 1 ) )
+          if (( QGis::GDAL_RUNTIME_VERSION_MAJOR < 2 ) && ( field_count > 1 ) )
           { // running with gdal 1.*: sometimes 2 (or more) will be returned (with same geomety data): should be ingnore since it cannot be retrieved
             // possible cause: a SpatialView with more than 1 geometry, the declared geometry is NOT the first geometry listed in the view
             // ogr should ignore the non declared geometries [https://trac.osgeo.org/gdal/ticket/6659]
@@ -3572,7 +3552,7 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
                 }
                 QString s_SubLayer = QString( "%1:%2:%3:%4:%5" ).arg( layer_number ).arg( layer_name, layer_feature_count == -1 ?  "Unknown" : QString::number( layer_feature_count ), geom ).arg( mOgrGetType );
                 mSubLayerList << s_SubLayer;
-                // printf( "-I-> QgsOgrProviderUtils::OGRGetSubLayer gdal[%s] zz  id = layer_number=%ld, i_layer=%ld/%ld, i_field=%d/%d,  layer_feature_count=%ld, i_count_get_index[%d] i_count_ogr_syntax[%d],  layer_name[%s] layer_field_name[%s] layer_type[%d] sub_layer[%s] \n", GDAL_VERSION_RUNTIME.toLocal8Bit().constData(), layer_number, i_layer, layer_count, i_field, field_count, layer_feature_count, i_count_get_index, i_count_ogr_syntax,theLayerName.toLocal8Bit().constData(), theLayerFieldName.toLocal8Bit().constData(), layerGeomType, s_SubLayer.toLocal8Bit().constData() );
+                // printf( "-I-> QgsOgrProviderUtils::OGRGetSubLayer gdal[%s] zz  id = layer_number=%ld, i_layer=%ld/%ld, i_field=%d/%d,  layer_feature_count=%ld, i_count_get_index[%d] i_count_ogr_syntax[%d],  layer_name[%s] layer_field_name[%s] layer_type[%d] sub_layer[%s] \n", QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), layer_number, i_layer, layer_count, i_field, field_count, layer_feature_count, i_count_get_index, i_count_ogr_syntax,theLayerName.toLocal8Bit().constData(), theLayerFieldName.toLocal8Bit().constData(), layerGeomType, s_SubLayer.toLocal8Bit().constData() );
               }
             }
             // Note: for gdal a layer without a geometry is still a layer.
@@ -3582,7 +3562,7 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
         }
       }
     }
-    if (( mGdalVersionMajor > 1 ) && ( i_count_get_index > 0 ) && ( i_count_ogr_syntax > 0 ) )
+    if (( QGis::GDAL_RUNTIME_VERSION_MAJOR > 1 ) && ( i_count_get_index > 0 ) && ( i_count_ogr_syntax > 0 ) )
     {  // this condition  only applies when running with version Gdal 2.*
       mOgrGetType = 0; // set to use 'OGRGetLayerNameWrapper'
       i_count_ogr_syntax = 0;
@@ -3638,7 +3618,7 @@ OGRLayerH QgsOgrProviderUtils::OGRGetLayerIndexWrapper( OGRDataSourceH ogrDataSo
   {
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     // gdal-compile-specific
-    switch ( mGdalVersionMajor )
+    switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
     { // gdal-runtime-specific
       case 1:
         ogrLayer = OGR_DS_GetLayer( ogrDataSource, iLayerIndex );
@@ -3665,7 +3645,7 @@ OGRLayerH QgsOgrProviderUtils::OGRGetLayerNameWrapper( OGRDataSourceH ogrDataSou
   {
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     // gdal-compile-specific
-    switch ( mGdalVersionMajor )
+    switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
     { // gdal-runtime-specific
       case 1:
         ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( sLayerName ) );
@@ -3687,7 +3667,7 @@ long QgsOgrProviderUtils::OGRGetLayerCountWrapper( OGRDataSourceH ogrDataSource 
   {
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     // gdal-compile-specific
-    switch ( mGdalVersionMajor )
+    switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
     { // gdal-runtime-specific
       case 1:
         layer_count = ( long )OGR_DS_GetLayerCount( ogrDataSource );
@@ -3709,7 +3689,7 @@ long QgsOgrProviderUtils::OGRGetFeatureCountWrapper( OGRLayerH layer, int bForce
   {
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
     // gdal-compile-specific
-    switch ( mGdalVersionMajor )
+    switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
     { // gdal-runtime-specific
       case 1:
         feature_count = ( long )OGR_L_GetFeatureCount( layer, bForce );
@@ -4188,7 +4168,7 @@ void QgsOgrProvider::open( OpenMode mode )
       }
     }
   }
-  printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", mGdalVersionMajor, mGdalVersionMinor, mGdalVersionRevision, GDAL_VERSION_RUNTIME.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
+  printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
   // For debug/testing purposes
   if ( !mValid )
     setProperty( "_debug_open_mode", "invalid" );
