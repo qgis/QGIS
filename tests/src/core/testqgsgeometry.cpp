@@ -2208,6 +2208,16 @@ void TestQgsGeometry::lineString()
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
   QCOMPARE( static_cast< QgsPointV2*>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
+
+
+  //extend
+  QgsLineString extend1;
+  extend1.extend( 10, 10 ); //test no crash
+  extend1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) );
+  extend1.extend( 1, 2 );
+  QCOMPARE( extend1.pointN( 0 ), QgsPointV2( QgsWkbTypes::Point, -1, 0 ) );
+  QCOMPARE( extend1.pointN( 1 ), QgsPointV2( QgsWkbTypes::Point, 1, 0 ) );
+  QCOMPARE( extend1.pointN( 2 ), QgsPointV2( QgsWkbTypes::Point, 1, 3 ) );
 }
 
 void TestQgsGeometry::polygon()

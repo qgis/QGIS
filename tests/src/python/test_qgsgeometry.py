@@ -3594,5 +3594,31 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertAlmostEqual(polygon.angleAtVertex(3), math.radians(225.0), places=3)
         self.assertAlmostEqual(polygon.angleAtVertex(4), math.radians(135.0), places=3)
 
+    def testExtendLine(self):
+        """ test QgsGeometry.extendLine """
+
+        empty = QgsGeometry()
+        self.assertFalse(empty.extendLine(1, 2))
+
+        # not a linestring
+        point = QgsGeometry.fromWkt('Point(1 2)')
+        self.assertFalse(point.extendLine(1, 2))
+
+        # linestring
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 1 0, 1 1)')
+        extended = linestring.extendLine(1, 2)
+        exp = 'LineString(-1 0, 1 0, 1 3)'
+        result = extended.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Extend line: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # multilinestring
+        multilinestring = QgsGeometry.fromWkt('MultiLineString((0 0, 1 0, 1 1),(11 11, 11 10, 10 10))')
+        extended = multilinestring.extendLine(1, 2)
+        exp = 'MultiLineString((-1 0, 1 0, 1 3),(11 12, 11 10, 8 10))'
+        result = extended.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Extend line: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
 if __name__ == '__main__':
     unittest.main()
