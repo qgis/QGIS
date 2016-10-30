@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    ImportIntoPostGIS.py
+    ImportIntoSpatialite.py
     ---------------------
-    Date                 : October 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : October 2016
+    Copyright            : (C) 2016 by Mathieu Pellerin
+    Email                : nirvn dot asia at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'October 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Mathieu Pellerin'
+__date__ = 'October 2016'
+__copyright__ = '(C) 2012, Mathieu Pellerin'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -35,14 +35,13 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects, postgis
+from processing.tools import dataobjects, spatialite
 
 
-class ImportIntoPostGIS(GeoAlgorithm):
+class ImportIntoSpatialite(GeoAlgorithm):
 
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'
-    SCHEMA = 'SCHEMA'
     INPUT = 'INPUT'
     OVERWRITE = 'OVERWRITE'
     CREATEINDEX = 'CREATEINDEX'
@@ -54,41 +53,29 @@ class ImportIntoPostGIS(GeoAlgorithm):
     ENCODING = 'ENCODING'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Import into PostGIS')
+        self.name, self.i18n_name = self.trAlgorithm('Import into Spatialite')
         self.group, self.i18n_group = self.trAlgorithm('Database')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Layer to import')))
-
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
-        self.addParameter(ParameterString(self.SCHEMA,
-                                          self.tr('Schema (schema name)'), 'public'))
-        self.addParameter(ParameterString(self.TABLENAME,
-                                          self.tr('Table to import to (leave blank to use layer name)'), optional=True))
-        self.addParameter(ParameterTableField(self.PRIMARY_KEY,
-                                              self.tr('Primary key field'), self.INPUT, optional=True))
-        self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
-                                          self.tr('Geometry column'), 'geom'))
-        self.addParameter(ParameterString(self.ENCODING,
-                                          self.tr('Encoding'), 'UTF-8',
-                                          optional=True))
-        self.addParameter(ParameterBoolean(self.OVERWRITE,
-                                           self.tr('Overwrite'), True))
-        self.addParameter(ParameterBoolean(self.CREATEINDEX,
-                                           self.tr('Create spatial index'), True))
-        self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
-                                           self.tr('Convert field names to lowercase'), True))
-        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
-                                           self.tr('Drop length constraints on character fields'), False))
-        self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
-                                           self.tr('Create single-part geometries instead of multi-part'), False))
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Layer to import')))
+        self.addParameter(ParameterVector(self.DATABASE, self.tr('File database'), False, False))
+        self.addParameter(ParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY, self.tr('Primary key field'), self.INPUT, optional=True))
+        self.addParameter(ParameterString(self.GEOMETRY_COLUMN, self.tr('Geometry column'), 'geom'))
+        self.addParameter(ParameterString(self.ENCODING, self.tr('Encoding'), 'UTF-8', optional=True))
+        self.addParameter(ParameterBoolean(self.OVERWRITE, self.tr('Overwrite'), True))
+        self.addParameter(ParameterBoolean(self.CREATEINDEX, self.tr('Create spatial index'), True))
+        self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES, self.tr('Convert field names to lowercase'), True))
+        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
+        self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
 
     def processAlgorithm(self, progress):
-        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
-        db = postgis.GeoDB.from_name(connection)
+        database = self.getParameterValue(self.DATABASE)
+        uri = QgsDataSourceUri(database)
+        if uri.database() is '':
+            if '|layerid' in database:
+                database = database[:database.find('|layerid')]
+            uri = QgsDataSourceUri('dbname=\'%s\'' % (database))
+        db = spatialite.GeoDB(uri)
 
-        schema = self.getParameterValue(self.SCHEMA)
         overwrite = self.getParameterValue(self.OVERWRITE)
         createIndex = self.getParameterValue(self.CREATEINDEX)
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
@@ -105,9 +92,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
             table.strip()
         if not table or table == '':
             table = layer.name()
-            table = "_".join(table.split(".")[:-1])
-        table = table.replace(' ', '').lower()[0:62]
-        providerName = 'postgres'
+        table = table.replace(' ', '').lower()
+        providerName = 'spatialite'
 
         geomColumn = self.getParameterValue(self.GEOMETRY_COLUMN)
         if not geomColumn:
@@ -129,7 +115,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = None
 
         uri = db.uri
-        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
+        uri.setDataSource('', table, geomColumn, '', primaryKeyField)
 
         if encoding:
             layer.setProviderEncoding(encoding)
@@ -145,14 +131,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         )
         if ret != 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error importing to PostGIS\n%s' % errMsg))
+                self.tr('Error importing to Spatialite\n%s' % errMsg))
 
         if geomColumn and createIndex:
-            db.create_spatial_index(table, schema, geomColumn)
-
-        db.vacuum_analyze(table, schema)
-
-    def dbConnectionNames(self):
-        settings = QSettings()
-        settings.beginGroup('/PostgreSQL/connections/')
-        return settings.childGroups()
+            db.create_spatial_index(table, geomColumn)
