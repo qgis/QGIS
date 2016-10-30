@@ -174,6 +174,7 @@ from .ZonalStatisticsQgis import ZonalStatisticsQgis
 from .RemoveNullGeometry import RemoveNullGeometry
 from .ExtendLines import ExtendLines
 from .ExtractSpecificNodes import ExtractSpecificNodes
+from .GeometryByExpression import GeometryByExpression
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -236,7 +237,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
-                        ExtractSpecificNodes()
+                        ExtractSpecificNodes(), GeometryByExpression()
                         ]
 
         if hasMatplotlib:
