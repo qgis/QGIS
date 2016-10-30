@@ -106,15 +106,15 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
   public:
     explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = nullptr );
     ~QgsBrowserDockWidget();
-    void addFavouriteDirectory( const QString& favDir );
+    void addFavoriteDirectory( const QString& favDir );
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );
     void showContextMenu( QPoint );
 
-    void addFavourite();
-    void addFavouriteDirectory();
-    void removeFavourite();
+    void addFavorite();
+    void addFavoriteDirectory();
+    void removeFavorite();
 
     void refresh();
 

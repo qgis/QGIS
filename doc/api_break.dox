@@ -61,6 +61,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsEditorWidgetV2<td>QgsEditorWidget
 <tr><td>QgsEllipseSymbolLayerV2<td>QgsEllipseSymbolLayer
 <tr><td>QgsEllipseSymbolLayerV2Widget<td>QgsEllipseSymbolLayerWidget
+<tr><td>QgsFavouritesItem<td>QgsFavoritesItem
 <tr><td>QgsFeatureRendererV2<td>QgsFeatureRenderer
 <tr><td>QgsFillSymbolLayerV2<td>QgsFillSymbolLayer
 <tr><td>QgsFillSymbolV2<td>QgsFillSymbol
@@ -352,6 +353,11 @@ QgsAuthMethod        {#qgis_api_break_3_0_QgsAuthMethod}
 - DataSourceURI has been renamed to DataSourceUri
 - GenericDataSourceURI has been renamed to GenericDataSourceUri
 
+QgsBrowserModel        {#qgis_api_break_3_0_QgsBrowserModel}
+---------------
+
+- addFavouriteDirectory has been renamed to addFavoriteDirectory
+- removeFavourite has been renamed to removeFavorite
 
 QgsCachedFeatureIterator        {#qgis_api_break_3_0_QgsQgsCachedFeatureIterator}
 ------------------------
@@ -624,7 +630,7 @@ QgsDataItem        {#qgis_api_break_3_0_QgsDataItem}
 - isPopulated() has been removed. Use state() instead.
 - capabilities() has been removed. Use capabilities2() instead (TODO: rename back to capabilities()).
 - emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.
-
+- Favourites was renamed to Favorites
 
 QgsDataSourceURI        {#qgis_api_break_3_0_QgsDatasourceUri}
 ----------------

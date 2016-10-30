@@ -385,17 +385,17 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   {
     QSettings settings;
     QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
-    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favourites;
+    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
 
     if ( item->parent() && !inFavDirs )
     {
-      // only non-root directories can be added as favourites
-      menu->addAction( tr( "Add as a Favourite" ), this, SLOT( addFavourite() ) );
+      // only non-root directories can be added as favorites
+      menu->addAction( tr( "Add as a Favorite" ), this, SLOT( addFavorite() ) );
     }
     else if ( inFavDirs )
     {
-      // only favourites can be removed
-      menu->addAction( tr( "Remove Favourite" ), this, SLOT( removeFavourite() ) );
+      // only favorites can be removed
+      menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
     }
     menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
@@ -410,9 +410,9 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
     menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
   }
-  else if ( item->type() == QgsDataItem::Favourites )
+  else if ( item->type() == QgsDataItem::Favorites )
   {
-    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavouriteDirectory() ) );
+    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
 
   }
 
@@ -434,7 +434,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   menu->popup( mBrowserView->mapToGlobal( pt ) );
 }
 
-void QgsBrowserDockWidget::addFavourite()
+void QgsBrowserDockWidget::addFavorite()
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
   QgsDataItem* item = mModel->dataItem( index );
@@ -445,26 +445,26 @@ void QgsBrowserDockWidget::addFavourite()
   if ( !dirItem )
     return;
 
-  addFavouriteDirectory( dirItem->dirPath() );
+  addFavoriteDirectory( dirItem->dirPath() );
 }
 
-void QgsBrowserDockWidget::addFavouriteDirectory()
+void QgsBrowserDockWidget::addFavoriteDirectory()
 {
-  QString directory = QFileDialog::getExistingDirectory( this, tr( "Add directory to favourites" ) );
+  QString directory = QFileDialog::getExistingDirectory( this, tr( "Add directory to favorites" ) );
   if ( !directory.isEmpty() )
   {
-    addFavouriteDirectory( directory );
+    addFavoriteDirectory( directory );
   }
 }
 
-void QgsBrowserDockWidget::addFavouriteDirectory( const QString& favDir )
+void QgsBrowserDockWidget::addFavoriteDirectory( const QString& favDir )
 {
-  mModel->addFavouriteDirectory( favDir );
+  mModel->addFavoriteDirectory( favDir );
 }
 
-void QgsBrowserDockWidget::removeFavourite()
+void QgsBrowserDockWidget::removeFavorite()
 {
-  mModel->removeFavourite( mProxyModel->mapToSource( mBrowserView->currentIndex() ) );
+  mModel->removeFavorite( mProxyModel->mapToSource( mBrowserView->currentIndex() ) );
 }
 
 void QgsBrowserDockWidget::refresh()

@@ -182,7 +182,7 @@ const QIcon &QgsDataCollectionItem::iconDir()
   return icon;
 }
 
-const QIcon &QgsFavouritesItem::iconFavourites()
+const QIcon &QgsFavoritesItem::iconFavorites()
 {
   static QIcon icon;
 
@@ -1100,21 +1100,21 @@ QgsErrorItem::~QgsErrorItem()
 {
 }
 
-QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path )
-    : QgsDataCollectionItem( parent, name, QStringLiteral( "favourites:" ) )
+QgsFavoritesItem::QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path )
+    : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ) )
 {
   Q_UNUSED( path );
   mCapabilities |= Fast;
-  mType = Favourites;
+  mType = Favorites;
   mIconName = QStringLiteral( "/mIconFavourites.png" );
   populate();
 }
 
-QgsFavouritesItem::~QgsFavouritesItem()
+QgsFavoritesItem::~QgsFavoritesItem()
 {
 }
 
-QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
+QVector<QgsDataItem*> QgsFavoritesItem::createChildren()
 {
   QVector<QgsDataItem*> children;
 
@@ -1129,7 +1129,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
   return children;
 }
 
-void QgsFavouritesItem::addDirectory( const QString& favDir )
+void QgsFavoritesItem::addDirectory( const QString& favDir )
 {
   QSettings settings;
   QStringList favDirs = settings.value( QStringLiteral( "/browser/favourites" ) ).toStringList();
@@ -1146,7 +1146,7 @@ void QgsFavouritesItem::addDirectory( const QString& favDir )
   }
 }
 
-void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
+void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
 {
   if ( !item )
     return;
@@ -1159,7 +1159,7 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
   int idx = findItem( mChildren, item );
   if ( idx < 0 )
   {
-    QgsDebugMsg( QString( "favourites item %1 not found" ).arg( item->path() ) );
+    QgsDebugMsg( QString( "favorites item %1 not found" ).arg( item->path() ) );
     return;
   }
 
@@ -1167,7 +1167,7 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
     deleteChildItem( mChildren.at( idx ) );
 }
 
-QVector<QgsDataItem*> QgsFavouritesItem::createChildren( const QString& favDir )
+QVector<QgsDataItem*> QgsFavoritesItem::createChildren( const QString& favDir )
 {
   QVector<QgsDataItem*> children;
   QString pathName = pathComponent( favDir );

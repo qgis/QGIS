@@ -143,8 +143,20 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void itemDataChanged( QgsDataItem * item );
     void itemStateChanged( QgsDataItem * item, QgsDataItem::State oldState );
 
-    void addFavouriteDirectory( const QString& favDir );
-    void removeFavourite( const QModelIndex &index );
+    /**
+     * Adds a directory to the favorites group.
+     * @note added in QGIS 3.0
+     * @see removeFavorite()
+     */
+    void addFavoriteDirectory( const QString& directory );
+
+    /**
+     * Removes a favorite directory from its corresponding model index.
+     * @note added in QGIS 3.0
+     * @see addFavoriteDirectory()
+     */
+    void removeFavorite( const QModelIndex &index );
+
     void updateProjectHome();
 
     //! Hide the given path in the browser model
@@ -156,7 +168,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void removeRootItems();
 
     QVector<QgsDataItem*> mRootItems;
-    QgsFavouritesItem *mFavourites;
+    QgsFavoritesItem *mFavorites;
     QgsDirectoryItem *mProjectHome;
 };
 

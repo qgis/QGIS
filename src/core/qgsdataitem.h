@@ -88,8 +88,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Directory,
       Layer,
       Error,
-      Favourites,
-      Project //! Represents a QGIS project
+      Favorites, //!< Represents a favorite item
+      Project //!< Represents a QGIS project
     };
 
     //! Create new data item.
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * @param parent
      * @param name directory name
      * @param dirPath path to directory in file system
-     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favourites: */
+     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
     ~QgsDirectoryItem();
 
@@ -519,21 +519,38 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 };
 
 /** \ingroup core
- * Contains various Favourites directories
+ * Contains various Favorites directories
+ * \note added in QGIS 3.0
 */
-class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
+class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
-    ~QgsFavouritesItem();
+
+    /**
+     * Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
+     * the item.
+     */
+    QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
+
+    ~QgsFavoritesItem();
 
     QVector<QgsDataItem*> createChildren() override;
 
-    void addDirectory( const QString& favIcon );
+    /**
+     * Adds a new directory to the favorites group.
+     * @see removeDirectory()
+     */
+    void addDirectory( const QString& directory );
+
+    /**
+     * Removes an existing directory from the favorites group.
+     * @see addDirectory()
+     */
     void removeDirectory( QgsDirectoryItem *item );
 
-    static const QIcon &iconFavourites();
+    //! Icon for favorites group
+    static const QIcon &iconFavorites();
 
   private:
     QVector<QgsDataItem*> createChildren( const QString& favDir );

@@ -49,7 +49,7 @@ static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
     : QAbstractItemModel( parent )
-    , mFavourites( nullptr )
+    , mFavorites( nullptr )
     , mProjectHome( nullptr )
 {
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
@@ -101,12 +101,12 @@ void QgsBrowserModel::addRootItems()
   connectItem( item );
   mRootItems << item;
 
-  // add favourite directories
-  mFavourites = new QgsFavouritesItem( nullptr, tr( "Favourites" ) );
-  if ( mFavourites )
+  // add favorite directories
+  mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
+  if ( mFavorites )
   {
-    connectItem( mFavourites );
-    mRootItems << mFavourites;
+    connectItem( mFavorites );
+    mRootItems << mFavorites;
   }
 
   // add drives
@@ -530,19 +530,19 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavouriteDirectory( const QString& favDir )
+void QgsBrowserModel::addFavoriteDirectory( const QString& directory )
 {
-  Q_ASSERT( mFavourites );
-  mFavourites->addDirectory( favDir );
+  Q_ASSERT( mFavorites );
+  mFavorites->addDirectory( directory );
 }
 
-void QgsBrowserModel::removeFavourite( const QModelIndex &index )
+void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 {
   QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
   if ( !item )
     return;
 
-  mFavourites->removeDirectory( item );
+  mFavorites->removeDirectory( item );
 }
 
 void QgsBrowserModel::hidePath( QgsDataItem *item )

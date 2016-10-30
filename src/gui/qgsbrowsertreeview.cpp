@@ -91,8 +91,8 @@ void QgsBrowserTreeView::restoreState()
   }
   else
   {
-    // expand root favourites item
-    QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favourites:" ) );
+    // expand root favorites item
+    QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favorites:" ) );
     expand( index );
   }
 }

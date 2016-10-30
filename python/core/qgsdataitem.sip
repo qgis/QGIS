@@ -43,8 +43,8 @@ class QgsDataItem : QObject
     sipType = sipType_QgsErrorItem;
   else if (qobject_cast<QgsDirectoryItem*>(sipCpp))
     sipType = sipType_QgsDirectoryItem;
-  else if (qobject_cast<QgsFavouritesItem*>(sipCpp))
-    sipType = sipType_QgsFavouritesItem;
+  else if (qobject_cast<QgsFavoritesItem*>(sipCpp))
+    sipType = sipType_QgsFavoritesItem;
   else if (qobject_cast<QgsZipItem*>(sipCpp))
     sipType = sipType_QgsZipItem;
   else if (qobject_cast<QgsDataCollectionItem*>(sipCpp))
@@ -61,8 +61,8 @@ class QgsDataItem : QObject
       Directory,
       Layer,
       Error,
-      Favourites,
-      Project //! Represents a QGIS project
+      Favorites, //!< Represents a favorite item
+      Project //!< Represents a QGIS project
     };
 
     /** Create new data item. */
@@ -359,7 +359,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
      * @param parent
      * @param name directory name
      * @param dirPath path to directory in file system
-     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favourites: */
+     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
 
     ~QgsDirectoryItem();
@@ -444,22 +444,40 @@ class QgsDirectoryParamWidget : QTreeWidget
     void showHideColumn();
 };
 
-/** Contains various Favourites directories */
-class QgsFavouritesItem : QgsDataCollectionItem
+/** \ingroup core
+ * Contains various Favorites directories
+ * \note added in QGIS 3.0
+*/
+class QgsFavoritesItem : QgsDataCollectionItem
 {
 %TypeHeaderCode
 #include <qgsdataitem.h>
 %End
   public:
-    QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
-    ~QgsFavouritesItem();
+
+    /**
+     * Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
+     * the item.
+     */
+    QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
+    ~QgsFavoritesItem();
 
     QVector<QgsDataItem*> createChildren();
 
-    void addDirectory( const QString& favIcon );
+    /**
+     * Adds a new directory to the favorites group.
+     * @see removeDirectory()
+     */
+    void addDirectory( const QString& directory );
+
+    /**
+     * Removes an existing directory from the favorites group.
+     * @see addDirectory()
+     */
     void removeDirectory( QgsDirectoryItem *item );
 
-    static const QIcon &iconFavourites();
+    //! Icon for favorites group
+    static const QIcon &iconFavorites();
 };
 
 /** A zip file: contains layers, using GDAL/OGR VSIFILE mechanism */
