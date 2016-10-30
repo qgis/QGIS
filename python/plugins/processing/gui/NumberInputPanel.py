@@ -103,7 +103,7 @@ class NumberInputPanel(BASE, WIDGET):
                     variables['%s_max' % name] = "Maximum value of %s" % desc
                     variables['%s_avg' % name] = "Mean value of %s" % desc
                     variables['%s_stddev' % name] = "Standard deviation of %s" % desc
-            for variable, desc in variables.iteritems():
+            for variable, desc in variables.items():
                 dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
         dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:

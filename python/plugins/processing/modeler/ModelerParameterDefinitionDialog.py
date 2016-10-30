@@ -179,7 +179,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.minTextBox.setText(str(self.param.min))
                 self.maxTextBox.setText(str(self.param.max))
-            self.horizontalLayoutDefault.addWidget(QLabel(self.tr('Default value')))
+            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.defaultTextBox = QLineEdit()
             self.defaultTextBox.setText(self.tr('0'))
             if self.param is not None:

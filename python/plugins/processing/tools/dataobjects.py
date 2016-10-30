@@ -333,7 +333,7 @@ def exportVectorLayer(layer, supported=None):
     else:
         isASCII = True
         try:
-            str(layer.source()).decode('ascii')
+            str(layer.source())
         except UnicodeEncodeError:
             isASCII = False
         if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
