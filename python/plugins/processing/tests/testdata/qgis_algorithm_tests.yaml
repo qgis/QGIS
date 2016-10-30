@@ -1276,3 +1276,48 @@ tests:
       OUTPUT_LAYER:
         name: expected/extract_specific_nodes_polys.gml
         type: vector
+
+  - algorithm: qgis:geometrybyexpression
+    name: Geometry by expression (point)
+    params:
+      EXPRESSION: 'translate( $geometry,1,1)'
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      OUTPUT_GEOMETRY: '0'
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/geometry_by_expression_point.gml
+        type: vector
+
+  - algorithm: qgis:geometrybyexpression
+    name: Geometry by expression (polygon)
+    params:
+      EXPRESSION: ' translate( centroid($geometry),1,1)'
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      OUTPUT_GEOMETRY: '2'
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/geometry_by_expression_poly.gml
+        type: vector
+
+  - algorithm: qgis:geometrybyexpression
+    name: Geometry by expression (line)
+    params:
+      EXPRESSION: ' translate( $geometry,1,1)'
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      OUTPUT_GEOMETRY: '1'
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/geometry_by_expression_line.gml
+        type: vector
