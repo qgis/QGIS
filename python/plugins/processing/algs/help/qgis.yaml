@@ -177,6 +177,13 @@ qgis:extractnodes: >
 
   Additional fields are added to the nodes indicating the node index (beginning at 0), distance along original geometry and bisector angle of node for original geometry.
 
+qgis:extractspecificnodes: >
+  This algorithm takes a line or polygon layer and generates a point layer with points representing specific nodes in the input lines or polygons. For instance, this algorithm can be used to extract the first or last nodes in the geometry. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
+
+  The node indices parameter accepts a comma separated string specifying the indices of the nodes to extract. The first node corresponds to an index of 0, the second node has an index of 1, etc. Negative indices can be used to find nodes at the end of the geometry, eg an index of -1 corresponds to the last node, -2 corresponds to the second last node, etc.
+
+  Additional fields are added to the nodes indicating the specific node position (eg 0, -1, etc), the original node index, distance along the original geometry and bisector angle of node for the original geometry.
+
 qgis:fieldcalculator: >
   This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on te properties and attributes of the feature.
 

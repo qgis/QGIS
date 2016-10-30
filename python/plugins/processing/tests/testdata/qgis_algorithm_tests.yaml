@@ -1252,3 +1252,27 @@ tests:
       OUTPUT_LAYER:
         name: expected/extend_multilines.gml
         type: vector
+
+  - algorithm: qgis:extractspecificnodes
+    name: Extract specific nodes lines
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      NODES: 0,-1,2,-2
+    results:
+      OUTPUT_LAYER:
+        name: expected/extract_specific_nodes_lines.gml
+        type: vector
+
+  - algorithm: qgis:extractspecificnodes
+    name: Extract specific nodes polygons
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      NODES: 0,-1,5,-5
+    results:
+      OUTPUT_LAYER:
+        name: expected/extract_specific_nodes_polys.gml
+        type: vector
