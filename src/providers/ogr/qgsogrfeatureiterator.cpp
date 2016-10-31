@@ -149,6 +149,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     OGR_L_SetAttributeFilter( ogrLayer, nullptr );
   }
 
+  if ( !mExpressionCompiled )
+    mRequest.setLimit( -1 );
+
   //start with first feature
   rewind();
 }
