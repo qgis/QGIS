@@ -1350,7 +1350,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
   QMap< QString, QgsField > mapFieldNameToOriginalField;
 
-  for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
+  for ( QList<QgsField>::const_iterator iter = attributes.constBegin(); iter != attributes.constEnd(); ++iter )
   {
     mapFieldNameToOriginalField[ iter->name()] = *iter;
 
@@ -1418,8 +1418,8 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   // For example in case of Integer64->Real mapping so that QVariant::LongLong is
   // still returned to the caller
   // Or if a field width was specified but not strictly enforced by the driver (#15614)
-  for ( QMap< QString, QgsField >::const_iterator it = mapFieldNameToOriginalField.begin();
-        it != mapFieldNameToOriginalField.end(); ++it )
+  for ( QMap< QString, QgsField >::const_iterator it = mapFieldNameToOriginalField.constBegin();
+        it != mapFieldNameToOriginalField.constEnd(); ++it )
   {
     int idx = mAttributeFields.lookupField( it.key() );
     if ( idx >= 0 )
