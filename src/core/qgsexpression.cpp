@@ -108,21 +108,36 @@ static QVariant tvl2variant( TVL v )
 
 inline bool isIntSafe( const QVariant& v )
 {
-  if ( v.type() == QVariant::Int ) return true;
-  if ( v.type() == QVariant::UInt ) return true;
-  if ( v.type() == QVariant::LongLong ) return true;
-  if ( v.type() == QVariant::ULongLong ) return true;
-  if ( v.type() == QVariant::Double ) return false;
-  if ( v.type() == QVariant::String ) { bool ok; v.toString().toInt( &ok ); return ok; }
+  if ( v.type() == QVariant::Int )
+    return true;
+  if ( v.type() == QVariant::UInt )
+    return true;
+  if ( v.type() == QVariant::LongLong )
+    return true;
+  if ( v.type() == QVariant::ULongLong )
+    return true;
+  if ( v.type() == QVariant::Double )
+    return false;
+  if ( v.type() == QVariant::String )
+  {
+    bool ok;
+    v.toString().toInt( &ok );
+    return ok;
+  }
   return false;
 }
 inline bool isDoubleSafe( const QVariant& v )
 {
-  if ( v.type() == QVariant::Double ) return true;
-  if ( v.type() == QVariant::Int ) return true;
-  if ( v.type() == QVariant::UInt ) return true;
-  if ( v.type() == QVariant::LongLong ) return true;
-  if ( v.type() == QVariant::ULongLong ) return true;
+  if ( v.type() == QVariant::Double )
+    return true;
+  if ( v.type() == QVariant::Int )
+    return true;
+  if ( v.type() == QVariant::UInt )
+    return true;
+  if ( v.type() == QVariant::LongLong )
+    return true;
+  if ( v.type() == QVariant::ULongLong )
+    return true;
   if ( v.type() == QVariant::String )
   {
     bool ok;
@@ -135,8 +150,9 @@ inline bool isDoubleSafe( const QVariant& v )
 
 inline bool isDateTimeSafe( const QVariant& v )
 {
-  return v.type() == QVariant::DateTime || v.type() == QVariant::Date ||
-         v.type() == QVariant::Time;
+  return v.type() == QVariant::DateTime
+         || v.type() == QVariant::Date
+         || v.type() == QVariant::Time;
 }
 
 inline bool isIntervalSafe( const QVariant& v )
@@ -153,7 +169,10 @@ inline bool isIntervalSafe( const QVariant& v )
   return false;
 }
 
-inline bool isNull( const QVariant& v ) { return v.isNull(); }
+inline bool isNull( const QVariant& v )
+{
+  return v.isNull();
+}
 
 ///////////////////////////////////////////////
 // evaluation error macros
