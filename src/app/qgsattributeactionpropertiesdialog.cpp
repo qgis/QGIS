@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 18.4.2016
- copyright            : (C) 2016 by mku
- email                : [your-email-here]
+ copyright            : (C) 2016 by Matthias Kuhn
+ email                : matthias@opengis.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,6 +20,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgsactionscoperegistry.h"
+#include "qgsactionscope.h"
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -28,7 +31,7 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, bool showInAttributeTable, QgsVectorLayer* layer, QWidget* parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer* layer, QWidget* parent )
     : QDialog( parent )
     , mLayer( layer )
 {
@@ -41,29 +44,8 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   mIconPreview->setPixmap( QPixmap( iconPath ) );
   mActionText->setText( actionText );
   mCaptureOutput->setChecked( capture );
-  mShowInAttributeTable->setChecked( showInAttributeTable );
 
-  // display the expression builder
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
-
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-
-  mFieldExpression->setLayer( mLayer );
-  mFieldExpression->setGeomCalculator( myDa );
-
-  connect( mBrowseButton, SIGNAL( clicked( bool ) ), this, SLOT( browse() ) );
-  connect( mInsertFieldOrExpression, SIGNAL( clicked( bool ) ), this, SLOT( insertExpressionOrField() ) );
-  connect( mActionName, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
-  connect( mActionText, SIGNAL( textChanged() ), this, SLOT( updateButtons() ) );
-  connect( mChooseIconButton, SIGNAL( clicked( bool ) ), this, SLOT( chooseIcon() ) );
-
-  updateButtons();
+  init( actionScopes );
 }
 
 QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVectorLayer* layer, QWidget* parent )
@@ -72,26 +54,13 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
 {
   setupUi( this );
 
-  // display the expression builder
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QSet<QString> defaultActionScopes;
+  defaultActionScopes << QStringLiteral( "Canvas" )
+  << QStringLiteral( "FieldSpecific" )
+  << QStringLiteral( "AttributeTableRow" )
+  << QStringLiteral( "FeatureForm" );
 
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-
-  mFieldExpression->setLayer( mLayer );
-  mFieldExpression->setGeomCalculator( myDa );
-
-  connect( mBrowseButton, SIGNAL( clicked( bool ) ), this, SLOT( browse() ) );
-  connect( mInsertFieldOrExpression, SIGNAL( clicked( bool ) ), this, SLOT( insertExpressionOrField() ) );
-  connect( mActionName, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
-  connect( mActionText, SIGNAL( textChanged() ), this, SLOT( updateButtons() ) );
-
-  updateButtons();
+  init( defaultActionScopes );
 }
 
 QgsAction::ActionType QgsAttributeActionPropertiesDialog::type() const
@@ -119,14 +88,38 @@ QString QgsAttributeActionPropertiesDialog::actionText() const
   return mActionText->text();
 }
 
-bool QgsAttributeActionPropertiesDialog::showInAttributeTable() const
+QSet<QString> QgsAttributeActionPropertiesDialog::actionScopes() const
 {
-  return mShowInAttributeTable->isChecked();
+  QSet<QString> actionScopes;
+
+  Q_FOREACH ( QCheckBox* cb, mActionScopeCheckBoxes )
+  {
+    if ( cb->isChecked() )
+      actionScopes.insert( cb->property( "ActionScopeName" ).toString() );
+  }
+
+  return actionScopes;
 }
 
 bool QgsAttributeActionPropertiesDialog::capture() const
 {
   return mCaptureOutput->isChecked();
+}
+
+QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext() const
+{
+  QgsExpressionContext context = mLayer->createExpressionContext();
+
+  Q_FOREACH ( QCheckBox* cb, mActionScopeCheckBoxes )
+  {
+    if ( cb->isChecked() )
+    {
+      QgsActionScope actionScope = QgsApplication::actionScopeRegistry()->actionScope( cb->property( "ActionScopeName" ).toString() );
+      context.appendScope( new QgsExpressionContextScope( actionScope.expressionContextScope() ) );
+    }
+  }
+
+  return context;
 }
 
 void QgsAttributeActionPropertiesDialog::browse()
@@ -177,4 +170,48 @@ void QgsAttributeActionPropertiesDialog::updateButtons()
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
   }
+}
+
+void QgsAttributeActionPropertiesDialog::init( const QSet<QString>& actionScopes )
+{
+  QSet<QgsActionScope> availableActionScopes = QgsApplication::actionScopeRegistry()->actionScopes();
+
+  Q_FOREACH ( const QgsActionScope& scope, availableActionScopes )
+  {
+    QCheckBox* actionScopeCheckBox = new QCheckBox( scope.title() );
+    if ( actionScopes.contains( scope.id() ) )
+      actionScopeCheckBox->setChecked( true );
+    QStringList variables = scope.expressionContextScope().variableNames();
+
+    QString tooltip = scope.description();
+    if ( !variables.empty() )
+    {
+      tooltip += "<br><br>";
+      tooltip += tr( "Additional variables" );
+      tooltip += "<ul><li>";
+      tooltip += variables.join( "</li><li>" );
+      tooltip += "</ul></li>";
+    }
+    actionScopeCheckBox->setToolTip( tooltip );
+    actionScopeCheckBox->setProperty( "ActionScopeName", scope.id() );
+    mActionScopeCheckBoxes.append( actionScopeCheckBox );
+    mActionScopesGroupBox->layout()->addWidget( actionScopeCheckBox );
+  }
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+
+  mFieldExpression->setLayer( mLayer );
+  mFieldExpression->setGeomCalculator( myDa );
+  mFieldExpression->registerExpressionContextGenerator( this );
+
+  connect( mBrowseButton, SIGNAL( clicked( bool ) ), this, SLOT( browse() ) );
+  connect( mInsertFieldOrExpression, SIGNAL( clicked( bool ) ), this, SLOT( insertExpressionOrField() ) );
+  connect( mActionName, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
+  connect( mActionText, SIGNAL( textChanged() ), this, SLOT( updateButtons() ) );
+  connect( mChooseIconButton, SIGNAL( clicked( bool ) ), this, SLOT( chooseIcon() ) );
+
+  updateButtons();
 }

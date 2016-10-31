@@ -22,6 +22,8 @@
 #include <qgis.h>
 #include <qgsconfig.h>
 
+class QgsActionScopeRegistry;
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
@@ -34,12 +36,20 @@ typedef void XEvent;
 class CORE_EXPORT QgsApplication : public QApplication
 {
     Q_OBJECT
+
   public:
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
     QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
     virtual ~QgsApplication();
+
+    /**
+     * Returns the singleton instance of the QgsApplication.
+     *
+     * @note Added in QGIS 3.0
+     */
+    static QgsApplication* instance();
 
     /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
@@ -364,6 +374,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     }
 #endif
 
+    /**
+     * Returns the action scope registry.
+     */
+    static QgsActionScopeRegistry* actionScopeRegistry();
+
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should
@@ -429,6 +444,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString sPlatformName;
 
     QMap<QString, QIcon> mIconCache;
+
+    QgsActionScopeRegistry* mActionScopeRegistry;
 };
 
 #endif

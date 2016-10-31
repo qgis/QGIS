@@ -175,7 +175,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Show In Attribute Table</string>
+          <string>Action Scopes</string>
          </property>
         </column>
        </widget>

@@ -22,12 +22,12 @@
 
 #include <QDialog>
 
-class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttributeActionPropertiesDialogBase
+class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttributeActionPropertiesDialogBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, bool showInAttributeTable, QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer* layer, QWidget* parent = nullptr );
 
     QgsAttributeActionPropertiesDialog( QgsVectorLayer* layer, QWidget* parent = nullptr );
 
@@ -41,9 +41,11 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
 
     QString actionText() const;
 
-    bool showInAttributeTable() const;
+    QSet<QString> actionScopes() const;
 
     bool capture() const;
+
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void browse();
@@ -52,7 +54,10 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     void updateButtons();
 
   private:
+    void init( const QSet<QString>& actionScopes );
+
     QgsVectorLayer* mLayer;
+    QList<QCheckBox*> mActionScopeCheckBoxes;
 };
 
 #endif // QGSATTRIBUTEACTIONPROPERTIESDIALOG_H

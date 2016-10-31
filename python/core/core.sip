@@ -18,6 +18,8 @@
 %Include qgsapplication.sip
 %Include qgsaction.sip
 %Include qgsactionmanager.sip
+%Include qgsactionscope.sip
+%Include qgsactionscoperegistry.sip
 %Include qgsaggregatecalculator.sip
 %Include qgsattributetableconfig.sip
 %Include qgsattributeeditorelement.sip

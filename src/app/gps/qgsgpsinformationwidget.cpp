@@ -831,7 +831,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     g.fromWkb( buf, size );
     f->setGeometry( g );
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, QString(), -1, this );
     if ( action.addFeature() )
     {
       if ( mCbxAutoCommit->isChecked() )
@@ -941,7 +941,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       return; //unknown wkbtype
     } // layerWKBType == QgsWkbTypes::Polygon
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, QString(), -1, this );
     if ( action.addFeature() )
     {
       if ( mCbxAutoCommit->isChecked() )

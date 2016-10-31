@@ -317,7 +317,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu* menu = new QgsActionMenu( mModel->layerCache()->layer(), &feature, this );
+    QgsActionMenu* menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "AttributeTableRow" ), this );
     menu->exec( event->globalPos() );
   }
 }

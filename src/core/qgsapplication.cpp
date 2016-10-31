@@ -23,6 +23,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpression.h"
+#include "qgsactionscoperegistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -102,6 +103,8 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
     : QApplication( argc, argv, GUIenabled )
 {
   sPlatformName = platformName;
+
+  mActionScopeRegistry = new QgsActionScopeRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -233,6 +236,12 @@ void QgsApplication::init( QString customConfigPath )
 
 QgsApplication::~QgsApplication()
 {
+  delete mActionScopeRegistry;
+}
+
+QgsApplication* QgsApplication::instance()
+{
+  return qobject_cast<QgsApplication*>( QCoreApplication::instance() );
 }
 
 bool QgsApplication::event( QEvent * event )
@@ -411,7 +420,7 @@ QString QgsApplication::iconPath( const QString& iconFile )
 
 QIcon QgsApplication::getThemeIcon( const QString &theName )
 {
-  QgsApplication* app = qobject_cast<QgsApplication*>( instance() );
+  QgsApplication* app = instance();
   if ( app && app->mIconCache.contains( theName ) )
     return app->mIconCache.value( theName );
 
@@ -1231,6 +1240,11 @@ void QgsApplication::copyPath( const QString& src, const QString& dst )
   {
     QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
   }
+}
+
+QgsActionScopeRegistry* QgsApplication::actionScopeRegistry()
+{
+  return instance()->mActionScopeRegistry;
 }
 
 bool QgsApplication::createDB( QString *errorMessage )

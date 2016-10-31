@@ -14,6 +14,19 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel1">
+     <property name="whatsThis">
+      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+     </property>
+     <property name="text">
+      <string>Description</string>
+     </property>
+     <property name="buddy">
+      <cstring>mActionName</cstring>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="1" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
@@ -47,7 +60,64 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="4">
+   <item row="6" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Type</string>
+     </property>
+     <property name="buddy">
+      <cstring>mActionType</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="mActionType">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>Generic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Python</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mac</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Windows</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Unix</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Open</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
     <widget class="QGroupBox" name="mActionGroupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -135,43 +205,6 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Type</string>
-     </property>
-     <property name="buddy">
-      <cstring>mActionType</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="textLabel1">
-     <property name="whatsThis">
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
-     </property>
-     <property name="text">
-      <string>Description</string>
-     </property>
-     <property name="buddy">
-      <cstring>mActionName</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Icon</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
@@ -179,44 +212,11 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mActionType">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="2" column="1" colspan="3">
+    <widget class="QLineEdit" name="mShortTitle">
+     <property name="placeholderText">
+      <string>Leave empty to use only icon</string>
      </property>
-     <item>
-      <property name="text">
-       <string>Generic</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Python</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mac</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Windows</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Unix</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Open</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="0" column="2">
@@ -229,6 +229,13 @@
      </property>
      <property name="text">
       <string>Capture output</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Icon</string>
      </property>
     </widget>
    </item>
@@ -245,18 +252,12 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="3">
-    <widget class="QLineEdit" name="mShortTitle">
-     <property name="placeholderText">
-      <string>Leave empty to use only icon</string>
+   <item row="4" column="0" colspan="3">
+    <widget class="QGroupBox" name="mActionScopesGroupBox">
+     <property name="title">
+      <string>Action Scopes</string>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QCheckBox" name="mShowInAttributeTable">
-     <property name="text">
-      <string>Show in attribute table</string>
-     </property>
+     <layout class="QFormLayout" name="formLayout"/>
     </widget>
    </item>
   </layout>

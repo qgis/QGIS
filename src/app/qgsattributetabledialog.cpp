@@ -226,6 +226,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
   mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
   mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
+  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -306,6 +307,25 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     mActionToggleMultiEdit->setToolTip( tr( "Multiedit is not supported when using custom UI forms" ) );
     mActionSearchForm->setEnabled( false );
     mActionSearchForm->setToolTip( tr( "Search is not supported when using custom UI forms" ) );
+  }
+
+  QList<QgsAction> actions = mLayer->actions()->listActions( QStringLiteral( "AttributeTable" ) );
+
+  if ( actions.isEmpty() )
+  {
+    mActionFeatureActions->setVisible( false );
+  }
+  else
+  {
+    QMenu* actionMenu = new QMenu();
+    Q_FOREACH ( const QgsAction& action, actions )
+    {
+      QAction* qAction = actionMenu->addAction( action.icon(), action.shortTitle() );
+      qAction->setToolTip( action.name() );
+      qAction->setData( QVariant::fromValue<QgsAction>( action ) );
+      connect( qAction, &QAction::triggered, this, &QgsAttributeTableDialog::layerActionTriggered );
+    }
+    mActionFeatureActions->setMenu( actionMenu );
   }
 
   editingToggled();
@@ -512,6 +532,20 @@ void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww 
   neww->setVisible( true );
 }
 
+void QgsAttributeTableDialog::layerActionTriggered()
+{
+  QAction* qAction = qobject_cast<QAction*>( sender() );
+  Q_ASSERT( qAction );
+
+  QgsAction action = qAction->data().value<QgsAction>();
+
+  QgsExpressionContext context = mLayer->createExpressionContext();
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), "AttributeTable" ) );
+  context.appendScope( scope );
+  action.run( context );
+}
+
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
@@ -662,7 +696,7 @@ void QgsAttributeTableDialog::on_mActionAddFeature_triggered()
   QgsAttributeTableModel* masterModel = mMainView->masterModel();
 
   QgsFeature f;
-  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, -1, this );
+  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QString(), -1, this );
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );

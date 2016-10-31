@@ -181,6 +181,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     /* replace the search widget with a new one */
     void replaceSearchWidget( QWidget* oldw, QWidget* neww );
 
+    void layerActionTriggered();
   signals:
 
     /**

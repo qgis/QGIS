@@ -5740,31 +5740,28 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
 
   mFeatureActionMenu->setActiveAction( action );
 
-  int index = mFeatureActionMenu->actions().indexOf( action );
-
-  if ( vlayer->actions()->size() > 0 && index < vlayer->actions()->size() )
+  QgsAction qgsAction;
+  if ( action )
   {
-    vlayer->actions()->setDefaultAction( index );
+    qgsAction = action->data().value<QgsAction>();
+  }
+
+  if ( qgsAction.isValid() )
+  {
+    vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), qgsAction.id() );
     QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
 
-    if ( index == -1 )
-      index = 0;
-    QgsAction a = vlayer->actions()->listActions().at( index );
+    mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( qgsAction.name() ) );
 
-    if ( !a.name().isEmpty() )
-      mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( a.name() ) );
-    else if ( !a.shortTitle().isEmpty() )
-      mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( a.shortTitle() ) );
-
-    if ( !a.icon().isNull() )
-      mActionFeatureAction->setIcon( a.icon() );
+    if ( !qgsAction.icon().isNull() )
+      mActionFeatureAction->setIcon( qgsAction.icon() );
   }
   else
   {
     //action is from QgsMapLayerActionRegistry
-    vlayer->actions()->setDefaultAction( -1 );
+    vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), QString() );
 
-    QgsMapLayerAction * mapLayerAction = dynamic_cast<QgsMapLayerAction *>( action );
+    QgsMapLayerAction* mapLayerAction = qobject_cast<QgsMapLayerAction*>( action );
     if ( mapLayerAction )
     {
       QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, mapLayerAction );
@@ -5790,19 +5787,22 @@ void QgisApp::refreshFeatureActions()
   if ( !vlayer )
     return;
 
-  QgsActionManager *actions = vlayer->actions();
-  for ( int i = 0; i < actions->size(); i++ )
+  QList<QgsAction> actions = vlayer->actions()->listActions( QStringLiteral( "Canvas" ) );
+  Q_FOREACH ( const QgsAction& action, actions )
   {
-    QAction *action = mFeatureActionMenu->addAction( actions->at( i ).icon(), actions->at( i ).name() );
-    if ( i == actions->defaultAction() )
+    QAction* qAction = new QAction( action.icon(), action.shortTitle(), mFeatureActionMenu );
+    qAction->setData( QVariant::fromValue<QgsAction>( action ) );
+    mFeatureActionMenu->addAction( qAction );
+
+    if ( action.name() == vlayer->actions()->defaultAction( QStringLiteral( "Canvas" ) ).name() )
     {
-      mFeatureActionMenu->setActiveAction( action );
+      mFeatureActionMenu->setActiveAction( qAction );
     }
   }
 
   //add actions registered in QgsMapLayerActionRegistry
   QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
-  if ( actions->size() > 0 && registeredActions.size() > 0 )
+  if ( !actions.isEmpty() && registeredActions.size() > 0 )
   {
     //add a separator between user defined and standard actions
     mFeatureActionMenu->addSeparator();
@@ -10592,7 +10592,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-    bool layerHasActions = vlayer->actions()->size() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+    bool layerHasActions = !vlayer->actions()->listActions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
@@ -10868,16 +10868,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
 void QgisApp::refreshActionFeatureAction()
 {
-  QgsMapLayer* layer = activeLayer();
-
-  if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
-  {
+  mActionFeatureAction->setEnabled( false );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !vlayer )
     return;
-  }
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
-
-  bool layerHasActions = vlayer->actions()->size() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+  bool layerHasActions = !vlayer->actions()->listActions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 

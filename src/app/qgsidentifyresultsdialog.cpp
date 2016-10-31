@@ -428,8 +428,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   //get valid QgsMapLayerActions for this layer
   QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  QList<QgsAction> actions = vlayer->actions()->listActions( QStringLiteral( "AttributeTableRow" ) );
 
-  if ( !vlayer->fields().isEmpty() || vlayer->actions()->size() || !registeredActions.isEmpty() )
+  if ( !vlayer->fields().isEmpty() || !actions.isEmpty() || !registeredActions.isEmpty() )
   {
     QgsTreeWidgetItem *actionItem = new QgsTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -444,17 +445,15 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       actionItem->addChild( editItem );
     }
 
-    for ( int i = 0; i < vlayer->actions()->size(); i++ )
+    Q_FOREACH ( const QgsAction& action, actions )
     {
-      const QgsAction &action = vlayer->actions()->at( i );
-
       if ( !action.runable() )
         continue;
 
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << QLatin1String( "" ) << action.name() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
       twi->setData( 0, Qt::UserRole, "action" );
-      twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
+      twi->setData( 0, Qt::UserRole + 1, action.id() );
       actionItem->addChild( twi );
     }
 
@@ -944,12 +943,12 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "action" ) )
   {
-    doAction( item, item->data( 0, Qt::UserRole + 1 ).toInt() );
+    doAction( item, item->data( 0, Qt::UserRole + 1 ).toString() );
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "map_layer_action" ) )
   {
-    QObject *action = item->data( 0, Qt::UserRole + 1 ).value<QObject *>();
-    doMapLayerAction( item, qobject_cast<QgsMapLayerAction *>( action ) );
+    QgsMapLayerAction* action = item->data( 0, Qt::UserRole + 1 ).value<QgsMapLayerAction*>();
+    doMapLayerAction( item, action );
   }
 }
 
@@ -1039,25 +1038,23 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
   mActionPopup->addSeparator();
 
-  if ( featItem && vlayer && vlayer->actions()->size() > 0 )
+  if ( featItem && vlayer )
   {
-    mActionPopup->addSeparator();
-
-    int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-
-    // The assumption is made that an instance of QgsIdentifyResults is
-    // created for each new Identify Results dialog box, and that the
-    // contents of the popup menu doesn't change during the time that
-    // such a dialog box is around.
-    for ( int i = 0; i < vlayer->actions()->size(); i++ )
+    QList<QgsAction> actions = vlayer->actions()->listActions( QStringLiteral( "FieldSpecific" ) );
+    if ( !actions.isEmpty() )
     {
-      const QgsAction &action = vlayer->actions()->at( i );
+      mActionPopup->addSeparator();
 
-      if ( !action.runable() )
-        continue;
+      int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx, this );
-      mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), action.name(), a, SLOT( execute() ) );
+      Q_FOREACH ( const QgsAction& action, actions )
+      {
+        if ( !action.runable() )
+          continue;
+
+        QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, action.id(), idx, this );
+        mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), action.name(), a, SLOT( execute() ) );
+      }
     }
   }
 
@@ -1179,7 +1176,7 @@ void QgsIdentifyResultsDialog::deactivate()
   }
 }
 
-void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
+void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QString& action )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
@@ -1635,13 +1632,14 @@ void QgsIdentifyResultsDialog::featureForm()
     return;
 
   QgsFeatureId fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
-  int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;
   if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f ) )
     return;
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, idx, -1, this );
+  QString actionId = featItem->data( 0, Qt::UserRole + 1 ).toString();
+
+  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, actionId, -1, this );
   if ( vlayer->isEditable() )
   {
     action.editFeature( false );

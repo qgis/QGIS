@@ -33,7 +33,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QString& actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
@@ -59,7 +59,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
     QgsVectorLayer* mLayer;
     QgsFeature* mFeature;
-    int mAction;
+    QString mActionId;
     int mIdx;
 
     bool mFeatureSaved;
