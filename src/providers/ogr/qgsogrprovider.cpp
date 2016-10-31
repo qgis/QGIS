@@ -4166,7 +4166,7 @@ void QgsOgrProvider::open( OpenMode mode )
       }
     }
   }
-  printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
+  // printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
   // For debug/testing purposes
   if ( !mValid )
     setProperty( "_debug_open_mode", "invalid" );
