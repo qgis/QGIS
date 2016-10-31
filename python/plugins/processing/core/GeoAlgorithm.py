@@ -36,7 +36,7 @@ import copy
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
-from qgis.core import QgsVectorLayer, QgsRasterLayer
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsExpressionContext, QgsExpressionContextUtils
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -533,3 +533,17 @@ class GeoAlgorithm(object):
         if context == '':
             context = self.__class__.__name__
         return string, QCoreApplication.translate(context, string)
+
+    def createExpressionContext(self, layer=None):
+
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        context.appendScope(QgsExpressionContextUtils.projectScope())
+
+        if self.model:
+            context.appendScope(self.model.createExpressionContextScope())
+
+        if layer:
+            context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+
+        return context
