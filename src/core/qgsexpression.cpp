@@ -3670,14 +3670,22 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
       if ( !node )
         return true;
 
-      if ( !node->args() || node->args()->count() < 4 )
+      if ( !node->args() )
         return false;
-      else
+
+      QSet<QString> referencedVars;
+      if ( node->args()->count() > 2 )
+      {
+        QgsExpression::Node* subExpressionNode = node->args()->at( 2 );
+        referencedVars = subExpressionNode->referencedVariables();
+      }
+
+      if ( node->args()->count() > 3 )
       {
         QgsExpression::Node* filterNode = node->args()->at( 3 );
-        QSet<QString> referencedVars = filterNode->referencedVariables();
-        return referencedVars.contains( "parent" ) || referencedVars.contains( QString() );
+        referencedVars = filterNode->referencedVariables();
       }
+      return referencedVars.contains( "parent" ) || referencedVars.contains( QString() );
     },
     []( const QgsExpression::NodeFunction* node )
     {
@@ -3686,18 +3694,29 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
       if ( !node )
         return QSet<QString>() << QgsFeatureRequest::AllAttributes;
 
-      if ( !node->args() || node->args()->count() < 4 )
+      if ( !node->args() )
         return QSet<QString>();
-      else
+
+      QSet<QString> referencedCols;
+      QSet<QString> referencedVars;
+
+      if ( node->args()->count() > 2 )
+      {
+        QgsExpression::Node* subExpressionNode = node->args()->at( 2 );
+        referencedVars = subExpressionNode->referencedVariables();
+        referencedCols = subExpressionNode->referencedColumns();
+      }
+      if ( node->args()->count() > 3 )
       {
         QgsExpression::Node* filterNode = node->args()->at( 3 );
-        QSet<QString> referencedVars = filterNode->referencedVariables();
-
-        if ( referencedVars.contains( "parent" ) || referencedVars.contains( QString() ) )
-          return QSet<QString>() << QgsFeatureRequest::AllAttributes;
-        else
-          return QSet<QString>();
+        referencedVars = filterNode->referencedVariables();
+        referencedCols.unite( filterNode->referencedColumns() );
       }
+
+      if ( referencedVars.contains( "parent" ) || referencedVars.contains( QString() ) )
+        return QSet<QString>() << QgsFeatureRequest::AllAttributes;
+      else
+        return referencedCols;
     },
     true
                          )
