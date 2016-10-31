@@ -88,6 +88,8 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 
     virtual QHash<const char *, int> supportedWidgetTypes() override;
 
+    virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
+
   private:
     QgsAttributeEditorContext mEditorContext;
     QgsMapCanvas* mCanvas;

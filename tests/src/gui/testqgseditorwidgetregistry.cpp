@@ -16,6 +16,9 @@
 
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetautoconf.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsmaplayerregistry.h"
 
 
 class TestQgsEditorWidgetRegistry: public QObject
@@ -107,6 +110,30 @@ class TestQgsEditorWidgetRegistry: public QObject
       // an unknown fields leads to a default setup with a TextEdit
       QCOMPARE( setup.type(), QString( "TextEdit" ) );
       QCOMPARE( setup.config().count(), 0 );
+    }
+
+    void referencedLayers()
+    {
+      //build two layers
+      QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=name:string&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer vl2( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+      QgsMapLayerRegistry::instance()->addMapLayer( &vl1, false, false );
+      QgsMapLayerRegistry::instance()->addMapLayer( &vl2, false, false );
+
+      //create a relation between them
+      QgsRelation relation;
+      relation.setRelationId( QStringLiteral( "vl1->vl2" ) );
+      relation.setRelationName( QStringLiteral( "vl1->vl2" ) );
+      relation.setReferencingLayer( vl1.id() );
+      relation.setReferencedLayer( vl2.id() );
+      relation.addFieldPair( "fk", "pk" );
+      QVERIFY( relation.isValid() );
+      QgsProject::instance()->relationManager()->addRelation( relation );
+
+      //check the guessed editor widget type for vl1.fk is RelationReference
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl1, QStringLiteral( "fk" ) );
+      QCOMPARE( setup.type(), QString( "RelationReference" ) );
+      QCOMPARE( setup.config(), QgsEditorWidgetConfig() );
     }
 
     void typeFromPlugin()
