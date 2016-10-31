@@ -276,6 +276,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         for inp in list(self.inputs.values()):
             if inp.param not in self.parameters:
                 self.parameters.append(inp.param)
+        self.parameters.sort(key=attrgetter("description"))
+
         self.outputs = []
         for alg in list(self.algs.values()):
             if alg.active:
