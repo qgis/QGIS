@@ -160,9 +160,10 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
             return
         self.internalTestBug15351('commit_closeIter_closeProvider')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
     def testGeopackageExtentUpdate(self):
         ''' test http://hub.qgis.org/issues/15273 '''
+        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2):
+            return
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
