@@ -701,8 +701,12 @@ static QVariant fcnAggregate( const QVariantList& values, const QgsExpressionCon
   {
     QString cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter );
 
+    QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
-    if ( filterExp.referencedVariables().contains( "parent" ) || filterExp.referencedVariables().contains( QString() ) )
+    if ( filterExp.referencedVariables().contains( "parent" )
+         || filterExp.referencedVariables().contains( QString() )
+         || subExp.referencedVariables().contains( "parent" )
+         || subExp.referencedVariables().contains( QString() ) )
     {
       cacheKey += ':' + qHash( context->feature() );
     }
