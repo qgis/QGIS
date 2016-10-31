@@ -132,8 +132,7 @@ class ModelerGraphicItem(QGraphicsItem):
         return rect
 
     def mouseDoubleClickEvent(self, event):
-        pass
-        #self.editElement()
+        self.editElement()
 
     def contextMenuEvent(self, event):
         if isinstance(self.element, ModelerOutput):
