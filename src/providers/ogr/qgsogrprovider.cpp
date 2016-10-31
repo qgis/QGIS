@@ -3967,14 +3967,14 @@ void QgsOgrProvider::recalculateFeatureCount()
     OGR_L_ResetReading( ogrLayer );
     OGRFeatureH fet;
     const OGRwkbGeometryType flattenGeomTypeFilter =
-        QgsOgrProvider::ogrWkbSingleFlatten( mOgrGeometryTypeFilter );
+        QgsOgrProviderUtils::wkbSingleFlattenWrapper( mOgrGeometryTypeFilter );
     while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
       if ( geom )
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
-        gType = QgsOgrProvider::ogrWkbSingleFlatten( gType );
+        gType = QgsOgrProviderUtils::wkbSingleFlattenWrapper( gType );
         if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
       }
       OGR_F_Destroy( fet );
@@ -4181,7 +4181,7 @@ void QgsOgrProvider::open( OpenMode mode )
       }
     }
   }
-  // printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
+  printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
   // For debug/testing purposes
   if ( !mValid )
     setProperty( "_debug_open_mode", "invalid" );
