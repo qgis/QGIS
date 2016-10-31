@@ -49,7 +49,7 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
-  QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, -1, -1, this );
+  QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
   bool res = action->addFeature( QgsAttributeMap(), showModal );
   if ( showModal )
     delete action;

@@ -335,6 +335,11 @@ variant instead.
 - expandAction() has been removed. Use QgsExpression::replaceExpressionText() instead.
 - setPythonExecute() was removed. Initialize QgsPythonRunner instead.
 
+QgsAction             {#qgis_api_break_3_0_QgsAction}
+---------
+
+- `QgsAction::action()` has been renamed to `QgsAction::command()`.
+
 
 QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget}
 -------------------------------

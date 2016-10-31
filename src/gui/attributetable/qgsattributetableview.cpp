@@ -176,24 +176,19 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   QAction* defaultAction = nullptr;
 
   // first add user created layer actions
-  QgsActionManager* actions = mFilterModel->layer()->actions();
-  for ( int i = 0; i < actions->size(); ++i )
+  QList<QgsAction> actions = mFilterModel->layer()->actions()->listActions( QStringLiteral( "AttributeTableRow" ) );
+  Q_FOREACH ( const QgsAction& action, actions )
   {
-    const QgsAction& action = actions->at( i );
-
-    if ( !action.showInAttributeTable() )
-      continue;
-
     QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QLatin1String( "" );
     QAction* act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
     act->setData( "user_action" );
-    act->setProperty( "action_id", i );
     act->setProperty( "fid", fid );
+    act->setProperty( "action_id", action.id() );
     connect( act, SIGNAL( triggered( bool ) ), this, SLOT( actionTriggered() ) );
     actionList << act;
 
-    if ( actions->defaultAction() == i )
+    if ( mFilterModel->layer()->actions()->defaultAction( QStringLiteral( "AttributeTableRow" ) ).id() == action.id() )
       defaultAction = act;
   }
 
@@ -242,8 +237,11 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     static_cast< QHBoxLayout* >( container->layout() )->addStretch();
   }
 
+  // TODO: Rethink default actions
+#if 0
   if ( toolButton && !toolButton->actions().isEmpty() && actions->defaultAction() == -1 )
     toolButton->setDefaultAction( toolButton->actions().at( 0 ) );
+#endif
 
   return container;
 }
@@ -416,7 +414,7 @@ void QgsAttributeTableView::actionTriggered()
 
   if ( action->data().toString() == QLatin1String( "user_action" ) )
   {
-    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toInt(), f );
+    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toString(), f );
   }
   else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {

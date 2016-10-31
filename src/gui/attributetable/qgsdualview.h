@@ -353,7 +353,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     Q_OBJECT
 
   public:
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, int action, const QModelIndex &fieldIdx )
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QString& action, const QModelIndex &fieldIdx )
         : QAction( name, dualView )
         , mDualView( dualView )
         , mAction( action )
@@ -366,7 +366,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
 
   private:
     QgsDualView* mDualView;
-    int mAction;
+    QString mAction;
     QModelIndex mFieldIdx;
 };
 

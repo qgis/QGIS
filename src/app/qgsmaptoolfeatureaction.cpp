@@ -73,7 +73,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer->actions()->size() == 0 && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty() )
+  if ( vlayer->actions()->listActions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty() )
   {
     emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
     return;
@@ -100,28 +100,22 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 
   QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
 
-  QgsFeatureList featList;
+  QgsRectangle r;
+
+  // create the search rectangle
+  double searchRadius = searchRadiusMU( mCanvas );
+
+  r.setXMinimum( point.x() - searchRadius );
+  r.setXMaximum( point.x() + searchRadius );
+  r.setYMinimum( point.y() - searchRadius );
+  r.setYMaximum( point.y() + searchRadius );
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
   try
   {
-    // create the search rectangle
-    double searchRadius = searchRadiusMU( mCanvas );
-
-    QgsRectangle r;
-    r.setXMinimum( point.x() - searchRadius );
-    r.setXMaximum( point.x() + searchRadius );
-    r.setYMinimum( point.y() - searchRadius );
-    r.setYMaximum( point.y() + searchRadius );
-
     r = toLayerCoordinates( layer, r );
-
-    QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-      featList << QgsFeature( f );
   }
   catch ( QgsCsException & cse )
   {
@@ -130,12 +124,13 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  if ( featList.isEmpty() )
-    return false;
+  QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
 
-  Q_FOREACH ( const QgsFeature& feat, featList )
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  QgsFeature feat;
+  while ( fit.nextFeature( feat ) )
   {
-    if ( layer->actions()->defaultAction() >= 0 )
+    if ( defaultAction.isValid() )
     {
       // define custom substitutions: layer id and clicked coords
       QgsExpressionContext context;
@@ -145,10 +140,10 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
       context << actionScope;
 
-      int actionIdx = layer->actions()->defaultAction();
-      layer->actions()->doAction( actionIdx, feat, context );
+      defaultAction.run( layer, feat, context );
     }
     else
     {

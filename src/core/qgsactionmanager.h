@@ -34,6 +34,7 @@ class QDomNode;
 class QDomDocument;
 class QgsPythonUtils;
 class QgsVectorLayer;
+class QgsExpressionContextScope;
 class QgsExpressionContext;
 
 /** \ingroup core
@@ -74,15 +75,12 @@ class CORE_EXPORT QgsActionManager
      */
     void addAction( const QgsAction& action );
 
-    //! Remove an action at given index
-    void removeAction( int index );
-
     /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
-    void doAction( int index,
-                   const QgsFeature &feat,
+    void doAction( const QString& actionId,
+                   const QgsFeature &feature,
                    int defaultValueIndex = 0 );
 
     /** Does the action using the expression engine to replace any embedded expressions
@@ -91,7 +89,7 @@ class CORE_EXPORT QgsActionManager
      * @param feature feature to run action for
      * @param context expression context to evalute expressions under
      */
-    void doAction( int index,
+    void doAction( const QString& actionId,
                    const QgsFeature& feature,
                    const QgsExpressionContext& context );
 
@@ -99,9 +97,10 @@ class CORE_EXPORT QgsActionManager
     void clearActions();
 
     /**
-     * Return a list of all actions
+     * Return a list of actions that are available in the given action scope.
+     * If no action scope is provided, all actions will be returned.
      */
-    QList<QgsAction> listActions() const;
+    QList<QgsAction> listActions( const QString& actionScope = QString() ) const;
 
     //! Return the layer
     QgsVectorLayer* layer() const { return mLayer; }
@@ -113,40 +112,36 @@ class CORE_EXPORT QgsActionManager
     bool readXml( const QDomNode& layer_node );
 
     /**
-     * Get the number of actions managed by this.
+     * Get an action by its id.
+     *
+     * @note Added in QGIS 3.0
      */
-    int size() const { return mActions.size(); }
+    QgsAction action( const QString& id );
 
     /**
-     * Get the action at the specified index.
+     * Each scope can have a default action. This will be saved in the project
+     * file.
+     *
+     * @note Added in QGIS 3.0
      */
-    const QgsAction& at( int idx ) const { return mActions.at( idx ); }
+    void setDefaultAction( const QString& actionScope, const QString& actionId );
 
     /**
-     * Get the action at the specified index.
+     * Each scope can have a default action. This will be saved in the project
+     * file.
+     *
+     * @note Added in QGIS 3.0
      */
-    QgsAction operator[]( int idx ) const { return mActions[idx]; }
-
-    /**
-     * Returns the index of the default action, or -1 if no default action is available.
-     * @see setDefaultAction()
-     */
-    int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? -1 : mDefaultAction; }
-
-    /**
-     * Set the index of the default action.
-     * @param actionNumber index of action which should be made the default for the layer
-     * @see defaultAction()
-     */
-    void setDefaultAction( int actionNumber ) { mDefaultAction = actionNumber ; }
+    QgsAction defaultAction( const QString& actionScope );
 
   private:
     QList<QgsAction> mActions;
     QgsVectorLayer *mLayer;
     static void ( *smPythonExecute )( const QString & );
 
-    void runAction( const QgsAction &action,
-                    void ( *executePython )( const QString & ) = nullptr );
+    void runAction( const QgsAction &action );
+
+    QVariantMap mDefaultActions;
 
     int mDefaultAction;
 

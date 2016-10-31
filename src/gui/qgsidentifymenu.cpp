@@ -266,7 +266,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).isEmpty();
     if ( !createMenu && mShowFeatureActions )
     {
-      QgsActionMenu* featureActionMenu = new QgsActionMenu( layer, &( results[0].mFeature ), this );
+      QgsActionMenu* featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "AttributeTableRow" ), this );
       createMenu  = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
@@ -351,7 +351,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     QList<QgsMapLayerAction*> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
     if ( mShowFeatureActions )
     {
-      featureActionMenu = new QgsActionMenu( layer, result.mFeature.id(), layerMenu );
+      featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "AttributeTableRow" ), layerMenu );
     }
 
     // feature title

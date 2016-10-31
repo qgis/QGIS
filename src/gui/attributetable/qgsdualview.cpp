@@ -390,20 +390,18 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   }
 
   //add user-defined actions to context menu
-  if ( mLayerCache->layer()->actions()->size() != 0 )
+  QList<QgsAction> actions = mLayerCache->layer()->actions()->listActions( QStringLiteral( "FieldSpecific" ) );
+  if ( !actions.isEmpty() )
   {
-
-    QAction *a = menu->addAction( tr( "Run layer action" ) );
+    QAction* a = menu->addAction( tr( "Run layer action" ) );
     a->setEnabled( false );
 
-    for ( int i = 0; i < mLayerCache->layer()->actions()->size(); i++ )
+    Q_FOREACH ( const QgsAction& action, actions )
     {
-      const QgsAction &action = mLayerCache->layer()->actions()->at( i );
-
       if ( !action.runable() )
         continue;
 
-      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, i, sourceIndex );
+      QgsAttributeTableAction* a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
       menu->addAction( action.name(), a, SLOT( execute() ) );
     }
   }
@@ -424,7 +422,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   }
 
   menu->addSeparator();
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
+  QgsAttributeTableAction* a = new QgsAttributeTableAction( tr( "Open form" ), this, QString(), sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
 

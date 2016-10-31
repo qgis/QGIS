@@ -32,11 +32,11 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, int action, int defaultAttr, QObject *parent )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QString& actionId, int defaultAttr, QObject *parent )
     : QAction( name, parent )
     , mLayer( layer )
     , mFeature( &f )
-    , mAction( action )
+    , mActionId( actionId )
     , mIdx( defaultAttr )
     , mFeatureSaved( false )
 {
@@ -44,7 +44,7 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
 
 void QgsFeatureAction::execute()
 {
-  mLayer->actions()->doAction( mAction, *mFeature, mIdx );
+  mLayer->actions()->doAction( mActionId, *mFeature, mIdx );
 }
 
 QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
@@ -66,7 +66,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
 
-  if ( mLayer->actions()->size() > 0 )
+  QList<QgsAction> actions = mLayer->actions()->listActions();
+  if ( !actions.isEmpty() )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
@@ -74,15 +75,13 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     a->setEnabled( false );
     dialog->addAction( a );
 
-    for ( int i = 0; i < mLayer->actions()->size(); i++ )
+    Q_FOREACH ( const QgsAction& action, actions )
     {
-      const QgsAction &action = mLayer->actions()->at( i );
-
       if ( !action.runable() )
         continue;
 
       QgsFeature& feat = const_cast<QgsFeature&>( *dialog->feature() );
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, i, -1, dialog );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
       dialog->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 

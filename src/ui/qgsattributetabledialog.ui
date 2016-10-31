@@ -187,6 +187,8 @@
      <addaction name="mActionOpenFieldCalculator"/>
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
+     <addaction name="separator"/>
+     <addaction name="mActionFeatureActions"/>
     </widget>
    </item>
    <item row="6" column="0">
@@ -611,6 +613,15 @@
    </property>
    <property name="toolTip">
     <string>Conditional formatting</string>
+   </property>
+  </action>
+  <action name="mActionFeatureActions">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mAction.svg</normaloff>:/images/themes/default/mAction.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Actions</string>
    </property>
   </action>
  </widget>

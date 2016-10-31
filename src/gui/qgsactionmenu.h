@@ -20,6 +20,7 @@
 #include <QSignalMapper>
 
 #include "qgsfeature.h"
+#include "qgsaction.h"
 
 class QgsMapLayer;
 class QgsMapLayerAction;
@@ -44,37 +45,12 @@ class GUI_EXPORT QgsActionMenu : public QMenu
 
     struct ActionData
     {
-      ActionData()
-          : actionType( Invalid )
-          , actionId( 0 )
-          , featureId( 0 )
-          , mapLayer( nullptr )
-      {}
-
-      ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-          : actionType( AttributeAction )
-          , actionId( actionId )
-          , featureId( featureId )
-          , mapLayer( mapLayer )
-      {}
-
-      ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-          : actionType( MapLayerAction )
-          , actionId( action )
-          , featureId( featureId )
-          , mapLayer( mapLayer )
-      {}
+      ActionData();
+      ActionData( const QgsAction& action, QgsFeatureId featureId, QgsMapLayer* mapLayer );
+      ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer );
 
       ActionType actionType;
-
-      union aid
-      {
-        aid( int i ) : id( i ) {}
-        aid( QgsMapLayerAction* a ) : action( a ) {}
-        int id;
-        QgsMapLayerAction* action;
-      } actionId;
-
+      QVariant actionData;
       QgsFeatureId featureId;
       QgsMapLayer* mapLayer;
     };
@@ -87,7 +63,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      *                 for the lifetime of this object.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature *feature, QWidget *parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature& feature, const QString& actionScope, QWidget *parent = nullptr );
 
     /**
      * Constructs a new QgsActionMenu
@@ -96,7 +72,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param fid      The feature id of the feature for which this action will be run.
      * @param parent   The usual QWidget parent.
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, QWidget *parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString& actionScope, QWidget *parent = nullptr );
 
     /**
      * Destructor
@@ -109,7 +85,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param feature  A feature. Will not take ownership. It's the callers responsibility to keep the feature
      *                 as long as the menu is displayed and the action is running.
      */
-    void setFeature( QgsFeature* feature );
+    void setFeature( const QgsFeature& feature );
 
   private slots:
     void triggerAction();
@@ -120,14 +96,15 @@ class GUI_EXPORT QgsActionMenu : public QMenu
 
   private:
     void init();
-    const QgsFeature* feature();
+    QgsFeature feature();
 
     QgsVectorLayer* mLayer;
-    QgsActionManager* mActions;
-    const QgsFeature* mFeature;
+    QList<QgsAction> mActions;
+    QgsFeature mFeature;
     QgsFeatureId mFeatureId;
-    bool mOwnsFeature;
+    QString mActionScope;
 };
+
 
 Q_DECLARE_METATYPE( QgsActionMenu::ActionData )
 

@@ -42,43 +42,38 @@
 
 void QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture )
 {
-  mActions << QgsAction( type, name, action, capture );
+  addAction( QgsAction( type, name, action, capture ) );
 }
 
 void QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
 {
-  mActions << QgsAction( type, name, action, icon, capture );
+  addAction( QgsAction( type, name, action, icon, capture ) );
 }
 
 void QgsActionManager::addAction( const QgsAction& action )
 {
-  mActions << action;
+  static int actionId = 0;
+
+  mActions.insert( ++actionId, action );
 }
 
-void QgsActionManager::removeAction( int index )
-{
-  if ( index >= 0 && index < mActions.size() )
-  {
-    mActions.removeAt( index );
-  }
-}
-
-void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
+void QgsActionManager::doAction( const QString& actionId, const QgsFeature& feature, int defaultValueIndex )
 {
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
-  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "current_field" ), feat.attribute( defaultValueIndex ), true ) );
+  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_index" ), defaultValueIndex, true ) );
+  if ( defaultValueIndex >= 0 && defaultValueIndex < feature.fields().size() )
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_name" ), feature.fields().at( defaultValueIndex ), true ) );
+  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_value" ), feature.attribute( defaultValueIndex ), true ) );
   context << actionScope;
-  doAction( index, feat, context );
+  doAction( actionId, feature, context );
 }
 
-void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExpressionContext& context )
+void QgsActionManager::doAction( const QString& actionId, const QgsFeature& feat, const QgsExpressionContext& context )
 {
-  if ( index < 0 || index >= size() )
-    return;
+  QgsAction act = action( actionId );
 
-  const QgsAction &action = at( index );
-  if ( !action.runable() )
+  if ( !act.isValid() || !act.runable() )
     return;
 
   QgsExpressionContext actionContext( context );
@@ -87,11 +82,11 @@ void QgsActionManager::doAction( int index, const QgsFeature& feat, const QgsExp
     actionContext << QgsExpressionContextUtils::layerScope( mLayer );
   actionContext.setFeature( feat );
 
-  QString expandedAction = QgsExpression::replaceExpressionText( action.action(), &actionContext );
+  QString expandedAction = QgsExpression::replaceExpressionText( act.command(), &actionContext );
   if ( expandedAction.isEmpty() )
     return;
 
-  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
+  QgsAction newAction( act.type(), act.name(), expandedAction, act.capture() );
   runAction( newAction );
 }
 
@@ -100,44 +95,44 @@ void QgsActionManager::clearActions()
   mActions.clear();
 }
 
-QList<QgsAction> QgsActionManager::listActions() const
+QList<QgsAction> QgsActionManager::listActions( const QString& actionScope ) const
 {
-  return mActions;
+  if ( actionScope.isNull() )
+    return mActions;
+  else
+  {
+    QList<QgsAction> actions;
+
+    Q_FOREACH ( const QgsAction& action, mActions )
+    {
+      if ( action.actionScopes().contains( actionScope ) )
+        actions.append( action );
+    }
+
+    return actions;
+  }
 }
 
-void QgsActionManager::runAction( const QgsAction &action, void ( *executePython )( const QString & ) )
+void QgsActionManager::runAction( const QgsAction &action )
 {
   if ( action.type() == QgsAction::OpenUrl )
   {
-    QFileInfo finfo( action.action() );
+    QFileInfo finfo( action.command() );
     if ( finfo.exists() && finfo.isFile() )
-      QDesktopServices::openUrl( QUrl::fromLocalFile( action.action() ) );
+      QDesktopServices::openUrl( QUrl::fromLocalFile( action.command() ) );
     else
-      QDesktopServices::openUrl( QUrl( action.action(), QUrl::TolerantMode ) );
+      QDesktopServices::openUrl( QUrl( action.command(), QUrl::TolerantMode ) );
   }
   else if ( action.type() == QgsAction::GenericPython )
   {
-    if ( executePython )
-    {
-      // deprecated
-      executePython( action.action() );
-    }
-    else if ( smPythonExecute )
-    {
-      // deprecated
-      smPythonExecute( action.action() );
-    }
-    else
-    {
-      // TODO: capture output from QgsPythonRunner (like QgsRunProcess does)
-      QgsPythonRunner::run( action.action() );
-    }
+    // TODO: capture output from QgsPythonRunner (like QgsRunProcess does)
+    QgsPythonRunner::run( action.command() );
   }
   else
   {
     // The QgsRunProcess instance created by this static function
     // deletes itself when no longer needed.
-    QgsRunProcess::create( action.action(), action.capture() );
+    QgsRunProcess::create( action.command(), action.capture() );
   }
 }
 
@@ -164,9 +159,15 @@ bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
     actionSetting.setAttribute( QStringLiteral( "name" ), action.name() );
     actionSetting.setAttribute( QStringLiteral( "shortTitle" ), action.shortTitle() );
     actionSetting.setAttribute( QStringLiteral( "icon" ), action.iconPath() );
-    actionSetting.setAttribute( QStringLiteral( "action" ), action.action() );
+    actionSetting.setAttribute( QStringLiteral( "action" ), action.command() );
     actionSetting.setAttribute( QStringLiteral( "capture" ), action.capture() );
-    actionSetting.setAttribute( QStringLiteral( "showInAttributeTable" ), action.showInAttributeTable() );
+
+    Q_FOREACH ( const QString& scope, action.actionScopes() )
+    {
+      QDomElement actionScopeElem = doc.createElement( "actionScope" );
+      actionScopeElem.setAttribute( "id", scope );
+      actionSetting.appendChild( actionScopeElem );
+    }
     aActions.appendChild( actionSetting );
   }
   layer_node.appendChild( aActions );
@@ -188,14 +189,36 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
+
+      QDomNodeList actionScopeNodes = setting.elementsByTagName( "actionScope" );
+      QSet<QString> actionScopes;
+
+      if ( actionScopeNodes.isEmpty() )
+      {
+        actionScopes
+        << QStringLiteral( "Canvas" )
+        << QStringLiteral( "FieldSpecific" )
+        << QStringLiteral( "AttributeTableRow" )
+        << QStringLiteral( "FeatureForm" );
+      }
+      else
+      {
+        for ( int j = 0; j < actionScopeNodes.length(); ++j )
+        {
+          QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
+          actionScopes << actionScopeElem.attribute( "id" );
+        }
+      }
+
+
       mActions.append(
         QgsAction( static_cast< QgsAction::ActionType >( setting.attributeNode( QStringLiteral( "type" ) ).value().toInt() ),
                    setting.attributeNode( QStringLiteral( "name" ) ).value(),
                    setting.attributeNode( QStringLiteral( "action" ) ).value(),
                    setting.attributeNode( QStringLiteral( "icon" ) ).value(),
                    setting.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0,
-                   !setting.attributes().contains( QStringLiteral( "showInAttributeTable" ) ) || setting.attributeNode( QStringLiteral( "showInAttributeTable" ) ).value().toInt() != 0,
-                   setting.attributeNode( QStringLiteral( "shortTitle" ) ).value()
+                   setting.attributeNode( QStringLiteral( "shortTitle" ) ).value(),
+                   actionScopes
                  )
       );
     }
@@ -203,4 +226,23 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
   return true;
 }
 
-void ( *QgsActionManager::smPythonExecute )( const QString & ) = nullptr;
+QgsAction QgsActionManager::action( const QString& id )
+{
+  Q_FOREACH ( const QgsAction& action, mActions )
+  {
+    if ( action.id() == id )
+      return action;
+  }
+
+  return QgsAction();
+}
+
+void QgsActionManager::setDefaultAction( const QString& actionScope, const QString& actionId )
+{
+  mDefaultActions[ actionScope ] = actionId;
+}
+
+QgsAction QgsActionManager::defaultAction( const QString& actionScope )
+{
+  return action( mDefaultActions.value( actionScope ).toString() );
+}
