@@ -31,7 +31,7 @@ import sys
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray
+from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, pyqtSignal
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter
 from qgis.core import QgsApplication
@@ -56,6 +56,8 @@ WIDGET, BASE = uic.loadUiType(
 class ModelerDialog(BASE, WIDGET):
 
     CANVAS_SIZE = 4000
+
+    update_model = pyqtSignal()
 
     def __init__(self, alg=None):
         super(ModelerDialog, self).__init__(None)
@@ -205,9 +207,6 @@ class ModelerDialog(BASE, WIDGET):
         self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
         self.help = None
-        # Indicates whether to update or not the toolbox after
-        # closing this dialog
-        self.update = False
 
         self.hasChanged = False
 
@@ -339,7 +338,7 @@ class ModelerDialog(BASE, WIDGET):
                 return
             fout.write(text)
             fout.close()
-            self.update = True
+            self.update_model.emit()
             self.bar.pushMessage("", "Model was correctly saved", level=QgsMessageBar.SUCCESS, duration=5)
 
             self.hasChanged = False

@@ -159,9 +159,11 @@ class ProcessingPlugin(object):
 
     def openModeler(self):
         dlg = ModelerDialog()
-        dlg.exec_()
-        if dlg.update:
-            algList.reloadProvider('model')
+        dlg.update_model.connect(self.updateModel)
+        dlg.show()
+
+    def updateModel(self):
+        algList.reloadProvider('model')
 
     def openResults(self):
         dlg = ResultsDialog()
