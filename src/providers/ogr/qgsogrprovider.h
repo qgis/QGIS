@@ -540,6 +540,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     OGRLayerH OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QString mLayerName, long mLayerIndex );
 };
 
+
 class QgsOgrProviderUtils
 {
   public:
@@ -859,4 +860,5 @@ class QgsOgrProviderUtils
     static OGRDataSourceH OGROpenWrapper( const char* pszPath, bool bUpdate, OGRSFDriverH *phDriver );
     static void OGRDestroyWrapper( OGRDataSourceH ogrDataSource );
 };
+
 #endif // QGSOGRPROVIDER_H
