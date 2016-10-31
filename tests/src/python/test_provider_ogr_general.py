@@ -63,6 +63,8 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
     gdal_version_num=0
     gdal_build_num=0
     gdal_build_version=""
+    gdal_runtime_version=""
+    ogr_runtime_supported=1
 
     def setUp(self):
         """Run before each test."""
@@ -72,11 +74,14 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         except AttributeError:
             self.gdal_build_num = self.gdal_version_num
             self.gdal_build_version = gdal.VersionInfo('VERSION_NUM')
+            self.gdal_runtime_version = gdal.VersionInfo('VERSION_NUM')
         else:
+            self.ogr_runtime_supported = QGis.GDAL_OGR_RUNTIME_SUPPORTED
             self.gdal_build_version = QGis.GDAL_BUILD_VERSION
+            self.gdal_runtime_version = QGis.GDAL_RUNTIME_VERSION
             self.gdal_build_num = (QGis.GDAL_BUILD_VERSION_MAJOR*1000000)+(QGis.GDAL_BUILD_VERSION_MINOR*10000)+(QGis.GDAL_BUILD_VERSION_REV*100)
 
-        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%d,%s]' % (self.gdal_version_num, self.gdal_build_num,self.gdal_build_version))
+        print('-I-> Using version of gdal/ogr[%d,%s] qgis built with gdal[%d,%s] ogr_runtime_supported[%d]' % (self.gdal_version_num,self.gdal_runtime_version, self.gdal_build_num,self.gdal_build_version,self.ogr_runtime_supported))
 
     @classmethod
     def setUpClass(cls):
@@ -99,11 +104,14 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # spatialite gdal_220.autotest.ogr_spatialite_views_writable.sqlite < gdal_220.autotest.ogr_spatialite_views_writable.sql
 # Note: this function should run first
 #
-
     def test_00_OgrSpatialiteViewsWritable(self):
+
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrSpatialiteViewsWritable: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
         
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-            print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s] ' % (self.gdal_version_num, self.gdal_build_version))
+            print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             print('-W-> Note: when qgis is compiled with gdal 2.*\n\tthe application may be killed with: \'symbol lookup error\'\n\t\t undefined symbol: OGR_GT_HasM \n')
             print('-W-> Note: when qgis is compiled with gdal 2.*\n\ttpython-scripts may fail with: \' libqgis_core.so.2.17.0:\'')
             print('\t\t undefined symbol: OGR_F_GetFieldAsInteger64\n\t\t undefined symbol: OGR_F_SetFieldInteger64\n\t\t undefined symbol: OGR_G_ExportToIsoWkb \n')
@@ -112,13 +120,20 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         print('-I-> Reading db(%s)' % (datasource))
         vl_positions = QgsVectorLayer(u'{}|layerid=0|layername=positions|featurescount=5|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
         self.assertTrue(vl_positions.isValid())
-        sub_layers_check=1
-        if ((self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)) or (self.gdal_build_num < GDAL_COMPUTE_VERSION(2, 0, 0))):
-            sub_layers_check=4 
-        self.assertEqual(len(vl_positions.dataProvider().subLayers()), sub_layers_check)
+        sub_layers_check=4
+        count_layers=len(vl_positions.dataProvider().subLayers())
+        self.assertEqual(count_layers, sub_layers_check)
         self.assertEqual(vl_positions.featureCount(), 5)
+
+        for index in range(count_layers):
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_positions.dataProvider().subLayers()[index]))
+
         if vl_positions.dataProvider().subLayers()[0].startswith('0:positions'):
             print('-I-> SpatialTable(%s) with [%d] rows' % ('positions',vl_positions.featureCount()))
+            count_fields=len(vl_positions.fields())
+            for index in range(count_fields):
+                print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_positions.fields()[index].name(), vl_positions.fields()[index].typeName()))
+
             f = next(vl_positions.getFeatures())
             self.assertEqual(f.constGeometry().geometry().wkbType(), QgsWKBTypes.Point)
             self.assertEqual(len(vl_positions.fields()), 5)
@@ -127,7 +142,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             vl_positions_1925 = QgsVectorLayer(u'{}|layerid=1|layername=positions_1925|featurescount=3|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
             self.assertTrue(vl_positions_1925.isValid())
             self.assertEqual(vl_positions_1925.featureCount(), 3)
-            if vl_positions_1925.dataProvider().subLayers()[0].startswith('1:positions_1925'):
+            if vl_positions_1925.dataProvider().subLayers()[1].startswith('1:positions_1925'):
                 got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions_1925.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 2"))]
                 self.assertEqual(got, [(u'Siegessäule', u'Königs Platz', QDate(1873, 9, 2))])
                 got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions_1925.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 3"))]
@@ -135,21 +150,27 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 caps = vl_positions_1925.dataProvider().capabilities()
                 if caps & QgsVectorDataProvider.AddFeatures:
                     self.ogr_spatialview_insert=1;
+            else:
+                print('-W-> SpatialView(%s) unexpected subLayers value returned [%s] ' % ('positions_1925',vl_positions_1925.dataProvider().subLayers()[1]))
+
             print('-I-> SpatialView(%s) contains 3 rows and only a TRIGGER for INSERT[%d] with [%d] rows' % ('positions_1925',self.ogr_spatialview_insert,vl_positions_1925.featureCount()))
             vl_positions_1955 = QgsVectorLayer(u'{}|layerid=2|layername=positions_1955|featurescount=2|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
             self.assertTrue(vl_positions_1955.isValid())
             self.assertEqual(vl_positions_1955.featureCount(), 2)
-            if vl_positions_1955.dataProvider().subLayers()[0].startswith('2:positions_1955'):
+            if vl_positions_1955.dataProvider().subLayers()[2].startswith('2:positions_1955'):
                 got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions_1955.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 4"))]
                 self.assertEqual(got, [(u'Siegessäule', u'Große Stern', QDate(1939, 1, 1))])
                 caps = vl_positions_1955.dataProvider().capabilities()
                 if caps & QgsVectorDataProvider.ChangeAttributeValues:
                     self.ogr_spatialview_update=1;
+            else:
+                print('-W-> SpatialView(%s) unexpected subLayers value returned [%s] ' % ('positions_1955',vl_positions_1955.dataProvider().subLayers()[2]))
+
             print('-I-> SpatialView(%s) contains 2 rows and only a TRIGGER for INSERT and UPDATE[%d] with [%d] rows' % ('positions_1955',self.ogr_spatialview_update,vl_positions_1955.featureCount()))
             vl_positions_1999 = QgsVectorLayer(u'{}|layerid=3|layername=positions_1999|featurescount=3|geometrytype=Point|ogrgettype=0'.format(datasource), u'SpatialView_writable', u'ogr')
             self.assertTrue(vl_positions_1999.isValid())
             self.assertEqual(vl_positions_1999.featureCount(), 3)
-            if vl_positions_1999.dataProvider().subLayers()[0].startswith('3:positions_1999'):
+            if vl_positions_1999.dataProvider().subLayers()[3].startswith('3:positions_1999'):
                 got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions_1999.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 5"))]
                 self.assertEqual(got, [(u'Ampelanlage', u'Potsdamer Platz', QDate(1998, 10, 2))])
                 caps = vl_positions_1999.dataProvider().capabilities()
@@ -159,10 +180,13 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                     self.ogr_spatialview_selectatid=1;
                 if caps & QgsVectorDataProvider.ChangeGeometries:
                     self.ogr_spatialview_changegeonetries=1;
+            else:
+                print('-W-> SpatialView(%s) unexpected subLayers value returned [%s] ' % ('positions_1999',vl_positions_1999.dataProvider().subLayers()[3]))
+
             print('-I-> SpatialView(%s) contains 3 rows and TRIGGERs for INSERT, UPDATE and DELETE[%d] with [%d] rows' % ('positions_1999',self.ogr_spatialview_delete,vl_positions_1999.featureCount()))
 
         if (self.ogr_spatialview_insert and self.ogr_spatialview_update and self.ogr_spatialview_delete):
-            print('-I-> This version of gdal/ogr[%d] qgis built with gdal[%s] supports writable SpatialViews.' % (self.gdal_version_num))
+            print('-I-> This version of gdal/ogr[%d] qgis built with gdal[%s] supports writable SpatialViews.' % (self.gdal_version_num,self.gdal_build_version))
             print('-I-> Can SpatialView(%s) SelectAtId[%d] ChangeGeometries[%d]' % ('positions_1999',self.ogr_spatialview_selectatid,self.ogr_spatialview_changegeonetries))
             caps = vl_positions_1925.dataProvider().capabilities()
             self.assertTrue(caps & QgsVectorDataProvider.EditingCapabilities)
@@ -195,8 +219,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> SpatialView(%s) the UPDATEd record was found,' % ('positions_1999'))
             # vl_positions_1999.rollBack(True)
             print('-I-> SpatialView(%s) should now again show 2: [%d] rows' % ('positions_1955',vl_positions_1955.featureCount()))
+            print('-I-> This version of gdal/ogr[%s] qgis built with gdal[%s] supports writable SpatialViews.' % (self.gdal_runtime_version, self.gdal_build_version))
         else:
-           print('-W-> This version of gdal/ogr[%d] qgis built with gdal[%s] does not support writable SpatialViews.' % (self.gdal_version_num, self.gdal_build_version))
+           print('-W-> This version of gdal/ogr[%s] qgis built with gdal[%s] does not support writable SpatialViews.' % (self.gdal_runtime_version, self.gdal_build_version))
 
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
             print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s]\n\t Note: this test has not failed. ' % (self.gdal_version_num, self.gdal_build_version))
@@ -213,6 +238,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # contains 1 SpatialTable with 2 geometries and 2 SpatialViews showing each geometry
 
     def test_01_OgrSpatialTableMultipleGeometries(self):
+
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrSpatialTableMultipleGeometries: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
+
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_8_2_geometries.sqlite')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spatialite_8 = QgsVectorLayer(u'{}'.format(datasource), u'spatialite_8', u'ogr')
@@ -285,6 +315,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # contains 47 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
 
     def test_02_OgrSpatialTableXYZM(self):
+
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrSpatialTableXYZM: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
+
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_spatialite_5_ZM.sqlite')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spatialite_5 = QgsVectorLayer(u'{}'.format(datasource), u'spatialite_5', u'ogr')
@@ -464,6 +499,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # --> 7+6=13 Polygons and 4 InternalRings
 
     def test_03_OgrGMLMutiPolygon(self):
+
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrGMLMutiPolygon: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
+
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.ogr_bezirk_Spandau_1938.3068.gml')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_spandau_1938 = QgsVectorLayer(u'{}'.format(datasource), u'spandau_1938', u'ogr')
@@ -481,7 +521,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             count_fields=len(vl_test_geom.fields())
             print('-I-> Testing type/values of a \'MULTIPOLYGON\' layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('bezirk_Spandau_1938',vl_test_geom.featureCount(),count_fields,vl_test_geom.hasGeometryType()))
             for index in range(count_fields):
-                print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_test_geom.fields()[index].name(), vl_test_geom.fields()[index].typeName()))
+                print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_test_geom.fields()[index].name(), vl_test_geom.fields()[index].typeName()))
             # <ogr:belongs_to>1902010800</ogr:belongs_to>
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("fid='1902010800'"))]
             #pprint(getmembers(features_vl_test))
@@ -629,6 +669,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # 
 
     def test_04_OgrKMLDuplicatelayerNames(self):
+
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrKMLDuplicatelayerNames: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
+
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.qgis_bugreport_15168.zk.kmz')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_bugreport_15168 = QgsVectorLayer(u'{}'.format(datasource), u'bugreport_15168', u'ogr')
@@ -650,7 +695,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             count_fields=len(vl_layer_3.fields())
             print('-I-> Testing type/values of a \'LineString25D\' of first duplicate layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('Directions from 423, Taiwan',vl_layer_3.featureCount(),count_fields,vl_layer_3.hasGeometryType()))
             for index in range(count_fields):
-                print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_3.fields()[index].name(), vl_layer_3.fields()[index].typeName()))
+                print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_layer_3.fields()[index].name(), vl_layer_3.fields()[index].typeName()))
             vl_layer_5 = QgsVectorLayer(u'{0}|layerid=5|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=1'.format(datasource,duplicate_layername), u'test_layer_5', u'ogr')
             self.assertTrue(vl_layer_5.isValid())
             vl_layer_1 = QgsVectorLayer(u'{0}|layerid=1|layername={1}|featurescount=3|geometrytype=LineString25D|ogrgettype=0'.format(datasource,unique_layername_1), u'test_layer_1', u'ogr')
@@ -700,6 +745,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # Table 'tpoly' contains 2 fields with BIGINT (Integer64) which will be tested
 
     def test_05_OgrInteger64(self):
+
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrInteger64: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
+
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_sqlite_test.db')
         print('\n-I-> Reading db(%s)' % (datasource))
         vl_sqlite_test = QgsVectorLayer(u'{}'.format(datasource), u'sqlite_test', u'ogr')
@@ -717,7 +767,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             count_fields=len(vl_layer_tpoly.fields())
             print('-I-> Testing type/values of a \'Integer64\' of the layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('tpoly',vl_layer_tpoly.featureCount(),count_fields,vl_layer_tpoly.hasGeometryType()))
             for index in range(count_fields):
-                print(u'-I-> Field[%d] : name[%s] type[%s]'% (index, vl_layer_tpoly.fields()[index].name(), vl_layer_tpoly.fields()[index].typeName()))
+                print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_layer_tpoly.fields()[index].name(), vl_layer_tpoly.fields()[index].typeName()))
 
             # Integer64 [Max-Integer32: 2147483647]  1234567890123/2147483647=574,890473251 ; 2147483647*0.890473251=1912276744,613426397
             gdal_2_value=1234567890123

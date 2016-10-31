@@ -3546,13 +3546,11 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
                     if (( mSubLayerList[i_list].contains( QString( ":%1:" ).arg( layer_name ) ) ) && ( mSubLayerList[i_list].endsWith( ":0" ) ) )
                     { // adapt the other Layers of the same name also to use 'OGRGetLayerIndexWrapper'
                       mSubLayerList[i_list].replace( QRegExp( QString( ":0$" ) ), QString( ":%1" ).arg( mOgrGetType ) );
-                      // printf( "-III-> QgsOgrProviderUtils::OGRGetSubLayer mSubLayerList[%d][%s] mSubLayerList.size[%d] sa_list_name.size[%d],i_count_get_index[%d] i_count_ogr_syntax[%d] \n",i_list, mSubLayerList[i_list].toLocal8Bit().constData(), mSubLayerList.size(), sa_list_name.size(),i_count_get_index, i_count_ogr_syntax);
                     }
                   }
                 }
                 QString s_SubLayer = QString( "%1:%2:%3:%4:%5" ).arg( layer_number ).arg( layer_name, layer_feature_count == -1 ?  "Unknown" : QString::number( layer_feature_count ), geom ).arg( mOgrGetType );
                 mSubLayerList << s_SubLayer;
-                // printf( "-I-> QgsOgrProviderUtils::OGRGetSubLayer gdal[%s] zz  id = layer_number=%ld, i_layer=%ld/%ld, i_field=%d/%d,  layer_feature_count=%ld, i_count_get_index[%d] i_count_ogr_syntax[%d],  layer_name[%s] layer_field_name[%s] layer_type[%d] sub_layer[%s] \n", QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), layer_number, i_layer, layer_count, i_field, field_count, layer_feature_count, i_count_get_index, i_count_ogr_syntax,theLayerName.toLocal8Bit().constData(), theLayerFieldName.toLocal8Bit().constData(), layerGeomType, s_SubLayer.toLocal8Bit().constData() );
               }
             }
             // Note: for gdal a layer without a geometry is still a layer.

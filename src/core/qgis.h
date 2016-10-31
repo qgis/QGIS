@@ -68,6 +68,11 @@ class CORE_EXPORT QGis
      * @returns true if QgsOgrProvider supports the runtime Version of gdal/ogr
      */
     static bool ogrRuntimeSupport();
+    /** Set, when needed, the gdal Runtime Version
+     * Determin if the runtime version should be supported
+     * @returns true if QgsOgrProvider supports the runtime Version of gdal/ogr
+     */
+    static bool gdalRuntimeSupport();
 
     // Enumerations
     //

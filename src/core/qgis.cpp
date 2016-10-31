@@ -116,7 +116,7 @@ const char* QGis::qgisUnitTypes[] =
 };
 
 bool QGis::ogrRuntimeSupport()
-{
+{ // Called in QgisApp and tested in QgsOgrProvider constructor
   if ( QGis::GDAL_RUNTIME_VERSION.isNull() )
   { // do this only once
     QGis::GDAL_RUNTIME_VERSION = QString( "%1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) );
@@ -132,16 +132,28 @@ bool QGis::ogrRuntimeSupport()
       if ( sa_split.size() > 2 )
         QGis::GDAL_RUNTIME_VERSION_REV = sa_split[2].toInt();
     }
-    if (QGis::GDAL_RUNTIME_VERSION_MAJOR >= 1)
-    { // For QGIS 3.*: set mininmal gdal to 2
+    // QgsOgrProvider constructor [with Layer is not valid] returns before QgsApplication::registerOgrDrivers is called when not 1
+    // - tested in QgsApplication::registerOgrDrivers, QgisApp::about()
+    //  --> QgisApp::about() will report version as 'Deprecated'
+    // -> QgisApp::addVectorLayers should return 'is not a valid or recognized data source'
+    if (QGis::GDAL_RUNTIME_VERSION_MAJOR >= QGis::GDAL_BUILD_VERSION_MAJOR)
+    { // Deprecated gdal major-versions that are less than the major-version
        QGis::GDAL_OGR_RUNTIME_SUPPORTED=1;
-    }
-    if (QGis::GDAL_RUNTIME_VERSION_MAJOR >= 1)
-    { // For QGIS 3.*: this can remain 1
+    }    
+    if (QGis::GDAL_RUNTIME_VERSION_MAJOR >= QGis::GDAL_BUILD_VERSION_MAJOR)
+    { // // Deprecated gdal major-versions that are less than the major-version [GDALRasterIOEx]
        QGis::GDAL_RASTER_RUNTIME_SUPPORTED=1;
     }
   }
   return (bool)QGis::GDAL_OGR_RUNTIME_SUPPORTED;
+}
+bool QGis::gdalRuntimeSupport()
+{
+  if ( QGis::GDAL_RUNTIME_VERSION.isNull() )
+  { // do this only once
+    QGis::ogrRuntimeSupport();
+  }
+  return (bool)QGis::GDAL_RASTER_RUNTIME_SUPPORTED;
 }
 
 QgsWKBTypes::Type QGis::fromOldWkbType( QGis::WkbType type )

@@ -26,7 +26,8 @@
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
-
+  if ( !QGis::ogrRuntimeSupport() )
+    return;
   // first get the GDAL driver manager
   QgsGdalProviderBase::registerGdalDrivers();
 }
@@ -217,17 +218,20 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 
 void QgsGdalProviderBase::registerGdalDrivers()
 {
-  GDALAllRegister();
-  QSettings mySettings;
-  QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
-  if ( !myJoinedList.isEmpty() )
+  if ( QGis::ogrRuntimeSupport() )
   {
-    QStringList myList = myJoinedList.split( ' ' );
-    for ( int i = 0; i < myList.size(); ++i )
+    GDALAllRegister();
+    QSettings mySettings;
+    QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
+    if ( !myJoinedList.isEmpty() )
     {
-      QgsApplication::skipGdalDriver( myList.at( i ) );
+      QStringList myList = myJoinedList.split( ' ' );
+      for ( int i = 0; i < myList.size(); ++i )
+      {
+        QgsApplication::skipGdalDriver( myList.at( i ) );
+      }
+      QgsApplication::applyGdalSkippedDrivers();
     }
-    QgsApplication::applyGdalSkippedDrivers();
   }
 }
 

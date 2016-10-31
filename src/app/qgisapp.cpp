@@ -3425,7 +3425,23 @@ void QgisApp::about()
     versionString += "</tr><tr>";
 
     versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + QGis::GDAL_BUILD_VERSION + "</td>";
-    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + QGis::GDAL_RUNTIME_VERSION + "</td>";
+    QString gdalString = tr( "Running against GDAL/OGR" );
+    if (( !QGis::ogrRuntimeSupport() ) || ( !QGis::gdalRuntimeSupport() ) )
+    {
+      if (( !QGis::ogrRuntimeSupport() ) && ( !QGis::gdalRuntimeSupport() ) )
+      {
+        gdalString = tr( "Running against a Deprecated  GDAL/OGR" );
+        if ( !QGis::ogrRuntimeSupport() )
+        {
+          gdalString = tr( "Running against GDAL/ Deprecated[OGR]" );
+        }
+        else
+        {
+          gdalString = tr( "Running against Deprecated[GDAL]  / OGR" );
+        }
+      }
+    }
+    versionString += "<td>" +  gdalString  + "</td><td>" + QGis::GDAL_RUNTIME_VERSION + "</td>";
 
     versionString += "</tr><tr>";
 
@@ -3986,16 +4002,16 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   Q_FOREACH ( const QgsSublayersDialog::LayerDefinition& def, chooseSublayersDialog.selection() )
   {
     QString layerGeometryType = def.type;
-    QString composedURI = uri + "|layerid=" + QString::number( def.layerId )+ "|layername=" + def.layerName;
-    if (def.count >= 0 )
+    QString composedURI = uri + "|layerid=" + QString::number( def.layerId ) + "|layername=" + def.layerName;
+    if ( def.count >= 0 )
     {
-      composedURI += "|featurescount=" + QString::number(def.count);
+      composedURI += "|featurescount=" + QString::number( def.count );
     }
     if ( !layerGeometryType.isEmpty() )
     {
       composedURI += "|geometrytype=" + layerGeometryType;
     }
-    composedURI += "|ogrgettype=" + QString::number(def.getType);
+    composedURI += "|ogrgettype=" + QString::number( def.getType );
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = fileName + " " + def.layerName;

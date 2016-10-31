@@ -149,17 +149,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
-        switch ( QGis::GDAL_RUNTIME_VERSION_MAJOR )
-        { // when called with gdal 1.*: ImportError: ../lib/libqgis_core.so.2.19.0: undefined symbol: OGR_F_GetFieldAsInteger64
-          case 1:
-          default:
-            bool b_ok=false;
-            QVariant value_double=QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
-            value=value_double.toLongLong(&b_ok);
-            // value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
-            printf( "-I-> QgsOgrUtils::getOgrFeatureAttribute gdal[%d,%d,%d,%s] value[%s] value_double[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), value.toString().toLocal8Bit().constData(), value_double.toString().toLocal8Bit().constData() );
-           break;
-          }
+        value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
         break;
 #endif
       case QVariant::Double:
