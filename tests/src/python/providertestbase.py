@@ -15,7 +15,16 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsRectangle, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsAbstractFeatureIterator, NULL
+from qgis.core import (
+    QgsRectangle,
+    QgsFeatureRequest,
+    QgsFeature,
+    QgsGeometry,
+    QgsAbstractFeatureIterator,
+    QgsExpressionContextScope,
+    QgsExpressionContext,
+    NULL
+)
 
 from utilities import(
     compareWkt
@@ -189,6 +198,21 @@ class ProviderTestCase(object):
 
         # geometry
         self.assert_query(provider, 'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))', [1, 2])
+
+        # combination of an uncompilable expression and limit
+        feature = next(self.vl.getFeatures('pk=4'))
+        context = QgsExpressionContext()
+        scope = QgsExpressionContextScope()
+        scope.setVariable('parent', feature)
+        context.appendScope(scope)
+
+        request = QgsFeatureRequest()
+        request.setExpressionContext(context)
+        request.setFilterExpression('"pk" = attribute(@parent, \'pk\')')
+        request.setLimit(1)
+
+        values = [f['pk'] for f in self.vl.getFeatures(request)]
+        self.assertEqual(values, [4])
 
     def testGetFeaturesUncompiled(self):
         self.compiled = False
