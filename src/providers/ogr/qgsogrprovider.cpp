@@ -1153,8 +1153,12 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
   bool returnvalue = true;
 
+  QMap< QString, QgsField > mapFieldNameToOriginalField;
+
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
+    mapFieldNameToOriginalField[ iter->name()] = *iter;
+
     OGRFieldType type;
 
     switch ( iter->type() )
@@ -1164,8 +1168,16 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
-        type = OFTInteger64;
+      {
+        const char* pszDataTypes = GDALGetMetadataItem( ogrDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
+          type = OFTInteger64;
+        else
+        {
+          type = OFTReal;
+        }
         break;
+      }
 #endif
       case QVariant::Double:
         type = OFTReal;
@@ -1203,6 +1215,26 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     OGR_Fld_Destroy( fielddefn );
   }
   loadFields();
+
+  // The check in QgsVectorLayerEditBuffer::commitChanges() is questionable with
+  // real-world drivers that might only be able to satisfy request only partially.
+  // So to avoid erroring out, patch field type, width and precision to match
+  // what was requested.
+  // For example in case of Integer64->Real mapping so that QVariant::LongLong is
+  // still returned to the caller
+  // Or if a field width was specified but not strictly enforced by the driver (#15614)
+  for ( QMap< QString, QgsField >::const_iterator it = mapFieldNameToOriginalField.begin();
+        it != mapFieldNameToOriginalField.end(); ++it )
+  {
+    int idx = mAttributeFields.fieldNameIndex( it.key() );
+    if ( idx >= 0 )
+    {
+      mAttributeFields[ idx ].setType( it->type() );
+      mAttributeFields[ idx ].setLength( it->length() );
+      mAttributeFields[ idx ].setPrecision( it->precision() );
+    }
+  }
+
   return returnvalue;
 }
 
