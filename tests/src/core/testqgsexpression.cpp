@@ -1578,8 +1578,14 @@ class TestQgsExpression: public QObject
     void referenced_variables()
     {
       QSet<QString> expectedVars;
-      expectedVars << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) << QStringLiteral( "ppp" ) << QStringLiteral( "qqq" ) << QStringLiteral( "rrr" );
-      QgsExpression exp( QStringLiteral( "CASE WHEN intersects(@bar, $geometry) THEN @ppp ELSE @qqq * @rrr END + @foo IN (1, 2, 3)" ) );
+      expectedVars << QStringLiteral( "foo" )
+      << QStringLiteral( "bar" )
+      << QStringLiteral( "ppp" )
+      << QStringLiteral( "qqq" )
+      << QStringLiteral( "rrr" )
+      << QStringLiteral( "sss" )
+      << QStringLiteral( "ttt" );
+      QgsExpression exp( QStringLiteral( "CASE WHEN intersects(@bar, $geometry) THEN @ppp ELSE @qqq * @rrr END + @foo IN (1, 2, @sss) OR @ttt" ) );
       QCOMPARE( exp.hasParserError(), false );
       QSet<QString> refVar = exp.referencedVariables();
 
