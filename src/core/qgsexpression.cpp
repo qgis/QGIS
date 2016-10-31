@@ -3683,7 +3683,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
       if ( node->args()->count() > 3 )
       {
         QgsExpression::Node* filterNode = node->args()->at( 3 );
-        referencedVars = filterNode->referencedVariables();
+        referencedVars.unite( filterNode->referencedVariables() );
       }
       return referencedVars.contains( "parent" ) || referencedVars.contains( QString() );
     },
