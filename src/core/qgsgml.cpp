@@ -875,8 +875,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char* el )
         unsigned char* pabyBuffer = new unsigned char[ wkbSize ];
 #if GDAL_VERSION_MAJOR >= 2
         // when called with gdal 1.*: ImportError: ../lib/libqgis_core.so.2.19.0: undefined symbol: OGR_G_ExportToIsoWkb
-        // OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
-        OGR_G_ExportToWkb( hGeom, wkbNDR, pabyBuffer );
+        OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
 #else
         OGR_G_ExportToWkb( hGeom, wkbNDR, pabyBuffer );
 #endif
