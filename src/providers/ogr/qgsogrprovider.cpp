@@ -1309,10 +1309,12 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
   bool returnvalue = true;
 
-  QMap< QString, QVariant::Type > mapFieldTypesToPatch;
+  QMap< QString, QgsField > mapFieldNameToOriginalField;
 
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
+    mapFieldNameToOriginalField[ iter->name()] = *iter;
+
     OGRFieldType type;
 
     switch ( iter->type() )
@@ -1328,7 +1330,6 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
           type = OFTInteger64;
         else
         {
-          mapFieldTypesToPatch[ iter->name()] = iter->type();
           type = OFTReal;
         }
         break;
@@ -1371,13 +1372,23 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   }
   loadFields();
 
-  // Patch field type in case of Integer64->Real mapping so that QVariant::LongLong
-  // is still returned to the caller
-  for ( QMap< QString, QVariant::Type >::const_iterator it = mapFieldTypesToPatch.begin(); it != mapFieldTypesToPatch.end(); ++it )
+  // The check in QgsVectorLayerEditBuffer::commitChanges() is questionable with
+  // real-world drivers that might only be able to satisfy request only partially.
+  // So to avoid erroring out, patch field type, width and precision to match
+  // what was requested.
+  // For example in case of Integer64->Real mapping so that QVariant::LongLong is
+  // still returned to the caller
+  // Or if a field width was specified but not strictly enforced by the driver (#15614)
+  for ( QMap< QString, QgsField >::const_iterator it = mapFieldNameToOriginalField.begin();
+        it != mapFieldNameToOriginalField.end(); ++it )
   {
     int idx = mAttributeFields.fieldNameIndex( it.key() );
     if ( idx >= 0 )
-      mAttributeFields[ idx ].setType( *it );
+    {
+      mAttributeFields[ idx ].setType( it->type() );
+      mAttributeFields[ idx ].setLength( it->length() );
+      mAttributeFields[ idx ].setPrecision( it->precision() );
+    }
   }
 
   return returnvalue;
