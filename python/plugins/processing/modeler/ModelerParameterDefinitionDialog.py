@@ -144,6 +144,13 @@ class ModelerParameterDefinitionDialog(QDialog):
                 datatypeIndex = self.param.datatype + 1
                 self.datatypeCombo.setCurrentIndex(datatypeIndex)
 
+            self.multipleCheck = QCheckBox()
+            self.multipleCheck.setText(self.tr('Accept multiple fields'))
+            self.multipleCheck.setChecked(False)
+            if self.param is not None:
+                self.multipleCheck.setChecked(self.param.multiple)
+            self.verticalLayout.addWidget(self.multipleCheck)
+
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or
                 isinstance(self.param, ParameterVector)):
             self.verticalLayout.addWidget(QLabel(self.tr('Shape type')))
@@ -269,7 +276,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
             parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
             datatype = self.datatypeCombo.itemData(self.datatypeCombo.currentIndex())
-            self.param = ParameterTableField(name, description, parent, datatype)
+            self.param = ParameterTableField(name, description, parent, datatype, multiple=self.multipleCheck.isChecked())
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or
                 isinstance(self.param, ParameterRaster)):
             self.param = ParameterRaster(

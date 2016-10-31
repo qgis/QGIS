@@ -755,24 +755,21 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     def createWidget(self):
         self._layer = None
 
-        if self.param.multiple:
-            if self.dialogType == DIALOG_STANDARD:
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            if self.param.multiple:
                 return MultipleInputPanel(options=[])
             else:
-                return QLineEdit()
+                widget = QComboBox()
+                return widget
         else:
-            if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-                widget = QComboBox()
-                return widget
-            else:
-                widget = QComboBox()
-                widget.setEditable(True)
-                fields = self.dialog.getAvailableValuesOfType(ParameterTableField, None)
-                if self.param.optional:
-                    widget.addItem(self.NOT_SET, None)
-                for f in fields:
-                    widget.addItem(self.dialog.resolveValueDescription(f), f)
-                return widget
+            widget = QComboBox()
+            widget.setEditable(True)
+            fields = self.dialog.getAvailableValuesOfType(ParameterTableField, None)
+            if self.param.optional:
+                widget.addItem(self.NOT_SET, None)
+            for f in fields:
+                widget.addItem(self.dialog.resolveValueDescription(f), f)
+            return widget
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
@@ -817,8 +814,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         return sorted(list(fieldNames), key=cmp_to_key(locale.strcoll))
 
     def setValue(self, value):
-        if self.param.multiple:
-            if self.dialogType == DIALOG_STANDARD:
+        if self.dialogType == DIALOG_STANDARD:
+            if self.param.multiple:
                 options = self.widget.options
                 selected = []
                 for i, opt in enumerate(options):
@@ -826,31 +823,22 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                         selected.append(i)
                 self.widget.setSelectedItems(selected)
             else:
-                self.widget.setText(value)
-        else:
-            if self.dialogType == DIALOG_STANDARD:
                 self.setComboValue(value)
+        else:
+            self.setComboValue(value)
 
     def value(self):
-        if self.param.multiple:
-            if self.dialogType == DIALOG_STANDARD:
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            if self.param.multiple:
                 return [self.widget.options[i] for i in self.widget.selectedoptions]
-            elif self.dialogType == DIALOG_BATCH:
-                return self.widget.text()
             else:
-                text = self.widget.text()
-                if not bool(text) and not self.param.optional:
-                    raise InvalidParameterValue()
-                return text
-        else:
-            if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                 if self.param.optional and self.widget.currentIndex() == 0:
                     return None
                 return self.widget.currentText()
-            else:
-                def validator(v):
-                    return bool(v) or self.param.optional
-                return self.comboValue(validator)
+        else:
+            def validator(v):
+                return bool(v) or self.param.optional
+            return self.comboValue(validator)
 
 
 def GeometryPredicateWidgetWrapper(WidgetWrapper):
