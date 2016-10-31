@@ -61,8 +61,6 @@ class OTBAlgorithmProvider(AlgorithmProvider):
 
         version = OTBUtils.getInstalledVersion(True)
         if version is None:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Problem with OTB installation: OTB was not found or is not correctly installed'))
             return
 
         folder = OTBUtils.compatibleDescriptionPath(version)
