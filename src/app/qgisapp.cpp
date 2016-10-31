@@ -4970,8 +4970,6 @@ bool QgisApp::addProject( const QString& projectFile )
         btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
         btnEnableMacros->setCursor( Qt::PointingHandCursor );
         btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-        connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
-        connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
 
         QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
           tr( "Security warning" ),
@@ -4980,6 +4978,13 @@ bool QgisApp::addProject( const QString& projectFile )
           QgsMessageBar::WARNING,
           0,
           mInfoBar );
+
+        connect( btnEnableMacros, &QToolButton::clicked, [this,macroMsg]
+        {
+          enableProjectMacros();
+          mInfoBar->popWidget( macroMsg );
+        } );
+
         // display the macros notification widget
         mInfoBar->pushItem( macroMsg );
       }
