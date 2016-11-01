@@ -399,7 +399,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       }
       if ( field == "geometrytype" )
       {
-        mOgrGeometryTypeFilter = ( OGRwkbGeometryType )QgsOgrProviderUtils::wkbGeometryTypeFromName( value );
+        mOgrGeometryTypeFilter = QgsOgrProviderUtils::wkbGeometryTypeFromName( value );
       }
       if ( field == "ogrgettype" )
       {
@@ -2814,286 +2814,11 @@ OGRwkbGeometryType QgsOgrProviderUtils::getOgrGeomType( OGRLayerH ogrLayer )
 
 QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
 {
-  QString geom;
-  switch (( long )type )
-  { // this should be keep uptodate with gdal/ogr/ogr_core.h
-    case wkbUnknown:
-      geom = "Unknown";
-      break;
-    case wkbPoint:
-      geom = "Point";
-      break;
-    case wkbLineString:
-      geom = "LineString";
-      break;
-    case wkbPolygon:
-      geom = "Polygon";
-      break;
-    case wkbMultiPoint:
-      geom = "MultiPoint";
-      break;
-    case wkbMultiLineString:
-      geom = "MultiLineString";
-      break;
-    case wkbMultiPolygon:
-      geom = "MultiPolygon";
-      break;
-    case wkbGeometryCollection:
-      geom = "GeometryCollection";
-      break;
-    case wkbNone:
-      geom = "None";
-      break;
-    case wkbUnknown | wkb25DBit:
-      geom = "Unknown25D";
-      break;
-    case wkbPoint25D:
-      geom = "Point25D";
-      break;
-    case wkbLineString25D:
-      geom = "LineString25D";
-      break;
-    case wkbPolygon25D:
-      geom = "Polygon25D";
-      break;
-    case wkbMultiPoint25D:
-      geom = "MultiPoint25D";
-      break;
-    case wkbMultiLineString25D:
-      geom = "MultiLineString25D";
-      break;
-    case wkbMultiPolygon25D:
-      geom = "MultiPolygon25D";
-      break;
-    case wkbGeometryCollection25D:
-      geom = "GeometryCollection25D";
-      break;
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
-      //  ISO SQL/MM Part 3. GDAL &gt;= 2.0
-    case wkbCircularString:
-      geom = "CircularString";
-      break;
-    case wkbCompoundCurve:
-      geom = "CompoundCurve";
-      break;
-    case wkbCurvePolygon:
-      geom = "CurvePolygon";
-      break;
-    case wkbMultiCurve:
-      geom = "MultiCurve";
-      break;
-    case wkbMultiSurface:
-      geom = "MultiSurface";
-      break;
-    case wkbCircularStringZ:
-      geom = "CircularStringZ";
-      break;
-    case wkbCompoundCurveZ:
-      geom = "CompoundCurveZ";
-      break;
-    case wkbCurvePolygonZ:
-      geom = "CurvePolygonZ";
-      break;
-    case wkbMultiCurveZ:
-      geom = "MultiCurveZ";
-      break;
-    case wkbMultiSurfaceZ:
-      geom = "MultiSurfaceZ";
-      break;
-# else
-    case 8:
-      geom = "CircularString";
-      break;
-    case 9:
-      geom = "CompoundCurve";
-      break;
-    case 10:
-      geom = "CurvePolygon";
-      break;
-    case 11:
-      geom = "MultiCurve";
-      break;
-    case 12:
-      geom = "MultiSurface";
-      break;
-    case 1008:
-      geom = "CircularStringZ";
-      break;
-    case 1009:
-      geom = "CompoundCurveZ";
-      break;
-    case 1010:
-      geom = "CurvePolygonZ";
-      break;
-    case 1011:
-      geom = "MultiCurveZ";
-      break;
-    case 1012:
-      geom = "MultiSurfaceZ";
-      break;
-#endif
+  QgsWKBTypes::Type wkbType=(QgsWKBTypes::Type)type;
+  QString geom=QgsWKBTypes::displayString( wkbType );
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
-      // ISO SQL/MM Part 3. GDAL &gt;= 2.1
-    case wkbPointM:
-      geom = "PointM";
-      break;
-    case wkbLineStringM:
-      geom = "LineStringM";
-      break;
-    case wkbPolygonM:
-      geom = "PolygonM";
-      break;
-    case wkbMultiPointM:
-      geom = "MultiPointM";
-      break;
-    case wkbMultiLineStringM:
-      geom = "MultiLineStringM";
-      break;
-    case wkbMultiPolygonM:
-      geom = "MultiPolygonM";
-      break;
-    case wkbGeometryCollectionM:
-      geom = "GeometryCollectionM";
-      break;
-    case wkbPointZM:
-      geom = "PointZM";
-      break;
-    case wkbLineStringZM:
-      geom = "LineStringZM";
-      break;
-    case wkbPolygonZM:
-      geom = "PolygonZM";
-      break;
-    case wkbMultiPointZM:
-      geom = "MultiPointZM";
-      break;
-    case wkbMultiLineStringZM:
-      geom = "MultiLineStringZM";
-      break;
-    case wkbMultiPolygonZM:
-      geom = "MultiPolygonZM";
-      break;
-    case wkbGeometryCollectionZM:
-      geom = "GeometryCollectionZM";
-      break;
-      // Note: when running with gdal 1.*, these values are not returned - thus not queried -no failures
-    case wkbCircularStringM:
-      geom = "CircularStringM";
-      break;
-    case wkbCompoundCurveM:
-      geom = "CompoundCurveM";
-      break;
-    case wkbCurvePolygonM:
-      geom = "CurvePolygonM";
-      break;
-    case wkbMultiCurveM:
-      geom = "MultiCurveM";
-      break;
-    case wkbMultiSurfaceM:
-      geom = "MultiSurfaceM";
-      break;
-    case wkbCircularStringZM:
-      geom = "CircularStringZM";
-      break;
-    case wkbCompoundCurveZM:
-      geom = "CompoundCurveZM";
-      break;
-    case wkbCurvePolygonZM:
-      geom = "CurvePolygonZM";
-      break;
-    case wkbMultiCurveZM:
-      geom = "MultiCurveZM";
-      break;
-    case wkbMultiSurfaceZM:
-      geom = "MultiSurfaceZM";
-      break;
-# else
-      // Note: [build with gdal 2.*] when running with gdal 1.*, these values are not returned - thus not queried -no failures
-      // Note: [build with gdal 1.*] when running with gdal 2.*, these values are returned - but unknown al build time -no failures
-    case 2001:
-      geom = "PointM";
-      break;
-    case 2002:
-      geom = "LineStringM";
-      break;
-    case 2003:
-      geom = "PolygonM";
-      break;
-    case 2004:
-      geom = "MultiPointM";
-      break;
-    case 2005:
-      geom = "MultiLineStringM";
-      break;
-    case 2006:
-      geom = "MultiPolygonM";
-      break;
-    case 2007:
-      geom = "GeometryCollectionM";
-      break;
-    case 3001:
-      geom = "PointZM";
-      break;
-    case 3002:
-      geom = "LineStringZM";
-      break;
-    case 3003:
-      geom = "PolygonZM";
-      break;
-    case 3004:
-      geom = "MultiPointZM";
-      break;
-    case 3005:
-      geom = "MultiLineStringZM";
-      break;
-    case 3006:
-      geom = "MultiPolygonZM";
-      break;
-    case 3007:
-      geom = "GeometryCollectionZM";
-      break;
-    case 2008:
-      geom = "CircularStringM";
-      break;
-    case 2009:
-      geom = "CompoundCurveM";
-      break;
-    case 2010:
-      geom = "CurvePolygonM";
-      break;
-    case 2011:
-      geom = "MultiCurveM";
-      break;
-    case 2012:
-      geom = "MultiSurfaceM";
-      break;
-    case 3008:
-      geom = "CircularStringZM";
-      break;
-    case 3009:
-      geom = "CompoundCurveZM";
-      break;
-    case 3010:
-      geom = "CurvePolygonZM";
-      break;
-    case 3011:
-      geom = "MultiCurveZM";
-      break;
-    case 3012:
-      geom = "MultiSurfaceZM";
-      break;
-#endif
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
-      // ISO SQL/MM Part 3. GDAL &gt;= 2.1
-    case wkbCurve:
-    case wkbSurface:
-    case wkbCurveZ:
-    case wkbSurfaceZ:
-    case wkbCurveM:
-    case wkbSurfaceM:
-    case wkbCurveZM:
-    case wkbSurfaceZM:
-      // Reserved in GDAL &gt;= 2.1 but not yet implemented
+  switch ( (long)type )
+  { // Reserved in GDAL &gt;= 2.1 but not yet implemented [and not (yet) defined in QgsWKBTypes]
     case wkbPolyhedralSurface:
     case wkbTIN:
     case wkbTriangle:
@@ -3106,68 +2831,18 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
     case wkbPolyhedralSurfaceZM:
     case wkbTINZM:
     case wkbTriangleZM:
-#endif
-    default:
       // Do not use ':', as it will mess with the separator used by QgsSublayersDialog::populateLayers()
       geom = QString( "Unknown WKB (%1)" ).arg( type );
+     break;
   }
+#endif
   return geom;
 }
 
-QgsWKBTypes::Type QgsOgrProviderUtils::wkbGeometryTypeFromName( const QString& typeName )
-{ // this should be keep uptodate with gdal/ogr/ogr_core.h (as returned in QgsOgrProvider::ogrWkbGeometryTypeName)
-  if ( typeName == "Point" ) return QgsWKBTypes::Point;
-  else if ( typeName == "LineString" ) return QgsWKBTypes::LineString;
-  else if ( typeName == "Polygon" ) return QgsWKBTypes::Polygon;
-  else if ( typeName == "MultiPoint" ) return QgsWKBTypes::MultiPoint;
-  else if ( typeName == "MultiLineString" ) return QgsWKBTypes::MultiLineString;
-  else if ( typeName == "MultiPolygon" ) return QgsWKBTypes::MultiPolygon;
-  else if ( typeName == "GeometryCollection" ) return QgsWKBTypes::GeometryCollection;
-  else if ( typeName == "None" ) return QgsWKBTypes::NoGeometry;
-  else if ( typeName == "Point25D" ) return QgsWKBTypes::Point25D;
-  else if ( typeName == "LineString25D" ) return QgsWKBTypes::LineString25D;
-  else if ( typeName == "Polygon25D" ) return QgsWKBTypes::Polygon25D;
-  else if ( typeName == "MultiPoint25D" ) return QgsWKBTypes::MultiPoint25D;
-  else if ( typeName == "MultiLineString25D" ) return QgsWKBTypes::MultiLineString25D;
-  else if ( typeName == "MultiPolygon25D" ) return QgsWKBTypes::MultiPolygon25D;
-  else if ( typeName == "GeometryCollection25D" ) return QgsWKBTypes::GeometryCollection25D;
-  else if ( typeName == "CircularString" ) return QgsWKBTypes::CircularString;
-  else if ( typeName == "CompoundCurve" ) return QgsWKBTypes::CompoundCurve;
-  else if ( typeName == "CurvePolygon" ) return QgsWKBTypes::CurvePolygon;
-  else if ( typeName == "MultiCurve" ) return QgsWKBTypes::MultiCurve;
-  else if ( typeName == "MultiSurface" ) return QgsWKBTypes::MultiSurface;
-  else if ( typeName == "CircularStringZ" ) return QgsWKBTypes::CircularStringZ;
-  else if ( typeName == "CompoundCurveZ" ) return QgsWKBTypes::CompoundCurveZ;
-  else if ( typeName == "CurvePolygonZ" ) return QgsWKBTypes::CurvePolygonZ;
-  else if ( typeName == "MultiCurveZ" ) return QgsWKBTypes::MultiCurveZ;
-  else if ( typeName == "MultiSurfaceZ" ) return QgsWKBTypes::MultiSurfaceZ;
-  // Note: [build with gdal 2.*] when running with gdal 1.*, these values are not returned - thus not queried -no failures
-  // Note: [build with gdal 1.*] when running with gdal 2.*, these values are returned - but unknown al build time -no failures
-  else if ( typeName == "PointM" ) return QgsWKBTypes::PointM;
-  else if ( typeName == "LineStringM" ) return QgsWKBTypes::LineStringM;
-  else if ( typeName == "PolygonM" ) return QgsWKBTypes::PolygonM;
-  else if ( typeName == "MultiPointM" ) return QgsWKBTypes::MultiPointM;
-  else if ( typeName == "MultiLineStringM" ) return QgsWKBTypes::MultiLineStringM;
-  else if ( typeName == "MultiPolygonM" ) return QgsWKBTypes::MultiPolygonM;
-  else if ( typeName == "GeometryCollectionM" ) return QgsWKBTypes::GeometryCollectionM;
-  else if ( typeName == "PointZM" ) return QgsWKBTypes::PointZM;
-  else if ( typeName == "LineStringZM" ) return QgsWKBTypes::LineStringZM;
-  else if ( typeName == "PolygonZM" ) return QgsWKBTypes::PolygonZM;
-  else if ( typeName == "MultiPointZM" ) return QgsWKBTypes::MultiPointZM;
-  else if ( typeName == "MultiLineStringZM" ) return QgsWKBTypes::MultiLineStringZM;
-  else if ( typeName == "MultiPolygonZM" ) return QgsWKBTypes::MultiPolygonZM;
-  else if ( typeName == "GeometryCollectionZM" ) return QgsWKBTypes::GeometryCollectionM;
-  else if ( typeName == "CircularStringM" ) return QgsWKBTypes::CircularStringM;
-  else if ( typeName == "CompoundCurveM" ) return QgsWKBTypes::CompoundCurveM;
-  else if ( typeName == "CurvePolygonM" ) return QgsWKBTypes::CurvePolygonM;
-  else if ( typeName == "MultiCurveM" ) return QgsWKBTypes::MultiCurveM;
-  else if ( typeName == "MultiSurfaceM" ) return QgsWKBTypes::MultiSurfaceM;
-  else if ( typeName == "CircularStringZM" ) return QgsWKBTypes::CircularStringZM;
-  else if ( typeName == "CompoundCurveZM" ) return QgsWKBTypes::CompoundCurveZM;
-  else if ( typeName == "CurvePolygonZM" ) return QgsWKBTypes::CurvePolygonZM;
-  else if ( typeName == "MultiCurveZM" ) return QgsWKBTypes::MultiCurveZM;
-  else if ( typeName == "MultiSurfaceZM" ) return QgsWKBTypes::MultiSurfaceZM;
-  return QgsWKBTypes::Unknown;
+OGRwkbGeometryType QgsOgrProviderUtils::wkbGeometryTypeFromName( const QString& typeName )
+{
+  QgsWKBTypes::Type type= QgsWKBTypes::parseType( typeName);
+  return ( OGRwkbGeometryType ) type;
 }
 
 OGRwkbGeometryType QgsOgrProviderUtils::wkbSingleFlattenWrapper( OGRwkbGeometryType type )
@@ -3383,7 +3058,7 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
       QStringList sa_list_sublayer = s_sublayer.split( ":" );
       lLayerIndex = sa_list_sublayer[0].toLong( &ok, 10 );
       mFeaturesCounted = sa_list_sublayer[2].toLong( &ok, 10 );
-      mOgrGeometryTypeFilter = ( OGRwkbGeometryType )QgsOgrProviderUtils::wkbGeometryTypeFromName( sa_list_sublayer[3] );
+      mOgrGeometryTypeFilter = QgsOgrProviderUtils::wkbGeometryTypeFromName( sa_list_sublayer[3] );
       if (( !sLayerName.isNull() ) && ( lLayerIndex < 0 ) )
       {
         ogrLayer = QgsOgrProviderUtils::OGRGetLayerNameWrapper( ogrDataSource, sLayerName );
@@ -4181,7 +3856,7 @@ void QgsOgrProvider::open( OpenMode mode )
       }
     }
   }
-  printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
+  // printf( "-I-> QgsOgrProvider::open gdal[%d,%d,%d,%s] SubLayerString[%s] dataSourceUri[%s]\n", QGis::GDAL_RUNTIME_VERSION_MAJOR, QGis::GDAL_RUNTIME_VERSION_MINOR, QGis::GDAL_RUNTIME_VERSION_REV, QGis::GDAL_RUNTIME_VERSION.toLocal8Bit().constData(), SubLayerString().toLocal8Bit().constData(), dataSourceUri().toLocal8Bit().constData() );
   // For debug/testing purposes
   if ( !mValid )
     setProperty( "_debug_open_mode", "invalid" );

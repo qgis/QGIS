@@ -131,6 +131,7 @@ QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> QgsWKBTypes::registerTypes()
   //geometrycollection
   entries.insert( GeometryCollection, wkbEntry( "GeometryCollection", true, GeometryCollection, Unknown, GeometryCollection, UnknownGeometry, false, false ) );
   entries.insert( GeometryCollectionZ, wkbEntry( "GeometryCollectionZ", true, GeometryCollectionZ, Unknown, GeometryCollection, UnknownGeometry, true, false ) );
+  entries.insert( GeometryCollectionZ, wkbEntry( "GeometryCollection25D", true, GeometryCollection25D, Unknown, GeometryCollection, UnknownGeometry, true, false ) );
   entries.insert( GeometryCollectionM, wkbEntry( "GeometryCollectionM", true, GeometryCollectionM, Unknown, GeometryCollection, UnknownGeometry, false, true ) );
   entries.insert( GeometryCollectionZM, wkbEntry( "GeometryCollectionZM", true, GeometryCollectionZM, Unknown, GeometryCollection, UnknownGeometry, true, true ) );
   return entries;

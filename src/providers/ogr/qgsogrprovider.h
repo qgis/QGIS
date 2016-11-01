@@ -570,7 +570,7 @@ class QgsOgrProviderUtils
      */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
     static QString wkbGeometryTypeName( OGRwkbGeometryType type );
-    static QgsWKBTypes::Type wkbGeometryTypeFromName( const QString& typeName ) ;
+    static OGRwkbGeometryType wkbGeometryTypeFromName( const QString& typeName ) ;
     /** Get single flatten geometry type */
     static OGRwkbGeometryType wkbSingleFlattenWrapper( OGRwkbGeometryType type );
     static OGRwkbGeometryType wkbFlattenWrapper( OGRwkbGeometryType eType );

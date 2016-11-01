@@ -313,6 +313,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # Test Spatialite SpatialTables with XYZM values
 # - created with gdal autotest/auto/ogr_sql_sqlite.py spatialite_5()
 # contains 47 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
+# Test Geometries taken from /autotest/ogr/data/curves_line.csv and curves_polygon.csv
+# - to test the correct reading of: CircularString, CompoundCurve, CurvePolygon, MultiCurve and MultiSurface
+# 
 
     def test_02_OgrSpatialTableXYZM(self):
 
@@ -432,7 +435,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,4))
                 del test_geom
             else:
-             print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
+             print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
@@ -456,7 +459,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
                                         (1,2,3,4,5,6))
             else:
-             print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
+             print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
@@ -467,7 +470,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             if (len(features_vl_test) > 0):
                 test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
-                    print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
+                    print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
                     # build gdal.1 running with gdal: 1 -I-> Sublayer[12] : [12:test12:1:LineString25D:0]
                     self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
@@ -481,13 +484,81 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                                         (1,2,3,4,5,6,7,8))
                 del test_geom
             else:
-             print('-I-> Using version [build gdal.%s]  of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
+             print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
 
             del features_vl_test
             del vl_test_geom
             test_geom = None
             vl_test_geom = None
             features_vl_test = None
+
+        if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
+            datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_circularstring.csv')
+            print('\n-I-> Reading db(%s)' % (datasource))
+            vl_circularstring = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_circularstring|featurescount=1|geometrytype=CircularString|ogrgettype=1'.format(datasource), u'test_circularstring', u'ogr')
+            print('-I-> Reading Geometry-Type=CircularString: hasGeometryType[%d,%s] '% (vl_circularstring.hasGeometryType(),vl_circularstring.wkbType()))
+            self.assertTrue(vl_circularstring.isValid())
+            count_fields=len(vl_circularstring.fields())
+            for index in range(count_fields):
+                print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_circularstring.fields()[index].name(), vl_circularstring.fields()[index].typeName()))
+
+            features_vl_circularstring = next(vl_circularstring.getFeatures())
+            test_geom = features_vl_circularstring.constGeometry().geometry()
+            print('-I-> checking Geometry-Type=CircularString: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
+            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.CircularString)
+            del test_geom
+            del features_vl_circularstring
+            del vl_circularstring
+            datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_compoundcurve.csv')
+            print('\n-I-> Reading db(%s)' % (datasource))
+            vl_compoundcurve = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_compoundcurve|featurescount=1|geometrytype=CompoundCurve|ogrgettype=1'.format(datasource), u'test_compoundcurve', u'ogr')
+            print('-I-> Reading Geometry-Type=CompoundCurve: hasGeometryType[%d,%s] '% (vl_compoundcurve.hasGeometryType(),vl_compoundcurve.wkbType()))
+            self.assertTrue(vl_compoundcurve.isValid())
+            features_vl_compoundcurve = next(vl_compoundcurve.getFeatures())
+            test_geom = features_vl_compoundcurve.constGeometry().geometry()
+            print('-I-> checking Geometry-Type=CompoundCurve: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
+            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.CompoundCurve)
+            del test_geom
+            del features_vl_compoundcurve
+            del vl_compoundcurve
+            datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_curvepolygon.csv')
+            print('\n-I-> Reading db(%s)' % (datasource))
+            vl_curvepolygon = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_curvepolygon|featurescount=1|geometrytype=CurvePolygon|ogrgettype=1'.format(datasource), u'test_curvepolygon', u'ogr')
+            print('-I-> Reading Geometry-Type=CurvePolygon: hasGeometryType[%d,%s] '% (vl_curvepolygon.hasGeometryType(),vl_curvepolygon.wkbType()))
+            self.assertTrue(vl_curvepolygon.isValid())
+            features_vl_curvepolygon = next(vl_curvepolygon.getFeatures())
+            test_geom = features_vl_curvepolygon.constGeometry().geometry()
+            print('-I-> checking Geometry-Type=CurvePolygon: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
+            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.CurvePolygon)
+            del test_geom
+            del features_vl_curvepolygon
+            del vl_curvepolygon
+            datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_multicurves.csv')
+            print('\n-I-> Reading db(%s)' % (datasource))
+            vl_multicurves = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_multicurves|featurescount=1|geometrytype=MultiCurve|ogrgettype=1'.format(datasource), u'test_multicurves', u'ogr')
+            print('-I-> Reading Geometry-Type=MultiCurve: hasGeometryType[%d,%s] '% (vl_multicurves.hasGeometryType(),vl_multicurves.wkbType()))
+            self.assertTrue(vl_multicurves.isValid())
+            features_vl_multicurves = next(vl_multicurves.getFeatures())
+            test_geom = features_vl_multicurves.constGeometry().geometry()
+            print('-I-> checking Geometry-Type=MultiCurve: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
+            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.MultiCurve)
+            del test_geom
+            del features_vl_multicurves
+            del vl_multicurves
+            datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_multisurface.csv')
+            print('\n-I-> Reading db(%s)' % (datasource))
+            vl_multisurface = QgsVectorLayer(u'{}|layerid=0|layername=gdal_220.autotest.ogr_multisurface|featurescount=1|geometrytype=MultiSurface|ogrgettype=1'.format(datasource), u'test_multisurface', u'ogr')
+            print('-I-> Reading Geometry-Type=MultiSurface: hasGeometryType[%d,%s] '% (vl_multisurface.hasGeometryType(),vl_multisurface.wkbType()))
+            self.assertTrue(vl_multisurface.isValid())
+            features_vl_multisurface = next(vl_multisurface.getFeatures())
+            test_geom = features_vl_multisurface.constGeometry().geometry()
+            print('-I-> checking Geometry-Type=MultiSurface: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
+            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.MultiSurface)
+            del test_geom
+            del features_vl_multisurface
+            del vl_multisurface
+        else:
+             print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support:\n\t CircularString, CompoundCurve, CurvePolygon, MultiCurve and MultiSurface geometries.' % (self.gdal_build_version, self.gdal_version_num))
 
 ###############################################################################
 # GML 2 MultiPolygon with InternalRings
