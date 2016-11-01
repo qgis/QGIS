@@ -123,10 +123,10 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldCon
 
   if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
   {
-    descriptions << QStringLiteral( "Not NULL" );
+    descriptions << tr( "Not NULL" );
     if ( !expression.isEmpty() )
     {
-      expressions << field.name() + " IS NOT NULL";
+      expressions << field.name() + QStringLiteral( " IS NOT NULL" );
     }
     else
     {
@@ -137,10 +137,10 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldCon
 
   if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
   {
-    descriptions << QStringLiteral( "Unique" );
+    descriptions << tr( "Unique" );
     if ( !expression.isEmpty() )
     {
-      expressions << field.name() + " IS UNIQUE";
+      expressions << field.name() + QStringLiteral( " IS UNIQUE" );
     }
     else
     {
