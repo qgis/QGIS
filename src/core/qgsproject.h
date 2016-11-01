@@ -80,6 +80,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+
+    /**
+     * The file name associated with the project.
+     * This is the file which contains the project's XML representation.
+     *
+     * \see fileInfo()
+     * \since QGIS 3.0
+     *
+     * \read fileName()
+     * \write setFileName()
+     * \notify fileNameChanged()
+     */
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
@@ -119,22 +131,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool isDirty() const;
 
-    /** Sets the file name associated with the project. This is the file which contains the project's XML
-     * representation.
-     * \param name project file name
-     * \see fileName()
+    /** 
+     * \copydoc fileName
      */
     void setFileName( const QString &name );
 
-    /** Returns the project's file name. This is the file which contains the project's XML
-     * representation.
-     * \see setFileName()
-     * \see fileInfo()
-    */
+    /**
+     * \copydoc fileName
+     */
     QString fileName() const;
 
     /** Returns QFileInfo object for the project's associated file.
-     * \see fileName()
+     * \see fileName
      * \since QGIS 2.9
      */
     QFileInfo fileInfo() const;
@@ -182,7 +190,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool read( const QString &filename );
 
-    /** Reads the project from its currently associated file (see fileName() ).
+    /** Reads the project from its currently associated file (\see fileName ).
      * \returns true if project file has been read successfully
      */
     bool read();
@@ -795,7 +803,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
-    //! Emitted when the file name of the project changes
+    /**
+     * \copydoc fileName
+     */
     void fileNameChanged();
 
     //! Emitted when the home path of the project changes
