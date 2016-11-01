@@ -79,7 +79,7 @@ void TestQgsAttributeForm::testFieldConstraint()
 
   // testing stuff
   QString validLabel = QStringLiteral( "col0<font color=\"green\">✔</font>" );
-  QString invalidLabel = QStringLiteral( "col0<font color=\"red\">❌</font>" );
+  QString invalidLabel = QStringLiteral( "col0<font color=\"red\">✘</font>" );
 
   // set constraint
   layer->setConstraintExpression( 0, QString() );
@@ -145,7 +145,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   // testing stuff
   QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
   QString val = QStringLiteral( "<font color=\"green\">✔</font>" );
-  QString inv = QStringLiteral( "<font color=\"red\">❌</font>" );
+  QString inv = QStringLiteral( "<font color=\"red\">✘</font>" );
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;

@@ -901,7 +901,7 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
     if ( !ok )
     {
       // not good
-      buddy->setText( QStringLiteral( "%1<font color=\"red\">❌</font>" ).arg( text ) );
+      buddy->setText( QStringLiteral( "%1<font color=\"red\">✘</font>" ).arg( text ) );
     }
     else
     {
