@@ -74,31 +74,31 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
         cs = obj.getConnectionString()
         # NOTE: defaults are debatable, see
         # https://github.com/qgis/QGIS/pull/3607#issuecomment-253971020
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "host=localhost port=5432 active_schema=public")
 
         obj.setParameterValue('HOST', 'remote')
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "host=remote port=5432 active_schema=public")
 
         obj.setParameterValue('HOST', '')
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "port=5432 active_schema=public")
 
         obj.setParameterValue('PORT', '5555')
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "port=5555 active_schema=public")
 
         obj.setParameterValue('PORT', '')
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "active_schema=public")
 
         obj.setParameterValue('USER', 'usr')
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "active_schema=public user=usr")
 
         obj.setParameterValue('PASSWORD', 'pwd')
-        self.assertEquals(obj.getConnectionString(),
+        self.assertEqual(obj.getConnectionString(),
                           "password=pwd active_schema=public user=usr")
 
 
