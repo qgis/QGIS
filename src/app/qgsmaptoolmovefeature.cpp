@@ -13,27 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolmovefeature.h"
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolmovefeature.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgstolerance.h"
-#include "qgisapp.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertools.h"
+
 
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
 
-QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
+
+QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas , MoveMode mode )
     : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
     , mRubberBand( nullptr )
+    , mMode( mode )
 {
   mToolName = tr( "Move feature" );
-  mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
+  switch ( mode )
+  {
+    case Move:
+      mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
+      break;
+    case CopyMove:
+      mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureLine; // we copy/move several times
+      break;
+  }
 }
 
 QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
@@ -138,12 +150,12 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
   }
   else
   {
-    delete mRubberBand;
-    mRubberBand = nullptr;
-
+    // copy and move mode
     if ( e->button() != Qt::LeftButton )
     {
       cadDockWidget()->clear();
+      delete mRubberBand;
+      mRubberBand = nullptr;
       return;
     }
 
@@ -152,13 +164,33 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
     double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
     double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
-    vlayer->beginEditCommand( tr( "Feature moved" ) );
-    Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
+
+
+    vlayer->beginEditCommand( mMode == Move ? tr( "Feature moved" ) : tr( "Feature copied and moved" ) );
+
+
+    switch ( mMode )
     {
-      vlayer->translateFeature( id, dx, dy );
+      case Move:
+        Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
+        {
+          vlayer->translateFeature( id, dx, dy );
+        }
+        delete mRubberBand;
+        mRubberBand = nullptr;
+        break;
+
+      case CopyMove:
+        QgsFeatureRequest request;
+        request.setFilterFids( mMovedFeatures );
+        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy ) )
+        {
+          delete mRubberBand;
+          mRubberBand = nullptr;
+        }
+        break;
     }
-    delete mRubberBand;
-    mRubberBand = nullptr;
+
     vlayer->endEditCommand();
     vlayer->triggerRepaint();
   }

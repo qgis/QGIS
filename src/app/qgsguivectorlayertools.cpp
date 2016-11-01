@@ -17,15 +17,17 @@
 #include <QToolButton>
 
 #include "qgsguivectorlayertools.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmessagebar.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsmessageviewer.h"
 #include "qgsfeatureaction.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmessageviewer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
@@ -91,6 +93,83 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   else //layer not modified
   {
     res = true;
+  }
+  return res;
+}
+
+bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy ) const
+{
+  bool res = false;
+  if ( !layer || !layer->isEditable() )
+  {
+    return false;
+  }
+
+  QgsFeatureIterator fi = layer->getFeatures( request );
+  QgsFeature f;
+  QgsAttributeList pkAttrList = layer->pkAttributeList();
+
+  int browsedFeatureCount = 0;
+  int couldNotWriteCount = 0;
+  int noGeometryCount = 0;
+
+  QgsFeatureIds fidList;
+
+  while ( fi.nextFeature( f ) )
+  {
+    browsedFeatureCount++;
+    // remove pkey values
+    Q_FOREACH ( auto idx, pkAttrList )
+    {
+      f.setAttribute( idx, QVariant() );
+    }
+    // translate
+    if ( f.hasGeometry() )
+    {
+      QgsGeometry geom = f.geometry();
+      geom.translate( dx, dy );
+      f.setGeometry( geom );
+#ifdef QGISDEBUG
+      const QgsFeatureId  fid = f.id();
+#endif
+      // paste feature
+      if ( !layer->addFeature( f, false ) )
+      {
+        couldNotWriteCount++;
+        QgsDebugMsg( QString( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
+      }
+      else
+      {
+        fidList.insert( f.id() );
+      }
+    }
+    else
+    {
+      noGeometryCount++;
+    }
+  }
+
+  request = QgsFeatureRequest();
+  request.setFilterFids( fidList );
+
+  if ( !couldNotWriteCount && !noGeometryCount )
+  {
+    res = true;
+  }
+  else
+  {
+    QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( browsedFeatureCount - couldNotWriteCount - noGeometryCount, browsedFeatureCount );
+    if ( noGeometryCount )
+    {
+      msg.append( " " );
+      msg.append( tr( "Some features have no geometry." ) );
+    }
+    if ( couldNotWriteCount )
+    {
+      msg.append( " " );
+      msg.append( tr( "Some could not be created on the layer." ) );
+    }
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Copy and move" ), msg, QgsMessageBar::CRITICAL );
   }
   return res;
 }
