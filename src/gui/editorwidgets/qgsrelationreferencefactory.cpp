@@ -181,3 +181,9 @@ QVariant QgsRelationReferenceFactory::sortValue( QgsVectorLayer* vl, int fieldId
 {
   return representValue( vl, fieldIdx, config, cache, value );
 }
+
+unsigned int QgsRelationReferenceFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  const QList<QgsRelation> relations = vl->referencingRelations( fieldIdx );
+  return !relations.isEmpty() ? 21 /*A bit stronger than the range widget*/ : 5;
+}
