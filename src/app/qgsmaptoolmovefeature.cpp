@@ -28,12 +28,21 @@
 #include <QSettings>
 #include <limits>
 
-QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
+
+QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas , MoveMode mode )
     : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
     , mRubberBand( nullptr )
+    , mMode( mode )
 {
   mToolName = tr( "Move feature" );
-  mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
+  if ( mode == Move )
+  {
+    mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
+  }
+  else
+  {
+    mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureLine; // we copy/move several times
+  }
 }
 
 QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
@@ -138,12 +147,12 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
   }
   else
   {
-    delete mRubberBand;
-    mRubberBand = nullptr;
-
+    // copy and move mode
     if ( e->button() != Qt::LeftButton )
     {
       cadDockWidget()->clear();
+      delete mRubberBand;
+      mRubberBand = nullptr;
       return;
     }
 
@@ -152,13 +161,47 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
     double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
     double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
-    vlayer->beginEditCommand( tr( "Feature moved" ) );
-    Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
+
+
+    vlayer->beginEditCommand( mMode == Move ? tr( "Feature moved" ) : tr( "Feature copied and moved" ) );
+
+
+    if ( mMode == Move )
     {
-      vlayer->translateFeature( id, dx, dy );
+      Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
+      {
+        vlayer->translateFeature( id, dx, dy );
+      }
+      delete mRubberBand;
+      mRubberBand = nullptr;
     }
-    delete mRubberBand;
-    mRubberBand = nullptr;
+    else
+    {
+      QgsFeatureRequest request;
+      request.setFilterFids( mMovedFeatures );
+      QgsFeatureIterator fi = vlayer->getFeatures( request );
+      QgsFeature f;
+      QgsAttributeList pkAttrList = vlayer->pkAttributeList();
+
+      while ( fi.nextFeature( f ) )
+      {
+        // remove pkey values
+        Q_FOREACH ( auto idx, pkAttrList )
+        {
+          f.setAttribute( idx, QVariant() );
+        }
+        // translate
+        QgsGeometry geom = f.geometry();
+        geom.translate( dx, dy );
+        f.setGeometry( geom );
+        // paste feature
+        if ( !vlayer->addFeature( f, false ) )
+        {
+          QgsDebugMsg( "could not paste feature" );
+        }
+      }
+    }
+
     vlayer->endEditCommand();
     vlayer->triggerRepaint();
   }
