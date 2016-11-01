@@ -96,7 +96,6 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
         arguments.append('-dialect')
         arguments.append('sqlite')
         arguments.append('-sql')

@@ -103,7 +103,6 @@ class OneSideBuffer(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(layername)
         arguments.append('-dialect')
         arguments.append('sqlite')
         arguments.append('-sql')
