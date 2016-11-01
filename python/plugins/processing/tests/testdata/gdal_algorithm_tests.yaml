@@ -143,3 +143,19 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/offset_lines.gml
         type: vector
+
+  - algorithm: gdalogr:singlesidedbufferforlines
+    name: OGR one-side buffer for lines (left-handed)
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '1'
+      MULTI: false
+      RADIUS: 0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/one_side_buffer.gml
+        type: vector
