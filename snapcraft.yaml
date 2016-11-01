@@ -56,6 +56,7 @@ parts:
     stage-packages:
       - python3-sip
       - python3-sip-dev
+      - libqt5sql5-sqlite
   python-deps:
     plugin: nil
     stage-packages:
