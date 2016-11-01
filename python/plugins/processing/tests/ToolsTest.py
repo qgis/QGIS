@@ -36,20 +36,6 @@ start_app()
 
 class VectorTest(unittest.TestCase):
 
-        # URI from OGR provider
-        # URI from OGR provider
-        # URI from OGR provider
-        # URI from OGR provider
-        # URI from OGR provider
-        # URI from OGR provider
-
-        # URI from Sqlite provider
-        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
-        self.assertEqual(name, 't')
-
-        # URI from PostgreSQL provider
-        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
-        self.assertEqual(name, 'city_data.edge')
     def testFeatures(self):
         ProcessingConfig.initialize()
 

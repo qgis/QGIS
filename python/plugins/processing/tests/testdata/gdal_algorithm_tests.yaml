@@ -44,17 +44,17 @@ tests:
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
           - '  NoData Value=-32768'
 
-  - algorithm: gdalogr:polygonize
-    name: GDAL polygonize
-    params:
-      FIELD: DN
-      INPUT:
-        name: raster.tif
-        type: raster
-    results:
-      OUTPUT:
-        name: expected/gdal/polygonize.gml
-        type: vector
+#  - algorithm: gdalogr:polygonize
+#    name: GDAL polygonize
+#    params:
+#      FIELD: DN
+#      INPUT:
+#        name: raster.tif
+#        type: raster
+#    results:
+#      OUTPUT:
+#        name: expected/gdal/polygonize.gml
+#        type: vector
 
   - algorithm: gdalogr:information
     name: GDAL ogrinfo
