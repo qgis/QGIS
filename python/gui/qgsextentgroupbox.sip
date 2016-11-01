@@ -58,7 +58,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     //! set output extent to be the same as current extent (may be transformed to output CRS)
     void setOutputExtentFromCurrent();
 
-    //! set output extent to custom extent (may be transformed to outut CRS)
+    //! set output extent to custom extent (may be transformed to output CRS)
     void setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs );
 
   signals:
