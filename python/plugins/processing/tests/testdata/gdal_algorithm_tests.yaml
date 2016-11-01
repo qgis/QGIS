@@ -76,7 +76,7 @@ tests:
     name: OGR buffer lines
     params:
       DISSOLVEALL: false
-      DISTANCE: '1'
+      DISTANCE: 1.0
       GEOMETRY: geometry
       INPUT_LAYER:
         name: lines.gml
@@ -91,7 +91,7 @@ tests:
     name: OGR basic polygon buffer
     params:
       DISSOLVEALL: false
-      DISTANCE: '0.5'
+      DISTANCE: 0.5
       GEOMETRY: geometry
       INPUT_LAYER:
         name: polys.gml
@@ -106,7 +106,7 @@ tests:
     name: OGR polygon buffer with dissolve
     params:
       DISSOLVEALL: true
-      DISTANCE: '0.5'
+      DISTANCE: 0.5
       GEOMETRY: geometry
       INPUT_LAYER:
         name: polys.gml
