@@ -195,6 +195,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation& relation, bool 
     mReferencedLayer = relation.referencedLayer();
     mReferencedFieldIdx = mReferencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
     mReferencingFieldIdx = mReferencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
+    mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
     QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 

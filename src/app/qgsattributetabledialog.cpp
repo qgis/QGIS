@@ -86,6 +86,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     , mRubberBand( nullptr )
     , mCurrentSearchWidgetWrapper( nullptr )
 {
+  setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + theLayer->id() );
   setupUi( this );
 
   Q_FOREACH ( const QgsField& field, mLayer->fields() )

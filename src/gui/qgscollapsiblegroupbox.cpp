@@ -522,6 +522,8 @@ void QgsCollapsibleGroupBox::init()
   // in multiple places or used as options for different parent objects
   mSaveCheckedState = false;
   mSettingGroup = QLatin1String( "" ); // if not set, use window object name
+
+  connect( this, &QObject::objectNameChanged, this, &QgsCollapsibleGroupBox::loadState );
 }
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
@@ -547,6 +549,9 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 
 QString QgsCollapsibleGroupBox::saveKey() const
 {
+  if ( objectName().isEmpty() || ( mSettingGroup.isEmpty() && window()->objectName().isEmpty() ) )
+    return QString();  // cannot get a valid key
+
   // save key for load/save state
   // currently QgsCollapsibleGroupBox/window()/object
   QString saveKey = '/' + objectName();
@@ -558,9 +563,9 @@ QString QgsCollapsibleGroupBox::saveKey() const
   // }
   // if ( parent() )
   //   saveKey = "/" + parent()->objectName() + saveKey;
-  QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
+  const QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
   saveKey = '/' + setgrp + saveKey;
-  saveKey = "QgsCollapsibleGroupBox" + saveKey;
+  saveKey = QStringLiteral( "QgsCollapsibleGroupBox" ) + saveKey;
   return saveKey;
 }
 
@@ -572,19 +577,21 @@ void QgsCollapsibleGroupBox::loadState()
   if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
 
+  const QString key = saveKey();
+  if ( key.isEmpty() )
+    return;
+
   setUpdatesEnabled( false );
 
-  QString key = saveKey();
-  QVariant val;
   if ( mSaveCheckedState )
   {
-    val = mSettings->value( key + "/checked" );
+    QVariant val = mSettings->value( key + "/checked" );
     if ( ! val.isNull() )
       setChecked( val.toBool() );
   }
   if ( mSaveCollapsedState )
   {
-    val = mSettings->value( key + "/collapsed" );
+    QVariant val = mSettings->value( key + "/collapsed" );
     if ( ! val.isNull() )
       setCollapsed( val.toBool() );
   }
@@ -597,14 +604,16 @@ void QgsCollapsibleGroupBox::saveState() const
   if ( !mSettings )
     return;
 
-  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
+  if ( !mShown || !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
 
-  QString key = saveKey();
+  const QString key = saveKey();
+  if ( key.isEmpty() )
+    return;
 
   if ( mSaveCheckedState )
-    mSettings->setValue( key + "/checked", isChecked() );
+    mSettings->setValue( key + QStringLiteral( "/checked" ), isChecked() );
   if ( mSaveCollapsedState )
-    mSettings->setValue( key + "/collapsed", isCollapsed() );
+    mSettings->setValue( key + QStringLiteral( "/collapsed" ), isCollapsed() );
 }
 
