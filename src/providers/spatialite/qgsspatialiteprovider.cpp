@@ -845,10 +845,12 @@ void QgsSpatiaLiteProvider::fetchConstraints()
         int fieldIdx = mAttributeFields.lookupField( fieldName );
         if ( fieldIdx >= 0 )
         {
+          QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
           if ( definition.contains( "unique", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
-            mAttributeFields[ fieldIdx ].setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginProvider );
+            constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
           if ( definition.contains( "not null", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
-            mAttributeFields[ fieldIdx ].setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+            constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+          mAttributeFields[ fieldIdx ].setConstraints( constraints );
         }
       }
     }

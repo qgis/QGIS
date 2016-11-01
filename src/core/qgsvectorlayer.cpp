@@ -1456,7 +1456,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
       if ( field.isEmpty() || constraints == 0 )
         continue;
 
-      mFieldConstraints.insert( field, static_cast< QgsField::Constraints >( constraints ) );
+      mFieldConstraints.insert( field, static_cast< QgsFieldConstraints::Constraints >( constraints ) );
     }
   }
   mFieldConstraintExpressions.clear();
@@ -1690,7 +1690,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   {
     QDomElement constraintElem = document.createElement( "constraint" );
     constraintElem.setAttribute( "field", field.name() );
-    constraintElem.setAttribute( "constraints", field.constraints() );
+    constraintElem.setAttribute( "constraints", field.constraints().constraints() );
     constraintsElem.appendChild( constraintElem );
   }
   layer_node.appendChild( constraintsElem );
@@ -1701,8 +1701,8 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   {
     QDomElement constraintExpressionElem = document.createElement( "constraint" );
     constraintExpressionElem.setAttribute( "field", field.name() );
-    constraintExpressionElem.setAttribute( "exp", field.constraintExpression() );
-    constraintExpressionElem.setAttribute( "desc", field.constraintDescription() );
+    constraintExpressionElem.setAttribute( "exp", field.constraints().constraintExpression() );
+    constraintExpressionElem.setAttribute( "desc", field.constraints().constraintDescription() );
     constraintExpressionsElem.appendChild( constraintExpressionElem );
   }
   layer_node.appendChild( constraintExpressionsElem );
@@ -2963,20 +2963,24 @@ void QgsVectorLayer::updateFields()
 
     mFields[ index ].setDefaultValueExpression( defaultIt.value() );
   }
-  QMap< QString, QgsField::Constraints >::const_iterator constraintIt = mFieldConstraints.constBegin();
+
+  QMap< QString, QgsFieldConstraints::Constraints >::const_iterator constraintIt = mFieldConstraints.constBegin();
   for ( ; constraintIt != mFieldConstraints.constEnd(); ++constraintIt )
   {
     int index = mFields.lookupField( constraintIt.key() );
     if ( index < 0 )
       continue;
 
+    QgsFieldConstraints constraints = mFields.at( index ).constraints();
+
     // always keep provider constraints intact
-    if ( !( mFields.at( index ).constraints() & QgsField::ConstraintNotNull ) && ( constraintIt.value() & QgsField::ConstraintNotNull ) )
-      mFields[ index ].setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginLayer );
-    if ( !( mFields.at( index ).constraints() & QgsField::ConstraintUnique ) && ( constraintIt.value() & QgsField::ConstraintUnique ) )
-      mFields[ index ].setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginLayer );
-    if ( !( mFields.at( index ).constraints() & QgsField::ConstraintExpression ) && ( constraintIt.value() & QgsField::ConstraintExpression ) )
-      mFields[ index ].setConstraint( QgsField::ConstraintExpression, QgsField::ConstraintOriginLayer );
+    if ( !( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull ) && ( constraintIt.value() & QgsFieldConstraints::ConstraintNotNull ) )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginLayer );
+    if ( !( constraints.constraints() & QgsFieldConstraints::ConstraintUnique ) && ( constraintIt.value() & QgsFieldConstraints::ConstraintUnique ) )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
+    if ( !( constraints.constraints() & QgsFieldConstraints::ConstraintExpression ) && ( constraintIt.value() & QgsFieldConstraints::ConstraintExpression ) )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintOriginLayer );
+    mFields[ index ].setConstraints( constraints );
   }
 
   QMap< QString, QPair< QString, QString > >::const_iterator constraintExpIt = mFieldConstraintExpressions.constBegin();
@@ -2986,11 +2990,14 @@ void QgsVectorLayer::updateFields()
     if ( index < 0 )
       continue;
 
+    QgsFieldConstraints constraints = mFields.at( index ).constraints();
+
     // always keep provider constraints intact
-    if ( mFields.at( index ).constraintOrigin( QgsField::ConstraintExpression ) == QgsField::ConstraintOriginProvider )
+    if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintOriginProvider )
       continue;
 
-    mFields[ index ].setConstraintExpression( constraintExpIt.value().first, constraintExpIt.value().second );
+    constraints.setConstraintExpression( constraintExpIt.value().first, constraintExpIt.value().second );
+    mFields[ index ].setConstraints( constraints );
   }
 
   if ( oldFields != mFields )
@@ -4282,12 +4289,12 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
   return true;
 }
 
-QgsField::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
+QgsFieldConstraints::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
 {
   if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
     return 0;
 
-  QgsField::Constraints constraints = mFields.at( fieldIndex ).constraints();
+  QgsFieldConstraints::Constraints constraints = mFields.at( fieldIndex ).constraints().constraints();
 
   // make sure provider constraints are always present!
   if ( mFields.fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
@@ -4298,7 +4305,7 @@ QgsField::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
   return constraints;
 }
 
-void QgsVectorLayer::setFieldConstraints( int index, QgsField::Constraints constraints )
+void QgsVectorLayer::setFieldConstraints( int index, QgsFieldConstraints::Constraints constraints )
 {
   if ( index < 0 || index >= mFields.count() )
     return;
@@ -4319,7 +4326,7 @@ QString QgsVectorLayer::constraintExpression( int index ) const
   if ( index < 0 || index >= mFields.count() )
     return QString();
 
-  return mFields.at( index ).constraintExpression();
+  return mFields.at( index ).constraints().constraintExpression();
 }
 
 QString QgsVectorLayer::constraintDescription( int index ) const
@@ -4327,7 +4334,7 @@ QString QgsVectorLayer::constraintDescription( int index ) const
   if ( index < 0 || index >= mFields.count() )
     return QString();
 
-  return mFields.at( index ).constraintDescription();
+  return mFields.at( index ).constraints().constraintDescription();
 }
 
 void QgsVectorLayer::setConstraintExpression( int index, const QString& expression, const QString& description )

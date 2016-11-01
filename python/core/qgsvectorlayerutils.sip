@@ -25,6 +25,6 @@ class QgsVectorLayerUtils
      * If the origin parameter is set then only constraints with a matching origin will be checked.
      */
     static bool validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors /Out/,
-                                   QgsField::ConstraintOrigin origin = QgsField::ConstraintOriginNotSet );
+                                   QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 
 };

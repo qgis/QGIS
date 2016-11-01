@@ -123,6 +123,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturerequest.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
+  qgsfieldconstraints.cpp
   qgsfields.cpp
   qgsfontutils.cpp
   qgsgeometrycache.cpp
@@ -459,6 +460,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfeature.h
   qgsfeedback.h
   qgsfield.h
+  qgsfieldconstraints.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h

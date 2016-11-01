@@ -122,7 +122,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * to only provider or layer based constraints.
      * @note added in QGIS 2.16
      */
-    void updateConstraint( const QgsFeature &featureContext, QgsField::ConstraintOrigin constraintOrigin = QgsField::ConstraintOriginNotSet );
+    void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
      * Get the current constraint status.

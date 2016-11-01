@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsField,
+                       QgsFieldConstraints,
                        QgsFields,
                        QgsFeature,
                        NULL
@@ -102,7 +103,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         print(errors)
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsField.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -121,31 +122,31 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
-        layer.setFieldConstraints(1, QgsField.ConstraintNotNull)
+        layer.setFieldConstraints(1, QgsFieldConstraints.ConstraintNotNull)
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
         print(errors)
 
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsField.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
         # unique constraint
         f.setAttributes(["test123", 123])
-        layer.setFieldConstraints(1, QgsField.Constraints())
+        layer.setFieldConstraints(1, QgsFieldConstraints.Constraints())
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
-        layer.setFieldConstraints(1, QgsField.ConstraintUnique)
+        layer.setFieldConstraints(1, QgsFieldConstraints.ConstraintUnique)
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
         print(errors)
 
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsField.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -158,7 +159,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         # test double constraint failure
         layer.setConstraintExpression(1, 'fldint>5')
-        layer.setFieldConstraints(1, QgsField.ConstraintNotNull)
+        layer.setFieldConstraints(1, QgsFieldConstraints.ConstraintNotNull)
         f.setAttributes(["test123", NULL])
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)

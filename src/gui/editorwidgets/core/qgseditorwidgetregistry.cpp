@@ -266,7 +266,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
       if ( ewv2CfgElem.attribute( QStringLiteral( "notNull" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) )
       {
         // upgrade from older config
-        vectorLayer->setFieldConstraints( idx, vectorLayer->fieldConstraints( idx ) | QgsField::ConstraintNotNull );
+        vectorLayer->setFieldConstraints( idx, vectorLayer->fieldConstraints( idx ) | QgsFieldConstraints::ConstraintNotNull );
       }
       if ( !ewv2CfgElem.attribute( QStringLiteral( "constraint" ), QString() ).isEmpty() )
       {

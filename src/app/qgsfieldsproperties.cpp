@@ -558,16 +558,17 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
-  attributeTypeDialog.setNotNull( cfg.mConstraints & QgsField::ConstraintNotNull );
-  attributeTypeDialog.setUnique( cfg.mConstraints & QgsField::ConstraintUnique );
+  attributeTypeDialog.setNotNull( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull );
+  attributeTypeDialog.setUnique( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique );
 
-  QgsField::Constraints providerConstraints = 0;
-  if ( mLayer->fields().at( index ).constraintOrigin( QgsField::ConstraintNotNull ) == QgsField::ConstraintOriginProvider )
-    providerConstraints |= QgsField::ConstraintNotNull;
-  if ( mLayer->fields().at( index ).constraintOrigin( QgsField::ConstraintUnique ) == QgsField::ConstraintOriginProvider )
-    providerConstraints |= QgsField::ConstraintUnique;
-  if ( mLayer->fields().at( index ).constraintOrigin( QgsField::ConstraintExpression ) == QgsField::ConstraintOriginProvider )
-    providerConstraints |= QgsField::ConstraintExpression;
+  QgsFieldConstraints constraints = mLayer->fields().at( index ).constraints();
+  QgsFieldConstraints::Constraints providerConstraints = 0;
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
+    providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
+    providerConstraints |= QgsFieldConstraints::ConstraintUnique;
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintOriginProvider )
+    providerConstraints |= QgsFieldConstraints::ConstraintExpression;
   attributeTypeDialog.setProviderConstraints( providerConstraints );
 
   attributeTypeDialog.setConstraintExpression( cfg.mConstraint );
@@ -584,13 +585,13 @@ void QgsFieldsProperties::attributeTypeDialog()
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
 
   cfg.mConstraints = 0;
-  if ( attributeTypeDialog.notNull() && !( providerConstraints & QgsField::ConstraintNotNull ) )
+  if ( attributeTypeDialog.notNull() && !( providerConstraints & QgsFieldConstraints::ConstraintNotNull ) )
   {
-    cfg.mConstraints |= QgsField::ConstraintNotNull;
+    cfg.mConstraints |= QgsFieldConstraints::ConstraintNotNull;
   }
-  if ( attributeTypeDialog.unique() && !( providerConstraints & QgsField::ConstraintUnique ) )
+  if ( attributeTypeDialog.unique() && !( providerConstraints & QgsFieldConstraints::ConstraintUnique ) )
   {
-    cfg.mConstraints |= QgsField::ConstraintUnique;
+    cfg.mConstraints |= QgsFieldConstraints::ConstraintUnique;
   }
 
   cfg.mConstraintDescription = attributeTypeDialog.constraintExpressionDescription();
@@ -1060,9 +1061,10 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  mConstraints = layer->fields().at( idx ).constraints();
-  mConstraint = layer->fields().at( idx ).constraintExpression();
-  mConstraintDescription = layer->fields().at( idx ).constraintDescription();
+  QgsFieldConstraints constraints = layer->fields().at( idx ).constraints();
+  mConstraints = constraints.constraints();
+  mConstraint = constraints.constraintExpression();
+  mConstraintDescription = constraints.constraintDescription();
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();

@@ -27,6 +27,7 @@
 // version without notice, or even be removed.
 //
 
+#include "qgsfieldconstraints.h"
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
@@ -55,7 +56,6 @@ class QgsFieldPrivate : public QSharedData
         , length( len )
         , precision( prec )
         , comment( comment )
-        , constraints( 0 )
     {
     }
 
@@ -71,9 +71,6 @@ class QgsFieldPrivate : public QSharedData
         , alias( other.alias )
         , defaultValueExpression( other.defaultValueExpression )
         , constraints( other.constraints )
-        , constraintOrigins( other.constraintOrigins )
-        , expressionConstraint( other.expressionConstraint )
-        , expressionConstraintDescription( other.expressionConstraintDescription )
     {
     }
 
@@ -84,10 +81,7 @@ class QgsFieldPrivate : public QSharedData
       return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
               && ( length == other.length ) && ( precision == other.precision )
               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
-              && ( constraints == other.constraints )
-              && ( expressionConstraint == other.expressionConstraint )
-              && ( expressionConstraintDescription == other.expressionConstraintDescription )
-              && ( constraintOrigins == other.constraintOrigins ) );
+              && ( constraints == other.constraints ) );
     }
 
     //! Name
@@ -117,17 +111,8 @@ class QgsFieldPrivate : public QSharedData
     //! Default value expression
     QString defaultValueExpression;
 
-    //! Constraints
-    QgsField::Constraints constraints;
-
-    //! Origin of field constraints
-    QHash< QgsField::Constraint, QgsField::ConstraintOrigin > constraintOrigins;
-
-    //! Expression constraint
-    QString expressionConstraint;
-
-    //! Expression constraint descriptive name
-    QString expressionConstraintDescription;
+    //! Field constraints
+    QgsFieldConstraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
 };

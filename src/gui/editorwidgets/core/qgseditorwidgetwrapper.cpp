@@ -106,22 +106,22 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid 
     widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
 }
 
-void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsField::ConstraintOrigin constraintOrigin )
+void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
 {
   bool toEmit( false );
   QgsField field = layer()->fields().at( mFieldIdx );
 
-  QString expression = field.constraintExpression();
+  QString expression = field.constraints().constraintExpression();
   QStringList expressions, descriptions;
 
   if ( ! expression.isEmpty() )
   {
     expressions << expression;
-    descriptions << field.constraintDescription();
+    descriptions << field.constraints().constraintDescription();
     toEmit = true;
   }
 
-  if ( field.constraints() & QgsField::ConstraintNotNull )
+  if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
   {
     descriptions << QStringLiteral( "Not NULL" );
     if ( !expression.isEmpty() )
@@ -135,7 +135,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsField::C
     toEmit = true;
   }
 
-  if ( field.constraints() & QgsField::ConstraintUnique )
+  if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
   {
     descriptions << QStringLiteral( "Unique" );
     if ( !expression.isEmpty() )

@@ -29,6 +29,7 @@ from qgis.core import (Qgis,
                        QgsGeometry,
                        QgsPoint,
                        QgsField,
+                       QgsFieldConstraints,
                        QgsFields,
                        QgsMapLayerRegistry,
                        QgsVectorJoinInfo,
@@ -1781,37 +1782,37 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertFalse(layer.fieldConstraints(1))
         self.assertFalse(layer.fieldConstraints(2))
 
-        layer.setFieldConstraints(0, QgsField.ConstraintNotNull)
-        self.assertEqual(layer.fieldConstraints(0), QgsField.ConstraintNotNull)
+        layer.setFieldConstraints(0, QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer.fieldConstraints(0), QgsFieldConstraints.ConstraintNotNull)
         self.assertFalse(layer.fieldConstraints(1))
         self.assertFalse(layer.fieldConstraints(2))
-        self.assertEqual(layer.fields().at(0).constraints(), QgsField.ConstraintNotNull)
-        self.assertEqual(layer.fields().at(0).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginLayer)
+        self.assertEqual(layer.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginLayer)
 
-        layer.setFieldConstraints(1, QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
-        self.assertEqual(layer.fieldConstraints(0), QgsField.ConstraintNotNull)
-        self.assertEqual(layer.fieldConstraints(1), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+        layer.setFieldConstraints(1, QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(layer.fieldConstraints(0), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer.fieldConstraints(1), QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
         self.assertFalse(layer.fieldConstraints(2))
-        self.assertEqual(layer.fields().at(0).constraints(), QgsField.ConstraintNotNull)
-        self.assertEqual(layer.fields().at(0).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(1).constraints(), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
-        self.assertEqual(layer.fields().at(1).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(1).constraintOrigin(QgsField.ConstraintUnique),
-                         QgsField.ConstraintOriginLayer)
+        self.assertEqual(layer.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginLayer)
+        self.assertEqual(layer.fields().at(1).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(layer.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginLayer)
+        self.assertEqual(layer.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOriginLayer)
 
-        layer.setFieldConstraints(1, QgsField.Constraints())
-        self.assertEqual(layer.fieldConstraints(0), QgsField.ConstraintNotNull)
+        layer.setFieldConstraints(1, QgsFieldConstraints.Constraints())
+        self.assertEqual(layer.fieldConstraints(0), QgsFieldConstraints.ConstraintNotNull)
         self.assertFalse(layer.fieldConstraints(1))
         self.assertFalse(layer.fieldConstraints(2))
-        self.assertEqual(layer.fields().at(0).constraints(), QgsField.ConstraintNotNull)
-        self.assertEqual(layer.fields().at(0).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginLayer)
-        self.assertFalse(layer.fields().at(1).constraints())
-        self.assertEqual(layer.fields().at(1).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginNotSet)
+        self.assertEqual(layer.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginLayer)
+        self.assertFalse(layer.fields().at(1).constraints().constraints())
+        self.assertEqual(layer.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginNotSet)
 
     def testSaveRestoreConstraints(self):
         """ test saving and restoring constraints from xml"""
@@ -1828,8 +1829,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertFalse(layer2.fieldConstraints(1))
 
         # set some constraints
-        layer.setFieldConstraints(0, QgsField.ConstraintNotNull)
-        layer.setFieldConstraints(1, QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+        layer.setFieldConstraints(0, QgsFieldConstraints.ConstraintNotNull)
+        layer.setFieldConstraints(1, QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
@@ -1837,16 +1838,16 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         layer3 = createLayerWithOnePoint()
         self.assertTrue(layer3.readXml(elem))
-        self.assertEqual(layer3.fieldConstraints(0), QgsField.ConstraintNotNull)
-        self.assertEqual(layer3.fieldConstraints(1), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
-        self.assertEqual(layer3.fields().at(0).constraints(), QgsField.ConstraintNotNull)
-        self.assertEqual(layer3.fields().at(0).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(1).constraints(), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
-        self.assertEqual(layer3.fields().at(1).constraintOrigin(QgsField.ConstraintNotNull),
-                         QgsField.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(1).constraintOrigin(QgsField.ConstraintUnique),
-                         QgsField.ConstraintOriginLayer)
+        self.assertEqual(layer3.fieldConstraints(0), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer3.fieldConstraints(1), QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(layer3.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(layer3.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginLayer)
+        self.assertEqual(layer3.fields().at(1).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginLayer)
+        self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOriginLayer)
 
     def testGetSetConstraintExpressions(self):
         """ test getting and setting field constraint expressions """
@@ -1860,23 +1861,23 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(layer.constraintExpression(0), '1+2')
         self.assertFalse(layer.constraintExpression(1))
         self.assertFalse(layer.constraintExpression(2))
-        self.assertEqual(layer.fields().at(0).constraintExpression(), '1+2')
+        self.assertEqual(layer.fields().at(0).constraints().constraintExpression(), '1+2')
 
         layer.setConstraintExpression(1, '3+4', 'desc')
         self.assertEqual(layer.constraintExpression(0), '1+2')
         self.assertEqual(layer.constraintExpression(1), '3+4')
         self.assertEqual(layer.constraintDescription(1), 'desc')
         self.assertFalse(layer.constraintExpression(2))
-        self.assertEqual(layer.fields().at(0).constraintExpression(), '1+2')
-        self.assertEqual(layer.fields().at(1).constraintExpression(), '3+4')
-        self.assertEqual(layer.fields().at(1).constraintDescription(), 'desc')
+        self.assertEqual(layer.fields().at(0).constraints().constraintExpression(), '1+2')
+        self.assertEqual(layer.fields().at(1).constraints().constraintExpression(), '3+4')
+        self.assertEqual(layer.fields().at(1).constraints().constraintDescription(), 'desc')
 
         layer.setConstraintExpression(1, None)
         self.assertEqual(layer.constraintExpression(0), '1+2')
         self.assertFalse(layer.constraintExpression(1))
         self.assertFalse(layer.constraintExpression(2))
-        self.assertEqual(layer.fields().at(0).constraintExpression(), '1+2')
-        self.assertFalse(layer.fields().at(1).constraintExpression())
+        self.assertEqual(layer.fields().at(0).constraints().constraintExpression(), '1+2')
+        self.assertFalse(layer.fields().at(1).constraints().constraintExpression())
 
     def testSaveRestoreConstraintExpressions(self):
         """ test saving and restoring constraint expressions from xml"""
@@ -1905,15 +1906,15 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(layer3.constraintExpression(0), '1+2')
         self.assertEqual(layer3.constraintExpression(1), '3+4')
         self.assertEqual(layer3.constraintDescription(1), 'desc')
-        self.assertEqual(layer3.fields().at(0).constraintExpression(), '1+2')
-        self.assertEqual(layer3.fields().at(1).constraintExpression(), '3+4')
-        self.assertEqual(layer3.fields().at(1).constraintDescription(), 'desc')
-        self.assertEqual(layer3.fields().at(0).constraints(), QgsField.ConstraintExpression)
-        self.assertEqual(layer3.fields().at(1).constraints(), QgsField.ConstraintExpression)
-        self.assertEqual(layer3.fields().at(0).constraintOrigin(QgsField.ConstraintExpression),
-                         QgsField.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(1).constraintOrigin(QgsField.ConstraintExpression),
-                         QgsField.ConstraintOriginLayer)
+        self.assertEqual(layer3.fields().at(0).constraints().constraintExpression(), '1+2')
+        self.assertEqual(layer3.fields().at(1).constraints().constraintExpression(), '3+4')
+        self.assertEqual(layer3.fields().at(1).constraints().constraintDescription(), 'desc')
+        self.assertEqual(layer3.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintExpression)
+        self.assertEqual(layer3.fields().at(1).constraints().constraints(), QgsFieldConstraints.ConstraintExpression)
+        self.assertEqual(layer3.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintExpression),
+                         QgsFieldConstraints.ConstraintOriginLayer)
+        self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintExpression),
+                         QgsFieldConstraints.ConstraintOriginLayer)
 
     def testGetFeatureLimitWithEdits(self):
         """ test getting features with a limit, when edits are present """

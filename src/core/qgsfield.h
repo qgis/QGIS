@@ -34,6 +34,7 @@ class QgsFieldsPrivate;
  ****************************************************************************/
 
 #include "qgseditorwidgetsetup.h"
+#include "qgsfieldconstraints.h"
 
 /** \class QgsField
   * \ingroup core
@@ -54,32 +55,9 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
     Q_PROPERTY( QString defaultValueExpression READ defaultValueExpression WRITE setDefaultValueExpression )
-    Q_PROPERTY( Constraints constraints READ constraints )
+    Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
 
   public:
-
-    /**
-     * Constraints which may be present on a field.
-     * @note added in QGIS 3.0
-     */
-    enum Constraint
-    {
-      ConstraintNotNull = 1, //!< Field may not be null
-      ConstraintUnique = 1 << 1, //!< Field must have a unique value
-      ConstraintExpression = 1 << 2, //!< Field has an expression constraint set. See constraintExpression().
-    };
-    Q_DECLARE_FLAGS( Constraints, Constraint )
-
-    /**
-     * Origin of constraints.
-     * @note added in QGIS 3.0
-     */
-    enum ConstraintOrigin
-    {
-      ConstraintOriginNotSet = 0, //!< Constraint is not set
-      ConstraintOriginProvider, //!< Constraint was set at data provider
-      ConstraintOriginLayer, //!< Constraint was set by layer
-    };
 
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
@@ -234,63 +212,18 @@ class CORE_EXPORT QgsField
     void setDefaultValueExpression( const QString& expression );
 
     /**
-     * Returns any constraints which are present for the field.
+     * Returns constraints which are present for the field.
      * @note added in QGIS 3.0
      * @see setConstraints()
-     * @see constraintOrigin()
      */
-    Constraints constraints() const;
+    const QgsFieldConstraints& constraints() const;
 
     /**
-     * Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
-     * is not present on this field.
+     * Sets constraints which are present for the field.
      * @note added in QGIS 3.0
      * @see constraints()
      */
-    ConstraintOrigin constraintOrigin( Constraint constraint ) const;
-
-    /**
-     * Sets a constraint on the field.
-     * @note added in QGIS 3.0
-     * @see constraints()
-     * @see removeConstraint()
-     */
-    void setConstraint( Constraint constraint, ConstraintOrigin origin = ConstraintOriginLayer );
-
-    /**
-     * Removes a constraint from the field.
-     * @see setConstraint()
-     * @see constraints()
-     */
-    void removeConstraint( Constraint constraint );
-
-    /**
-     * Returns the constraint expression for the field, if set.
-     * @note added in QGIS 3.0
-     * @see constraints()
-     * @see constraintDescription()
-     * @see setConstraintExpression()
-     */
-    QString constraintExpression() const;
-
-    /**
-     * Returns the descriptive name for the constraint expression.
-     * @note added in QGIS 3.0
-     * @see constraints()
-     * @see constraintExpression()
-     * @see setConstraintExpression()
-     */
-    QString constraintDescription() const;
-
-    /**
-     * Set the constraint expression for the field. An optional descriptive name for the constraint
-     * can also be set. Setting an empty expression will clear any existing expression constraint.
-     * @note added in QGIS 3.0
-     * @see constraintExpression()
-     * @see constraintDescription()
-     * @see constraints()
-     */
-    void setConstraintExpression( const QString& expression, const QString& description = QString() );
+    void setConstraints( const QgsFieldConstraints& constraints );
 
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
@@ -344,8 +277,6 @@ class CORE_EXPORT QgsField
 
 
 }; // class QgsField
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsField::Constraints )
 
 Q_DECLARE_METATYPE( QgsField )
 

@@ -704,8 +704,8 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // to test, but they are unlikely to have any control over provider-side constraints
     // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint
     // and there's no point rechecking!
-    QgsField::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsField::ConstraintOriginNotSet
-        : QgsField::ConstraintOriginLayer;
+    QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet
+        : QgsFieldConstraints::ConstraintOriginLayer;
 
     // update eww constraint
     eww->updateConstraint( ft, constraintOrigin );
@@ -928,7 +928,7 @@ QList<QgsEditorWidgetWrapper*> QgsAttributeForm::constraintDependencies( QgsEdit
       if ( name != ewwName )
       {
         // get expression and referencedColumns
-        QgsExpression expr = eww->layer()->fields().at( eww->fieldIdx() ).constraintExpression();
+        QgsExpression expr = eww->layer()->fields().at( eww->fieldIdx() ).constraints().constraintExpression();
 
         Q_FOREACH ( const QString& colName, expr.referencedColumns() )
         {

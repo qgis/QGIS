@@ -1404,7 +1404,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @note added in QGIS 3.0
      * @see setFieldConstraints()
      */
-    QgsField::Constraints fieldConstraints( int fieldIndex ) const;
+    QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
      * Sets the constraints for a specified field index. Any constraints inherited from the layer's
@@ -1413,7 +1413,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @note added in QGIS 3.0
      * @see fieldConstraints()
      */
-    void setFieldConstraints( int index, QgsField::Constraints constraints );
+    void setFieldConstraints( int index, QgsFieldConstraints::Constraints constraints );
 
     /**
      * Returns the constraint expression for for a specified field index, if set.
@@ -1981,7 +1981,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsStringMap mDefaultExpressionMap;
 
     //! Map which stores constraints for fields
-    QMap< QString, QgsField::Constraints > mFieldConstraints;
+    QMap< QString, QgsFieldConstraints::Constraints > mFieldConstraints;
 
     //! Map which stores expression constraints for fields. Value is a pair of expression/description.
     QMap< QString, QPair< QString, QString > > mFieldConstraintExpressions;

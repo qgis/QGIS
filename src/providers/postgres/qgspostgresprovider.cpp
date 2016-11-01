@@ -1000,10 +1000,12 @@ bool QgsPostgresProvider::loadFields()
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
+    QgsFieldConstraints constraints;
     if ( notNullMap[tableoid][attnum] )
-      newField.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
     if ( uniqueMap[tableoid][attnum] )
-      newField.setConstraint( QgsField::ConstraintUnique, QgsField::ConstraintOriginProvider );
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    newField.setConstraints( constraints );
 
     mAttributeFields.append( newField );
   }

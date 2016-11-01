@@ -943,7 +943,9 @@ void QgsOgrProvider::loadFields()
       bool nullable = OGR_Fld_IsNullable( fldDef );
       if ( !nullable )
       {
-        newField.setConstraint( QgsField::ConstraintNotNull, QgsField::ConstraintOriginProvider );
+        QgsFieldConstraints constraints;
+        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+        newField.setConstraints( constraints );
       }
 #endif
 
