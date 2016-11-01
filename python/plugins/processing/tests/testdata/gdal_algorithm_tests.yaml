@@ -128,3 +128,18 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/points_along_lines.gml
         type: vector
+
+  - algorithm: gdalogr:offsetlinesforlines
+    name: OGR offset lines for lines (right-handed)
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+         name: lines.gml
+         type: vector
+      MULTI: false
+      RADIUS: -0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/offset_lines.gml
+        type: vector
