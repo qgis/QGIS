@@ -213,6 +213,7 @@ SET(QGIS_CORE_SRCS
   qgstextrenderer.cpp
   qgstolerance.cpp
   qgstracer.cpp
+  qgstrackedvectorlayertools.cpp
   qgstransaction.cpp
   qgstransactiongroup.cpp
   qgsunittypes.cpp
@@ -230,6 +231,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerlabeling.cpp
   qgsvectorlayerlabelprovider.cpp
   qgsvectorlayerrenderer.cpp
+  qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
@@ -491,6 +493,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrunprocess.h
   qgssnappingutils.h
   qgstracer.h
+  qgstrackedvectorlayertools.h
   qgstransaction.h
   qgstransactiongroup.h
   qgsunittypes.h
@@ -500,6 +503,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
   qgsvectorlayerjoinbuffer.h
+  qgsvectorlayertools.h
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h

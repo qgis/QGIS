@@ -1,9 +1,12 @@
-class QgsVectorLayerTools
+class QgsVectorLayerTools : QObject
 {
 %TypeHeaderCode
 #include <qgsvectorlayertools.h>
 %End
   public:
+    QgsVectorLayerTools();
+
+    virtual ~QgsVectorLayerTools();
 
     /**
      * This method should/will be called, whenever a new feature will be added to the layer
@@ -45,4 +48,17 @@ class QgsVectorLayerTools
      */
     virtual bool saveEdits( QgsVectorLayer* layer ) const = 0;
 
+    /**
+     * Copy and move features with defined translation.
+     *
+     * @param layer The layer
+     * @param request The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
+     * @param dx The translation on x
+     * @param dy The translation on y
+     * @param errorMsg If given, it will contain the error message
+     * @return True if all features could be copied.
+     *
+     * TODO QGIS 3: remove const qualifier
+     */
+    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString* errorMsg /Out/ = nullptr ) const;
 };

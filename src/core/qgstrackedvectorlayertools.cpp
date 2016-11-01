@@ -17,7 +17,7 @@
 #include "qgsvectorlayer.h"
 
 QgsTrackedVectorLayerTools::QgsTrackedVectorLayerTools()
-    : mBackend( nullptr )
+    : mBackend()
 {
 }
 
@@ -55,6 +55,11 @@ bool QgsTrackedVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowC
 bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
 {
   return mBackend->saveEdits( layer );
+}
+
+bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy, QString* errorMsg ) const
+{
+  return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg );
 }
 
 void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools* tools )

@@ -23,7 +23,7 @@
  * or a feature is added.
  */
 
-class QgsGuiVectorLayerTools : public QObject, public QgsVectorLayerTools
+class QgsGuiVectorLayerTools : public QgsVectorLayerTools
 {
     Q_OBJECT
 
@@ -73,6 +73,7 @@ class QgsGuiVectorLayerTools : public QObject, public QgsVectorLayerTools
 
   private:
     void commitError( QgsVectorLayer* vlayer ) const;
+
 };
 
 #endif // QGSGUIVECTORLAYERTOOLS_H

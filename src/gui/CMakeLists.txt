@@ -311,7 +311,6 @@ SET(QGIS_GUI_SRCS
   qgstextannotationitem.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
-  qgstrackedvectorlayertools.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
@@ -662,9 +661,7 @@ SET(QGIS_GUI_HDRS
   qgssvgannotationitem.h
   qgstablewidgetitem.h
   qgstextannotationitem.h
-  qgstrackedvectorlayertools.h
   qgsuserinputdockwidget.h
-  qgsvectorlayertools.h
   qgsvertexmarker.h
   qgsfiledownloader.h
 

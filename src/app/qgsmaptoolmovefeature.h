@@ -23,7 +23,14 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsMapToolMoveFeature( QgsMapCanvas* canvas );
+    //! Mode for moving features
+    enum MoveMode
+    {
+      Move, //!< Move feature
+      CopyMove  //!< Copy and move feature
+    };
+
+    QgsMapToolMoveFeature( QgsMapCanvas* canvas, MoveMode mode = Move );
     virtual ~QgsMapToolMoveFeature();
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
@@ -44,6 +51,8 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     QgsFeatureIds mMovedFeatures;
 
     QPoint mPressPos;
+
+    MoveMode mMode;
 
 };
 

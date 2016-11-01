@@ -23,14 +23,14 @@ from qgis.core import (
     QgsRelation,
     QgsMapLayerRegistry,
     QgsTransaction,
-    QgsFeatureRequest
+    QgsFeatureRequest,
+    QgsVectorLayerTools
 )
 
 from qgis.gui import (
     QgsEditorWidgetRegistry,
     QgsRelationWidgetWrapper,
-    QgsAttributeEditorContext,
-    QgsVectorLayerTools
+    QgsAttributeEditorContext
 )
 
 from qgis.PyQt.QtCore import QTimer

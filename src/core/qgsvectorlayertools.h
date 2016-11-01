@@ -16,9 +16,12 @@
 #ifndef QGSVECTORLAYERTOOLS_H
 #define QGSVECTORLAYERTOOLS_H
 
+#include <QObject>
+
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 
+class QgsFeatureRequest;
 class QgsVectorLayer;
 
 /** \ingroup gui
@@ -30,12 +33,14 @@ class QgsVectorLayer;
  * in your application.
  *
  */
-class GUI_EXPORT QgsVectorLayerTools
+class CORE_EXPORT QgsVectorLayerTools : public QObject
 {
-  public:
-    QgsVectorLayerTools() {}
+    Q_OBJECT
 
-    virtual ~QgsVectorLayerTools() {}
+  public:
+    QgsVectorLayerTools();
+
+    virtual ~QgsVectorLayerTools();
 
     /**
      * This method should/will be called, whenever a new feature will be added to the layer
@@ -84,6 +89,20 @@ class GUI_EXPORT QgsVectorLayerTools
      * TODO QGIS 3: remove const qualifier
      */
     virtual bool saveEdits( QgsVectorLayer* layer ) const = 0;
+
+    /**
+     * Copy and move features with defined translation.
+     *
+     * @param layer The layer
+     * @param request The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
+     * @param dx The translation on x
+     * @param dy The translation on y
+     * @param errorMsg If given, it will contain the error message
+     * @return True if all features could be copied.
+     *
+     * TODO QGIS 3: remove const qualifier
+     */
+    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = nullptr ) const;
 
 };
 

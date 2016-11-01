@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -369,7 +369,6 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionMoveFeature"/>
    <addaction name="mActionNodeTool"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
@@ -2562,6 +2561,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="shortcut">
     <string>F3</string>
+   </property>
+  </action>
+  <action name="mActionMoveFeatureCopy">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveFeatureCopy.svg</normaloff>:/images/themes/default/mActionMoveFeatureCopy.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Copy and Move Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy and Move Feature(s)</string>
    </property>
   </action>
  </widget>
