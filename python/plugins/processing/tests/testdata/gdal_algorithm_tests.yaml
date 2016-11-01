@@ -86,3 +86,17 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/buffer_lines.gml
         type: vector
+  - algorithm: gdalogr:buffervectors
+    name: OGR basic polygon buffer
+    params:
+      DISSOLVEALL: false
+      DISTANCE: '0.5'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_polys.gml
+        type: vector
