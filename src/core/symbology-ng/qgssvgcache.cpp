@@ -430,7 +430,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     reply = QgsNetworkAccessManager::instance()->get( request );
-    connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( downloadProgress( qint64, qint64 ) ) );
+    connect( reply, &QNetworkReply::downloadProgress, this, &QgsSvgCache::downloadProgress );
 
     //emit statusChanged( tr( "Downloading svg." ) );
 

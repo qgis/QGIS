@@ -603,12 +603,16 @@ QgsCptCityColorRampDialog        {#qgis_api_break_3_0_QgsCptCityColorRampDialog}
 and the new ramp can be retrieved after executing the dialog by calling ramp().
 - Some internal methods which were previously public or protected were made private.
 
+QgsCptCityDataItem        {#qgis_api_break_3_0_QgsCptCityDataItem}
+-----------------------
+
+- emitBeginInsertItems, emitEndInsertItems, emitBeginRemoveItems and emitEndRemoveItems were removed. There
+should be no need to call these slots manually.
 
 QgsCptCitySelectionItem        {#qgis_api_break_3_0_QgsCptCitySelectionItem}
 -----------------------
 
 - parseXML() has been renamed to parseXml()
-
 
 QgsCRSCache        {#qgis_api_break_3_0_QgsCRSCache}
 -----------

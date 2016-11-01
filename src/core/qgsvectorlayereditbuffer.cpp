@@ -37,7 +37,7 @@ template <class Key, class T> void mapToReversedLists( const QMap< Key, T >& map
 QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer( QgsVectorLayer* layer )
     : L( layer )
 {
-  connect( L->undoStack(), SIGNAL( indexChanged( int ) ), this, SLOT( undoIndexChanged( int ) ) ); // TODO[MD]: queued?
+  connect( L->undoStack(), &QUndoStack::indexChanged, this, &QgsVectorLayerEditBuffer::undoIndexChanged ); // TODO[MD]: queued?
 }
 
 QgsVectorLayerEditBuffer::~QgsVectorLayerEditBuffer()

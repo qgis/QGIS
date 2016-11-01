@@ -10249,7 +10249,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
       connect( rlayer, SIGNAL( drawingProgress( int, int ) ), this, SLOT( showProgress( int, int ) ) );
 
       // connect up any request the raster may make to update the statusbar message
-      connect( rlayer, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+      connect( rlayer, &QgsRasterLayer::statusChanged, this, &QgisApp::showStatusMessage );
 
       provider = rlayer->dataProvider();
     }

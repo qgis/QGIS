@@ -188,12 +188,6 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     QIcon mIcon;
     bool mValid;
 
-  public slots:
-    void emitBeginInsertItems( QgsCptCityDataItem* parent, int first, int last );
-    void emitEndInsertItems();
-    void emitBeginRemoveItems( QgsCptCityDataItem* parent, int first, int last );
-    void emitEndRemoveItems();
-
   signals:
     void beginInsertItems( QgsCptCityDataItem* parent, int first, int last );
     void endInsertItems();

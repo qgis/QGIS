@@ -818,16 +818,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mLastModified = lastModified( mDataSource );
 
   // Connect provider signals
-  connect(
-    mDataProvider, SIGNAL( progress( int, double, QString ) ),
-    this,          SLOT( onProgress( int, double, QString ) )
-  );
+  connect( mDataProvider, &QgsRasterDataProvider::progress, this, &QgsRasterLayer::onProgress );
 
   // Do a passthrough for the status bar text
-  connect(
-    mDataProvider, SIGNAL( statusChanged( QString ) ),
-    this,          SIGNAL( statusChanged( QString ) )
-  );
+  connect( mDataProvider, &QgsRasterDataProvider::statusChanged, this, &QgsRasterLayer::statusChanged );
 
   //mark the layer as valid
   mValid = true;

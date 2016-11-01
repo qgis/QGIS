@@ -837,7 +837,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
   }
 
   QgsMapLayer* layer = nodeLayer->layer();
-  connect( layer, SIGNAL( legendChanged() ), this, SLOT( layerLegendChanged() ), Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeModel::layerLegendChanged, Qt::UniqueConnection );
 
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {

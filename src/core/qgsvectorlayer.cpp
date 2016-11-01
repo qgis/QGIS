@@ -157,7 +157,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( repaintRequested() ) );
-  connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
+  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   // Default simplify drawing settings
   QSettings settings;
@@ -1329,30 +1329,21 @@ bool QgsVectorLayer::startEditing()
     mEditBuffer = new QgsVectorLayerEditBuffer( this );
   }
   // forward signals
-  connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( invalidateSymbolCountedFlag() ) );
-  connect( mEditBuffer, SIGNAL( layerModified() ), this, SIGNAL( layerModified() ) ); // TODO[MD]: necessary?
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::invalidateSymbolCountedFlag );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::layerModified ); // TODO[MD]: necessary?
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
-  connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( featureAdded( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
-  connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
-  connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
-  connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), this, SIGNAL( attributeDeleted( int ) ) );
-
-  connect( mEditBuffer, SIGNAL( committedAttributesDeleted( const QString &, const QgsAttributeList & ) ),
-           this, SIGNAL( committedAttributesDeleted( const QString &, const QgsAttributeList & ) ) );
-
-  connect( mEditBuffer, SIGNAL( committedAttributesAdded( const QString &, const QList<QgsField> & ) ),
-           this, SIGNAL( committedAttributesAdded( const QString &, const QList<QgsField> & ) ) );
-
-  connect( mEditBuffer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), this, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ) );
-  connect( mEditBuffer, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ), this, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ) );
-
-  connect( mEditBuffer, SIGNAL( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ),
-           this, SIGNAL( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ) );
-
-  connect( mEditBuffer, SIGNAL( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ),
-           this, SIGNAL( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ) );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::featureAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureDeleted, this, &QgsVectorLayer::onFeatureDeleted );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::geometryChanged, this, &QgsVectorLayer::geometryChanged );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeValueChanged, this, &QgsVectorLayer::attributeValueChanged );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeAdded, this, &QgsVectorLayer::attributeAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeDeleted, this, &QgsVectorLayer::attributeDeleted );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::committedAttributesDeleted, this, &QgsVectorLayer::committedAttributesDeleted );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::committedAttributesAdded, this, &QgsVectorLayer::committedAttributesAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::committedFeaturesAdded, this, &QgsVectorLayer::committedFeaturesAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::committedFeaturesRemoved, this, &QgsVectorLayer::committedFeaturesRemoved );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::committedAttributeValuesChanges, this, &QgsVectorLayer::committedAttributeValuesChanges );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::committedGeometriesChanges, this, &QgsVectorLayer::committedGeometriesChanges );
 
   updateFields();
 
@@ -1416,7 +1407,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   if ( !mJoinBuffer )
   {
     mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
-    connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
+    connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
   }
   mJoinBuffer->readXml( layer_node );
 
@@ -1525,7 +1516,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     return false;
   }
 
-  connect( mDataProvider, SIGNAL( raiseError( QString ) ), this, SIGNAL( raiseError( QString ) ) );
+  connect( mDataProvider, &QgsVectorDataProvider::raiseError, this, &QgsVectorLayer::raiseError );
 
   QgsDebugMsg( "Instantiated the data provider plugin" );
 
@@ -1537,13 +1528,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
-  connect( mDataProvider, SIGNAL( fullExtentCalculated() ), this, SLOT( updateExtents() ) );
+  connect( mDataProvider, &QgsVectorDataProvider::fullExtentCalculated, this, &QgsVectorLayer::updateExtents );
 
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
-  connect( mJoinBuffer, SIGNAL( joinedFieldsChanged() ), this, SLOT( onJoinedFieldsChanged() ) );
+  connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
@@ -4165,11 +4156,11 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
     QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )
       continue;
-    disconnect( lyr, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
-    disconnect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
-    disconnect( lyr, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
-    disconnect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
-    disconnect( lyr, SIGNAL( repaintRequested() ), this, SLOT( triggerRepaint() ) );
+    disconnect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );
+    disconnect( lyr, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayer::dataChanged );
+    disconnect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::dataChanged );
+    disconnect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::dataChanged );
+    disconnect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
   }
 
   // assign new dependencies
@@ -4185,11 +4176,11 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
     QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )
       continue;
-    connect( lyr, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
-    connect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
-    connect( lyr, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
-    connect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
-    connect( lyr, SIGNAL( repaintRequested() ), this, SLOT( triggerRepaint() ) );
+    connect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );
+    connect( lyr, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayer::dataChanged );
+    connect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::dataChanged );
+    connect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::dataChanged );
+    connect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
   }
 
   // if new layers are present, emit a data change

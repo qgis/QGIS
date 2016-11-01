@@ -508,23 +508,6 @@ QgsCptCityDataItem::~QgsCptCityDataItem()
   // QgsDebugMsg( "mName = " + mName + " mPath = " + mPath );
 }
 
-void QgsCptCityDataItem::emitBeginInsertItems( QgsCptCityDataItem* parent, int first, int last )
-{
-  emit beginInsertItems( parent, first, last );
-}
-void QgsCptCityDataItem::emitEndInsertItems()
-{
-  emit endInsertItems();
-}
-void QgsCptCityDataItem::emitBeginRemoveItems( QgsCptCityDataItem* parent, int first, int last )
-{
-  emit beginRemoveItems( parent, first, last );
-}
-void QgsCptCityDataItem::emitEndRemoveItems()
-{
-  emit endRemoveItems();
-}
-
 QVector<QgsCptCityDataItem*> QgsCptCityDataItem::createChildren()
 {
   QVector<QgsCptCityDataItem*> children;
@@ -607,14 +590,10 @@ void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem * child, bool refresh 
 
   mChildren.insert( i, child );
 
-  connect( child, SIGNAL( beginInsertItems( QgsCptCityDataItem*, int, int ) ),
-           this, SLOT( emitBeginInsertItems( QgsCptCityDataItem*, int, int ) ) );
-  connect( child, SIGNAL( endInsertItems() ),
-           this, SLOT( emitEndInsertItems() ) );
-  connect( child, SIGNAL( beginRemoveItems( QgsCptCityDataItem*, int, int ) ),
-           this, SLOT( emitBeginRemoveItems( QgsCptCityDataItem*, int, int ) ) );
-  connect( child, SIGNAL( endRemoveItems() ),
-           this, SLOT( emitEndRemoveItems() ) );
+  connect( child, &QgsCptCityDataItem::beginInsertItems, this, &QgsCptCityDataItem::beginInsertItems );
+  connect( child, &QgsCptCityDataItem::endInsertItems, this, &QgsCptCityDataItem::endInsertItems );
+  connect( child, &QgsCptCityDataItem::beginRemoveItems, this, &QgsCptCityDataItem::beginRemoveItems );
+  connect( child, &QgsCptCityDataItem::endRemoveItems, this, &QgsCptCityDataItem::endRemoveItems );
 
   if ( refresh )
     emit endInsertItems();
@@ -638,14 +617,10 @@ QgsCptCityDataItem * QgsCptCityDataItem::removeChildItem( QgsCptCityDataItem * c
   emit beginRemoveItems( this, i, i );
   mChildren.remove( i );
   emit endRemoveItems();
-  disconnect( child, SIGNAL( beginInsertItems( QgsCptCityDataItem*, int, int ) ),
-              this, SLOT( emitBeginInsertItems( QgsCptCityDataItem*, int, int ) ) );
-  disconnect( child, SIGNAL( endInsertItems() ),
-              this, SLOT( emitEndInsertItems() ) );
-  disconnect( child, SIGNAL( beginRemoveItems( QgsCptCityDataItem*, int, int ) ),
-              this, SLOT( emitBeginRemoveItems( QgsCptCityDataItem*, int, int ) ) );
-  disconnect( child, SIGNAL( endRemoveItems() ),
-              this, SLOT( emitEndRemoveItems() ) );
+  disconnect( child, &QgsCptCityDataItem::beginInsertItems, this, &QgsCptCityDataItem::beginInsertItems );
+  disconnect( child, &QgsCptCityDataItem::endInsertItems, this, &QgsCptCityDataItem::endInsertItems );
+  disconnect( child, &QgsCptCityDataItem::beginRemoveItems, this, &QgsCptCityDataItem::beginRemoveItems );
+  disconnect( child, &QgsCptCityDataItem::endRemoveItems, this, &QgsCptCityDataItem::endRemoveItems );
   child->setParent( nullptr );
   return child;
 }
@@ -1668,14 +1643,10 @@ void QgsCptCityBrowserModel::endRemoveItems()
 }
 void QgsCptCityBrowserModel::connectItem( QgsCptCityDataItem* item )
 {
-  connect( item, SIGNAL( beginInsertItems( QgsCptCityDataItem*, int, int ) ),
-           this, SLOT( beginInsertItems( QgsCptCityDataItem*, int, int ) ) );
-  connect( item, SIGNAL( endInsertItems() ),
-           this, SLOT( endInsertItems() ) );
-  connect( item, SIGNAL( beginRemoveItems( QgsCptCityDataItem*, int, int ) ),
-           this, SLOT( beginRemoveItems( QgsCptCityDataItem*, int, int ) ) );
-  connect( item, SIGNAL( endRemoveItems() ),
-           this, SLOT( endRemoveItems() ) );
+  connect( item, &QgsCptCityDataItem::beginInsertItems, this, &QgsCptCityBrowserModel::beginInsertItems );
+  connect( item, &QgsCptCityDataItem::endInsertItems, this, &QgsCptCityBrowserModel::endInsertItems );
+  connect( item, &QgsCptCityDataItem::beginRemoveItems, this, &QgsCptCityBrowserModel::beginRemoveItems );
+  connect( item, &QgsCptCityDataItem::endRemoveItems, this, &QgsCptCityBrowserModel::endRemoveItems );
 }
 
 bool QgsCptCityBrowserModel::canFetchMore( const QModelIndex & parent ) const

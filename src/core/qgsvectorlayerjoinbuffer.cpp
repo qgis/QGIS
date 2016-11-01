@@ -89,8 +89,8 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
   // Unique connection makes sure we do not respond to one layer's update more times (in case of multiple join)
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) ) )
   {
-    connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
-    connect( vl, SIGNAL( layerModified() ), this, SLOT( joinedLayerModified() ), Qt::UniqueConnection );
+    connect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields, Qt::UniqueConnection );
+    connect( vl, &QgsVectorLayer::layerModified, this, &QgsVectorLayerJoinBuffer::joinedLayerModified, Qt::UniqueConnection );
   }
 
   emit joinedFieldsChanged();
@@ -113,7 +113,7 @@ bool QgsVectorLayerJoinBuffer::removeJoin( const QString& joinLayerId )
 
   if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinLayerId ) ) )
   {
-    disconnect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ) );
+    disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
   }
 
   emit joinedFieldsChanged();
@@ -273,8 +273,8 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
     // make sure we are connected to the joined layer
     if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) ) )
     {
-      connect( vl, SIGNAL( updatedFields() ), this, SLOT( joinedLayerUpdatedFields() ), Qt::UniqueConnection );
-      connect( vl, SIGNAL( layerModified() ), this, SLOT( joinedLayerModified() ), Qt::UniqueConnection );
+      connect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields, Qt::UniqueConnection );
+      connect( vl, &QgsVectorLayer::layerModified, this, &QgsVectorLayerJoinBuffer::joinedLayerModified, Qt::UniqueConnection );
     }
   }
 }

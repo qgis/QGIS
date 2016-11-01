@@ -1649,7 +1649,7 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
   mLegend = legend;
 
   if ( mLegend )
-    connect( mLegend, SIGNAL( itemsChanged() ), this, SIGNAL( legendChanged() ) );
+    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged );
 
   emit legendChanged();
 }

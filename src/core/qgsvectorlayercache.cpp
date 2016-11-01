@@ -26,18 +26,18 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
 {
   mCache.setMaxCost( cacheSize );
 
-  connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( featureDeleted( QgsFeatureId ) ) );
-  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
-  connect( mLayer, SIGNAL( destroyed() ), SLOT( layerDeleted() ) );
+  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayerCache::featureDeleted );
+  connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsVectorLayerCache::onFeatureAdded );
+  connect( mLayer, &QgsVectorLayer::destroyed, this, &QgsVectorLayerCache::layerDeleted );
 
   setCacheGeometry( true );
   setCacheSubsetOfAttributes( mLayer->attributeList() );
   setCacheAddedAttributes( true );
 
-  connect( mLayer, SIGNAL( attributeDeleted( int ) ), SLOT( attributeDeleted( int ) ) );
-  connect( mLayer, SIGNAL( updatedFields() ), SLOT( invalidate() ) );
-  connect( mLayer, SIGNAL( dataChanged() ), SLOT( invalidate() ) );
-  connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
+  connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsVectorLayerCache::attributeDeleted );
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerCache::invalidate );
+  connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsVectorLayerCache::invalidate );
+  connect( mLayer, &QgsVectorLayer::attributeValueChanged, this, &QgsVectorLayerCache::onAttributeValueChanged );
 }
 
 QgsVectorLayerCache::~QgsVectorLayerCache()
@@ -61,11 +61,11 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
   mCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
   if ( cacheGeometry )
   {
-    connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
+    connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged );
   }
   else
   {
-    disconnect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry& ) ) );
+    disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged );
   }
 }
 
@@ -124,11 +124,11 @@ void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 {
   if ( cacheAddedAttributes )
   {
-    connect( mLayer, SIGNAL( attributeAdded( int ) ), SLOT( attributeAdded( int ) ) );
+    connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsVectorLayerCache::attributeAdded );
   }
   else
   {
-    disconnect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
+    disconnect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsVectorLayerCache::attributeAdded );
   }
 }
 

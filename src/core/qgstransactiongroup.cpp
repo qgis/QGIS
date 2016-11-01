@@ -53,8 +53,8 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
 
   mLayers.insert( layer );
 
-  connect( layer, SIGNAL( beforeEditingStarted() ), this, SLOT( onEditingStarted() ) );
-  connect( layer, SIGNAL( destroyed() ), this, SLOT( onLayerDeleted() ) );
+  connect( layer, &QgsVectorLayer::beforeEditingStarted, this, &QgsTransactionGroup::onEditingStarted );
+  connect( layer, &QgsVectorLayer::destroyed, this, &QgsTransactionGroup::onLayerDeleted );
 
   return true;
 }
@@ -88,8 +88,8 @@ void QgsTransactionGroup::onEditingStarted()
   {
     mTransaction->addLayer( layer );
     layer->startEditing();
-    connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( onCommitChanges() ) );
-    connect( layer, SIGNAL( beforeRollBack() ), this, SLOT( onRollback() ) );
+    connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }
 
@@ -160,8 +160,8 @@ void QgsTransactionGroup::disableTransaction()
 
   Q_FOREACH ( QgsVectorLayer* layer, mLayers )
   {
-    disconnect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( onCommitChanges() ) );
-    disconnect( layer, SIGNAL( beforeRollBack() ), this, SLOT( onRollback() ) );
+    disconnect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    disconnect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }
 
