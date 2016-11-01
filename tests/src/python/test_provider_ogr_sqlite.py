@@ -20,7 +20,7 @@ import shutil
 import glob
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsField
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -128,6 +128,37 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         got = [(f.attribute('fid'), f.attribute('intfield')) for f in vl.dataProvider().getFeatures(QgsFeatureRequest().setFilterExpression("fid = 12"))]
         self.assertEqual(got, [(12, 123)])
+
+    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
+    def testNotNullConstraint(self):
+        """ test detection of not null constraint on OGR layer """
+
+        tmpfile = os.path.join(self.basetestpath, 'testNotNullConstraint.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTInteger))
+        fld2 = ogr.FieldDefn('field2', ogr.OFTInteger)
+        fld2.SetNullable(False)
+        lyr.CreateField(fld2)
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # test some bad indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsField.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsField.Constraints())
+
+        self.assertFalse(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsField.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsField.ConstraintNotNull)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertFalse(fields.at(0).constraints() & QgsField.ConstraintNotNull)
+        self.assertFalse(fields.at(1).constraints() & QgsField.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraintOrigin(QgsField.ConstraintNotNull), QgsField.ConstraintOriginProvider)
 
 
 if __name__ == '__main__':
