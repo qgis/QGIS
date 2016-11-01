@@ -41,8 +41,6 @@ import io
 
 import psycopg2
 
-from osgeo import ogr
-
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
@@ -558,46 +556,21 @@ def ogrConnectionString(uri):
 # /tmp/x.gdb|layername=thelayer
 #
 def ogrLayerName(uri):
-
-    # handle URIs of database providers
-    if ' table=' in uri:
-        # Matches table="schema"."table"
-        re_table_schema = re.compile(' table="([^"]*)"\."([^"]*)"')
-        r = re_table_schema.search(uri)
-        if r:
-            return r.groups()[0] + '.' + r.groups()[1]
-        # Matches table="table"
-        re_table = re.compile(' table="([^"]*)"')
-        r = re_table.search(uri)
-        if r:
-            return r.groups()[0]
-
-    # handle URIs of OGR provider with explicit layername
-    if 'layername' in uri:
-        regex = re.compile('(layername=)([^|]*)')
+    if 'host' in uri:
+        regex = re.compile('(table=")(.+?)(\.)(.+?)"')
+        r = regex.search(uri)
+        return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
+    elif 'dbname' in uri:
+        regex = re.compile('(table=")(.+?)"')
         r = regex.search(uri)
         return r.groups()[1]
+    elif 'layername' in uri:
+        regex = re.compile('(layername=)(.*)')
+        r = regex.search(uri)
+        return r.groups()[1]
+    else:
+        return os.path.basename(os.path.splitext(uri)[0])
 
-    fields = uri.split('|')
-    ogruri = fields[0]
-    fields = fields[1:]
-    layerid = 0
-    for f in fields:
-        if f.startswith('layername='):
-            # Name encoded in uri, nothing more needed
-            return f.split('=')[1]
-        if f.startswith('layerid='):
-            layerid = int(f.split('=')[1])
-            # Last layerid= takes precedence, to allow of layername to
-            # take precedence
-    ds = ogr.Open(ogruri)
-    if not ds:
-        return "invalid-uri"
-    ly = ds.GetLayer(layerid)
-    if not ly:
-        return "invalid-layerid"
-    name = ly.GetName()
-    return name
 
 
 class VectorWriter(object):
