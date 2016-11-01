@@ -116,3 +116,15 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/buffer_polys_dissolve.gml
         type: vector
+  - algorithm: gdalogr:createpointsalonglines
+    name: OGR points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
