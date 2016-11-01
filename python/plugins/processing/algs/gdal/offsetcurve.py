@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
@@ -46,8 +47,6 @@ class OffsetCurve(GdalAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     GEOMETRY = 'GEOMETRY'
     RADIUS = 'RADIUS'
-    LEFTRIGHT = 'LEFTRIGHT'
-    LEFTRIGHTLIST = ['Right', 'Left']
     DISSOLVEALL = 'DISSOLVEALL'
     FIELD = 'FIELD'
     MULTI = 'MULTI'
@@ -62,10 +61,10 @@ class OffsetCurve(GdalAlgorithm):
         self.addParameter(ParameterString(self.GEOMETRY,
                                           self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
                                           'geometry', optional=False))
-        self.addParameter(ParameterString(self.RADIUS,
-                                          self.tr('Offset distance'), '1000', optional=False))
-        self.addParameter(ParameterSelection(self.LEFTRIGHT,
-                                             self.tr('Offset side'), self.LEFTRIGHTLIST, 0))
+        self.addParameter(ParameterNumber(self.RADIUS,
+                                          self.tr('Offset distance (positive value for left-sided and negative - for right-sided)'),
+                                          0.0, 99999999.999999, 1000.0,
+                                          optional=False))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
                                            self.tr('Dissolve all results'), False))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -82,7 +81,6 @@ class OffsetCurve(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)
-        leftright = self.getParameterValue(self.LEFTRIGHT)
         dissolveall = self.getParameterValue(self.DISSOLVEALL)
         field = self.getParameterValue(self.FIELD)
         multi = self.getParameterValue(self.MULTI)
@@ -106,9 +104,9 @@ class OffsetCurve(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolveall or field is not None:
-            sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM '{}'".format(geometry, distance, leftright, layername)
+            sql = "SELECT ST_Union(ST_OffsetCurve({},  {})) * FROM '{}'".format(geometry, distance, layername)
         else:
-            sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM '{}'".format(geometry, distance, leftright, layername)
+            sql = "SELECT ST_OffsetCurve({}, {}), * FROM '{}'".format(geometry, distance, layername)
 
         if field is not None:
             sql = '"{} GROUP BY {}"'.format(sql, field)
@@ -118,7 +116,7 @@ class OffsetCurve(GdalAlgorithm):
         if field is not None and multi:
             arguments.append('-explodecollections')
 
-        if len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         commands = []

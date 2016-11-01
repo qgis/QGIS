@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
@@ -62,8 +63,10 @@ class OneSideBuffer(GdalAlgorithm):
         self.addParameter(ParameterString(self.GEOMETRY,
                                           self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
                                           'geometry', optional=False))
-        self.addParameter(ParameterString(self.RADIUS,
-                                          self.tr('Buffer distance'), '1000', optional=False))
+        self.addParameter(ParameterNumber(self.RADIUS,
+                                          self.tr('Buffer distance'),
+                                          0.0, 99999999.999999, 1000.0,
+                                          optional=False))
         self.addParameter(ParameterSelection(self.LEFTRIGHT,
                                              self.tr('Buffer side'), self.LEFTRIGHTLIST, 0))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
@@ -118,7 +121,7 @@ class OneSideBuffer(GdalAlgorithm):
         if field is not None and multi:
             arguments.append('-explodecollections')
 
-        if len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         commands = []
