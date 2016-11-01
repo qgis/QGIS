@@ -492,10 +492,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsFieldConstraints.ConstraintNotNull)
-        self.assertTrue(vl.fields().at(0).constraints() & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(vl.fields().at(0).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
 
         # add a constraint at the layer level
-        vl.setFieldConstraints(0, QgsFieldConstraints.ConstraintUnique)
+        vl.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
 
         # should be no change at provider level
         self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsFieldConstraints.ConstraintNotNull)
@@ -505,7 +505,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.fieldConstraints(0) & QgsFieldConstraints.ConstraintNotNull)
         # ...in addition to layer level constraint
         self.assertTrue(vl.fields().at(0).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
-        self.assertTrue(vl.fieldConstraints(0) & QgsFieQgsFieldConstraintsld.ConstraintUnique)
+        self.assertTrue(vl.fieldConstraints(0) & QgsFieldConstraints.ConstraintUnique)
 
     # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):
