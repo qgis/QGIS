@@ -1248,6 +1248,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMeasureArea;
   delete mMapTools.mMeasureDist;
   delete mMapTools.mMoveFeature;
+  delete mMapTools.mMoveFeatureCopy;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mNodeTool;
   delete mMapTools.mOffsetCurve;
@@ -1584,6 +1585,7 @@ void QgisApp::createActions()
   connect( mActionCircularStringCurvePoint, SIGNAL( triggered() ), this, SLOT( circularStringCurvePoint() ) );
   connect( mActionCircularStringRadius, SIGNAL( triggered() ), this, SLOT( circularStringRadius() ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
+  connect( mActionMoveFeatureCopy, SIGNAL( triggered() ), this, SLOT( moveFeatureCopy() ) );
   connect( mActionRotateFeature, SIGNAL( triggered() ), this, SLOT( rotateFeature() ) );
 
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
@@ -1876,6 +1878,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionCircularStringCurvePoint );
   mMapToolGroup->addAction( mActionCircularStringRadius );
   mMapToolGroup->addAction( mActionMoveFeature );
+  mMapToolGroup->addAction( mActionMoveFeatureCopy );
   mMapToolGroup->addAction( mActionRotateFeature );
   mMapToolGroup->addAction( mActionOffsetCurve );
   mMapToolGroup->addAction( mActionReshapeFeatures );
@@ -2328,6 +2331,25 @@ void QgisApp::createToolBars()
     layout->itemAt( i )->setAlignment( Qt::AlignLeft );
   }
 
+  // move feature tool button
+  QToolButton* moveFeatureButton = new QToolButton( mDigitizeToolBar );
+  moveFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
+  moveFeatureButton->addAction( mActionMoveFeature );
+  moveFeatureButton->addAction( mActionMoveFeatureCopy );
+  QAction* defAction = mActionMoveFeature;
+  switch ( settings.value( QStringLiteral( "/UI/defaultMoveTool" ), 0 ).toInt() )
+  {
+    case 0:
+      defAction = mActionMoveFeature;
+      break;
+    case 1:
+      defAction = mActionMoveFeatureCopy;
+      break;
+  };
+  moveFeatureButton->setDefaultAction( defAction );
+  connect( moveFeatureButton, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+  mDigitizeToolBar->insertWidget( mActionNodeTool, moveFeatureButton );
+
   //circular string digitize tool button
   QToolButton* tbAddCircularString = new QToolButton( mDigitizeToolBar );
   tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
@@ -2617,6 +2639,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
   mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePoint.svg" ) ) );
   mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeaturePoint.svg" ) ) );
+  mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopyPoint.svg" ) ) );
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRotateFeature.svg" ) ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionReshape.svg" ) ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitFeatures.svg" ) ) );
@@ -2855,8 +2878,10 @@ void QgisApp::createCanvasTools()
   mMapTools.mCircularStringCurvePoint->setAction( mActionCircularStringCurvePoint );
   mMapTools.mCircularStringRadius = new QgsMapToolCircularStringRadius( dynamic_cast<QgsMapToolAddFeature*>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mCircularStringRadius->setAction( mActionCircularStringRadius );
-  mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
+  mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas, QgsMapToolMoveFeature::Move );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
+  mMapTools.mMoveFeatureCopy = new QgsMapToolMoveFeature( mMapCanvas, QgsMapToolMoveFeature::CopyMove );
+  mMapTools.mMoveFeatureCopy->setAction( mActionMoveFeatureCopy );
   mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas );
   mMapTools.mRotateFeature->setAction( mActionRotateFeature );
   mMapTools.mOffsetCurve = new QgsMapToolOffsetCurve( mMapCanvas );
@@ -6483,6 +6508,11 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
 void QgisApp::moveFeature()
 {
   mMapCanvas->setMapTool( mMapTools.mMoveFeature );
+}
+
+void QgisApp::moveFeatureCopy()
+{
+  mMapCanvas->setMapTool( mMapTools.mMoveFeatureCopy );
 }
 
 void QgisApp::offsetCurve()
@@ -10526,6 +10556,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCircularStringCurvePoint->setEnabled( false );
     mActionCircularStringRadius->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionNodeTool->setEnabled( false );
@@ -10680,6 +10711,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionAddPart->setEnabled( isEditable && canChangeGeometry );
       mActionDeletePart->setEnabled( isEditable && canChangeGeometry );
       mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
+      mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
@@ -10690,6 +10722,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePoint.svg" ) ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeaturePoint.svg" ) ) );
+        mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopyPoint.svg" ) ) );
 
         mActionAddRing->setEnabled( false );
         mActionFillRing->setEnabled( false );
@@ -10718,6 +10751,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCaptureLine.svg" ) ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureLine.svg" ) ) );
+        mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopyLine.svg" ) ) );
 
         mActionReshapeFeatures->setEnabled( isEditable && canChangeGeometry );
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
@@ -10733,6 +10767,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePolygon.svg" ) ) );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeature.svg" ) ) );
+        mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopy.svg" ) ) );
 
         mActionAddRing->setEnabled( isEditable && canChangeGeometry );
         mActionFillRing->setEnabled( isEditable && canChangeGeometry );
@@ -10819,6 +10854,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionAddPart->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
@@ -11846,6 +11882,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "/UI/defaultMapService" ), 0 );
   else if ( action == mActionAddAmsLayer )
     settings.setValue( QStringLiteral( "/UI/defaultMapService" ), 1 );
+  else if ( action == mActionMoveFeature )
+    settings.setValue( QStringLiteral( "/UI/defaultMoveTool" ), 0 );
+  else if ( action == mActionMoveFeatureCopy )
+    settings.setValue( QStringLiteral( "/UI/defaultMoveTool" ), 1 );
 
   bt->setDefaultAction( action );
 }

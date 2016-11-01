@@ -331,6 +331,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionAddFeature() { return mActionAddFeature; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
+    QAction *actionMoveFeatureCopy() { return mActionMoveFeatureCopy; }
     QAction *actionRotateFeature() { return mActionRotateFeature;}
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionSplitParts() { return mActionSplitParts; }
@@ -1068,6 +1069,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void circularStringRadius();
     //! activates the move feature tool
     void moveFeature();
+    //! activates the copy and move feature tool
+    void moveFeatureCopy();
     //! activates the offset curve tool
     void offsetCurve();
     //! activates the reshape features tool
@@ -1634,6 +1637,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mCircularStringCurvePoint;
         QgsMapTool *mCircularStringRadius;
         QgsMapTool *mMoveFeature;
+        QgsMapTool *mMoveFeatureCopy;
         QgsMapTool *mOffsetCurve;
         QgsMapTool *mReshapeFeatures;
         QgsMapTool *mSplitFeatures;
