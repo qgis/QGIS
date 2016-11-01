@@ -75,9 +75,9 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   initPython();
   setFeature( feature );
 
-  connect( vl, SIGNAL( updatedFields() ), this, SLOT( onUpdatedFields() ) );
-  connect( vl, SIGNAL( beforeAddingExpressionField( QString ) ), this, SLOT( preventFeatureRefresh() ) );
-  connect( vl, SIGNAL( beforeRemovingExpressionField( int ) ), this, SLOT( preventFeatureRefresh() ) );
+  connect( vl, &QgsVectorLayer::updatedFields, this, &QgsAttributeForm::onUpdatedFields );
+  connect( vl, &QgsVectorLayer::beforeAddingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
+  connect( vl, &QgsVectorLayer::beforeRemovingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
   connect( vl, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
 
   // constraints management
@@ -96,20 +96,20 @@ void QgsAttributeForm::hideButtonBox()
 
   // Make sure that changes are taken into account if somebody tries to figure out if there have been some
   if ( mMode == SingleEditMode )
-    connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+    connect( mLayer, &QgsVectorLayer::beforeModifiedCheck, this, &QgsAttributeForm::save );
 }
 
 void QgsAttributeForm::showButtonBox()
 {
   mButtonBox->show();
 
-  disconnect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+  disconnect( mLayer, &QgsVectorLayer::beforeModifiedCheck, this, &QgsAttributeForm::save );
 }
 
 void QgsAttributeForm::disconnectButtonBox()
 {
-  disconnect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  disconnect( mButtonBox, SIGNAL( rejected() ), this, SLOT( resetValues() ) );
+  disconnect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsAttributeForm::save );
+  disconnect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsAttributeForm::resetValues );
 }
 
 void QgsAttributeForm::addInterface( QgsAttributeFormInterface* iface )
@@ -148,11 +148,11 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
 
   if ( mButtonBox->isVisible() && mMode == SingleEditMode )
   {
-    connect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+    connect( mLayer, &QgsVectorLayer::beforeModifiedCheck, this, &QgsAttributeForm::save );
   }
   else
   {
-    disconnect( mLayer, SIGNAL( beforeModifiedCheck() ), this, SLOT( save() ) );
+    disconnect( mLayer, &QgsVectorLayer::beforeModifiedCheck, this, &QgsAttributeForm::save );
   }
 
   //update all form editor widget modes to match
@@ -660,7 +660,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
         QLabel *msgLabel = new QLabel( tr( "Unsaved multiedit changes: <a href=\"#apply\">apply changes</a> or <a href=\"#reset\">reset changes</a>." ), mMessageBar );
         msgLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
         msgLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-        connect( msgLabel, SIGNAL( linkActivated( QString ) ), this, SLOT( multiEditMessageClicked( QString ) ) );
+        connect( msgLabel, &QLabel::linkActivated, this, &QgsAttributeForm::multiEditMessageClicked );
         clearMultiEditMessages();
 
         mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
@@ -1314,7 +1314,7 @@ void QgsAttributeForm::init()
     mSearchButtonBox->setObjectName( QStringLiteral( "searchButtonBox" ) );
 
     QPushButton* clearButton = new QPushButton( tr( "&Reset form" ), mSearchButtonBox );
-    connect( clearButton, SIGNAL( clicked( bool ) ), this, SLOT( resetSearch() ) );
+    connect( clearButton, &QPushButton::clicked, this, &QgsAttributeForm::resetSearch );
     boxLayout->addWidget( clearButton );
     boxLayout->addStretch( 1 );
 
@@ -1322,19 +1322,19 @@ void QgsAttributeForm::init()
     selectButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     selectButton->setText( tr( "&Select features" ) );
     selectButton->setPopupMode( QToolButton::MenuButtonPopup );
-    connect( selectButton, SIGNAL( clicked( bool ) ), this, SLOT( searchSetSelection() ) );
+    connect( selectButton, &QToolButton::clicked, this, &QgsAttributeForm::searchSetSelection );
     QMenu* selectMenu = new QMenu( selectButton );
     QAction* selectAction = new QAction( tr( "Select features" ), selectMenu );
-    connect( selectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchSetSelection() ) );
+    connect( selectAction, &QAction::triggered, this, &QgsAttributeForm::searchSetSelection );
     selectMenu->addAction( selectAction );
     QAction* addSelectAction = new QAction( tr( "Add to current selection" ), selectMenu );
-    connect( addSelectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchAddToSelection() ) );
+    connect( addSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchAddToSelection );
     selectMenu->addAction( addSelectAction );
     QAction* filterSelectAction = new QAction( tr( "Filter current selection" ), selectMenu );
-    connect( filterSelectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchIntersectSelection() ) );
+    connect( filterSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchIntersectSelection );
     selectMenu->addAction( filterSelectAction );
     QAction* deselectAction = new QAction( tr( "Remove from current selection" ), selectMenu );
-    connect( deselectAction, SIGNAL( triggered( bool ) ), this, SLOT( searchRemoveFromSelection() ) );
+    connect( deselectAction, &QAction::triggered, this, &QgsAttributeForm::searchRemoveFromSelection );
     selectMenu->addAction( deselectAction );
     selectButton->setMenu( selectMenu );
     boxLayout->addWidget( selectButton );
@@ -1345,13 +1345,13 @@ void QgsAttributeForm::init()
       filterButton->setText( tr( "Filter features" ) );
       filterButton->setPopupMode( QToolButton::MenuButtonPopup );
       filterButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-      connect( filterButton, SIGNAL( clicked( bool ) ), this, SLOT( filterTriggered() ) );
+      connect( filterButton, &QToolButton::clicked, this, &QgsAttributeForm::filterTriggered );
       QMenu* filterMenu = new QMenu( filterButton );
       QAction* filterAndAction = new QAction( tr( "Filter within (\"AND\")" ), filterMenu );
-      connect( filterAndAction, SIGNAL( triggered( bool ) ), this, SLOT( filterAndTriggered() ) );
+      connect( filterAndAction, &QAction::triggered, this, &QgsAttributeForm::filterAndTriggered );
       filterMenu->addAction( filterAndAction );
       QAction* filterOrAction = new QAction( tr( "Extend filter (\"OR\")" ), filterMenu );
-      connect( filterOrAction, SIGNAL( triggered( bool ) ), this, SLOT( filterOrTriggered() ) );
+      connect( filterOrAction, &QAction::triggered, this, &QgsAttributeForm::filterOrTriggered );
       filterMenu->addAction( filterOrAction );
       filterButton->setMenu( filterMenu );
       boxLayout->addWidget( filterButton );
@@ -1359,7 +1359,7 @@ void QgsAttributeForm::init()
     else
     {
       QPushButton* closeButton = new QPushButton( tr( "Close" ), mSearchButtonBox );
-      connect( closeButton, SIGNAL( clicked( bool ) ), this, SIGNAL( closed() ) );
+      connect( closeButton, &QPushButton::clicked, this, &QgsAttributeForm::closed );
       closeButton->setShortcut( Qt::Key_Escape );
       boxLayout->addWidget( closeButton );
     }
@@ -1370,11 +1370,11 @@ void QgsAttributeForm::init()
 
   afterWidgetInit();
 
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( resetValues() ) );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsAttributeForm::save );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsAttributeForm::resetValues );
 
-  connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( synchronizeEnabledState() ) );
-  connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( synchronizeEnabledState() ) );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeForm::synchronizeEnabledState );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::synchronizeEnabledState );
 
   Q_FOREACH ( QgsAttributeFormInterface* iface, mInterfaces )
   {
@@ -1750,8 +1750,7 @@ void QgsAttributeForm::afterWidgetInit()
       }
 
       connect( eww, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( onAttributeChanged( const QVariant& ) ) );
-      connect( eww, SIGNAL( constraintStatusChanged( QString, QString, QString, bool ) ),
-               this, SLOT( onConstraintStatusChanged( QString, QString, QString, bool ) ) );
+      connect( eww, &QgsEditorWidgetWrapper::constraintStatusChanged, this, &QgsAttributeForm::onConstraintStatusChanged );
     }
   }
 
