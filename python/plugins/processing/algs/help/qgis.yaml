@@ -410,9 +410,9 @@ qgis:splitlineswithlines: >
   This algorithm split the lines in a line layer using the lines in another line layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
 
 qgis:splitvectorlayer: >
-  This algorithm takes a vector layer and an attribute and generates a set of vector layers in an outut folder. Each of the layers created in that folder contains all features from the input layer with the same value for the specified attribute.
+  This algorithm takes a vector layer and an attribute and generates a set of vector layers in an output folder. Each of the layers created in that folder contains all features from the input layer with the same value for the specified attribute.
 
-  The number of files generated is equal to the nuber of different values found for the specified attribute.
+  The number of files generated is equal to the number of different values found for the specified attribute.
 
 qgis:statisticsbycategories:
 
