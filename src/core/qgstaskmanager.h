@@ -23,11 +23,12 @@
 #include <QAbstractItemModel>
 #include <QFuture>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTask
  * \brief Interface class for long running background tasks. Tasks can be controlled directly,
  * or added to a QgsTaskManager for automatic management.
- * \note Added in version 2.16
+ * \note Added in version 3.0
  */
 class CORE_EXPORT QgsTask : public QObject
 {
@@ -38,11 +39,11 @@ class CORE_EXPORT QgsTask : public QObject
     //! Status of tasks
     enum TaskStatus
     {
-      Queued, /*!< Task is queued and has not begun */
-      OnHold, /*!< Task is queued but on hold and will not be started */
-      Running, /*!< Task is currently running */
-      Complete, /*!< Task successfully completed */
-      Terminated, /*!< Task was terminated or errored */
+      Queued, //!< Task is queued and has not begun
+      OnHold, //!< Task is queued but on hold and will not be started
+      Running, //!< Task is currently running
+      Complete, //!< Task successfully completed
+      Terminated, //!< Task was terminated or errored
     };
 
     //! Task flags
@@ -173,7 +174,7 @@ typedef QList< QgsTask* > QgsTaskList;
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
  * or accessed via a global instance.
- * \note Added in version 2.16
+ * \note Added in version 3.0
  */
 class CORE_EXPORT QgsTaskManager : public QObject
 {

@@ -138,8 +138,8 @@ long QgsTaskManager::addTask( QgsTask* task, const QgsTaskList& dependencies )
   QMutexLocker ml( mTaskMutex );
   mTasks.insert( mNextTaskId, task );
 
-  connect( task, SIGNAL( progressChanged( double ) ), this, SLOT( taskProgressChanged( double ) ) );
-  connect( task, SIGNAL( statusChanged( int ) ), this, SLOT( taskStatusChanged( int ) ) );
+  connect( task, &QgsTask::progressChanged, this, &QgsTaskManager::taskProgressChanged );
+  connect( task, &QgsTask::statusChanged, this, &QgsTaskManager::taskStatusChanged );
 
   if ( !dependencies.isEmpty() )
   {
@@ -397,8 +397,8 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   {
     task->cancel();
     // delete task when it's terminated
-    connect( task, SIGNAL( taskCompleted() ), task, SLOT( deleteLater() ) );
-    connect( task, SIGNAL( taskStopped() ), task, SLOT( deleteLater() ) );
+    connect( task, &QgsTask::taskCompleted, task, &QgsTask::deleteLater );
+    connect( task, &QgsTask::taskStopped, task, &QgsTask::deleteLater );
   }
   else
   {
