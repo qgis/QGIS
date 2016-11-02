@@ -46,7 +46,7 @@ void QgsTask::start()
       break;
 
     case ResultFail:
-      stopped();
+      terminated();
       break;
 
     case ResultPending:
@@ -63,7 +63,7 @@ void QgsTask::cancel()
   if ( mStatus == Queued || mStatus == OnHold )
   {
     // immediately terminate unstarted jobs
-    stopped();
+    terminated();
   }
 }
 
@@ -98,11 +98,11 @@ void QgsTask::completed()
   emit taskCompleted();
 }
 
-void QgsTask::stopped()
+void QgsTask::terminated()
 {
   mStatus = Terminated;
   emit statusChanged( Terminated );
-  emit taskStopped();
+  emit taskTerminated();
 }
 
 
@@ -413,7 +413,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
     task->cancel();
     // delete task when it's terminated
     connect( task, &QgsTask::taskCompleted, task, &QgsTask::deleteLater );
-    connect( task, &QgsTask::taskStopped, task, &QgsTask::deleteLater );
+    connect( task, &QgsTask::taskTerminated, task, &QgsTask::deleteLater );
   }
   else
   {

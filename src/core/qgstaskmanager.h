@@ -157,7 +157,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Will be emitted by task when its status changes.
      * @param status new task status
      * @note derived classes should not emit this signal directly, instead they should call
-     * completed() or stopped()
+     * completed() or terminated()
      */
     void statusChanged( int status );
 
@@ -180,9 +180,9 @@ class CORE_EXPORT QgsTask : public QObject
      * other then completion (eg when a task has been cancelled or encountered
      * an internal error).
      * @note derived classes should not emit this signal directly, instead they should call
-     * stopped()
+     * terminated()
      */
-    void taskStopped();
+    void taskTerminated();
 
   protected:
 
@@ -197,13 +197,13 @@ class CORE_EXPORT QgsTask : public QObject
      *
      * Alternatively, tasks can also return the ResultPending value
      * to indicate that the task is still operating and will manually report its
-     * completion by calling completed() or stopped(). This may be useful for
+     * completion by calling completed() or terminated(). This may be useful for
      * tasks which rely on external events for completion, eg downloading a
      * file. In this case Qt slots could be created which are connected to the
-     * download completion or termination and which call completed() or stopped()
+     * download completion or termination and which call completed() or terminated()
      * to indicate the task has finished operations.
      * @see completed()
-     * @see stopped()
+     * @see terminated()
      */
     virtual TaskResult run() = 0;
 
@@ -223,13 +223,13 @@ class CORE_EXPORT QgsTask : public QObject
     void completed();
 
     /**
-     * Sets the task as stopped.  Calling this is only required for tasks which
+     * Sets the task as terminated.  Calling this is only required for tasks which
      * returned the ResultPending value as a result of run().
      * Should be called whenever the task ends for any reason other than successful
-     * completion. Calling will automatically emit the statusChanged and taskStopped
+     * completion. Calling will automatically emit the statusChanged and taskTerminated
      * signals.
      */
-    void stopped();
+    void terminated();
 
   protected slots:
 

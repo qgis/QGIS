@@ -33,7 +33,7 @@ class TestTask : public QgsTask
     TestTask( const QString& desc, const QgsTask::Flags& flags ) : QgsTask( desc, flags ), runCalled( false ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
-    void emitTaskStopped() { stopped(); }
+    void emitTaskStopped() { terminated(); }
     void emitTaskCompleted() { completed(); }
 
     bool runCalled;
@@ -153,8 +153,8 @@ void TestQgsTaskManager::task()
   QVERIFY( task->canCancel() );
   QVERIFY( task->flags() & QgsTask::CanReportProgress );
 
-  QSignalSpy startedSpy( task.data(), SIGNAL( begun() ) );
-  QSignalSpy statusSpy( task.data(), SIGNAL( statusChanged( int ) ) );
+  QSignalSpy startedSpy( task.data(), &QgsTask::begun );
+  QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
 
   task->start();
   QCOMPARE( task->status(), QgsTask::Running );
@@ -165,7 +165,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 0 ).toInt() ), QgsTask::Running );
 
   //test that calling stopped sets correct state
-  QSignalSpy stoppedSpy( task.data(), SIGNAL( taskStopped() ) );
+  QSignalSpy stoppedSpy( task.data(), &QgsTask::taskTerminated );
   task->emitTaskStopped();
   QCOMPARE( task->status(), QgsTask::Terminated );
   QVERIFY( !task->isActive() );
@@ -175,8 +175,8 @@ void TestQgsTaskManager::task()
 
   //test that calling completed sets correct state
   task.reset( new TestTask() );
-  QSignalSpy completeSpy( task.data(), SIGNAL( taskCompleted() ) );
-  QSignalSpy statusSpy2( task.data(), SIGNAL( statusChanged( int ) ) );
+  QSignalSpy completeSpy( task.data(), &QgsTask::taskCompleted );
+  QSignalSpy statusSpy2( task.data(), &QgsTask::statusChanged );
   task->emitTaskCompleted();
   QCOMPARE( task->status(), QgsTask::Complete );
   QVERIFY( !task->isActive() );
@@ -208,7 +208,7 @@ void TestQgsTaskManager::taskResult()
 {
   QScopedPointer< TestTask > task( new SuccessTask() );
   QCOMPARE( task->status(), QgsTask::Queued );
-  QSignalSpy statusSpy( task.data(), SIGNAL( statusChanged( int ) ) );
+  QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
 
   task->start();
   QCOMPARE( statusSpy.count(), 2 );
@@ -218,7 +218,7 @@ void TestQgsTaskManager::taskResult()
 
   task.reset( new FailTask() );
   QCOMPARE( task->status(), QgsTask::Queued );
-  QSignalSpy statusSpy2( task.data(), SIGNAL( statusChanged( int ) ) );
+  QSignalSpy statusSpy2( task.data(), &QgsTask::statusChanged );
 
   task->start();
   QCOMPARE( statusSpy2.count(), 2 );
@@ -243,7 +243,7 @@ void TestQgsTaskManager::addTask()
   QCOMPARE( manager.count(), 0 );
   QVERIFY( !manager.task( 0L ) );
 
-  QSignalSpy spy( &manager, SIGNAL( taskAdded( long ) ) );
+  QSignalSpy spy( &manager, &QgsTaskManager::taskAdded );
 
   //add a task
   TestTask* task = new TestTask();
@@ -284,7 +284,7 @@ void TestQgsTaskManager::deleteTask()
   manager.addTask( task2 );
   manager.addTask( task3 );
 
-  QSignalSpy spy( &manager, SIGNAL( taskAboutToBeDeleted( long ) ) );
+  QSignalSpy spy( &manager, &QgsTaskManager::taskAboutToBeDeleted );
 
   //try deleting a non-existant task
   QVERIFY( !manager.deleteTask( 56 ) );
@@ -407,7 +407,7 @@ void TestQgsTaskManager::statusChanged()
   manager.addTask( task );
   manager.addTask( task2 );
 
-  QSignalSpy spy( &manager, SIGNAL( statusChanged( long, int ) ) );
+  QSignalSpy spy( &manager, &QgsTaskManager::statusChanged );
 
   task->start();
   QCOMPARE( spy.count(), 1 );
@@ -435,7 +435,7 @@ void TestQgsTaskManager::allTasksFinished()
   manager.addTask( task2 );
   while ( task2->status() != QgsTask::Running ) { }
 
-  QSignalSpy spy( &manager, SIGNAL( allTasksFinished() ) );
+  QSignalSpy spy( &manager, &QgsTaskManager::allTasksFinished );
 
   task->emitTaskStopped();
   while ( task->status() == QgsTask::Running ) { }
@@ -470,7 +470,7 @@ void TestQgsTaskManager::activeTasks()
   QgsTaskManager manager;
   TestTask* task = new TestTask();
   TestTask* task2 = new TestTask();
-  QSignalSpy spy( &manager, SIGNAL( countActiveTasksChanged( int ) ) );
+  QSignalSpy spy( &manager, &QgsTaskManager::countActiveTasksChanged );
   manager.addTask( task );
   QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask* >() << task ).toSet() );
   QCOMPARE( manager.countActiveTasks(), 1 );
