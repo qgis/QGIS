@@ -43,6 +43,7 @@ typedef QVector<QgsPolygon> QgsMultiPolygon;
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
+
     /** Construct geometry from a WKB string.
      */
     static QgsAbstractGeometry* geomFromWkb( QgsConstWkbPtr wkb );

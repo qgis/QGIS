@@ -11,6 +11,7 @@
 class CORE_EXPORT QgsRuntimeProfiler
 {
   public:
+
     /**
      * Constructor to create a new runtime profiler.
      */

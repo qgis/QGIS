@@ -38,6 +38,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      * @param qgis Pointer to the QgisApp object
@@ -82,6 +83,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! Add an icon to the plugins toolbar
     int addToolBarIcon( QAction *qAction ) override;
+
     /**
      * Add a widget to the plugins toolbar.
      * To remove this widget again, call {@link removeToolBarIcon}
@@ -95,6 +97,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Raster toolbar
     int addRasterToolBarIcon( QAction *qAction ) override;
+
     /**
      * Add a widget to the raster toolbar.
      * To remove this widget again, call {@link removeRasterToolBarIcon}
@@ -108,6 +111,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeRasterToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Vector toolbar
     int addVectorToolBarIcon( QAction *qAction ) override;
+
     /**
      * Add a widget to the vector toolbar.
      * To remove this widget again, call {@link removeVectorToolBarIcon}
@@ -121,6 +125,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeVectorToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Database toolbar
     int addDatabaseToolBarIcon( QAction *qAction ) override;
+
     /**
      * Add a widget to the database toolbar.
      * To remove this widget again, call {@link removeDatabaseToolBarIcon}
@@ -134,6 +139,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeDatabaseToolBarIcon( QAction *qAction ) override;
     //! Add an icon to the Web toolbar
     int addWebToolBarIcon( QAction *qAction ) override;
+
     /**
      * Add a widget to the web toolbar.
      * To remove this widget again, call {@link removeWebToolBarIcon}
@@ -194,6 +200,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<QgsComposerView*> activeComposers() override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
+
     /** Create a new composer
      * @param title window title for new composer (one will be generated if empty)
      * @return pointer to composer's view
@@ -202,6 +209,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsComposerView* createNewComposer( const QString& title = QString() ) override;
 
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
+
     /** Duplicate an existing parent composer from composer view
      * @param composerView pointer to existing composer view
      * @param title window title for duplicated composer (one will be generated if empty)
@@ -278,6 +286,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) override;
+
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) override;

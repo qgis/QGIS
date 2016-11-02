@@ -5,6 +5,7 @@
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -39,6 +40,7 @@ class CORE_EXPORT QgsScaleBarStyle
     virtual void draw( QPainter* p, double xOffset = 0 ) const = 0; //to do by every subclass
     virtual void drawLabels( QPainter* p ) const; //default implementation provided
     virtual QRectF calculateBoxSize() const; //default implementation provided
+
     /**
      * Get a name for this style.
      * Needs to be remiplmeented by subclasses.

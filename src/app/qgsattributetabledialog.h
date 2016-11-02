@@ -42,6 +42,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param theLayer layer pointer
@@ -54,6 +55,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsExpressionContext createExpressionContext() const override;
 
   public slots:
+
     /**
      * Toggles editing mode
      */
@@ -68,46 +70,57 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
                               bool alwaysShowFilter = false );
 
   private slots:
+
     /**
      * Copies selected rows to the clipboard
      */
     void on_mActionCopySelectedRows_triggered();
+
     /**
      * Paste features from the clipboard
      */
     void on_mActionPasteFeatures_triggered();
+
     /**
      * Toggles editing mode
      */
     void on_mActionToggleEditing_toggled( bool );
+
     /**
      * Saves edits
      */
     void on_mActionSaveEdits_triggered();
+
     /**
      * Reload the data
      */
     void on_mActionReload_triggered();
+
     /**
      * Inverts selection
      */
     void on_mActionInvertSelection_triggered();
+
     /**
      * Clears selection
      */
     void on_mActionRemoveSelection_triggered();
+
     /**
      * Select all
      */
     void on_mActionSelectAll_triggered();
+
     /**
      * Zooms to selected features
      */
     void on_mActionZoomMapToSelectedRows_triggered();
+
     /**
      * Pans to selected features
      */
     void on_mActionPanMapToSelectedRows_triggered();
+
     /**
      * Moves selected lines to the top
      */
@@ -122,6 +135,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Opens dialog to remove attribute
      */
     void on_mActionRemoveAttribute_triggered();
+
     /**
      * Opens field calculator dialog
      */
@@ -168,6 +182,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void replaceSearchWidget( QWidget* oldw, QWidget* neww );
 
   signals:
+
     /**
      * Informs that edits should be saved
      * @param layer layer whose edits are to be saved
@@ -175,6 +190,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void saveEdits( QgsMapLayer *layer );
 
   protected:
+
     /**
      * Handle closing of the window
      * @param event unused
@@ -188,6 +204,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void keyPressEvent( QKeyEvent* event ) override;
 
   private slots:
+
     /**
      * Initialize column box
      */

@@ -32,6 +32,7 @@ class QgsFields;
 class CORE_EXPORT QgsAttributeTableConfig
 {
   public:
+
     /**
      * The type of an attribute table column.
      */

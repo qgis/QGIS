@@ -151,6 +151,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp();
     //! Destructor
     ~QgisApp();
+
     /**
      * Add a vector layer to the canvas, returns pointer to it
      */
@@ -190,6 +191,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setExtent( const QgsRectangle& theRect );
     //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
+
     /** Open a raster or vector file; ignore other files.
       Used to process a commandline argument, FileOpen or Drop event.
       Set interactive to true if it is ok to ask the user for information (mostly for
@@ -197,6 +199,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       @returns true if the file is successfully opened
       */
     bool openLayer( const QString & fileName, bool allowInteractive = false );
+
     /** Open the specified project file; prompt to save previous project if necessary.
       Used to process a commandline argument, FileOpen or Drop event.
       */
@@ -211,6 +214,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       @returns false if unable to open the project
       */
     bool addProject( const QString& projectFile );
+
     /** Convenience function to open either a project or a layer file.
       */
     void openFile( const QString & fileName );
@@ -258,6 +262,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parent class, it will also add it to the View menu list of docks.*/
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget );
     void removeDockWidget( QDockWidget* dockwidget );
+
     /** Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
@@ -274,12 +279,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     void addWindow( QAction *action );
+
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     void removeWindow( QAction *action );
 
     //! Returns the print composers
     QSet<QgsComposer*> printComposers() const {return mPrintComposers;}
+
     /** Get a unique title from user for new and duplicate composers
      * @param acceptEmpty whether to accept empty titles (one will be generated)
      * @param currentTitle base name for initial title choice
@@ -290,6 +297,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsComposer* createNewComposer( QString title = QString() );
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
+
     /** Duplicates a composer and adds it to Set
      */
     QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString() );
@@ -453,6 +461,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *helpMenu() { return mHelpMenu; }
 
     //! Toolbars
+
     /** Get a reference to a toolbar. Mainly intended
      *   to be used by plugins that want to specifically add
      *   an icon into the file toolbar for consistency e.g.
@@ -606,18 +615,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
+
     /**
        \param layerContainingSelection  The layer that the selection will be taken from
                                         (defaults to the active layer on the legend)
      */
     void editCut( QgsMapLayer *layerContainingSelection = nullptr );
     //! copies selected features on the active layer to the clipboard
+
     /**
        \param layerContainingSelection  The layer that the selection will be taken from
                                         (defaults to the active layer on the legend)
      */
     void editCopy( QgsMapLayer *layerContainingSelection = nullptr );
     //! copies features on the clipboard to the active layer
+
     /**
        \param destinationLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
@@ -628,12 +640,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! copies features on the clipboard to a new memory vector layer
     QgsVectorLayer *pasteAsNewMemoryVector( const QString & theLayerName = QString() );
     //! copies style of the active layer to the clipboard
+
     /**
        \param sourceLayer  The layer where the style will be taken from
                                         (defaults to the active layer on the legend)
      */
     void copyStyle( QgsMapLayer *sourceLayer = nullptr );
     //! pastes style on the clipboard to the active layer
+
     /**
        \param destinationLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
@@ -805,10 +819,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
     void zoomActualSize();
+
     /** Perform a local histogram stretch on the active raster layer
      * (stretch based on pixel values in view extent).
      * Valid for non wms raster layers only. */
     void localHistogramStretch();
+
     /** Perform a full histogram stretch on the active raster layer
      * (stretch based on pixels values in full dataset)
      * Valid for non wms raster layers only. */
@@ -817,15 +833,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void localCumulativeCutStretch();
     //! Perform a full extent cumulative cut stretch
     void fullCumulativeCutStretch();
+
     /** Increase raster brightness
      * Valid for non wms raster layers only. */
     void increaseBrightness();
+
     /** Decrease raster brightness
      * Valid for non wms raster layers only. */
     void decreaseBrightness();
+
     /** Increase raster contrast
      * Valid for non wms raster layers only. */
     void increaseContrast();
+
     /** Decrease raster contrast
      * Valid for non wms raster layers only. */
     void decreaseContrast();
@@ -869,6 +889,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeAddLayerAction( QAction *action );
     //! Add an icon to the plugin toolbar
     int addPluginToolBarIcon( QAction *qAction );
+
     /**
      * Add a widget to the plugins toolbar.
      * To remove this widget again, call {@link removeToolBarIcon}
@@ -882,6 +903,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removePluginToolBarIcon( QAction *qAction );
     //! Add an icon to the Raster toolbar
     int addRasterToolBarIcon( QAction *qAction );
+
     /**
      * Add a widget to the raster toolbar.
      * To remove this widget again, call {@link removeRasterToolBarIcon}
@@ -895,6 +917,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeRasterToolBarIcon( QAction *qAction );
     //! Add an icon to the Vector toolbar
     int addVectorToolBarIcon( QAction *qAction );
+
     /**
      * Add a widget to the vector toolbar.
      * To remove this widget again, call {@link removeVectorToolBarIcon}
@@ -908,6 +931,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeVectorToolBarIcon( QAction *qAction );
     //! Add an icon to the Database toolbar
     int addDatabaseToolBarIcon( QAction *qAction );
+
     /**
      * Add a widget to the database toolbar.
      * To remove this widget again, call {@link removeDatabaseToolBarIcon}
@@ -921,6 +945,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeDatabaseToolBarIcon( QAction *qAction );
     //! Add an icon to the Web toolbar
     int addWebToolBarIcon( QAction *qAction );
+
     /**
      * Add a widget to the web toolbar.
      * To remove this widget again, call {@link removeWebToolBarIcon}
@@ -945,6 +970,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
+
     /** Attempts to run a python script
      * @param filePath full path to python script
      * @note added in QGIS 2.7
@@ -1313,15 +1339,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Disable any preview modes shown on the map canvas
      * @note added in 2.3 */
     void disablePreviewMode();
+
     /** Enable a grayscale preview mode on the map canvas
      * @note added in 2.3 */
     void activateGrayscalePreview();
+
     /** Enable a monochrome preview mode on the map canvas
      * @note added in 2.3 */
     void activateMonoPreview();
+
     /** Enable a color blindness (protanope) preview mode on the map canvas
      * @note added in 2.3 */
     void activateProtanopePreview();
+
     /** Enable a color blindness (deuteranope) preview mode on the map canvas
      * @note added in 2.3 */
     void activateDeuteranopePreview();
@@ -1343,6 +1373,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void dropEventTimeout();
 
   signals:
+
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
     void keyPressed( QKeyEvent *e );
@@ -1354,6 +1385,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       knows to then check the project properties for any relevant state.
       */
     void projectRead();
+
     /** Emitted when starting an entirely new project
       @note
       This is similar to projectRead(); plug-ins might want to be notified
@@ -1401,15 +1433,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @returns true if any items were loaded
      */
     bool askUserForZipItemLayers( const QString &path );
+
     /** This method will open a dialog so the user can select GDAL sublayers to load
      */
     void askUserForGDALSublayers( QgsRasterLayer *layer );
+
     /** This method will verify if a GDAL layer contains sublayers
      */
     bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
+
     /** This method will open a dialog so the user can select OGR sublayers to load
      */
     void askUserForOGRSublayers( QgsVectorLayer *layer );
+
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.
      */
@@ -1435,6 +1471,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     // void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
+
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
       @return empty geometry in case of error or if canceled */
     QgsGeometry unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool &canceled );
@@ -1699,10 +1736,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsClipboard *mInternalClipboard;
     //! Flag to indicate how the project properties dialog was summoned
     bool mShowProjectionTab;
+
     /** String containing supporting vector file formats
       Suitable for a QFileDialog file filter.  Build in ctor.
       */
     QString mVectorFileFilter;
+
     /** String containing supporting raster file formats
       Suitable for a QFileDialog file filter.  Build in ctor.
       */

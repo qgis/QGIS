@@ -73,6 +73,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
 
   signals:
+
     /**
      * This signal is emitted when selection was changed
      *

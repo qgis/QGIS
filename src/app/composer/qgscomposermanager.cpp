@@ -5,6 +5,7 @@
     copyright            : (C) 2009 by Marco Hugentobler
     email                : marco at hugis dot net
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

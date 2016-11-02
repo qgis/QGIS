@@ -62,6 +62,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see setColorRamp
      */
     QgsColorRamp* colorRamp() const { return mGradientRamp; }
+
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
@@ -89,6 +90,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see radiusMapUnitScale
      */
     double radius() const { return mRadius; }
+
     /** Sets the radius for the heatmap
      * @param radius heatmap radius
      * @see radius
@@ -104,6 +106,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see radiusMapUnitScale
      */
     QgsUnitTypes::RenderUnit radiusUnit() const { return mRadiusUnit; }
+
     /** Sets the units used for the heatmap's radius
      * @param unit units for heatmap radius
      * @see radiusUnit
@@ -119,6 +122,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see setRadiusMapUnitScale
      */
     const QgsMapUnitScale& radiusMapUnitScale() const { return mRadiusMapUnitScale; }
+
     /** Sets the map unit scale used for the heatmap's radius
      * @param scale map unit scale for heatmap's radius
      * @see setRadius
@@ -133,6 +137,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see setMaximumValue
      */
     double maximumValue() const { return mExplicitMax; }
+
     /** Sets the maximum value used for shading the heatmap.
      * @param value maximum value for heatmap shading. Set to 0 for automatic calculation of
      * maximum value.
@@ -146,6 +151,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see setRenderQuality
      */
     double renderQuality() const { return mRenderQuality; }
+
     /** Sets the render quality used for drawing the heatmap.
      * @param quality render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.

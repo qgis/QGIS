@@ -28,6 +28,7 @@ class QTemporaryFile;
 class QgsSLDConfigParser : public QgsWmsConfigParser
 {
   public:
+
     /** Constructor takes a dom document as argument. The class takes ownership of the document and deletes it in the destructor
     @param doc SLD document
     @param parameterMap map containing the wms request parameters*/

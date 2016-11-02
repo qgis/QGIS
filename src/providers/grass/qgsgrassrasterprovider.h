@@ -74,6 +74,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QTemporaryFile mGisrcFile;
     QProcess *mProcess;
 };
+
 /**
 
   \brief Data provider for GRASS raster layers.
@@ -88,6 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -216,6 +218,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     void clearLastError();
     // append error if it is not empty
     void appendIfError( const QString &error );
+
     /**
      * Flag indicating if the layer data source is a valid layer
      */

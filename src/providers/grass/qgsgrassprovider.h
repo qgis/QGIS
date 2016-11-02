@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Gary E.Sherman, Radim Blazek
     email                : sherman@mrcc.com, blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -297,6 +298,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int findNode( double x, double y, double threshold );
 
     // TODO is it used?
+
     /** Read attributes from DB
      *   @param field
      *   @param cat

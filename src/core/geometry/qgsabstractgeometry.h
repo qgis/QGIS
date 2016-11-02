@@ -70,6 +70,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const = 0;
 
     //mm-sql interface
+
     /** Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
      * 1 for a linestring and 2 for a polygon.
      */

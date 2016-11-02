@@ -24,6 +24,7 @@
 class CORE_EXPORT QgsScaleUtils
 {
   public:
+
     /** Save scales to the given file
      * @param fileName the name of the output file
      * @param scales the list of scales to save

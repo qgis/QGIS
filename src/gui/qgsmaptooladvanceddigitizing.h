@@ -89,6 +89,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
 
   protected:
+
     /**
      * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a
@@ -130,6 +131,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool mSnapOnDoubleClick; //!< Snap on double click
 
   private slots:
+
     /**
      * Is to be called by the cad system whenever a point changes outside of a
      * mouse event. E.g. when additional constraints are toggled.

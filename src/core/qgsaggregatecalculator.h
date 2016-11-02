@@ -70,6 +70,7 @@ class CORE_EXPORT QgsAggregateCalculator
     //! A bundle of parameters controlling aggregate calculation
     struct AggregateParameters
     {
+
       /** Optional filter for calculating aggregate over a subset of features, or an
        * empty string to use all features.
        * @see QgsAggregateCalculator::setFilter()

@@ -496,6 +496,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QMutex *mutex() { return mMutex; }
 
   signals:
+
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
      * @see QgsMessageLog

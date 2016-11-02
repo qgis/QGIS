@@ -33,6 +33,7 @@ class CORE_EXPORT QgsSQLStatement
 {
     Q_DECLARE_TR_FUNCTIONS( QgsSQLStatement )
   public:
+
     /**
      * Creates a new statement based on the provided string.
      */
@@ -42,6 +43,7 @@ class CORE_EXPORT QgsSQLStatement
      * Create a copy of this statement.
      */
     QgsSQLStatement( const QgsSQLStatement& other );
+
     /**
      * Create a copy of this statement.
      */

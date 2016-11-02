@@ -1,4 +1,5 @@
 
+
 /***************************************************************************
                               qgsrequesthandler.h
                  abstraction for reading from/ writing to a request datasource
@@ -55,6 +56,7 @@ class QgsRequestHandler
         , mException( nullptr )
     {}
     virtual ~QgsRequestHandler() {}
+
     /** Parses the input and creates a request neutral Parameter/Value map
      * @note not available in Python bindings
      */
@@ -152,6 +154,7 @@ class QgsRequestHandler
     bool headersSent() { return mHeadersSent; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
     /** Allow core services to call plugin hooks through sendResponse()
      * @note not available in Python bindings
      */
@@ -179,10 +182,12 @@ class QgsRequestHandler
     QString mInfoFormat;
     QgsMapServiceException* mException; // Stores the exception
     QMap<QString, QString> mParameterMap;
+
     /** Response headers. They can be empty, in this case headers are
         automatically generated from the content mFormat */
     QMap<QString, QString> mHeaders;
     // TODO: if HAVE_SERVER_PYTHON
+
     /** Response output buffers, used by Python bindings to return
      * output instead of printing with fcgi printf */
     // QByteArray mResponseHeader;

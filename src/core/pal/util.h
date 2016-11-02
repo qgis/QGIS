@@ -82,6 +82,7 @@ namespace pal
   class Util
   {
     public:
+
       /**
        * \brief Sort an array of pointers
        * \param items arays of pointers to sort

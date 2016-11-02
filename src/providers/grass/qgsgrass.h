@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Radim Blazek
     email                : blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -99,9 +100,11 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
     QString name() const { return mName; }
     void setName( const QString& name ) { mName = name; }
+
     /** Return full name (map@mapset)
      * @return full name or empty string if map name is empty */
     QString fullName() const;
+
     /** Parse full name in map@mapset form and set map and mapset. If mapset is not
      * specified, mapset is set to the current mapset. */
     void setFullName( const QString& fullName );
@@ -186,6 +189,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void unlock();
 
     //! Get info about the mode
+
     /** QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
      *  in that case default GISDBASE, LOCATION and MAPSET may be read by GetDefaul*() functions.
@@ -335,6 +339,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void initRegion( struct Cell_head *window );
     //! Set region extent
     static void setRegion( struct Cell_head *window, const QgsRectangle &rect );
+
     /** Init region, set extent, rows and cols and adjust.
      * Returns error if adjustment failed. */
     static QString setRegion( struct Cell_head *window, const QgsRectangle &rect, int rows, int cols );

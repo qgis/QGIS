@@ -88,6 +88,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     class GUI_EXPORT CadConstraint
     {
       public:
+
         /**
          * The lock mode
          */
@@ -120,6 +121,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * @return Lock mode
          */
         LockMode lockMode() const { return mLockMode; }
+
         /**
          * Is any kind of lock mode enabled
          */
@@ -136,6 +138,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * Is the constraint in relative mode
          */
         bool relative() const { return mRelative; }
+
         /**
          * The value of the constraint
          */
@@ -215,6 +218,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasPressEvent( QgsMapMouseEvent* e );
+
     /**
      * Will react on a canvas release event
      *
@@ -223,6 +227,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode );
+
     /**
      * Will react on a canvas move event
      *
@@ -230,6 +235,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasMoveEvent( QgsMapMouseEvent* e );
+
     /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
@@ -328,6 +334,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void disable();
 
   signals:
+
     /**
      * Push a warning
      *

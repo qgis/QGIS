@@ -5,6 +5,7 @@
     copyright            : (C) 2015 Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
     Q_OBJECT
   public:
+
     /** New dialog constructor.
      * @param source original data source name, e.g. original layer name of the layer to be copied
      * @param initial initial name

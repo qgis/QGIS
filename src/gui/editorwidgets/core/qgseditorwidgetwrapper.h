@@ -40,6 +40,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new widget wrapper
      *
@@ -131,6 +132,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool isValidConstraint() const;
 
   signals:
+
     /**
      * Emit this signal, whenever the value changed.
      *
@@ -149,6 +151,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, bool status );
 
   public slots:
+
     /**
      * Will be called when the feature changes
      *
@@ -167,6 +170,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void setValue( const QVariant& value ) = 0;
 
   protected slots:
+
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
      * will be broadcasted. Helper for string type widgets.
@@ -216,6 +220,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void valueChanged();
 
   protected:
+
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.

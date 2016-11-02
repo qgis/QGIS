@@ -1,4 +1,5 @@
 
+
 /***************************************************************************
                           qgsvectorlayer.h  -  description
                              -------------------
@@ -122,6 +123,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
   /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
     @note added in 2.6 */
   void setJoinFieldNamesSubset( QStringList* fieldNamesSubset ) { joinFieldsSubset = QSharedPointer<QStringList>( fieldNamesSubset ); }
+
   /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
     @note added in 2.6 */
   QStringList* joinFieldNamesSubset() const { return joinFieldsSubset.data(); }
@@ -1239,6 +1241,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
     const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
@@ -1557,6 +1560,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setEditFormConfig( const QgsEditFormConfig& editFormConfig );
 
   public slots:
+
     /**
      * Select feature by its ID
      *
@@ -1855,6 +1859,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setExtent( const QgsRectangle &rect ) override;
 
   private:                       // Private methods
+
     /**
      * Returns true if the provider is in read-only mode
      */

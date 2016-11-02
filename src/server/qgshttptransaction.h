@@ -43,6 +43,7 @@ class QgsHttpTransaction : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      */

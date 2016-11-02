@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -179,6 +180,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     void switchAdvanced();
 
   private:
+
     /** Read and parse module options (--interface-description).
      * @param errors - list to which possible errors are added
      */

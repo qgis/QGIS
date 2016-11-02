@@ -2528,6 +2528,7 @@ void QgisApp::setIconSizes( int size )
 
 void QgisApp::setTheme( const QString& theThemeName )
 {
+
   /*****************************************************************
   // Init the toolbar icons by setting the icon for each action.
   // All toolbar/menu items must be a QAction in order for this
@@ -4621,8 +4622,10 @@ void QgisApp::fileOpenAfterLaunch()
   bool projOpenedOK = settings.value( QStringLiteral( "/qgis/projOpenedOKAtLaunch" ), QVariant( true ) ).toBool();
 
   // notify user if last attempt at auto-opening a project failed
+
   /** NOTE: Notification will not show if last auto-opened project failed but
       next project opened is from command line (minor issue) */
+
   /** TODO: Keep projOpenedOKAtLaunch from being reset to true after
       reading command line project (which happens before initialization signal) */
   if ( !projOpenedOK )
@@ -6220,6 +6223,7 @@ void QgisApp::saveAsLayerDefinition()
 }
 
 ///@cond PRIVATE
+
 /** Field value converter for export as vecotr layer
  * \note Not available in Python bindings
  */
@@ -7766,6 +7770,7 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     mActionPasteStyle->setEnabled( true );
   }
 }
+
 /**
    \param destinationLayer  The layer that the clipboard will be pasted to
                             (defaults to the active layer on the legend)
@@ -10753,6 +10758,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionLayerSubsetString->setEnabled( false );
     }
   } //end vector layer block
+
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {

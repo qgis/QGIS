@@ -37,16 +37,19 @@ struct CORE_EXPORT QgsSnappingResult
 {
   //! The coordinates of the snapping result
   QgsPoint snappedVertex;
+
   /** The vertex index of snappedVertex
    or -1 if no such vertex number (e.g. snap to segment)*/
   int snappedVertexNr;
   //! The layer coordinates of the vertex before snappedVertex
   QgsPoint beforeVertex;
+
   /** The index of the vertex before snappedVertex
    or -1 if no such vertex*/
   int beforeVertexNr;
   //! The layer coordinates of the vertex after snappedVertex
   QgsPoint afterVertex;
+
   /** The index of the vertex after snappedVertex
    or -1 if no such vertex*/
   int afterVertexNr;
@@ -77,6 +80,7 @@ class CORE_EXPORT QgsSnapper
     {
       //! Only one snapping result is returned
       SnapWithOneResult,
+
       /** Several snapping results which have the same position are returned.
          This is useful for topological editing*/
       SnapWithResultsForSamePosition,

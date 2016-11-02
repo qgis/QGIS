@@ -87,6 +87,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @note This is an internal construct used by QgsAuthManager that should generally not be set by client code
      */
     const QString configString() const;
+
     /**
      * Load existing extended configuration
      * @param configstr Configuration string to load
@@ -95,6 +96,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     //! Get extended configuration, mapped to key/value pairs of QStrings
     QgsStringMap configMap() const { return mConfigMap; }
+
     /**
      * Set extended configuration map
      * @param map Map to set
@@ -108,6 +110,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @param value Config value
      */
     void setConfig( const QString &key, const QString &value );
+
     /**
      * Set a multiple config values per key in the map
      * @note if key exists, it is replaced
@@ -183,6 +186,7 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 class CORE_EXPORT QgsPkiBundle
 {
   public:
+
     /**
      * Construct a bundle from existing PKI components
      * @param clientCert Certificate to store in bundle
@@ -250,6 +254,7 @@ class CORE_EXPORT QgsPkiBundle
 class CORE_EXPORT QgsPkiConfigBundle
 {
   public:
+
     /**
      * Construct a bundle from existing PKI components and authentication method configuration
      * @param config Authentication method configuration
@@ -327,6 +332,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
      * @note When set to 0 = unlimited depth
      */
     int sslPeerVerifyDepth() const { return mSslPeerVerifyDepth; }
+
     /** Set number or SSL client's peer to verify in connections
      * @note When set to 0 = unlimited depth
      */

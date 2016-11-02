@@ -3494,12 +3494,14 @@ QGISEXTERN QgsWmsProvider * classFactory( const QString *uri )
 {
   return new QgsWmsProvider( *uri );
 }
+
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
   return WMS_KEY;
 }
+
 /**
  * Required description function
  */
@@ -3507,6 +3509,7 @@ QGISEXTERN QString description()
 {
   return WMS_DESCRIPTION;
 }
+
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin

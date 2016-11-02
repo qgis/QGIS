@@ -138,6 +138,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
     void close();
 
   protected:
+
     /** @note not available in Python bindings
      */
     QgsOSMNodeIterator( sqlite3* handle );
@@ -163,6 +164,7 @@ class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
     void close();
 
   protected:
+
     /** @note not available in Python bindings
      */
     QgsOSMWayIterator( sqlite3* handle );

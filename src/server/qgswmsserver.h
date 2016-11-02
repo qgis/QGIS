@@ -61,6 +61,7 @@ independent from any server side technology*/
 class QgsWmsServer: public QgsOWSServer
 {
   public:
+
     /** Constructor. Does _NOT_ take ownership of
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
     QgsWmsServer(
@@ -84,6 +85,7 @@ class QgsWmsServer: public QgsOWSServer
     QDomDocument getCapabilities( const QString &version = "1.3.0", bool fullProjectInformation = false );
 
     QDomDocument getContext();
+
     /** Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();
@@ -135,19 +137,23 @@ class QgsWmsServer: public QgsOWSServer
      @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
      @return 0 in case of error*/
     QImage* createImage( int width = -1, int height = -1 ) const;
+
     /** Configures mMapRenderer to the parameters
      HEIGHT, WIDTH, BBOX, CRS.
      @param paintDevice the device that is used for painting (for dpi)
      @return 0 in case of success*/
     int configureMapRender( const QPaintDevice* paintDevice ) const;
+
     /** Reads the layers and style lists from the parameters LAYERS and STYLES
      @return 0 in case of success*/
     int readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const;
+
     /** If the parameter SLD exists, mSLDParser is configured appropriately. The lists are
     set to the layer and style names according to the SLD
     @return 0 in case of success*/
     int initializeSLDParser( QStringList& layersList, QStringList& stylesList );
     static bool infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, QgsMapRenderer* mapRenderer );
+
     /** Appends feature info xml for the layer to the layer element of the feature info dom document
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
@@ -196,6 +202,7 @@ class QgsWmsServer: public QgsOWSServer
     void applyRequestedLayerFilters( const QStringList& layerList, QHash<QgsMapLayer*, QString>& originalFilters ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
     /** Apply filter strings from the access control to the layers.
      * @param layerList layers to filter
      * @param originalLayerFilters the original layers filter dictionary

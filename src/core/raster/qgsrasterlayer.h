@@ -10,6 +10,7 @@
  * B. Morley - added functions to convert this class to a data provider interface
  * Frank Warmerdam - contributed bug fixes and migrated class to use all GDAL_C_API calls
  */
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

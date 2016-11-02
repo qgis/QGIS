@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 /** QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
@@ -172,6 +173,7 @@ class QgisPlugin
     QString mVersion;
 
     /// UI or MAPLAYER plug-in
+
     /**
       @todo Really, might be indicative that this needs to split into
       maplayer vs. ui plug-in vs. other kind of plug-in

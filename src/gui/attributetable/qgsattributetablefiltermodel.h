@@ -35,6 +35,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     Q_OBJECT
 
   public:
+
     /**
      * The filter mode defines how the rows should be filtered.
      */
@@ -217,6 +218,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   signals:
+
     /**
      * Is emitted whenever the sort column is changed
      * @param column The sort column
@@ -225,6 +227,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void sortColumnChanged( int column, Qt::SortOrder order );
 
   protected:
+
     /**
      * Returns true if the source row will be accepted
      *
@@ -246,6 +249,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   public slots:
+
     /**
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.

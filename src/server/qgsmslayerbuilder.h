@@ -45,10 +45,12 @@ class QgsMSLayerBuilder
   protected:
     //! Tries to create a suitable layer name from a URL.
     virtual QString layerNameFromUri( const QString& uri ) const;
+
     /** Helper function that creates a new temporary file with random name under /tmp/qgis_wms_serv/
     and returns the path of the file (Unix). On Windows, it is created in the current working directory
     and returns the filename only*/
     QString createTempFile() const;
+
     /** Resets the former symbology of a raster layer. This is important for single band layers (e.g. dems)
      coming from the cash*/
     void clearRasterSymbology( QgsRasterLayer* rl ) const;

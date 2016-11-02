@@ -29,6 +29,7 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsSnappingConfig
 {
   public:
+
     /**
      * SnappingMode defines on which layer the snapping is performed
      */
@@ -56,6 +57,7 @@ class CORE_EXPORT QgsSnappingConfig
     class CORE_EXPORT IndividualLayerSettings
     {
       public:
+
         /**
          * @brief IndividualLayerSettings
          * @param enabled
@@ -175,6 +177,7 @@ class CORE_EXPORT QgsSnappingConfig
     bool operator!= ( const QgsSnappingConfig& other ) const;
 
   public:
+
     /**
      * Reads the configuration from the specified QGIS project document.
      *

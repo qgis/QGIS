@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Hugo Mercier
     email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -297,6 +298,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void numberFeaturesChanged( int numFeatures );
 
   private:
+
     /** Updates the filename expression.
      * @returns true if expression was successfully parsed, false if expression is invalid
      */

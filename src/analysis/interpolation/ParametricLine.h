@@ -37,6 +37,7 @@ class ANALYSIS_EXPORT ParametricLine
   public:
     //! Default constructor
     ParametricLine();
+
     /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );

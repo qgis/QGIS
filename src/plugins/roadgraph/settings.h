@@ -38,19 +38,23 @@ class RgSettings
      * write settings to the poject file
      */
     virtual void write( QgsProject * ) = 0;
+
     /**
      * read settings form project file
      */
     virtual void read( const QgsProject * ) = 0;
+
     /**
      * This function test settings and return true if setting correct
      */
     virtual bool test() = 0;
+
     /**
      * Make settings widget
      * use it for GUI setting
      */
     virtual QWidget* getGui( QWidget* parent ) = 0;
+
     /**
      * Load settings from widget
      */

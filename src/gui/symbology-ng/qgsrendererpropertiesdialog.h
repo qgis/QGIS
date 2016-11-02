@@ -66,6 +66,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     void setDockMode( bool dockMode );
 
   signals:
+
     /**
      * Emitted when expression context variables on the associated
      * vector layers have been changed. Will request the parent dialog
@@ -120,6 +121,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     void syncToLayer();
 
   protected:
+
     /**
      * Connect the given slot to the value changed event for the set of widgets
      * Each widget is checked for type and the common type of signal is connected

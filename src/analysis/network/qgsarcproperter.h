@@ -32,6 +32,7 @@
 class ANALYSIS_EXPORT QgsArcProperter
 {
   public:
+
     /**
      * default constructor
      */

@@ -43,6 +43,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param qIface  pointer to QgisInterface instance that is passed to the rulesDialog
@@ -52,44 +53,54 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
     ~checkDock();
 
   private slots:
+
     /**
      * Launches the configuration dialog
      */
     void configure();
+
     /**
      * Launches fixing routine
      */
     void fix();
+
     /**
      * Validates the whole layer
      */
     void validateAll();
+
     /**
      * Validates the current extent
      */
     void validateExtent();
+
     /**
      * Validates only selected features
      */
     void validateSelected();
+
     /**
      * toggles the visibility of rubber band error markers
      */
     void toggleErrorMarker();
+
     /**
      * Handles error selection
      * @param index clicked index in the table
      */
     void errorListClicked( const QModelIndex& index );
+
     /**
      * Deletes allocated errors' data
      */
     void deleteErrors();
+
     /**
      * Filters all errors involving features from specified layer
      * @param layerId layer ID
      */
     void parseErrorListByLayer( const QString& layerId );
+
     /**
      * Clears rubberbands when window is hidden
      * @param visible true if the window is visible
@@ -124,16 +135,19 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * @param type validation type - what features to check
      */
     void runTests( ValidateType type );
+
     /**
      * Validates topology
      * @param type validation type - what features to check
      */
     void validate( ValidateType type );
+
     /**
      * Filters all errors involving specified feature
      * @param featureId feature ID
      */
     void parseErrorListByFeature( int featureId );
+
     /**
      * Deletes vertex markers
      */

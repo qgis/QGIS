@@ -82,6 +82,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     void on_btnHistoMax_toggled();
     //! Called when a selection has been made using the plot picker.
     void histoPickerSelected( QPointF );
+
     /** Called when a selection has been made using the plot picker (for qwt5 only).
       @note not available in python bindings
       */

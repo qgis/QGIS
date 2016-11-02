@@ -57,6 +57,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsGenericProjectionSelector* mProjectionSelector;
+
     /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/

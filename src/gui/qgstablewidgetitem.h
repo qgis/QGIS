@@ -26,6 +26,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
 {
   public:
     QgsTableWidgetItem();
+
     /**
      * Creates a new table widget item with the specified text.
      */
@@ -37,6 +38,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
      * By default this will be set to Qt::DisplayRole
      */
     void setSortRole( int role );
+
     /**
      * Get the role by which the items should be sorted.
      * By default this will be Qt::DisplayRole

@@ -32,6 +32,7 @@ template<class T>
 class CORE_EXPORT QgsOptional
 {
   public:
+
     /**
      * A QgsOptional is disabled by default if default constructed.
      */

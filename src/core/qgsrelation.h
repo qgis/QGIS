@@ -34,6 +34,7 @@ class QgsAttributes;
 class CORE_EXPORT QgsRelation
 {
   public:
+
     /**
      * \ingroup core
      * Defines a relation between matching fields of the two involved tables of a relation.
@@ -290,6 +291,7 @@ class CORE_EXPORT QgsRelation
     bool hasEqualDefinition( const QgsRelation& other ) const;
 
   protected:
+
     /**
      * Updates the validity status of this relation.
      * Will be called internally whenever a member is changed.
@@ -309,6 +311,7 @@ class CORE_EXPORT QgsRelation
     QString mReferencedLayerId;
     //! The parent layer
     QgsVectorLayer* mReferencedLayer;
+
     /** A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
      *  are supported for composited foreign keys.

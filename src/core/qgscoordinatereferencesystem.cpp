@@ -2315,7 +2315,9 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
   // Read settings from persistent storage
   QSettings settings;
   projections = settings.value( QStringLiteral( "/UI/recentProjections" ) ).toStringList();
+
   /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
+
   /*** This is kept now for backwards compatibility */
 
   QStringList projectionsProj4  = settings.value( QStringLiteral( "/UI/recentProjectionsProj4" ) ).toStringList();

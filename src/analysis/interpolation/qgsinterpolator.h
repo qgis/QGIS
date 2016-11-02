@@ -69,6 +69,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     const QList<LayerData>& layerData() const { return mLayerData; }
 
   protected:
+
     /** Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
     @return 0 in case of success*/
@@ -84,6 +85,7 @@ class ANALYSIS_EXPORT QgsInterpolator
 
   private:
     QgsInterpolator(); //forbidden
+
     /** Helper method that adds the vertices of a geometry to the mCachedBaseData
        @param geom the geometry
        @param zCoord true if the z-coordinate of the geometry is to be interpolated

@@ -49,6 +49,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
+
     /** Construct point locator for a layer.
      *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
      *  do the searches on data reprojected to the given CRS

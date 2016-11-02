@@ -5,6 +5,7 @@
     copyright            : (C) 2016 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

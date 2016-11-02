@@ -160,6 +160,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      * @see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
+
     /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
      * @param mode PreviewMode to be used to draw the view
@@ -276,6 +277,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void selectedItemChanged( QgsComposerItem* selected );
     //! Is emitted when a composer item has been removed from the scene
     void itemRemoved( QgsComposerItem* );
+
     /** Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();

@@ -88,6 +88,7 @@ typedef QList< int > QgsGraphArcIdList;
 class ANALYSIS_EXPORT QgsGraphVertex
 {
   public:
+
     /**
      * default constructor. It need for QT's container, e.g. QVector
      */
@@ -134,6 +135,7 @@ class ANALYSIS_EXPORT QgsGraph
     QgsGraph();
 
     // begin graph constructing methods
+
     /**
      * add vertex to a grap
      */

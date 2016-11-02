@@ -322,14 +322,17 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * Name of the table with no schema
      */
     QString mTableName;
+
     /**
      * Name of the table or subquery
      */
     QString mQuery;
+
     /**
      * Owner of the table
      */
     QString mOwnerName;
+
     /**
      * SQL statement used to limit the features retrieved
      */

@@ -65,6 +65,7 @@ astyleit() {
 	modified=$1.unify_includes_modified
 	cp "$1" "$modified"
 	scripts/unify_includes.pl "$modified"
+        scripts/doxygen_space.pl "$modified"
 	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
 	rm -f "$modified"
 }

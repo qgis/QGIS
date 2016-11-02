@@ -29,6 +29,7 @@ class RgSettings;
 /**
 @author Sergey Yakushev
 */
+
 /**
 * \class RgSettingsDlg
 * \brief implement of settings dialog

@@ -33,6 +33,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * QgsComposerItemComboBox creates a combo box to display a list of items in a
      * composition. The items can optionally be filtered by type.
@@ -80,6 +81,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
     QgsComposerItem* currentItem() const;
 
   public slots:
+
     /** Sets the currently selected item in the combo box.
      * @param item selected item
      */

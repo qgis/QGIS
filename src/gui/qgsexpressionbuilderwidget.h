@@ -72,6 +72,7 @@ class QgsExpressionItem : public QStandardItem
       * @return The help text.
       */
     QString getHelpText() const { return mHelpText; }
+
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.
@@ -124,6 +125,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new expression builder widget with an optional parent.
      */
@@ -262,6 +264,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void on_txtPython_textChanged();
 
   signals:
+
     /** Emitted when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
