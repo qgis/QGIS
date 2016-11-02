@@ -360,5 +360,44 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         sublayers = vl.dataProvider().subLayers()
         self.assertEqual(len(sublayers), 2, sublayers)
 
+    def testDisablewalForSqlite3(self):
+        ''' Test disabling walForSqlite3 setting '''
+        QSettings().setValue("/qgis/walForSqlite3", False)
+
+        tmpfile = os.path.join(self.basetestpath, 'testDisablewalForSqlite3.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('attr0', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('attr1', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
+
+        # Test that we are using default delete mode and not WAL
+        ds = ogr.Open(tmpfile)
+        lyr = ds.ExecuteSQL('PRAGMA journal_mode')
+        f = lyr.GetNextFeature()
+        res = f.GetField(0)
+        ds.ReleaseResultSet(lyr)
+        ds = None
+        self.assertEqual(res, 'delete')
+
+        self.assertTrue(vl.startEditing())
+        feature = next(vl.getFeatures())
+        self.assertTrue(vl.changeAttributeValue(feature.id(), 1, 1001))
+
+        # Commit changes
+        cbk = ErrorReceiver()
+        vl.dataProvider().raiseError.connect(cbk.receiveError)
+        self.assertTrue(vl.commitChanges())
+        self.assertIsNone(cbk.msg)
+        vl = None
+
+        QSettings().setValue("/qgis/walForSqlite3", None)
+
 if __name__ == '__main__':
     unittest.main()
