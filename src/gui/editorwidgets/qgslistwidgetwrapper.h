@@ -51,7 +51,7 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
     void onValueChanged();
 
   private:
-    void updateConstraintWidgetStatus( bool constraintValid ) override;
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
     QgsListWidget* mWidget;
 };

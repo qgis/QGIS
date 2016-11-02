@@ -80,6 +80,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   // testing stuff
   QString validLabel = QStringLiteral( "col0<font color=\"green\">✔</font>" );
   QString invalidLabel = QStringLiteral( "col0<font color=\"red\">✘</font>" );
+  QString warningLabel = QStringLiteral( "col0<font color=\"orange\">✘</font>" );
 
   // set constraint
   layer->setConstraintExpression( 0, QString() );
@@ -116,6 +117,27 @@ void TestQgsAttributeForm::testFieldConstraint()
   spy.clear();
   ww->setValue( 1 );
   QCOMPARE( spy.count(), 2 );
+  QCOMPARE( label->text(), validLabel );
+
+  // set a soft constraint
+  layer->setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
+  layer->setFieldConstraint( 0, QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
+  // build a form for this feature
+  QgsAttributeForm form3( layer );
+  form3.setFeature( ft );
+  ww = qobject_cast<QgsEditorWidgetWrapper*>( form3.mWidgets[0] );
+  label = form3.mBuddyMap.value( ww->widget() );
+
+  // set value to 1
+  ww->setValue( 1 );
+  QCOMPARE( label->text(), validLabel );
+
+  // set value to null
+  ww->setValue( QVariant() );
+  QCOMPARE( label->text(), warningLabel );
+
+  // set value to 1
+  ww->setValue( 1 );
   QCOMPARE( label->text(), validLabel );
 }
 
@@ -267,6 +289,20 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QCOMPARE( spy3.count(), 1 );
   QCOMPARE( layer->isEditable(), false );
   QCOMPARE( okButton->isEnabled(), false );
+
+  // set soft constraint
+  layer->setFieldConstraint( 0, QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
+  QgsAttributeForm form4( layer );
+  form4.setFeature( ft );
+  ww = qobject_cast<QgsEditorWidgetWrapper*>( form4.mWidgets[0] );
+  okButton = form4.mButtonBox->button( QDialogButtonBox::Ok );
+  ww->setValue( 1 );
+  QVERIFY( !okButton->isEnabled() );
+  layer->startEditing();
+  // just a soft constraint, so OK should be enabled
+  QVERIFY( okButton->isEnabled() );
+  layer->rollBack();
+  QVERIFY( !okButton->isEnabled() );
 }
 
 QTEST_MAIN( TestQgsAttributeForm )

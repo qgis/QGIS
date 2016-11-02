@@ -143,13 +143,23 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   emit valueChanged( value );
 }
 
-void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
 {
   if ( mWidget )
   {
-    if ( constraintValid )
-      mWidget->setStyleSheet( QString() );
-    else
-      mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
+    switch ( status )
+    {
+      case ConstraintResultPass:
+        mWidget->setStyleSheet( QString() );
+        break;
+
+      case ConstraintResultFailHard:
+        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
+        break;
+
+      case ConstraintResultFailSoft:
+        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
+        break;
+    }
   }
 }

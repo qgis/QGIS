@@ -22,9 +22,10 @@ class QgsVectorLayerUtils
     /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
-     * If the origin parameter is set then only constraints with a matching origin will be checked.
+     * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
     static bool validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors /Out/,
+                                   QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 
 };

@@ -813,7 +813,8 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
 
         descriptions.append( eww->constraintFailureReason() );
 
-        valid = false; // continue to get all invalif fields
+        if ( eww->isBlockingCommit() )
+          valid = false; // continue to get all invalid fields
       }
     }
   }
@@ -879,7 +880,7 @@ void QgsAttributeForm::onUpdatedFields()
 }
 
 void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
-    const QString &description, const QString& err, bool ok )
+    const QString &description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result )
 {
   QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sender() );
   Q_ASSERT( eww );
@@ -898,15 +899,19 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
 
     QString text = buddy->property( "originalText" ).toString();
 
-    if ( !ok )
+    switch ( result )
     {
-      // not good
-      buddy->setText( QStringLiteral( "%1<font color=\"red\">✘</font>" ).arg( text ) );
-    }
-    else
-    {
-      // good
-      buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
+      case QgsEditorWidgetWrapper::ConstraintResultFailHard:
+        buddy->setText( QStringLiteral( "%1<font color=\"red\">✘</font>" ).arg( text ) );
+        break;
+
+      case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
+        buddy->setText( QStringLiteral( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
+        break;
+
+      case QgsEditorWidgetWrapper::ConstraintResultPass:
+        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
+        break;
     }
   }
 }
@@ -991,7 +996,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     QStringList invalidFields, descriptions;
     bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
 
-    if ( ! validConstraint )
+    if ( ! invalidFields.isEmpty() )
       displayInvalidConstraintMessage( invalidFields, descriptions );
 
     isEditable = isEditable & validConstraint;

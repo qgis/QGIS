@@ -45,7 +45,7 @@ class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    void updateConstraintWidgetStatus( bool constraintValid ) override;
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
     QgsColorButton* mColorButton;
 };

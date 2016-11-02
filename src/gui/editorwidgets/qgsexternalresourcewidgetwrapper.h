@@ -54,7 +54,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void setEnabled( bool enabled ) override;
 
   private:
-    void updateConstraintWidgetStatus( bool constraintValid ) override;
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
     QLineEdit* mLineEdit;
     QLabel* mLabel;

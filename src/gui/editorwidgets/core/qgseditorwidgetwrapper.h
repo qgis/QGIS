@@ -40,6 +40,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
+
+    /**
+     * Result of constraint checks.
+     * @note added in QGIS 3.0
+     */
+    enum ConstraintResult
+    {
+      ConstraintResultPass = 0, //!< Widget passed constraints successfully
+      ConstraintResultFailHard, //!< Widget failed at least one hard (enforced) constraint
+      ConstraintResultFailSoft, //!< Widget failed at least one soft (non-enforced) constraint
+    };
+
     /**
      * Create a new widget wrapper
      *
@@ -130,8 +142,17 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * false otherwise
      * @note added in QGIS 2.16
      * @see constraintFailureReason()
+     * @see isBlockingCommit()
      */
     bool isValidConstraint() const;
+
+    /**
+     * Returns true if the widget is preventing the feature from being committed. This may be true as a result
+     * of attribute values failing enforced field constraints.
+     * @note added in QGIS 3.0
+     * @see isValidConstraint()
+     */
+    bool isBlockingCommit() const;
 
     /**
      * Returns the reason why a constraint check has failed (or an empty string
@@ -157,7 +178,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * @param err the error represented as a string. Empty if none.
      * @param status
      */
-    void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, bool status );
+    void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, ConstraintResult status );
 
   public slots:
     /**
@@ -237,11 +258,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
      *
-     * @param constraintValid The current constraint status.
+     * @param status The current constraint status.
      *
      * @note added in QGIS 2.16
      */
-    virtual void updateConstraintWidgetStatus( bool constraintValid );
+    virtual void updateConstraintWidgetStatus( ConstraintResult status );
 
   private:
 
@@ -249,6 +270,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Boolean storing the current validity of the constraint for this widget.
      */
     bool mValidConstraint;
+
+    //! True if widget is blocking feature commits
+    bool mIsBlockingCommit;
 
     //! Contains the string explanation of why a constraint check failed
     QString mConstraintFailureReason;

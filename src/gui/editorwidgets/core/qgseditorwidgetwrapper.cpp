@@ -24,6 +24,7 @@
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsWidgetWrapper( vl, editor, parent )
     , mValidConstraint( true )
+    , mIsBlockingCommit( false )
     , mFieldIdx( fieldIdx )
 {
 }
@@ -98,12 +99,22 @@ void QgsEditorWidgetWrapper::valueChanged()
   emit valueChanged( value() );
 }
 
-void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult constraintResult )
 {
-  if ( constraintValid )
-    widget()->setStyleSheet( QString() );
-  else
-    widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
+  switch ( constraintResult )
+  {
+    case ConstraintResultPass:
+      widget()->setStyleSheet( QString() );
+      break;
+
+    case ConstraintResultFailHard:
+      widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
+      break;
+
+    case ConstraintResultFailSoft:
+      widget()->setStyleSheet( QStringLiteral( "background-color: #ffd85d;" ) );
+      break;
+  }
 }
 
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
@@ -150,7 +161,15 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldCon
   }
 
   QStringList errors;
-  mValidConstraint = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, errors, constraintOrigin );
+  bool hardConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, errors, QgsFieldConstraints::ConstraintStrengthHard, constraintOrigin );
+
+  QStringList softErrors;
+  bool softConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, softErrors, QgsFieldConstraints::ConstraintStrengthSoft, constraintOrigin );
+  errors << softErrors;
+
+  mValidConstraint = hardConstraintsOk && softConstraintsOk;
+  mIsBlockingCommit = !hardConstraintsOk;
+
   mConstraintFailureReason = errors.join( ", " );
 
   if ( toEmit )
@@ -164,14 +183,21 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldCon
     else if ( !expressions.isEmpty() )
       expressionDesc = expressions.at( 0 );
 
-    updateConstraintWidgetStatus( mValidConstraint );
-    emit constraintStatusChanged( expressionDesc, description, errStr, mValidConstraint );
+    ConstraintResult result = !hardConstraintsOk ? ConstraintResultFailHard
+                              : ( !softConstraintsOk ? ConstraintResultFailSoft : ConstraintResultPass );
+    updateConstraintWidgetStatus( result );
+    emit constraintStatusChanged( expressionDesc, description, errStr, result );
   }
 }
 
 bool QgsEditorWidgetWrapper::isValidConstraint() const
 {
   return mValidConstraint;
+}
+
+bool QgsEditorWidgetWrapper::isBlockingCommit() const
+{
+  return mIsBlockingCommit;
 }
 
 QString QgsEditorWidgetWrapper::constraintFailureReason() const
