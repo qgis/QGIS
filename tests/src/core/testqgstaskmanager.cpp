@@ -40,9 +40,10 @@ class TestTask : public QgsTask
 
   protected:
 
-    void run() override
+    TaskResult run() override
     {
       runCalled = true;
+      return ResultPending;
     }
 
 };
@@ -61,11 +62,35 @@ class TestTerminationTask : public TestTask
 
   protected:
 
-    void run() override
+    TaskResult run() override
     {
       while ( !isCancelled() )
         {}
-      stopped();
+      return ResultFail;
+    }
+};
+
+class SuccessTask : public TestTask
+{
+    Q_OBJECT
+
+  protected:
+
+    TaskResult run() override
+    {
+      return ResultSuccess;
+    }
+};
+
+class FailTask : public TestTask
+{
+    Q_OBJECT
+
+  protected:
+
+    TaskResult run() override
+    {
+      return ResultFail;
     }
 };
 
@@ -80,6 +105,7 @@ class TestQgsTaskManager : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void task();
+    void taskResult();
     void createInstance();
     void addTask();
     void deleteTask();
@@ -178,6 +204,28 @@ void TestQgsTaskManager::task()
   QVERIFY( task->flags() & QgsTask::CanCancel );
 }
 
+void TestQgsTaskManager::taskResult()
+{
+  QScopedPointer< TestTask > task( new SuccessTask() );
+  QCOMPARE( task->status(), QgsTask::Queued );
+  QSignalSpy statusSpy( task.data(), SIGNAL( statusChanged( int ) ) );
+
+  task->start();
+  QCOMPARE( statusSpy.count(), 2 );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
+  QCOMPARE( task->status(), QgsTask::Complete );
+
+  task.reset( new FailTask() );
+  QCOMPARE( task->status(), QgsTask::Queued );
+  QSignalSpy statusSpy2( task.data(), SIGNAL( statusChanged( int ) ) );
+
+  task->start();
+  QCOMPARE( statusSpy2.count(), 2 );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 1 ).at( 0 ).toInt() ), QgsTask::Terminated );
+  QCOMPARE( task->status(), QgsTask::Terminated );
+}
 
 void TestQgsTaskManager::createInstance()
 {

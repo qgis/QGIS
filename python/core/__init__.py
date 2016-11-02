@@ -201,10 +201,9 @@ class QgsTaskWrapper(QgsTask):
         except Exception as ex:
             # report error
             self.exception = ex
-            self.stopped()
-            return
+            return QgsTask.ResultFail
 
-        self.completed()
+        return QgsTask.ResultSuccess
 
 
 def fromFunction(cls, description, function, *args, **kwargs):

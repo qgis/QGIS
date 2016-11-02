@@ -38,7 +38,23 @@ void QgsTask::start()
   mStatus = Running;
   emit statusChanged( Running );
   emit begun();
-  run();
+  TaskResult result = run();
+  switch ( result )
+  {
+    case ResultSuccess:
+      completed();
+      break;
+
+    case ResultFail:
+      stopped();
+      break;
+
+    case ResultPending:
+      // nothing to do - task will call completed() or stopped()
+      // in it's own time
+      break;
+
+  }
 }
 
 void QgsTask::cancel()

@@ -54,6 +54,14 @@ class CORE_EXPORT QgsTask : public QObject
       Terminated, //!< Task was terminated or errored
     };
 
+    //! Result of running the task
+    enum TaskResult
+    {
+      ResultSuccess = 0, //!< Task completed successfully
+      ResultFail, //!< Task was terminated within completion
+      ResultPending, //!< Task is still running
+    };
+
     //! Task flags
     enum Flag
     {
@@ -182,8 +190,22 @@ class CORE_EXPORT QgsTask : public QObject
      * Performs the task's operation. This method will be called when the task commences
      * (ie via calling start() ), and subclasses should implement the operation they
      * wish to perform in the background within this method.
+     *
+     * A task can return a ResultSuccess and ResultFail value to indicate that the
+     * task has finished and was either completed successfully or terminated before
+     * completion.
+     *
+     * Alternatively, tasks can also return the ResultPending value
+     * to indicate that the task is still operating and will manually report its
+     * completion by calling completed() or stopped(). This may be useful for
+     * tasks which rely on external events for completion, eg downloading a
+     * file. In this case Qt slots could be created which are connected to the
+     * download completion or termination and which call completed() or stopped()
+     * to indicate the task has finished operations.
+     * @see completed()
+     * @see stopped()
      */
-    virtual void run() = 0;
+    virtual TaskResult run() = 0;
 
     /**
      * Will return true if task should terminate ASAP. If the task reports the CanCancel
@@ -193,15 +215,19 @@ class CORE_EXPORT QgsTask : public QObject
     bool isCancelled() const { return mShouldTerminate; }
 
     /**
-     * Sets the task as completed. Should be called when the task is complete.
-     * Calling will automatically emit the statusChanged and taskCompleted signals.
+     * Sets the task as completed. Calling this is only required for tasks which
+     * returned the ResultPending value as a result of run(). This should be called
+     * when the task is complete. Calling will automatically emit the statusChanged
+     * and taskCompleted signals.
      */
     void completed();
 
     /**
-     * Sets the task as stopped. Should be called whenever the task ends for any
-     * reason other than successful completion.
-     * Calling will automatically emit the statusChanged and taskStopped signals.
+     * Sets the task as stopped.  Calling this is only required for tasks which
+     * returned the ResultPending value as a result of run().
+     * Should be called whenever the task ends for any reason other than successful
+     * completion. Calling will automatically emit the statusChanged and taskStopped
+     * signals.
      */
     void stopped();
 
