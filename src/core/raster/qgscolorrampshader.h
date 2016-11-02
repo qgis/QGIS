@@ -72,7 +72,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //! \brief Get the color ramp type
     QgsColorRampShader::ColorRamp_TYPE colorRampType() const { return mColorRampType; }
 
-    // \brief Get the color ramp type as a string
+    //! \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
 
     /** Get the original color ramp name
