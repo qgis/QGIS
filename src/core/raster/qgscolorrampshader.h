@@ -133,7 +133,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     double mLUTFactor;
     bool mLUTInitialized;
 
-    /** Colorramp name*/
+    //! Color ramp name
     QString mColorRampName;
 
     //! Do not render values out of range
