@@ -655,6 +655,22 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
               {
                 throw QgsMapServiceException( QStringLiteral( "RequestNotWellFormed" ), filter->parserErrorString() );
               }
+              QgsFeatureRequest req;
+              req.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+              req.setFilterExpression( filter->expression() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+              mAccessControl->filterFeatures( layer, req );
+
+              QStringList attributes = QStringList();
+              Q_FOREACH ( int idx, attrIndexes )
+              {
+                attributes.append( layer->pendingFields().field( idx ).name() );
+              }
+              req.setSubsetOfAttributes(
+                mAccessControl->layerAttributes( layer, attributes ),
+                layer->pendingFields() );
+#endif
+              QgsFeatureIterator fit = layer->getFeatures( req );
               while ( fit.nextFeature( feature ) && ( !hasFeatureLimit || featureCounter < maxFeatures + startIndex ) )
               {
                 expressionContext.setFeature( feature );
