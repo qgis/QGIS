@@ -68,13 +68,12 @@ class MultipartToSingleparts(GeoAlgorithm):
             input_geometry = f.geometry()
             if input_geometry:
                 if input_geometry.isMultipart():
-                    for i in range(input_geometry.geometry().numGeometries()):
-                        singlepart_geometry = QgsGeometry(input_geometry.geometry().geometryN(i).clone())
+                    for g in input_geometry.asGeometryCollection():
                         output_feature = f
-                        output_feature.setGeometry( singlepart_geometry )
+                        output_feature.setGeometry(g)
                         writer.addFeature(output_feature)
                 else:
-                   writer.addFeature(f)
+                    writer.addFeature(f)
             else:
                 #input feature with null geometry
                 writer.addFeature(f)
