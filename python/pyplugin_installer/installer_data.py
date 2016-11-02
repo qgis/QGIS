@@ -236,7 +236,10 @@ class Repositories(QObject):
     def urlParams(self):
         """ return GET parameters to be added to every request """
         v = str(Qgis.QGIS_VERSION_INT)
-        return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
+        # TODO: make this proper again after 3.0 release, by uncommenting
+        # the line below and removing the other return line:
+        #return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
+        return "?qgis=3.0"
 
     # ----------------------------------------- #
     def setRepositoryData(self, reposName, key, value):
