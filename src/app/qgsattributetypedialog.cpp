@@ -69,7 +69,21 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     isFieldEditableCheckBox->setEnabled( false );
   }
 
-  connect( mExpressionWidget, SIGNAL( expressionChanged( QString ) ), this, SLOT( defaultExpressionChanged() ) );
+  connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
+  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [=]( bool checked )
+  {
+    mCheckBoxEnforceUnique->setEnabled( checked );
+    if ( !checked )
+      mCheckBoxEnforceUnique->setChecked( false );
+  }
+         );
+  connect( notNullCheckBox, &QCheckBox::toggled, this, [=]( bool checked )
+  {
+    mCheckBoxEnforceNotNull->setEnabled( checked );
+    if ( !checked )
+      mCheckBoxEnforceNotNull->setChecked( false );
+  }
+         );
 
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
@@ -154,7 +168,7 @@ void QgsAttributeTypeDialog::setWidgetType( const QString& type )
       stackedWidget->addWidget( cfgWdg );
       stackedWidget->setCurrentWidget( cfgWdg );
       mEditorConfigWidgets.insert( type, cfgWdg );
-      connect( cfgWdg, SIGNAL( changed() ), this, SLOT( defaultExpressionChanged() ) );
+      connect( cfgWdg, &QgsEditorConfigWidget::changed, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
     }
     else
     {
@@ -183,6 +197,8 @@ void QgsAttributeTypeDialog::setProviderConstraints( QgsFieldConstraints::Constr
     notNullCheckBox->setChecked( true );
     notNullCheckBox->setEnabled( false );
     notNullCheckBox->setToolTip( tr( "The provider for this layer has a NOT NULL constraint set on the field." ) );
+    mCheckBoxEnforceNotNull->setChecked( true );
+    mCheckBoxEnforceNotNull->setEnabled( false );
   }
 
   if ( constraints & QgsFieldConstraints::ConstraintUnique )
@@ -190,6 +206,8 @@ void QgsAttributeTypeDialog::setProviderConstraints( QgsFieldConstraints::Constr
     mUniqueCheckBox->setChecked( true );
     mUniqueCheckBox->setEnabled( false );
     mUniqueCheckBox->setToolTip( tr( "The provider for this layer has a UNIQUE constraint set on the field." ) );
+    mCheckBoxEnforceUnique->setChecked( true );
+    mCheckBoxEnforceUnique->setEnabled( false );
   }
 }
 
@@ -218,6 +236,16 @@ bool QgsAttributeTypeDialog::notNull() const
   return notNullCheckBox->isChecked();
 }
 
+void QgsAttributeTypeDialog::setNotNullEnforced( bool enforced )
+{
+  mCheckBoxEnforceNotNull->setChecked( enforced );
+}
+
+bool QgsAttributeTypeDialog::notNullEnforced() const
+{
+  return mCheckBoxEnforceNotNull->isChecked();
+}
+
 void QgsAttributeTypeDialog::setUnique( bool unique )
 {
   mUniqueCheckBox->setChecked( unique );
@@ -228,9 +256,29 @@ bool QgsAttributeTypeDialog::unique() const
   return mUniqueCheckBox->isChecked();
 }
 
+void QgsAttributeTypeDialog::setUniqueEnforced( bool enforced )
+{
+  mCheckBoxEnforceUnique->setChecked( enforced );
+}
+
+bool QgsAttributeTypeDialog::uniqueEnforced() const
+{
+  return mCheckBoxEnforceUnique->isChecked();
+}
+
 void QgsAttributeTypeDialog::setConstraintExpression( const QString &str )
 {
   constraintExpressionWidget->setField( str );
+}
+
+void QgsAttributeTypeDialog::setConstraintExpressionEnforced( bool enforced )
+{
+  mCheckBoxEnforceExpression->setChecked( enforced );
+}
+
+bool QgsAttributeTypeDialog::constraintExpressionEnforced() const
+{
+  return mCheckBoxEnforceExpression->isChecked();
 }
 
 QString QgsAttributeTypeDialog::defaultValueExpression() const

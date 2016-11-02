@@ -86,6 +86,16 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     bool notNull() const;
 
     /**
+     * Sets whether the not null constraint is enforced.
+     */
+    void setNotNullEnforced( bool enforced );
+
+    /**
+     * Returns whether the not null constraint should be enforced.
+     */
+    bool notNullEnforced() const;
+
+    /**
      * Setter for unique constraint checkbox
      */
     void setUnique( bool unique );
@@ -94,6 +104,16 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Getter for unique constraint checkbox state
      */
     bool unique() const;
+
+    /**
+     * Sets whether the not null constraint is enforced.
+     */
+    void setUniqueEnforced( bool enforced );
+
+    /**
+     * Returns whether the not null constraint should be enforced.
+     */
+    bool uniqueEnforced() const;
 
     /**
      * Setter for constraint expression description
@@ -120,6 +140,16 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * @note added in QGIS 2.16
      */
     void setConstraintExpression( const QString &str );
+
+    /**
+     * Sets whether the expression constraint is enforced.
+     */
+    void setConstraintExpressionEnforced( bool enforced );
+
+    /**
+     * Returns whether the expression constraint should be enforced.
+     */
+    bool constraintExpressionEnforced() const;
 
     /**
      * Returns the expression used for the field's default value, or

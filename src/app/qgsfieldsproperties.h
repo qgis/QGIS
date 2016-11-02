@@ -123,6 +123,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool mEditableEnabled;
         bool mLabelOnTop;
         QgsFieldConstraints::Constraints mConstraints;
+        QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
         QString mConstraint;
         QString mConstraintDescription;
         QPushButton* mButton;

@@ -29,17 +29,48 @@ QgsFieldConstraints::ConstraintOrigin QgsFieldConstraints::constraintOrigin( Qgs
   return mConstraintOrigins.value( constraint, ConstraintOriginNotSet );
 }
 
+QgsFieldConstraints::ConstraintStrength QgsFieldConstraints::constraintStrength( QgsFieldConstraints::Constraint constraint ) const
+{
+  if ( !( mConstraints & constraint ) )
+    return ConstraintStrengthNotSet;
+
+  // defaults to hard strength unless explicitly set
+  return mConstraintStrengths.value( constraint, ConstraintStrengthHard );
+}
+
+void QgsFieldConstraints::setConstraintStrength( QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength )
+{
+  if ( constraintOrigin( constraint ) == ConstraintOriginProvider )
+  {
+    // cannot be overwritten
+    return;
+  }
+  else if ( strength == ConstraintStrengthNotSet )
+  {
+    mConstraintStrengths.remove( constraint );
+  }
+  else
+  {
+    mConstraintStrengths.insert( constraint, strength );
+  }
+}
+
 void QgsFieldConstraints::setConstraint( QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintOrigin origin )
 {
   if ( origin == ConstraintOriginNotSet )
   {
     mConstraints &= ~constraint;
     mConstraintOrigins.remove( constraint );
+    mConstraintStrengths.remove( constraint );
   }
   else
   {
     mConstraints |= constraint;
     mConstraintOrigins.insert( constraint, origin );
+    if ( !mConstraintStrengths.contains( constraint ) || origin == ConstraintOriginProvider )
+    {
+      mConstraintStrengths.insert( constraint, ConstraintStrengthHard );
+    }
   }
 }
 
@@ -65,5 +96,6 @@ void QgsFieldConstraints::setConstraintExpression( const QString& expression, co
 bool QgsFieldConstraints::operator==( const QgsFieldConstraints& other ) const
 {
   return mConstraints == other.mConstraints && mConstraintOrigins == other.mConstraintOrigins
-         && mExpressionConstraint == other.mExpressionConstraint && mExpressionConstraintDescription == other.mExpressionConstraintDescription;
+         && mExpressionConstraint == other.mExpressionConstraint && mExpressionConstraintDescription == other.mExpressionConstraintDescription
+         && mConstraintStrengths == other.mConstraintStrengths;
 }

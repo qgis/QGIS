@@ -87,6 +87,7 @@ void TestQgsField::copy()
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
   QgsField copy( original );
   QVERIFY( copy == original );
@@ -102,6 +103,7 @@ void TestQgsField::assignment()
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
   QgsField copy;
   copy = original;
@@ -153,6 +155,20 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.constraints().constraintExpression(), QStringLiteral( "constraint expression" ) );
   QCOMPARE( field.constraints().constraintDescription(), QStringLiteral( "description" ) );
   QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintUnique | QgsFieldConstraints::ConstraintExpression ); //setting constraint expression should add constraint
+  constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+
+  // check a constraint strength which hasn't been set
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ), QgsFieldConstraints::ConstraintStrengthNotSet );
+  // check a constraint strength which has not been explicitly set
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthHard );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthSoft );
+  // try overwriting a provider constraint's strength
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthHard );
 }
 
 void TestQgsField::isNumeric()
@@ -249,9 +265,14 @@ void TestQgsField::equality()
   field2.setConstraints( constraints );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  constraints = field2.constraints();
-  constraints.setConstraintExpression( QString(), QString() );
+  constraints = QgsFieldConstraints();
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard );
   field2.setConstraints( constraints );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
+  field1.setConstraints( constraints );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
 }
 
 void TestQgsField::asVariant()
@@ -442,6 +463,7 @@ void TestQgsField::dataStream()
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
 
   QByteArray ba;

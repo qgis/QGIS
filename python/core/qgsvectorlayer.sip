@@ -1262,18 +1262,28 @@ class QgsVectorLayer : QgsMapLayer
      * field index. These constraints may be inherited from the layer's data provider
      * or may be set manually on the vector layer from within QGIS.
      * @note added in QGIS 3.0
-     * @see setFieldConstraints()
+     * @see setFieldConstraint()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
-     * Sets the constraints for a specified field index. Any constraints inherited from the layer's
-     * data provider will be kept intact and cannot be cleared. Ie, calling this method only allows for new
+     * Sets a constraint for a specified field index. Any constraints inherited from the layer's
+     * data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
      * constraints to be added on top of the existing provider constraints.
      * @note added in QGIS 3.0
      * @see fieldConstraints()
+     * @see removeFieldConstraint()
      */
-    void setFieldConstraints( int index, QgsFieldConstraints::Constraints constraints );
+    void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
+
+    /**
+     * Removes a constraint for a specified field index. Any constraints inherited from the layer's
+     * data provider will be kept intact and cannot be removed.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     * @see setFieldConstraint()
+     */
+    void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
 
     /**
      * Returns the constraint expression for for a specified field index, if set.

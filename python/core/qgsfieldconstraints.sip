@@ -41,8 +41,9 @@ class QgsFieldConstraints
      */
     enum ConstraintStrength
     {
-      ConstraintHard, //!< Constraint must be honored before feature can be accepted
-      ConstraintSoft, //!< User is warned if constraint is violated but feature can still be accepted
+      ConstraintStrengthNotSet, //!< Constraint is not set
+      ConstraintStrengthHard, //!< Constraint must be honored before feature can be accepted
+      ConstraintStrengthSoft, //!< User is warned if constraint is violated but feature can still be accepted
     };
 
     /**
@@ -63,6 +64,22 @@ class QgsFieldConstraints
      * @see constraints()
      */
     ConstraintOrigin constraintOrigin( Constraint constraint ) const;
+
+    /**
+     * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
+     * is not present on this field.
+     * @see constraints()
+     * @see setConstraintStrength()
+     */
+    ConstraintStrength constraintStrength( Constraint constraint ) const;
+
+    /**
+     * Sets the strength of a constraint. Note that the strength of constraints which originate
+     * from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
+     * explicitly changed.
+     * @see constraintStrength()
+     */
+    void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
 
     /**
      * Sets a constraint on the field.

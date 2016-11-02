@@ -61,8 +61,9 @@ class CORE_EXPORT QgsFieldConstraints
      */
     enum ConstraintStrength
     {
-      ConstraintHard = 0, //!< Constraint must be honored before feature can be accepted
-      ConstraintSoft, //!< User is warned if constraint is violated but feature can still be accepted
+      ConstraintStrengthNotSet = 0, //!< Constraint is not set
+      ConstraintStrengthHard, //!< Constraint must be honored before feature can be accepted
+      ConstraintStrengthSoft, //!< User is warned if constraint is violated but feature can still be accepted
     };
 
     /**
@@ -83,6 +84,22 @@ class CORE_EXPORT QgsFieldConstraints
      * @see constraints()
      */
     ConstraintOrigin constraintOrigin( Constraint constraint ) const;
+
+    /**
+     * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
+     * is not present on this field.
+     * @see constraints()
+     * @see setConstraintStrength()
+     */
+    ConstraintStrength constraintStrength( Constraint constraint ) const;
+
+    /**
+     * Sets the strength of a constraint. Note that the strength of constraints which originate
+     * from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
+     * explicitly changed.
+     * @see constraintStrength()
+     */
+    void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
 
     /**
      * Sets a constraint on the field.
@@ -132,6 +149,9 @@ class CORE_EXPORT QgsFieldConstraints
 
     //! Origin of field constraints
     QHash< Constraint, ConstraintOrigin > mConstraintOrigins;
+
+    //! Strength of field constraints
+    QHash< Constraint, ConstraintStrength > mConstraintStrengths;
 
     //! Expression constraint
     QString mExpressionConstraint;
