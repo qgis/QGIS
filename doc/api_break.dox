@@ -739,7 +739,14 @@ QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
 - expression(), setExpression(), expressionDescription() and setExpressionDescription() 
 have been removed. Use QgsVectorLayer.setConstraintExpression()/constraintExpression(),
 or QgsField.constraintExpression()/QgsField.constraintDescription() instead.
-- notNull() and setNotNull() have been removed. Use QgsVectorLayer.setFieldConstraints()/fieldConstraints(), or QgsField.constraints() instead.
+- notNull() and setNotNull() have been removed. Use QgsVectorLayer.setFieldConstraint()/fieldConstraints(), or QgsField.constraints() instead.
+
+QgsEditorWidgetWrapper        {#qgis_api_break_3_0_QgsEditorWidgetWrapper}
+----------------------
+
+- constraintStatusChanged now reports a QgsEditorWidgetWrapper::ConstraintResult instead of the previous boolean value for the constraint status
+- The boolean constraintValid argument for updateConstraintWidgetStatus has been changed to a QgsEditorWidgetWrapper::ConstraintResult value
+
 
 QgsExpression        {#qgis_api_break_3_0_QgsExpression}
 -------------
