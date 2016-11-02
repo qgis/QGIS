@@ -235,7 +235,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(res, 'delete')
 
         self.assertTrue(vl.startEditing())
-        feature = vl.getFeatures().next()
+        feature = next(vl.getFeatures())
         self.assertTrue(vl.changeAttributeValue(feature.id(), 1, 1001))
 
         # Commit changes
