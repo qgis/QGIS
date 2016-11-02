@@ -35,13 +35,14 @@ QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas , MoveMode mo
     , mMode( mode )
 {
   mToolName = tr( "Move feature" );
-  if ( mode == Move )
+  switch ( mode )
   {
-    mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
-  }
-  else
-  {
-    mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureLine; // we copy/move several times
+    case Move:
+      mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
+      break;
+    case CopyMove:
+      mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureLine; // we copy/move several times
+      break;
   }
 }
 
@@ -177,14 +178,19 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     }
     else
     {
+      int featureCount = mMovedFeatures.count();
+
       QgsFeatureRequest request;
       request.setFilterFids( mMovedFeatures );
       QgsFeatureIterator fi = vlayer->getFeatures( request );
       QgsFeature f;
       QgsAttributeList pkAttrList = vlayer->pkAttributeList();
 
+      int browsedFeatureCount = 0;
+      int addedFeatureCount = 0;
       while ( fi.nextFeature( f ) )
       {
+        browsedFeatureCount++;
         // remove pkey values
         Q_FOREACH ( auto idx, pkAttrList )
         {
@@ -194,11 +200,32 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         QgsGeometry geom = f.geometry();
         geom.translate( dx, dy );
         f.setGeometry( geom );
+#ifdef QGISDEBUG
+        const QgsFeatureId  fid = f.id();
+#endif
         // paste feature
-        if ( !vlayer->addFeature( f, false ) )
+        if ( vlayer->addFeature( f, false ) )
         {
-          QgsDebugMsg( "could not paste feature" );
+          addedFeatureCount++;
         }
+        else
+        {
+          QgsDebugMsg( QString( "could not add new feature. copied feature had id: %1" ).arg( fid ) );
+        }
+      }
+      if ( addedFeatureCount != featureCount )
+      {
+        QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( addedFeatureCount, featureCount );
+        msg.append( " " );
+        if ( browsedFeatureCount == featureCount )
+        {
+          msg.append( tr( "Some features could not be created on the layer." ) );
+        }
+        else
+        {
+          msg.append( tr( "Some features could not be retrieved from the selection." ) );
+        }
+        emit messageEmitted( msg, QgsMessageBar::CRITICAL );
       }
     }
 
