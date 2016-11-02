@@ -102,6 +102,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //! \brief Generates and new RGB value based on original RGB value
     bool shade( double, double, double, double, int*, int*, int*, int* ) override;
 
+    //! \brief Get symbology items if provided by renderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
     /** Sets whether the shader should not render values out of range.
