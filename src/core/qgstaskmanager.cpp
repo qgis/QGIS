@@ -71,7 +71,6 @@ void QgsTask::unhold()
 
 void QgsTask::setProgress( double progress )
 {
-
   mProgress = progress;
   emit progressChanged( progress );
 }

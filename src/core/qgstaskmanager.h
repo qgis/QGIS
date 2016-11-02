@@ -20,14 +20,22 @@
 
 #include <QObject>
 #include <QMap>
-#include <QAbstractItemModel>
 #include <QFuture>
 
 /**
  * \ingroup core
  * \class QgsTask
- * \brief Interface class for long running background tasks. Tasks can be controlled directly,
+ * \brief Abstract base class for long running background tasks. Tasks can be controlled directly,
  * or added to a QgsTaskManager for automatic management.
+ *
+ * Derived classes should implement the process they want to execute in the background
+ * within the run() method. This method will be called when the
+ * task commences (ie via calling start() ).
+ *
+ * Long running tasks should periodically check the isCancelled() flag to detect if the task
+ * has been cancelled via some external event. If this flag is true then the task should
+ * clean up and terminate at the earliest possible convenience.
+ *
  * \note Added in version 3.0
  */
 class CORE_EXPORT QgsTask : public QObject
@@ -55,105 +63,157 @@ class CORE_EXPORT QgsTask : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /** Constructor for QgsTask.
+    /**
+     * Constructor for QgsTask.
      * @param description text description of task
      * @param flags task flags
      */
     QgsTask( const QString& description = QString(), const Flags& flags = AllFlags );
 
-    //! Returns the flags associated with the task.
+    /**
+     * Returns the flags associated with the task.
+     */
     Flags flags() const { return mFlags; }
 
-    //! Returns true if the task can be cancelled.
+    /**
+     * Returns true if the task can be cancelled.
+     */
     bool canCancel() const { return mFlags & CanCancel; }
 
-    //! Returns true if the task is active, ie it is not complete and has
-    //! not been cancelled.
+    /**
+     * Returns true if the task is active, ie it is not complete and has
+     * not been cancelled.
+     */
     bool isActive() const { return mStatus == Running; }
 
-    //! Returns the current task status.
+    /**
+     * Returns the current task status.
+     */
     TaskStatus status() const { return mStatus; }
 
-    //! Returns the task's description.
+    /**
+     * Returns the task's description.
+     */
     QString description() const { return mDescription; }
 
-    //! Returns the task's progress (between 0.0 and 100.0)
+    /**
+     * Returns the task's progress (between 0.0 and 100.0)
+     */
     double progress() const { return mProgress; }
 
-  public slots:
-
-    //! Starts the task.
+    /**
+     * Starts the task. Should only be called for tasks which are not being
+     * handled by a QgsTaskManager. If the task is managed by a QgsTaskManager
+     * then this method should not be called directly, instead it is left to the
+     * task manager to start the task when appropriate.
+     */
     void start();
 
-    //! Notifies the task that it should terminate.
-    //! @see isCancelled()
+    /**
+     * Notifies the task that it should terminate. Calling this is not gauranteed
+     * to immediately end the task, rather it sets the isCancelled() flag which
+     * task subclasses can check and terminate their operations at an appropriate
+     * time.
+     * @see isCancelled()
+     */
     void cancel();
 
-    //! Called when the task is placed on hold. If the task in not queued
-    //! (ie it is running or has finished) then calling this has no effect.
-    //! @see unhold()
+    /**
+     * Places the task on hold. If the task in not queued
+     * (ie it is already running or has finished) then calling this has no effect.
+     * Calling this method only has an effect for tasks which are managed
+     * by a QgsTaskManager.
+     * @see unhold()
+     */
     void hold();
 
-    //! Called when the task should be unheld and re-added to the queue. If the
-    //! task in not currently being held then calling this has no effect.
-    //! @see unhold()
+    /**
+     * Releases the task from being held. For tasks managed by a QgsTaskManager
+     * calling this will re-add them to the queue. If the
+     * task in not currently being held then calling this has no effect.
+     * @see hold()
+     */
     void unhold();
-
-    //! Sets the task's current progress. If task reports the CanReportProgress flag then
-    //! the derived class should call this method whenever the task wants to update its
-    //! progress. Calling will automatically emit the progressChanged signal.
-    //! @param progress percent of progress, from 0.0 - 100.0
-    void setProgress( double progress );
-
-    //! Sets the task as completed. Should be called when the task is complete.
-    //! Calling will automatically emit the statusChanged and taskCompleted signals.
-    void completed();
-
-    //! Sets the task as stopped. Should be called whenever the task ends for any
-    //! reason other than successful completion.
-    //! Calling will automatically emit the statusChanged and taskStopped signals.
-    void stopped();
 
   signals:
 
-    //! Will be emitted by task when its progress changes
-    //! @param progress percent of progress, from 0.0 - 100.0
-    //! @note derived classes should not emit this signal directly, instead they should call
-    //! setProgress()
+    /**
+     * Will be emitted by task when its progress changes.
+     * @param progress percent of progress, from 0.0 - 100.0
+     * @note derived classes should not emit this signal directly, instead they should call
+     * setProgress()
+     */
     void progressChanged( double progress );
 
-    //! Will be emitted by task when its status changes
-    //! @param status new task status
-    //! @note derived classes should not emit this signal directly, instead they should call
-    //! completed() or stopped()
+    /**
+     * Will be emitted by task when its status changes.
+     * @param status new task status
+     * @note derived classes should not emit this signal directly, instead they should call
+     * completed() or stopped()
+     */
     void statusChanged( int status );
 
-    //! Will be emitted by task to indicate its commencement.
-    //! @note derived classes should not emit this signal directly, it will automatically
-    //! be emitted when the task begins
+    /**
+     * Will be emitted by task to indicate its commencement.
+     * @note derived classes should not emit this signal directly, it will automatically
+     * be emitted when the task begins
+     */
     void begun();
 
-    //! Will be emitted by task to indicate its completion.
-    //! @note derived classes should not emit this signal directly, instead they should call
-    //! completed()
+    /**
+     * Will be emitted by task to indicate its successful completion.
+     * @note derived classes should not emit this signal directly, instead they should call
+     * completed()
+     */
     void taskCompleted();
 
-    //! Will be emitted by task if it has terminated for any reason
-    //! other then completion.
-    //! @note derived classes should not emit this signal directly, instead they should call
-    //! stopped()//!
+    /**
+     * Will be emitted by task if it has terminated for any reason
+     * other then completion (eg when a task has been cancelled or encountered
+     * an internal error).
+     * @note derived classes should not emit this signal directly, instead they should call
+     * stopped()
+     */
     void taskStopped();
 
   protected:
 
-    //! Derived tasks must implement a run() method. This method will be called when the
-    //! task commences (ie via calling start() ).
+    /**
+     * Performs the task's operation. This method will be called when the task commences
+     * (ie via calling start() ), and subclasses should implement the operation they
+     * wish to perform in the background within this method.
+     */
     virtual void run() = 0;
 
-    //! Will return true if task should terminate ASAP. If the task reports the CanCancel
-    //! flag, then derived classes' run() methods should periodically check this and
-    //! terminate in a safe manner.
+    /**
+     * Will return true if task should terminate ASAP. If the task reports the CanCancel
+     * flag, then derived classes' run() methods should periodically check this and
+     * terminate in a safe manner.
+     */
     bool isCancelled() const { return mShouldTerminate; }
+
+    /**
+     * Sets the task as completed. Should be called when the task is complete.
+     * Calling will automatically emit the statusChanged and taskCompleted signals.
+     */
+    void completed();
+
+    /**
+     * Sets the task as stopped. Should be called whenever the task ends for any
+     * reason other than successful completion.
+     * Calling will automatically emit the statusChanged and taskStopped signals.
+     */
+    void stopped();
+
+  protected slots:
+
+    /**
+     * Sets the task's current progress. If task reports the CanReportProgress flag then
+     * the derived class should call this method whenever the task wants to update its
+     * progress. Calling will automatically emit the progressChanged signal.
+     * @param progress percent of progress, from 0.0 - 100.0
+     */
+    void setProgress( double progress );
 
   private:
 
