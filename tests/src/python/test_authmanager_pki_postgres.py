@@ -171,7 +171,7 @@ class TestAuthManager(unittest.TestCase):
         while True:
             line = cls.server.stderr.readline()
             print(line)
-            if line.find("database system is ready to accept") != -1:
+            if line.find(b"database system is ready to accept") != -1:
                 break
             if time.time() > end:
                 raise Exception("Timeout connecting to postgresql")
