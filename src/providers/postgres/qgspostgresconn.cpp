@@ -209,7 +209,6 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
   // expand connectionInfo
   QgsDataSourceURI uri( conninfo );
   QString expandedConnectionInfo = uri.connectionInfo( true );
-  QgsMessageLog::logMessage( tr( "Connection info: " ) + expandedConnectionInfo );
 
   mConn = PQconnectdb( expandedConnectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
 
