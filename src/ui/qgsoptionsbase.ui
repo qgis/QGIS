@@ -1997,7 +1997,7 @@
                      <item row="2" column="1">
                       <widget class="QLabel" name="mSimplifyAlgorithmLabel">
                        <property name="toolTip">
-                        <string>This algorithm only is applied to simplify on local side</string>
+                        <string>This algorithm is only applied to simplify on local side</string>
                        </property>
                        <property name="text">
                         <string>Simplification algorithm: </string>
@@ -2105,7 +2105,7 @@
                 </widget>
                </item>
                <item row="2" column="0">
-                <widget class="QGroupBox" name="mSegmentationGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mSegmentationGroupBox">
                  <property name="title">
                   <string>Curve segmentation</string>
                  </property>
