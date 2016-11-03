@@ -51,7 +51,6 @@ class CORE_EXPORT QgsActionManager
     //! Constructor
     QgsActionManager( QgsVectorLayer *layer )
         : mLayer( layer )
-        , mDefaultAction( -1 )
     {}
 
     /** Add an action with the given name and action details.
@@ -142,8 +141,6 @@ class CORE_EXPORT QgsActionManager
     void runAction( const QgsAction &action );
 
     QVariantMap mDefaultActions;
-
-    int mDefaultAction;
 
     QgsExpressionContext createExpressionContext() const;
 };
