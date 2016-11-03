@@ -379,7 +379,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     //! Will be emitted when only a single task remains to complete
     //! and that task has reported a progress change
     //! @param progress percent of progress, from 0.0 - 100.0
-    void progressChanged( double progress );
+    void finalTaskProgressChanged( double progress );
 
     //! Will be emitted when a task reports a status change
     //! @param taskId ID of task

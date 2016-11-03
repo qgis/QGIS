@@ -75,10 +75,10 @@ QgsTaskManagerModel::QgsTaskManagerModel( QgsTaskManager *manager, QObject *pare
     mRowToTaskIdMap.insert( i, mManager->taskId( task ) );
   }
 
-  connect( mManager, SIGNAL( taskAdded( long ) ), this, SLOT( taskAdded( long ) ) );
-  connect( mManager, SIGNAL( taskAboutToBeDeleted( long ) ), this, SLOT( taskDeleted( long ) ) );
-  connect( mManager, SIGNAL( progressChanged( long, double ) ), this, SLOT( progressChanged( long, double ) ) );
-  connect( mManager, SIGNAL( statusChanged( long, int ) ), this, SLOT( statusChanged( long, int ) ) );
+  connect( mManager, &QgsTaskManager::taskAdded, this, &QgsTaskManagerModel::taskAdded );
+  connect( mManager, &QgsTaskManager::taskAboutToBeDeleted, this, &QgsTaskManagerModel::taskDeleted );
+  connect( mManager, &QgsTaskManager::progressChanged, this, &QgsTaskManagerModel::progressChanged );
+  connect( mManager, &QgsTaskManager::statusChanged, this, &QgsTaskManagerModel::statusChanged );
 }
 
 QModelIndex QgsTaskManagerModel::index( int row, int column, const QModelIndex &parent ) const
@@ -412,13 +412,13 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
   mFloatingWidget->setAnchorPoint( QgsFloatingWidget::BottomMiddle );
   mFloatingWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopMiddle );
   mFloatingWidget->hide();
-  connect( this, SIGNAL( clicked( bool ) ), this, SLOT( toggleDisplay() ) );
+  connect( this, &QgsTaskManagerStatusBarWidget::clicked, this, &QgsTaskManagerStatusBarWidget::toggleDisplay );
   hide();
 
-  connect( manager, SIGNAL( taskAdded( long ) ), this, SLOT( showButton() ) );
-  connect( manager, SIGNAL( allTasksFinished() ), this, SLOT( allFinished() ) );
-  connect( manager, SIGNAL( progressChanged( double ) ), this, SLOT( overallProgressChanged( double ) ) );
-  connect( manager, SIGNAL( countActiveTasksChanged( int ) ), this, SLOT( countActiveTasksChanged( int ) ) );
+  connect( manager, &QgsTaskManager::taskAdded, this, &QgsTaskManagerStatusBarWidget::showButton );
+  connect( manager, &QgsTaskManager::allTasksFinished, this, &QgsTaskManagerStatusBarWidget::allFinished );
+  connect( manager, &QgsTaskManager::finalTaskProgressChanged, this, &QgsTaskManagerStatusBarWidget::overallProgressChanged );
+  connect( manager, &QgsTaskManager::countActiveTasksChanged, this, &QgsTaskManagerStatusBarWidget::countActiveTasksChanged );
 }
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const

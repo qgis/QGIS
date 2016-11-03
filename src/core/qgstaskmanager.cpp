@@ -352,7 +352,7 @@ void QgsTaskManager::taskProgressChanged( double progress )
   emit progressChanged( id, progress );
   if ( mActiveTasks.count() == 1 )
   {
-    emit progressChanged( progress );
+    emit finalTaskProgressChanged( progress );
   }
 }
 

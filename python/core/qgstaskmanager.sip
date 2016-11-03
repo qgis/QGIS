@@ -347,6 +347,11 @@ class QgsTaskManager : QObject
     //! @param progress percent of progress, from 0.0 - 100.0
     void progressChanged( long taskId, double progress );
 
+    //! Will be emitted when only a single task remains to complete
+    //! and that task has reported a progress change
+    //! @param progress percent of progress, from 0.0 - 100.0
+    void finalTaskProgressChanged( double progress );
+
     //! Will be emitted when a task reports a status change
     //! @param taskId ID of task
     //! @param status new task status

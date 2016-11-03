@@ -361,8 +361,8 @@ void TestQgsTaskManager::progressChanged()
   manager.addTask( task );
   manager.addTask( task2 );
 
-  QSignalSpy spy( &manager, SIGNAL( progressChanged( long, double ) ) );
-  QSignalSpy spy2( &manager, SIGNAL( progressChanged( double ) ) );
+  QSignalSpy spy( &manager, &QgsTaskManager::progressChanged );
+  QSignalSpy spy2( &manager, &QgsTaskManager::finalTaskProgressChanged );
 
   task->emitProgressChanged( 50.0 );
   QCOMPARE( task->progress(), 50.0 );
