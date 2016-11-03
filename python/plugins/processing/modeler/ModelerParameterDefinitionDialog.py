@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import math
 
+from qgis.gui import QgsExpressionLineEdit
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
@@ -47,6 +48,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterMultipleInput,
                                         ParameterNumber,
                                         ParameterString,
+                                        ParameterExpression,
                                         ParameterTableField,
                                         ParameterExtent,
                                         ParameterFile,
@@ -62,6 +64,7 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_TABLE = 'Table'
     PARAMETER_VECTOR = 'Vector layer'
     PARAMETER_STRING = 'String'
+    PARAMETER_EXPRESSION = 'Expression'
     PARAMETER_BOOLEAN = 'Boolean'
     PARAMETER_TABLE_FIELD = 'Table field'
     PARAMETER_EXTENT = 'Extent'
@@ -77,6 +80,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_NUMBER,
         PARAMETER_RASTER,
         PARAMETER_STRING,
+        PARAMETER_EXPRESSION,
         PARAMETER_TABLE,
         PARAMETER_TABLE_FIELD,
         PARAMETER_VECTOR,
@@ -196,6 +200,25 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if default:
                     self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXPRESSION or
+              isinstance(self.param, ParameterExpression)):
+            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
+            self.defaultEdit = QgsExpressionLineEdit()
+            if self.param is not None:
+                self.defaultEdit.setExpression(self.param.default)
+            self.verticalLayout.addWidget(self.defaultEdit)
+
+            self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
+            self.parentCombo = QComboBox()
+            idx = 0
+            for param in list(self.alg.inputs.values()):
+                if isinstance(param.param, (ParameterVector, ParameterTable)):
+                    self.parentCombo.addItem(param.param.description, param.param.name)
+                    if self.param is not None:
+                        if self.param.parent_layer == param.param.name:
+                            self.parentCombo.setCurrentIndex(idx)
+                    idx += 1
+            self.verticalLayout.addWidget(self.parentCombo)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or
                 isinstance(self.param, ParameterString)):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
@@ -314,6 +337,12 @@ class ModelerParameterDefinitionDialog(QDialog):
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXPRESSION or
+                isinstance(self.param, ParameterExpression)):
+            parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
+            self.param = ParameterExpression(name, description,
+                                             default=str(self.defaultEdit.expression()),
+                                             parent_layer=parent)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or
                 isinstance(self.param, ParameterString)):
             self.param = ParameterString(name, description,

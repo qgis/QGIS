@@ -30,7 +30,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterExpression
 from processing.tools import dataobjects
 
 
@@ -52,8 +52,8 @@ class SelectByExpression(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.LAYERNAME,
                                           self.tr('Input Layer')))
-        self.addParameter(ParameterString(self.EXPRESSION,
-                                          self.tr("Expression")))
+        self.addParameter(ParameterExpression(self.EXPRESSION,
+                                              self.tr("Expression"), parent_layer=self.LAYERNAME))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Modify current selection by'), self.methods, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
