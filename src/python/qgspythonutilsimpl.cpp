@@ -210,14 +210,20 @@ bool QgsPythonUtilsImpl::checkQgisUser()
   return true;
 }
 
-void QgsPythonUtilsImpl::doGlobalImports()
+void QgsPythonUtilsImpl::doCustomImports()
 {
-  QString startupPath = QStandardPaths::locate( QStandardPaths::AppDataLocation, "global_startup.py" );
-  //runString( "if os.path.exists(" + startuppath + "): from global_startup import *\n" );
-  if ( !startupPath.isEmpty() )
+  QStringList startupPaths = QStandardPaths::locateAll( QStandardPaths::AppDataLocation, "startup.py" );
+  if ( startupPaths.isEmpty() )
   {
-    runString( "import importlib.util" );
-    runString( QString( "spec = importlib.util.spec_from_file_location('global_startup','%1')" ).arg( startupPath ) );
+    return;
+  }
+
+  runString( "import importlib.util" );
+
+  QStringList::const_iterator iter = startupPaths.constBegin();
+  for ( ; iter != startupPaths.constEnd(); ++iter )
+  {
+    runString( QString( "spec = importlib.util.spec_from_file_location('startup','%1')" ).arg( *iter ) );
     runString( "module = importlib.util.module_from_spec(spec)" );
     runString( "spec.loader.exec_module(module)" );
   }
@@ -238,7 +244,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     exitPython();
     return;
   }
-  doGlobalImports();
+  doCustomImports();
   finish();
 }
 
@@ -264,7 +270,7 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
   // This is the other main difference with initInterface() for desktop plugins
   runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ')' );
 
-  doGlobalImports();
+  doCustomImports();
   finish();
 }
 
