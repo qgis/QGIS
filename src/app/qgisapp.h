@@ -668,7 +668,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void loadGDALSublayers( const QString& uri, const QStringList& list );
 
     //! Deletes the selected attributes for the currently selected vector layer
-    void deleteSelected() {deleteSelected( nullptr,  nullptr, false );}
+    void deleteSelected() {deleteSelected( nullptr );}
 
     //! Deletes the selected attributes for the currently selected vector layer
     void deleteSelected( QgsMapLayer *layer, QWidget *parent = nullptr, bool promptConfirmation = false );
