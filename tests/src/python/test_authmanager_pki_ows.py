@@ -39,7 +39,7 @@ from qgis.core import (
     QgsRasterLayer,
 )
 
-from PyQt.QtNetwork import QSslCertificate
+from qgis.PyQt.QtNetwork import QSslCertificate
 
 from qgis.testing import (
     start_app,
