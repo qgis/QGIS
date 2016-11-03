@@ -229,7 +229,7 @@ class QgsAttributeTableAction : QAction
 %End
 
   public:
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, int action, const QModelIndex &fieldIdx );
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QString& action, const QModelIndex &fieldIdx );
 
   public slots:
     void execute();

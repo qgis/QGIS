@@ -41,6 +41,20 @@ class QgsAction
     //! The short title is used to label user interface elements like buttons
     QString shortTitle() const;
 
+    /**
+     * Returns a unique id for this action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QString id() const { return mShortTitle; }
+
+    /**
+     * Returns true if this action was a default constructed one.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool isValid() const { return !mShortTitle.isNull(); }
+
     //! The path to the icon
     QString iconPath() const;
 
@@ -58,6 +72,20 @@ class QgsAction
 
     //! Checks if the action is runable on the current platform
     bool runable() const;
+
+    /**
+     * Run this action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void run( QgsVectorLayer* layer, const QgsFeature& feature, const QgsExpressionContext& expressionContext ) const;
+
+    /**
+     * Run this action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void run( const QgsExpressionContext& expressionContext ) const;
 
     /**
      * The action scopes define where an action will be available.

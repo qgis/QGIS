@@ -37,21 +37,24 @@
 class CORE_EXPORT QgsActionScopeRegistry : public QObject
 {
     Q_OBJECT
-    /**
-     * The action scopes which are currently registered and available.
-     *
-     * \read actionScopes()
-     * \notify actionScopesChanged()
-     *
-     * \since QGIS 3.0
-     */
     Q_PROPERTY( QSet<QgsActionScope> actionScopes READ actionScopes NOTIFY actionScopesChanged )
 
   public:
+
+    /**
+     * Create a new QgsActionScopeRegistry.
+     * QGIS already creates a central registry. You will normally
+     * want to use QgsApplication::actionScopeRegistry() to get acess
+     * to that one instead.
+     *
+     * @note Added in QGIS 3.0
+     */
     explicit QgsActionScopeRegistry( QObject* parent = nullptr );
 
     /**
      * Get all registered action scopes.
+     *
+     * @note Added in QGIS 3.0
      */
     QSet<QgsActionScope> actionScopes() const;
 
@@ -69,9 +72,21 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
      */
     void unregisterActionScope( const QgsActionScope& actionScope );
 
+    /**
+     * Get an action scope by its id.
+     *
+     * @note Added in QGIS 3.0
+     */
     QgsActionScope actionScope( const QString& id );
 
   signals:
+
+    /**
+     * Emitted whenever a new action scope is registered or an action scope
+     * is unregistered.
+     *
+     * @note Added in QGIS 3.0
+     */
     void actionScopesChanged();
 
   private:

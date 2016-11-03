@@ -35,10 +35,20 @@ class QgsActionScopeRegistry : QObject
 %End
 
   public:
+    /**
+     * Create a new QgsActionScopeRegistry.
+     * QGIS already creates a central registry. You will normally
+     * want to use QgsApplication::actionScopeRegistry() to get acess
+     * to that one instead.
+     *
+     * @note Added in QGIS 3.0
+     */
     explicit QgsActionScopeRegistry( QObject* parent = nullptr );
 
     /**
      * Get all registered action scopes.
+     *
+     * @note Added in QGIS 3.0
      */
     QSet<QgsActionScope> actionScopes() const;
 
