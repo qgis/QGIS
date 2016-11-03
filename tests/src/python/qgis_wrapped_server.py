@@ -100,7 +100,7 @@ class Handler(BaseHTTPRequestHandler):
         if https:
             try:
                 ssl.match_hostname(self.connection.getpeercert(), QGIS_SERVER_PKI_USERNAME)
-            except ssl.CertificateError as ex:
+            except Exception as ex:
                 print("SSL Exception %s" % ex)
                 self.send_response(401)
                 self.end_headers()
@@ -146,7 +146,11 @@ if __name__ == '__main__':
                                         cert_reqs=ssl.CERT_REQUIRED,
                                         server_side=True,
                                         ssl_version=ssl.PROTOCOL_TLSv1)
-    print('Starting server on %s://%s:%s, use <Ctrl-C> to stop' %
-          ('https' if https else 'http', QGIS_SERVER_HOST, server.server_port))
-    sys.stdout.flush()
+    message = 'Starting server on %s://%s:%s, use <Ctrl-C> to stop' % \
+              ('https' if https else 'http', QGIS_SERVER_HOST, server.server_port)
+    try:
+        print(message, flush=True)
+    except:
+        print(message)
+        sys.stdout.flush()
     server.serve_forever()

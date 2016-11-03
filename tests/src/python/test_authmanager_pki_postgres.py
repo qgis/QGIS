@@ -9,7 +9,7 @@ a PKI protected postgres.
 Configuration form the environment:
 
     * QGIS_POSTGRES_SERVER_PORT (default: 55432)
-    * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.3/bin)
+    * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.4/bin)
 
 
 From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
@@ -37,7 +37,11 @@ from qgis.core import (
     QgsWKBTypes,
 )
 
-from PyQt4.QtNetwork import QSslCertificate
+
+try:
+    from PyQt4.QtNetwork import QSslCertificate
+except ImportError:
+    from PyQt5.QtNetwork import QSslCertificate
 
 from qgis.testing import (
     start_app,
@@ -52,7 +56,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 QGIS_POSTGRES_SERVER_PORT = os.environ.get('QGIS_POSTGRES_SERVER_PORT', '55432')
-QGIS_POSTGRES_EXECUTABLE_PATH = os.environ.get('QGIS_POSTGRES_EXECUTABLE_PATH', '/usr/lib/postgresql/9.3/bin')
+QGIS_POSTGRES_EXECUTABLE_PATH = os.environ.get('QGIS_POSTGRES_EXECUTABLE_PATH', '/usr/lib/postgresql/9.4/bin')
 
 assert os.path.exists(QGIS_POSTGRES_EXECUTABLE_PATH)
 
@@ -81,7 +85,9 @@ password_encryption = on
 
 QGIS_POSTGRES_HBA_TEMPLATE = """
 hostssl    all           all             0.0.0.0/0              cert clientcert=1
+hostssl    all           all             ::1/0                  cert clientcert=1
 host       all           all             127.0.0.1/32           trust
+host       all           all             ::1/32                 trust
 """
 
 
@@ -165,7 +171,7 @@ class TestAuthManager(unittest.TestCase):
         while True:
             line = cls.server.stderr.readline()
             print(line)
-            if line.find("database system is ready to accept") != -1:
+            if line.find(b"database system is ready to accept") != -1:
                 break
             if time.time() > end:
                 raise Exception("Timeout connecting to postgresql")
