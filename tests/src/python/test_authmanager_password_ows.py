@@ -22,7 +22,10 @@ import subprocess
 import tempfile
 import random
 import string
-import urllib
+try:
+    from urllib.parse import quote
+except:
+    from urllib import quote
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '18/09/2016'
@@ -151,7 +154,7 @@ class TestAuthManager(unittest.TestCase):
             'format': 'image/png',
             # This is needed because of a really weird implementation in QGIS Server, that
             # replaces _ in the the real layer name with spaces
-            'layers': urllib.quote(layers.replace('_', ' ')),
+            'layers': quote(layers.replace('_', ' ')),
             'styles': '',
             'version': 'auto',
             #'sql': '',

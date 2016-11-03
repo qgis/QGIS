@@ -39,7 +39,10 @@ from qgis.core import (
     QgsRasterLayer,
 )
 
-from PyQt4.QtNetwork import QSslCertificate
+try:
+    from PyQt4.QtNetwork import QSslCertificate
+except ImportError:
+    from PyQt5.QtNetwork import QSslCertificate
 
 from qgis.testing import (
     start_app,
@@ -163,7 +166,10 @@ class TestAuthManager(unittest.TestCase):
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
-        uri = ' '.join([("%s='%s'" % (k, v.decode('utf-8'))) for k, v in list(parms.items())])
+        try: # Py2
+            uri = ' '.join([("%s='%s'" % (k, v.decode('utf-8'))) for k, v in list(parms.items())])
+        except AttributeError: # Py3
+            uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         return wfs_layer
 

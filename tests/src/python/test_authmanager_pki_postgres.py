@@ -81,7 +81,9 @@ password_encryption = on
 
 QGIS_POSTGRES_HBA_TEMPLATE = """
 hostssl    all           all             0.0.0.0/0              cert clientcert=1
+hostssl    all           all             ::1/0                  cert clientcert=1
 host       all           all             127.0.0.1/32           trust
+host       all           all             ::1/32                 trust
 """
 
 
