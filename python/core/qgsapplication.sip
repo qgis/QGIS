@@ -378,6 +378,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );
 %End
+    /**
+     * Returns the action scope registry.
+     *
+     * @Note Added in QGIS 3.0
+     */
+    static QgsActionScopeRegistry* actionScopeRegistry();
 
   public slots:
 

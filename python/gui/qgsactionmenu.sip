@@ -35,6 +35,7 @@ class QgsActionMenu : QMenu
      * @param feature  The feature that this action will be run upon. Make sure that this feature is available
      *                 for the lifetime of this object.
      * @param parent   The usual QWidget parent.
+     * @param actionScope The action scope this menu will run in
      */
     explicit QgsActionMenu( QgsVectorLayer* layer, const QgsFeature& feature, const QString& actionScope, QWidget *parent /TransferThis/ = nullptr );
 
@@ -44,6 +45,7 @@ class QgsActionMenu : QMenu
      * @param layer    The layer that this action will be run upon.
      * @param fid      The feature id of the feature for which this action will be run.
      * @param parent   The usual QWidget parent.
+     * @param actionScope The action scope this menu will run in
      */
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString& actionScope, QWidget *parent /TransferThis/ = nullptr );
 

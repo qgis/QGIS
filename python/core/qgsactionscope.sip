@@ -25,11 +25,12 @@
  * <dl>
  *   <dt>Canvas</dt>
  *   <dd>Show for canvas tools. Adds `@clicked_x` and `@clicked_y` in map coordinates.</dd>
- *   <dt>AttributeTable</dt>
- *   <dd>Show in attribute table for each row.</dd>
- *   <dt>FieldSpecific</dt>
- *   <dd>Show on right click in attribute table. Adds `@field_index` and `@field_name`.</dd>
- *   <dt>Selection</dt>
+ *   <dt>Feature</dt>
+ *   <dd>Show in feature specific places like the attribute table or feature
+ *   form.</dd>
+ *   <dt>Field</dt>
+ *   <dd>Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.</dd>
+ *   <dt>Layer</dt>
  *   <dd>Show in attribute table and work on the layer or selection.</dd>
  * </dl>
  *
@@ -43,7 +44,9 @@ class QgsActionScope
 %End
   public:
     /**
-     * Creates a new action scope.
+     * Creates a new invalid action scope.
+     *
+     * @note Added in QGSI 3.0
      */
     explicit QgsActionScope();
 

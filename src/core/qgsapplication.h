@@ -376,6 +376,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the action scope registry.
+     *
+     * @Note Added in QGIS 3.0
      */
     static QgsActionScopeRegistry* actionScopeRegistry();
 
