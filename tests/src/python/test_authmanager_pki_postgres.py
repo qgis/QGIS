@@ -9,7 +9,7 @@ a PKI protected postgres.
 Configuration form the environment:
 
     * QGIS_POSTGRES_SERVER_PORT (default: 55432)
-    * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.3/bin)
+    * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.4/bin)
 
 
 From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
@@ -52,7 +52,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 QGIS_POSTGRES_SERVER_PORT = os.environ.get('QGIS_POSTGRES_SERVER_PORT', '55432')
-QGIS_POSTGRES_EXECUTABLE_PATH = os.environ.get('QGIS_POSTGRES_EXECUTABLE_PATH', '/usr/lib/postgresql/9.3/bin')
+QGIS_POSTGRES_EXECUTABLE_PATH = os.environ.get('QGIS_POSTGRES_EXECUTABLE_PATH', '/usr/lib/postgresql/9.4/bin')
 
 assert os.path.exists(QGIS_POSTGRES_EXECUTABLE_PATH)
 
