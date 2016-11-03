@@ -433,6 +433,18 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_label_curved_zero_width_char(self):
+        # Test that curved label work with zero-width characters
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        self.lyr.fieldName = "'invisible​space'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
