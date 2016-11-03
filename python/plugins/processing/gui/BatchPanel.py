@@ -132,11 +132,11 @@ class BatchPanel(BASE, WIDGET):
         for i in range(3):
             self.addRow()
 
-        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.Interactive)
+        self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
         self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
-        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
-        self.tblParameters.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
     def load(self):
