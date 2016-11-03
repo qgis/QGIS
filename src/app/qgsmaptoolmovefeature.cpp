@@ -167,66 +167,67 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     vlayer->beginEditCommand( mMode == Move ? tr( "Feature moved" ) : tr( "Feature copied and moved" ) );
 
 
-    if ( mMode == Move )
+    switch ( mMode )
     {
-      Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
-      {
-        vlayer->translateFeature( id, dx, dy );
-      }
-      delete mRubberBand;
-      mRubberBand = nullptr;
-    }
-    else
-    {
-      int featureCount = mMovedFeatures.count();
-
-      QgsFeatureRequest request;
-      request.setFilterFids( mMovedFeatures );
-      QgsFeatureIterator fi = vlayer->getFeatures( request );
-      QgsFeature f;
-      QgsAttributeList pkAttrList = vlayer->pkAttributeList();
-
-      int browsedFeatureCount = 0;
-      int addedFeatureCount = 0;
-      while ( fi.nextFeature( f ) )
-      {
-        browsedFeatureCount++;
-        // remove pkey values
-        Q_FOREACH ( auto idx, pkAttrList )
+      case Move:
+        Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
         {
-          f.setAttribute( idx, QVariant() );
+          vlayer->translateFeature( id, dx, dy );
         }
-        // translate
-        QgsGeometry geom = f.geometry();
-        geom.translate( dx, dy );
-        f.setGeometry( geom );
+        delete mRubberBand;
+        mRubberBand = nullptr;
+        break;
+
+      case CopyMove:
+        int featureCount = mMovedFeatures.count();
+
+        QgsFeatureRequest request;
+        request.setFilterFids( mMovedFeatures );
+        QgsFeatureIterator fi = vlayer->getFeatures( request );
+        QgsFeature f;
+        QgsAttributeList pkAttrList = vlayer->pkAttributeList();
+
+        int browsedFeatureCount = 0;
+        int addedFeatureCount = 0;
+        while ( fi.nextFeature( f ) )
+        {
+          browsedFeatureCount++;
+          // remove pkey values
+          Q_FOREACH ( auto idx, pkAttrList )
+          {
+            f.setAttribute( idx, QVariant() );
+          }
+          // translate
+          QgsGeometry geom = f.geometry();
+          geom.translate( dx, dy );
+          f.setGeometry( geom );
 #ifdef QGISDEBUG
-        const QgsFeatureId  fid = f.id();
+          const QgsFeatureId  fid = f.id();
 #endif
-        // paste feature
-        if ( vlayer->addFeature( f, false ) )
-        {
-          addedFeatureCount++;
+          // paste feature
+          if ( vlayer->addFeature( f, false ) )
+          {
+            addedFeatureCount++;
+          }
+          else
+          {
+            QgsDebugMsg( QString( "could not add new feature. copied feature had id: %1" ).arg( fid ) );
+          }
         }
-        else
+        if ( addedFeatureCount != featureCount )
         {
-          QgsDebugMsg( QString( "could not add new feature. copied feature had id: %1" ).arg( fid ) );
+          QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( addedFeatureCount, featureCount );
+          msg.append( " " );
+          if ( browsedFeatureCount == featureCount )
+          {
+            msg.append( tr( "Some features could not be created on the layer." ) );
+          }
+          else
+          {
+            msg.append( tr( "Some features could not be retrieved from the selection." ) );
+          }
+          emit messageEmitted( msg, QgsMessageBar::CRITICAL );
         }
-      }
-      if ( addedFeatureCount != featureCount )
-      {
-        QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( addedFeatureCount, featureCount );
-        msg.append( " " );
-        if ( browsedFeatureCount == featureCount )
-        {
-          msg.append( tr( "Some features could not be created on the layer." ) );
-        }
-        else
-        {
-          msg.append( tr( "Some features could not be retrieved from the selection." ) );
-        }
-        emit messageEmitted( msg, QgsMessageBar::CRITICAL );
-      }
     }
 
     vlayer->endEditCommand();

@@ -1585,7 +1585,8 @@ void QgisApp::createActions()
   connect( mActionCircularStringCurvePoint, SIGNAL( triggered() ), this, SLOT( circularStringCurvePoint() ) );
   connect( mActionCircularStringRadius, SIGNAL( triggered() ), this, SLOT( circularStringRadius() ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
-  connect( mActionMoveFeatureCopy, SIGNAL( triggered() ), this, SLOT( moveFeatureCopy() ) );
+  connect( mActionMoveFeatureCopy, &QAction::triggered, [=]() {mMapCanvas->setMapTool( mMapTools.mMoveFeatureCopy );}
+         );
   connect( mActionRotateFeature, SIGNAL( triggered() ), this, SLOT( rotateFeature() ) );
 
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
@@ -6508,11 +6509,6 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
 void QgisApp::moveFeature()
 {
   mMapCanvas->setMapTool( mMapTools.mMoveFeature );
-}
-
-void QgisApp::moveFeatureCopy()
-{
-  mMapCanvas->setMapTool( mMapTools.mMoveFeatureCopy );
 }
 
 void QgisApp::offsetCurve()

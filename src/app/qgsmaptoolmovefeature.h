@@ -23,11 +23,11 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    //!* Mode for moving features
+    //! Mode for moving features
     enum MoveMode
     {
-      Move, //!* move feature
-      CopyMove  //!* Copy and move feature
+      Move, //!< Move feature
+      CopyMove  //!< Copy and move feature
     };
 
     QgsMapToolMoveFeature( QgsMapCanvas* canvas, MoveMode mode = Move );
