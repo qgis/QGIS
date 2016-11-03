@@ -37,7 +37,11 @@ from qgis.core import (
     QgsWKBTypes,
 )
 
-from PyQt4.QtNetwork import QSslCertificate
+
+try:
+    from PyQt4.QtNetwork import QSslCertificate
+except ImportError:
+    from PyQt5.QtNetwork import QSslCertificate
 
 from qgis.testing import (
     start_app,

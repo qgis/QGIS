@@ -87,11 +87,14 @@ class TestAuthManager(unittest.TestCase):
         cls.auth_config.setConfig('username', cls.username)
         cls.auth_config.setConfig('password', cls.password)
         assert (authm.storeAuthenticationConfig(cls.auth_config)[0])
+        cls.hostname = '127.0.0.1'
+        cls.protocol = 'http'
 
         os.environ['QGIS_SERVER_HTTP_BASIC_AUTH'] = '1'
         os.environ['QGIS_SERVER_USERNAME'] = cls.username
         os.environ['QGIS_SERVER_PASSWORD'] = cls.password
         os.environ['QGIS_SERVER_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_HOST'] = cls.hostname
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
@@ -101,7 +104,7 @@ class TestAuthManager(unittest.TestCase):
         cls.port = int(re.findall(b':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding! http://127.0.0.1:%s" % cls.port
+        assert waitServer('%s://%s:%s' % (cls.protocol, cls.hostname, cls.port)), "Server is not responding! '%s://%s:%s" % (cls.protocol, cls.hostname, cls.port)
 
     @classmethod
     def tearDownClass(cls):
@@ -128,7 +131,7 @@ class TestAuthManager(unittest.TestCase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port, cls.project_path),
+            'url': '%s://%s:%s/?map=%s' % (cls.protocol, cls.hostname, cls.port, cls.project_path),
             'version': 'auto',
             'table': '',
         }
@@ -150,7 +153,7 @@ class TestAuthManager(unittest.TestCase):
             layer_name = 'wms_' + layers.replace(',', '')
         parms = {
             'crs': 'EPSG:4326',
-            'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port, cls.project_path),
+            'url': '%s://%s:%s/?map=%s' % (cls.protocol, cls.hostname, cls.port, cls.project_path),
             'format': 'image/png',
             # This is needed because of a really weird implementation in QGIS Server, that
             # replaces _ in the the real layer name with spaces
