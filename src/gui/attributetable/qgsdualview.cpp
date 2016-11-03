@@ -390,7 +390,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   }
 
   //add user-defined actions to context menu
-  QList<QgsAction> actions = mLayerCache->layer()->actions()->listActions( QStringLiteral( "Field" ) );
+  QList<QgsAction> actions = mLayerCache->layer()->actions()->actions( QStringLiteral( "Field" ) );
   if ( !actions.isEmpty() )
   {
     QAction* a = menu->addAction( tr( "Run layer action" ) );

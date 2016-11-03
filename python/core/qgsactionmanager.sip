@@ -59,6 +59,13 @@ class QgsActionManager
      */
     void addAction( const QgsAction& action );
 
+    /**
+     * Remove an action by its id.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void removeAction( const QUuid& actionId );
+
     /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
@@ -80,7 +87,7 @@ class QgsActionManager
      * Return a list of actions that are available in the given action scope.
      * If no action scope is provided, all actions will be returned.
      */
-    QList<QgsAction> listActions( const QString& actionScope = QString() ) const;
+    QList<QgsAction> actions( const QString& actionScope = QString() ) const;
 
     //! Return the layer
     QgsVectorLayer* layer() const;
