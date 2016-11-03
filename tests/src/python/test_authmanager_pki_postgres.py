@@ -150,7 +150,18 @@ class TestAuthManager(unittest.TestCase):
         cls.server = subprocess.Popen([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'postgres'), '-D',
                                        cls.data_path, '-c',
                                        "config_file=%s" % cls.pg_conf],
-                                      env=os.environ, stdout=subprocess.PIPE)
+                                      env=os.environ,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE)
+        # Wait max 10 secs for the server to start
+        end = time.time() + 10
+        while True:
+            line = cls.server.stderr.readline()
+            print(line)
+            if line.find("database system is ready to accept") != -1:
+                break
+            if time.time() > end:
+                raise Exception("Timeout connecting to postgresql")
         # Create a DB
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'])
         # Inject test SQL from test path
