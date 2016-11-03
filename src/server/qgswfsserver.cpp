@@ -657,7 +657,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
               }
               QgsFeatureRequest req;
-              req.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+              if ( filter->needsGeometry() )
+              {
+                req.setFlags( QgsFeatureRequest::NoFlags );
+              }
+              else
+              {
+                req.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+              }
               req.setFilterExpression( filter->expression() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
               mAccessControl->filterFeatures( layer, req );
