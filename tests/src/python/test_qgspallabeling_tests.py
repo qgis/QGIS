@@ -308,8 +308,9 @@ class TestLineBase(object):
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
-
 # noinspection PyPep8Naming
+
+
 def suiteTests():
     """
     Use to define which tests are run when PAL_SUITE is set.

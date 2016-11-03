@@ -1059,6 +1059,10 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
 
     // grab the next character according to the orientation
     LabelInfo::CharacterInfo& ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num-i-1] );
+    if ( qgsDoubleNear( ci.width, 0.0 ) )
+      // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
+      continue;
+
     double start_x, start_y, end_x, end_y;
     if ( nextCharPosition( ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y ) == false )
     {
