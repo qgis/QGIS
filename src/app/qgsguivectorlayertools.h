@@ -71,8 +71,18 @@ class QgsGuiVectorLayerTools : public QObject, public QgsVectorLayerTools
      */
     bool saveEdits( QgsVectorLayer* layer ) const override;
 
+    /**
+     * Copy and move features with defined translation.
+     *
+     * @param layer The layer
+     * @param ids The IDs of the features to be moved
+     * @return True if successful.
+     */
+    bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double  dx, double dy ) const override;
+
   private:
     void commitError( QgsVectorLayer* vlayer ) const;
+
 };
 
 #endif // QGSGUIVECTORLAYERTOOLS_H

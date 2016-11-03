@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolmovefeature.h"
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolmovefeature.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgstolerance.h"
-#include "qgisapp.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertools.h"
+
 
 #include <QMouseEvent>
 #include <QSettings>
@@ -179,55 +181,12 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
         break;
 
       case CopyMove:
-        int featureCount = mMovedFeatures.count();
-
-        QgsFeatureRequest request;
-        request.setFilterFids( mMovedFeatures );
-        QgsFeatureIterator fi = vlayer->getFeatures( request );
-        QgsFeature f;
-        QgsAttributeList pkAttrList = vlayer->pkAttributeList();
-
-        int browsedFeatureCount = 0;
-        int addedFeatureCount = 0;
-        while ( fi.nextFeature( f ) )
+        if (!QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, mMovedFeatures, dx, dy ))
         {
-          browsedFeatureCount++;
-          // remove pkey values
-          Q_FOREACH ( auto idx, pkAttrList )
-          {
-            f.setAttribute( idx, QVariant() );
-          }
-          // translate
-          QgsGeometry geom = f.geometry();
-          geom.translate( dx, dy );
-          f.setGeometry( geom );
-#ifdef QGISDEBUG
-          const QgsFeatureId  fid = f.id();
-#endif
-          // paste feature
-          if ( vlayer->addFeature( f, false ) )
-          {
-            addedFeatureCount++;
-          }
-          else
-          {
-            QgsDebugMsg( QString( "could not add new feature. copied feature had id: %1" ).arg( fid ) );
-          }
+          delete mRubberBand;
+          mRubberBand = nullptr;
         }
-        if ( addedFeatureCount != featureCount )
-        {
-          QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( addedFeatureCount, featureCount );
-          msg.append( " " );
-          if ( browsedFeatureCount == featureCount )
-          {
-            msg.append( tr( "Some features could not be created on the layer." ) );
-          }
-          else
-          {
-            msg.append( tr( "Some features could not be retrieved from the selection." ) );
-          }
-          emit messageEmitted( msg, QgsMessageBar::CRITICAL );
-        }
+        break;
     }
 
     vlayer->endEditCommand();

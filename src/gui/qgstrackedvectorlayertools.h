@@ -30,6 +30,7 @@ class GUI_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     bool startEditing( QgsVectorLayer* layer ) const override;
     bool stopEditing( QgsVectorLayer* layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer* layer ) const override;
+    bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double  dx, double dy ) const override;
 
     /**
      * Set the vector layer tools that will be used to interact with the data

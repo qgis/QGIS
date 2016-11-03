@@ -85,6 +85,17 @@ class GUI_EXPORT QgsVectorLayerTools
      */
     virtual bool saveEdits( QgsVectorLayer* layer ) const = 0;
 
+    /**
+     * Copy and move features with defined translation.
+     *
+     * @param layer The layer
+     * @param ids The IDs of the features to be moved
+     * @return True if successful.
+     *
+     * TODO QGIS 3: remove const qualifier
+     */
+    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double dx = 0, double dy = 0 ) const = 0;
+
 };
 
 #endif // QGSVECTORLAYERTOOLS_H

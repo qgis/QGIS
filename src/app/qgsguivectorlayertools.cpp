@@ -17,15 +17,17 @@
 #include <QToolButton>
 
 #include "qgsguivectorlayertools.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmessagebar.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsmessageviewer.h"
 #include "qgsfeatureaction.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmessageviewer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
@@ -91,6 +93,70 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   else //layer not modified
   {
     res = true;
+  }
+  return res;
+}
+
+bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double dx, double dy ) const
+{
+  bool res = false;
+  if ( !layer || !layer->isEditable() )
+  {
+    return false;
+  }
+
+  int featureCount = ids.count();
+
+  QgsFeatureRequest request;
+  request.setFilterFids( ids );
+  QgsFeatureIterator fi = layer->getFeatures( request );
+  QgsFeature f;
+  QgsAttributeList pkAttrList = layer->pkAttributeList();
+
+  int browsedFeatureCount = 0;
+  int addedFeatureCount = 0;
+  while ( fi.nextFeature( f ) )
+  {
+    browsedFeatureCount++;
+    // remove pkey values
+    Q_FOREACH ( auto idx, pkAttrList )
+    {
+      f.setAttribute( idx, QVariant() );
+    }
+    // translate
+    QgsGeometry geom = f.geometry();
+    geom.translate( dx, dy );
+    f.setGeometry( geom );
+#ifdef QGISDEBUG
+    const QgsFeatureId  fid = f.id();
+#endif
+    // paste feature
+    if ( layer->addFeature( f, false ) )
+    {
+      addedFeatureCount++;
+    }
+    else
+    {
+      QgsDebugMsg( QString( "could not add new feature. copied feature had id: %1" ).arg( fid ) );
+    }
+  }
+
+  if ( addedFeatureCount == featureCount )
+  {
+    res = true;
+  }
+  {
+    QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( addedFeatureCount, featureCount );
+    msg.append( " " );
+    if ( browsedFeatureCount == featureCount )
+    {
+      msg.append( tr( "Some features could not be created on the layer." ) );
+    }
+    else
+    {
+      msg.append( tr( "Some features could not be retrieved from the selection." ) );
+    }
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Copy and move" ), msg, QgsMessageBar::CRITICAL );
   }
   return res;
 }
