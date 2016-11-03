@@ -21,6 +21,7 @@ import re
 import subprocess
 import tempfile
 import urllib
+import stat
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
@@ -68,13 +69,16 @@ class TestAuthManager(unittest.TestCase):
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
         cls.sslcert = os.path.join(cls.certsdata_path, 'gerardus_cert.pem')
         cls.sslkey = os.path.join(cls.certsdata_path, 'gerardus_key.pem')
+        assert os.path.isfile(cls.sslcert)
+        assert os.path.isfile(cls.sslkey)
+        assert os.path.isfile(cls.sslrootcert_path)
+        os.chmod(cls.sslcert, stat.S_IRUSR)
+        os.chmod(cls.sslkey, stat.S_IRUSR)
+        os.chmod(cls.sslrootcert_path, stat.S_IRUSR)
         cls.auth_config = QgsAuthMethodConfig("PKI-Paths")
         cls.auth_config.setConfig('certpath', cls.sslcert)
         cls.auth_config.setConfig('keypath', cls.sslkey)
         cls.auth_config.setName('test_pki_auth_config')
-        assert os.path.isfile(cls.sslcert)
-        assert os.path.isfile(cls.sslkey)
-        assert os.path.isfile(cls.sslrootcert_path)
         cls.username = 'Gerardus'
         cls.sslrootcert = QSslCertificate.fromPath(cls.sslrootcert_path)
         assert cls.sslrootcert is not None
@@ -87,6 +91,9 @@ class TestAuthManager(unittest.TestCase):
         cls.server_cert = os.path.join(cls.certsdata_path, 'localhost_ssl_cert.pem')
         cls.server_key = os.path.join(cls.certsdata_path, 'localhost_ssl_key.pem')
         cls.server_rootcert = cls.sslrootcert_path
+        os.chmod(cls.server_cert, stat.S_IRUSR)
+        os.chmod(cls.server_key, stat.S_IRUSR)
+        os.chmod(cls.server_rootcert, stat.S_IRUSR)
 
         os.environ['QGIS_SERVER_HOST'] = cls.hostname
         os.environ['QGIS_SERVER_PORT'] = str(cls.port)
