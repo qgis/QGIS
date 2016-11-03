@@ -150,7 +150,13 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
 {
   QDomElement aActions = doc.createElement( QStringLiteral( "attributeactions" ) );
-  aActions.setAttribute( QStringLiteral( "default" ), mDefaultAction );
+  for ( QVariantMap::const_iterator defaultAction = mDefaultActions.constBegin(); defaultAction != mDefaultActions.constEnd(); ++ defaultAction )
+  {
+    QDomElement defaultActionElement = doc.createElement( QStringLiteral( "defaultAction" ) );
+    defaultActionElement.setAttribute( QStringLiteral( "key" ), defaultAction.key() );
+    defaultActionElement.setAttribute( QStringLiteral( "value" ), defaultAction.value().toString() );
+    aActions.appendChild( defaultActionElement );
+  }
 
   Q_FOREACH ( const QgsAction& action, mActions )
   {
@@ -183,9 +189,7 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
 
   if ( !aaNode.isNull() )
   {
-    mDefaultAction = aaNode.toElement().attribute( QStringLiteral( "default" ), 0 ).toInt();
-
-    QDomNodeList actionsettings = aaNode.childNodes();
+    QDomNodeList actionsettings = aaNode.toElement().elementsByTagName( QStringLiteral( "actionsetting" ) );
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QDomElement setting = actionsettings.item( i ).toElement();
@@ -210,7 +214,6 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
         }
       }
 
-
       mActions.append(
         QgsAction( static_cast< QgsAction::ActionType >( setting.attributeNode( QStringLiteral( "type" ) ).value().toInt() ),
                    setting.attributeNode( QStringLiteral( "name" ) ).value(),
@@ -221,6 +224,14 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
                    actionScopes
                  )
       );
+    }
+
+    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( "defaultAction" );
+
+    for ( int i = 0; i < defaultActionNodes.size(); ++i )
+    {
+      QDomElement defaultValueElem = defaultActionNodes.at( i ).toElement();
+      mDefaultActions.insert( defaultValueElem.attribute( "key" ), defaultValueElem.attribute( "value" ) );
     }
   }
   return true;

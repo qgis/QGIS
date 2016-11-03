@@ -28,16 +28,13 @@ QgsActionScopeRegistry::QgsActionScopeRegistry( QObject* parent )
   mActionScopes.insert( QgsActionScope( QStringLiteral( "Canvas" ), tr( "Canvas" ), tr( "Available for the action map tool on the canvas." ), canvasScope ) );
 
   QgsExpressionContextScope fieldScope;
-  fieldScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "current_field" ), QStringLiteral( "[field_value]" ), true ) );
   fieldScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_index" ), 0, true ) );
   fieldScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_name" ), "[field_name]", true ) );
   fieldScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_value" ), "[field_value]", true ) );
-  mActionScopes.insert( QgsActionScope( QStringLiteral( "FieldSpecific" ), tr( "Field Specific" ), tr( "Available for individual fields in the attribute table." ), fieldScope ) );
 
-  mActionScopes.insert( QgsActionScope( QStringLiteral( "AttributeTableRow" ), tr( "Attribute Table Row" ), tr( "Available for individual features (rows) in the attribute table." ) ) );
-  mActionScopes.insert( QgsActionScope( QStringLiteral( "FeatureForm" ), tr( "Feature Form" ), tr( "Available for individual features in their form." ) ) );
-
-  mActionScopes.insert( QgsActionScope( QStringLiteral( "AttributeTable" ), tr( "Attribute Table" ), tr( "Available as layer global action in the attribute table." ) ) );
+  mActionScopes.insert( QgsActionScope( QStringLiteral( "Field" ), tr( "Field Scope" ), tr( "Available for individual fields. For example in the attribute table." ), fieldScope ) );
+  mActionScopes.insert( QgsActionScope( QStringLiteral( "Feature" ), tr( "Feature Scope" ), tr( "Available for individual features. For example on feature forms or per row in the attribute table." ) ) );
+  mActionScopes.insert( QgsActionScope( QStringLiteral( "Layer Scope" ), tr( "Layer Scope" ), tr( "Available as layer global action. For example on top of the attribute table." ) ) );
 }
 
 QSet<QgsActionScope> QgsActionScopeRegistry::actionScopes() const
