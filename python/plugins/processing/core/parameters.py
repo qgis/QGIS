@@ -1210,6 +1210,55 @@ class ParameterString(Parameter):
         return _expressionContext()
 
 
+class ParameterExpression(Parameter):
+
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.ExpressionWidgetWrapper'
+    }
+
+    NEWLINE = '\n'
+    ESCAPED_NEWLINE = '\\n'
+
+    def __init__(self, name='', description='', default=None, optional=False, parent_layer=None):
+        Parameter.__init__(self, name, description, default, optional)
+        self.parent_layer = parent_layer
+
+    def setValue(self, obj):
+        if not bool(obj):
+            if not self.optional:
+                return False
+            self.value = None
+            return True
+
+        self.value = str(obj).replace(
+            ParameterString.ESCAPED_NEWLINE,
+            ParameterString.NEWLINE
+        )
+        return True
+
+    def getValueAsCommandLineParameter(self):
+        return ('"' + str(self.value.replace(ParameterExpression.NEWLINE,
+                                             ParameterExpression.ESCAPED_NEWLINE)) + '"'
+                if self.value is not None else str(None))
+
+    def getAsScriptCode(self):
+        param_type = ''
+        if self.optional:
+            param_type += 'optional '
+        param_type += 'expression'
+        return '##' + self.name + '=' + param_type + self.default
+
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        default = definition.strip()[len('expression') + 1:]
+        if default:
+            return ParameterExpression(name, descName, default, optional=isOptional)
+        else:
+            return ParameterExpression(name, descName, optional=isOptional)
+
+
 class ParameterTable(ParameterDataObject):
 
     default_metadata = {

@@ -30,7 +30,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterString, ParameterExpression
 from processing.tools import dataobjects
 
 
@@ -46,8 +46,8 @@ class ExtractByExpression(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
-        self.addParameter(ParameterString(self.EXPRESSION,
-                                          self.tr("Expression")))
+        self.addParameter(ParameterExpression(self.EXPRESSION,
+                                              self.tr("Expression"), parent_layer=self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (expression)')))
 
     def processAlgorithm(self, progress):

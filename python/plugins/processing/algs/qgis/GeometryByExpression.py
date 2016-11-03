@@ -30,7 +30,7 @@ from qgis.core import QgsWkbTypes, QgsExpression, QgsExpressionContext, QgsExpre
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterString
+from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -63,8 +63,8 @@ class GeometryByExpression(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.WITH_M,
                                            self.tr('Output geometry has m values'), False))
 
-        self.addParameter(ParameterString(self.EXPRESSION,
-                                          self.tr("Geometry expression"), '$geometry'))
+        self.addParameter(ParameterExpression(self.EXPRESSION,
+                                              self.tr("Geometry expression"), '$geometry', parent_layer=self.INPUT_LAYER))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
 

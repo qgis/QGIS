@@ -36,6 +36,7 @@ from functools import cmp_to_key
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
+from qgis.gui import QgsFieldExpressionWidget
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel
@@ -43,9 +44,20 @@ from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
-from processing.core.parameters import (ParameterBoolean, ParameterPoint, ParameterFile,
-                                        ParameterRaster, ParameterVector, ParameterNumber, ParameterString, ParameterTable,
-                                        ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs, _resolveLayers)
+from processing.core.parameters import (ParameterBoolean,
+                                        ParameterPoint,
+                                        ParameterFile,
+                                        ParameterRaster,
+                                        ParameterVector,
+                                        ParameterNumber,
+                                        ParameterString,
+                                        ParameterExpression,
+                                        ParameterTable,
+                                        ParameterTableField,
+                                        ParameterExtent,
+                                        ParameterFixedTable,
+                                        ParameterCrs,
+                                        _resolveLayers)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber,
@@ -645,7 +657,7 @@ class StringWidgetWrapper(WidgetWrapper):
         else:
             # strings, numbers, files and table fields are all allowed input types
             strings = self.dialog.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile,
-                                                            ParameterTableField], OutputString)
+                                                            ParameterTableField, ParameterExpression], OutputString)
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             if self.param.multiline:
                 widget = MultilineTextPanel(options)
@@ -696,6 +708,54 @@ class StringWidgetWrapper(WidgetWrapper):
                 def validator(v):
                     return bool(v) or self.param.optional
                 return self.comboValue(validator)
+
+
+class ExpressionWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            widget = QgsFieldExpressionWidget()
+            if self.param.default:
+                widget.setExpression(self.param.default)
+        else:
+            strings = self.dialog.getAvailableValuesOfType([ParameterExpression, ParameterString, ParameterNumber], OutputString)
+            options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
+            widget = QComboBox()
+            widget.setEditable(True)
+            for desc, val in options:
+                widget.addItem(desc, val)
+            widget.setEditText(self.param.default or "")
+        return widget
+
+    def postInitialize(self, wrappers):
+        for wrapper in wrappers:
+            if wrapper.param.name == self.param.parent_layer:
+                if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+                    self.setLayer(wrapper.value())
+                    wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
+                break
+
+    def parentLayerChanged(self, wrapper):
+        self.setLayer(wrapper.value())
+
+    def setLayer(self, layer):
+        if isinstance(layer, str):
+            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+        self.widget.setLayer(layer)
+
+    def setValue(self, value):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            self.widget.setExpression(value)
+        else:
+            self.setComboValue(value)
+
+    def value(self):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            return self.widget.asExpression()
+        else:
+            def validator(v):
+                return bool(v) or self.param.optional
+            return self.comboValue(validator)
 
 
 class TableWidgetWrapper(WidgetWrapper):
