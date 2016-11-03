@@ -90,6 +90,8 @@ class GUI_EXPORT QgsVectorLayerTools
      *
      * @param layer The layer
      * @param ids The IDs of the features to be moved
+     * @param dx The translation on x
+     * @param dy The translation on y
      * @return True if successful.
      *
      * TODO QGIS 3: remove const qualifier

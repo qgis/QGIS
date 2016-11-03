@@ -50,6 +50,8 @@ class QgsVectorLayerTools
      *
      * @param layer The layer
      * @param ids The IDs of the features to be moved
+     * @param dx The translation on x
+     * @param dy The translation on y
      * @return True if successful.
      */
     virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double dx = 0, double dy = 0 ) const = 0;
