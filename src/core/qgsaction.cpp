@@ -91,3 +91,56 @@ void QgsAction::setActionScopes( const QSet<QString>& actionScopes )
 {
   mActionScopes = actionScopes;
 }
+
+void QgsAction::readXml( const QDomNode& actionNode )
+{
+  QDomElement actionElement = actionNode.toElement();
+  QDomNodeList actionScopeNodes = actionElement.elementsByTagName( "actionScope" );
+
+  if ( actionScopeNodes.isEmpty() )
+  {
+    mActionScopes
+    << QStringLiteral( "Canvas" )
+    << QStringLiteral( "Field" )
+    << QStringLiteral( "Feature" );
+  }
+  else
+  {
+    for ( int j = 0; j < actionScopeNodes.length(); ++j )
+    {
+      QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
+      mActionScopes << actionScopeElem.attribute( "id" );
+    }
+  }
+
+  mType = static_cast< QgsAction::ActionType >( actionElement.attributeNode( QStringLiteral( "type" ) ).value().toInt() );
+  mDescription = actionElement.attributeNode( QStringLiteral( "name" ) ).value();
+  mCommand = actionElement.attributeNode( QStringLiteral( "action" ) ).value();
+  mIcon = actionElement.attributeNode( QStringLiteral( "icon" ) ).value();
+  mCaptureOutput = actionElement.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0;
+  mShortTitle = actionElement.attributeNode( QStringLiteral( "shortTitle" ) ).value();
+  mId = QUuid( actionElement.attributeNode( QStringLiteral( "id" ) ).value() );
+  if ( mId.isNull() )
+    mId = QUuid::createUuid();
+}
+
+void QgsAction::writeXml( QDomNode& actionsNode ) const
+{
+  QDomElement actionSetting = actionsNode.ownerDocument().createElement( QStringLiteral( "actionsetting" ) );
+  actionSetting.setAttribute( QStringLiteral( "type" ), mType );
+  actionSetting.setAttribute( QStringLiteral( "name" ), mDescription );
+  actionSetting.setAttribute( QStringLiteral( "shortTitle" ), mShortTitle );
+  actionSetting.setAttribute( QStringLiteral( "icon" ), mIcon );
+  actionSetting.setAttribute( QStringLiteral( "action" ), mCommand );
+  actionSetting.setAttribute( QStringLiteral( "capture" ), mCaptureOutput );
+  actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
+
+  Q_FOREACH ( const QString& scope, mActionScopes )
+  {
+    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( "actionScope" );
+    actionScopeElem.setAttribute( "id", scope );
+    actionSetting.appendChild( actionScopeElem );
+  }
+
+  actionsNode.appendChild( actionSetting );
+}

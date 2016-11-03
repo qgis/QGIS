@@ -44,7 +44,7 @@ class QgsActionManager
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
+    QUuid addAction(QgsAction::ActionType type, const QString& name, const QString& command, bool capture = false );
 
     /** Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
@@ -52,7 +52,7 @@ class QgsActionManager
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
+    QUuid addAction(QgsAction::ActionType type, const QString& name, const QString& command, const QString& icon, bool capture = false );
 
     /**
      * Add a new action to this list.
@@ -63,9 +63,7 @@ class QgsActionManager
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
-    void doAction( const QString& actionId,
-                   const QgsFeature &feat,
-                   int defaultValueIndex = 0 ) /PyName=doActionFeature/;
+    void doAction(const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
 
     /** Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
@@ -73,21 +71,22 @@ class QgsActionManager
      * @param feature feature to run action for
      * @param context expression context to evalute expressions under
      */
-    void doAction( const QString& actionId,
-                   const QgsFeature& feature,
-                   const QgsExpressionContext& context );
+    void doAction( const QUuid& actionId, const QgsFeature& feature, const QgsExpressionContext& context );
 
     //! Removes all actions
     void clearActions();
 
-    //! List all actions
+    /**
+     * Return a list of actions that are available in the given action scope.
+     * If no action scope is provided, all actions will be returned.
+     */
     QList<QgsAction> listActions( const QString& actionScope = QString() ) const;
 
     //! Return the layer
     QgsVectorLayer* layer() const;
 
     //! Writes the actions out in XML format
-    bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;
+    bool writeXml( QDomNode& layer_node ) const;
 
     //! Reads the actions in in XML format
     bool readXml( const QDomNode& layer_node );
@@ -97,7 +96,7 @@ class QgsActionManager
      *
      * @note Added in QGIS 3.0
      */
-    QgsAction action( const QString& id );
+    QgsAction action( const QUuid& id );
 
     /**
      * Each scope can have a default action. This will be saved in the project
@@ -105,7 +104,7 @@ class QgsActionManager
      *
      * @note Added in QGIS 3.0
      */
-    void setDefaultAction( const QString& actionScope, const QString& actionId );
+    void setDefaultAction( const QString& actionScope, const QUuid& actionId );
 
     /**
      * Each scope can have a default action. This will be saved in the project

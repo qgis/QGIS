@@ -40,24 +40,26 @@
 #include <QFileInfo>
 
 
-void QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture )
+QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& command, bool capture )
 {
-  addAction( QgsAction( type, name, action, capture ) );
+  QgsAction action( type, name, command, capture );
+  addAction( action );
+  return action.id();
 }
 
-void QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture )
+QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& command, const QString& icon, bool capture )
 {
-  addAction( QgsAction( type, name, action, icon, capture ) );
+  QgsAction action( type, name, command, icon, capture );
+  addAction( action );
+  return action.id();
 }
 
 void QgsActionManager::addAction( const QgsAction& action )
 {
-  static int actionId = 0;
-
-  mActions.insert( ++actionId, action );
+  mActions.append( action );
 }
 
-void QgsActionManager::doAction( const QString& actionId, const QgsFeature& feature, int defaultValueIndex )
+void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex )
 {
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
@@ -69,7 +71,7 @@ void QgsActionManager::doAction( const QString& actionId, const QgsFeature& feat
   doAction( actionId, feature, context );
 }
 
-void QgsActionManager::doAction( const QString& actionId, const QgsFeature& feat, const QgsExpressionContext& context )
+void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& feat, const QgsExpressionContext& context )
 {
   QgsAction act = action( actionId );
 
@@ -147,12 +149,12 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
   return context;
 }
 
-bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
+bool QgsActionManager::writeXml( QDomNode& layer_node ) const
 {
-  QDomElement aActions = doc.createElement( QStringLiteral( "attributeactions" ) );
-  for ( QVariantMap::const_iterator defaultAction = mDefaultActions.constBegin(); defaultAction != mDefaultActions.constEnd(); ++ defaultAction )
+  QDomElement aActions = layer_node.ownerDocument().createElement( QStringLiteral( "attributeactions" ) );
+  for ( QMap<QString, QUuid>::const_iterator defaultAction = mDefaultActions.constBegin(); defaultAction != mDefaultActions.constEnd(); ++ defaultAction )
   {
-    QDomElement defaultActionElement = doc.createElement( QStringLiteral( "defaultAction" ) );
+    QDomElement defaultActionElement = layer_node.ownerDocument().createElement( QStringLiteral( "defaultAction" ) );
     defaultActionElement.setAttribute( QStringLiteral( "key" ), defaultAction.key() );
     defaultActionElement.setAttribute( QStringLiteral( "value" ), defaultAction.value().toString() );
     aActions.appendChild( defaultActionElement );
@@ -160,21 +162,7 @@ bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
 
   Q_FOREACH ( const QgsAction& action, mActions )
   {
-    QDomElement actionSetting = doc.createElement( QStringLiteral( "actionsetting" ) );
-    actionSetting.setAttribute( QStringLiteral( "type" ), action.type() );
-    actionSetting.setAttribute( QStringLiteral( "name" ), action.name() );
-    actionSetting.setAttribute( QStringLiteral( "shortTitle" ), action.shortTitle() );
-    actionSetting.setAttribute( QStringLiteral( "icon" ), action.iconPath() );
-    actionSetting.setAttribute( QStringLiteral( "action" ), action.command() );
-    actionSetting.setAttribute( QStringLiteral( "capture" ), action.capture() );
-
-    Q_FOREACH ( const QString& scope, action.actionScopes() )
-    {
-      QDomElement actionScopeElem = doc.createElement( "actionScope" );
-      actionScopeElem.setAttribute( "id", scope );
-      actionSetting.appendChild( actionScopeElem );
-    }
-    aActions.appendChild( actionSetting );
+    action.writeXml( aActions );
   }
   layer_node.appendChild( aActions );
 
@@ -192,38 +180,9 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
     QDomNodeList actionsettings = aaNode.toElement().elementsByTagName( QStringLiteral( "actionsetting" ) );
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
-      QDomElement setting = actionsettings.item( i ).toElement();
-
-      QDomNodeList actionScopeNodes = setting.elementsByTagName( "actionScope" );
-      QSet<QString> actionScopes;
-
-      if ( actionScopeNodes.isEmpty() )
-      {
-        actionScopes
-        << QStringLiteral( "Canvas" )
-        << QStringLiteral( "FieldSpecific" )
-        << QStringLiteral( "AttributeTableRow" )
-        << QStringLiteral( "FeatureForm" );
-      }
-      else
-      {
-        for ( int j = 0; j < actionScopeNodes.length(); ++j )
-        {
-          QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
-          actionScopes << actionScopeElem.attribute( "id" );
-        }
-      }
-
-      mActions.append(
-        QgsAction( static_cast< QgsAction::ActionType >( setting.attributeNode( QStringLiteral( "type" ) ).value().toInt() ),
-                   setting.attributeNode( QStringLiteral( "name" ) ).value(),
-                   setting.attributeNode( QStringLiteral( "action" ) ).value(),
-                   setting.attributeNode( QStringLiteral( "icon" ) ).value(),
-                   setting.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0,
-                   setting.attributeNode( QStringLiteral( "shortTitle" ) ).value(),
-                   actionScopes
-                 )
-      );
+      QgsAction action;
+      action.readXml( actionsettings.item( i ) );
+      mActions.append( action );
     }
 
     QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( "defaultAction" );
@@ -237,7 +196,7 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
   return true;
 }
 
-QgsAction QgsActionManager::action( const QString& id )
+QgsAction QgsActionManager::action( const QUuid& id )
 {
   Q_FOREACH ( const QgsAction& action, mActions )
   {
@@ -248,12 +207,12 @@ QgsAction QgsActionManager::action( const QString& id )
   return QgsAction();
 }
 
-void QgsActionManager::setDefaultAction( const QString& actionScope, const QString& actionId )
+void QgsActionManager::setDefaultAction( const QString& actionScope, const QUuid& actionId )
 {
   mDefaultActions[ actionScope ] = actionId;
 }
 
 QgsAction QgsActionManager::defaultAction( const QString& actionScope )
 {
-  return action( mDefaultActions.value( actionScope ).toString() );
+  return action( mDefaultActions.value( actionScope ) );
 }

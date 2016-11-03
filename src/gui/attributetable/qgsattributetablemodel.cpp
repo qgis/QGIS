@@ -737,7 +737,7 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
 }
 
 
-void QgsAttributeTableModel::executeAction( const QString& action, const QModelIndex &idx ) const
+void QgsAttributeTableModel::executeAction( const QUuid& action, const QModelIndex &idx ) const
 {
   QgsFeature f = feature( idx );
   layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );

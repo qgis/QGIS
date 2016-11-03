@@ -20,6 +20,7 @@
 #include <QString>
 #include <QIcon>
 #include <QAction>
+#include <QUuid>
 
 #include "qgsexpressioncontext.h"
 
@@ -53,14 +54,15 @@ class CORE_EXPORT QgsAction
      *
      * @param type          The type of this action
      * @param description   A human readable description string
-     * @param action        The action text. Its interpretation depends on the type
+     * @param command       The action text. Its interpretation depends on the type
      * @param capture       If this is set to true, the output will be captured when an action is run
      */
-    QgsAction( ActionType type, const QString& description, const QString& action, bool capture )
+    QgsAction( ActionType type, const QString& description, const QString& command, bool capture = false )
         : mType( type )
         , mDescription( description )
-        , mCommand( action )
+        , mCommand( command )
         , mCaptureOutput( capture )
+        , mId( QUuid::createUuid() )
     {}
 
     /**
@@ -82,6 +84,7 @@ class CORE_EXPORT QgsAction
         , mCommand( action )
         , mCaptureOutput( capture )
         , mActionScopes( actionScopes )
+        , mId( QUuid::createUuid() )
     {}
 
     //! The name of the action. This may be a longer description.
@@ -95,14 +98,14 @@ class CORE_EXPORT QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    QString id() const { return mShortTitle; }
+    QUuid id() const { return mId; }
 
     /**
      * Returns true if this action was a default constructed one.
      *
      * @note Added in QGIS 3.0
      */
-    bool isValid() const { return !mShortTitle.isNull(); }
+    bool isValid() const { return !mId.isNull(); }
 
     //! The path to the icon
     QString iconPath() const { return mIcon; }
@@ -161,6 +164,22 @@ class CORE_EXPORT QgsAction
      */
     void setActionScopes( const QSet<QString>& actionScopes );
 
+    /**
+     * Reads an XML definition from actionNode
+     * into this object.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void readXml( const QDomNode& actionNode );
+
+    /**
+     * Appends an XML definition for this action as a new
+     * child node to actionsNode.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void writeXml( QDomNode& actionsNode ) const;
+
   private:
     ActionType mType;
     QString mDescription;
@@ -170,6 +189,7 @@ class CORE_EXPORT QgsAction
     bool mCaptureOutput;
     QSet<QString> mActionScopes;
     mutable QSharedPointer<QAction> mAction;
+    QUuid mId;
 };
 
 Q_DECLARE_METATYPE( QgsAction )

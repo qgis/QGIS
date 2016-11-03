@@ -45,7 +45,7 @@ class TestQgsActionManager(unittest.TestCase):
         self.manager = QgsActionManager(self.layer)
 
         # make a little script to aid in recording action outputs
-        # this is just a little python file which writes out it's arguments to a text file
+        # this is just a little python file which writes out its arguments to a text file
         self.run_script_file = os.path.join(QDir.tempPath(), 'run_action.py')
         with open(self.run_script_file, 'w') as s:
             s.write('import sys\n')
@@ -70,36 +70,29 @@ class TestQgsActionManager(unittest.TestCase):
         """ Test adding actions """
 
         # should be empty to start with
-        self.assertEqual(self.manager.size(), 0)
         self.assertEqual(self.manager.listActions(), [])
 
         # add an action
-        self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
-        self.assertEqual(self.manager.size(), 1)
+        action1 = QgsAction(QgsAction.GenericPython, 'Test Action', 'i=1')
+        self.manager.addAction(action1)
+        self.assertEqual(len(self.manager.listActions()), 1)
         self.assertEqual(self.manager.listActions()[0].type(), QgsAction.GenericPython)
-        self.assertEqual(self.manager.listActions()[0].name(), 'test_action')
-        self.assertEqual(self.manager.listActions()[0].action(), 'i=1')
-        self.assertEqual(self.manager.at(0).name(), 'test_action')
-        self.assertEqual(self.manager[0].name(), 'test_action')
+        self.assertEqual(self.manager.listActions()[0].name(), 'Test Action')
+        self.assertEqual(self.manager.listActions()[0].command(), 'i=1')
 
         # add another action
-        self.manager.addAction(QgsAction.Windows, 'test_action2', 'i=2')
-        self.assertEqual(self.manager.size(), 2)
-        self.assertEqual(self.manager.listActions()[1].type(), QgsAction.Windows)
-        self.assertEqual(self.manager.listActions()[1].name(), 'test_action2')
-        self.assertEqual(self.manager.listActions()[1].action(), 'i=2')
-        self.assertEqual(self.manager.at(1).name(), 'test_action2')
-        self.assertEqual(self.manager[1].name(), 'test_action2')
+        action2 = QgsAction(QgsAction.Windows, 'Test Action2', 'i=2')
+        self.manager.addAction(action2)
+        self.assertEqual(len(self.manager.listActions()), 2)
+        self.assertEqual(self.manager.action(action2.id()).type(), QgsAction.Windows)
+        self.assertEqual(self.manager.action(action2.id()).name(), 'Test Action2')
+        self.assertEqual(self.manager.action(action2.id()).command(), 'i=2')
 
-        # add a predefined action
-        action = QgsAction(QgsAction.Unix, 'test_action3', 'i=3', False)
-        self.manager.addAction(action)
-        self.assertEqual(self.manager.size(), 3)
-        self.assertEqual(self.manager.listActions()[2].type(), QgsAction.Unix)
-        self.assertEqual(self.manager.listActions()[2].name(), 'test_action3')
-        self.assertEqual(self.manager.listActions()[2].action(), 'i=3')
-        self.assertEqual(self.manager.at(2).name(), 'test_action3')
-        self.assertEqual(self.manager[2].name(), 'test_action3')
+        id3 = self.manager.addAction(QgsAction.Generic, 'Test Action3', 'i=3')
+        self.assertEqual(len(self.manager.listActions()), 3)
+        self.assertEqual(self.manager.action(id3).type(), QgsAction.Generic)
+        self.assertEqual(self.manager.action(id3).name(), 'Test Action3')
+        self.assertEqual(self.manager.action(id3).command(), 'i=3')
 
     def testRemoveActions(self):
         """ test removing actions """
@@ -113,9 +106,9 @@ class TestQgsActionManager(unittest.TestCase):
         self.assertEqual(self.manager.listActions(), [])
 
         # add some actions
-        self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
-        self.manager.addAction(QgsAction.GenericPython, 'test_action2', 'i=2')
-        self.manager.addAction(QgsAction.GenericPython, 'test_action3', 'i=3')
+        id1 = self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
+        id2 = self.manager.addAction(QgsAction.GenericPython, 'test_action2', 'i=2')
+        id3 = self.manager.addAction(QgsAction.GenericPython, 'test_action3', 'i=3')
 
         # remove non-existant action
         self.manager.removeAction(5)
