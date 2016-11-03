@@ -59,13 +59,27 @@ void QgsActionManager::addAction( const QgsAction& action )
   mActions.append( action );
 }
 
+void QgsActionManager::removeAction( const QUuid& actionId )
+{
+  int i = 0;
+  Q_FOREACH ( const QgsAction& action, mActions )
+  {
+    if ( action.id() == actionId )
+    {
+      mActions.removeAt( i );
+      return;
+    }
+    ++i;
+  }
+}
+
 void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex )
 {
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
   actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_index" ), defaultValueIndex, true ) );
   if ( defaultValueIndex >= 0 && defaultValueIndex < feature.fields().size() )
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_name" ), feature.fields().at( defaultValueIndex ), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_name" ), feature.fields().at( defaultValueIndex ).name(), true ) );
   actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_value" ), feature.attribute( defaultValueIndex ), true ) );
   context << actionScope;
   doAction( actionId, feature, context );
@@ -97,7 +111,7 @@ void QgsActionManager::clearActions()
   mActions.clear();
 }
 
-QList<QgsAction> QgsActionManager::listActions( const QString& actionScope ) const
+QList<QgsAction> QgsActionManager::actions( const QString& actionScope ) const
 {
   if ( actionScope.isNull() )
     return mActions;

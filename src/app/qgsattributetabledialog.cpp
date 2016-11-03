@@ -309,7 +309,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     mActionSearchForm->setToolTip( tr( "Search is not supported when using custom UI forms" ) );
   }
 
-  QList<QgsAction> actions = mLayer->actions()->listActions( QStringLiteral( "Layer" ) );
+  QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Layer" ) );
 
   if ( actions.isEmpty() )
   {

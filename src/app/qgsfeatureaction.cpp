@@ -66,7 +66,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
 
-  QList<QgsAction> actions = mLayer->actions()->listActions( QStringLiteral( "Feature" ) );
+  QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
   if ( !actions.isEmpty() )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );

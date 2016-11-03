@@ -176,7 +176,7 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   QAction* defaultAction = nullptr;
 
   // first add user created layer actions
-  QList<QgsAction> actions = mFilterModel->layer()->actions()->listActions( QStringLiteral( "Feature" ) );
+  QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
   Q_FOREACH ( const QgsAction& action, actions )
   {
     QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QLatin1String( "" );

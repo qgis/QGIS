@@ -73,7 +73,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer->actions()->listActions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty() )
+  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty() )
   {
     emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
     return;

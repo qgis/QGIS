@@ -105,7 +105,7 @@ void QgsActionMenu::reloadActions()
 {
   clear();
 
-  mActions = mLayer->actions()->listActions( mActionScope );
+  mActions = mLayer->actions()->actions( mActionScope );
 
   Q_FOREACH ( const QgsAction& action, mActions )
   {
