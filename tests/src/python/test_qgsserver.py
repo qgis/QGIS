@@ -459,11 +459,13 @@ class TestQgsServer(unittest.TestCase):
                 report, encoded_rendered_file.strip(), tempfile.gettempdir(), image
             )
 
-        with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
-            encoded_diff_file = base64.b64encode(diff_file.read())
-            message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                encoded_diff_file.strip(), tempfile.gettempdir(), image
-            )
+        # If the failure is in image sizes the diff file will not exists.
+        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
+            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
+                encoded_diff_file = base64.b64encode(diff_file.read())
+                message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
+                    encoded_diff_file.strip(), tempfile.gettempdir(), image
+                )
 
         self.assertTrue(test, message)
 

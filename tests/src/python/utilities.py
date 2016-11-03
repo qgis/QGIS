@@ -19,9 +19,9 @@ import glob
 import platform
 import tempfile
 try:
-    from urllib2 import urlopen, HTTPError
+    from urllib2 import urlopen, HTTPError, URLError
 except ImportError:
-    from urllib.request import urlopen, HTTPError
+    from urllib.request import urlopen, HTTPError, URLError
 
 from qgis.PyQt.QtCore import QDir
 
@@ -833,7 +833,7 @@ def waitServer(url, timeout=10):
         try:
             urlopen(url, timeout=1)
             return True
-        except HTTPError:
+        except (HTTPError, URLError):
             return True
         except Exception as e:
             if now() > end:
