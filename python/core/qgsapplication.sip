@@ -381,7 +381,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     /**
      * Returns the action scope registry.
      *
-     * @Note Added in QGIS 3.0
+     * @note Added in QGIS 3.0
      */
     static QgsActionScopeRegistry* actionScopeRegistry();
 

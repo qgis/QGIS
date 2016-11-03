@@ -2006,7 +2006,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( excludeWFSElem );
 
   // add attribute actions
-  mActions->writeXml( node, doc );
+  mActions->writeXml( node );
   mAttributeTableConfig.writeXml( node );
   mEditFormConfig.writeXml( node );
   mConditionalStyles->writeXml( node, doc );

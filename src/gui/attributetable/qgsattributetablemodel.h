@@ -171,7 +171,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Execute an action
      */
-    void executeAction( const QString& action, const QModelIndex &idx ) const;
+    void executeAction( const QUuid& action, const QModelIndex &idx ) const;
 
     /**
      * Execute a QgsMapLayerAction

@@ -22,6 +22,7 @@
 #include <QList>
 #include <QPair>
 #include <QAction>
+#include <QUuid>
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
@@ -33,7 +34,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QString& actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid& actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
@@ -59,7 +60,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
     QgsVectorLayer* mLayer;
     QgsFeature* mFeature;
-    QString mActionId;
+    QUuid mActionId;
     int mIdx;
 
     bool mFeatureSaved;

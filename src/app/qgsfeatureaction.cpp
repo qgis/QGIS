@@ -32,7 +32,7 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QString& actionId, int defaultAttr, QObject *parent )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid& actionId, int defaultAttr, QObject *parent )
     : QAction( name, parent )
     , mLayer( layer )
     , mFeature( &f )

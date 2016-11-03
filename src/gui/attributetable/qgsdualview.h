@@ -353,7 +353,12 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     Q_OBJECT
 
   public:
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QString& action, const QModelIndex &fieldIdx )
+    /**
+     * Create a new attribute table action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsAttributeTableAction( const QString& name, QgsDualView* dualView, const QUuid& action, const QModelIndex& fieldIdx )
         : QAction( name, dualView )
         , mDualView( dualView )
         , mAction( action )
@@ -366,7 +371,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
 
   private:
     QgsDualView* mDualView;
-    QString mAction;
+    QUuid mAction;
     QModelIndex mFieldIdx;
 };
 

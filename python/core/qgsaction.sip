@@ -33,6 +33,32 @@ class QgsAction
       OpenUrl,
     };
 
+    /**
+     * Default constructor
+     */
+    QgsAction();
+
+    /**
+     * Create a new QgsAction
+     *
+     * @param type          The type of this action
+     * @param description   A human readable description string
+     * @param command       The action text. Its interpretation depends on the type
+     * @param capture       If this is set to true, the output will be captured when an action is run
+     */
+    QgsAction( ActionType type, const QString& description, const QString& command, bool capture = false );
+
+    /**
+     * Create a new QgsAction
+     *
+     * @param type                 The type of this action
+     * @param description          A human readable description string
+     * @param action               The action text. Its interpretation depends on the type
+     * @param icon                 Path to an icon for this action
+     * @param capture              If this is set to true, the output will be captured when an action is run
+     * @param shortTitle           A short string used to label user interface elements like buttons
+     * @param actionScopes         A set of scopes in which this action will be available
+     */
     QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString(), const QSet<QString>& actionScopes = QSet<QString>() );
 
     //! The name of the action. This may be a longer description.
@@ -46,14 +72,14 @@ class QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    QString id() const { return mShortTitle; }
+    QUuid id() const;
 
     /**
      * Returns true if this action was a default constructed one.
      *
      * @note Added in QGIS 3.0
      */
-    bool isValid() const { return !mShortTitle.isNull(); }
+    bool isValid() const;
 
     //! The path to the icon
     QString iconPath() const;
@@ -105,4 +131,20 @@ class QgsAction
      * @note Added in QGIS 3.0
      */
     void setActionScopes( const QSet<QString>& actionScopes );
+
+    /**
+     * Reads an XML definition from actionNode
+     * into this object.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void readXml( const QDomNode& actionNode );
+
+    /**
+     * Appends an XML definition for this action as a new
+     * child node to actionsNode.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void writeXml(QDomNode& actionsNode ) const;
 };
