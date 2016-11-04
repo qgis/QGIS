@@ -8,7 +8,7 @@ and QGIS Server WFS/WMS that check if QGIS can use a stored auth manager auth
 configuration to access an HTTP Basic protected endpoint.
 
 
-From build dir, run: ctest -R PyQgsAuthManagerEndpointTest -V
+From build dir, run: ctest -R PyQgsAuthManagerPasswordOWSTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from urllib.parse import quote
 from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
@@ -45,11 +44,10 @@ from qgis.testing import (
     unittest,
 )
 
-
 try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
 except:
-    QGIS_SERVER_ENDPOINT_PORT = '0' # Auto
+    QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
 
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
@@ -74,7 +72,7 @@ class TestAuthManager(unittest.TestCase):
             except KeyError:
                 pass
         cls.testdata_path = unitTestDataPath('qgis_server') + '/'
-        cls.project_path = quote(cls.testdata_path + "test_project.qgs")
+        cls.project_path = cls.testdata_path + "test_project.qgs"
         # Enable auth
         #os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
         authm = QgsAuthManager.instance()
@@ -86,26 +84,30 @@ class TestAuthManager(unittest.TestCase):
         cls.auth_config.setConfig('username', cls.username)
         cls.auth_config.setConfig('password', cls.password)
         assert (authm.storeAuthenticationConfig(cls.auth_config)[0])
+        cls.hostname = '127.0.0.1'
+        cls.protocol = 'http'
 
         os.environ['QGIS_SERVER_HTTP_BASIC_AUTH'] = '1'
         os.environ['QGIS_SERVER_USERNAME'] = cls.username
         os.environ['QGIS_SERVER_PASSWORD'] = cls.password
         os.environ['QGIS_SERVER_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_HOST'] = cls.hostname
+
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ, stdout=subprocess.PIPE)
+
         line = cls.server.stdout.readline()
         cls.port = int(re.findall(b':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
+        assert waitServer('%s://%s:%s' % (cls.protocol, cls.hostname, cls.port)), "Server is not responding! %s://%s:%s" % (cls.protocol, cls.hostname, cls.port)
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         cls.server.terminate()
-        cls.server.wait()
         rmtree(QGIS_AUTH_DB_DIR_PATH)
         del cls.server
 
@@ -127,7 +129,7 @@ class TestAuthManager(unittest.TestCase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port, cls.project_path),
+            'url': '%s://%s:%s/?map=%s' % (cls.protocol, cls.hostname, cls.port, cls.project_path),
             'version': 'auto',
             'table': '',
         }
@@ -146,12 +148,12 @@ class TestAuthManager(unittest.TestCase):
             layer_name = 'wms_' + layers.replace(',', '')
         parms = {
             'crs': 'EPSG:4326',
-            'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port, cls.project_path),
-            'format': 'image/png',
+            'url': '%s://%s:%s/?map=%s' % (cls.protocol, cls.hostname, cls.port, cls.project_path),
             # This is needed because of a really weird implementation in QGIS Server, that
             # replaces _ in the the real layer name with spaces
-            'layers': urllib.parse.quote(layers).replace('_', ' '),
+            'layers': urllib.parse.quote(layers.replace('_', ' ')),
             'styles': '',
+            'version': 'auto',
             #'sql': '',
         }
         if authcfg is not None:
@@ -173,7 +175,7 @@ class TestAuthManager(unittest.TestCase):
         """
         Access the HTTP Basic protected layer with no credentials
         """
-        wfs_layer = self._getWFSLayer('testlayer_èé')
+        wfs_layer = self._getWFSLayer('testlayer èé')
         self.assertFalse(wfs_layer.isValid())
         wms_layer = self._getWMSLayer('testlayer_èé')
         self.assertFalse(wms_layer.isValid())
