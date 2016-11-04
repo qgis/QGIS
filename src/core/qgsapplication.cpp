@@ -882,6 +882,9 @@ void QgsApplication::initQgis()
   // create map layer registry if doesn't exist
   QgsMapLayerRegistry::instance();
 
+  // Make sure we have a NAM created on the main thread.
+  QgsNetworkAccessManager::instance();
+
   // initialize authentication manager and connect to database
   QgsAuthManager::instance()->init( pluginPath() );
 }
