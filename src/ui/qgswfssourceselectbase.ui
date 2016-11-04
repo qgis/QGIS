@@ -149,7 +149,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Filter:</string>
+        <string>Filter</string>
        </property>
        <property name="buddy">
         <cstring>lineFilter</cstring>

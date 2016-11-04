@@ -155,7 +155,7 @@
        <item row="3" column="0">
         <widget class="QGroupBox" name="groupBoxRowSelectionBehaviour">
          <property name="title">
-          <string>When a row is selected, move canvas to:</string>
+          <string>When a row is selected, move canvas to</string>
          </property>
          <property name="flat">
           <bool>true</bool>
@@ -385,7 +385,7 @@
           <item>
            <widget class="QLabel" name="labelMergeAttribute">
             <property name="text">
-             <string>Attribute to use when merging features by attribute value:</string>
+             <string>Attribute to use when merging features by attribute value</string>
             </property>
            </widget>
           </item>

@@ -355,7 +355,7 @@
                <item row="0" column="0">
                 <widget class="QLabel" name="label_7">
                  <property name="text">
-                  <string>Default:</string>
+                  <string>Default</string>
                  </property>
                 </widget>
                </item>
@@ -369,7 +369,7 @@
                <item row="0" column="2">
                 <widget class="QLabel" name="label_8">
                  <property name="text">
-                  <string>Keyword:</string>
+                  <string>Keyword</string>
                  </property>
                 </widget>
                </item>
@@ -383,7 +383,7 @@
                <item row="0" column="4">
                 <widget class="QLabel" name="label_27">
                  <property name="text">
-                  <string>Class name:</string>
+                  <string>Class name</string>
                  </property>
                 </widget>
                </item>
@@ -397,7 +397,7 @@
                <item row="1" column="0">
                 <widget class="QLabel" name="label_11">
                  <property name="text">
-                  <string>Function:</string>
+                  <string>Function</string>
                  </property>
                 </widget>
                </item>
@@ -411,7 +411,7 @@
                <item row="1" column="2">
                 <widget class="QLabel" name="label_9">
                  <property name="text">
-                  <string>Decorator:</string>
+                  <string>Decorator</string>
                  </property>
                 </widget>
                </item>
@@ -425,7 +425,7 @@
                <item row="1" column="4">
                 <widget class="QLabel" name="label_10">
                  <property name="text">
-                  <string>Comment:</string>
+                  <string>Comment</string>
                  </property>
                 </widget>
                </item>
@@ -439,7 +439,7 @@
                <item row="2" column="0">
                 <widget class="QLabel" name="label_12">
                  <property name="text">
-                  <string>Comment block:</string>
+                  <string>Comment block</string>
                  </property>
                 </widget>
                </item>
@@ -453,7 +453,7 @@
                <item row="2" column="2">
                 <widget class="QLabel" name="label_25">
                  <property name="text">
-                  <string>Cursor:</string>
+                  <string>Cursor</string>
                  </property>
                 </widget>
                </item>
@@ -467,7 +467,7 @@
                <item row="2" column="4">
                 <widget class="QLabel" name="label_23">
                  <property name="text">
-                  <string>Caretline:</string>
+                  <string>Caretline</string>
                  </property>
                 </widget>
                </item>
@@ -481,7 +481,7 @@
                <item row="3" column="0">
                 <widget class="QLabel" name="label_32">
                  <property name="text">
-                  <string>Single quote:</string>
+                  <string>Single quote</string>
                  </property>
                 </widget>
                </item>
@@ -495,7 +495,7 @@
                <item row="3" column="2">
                 <widget class="QLabel" name="label_33">
                  <property name="text">
-                  <string>Double quote:</string>
+                  <string>Double quote</string>
                  </property>
                 </widget>
                </item>
@@ -509,7 +509,7 @@
                <item row="3" column="4">
                 <widget class="QLabel" name="label_34">
                  <property name="text">
-                  <string>Triple single quote:</string>
+                  <string>Triple single quote</string>
                  </property>
                 </widget>
                </item>
@@ -523,7 +523,7 @@
                <item row="4" column="0">
                 <widget class="QLabel" name="label_35">
                  <property name="text">
-                  <string>Triple double quote:</string>
+                  <string>Triple double quote</string>
                  </property>
                 </widget>
                </item>
@@ -537,7 +537,7 @@
                <item row="4" column="4">
                 <widget class="QLabel" name="label_21">
                  <property name="text">
-                  <string>Background:</string>
+                  <string>Background</string>
                  </property>
                 </widget>
                </item>
@@ -887,7 +887,7 @@
                <item row="0" column="0">
                 <widget class="QLabel" name="label_16">
                  <property name="text">
-                  <string>Default:</string>
+                  <string>Default</string>
                  </property>
                 </widget>
                </item>
@@ -901,7 +901,7 @@
                <item row="0" column="2">
                 <widget class="QLabel" name="label_17">
                  <property name="text">
-                  <string>Keyword:</string>
+                  <string>Keyword</string>
                  </property>
                 </widget>
                </item>
@@ -915,7 +915,7 @@
                <item row="0" column="4">
                 <widget class="QLabel" name="label_26">
                  <property name="text">
-                  <string>Class name:</string>
+                  <string>Class name</string>
                  </property>
                 </widget>
                </item>
@@ -929,7 +929,7 @@
                <item row="1" column="0">
                 <widget class="QLabel" name="label_13">
                  <property name="text">
-                  <string>Function:</string>
+                  <string>Function</string>
                  </property>
                 </widget>
                </item>
@@ -943,7 +943,7 @@
                <item row="1" column="2">
                 <widget class="QLabel" name="label_18">
                  <property name="text">
-                  <string>Decorator:</string>
+                  <string>Decorator</string>
                  </property>
                 </widget>
                </item>
@@ -957,7 +957,7 @@
                <item row="1" column="4">
                 <widget class="QLabel" name="label_19">
                  <property name="text">
-                  <string>Comment:</string>
+                  <string>Comment</string>
                  </property>
                 </widget>
                </item>
@@ -971,7 +971,7 @@
                <item row="2" column="0">
                 <widget class="QLabel" name="label_20">
                  <property name="text">
-                  <string>Comment block:</string>
+                  <string>Comment block</string>
                  </property>
                 </widget>
                </item>
@@ -985,7 +985,7 @@
                <item row="2" column="2">
                 <widget class="QLabel" name="label_24">
                  <property name="text">
-                  <string>Cursor:</string>
+                  <string>Cursor</string>
                  </property>
                 </widget>
                </item>
@@ -999,7 +999,7 @@
                <item row="2" column="4">
                 <widget class="QLabel" name="label_22">
                  <property name="text">
-                  <string>Caretline:</string>
+                  <string>Caretline</string>
                  </property>
                 </widget>
                </item>
@@ -1013,7 +1013,7 @@
                <item row="3" column="0">
                 <widget class="QLabel" name="label_28">
                  <property name="text">
-                  <string>Single quote:</string>
+                  <string>Single quote</string>
                  </property>
                 </widget>
                </item>
@@ -1027,7 +1027,7 @@
                <item row="3" column="2">
                 <widget class="QLabel" name="label_31">
                  <property name="text">
-                  <string>Double quote:</string>
+                  <string>Double quote</string>
                  </property>
                 </widget>
                </item>
@@ -1041,7 +1041,7 @@
                <item row="3" column="4">
                 <widget class="QLabel" name="label_29">
                  <property name="text">
-                  <string>Triple single quote:</string>
+                  <string>Triple single quote</string>
                  </property>
                 </widget>
                </item>
@@ -1055,7 +1055,7 @@
                <item row="4" column="0">
                 <widget class="QLabel" name="label_30">
                  <property name="text">
-                  <string>Triple double quote:</string>
+                  <string>Triple double quote</string>
                  </property>
                 </widget>
                </item>
@@ -1069,7 +1069,7 @@
                <item row="4" column="4">
                 <widget class="QLabel" name="label_15">
                  <property name="text">
-                  <string>Background:</string>
+                  <string>Background</string>
                  </property>
                 </widget>
                </item>
@@ -1083,7 +1083,7 @@
                <item row="5" column="4">
                 <widget class="QLabel" name="label_14">
                  <property name="text">
-                  <string>Error:</string>
+                  <string>Error</string>
                  </property>
                 </widget>
                </item>

@@ -3,7 +3,7 @@
  <class>QgsOWSSourceSelectBase</class>
  <widget class="QDialog" name="QgsOWSSourceSelectBase">
   <property name="geometry">
-   <rect>
+   <rect>:
     <x>0</x>
     <y>0</y>
     <width>743</width>
@@ -237,7 +237,7 @@
           <item>
            <widget class="QLabel" name="mCRSLabel">
             <property name="text">
-             <string>Coordinate Reference System:</string>
+             <string>Coordinate Reference System</string>
             </property>
            </widget>
           </item>

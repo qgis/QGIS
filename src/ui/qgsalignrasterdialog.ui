@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Raster layers to align:</string>
+        <string>Raster layers to align</string>
        </property>
       </widget>
      </item>

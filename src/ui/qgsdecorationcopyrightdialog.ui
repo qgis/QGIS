@@ -49,7 +49,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>&amp;Enter your copyright label here:</string>
+         <string>Copyright label text</string>
         </property>
         <property name="buddy">
          <cstring>txtCopyrightText</cstring>

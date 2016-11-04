@@ -1211,7 +1211,7 @@
                          <string>Use original source no data value.</string>
                         </property>
                         <property name="text">
-                         <string>No data value:</string>
+                         <string>No data value</string>
                         </property>
                        </widget>
                       </item>

@@ -498,7 +498,7 @@
     <item>
      <widget class="QLabel" name="textLabel7">
       <property name="text">
-       <string>New mapset:</string>
+       <string>New mapset</string>
       </property>
      </widget>
     </item>
@@ -613,7 +613,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Database:</string>
+       <string>Database</string>
       </property>
      </widget>
     </item>
@@ -632,7 +632,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Location:</string>
+       <string>Location</string>
       </property>
      </widget>
     </item>
@@ -651,7 +651,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Mapset:</string>
+       <string>Mapset</string>
       </property>
      </widget>
     </item>

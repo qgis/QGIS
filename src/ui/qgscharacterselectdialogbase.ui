@@ -31,7 +31,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Font:</string>
+        <string>Font</string>
        </property>
       </widget>
      </item>

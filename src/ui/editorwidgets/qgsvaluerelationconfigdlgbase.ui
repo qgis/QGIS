@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Select layer, key column and value column:</string>
+      <string>Select layer, key column and value column</string>
      </property>
     </widget>
    </item>

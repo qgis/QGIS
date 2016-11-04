@@ -791,7 +791,7 @@
                   <item row="1" column="1">
                    <widget class="QLabel" name="label_56">
                     <property name="text">
-                     <string>Simplification threshold (higher values result in more simplification): </string>
+                     <string>Simplification threshold (higher values result in more simplification)</string>
                     </property>
                     <property name="margin">
                      <number>2</number>
@@ -849,7 +849,7 @@
                      <string>This algorithm only is applied to simplify on local side</string>
                     </property>
                     <property name="text">
-                     <string>Simplification algorithm: </string>
+                     <string>Simplification algorithm</string>
                     </property>
                     <property name="margin">
                      <number>2</number>
@@ -869,7 +869,7 @@
                   <item row="4" column="1">
                    <widget class="QLabel" name="mSimplifyMaxScaleLabel">
                     <property name="text">
-                     <string>Maximum scale at which the layer should be simplified (1:1 always simplifies): </string>
+                     <string>Maximum scale at which the layer should be simplified (1:1 always simplifies)</string>
                     </property>
                     <property name="margin">
                      <number>2</number>

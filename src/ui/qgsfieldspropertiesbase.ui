@@ -16,7 +16,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Attribute editor layout:</string>
+        <string>Attribute editor layout</string>
        </property>
       </widget>
      </item>

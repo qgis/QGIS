@@ -1996,7 +1996,7 @@
                      <item row="4" column="0" colspan="2">
                       <widget class="QGroupBox" name="mWMSInspireScenario2">
                        <property name="title">
-                        <string>Scenario 2 - INSPIRE related fields using embedded service metadata:</string>
+                        <string>Scenario 2 - INSPIRE related fields using embedded service metadata</string>
                        </property>
                        <property name="checkable">
                         <bool>true</bool>

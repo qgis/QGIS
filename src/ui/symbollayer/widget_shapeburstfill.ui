@@ -126,7 +126,7 @@
      <item>
       <widget class="QRadioButton" name="mRadioUseMaxDistance">
        <property name="text">
-        <string>Shade to a set distance:</string>
+        <string>Shade to a set distance</string>
        </property>
       </widget>
      </item>

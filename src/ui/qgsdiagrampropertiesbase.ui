@@ -1037,7 +1037,7 @@
                      <item>
                       <widget class="QLabel" name="mLinearlyScalingLabel">
                        <property name="text">
-                        <string>Scale linearly between 0 and the following attribute value / diagram size:</string>
+                        <string>Scale linearly between 0 and the following attribute value / diagram size</string>
                        </property>
                        <property name="wordWrap">
                         <bool>true</bool>
@@ -1415,7 +1415,7 @@
                     <item>
                      <widget class="QLabel" name="mPriorityLabel">
                       <property name="text">
-                       <string>Priority:</string>
+                       <string>Priority</string>
                       </property>
                      </widget>
                     </item>

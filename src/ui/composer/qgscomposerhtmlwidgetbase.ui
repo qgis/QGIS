@@ -107,7 +107,7 @@
           <item row="2" column="0" colspan="2">
            <widget class="QRadioButton" name="mRadioManualSource">
             <property name="text">
-             <string>Source:</string>
+             <string>Source</string>
             </property>
            </widget>
           </item>

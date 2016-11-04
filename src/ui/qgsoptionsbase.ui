@@ -1858,7 +1858,7 @@
                     <item>
                      <widget class="QCheckBox" name="chkMaxThreads">
                       <property name="text">
-                       <string>Max cores to use:</string>
+                       <string>Max cores to use</string>
                       </property>
                      </widget>
                     </item>
@@ -1942,7 +1942,7 @@
                      <item row="1" column="1">
                       <widget class="QLabel" name="label_65">
                        <property name="text">
-                        <string>Simplification threshold (higher values result in more simplification): </string>
+                        <string>Simplification threshold (higher values result in more simplification)</string>
                        </property>
                        <property name="margin">
                         <number>2</number>
@@ -2000,7 +2000,7 @@
                         <string>This algorithm is only applied to simplify on local side</string>
                        </property>
                        <property name="text">
-                        <string>Simplification algorithm: </string>
+                        <string>Simplification algorithm</string>
                        </property>
                        <property name="margin">
                         <number>2</number>
@@ -2020,7 +2020,7 @@
                      <item row="4" column="1">
                       <widget class="QLabel" name="mSimplifyMaxScaleLabel">
                        <property name="text">
-                        <string>Maximum scale at which the layer should be simplified (1:1 always simplifies): </string>
+                        <string>Maximum scale at which the layer should be simplified (1:1 always simplifies)</string>
                        </property>
                        <property name="margin">
                         <number>2</number>
@@ -4781,7 +4781,7 @@
                   <item row="0" column="0">
                    <widget class="QLabel" name="lblSystemLocale">
                     <property name="text">
-                     <string>Detected active locale on your system:</string>
+                     <string>Detected active locale on your system</string>
                     </property>
                    </widget>
                   </item>

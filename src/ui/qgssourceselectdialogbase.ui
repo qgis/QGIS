@@ -120,7 +120,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Fi&amp;lter:</string>
+        <string>Fi&amp;lter</string>
        </property>
        <property name="buddy">
         <cstring>lineFilter</cstring>
