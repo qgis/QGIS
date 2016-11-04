@@ -201,15 +201,21 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
         continue;
       }
 
+      //The layer set has entries if the composer map has a locked layer set or
+      //if the composer map layer set has been constrained in the WMS request.
+      //If this is not the case, there is no need to modify the layers in the legend here
+      QStringList layerSet = map->layerSet();
+      if ( layerSet.size() < 1 )
+      {
+        continue;
+      }
+
       // get model and layer tree root of the legend
       QgsLegendModelV2* model = currentLegend->modelV2();
       QgsLayerTreeGroup* root = model->rootGroup();
 
-
       // get layerIds find in the layer tree root
       QStringList layerIds = root->findLayerIds();
-      // get map layerIds
-      QStringList layerSet = map->layerSet();
 
       // get map scale
       double scale = map->scale();
