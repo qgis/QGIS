@@ -511,6 +511,9 @@ static bool _fuzzyContainsRect( const QRectF& r1, const QRectF& r2 )
 
 void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle& viewExtent, int imageWidth, QList<QRectF>& missingRects, double tres, int resOffset, QList<TileImage>& otherResTiles )
 {
+  if ( !mTileMatrixSet )
+    return;  // there is no tile matrix set defined for ordinary WMS (with user-specified tile size)
+
   const QgsWmtsTileMatrix* tmOther = mTileMatrixSet->findOtherResolution( tres, resOffset );
   if ( !tmOther )
     return;
@@ -654,6 +657,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     }
     else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 )
     {
+      // this is an ordinary WMS server, but the user requested tiled approach
+      // so we will pretend it is a WMS-C server with just one tile matrix
       tempTm.reset( new QgsWmtsTileMatrix );
       tempTm->topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth    = mSettings.mMaxWidth;
