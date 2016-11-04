@@ -1365,12 +1365,55 @@ static QVariant fcnUuid( const QVariantList&, const QgsExpressionContext*, QgsEx
   return QUuid::createUuid().toString();
 }
 
-static QVariant fcnSubstr( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+static QVariant fcnSubstr( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
 {
-  QString str = getStringValue( values.at( 0 ), parent );
-  int from = getIntValue( values.at( 1 ), parent );
-  int len = getIntValue( values.at( 2 ), parent );
-  return QVariant( str.mid( from -1, len ) );
+
+  QgsExpression::Node* node;
+
+  node = getNode( values.at( 0 ), parent );
+  ENSURE_NO_EVAL_ERROR;
+  QString str = node->eval( parent, context ).toString();
+
+  node = getNode( values.at( 1 ), parent );
+  ENSURE_NO_EVAL_ERROR;
+  int from = node->eval( parent, context ).toInt();
+
+  node = getNode( values.at( 2 ), parent );
+  QVariant value = node->eval( parent, context );
+  int len;
+  if ( value.isValid() )
+  {
+    len = value.toInt();
+  }
+  else
+  {
+    len = str.size();
+  }
+
+  if ( from < 0 )
+  {
+    from = str.size() + from;
+    if ( from < 0 )
+    {
+      from = 0;
+    }
+  }
+  else if ( from > 0 )
+  {
+    //account for the fact that substr() starts at 1
+    from -= 1;
+  }
+
+  if ( len < 0 )
+  {
+    len = str.size() + len - from;
+    if ( len < 0 )
+    {
+      len = 0;
+    }
+  }
+
+  return QVariant( str.mid( from, len ) );
 }
 static QVariant fcnFeatureId( const QVariantList&, const QgsExpressionContext* context, QgsExpression* )
 {
@@ -3769,7 +3812,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "replace" ), -1, fcnReplace, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "regexp_replace" ), 3, fcnRegexpReplace, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "regexp_substr" ), 2, fcnRegexpSubstr, QStringLiteral( "String" ) )
-    << new StaticFunction( QStringLiteral( "substr" ), 3, fcnSubstr, QStringLiteral( "String" ) )
+    << new StaticFunction( QStringLiteral( "substr" ), ParameterList() << Parameter( QStringLiteral( "string" ) ) << Parameter( QStringLiteral( "start " ) ) << Parameter( QStringLiteral( "length" ), true ), fcnSubstr, QStringLiteral( "String" ), QString(), False, QSet<QString>(), true )
     << new StaticFunction( QStringLiteral( "concat" ), -1, fcnConcat, QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList(), true )
     << new StaticFunction( QStringLiteral( "strpos" ), 2, fcnStrpos, QStringLiteral( "String" ) )
     << new StaticFunction( QStringLiteral( "left" ), 2, fcnLeft, QStringLiteral( "String" ) )
