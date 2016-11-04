@@ -403,6 +403,7 @@ protected:
  * Provider to display vector data in a GRASS GIS layer.
  *
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
+ * @see QgsVectorLayerUtils()
  */
 
 
@@ -1396,6 +1397,62 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QString defaultValueExpression( int index ) const;
 
+    /**
+     * Returns any constraints which are present for a specified
+     * field index. These constraints may be inherited from the layer's data provider
+     * or may be set manually on the vector layer from within QGIS.
+     * @note added in QGIS 3.0
+     * @see setFieldConstraint()
+     */
+    QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
+
+    /**
+     * Sets a constraint for a specified field index. Any constraints inherited from the layer's
+     * data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
+     * constraints to be added on top of the existing provider constraints.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     * @see removeFieldConstraint()
+     */
+    void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
+
+    /**
+     * Removes a constraint for a specified field index. Any constraints inherited from the layer's
+     * data provider will be kept intact and cannot be removed.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     * @see setFieldConstraint()
+     */
+    void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
+
+    /**
+     * Returns the constraint expression for for a specified field index, if set.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     * @see constraintDescription()
+     * @see setConstraintExpression()
+     */
+    QString constraintExpression( int index ) const;
+
+    /**
+     * Returns the descriptive name for the constraint expression for a specified field index.
+     * @note added in QGIS 3.0
+     * @see constraints()
+     * @see constraintExpression()
+     * @see setConstraintExpression()
+     */
+    QString constraintDescription( int index ) const;
+
+    /**
+     * Set the constraint expression for the specified field index. An optional descriptive name for the constraint
+     * can also be set. Setting an empty expression will clear any existing expression constraint.
+     * @note added in QGIS 3.0
+     * @see constraintExpression()
+     * @see constraintDescription()
+     * @see constraints()
+     */
+    void setConstraintExpression( int index, const QString& expression, const QString& description = QString() );
+
     /** Calculates a list of unique values contained within an attribute in the layer. Note that
      * in some circumstances when unsaved changes are present for the layer then the returned list
      * may contain outdated values (for instance when the attribute value in a saved feature has
@@ -1932,6 +1989,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map which stores default value expressions for fields
     QgsStringMap mDefaultExpressionMap;
+
+    //! Map which stores constraints for fields
+    QMap< QString, QgsFieldConstraints::Constraints > mFieldConstraints;
+
+    //! Map which stores constraint strength for fields
+    QMap< QPair< QString, QgsFieldConstraints::Constraint >, QgsFieldConstraints::ConstraintStrength > mFieldConstraintStrength;
+
+    //! Map which stores expression constraints for fields. Value is a pair of expression/description.
+    QMap< QString, QPair< QString, QString > > mFieldConstraintExpressions;
 
     //! Holds the configuration for the edit form
     QgsEditFormConfig mEditFormConfig;

@@ -104,6 +104,7 @@ void QgsFilterLineEdit::clearValue()
   {
     case ClearToNull:
       setText( mNullValue );
+      selectAll();
       break;
 
     case ClearToDefault:

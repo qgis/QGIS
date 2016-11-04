@@ -282,6 +282,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QVariant defaultValue( int fieldId ) const;
 
     /**
+     * Returns any constraints which are present at the provider for a specified
+     * field index.
+     * @note added in QGIS 3.0
+     */
+    QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
+
+    /**
      * Changes geometries of existing features
      * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
@@ -520,6 +527,5 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Capabilities )
-
 
 #endif

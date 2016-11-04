@@ -20,6 +20,18 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 %End
 
   public:
+
+    /**
+     * Result of constraint checks.
+     * @note added in QGIS 3.0
+     */
+    enum ConstraintResult
+    {
+      ConstraintResultPass, //!< Widget passed constraints successfully
+      ConstraintResultFailHard, //!< Widget failed at least one hard (enforced) constraint
+      ConstraintResultFailSoft, //!< Widget failed at least one soft (non-enforced) constraint
+    };
+
     /**
      * Create a new widget wrapper
      *
@@ -104,11 +116,29 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 
     /**
      * Get the current constraint status.
-     * @return true if the constraint is valid or if there's not constraint,
+     * @return true if the constraint is valid or if there's no constraint,
      * false otherwise
      * @note added in QGIS 2.16
+     * @see constraintFailureReason()
+     * @see isBlockingCommit()
      */
     bool isValidConstraint() const;
+
+    /**
+     * Returns true if the widget is preventing the feature from being committed. This may be true as a result
+     * of attribute values failing enforced field constraints.
+     * @note added in QGIS 3.0
+     * @see isValidConstraint()
+     */
+    bool isBlockingCommit() const;
+
+    /**
+     * Returns the reason why a constraint check has failed (or an empty string
+     * if constraint check was successful).
+     * @see isValidConstraint()
+     * @note added in QGIS 3.0
+     */
+    QString constraintFailureReason() const;
 
   signals:
     /**
@@ -126,7 +156,7 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      * @param err the error represented as a string. Empty if none.
      * @param status
      */
-    void constraintStatusChanged( const QString& constraint, const QString& err, bool status );
+    void constraintStatusChanged( const QString& constraint, const QString &desc, const QString& err, ConstraintResult status );
 
   public slots:
     /**
@@ -205,6 +235,10 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      *
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
+     *
+     * @param status The current constraint status.
+     *
+     * @note added in QGIS 2.16
      */
-    virtual void updateConstraintWidgetStatus( bool contraintValid );
+    virtual void updateConstraintWidgetStatus( ConstraintResult status );
 };

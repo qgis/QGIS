@@ -51,7 +51,7 @@ class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant& value ) override;
 
   private:
-    void updateConstraintWidgetStatus( bool constraintValid ) override;
+    void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
     QLineEdit* mLineEdit;
     QPushButton* mPushButton;

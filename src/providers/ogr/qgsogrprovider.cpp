@@ -927,18 +927,29 @@ void QgsOgrProvider::loadFields()
       if ( prec > 0 )
         width -= 1;
 
-      mAttributeFields.append(
-        QgsField(
-          name,
-          varType,
+      QgsField newField = QgsField(
+                            name,
+                            varType,
 #ifdef ANDROID
-          OGR_GetFieldTypeName( ogrType ),
+                            OGR_GetFieldTypeName( ogrType ),
 #else
-          textEncoding()->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+                            textEncoding()->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
 #endif
-          width, prec
-        )
-      );
+                            width, prec
+                          );
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
+      // check if field is nullable
+      bool nullable = OGR_Fld_IsNullable( fldDef );
+      if ( !nullable )
+      {
+        QgsFieldConstraints constraints;
+        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+        newField.setConstraints( constraints );
+      }
+#endif
+
+      mAttributeFields.append( newField );
     }
   }
 }

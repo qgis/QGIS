@@ -674,30 +674,6 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       break;
   }
 
-  if ( eww->layer()->editFormConfig().notNull( eww->fieldIdx() ) )
-  {
-    QLabel* buddy = mBuddyMap.value( eww->widget() );
-
-    if ( buddy )
-    {
-      if ( !buddy->property( "originalText" ).isValid() )
-        buddy->setProperty( "originalText", buddy->text() );
-
-      QString text = buddy->property( "originalText" ).toString();
-
-      if ( value.isNull() )
-      {
-        // not good
-        buddy->setText( QStringLiteral( "%1<font color=\"red\">❌</font>" ).arg( text ) );
-      }
-      else
-      {
-        // good
-        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
-      }
-    }
-  }
-
   updateConstraints( eww );
 
   // emit
@@ -720,14 +696,25 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
   QgsFeature ft;
   if ( currentFormFeature( ft ) )
   {
+    // if the layer is NOT being edited then we only check layer based constraints, and not
+    // any constraints enforced by the provider. Because:
+    // 1. we want to keep browsing features nice and responsive. It's nice to give feedback as to whether
+    // the value checks out, but not if it's too slow to do so. Some constraints (eg unique) can be
+    // expensive to test. A user can freely remove a layer-based constraint if it proves to be too slow
+    // to test, but they are unlikely to have any control over provider-side constraints
+    // 2. the provider has already accepted the value, so presumably it doesn't violate the constraint
+    // and there's no point rechecking!
+    QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet
+        : QgsFieldConstraints::ConstraintOriginLayer;
+
     // update eww constraint
-    eww->updateConstraint( ft );
+    eww->updateConstraint( ft, constraintOrigin );
 
     // update eww dependencies constraint
     QList<QgsEditorWidgetWrapper*> deps = constraintDependencies( eww );
 
     Q_FOREACH ( QgsEditorWidgetWrapper* depsEww, deps )
-      depsEww->updateConstraint( ft );
+      depsEww->updateConstraint( ft, constraintOrigin );
 
     // sync ok button status
     synchronizeEnabledState();
@@ -824,10 +811,10 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
       {
         invalidFields.append( eww->field().name() );
 
-        QString desc = eww->layer()->editFormConfig().constraintDescription( eww->fieldIdx() );
-        descriptions.append( desc );
+        descriptions.append( eww->constraintFailureReason() );
 
-        valid = false; // continue to get all invalif fields
+        if ( eww->isBlockingCommit() )
+          valid = false; // continue to get all invalid fields
       }
     }
   }
@@ -893,7 +880,7 @@ void QgsAttributeForm::onUpdatedFields()
 }
 
 void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
-    const QString &description, const QString& err, bool ok )
+    const QString &description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result )
 {
   QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sender() );
   Q_ASSERT( eww );
@@ -902,8 +889,9 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
 
   if ( buddy )
   {
-    QString tooltip = tr( "Description: " ) + description + "\n" +
-                      tr( "Raw expression: " ) + constraint + "\n" + tr( "Constraint: " ) + err;
+    QString tooltip = QStringLiteral( "<b>" ) + tr( "Constraints: " ) + QStringLiteral( "</b>" ) + description +
+                      QStringLiteral( "<br /><b>" ) + tr( "Raw expression: " ) + QStringLiteral( "</b>" ) + constraint +
+                      QStringLiteral( "<br /><b>" ) + tr( "Result: " ) + QStringLiteral( "</b>" ) + err;
     buddy->setToolTip( tooltip );
 
     if ( !buddy->property( "originalText" ).isValid() )
@@ -911,15 +899,19 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
 
     QString text = buddy->property( "originalText" ).toString();
 
-    if ( !ok )
+    switch ( result )
     {
-      // not good
-      buddy->setText( QStringLiteral( "%1<font color=\"red\">*</font>" ).arg( text ) );
-    }
-    else
-    {
-      // good
-      buddy->setText( QStringLiteral( "%1<font color=\"green\">*</font>" ).arg( text ) );
+      case QgsEditorWidgetWrapper::ConstraintResultFailHard:
+        buddy->setText( QStringLiteral( "%1<font color=\"red\">✘</font>" ).arg( text ) );
+        break;
+
+      case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
+        buddy->setText( QStringLiteral( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
+        break;
+
+      case QgsEditorWidgetWrapper::ConstraintResultPass:
+        buddy->setText( QStringLiteral( "%1<font color=\"green\">✔</font>" ).arg( text ) );
+        break;
     }
   }
 }
@@ -941,7 +933,7 @@ QList<QgsEditorWidgetWrapper*> QgsAttributeForm::constraintDependencies( QgsEdit
       if ( name != ewwName )
       {
         // get expression and referencedColumns
-        QgsExpression expr = eww->layer()->editFormConfig().constraintExpression( eww->fieldIdx() );
+        QgsExpression expr = eww->layer()->fields().at( eww->fieldIdx() ).constraints().constraintExpression();
 
         Q_FOREACH ( const QString& colName, expr.referencedColumns() )
         {
@@ -1004,7 +996,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     QStringList invalidFields, descriptions;
     bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
 
-    if ( ! validConstraint )
+    if ( ! invalidFields.isEmpty() )
       displayInvalidConstraintMessage( invalidFields, descriptions );
 
     isEditable = isEditable & validConstraint;

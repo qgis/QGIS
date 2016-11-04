@@ -87,7 +87,7 @@ void QgsListWidgetWrapper::onValueChanged()
   emit valueChanged( value() );
 }
 
-void QgsListWidgetWrapper::updateConstraintWidgetStatus( bool /*constraintValid*/ )
+void QgsListWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult /*constraintValid*/ )
 {
   // Nothing
 }

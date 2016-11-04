@@ -56,6 +56,7 @@
 %Include qgsfeaturerequest.sip
 %Include qgsfeedback.sip
 %Include qgsfield.sip
+%Include qgsfieldconstraints.sip
 %Include qgsfields.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgsgeometryvalidator.sip
@@ -148,6 +149,7 @@
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
+%Include qgsvectorlayerutils.sip
 %Include qgsvectorsimplifymethod.sip
 
 %Include qgscachedfeatureiterator.sip

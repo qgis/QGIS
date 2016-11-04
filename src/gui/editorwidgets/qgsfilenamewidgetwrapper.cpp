@@ -152,15 +152,23 @@ void QgsFileNameWidgetWrapper::selectFileName()
     mLineEdit->setText( fileName );
 }
 
-void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+void QgsFileNameWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
 {
   if ( mLineEdit )
   {
-    if ( constraintValid )
-      mLineEdit->setStyleSheet( QString() );
-    else
+    switch ( status )
     {
-      mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+      case ConstraintResultPass:
+        mLineEdit->setStyleSheet( QString() );
+        break;
+
+      case ConstraintResultFailHard:
+        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+        break;
+
+      case ConstraintResultFailSoft:
+        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
+        break;
     }
   }
 }

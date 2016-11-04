@@ -34,6 +34,7 @@ class QgsFieldsPrivate;
  ****************************************************************************/
 
 #include "qgseditorwidgetsetup.h"
+#include "qgsfieldconstraints.h"
 
 /** \class QgsField
   * \ingroup core
@@ -54,8 +55,10 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
     Q_PROPERTY( QString defaultValueExpression READ defaultValueExpression WRITE setDefaultValueExpression )
+    Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
 
   public:
+
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
@@ -207,6 +210,20 @@ class CORE_EXPORT QgsField
      * @see defaultValueExpression()
      */
     void setDefaultValueExpression( const QString& expression );
+
+    /**
+     * Returns constraints which are present for the field.
+     * @note added in QGIS 3.0
+     * @see setConstraints()
+     */
+    const QgsFieldConstraints& constraints() const;
+
+    /**
+     * Sets constraints which are present for the field.
+     * @note added in QGIS 3.0
+     * @see constraints()
+     */
+    void setConstraints( const QgsFieldConstraints& constraints );
 
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.

@@ -188,13 +188,23 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
     mQgsWidget->setReadOnly( !enabled );
 }
 
-void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
 {
   if ( mLineEdit )
   {
-    if ( constraintValid )
-      mLineEdit->setStyleSheet( QString() );
-    else
-      mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+    switch ( status )
+    {
+      case ConstraintResultPass:
+        mLineEdit->setStyleSheet( QString() );
+        break;
+
+      case ConstraintResultFailHard:
+        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+        break;
+
+      case ConstraintResultFailSoft:
+        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
+        break;
+    }
   }
 }

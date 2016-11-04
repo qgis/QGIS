@@ -267,15 +267,23 @@ void QgsPhotoWidgetWrapper::setEnabled( bool enabled )
     mButton->setEnabled( enabled );
 }
 
-void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus( bool constraintValid )
+void QgsPhotoWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
 {
   if ( mLineEdit )
   {
-    if ( constraintValid )
-      mLineEdit->setStyleSheet( QString() );
-    else
+    switch ( status )
     {
-      mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+      case ConstraintResultPass:
+        mLineEdit->setStyleSheet( QString() );
+        break;
+
+      case ConstraintResultFailHard:
+        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+        break;
+
+      case ConstraintResultFailSoft:
+        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
+        break;
     }
   }
 }

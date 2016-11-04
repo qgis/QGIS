@@ -180,6 +180,16 @@ void QgsField::setDefaultValueExpression( const QString& expression )
   d->defaultValueExpression = expression;
 }
 
+void QgsField::setConstraints( const QgsFieldConstraints& constraints )
+{
+  d->constraints = constraints;
+}
+
+const QgsFieldConstraints& QgsField::constraints() const
+{
+  return d->constraints;
+}
+
 QString QgsField::alias() const
 {
   return d->alias;
@@ -303,15 +313,26 @@ QDataStream& operator<<( QDataStream& out, const QgsField& field )
   out << field.comment();
   out << field.alias();
   out << field.defaultValueExpression();
+  out << field.constraints().constraints();
+  out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) );
+  out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ) );
+  out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintExpression ) );
+  out << static_cast< quint32 >( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+  out << static_cast< quint32 >( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+  out << static_cast< quint32 >( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+  out << field.constraints().constraintExpression();
+  out << field.constraints().constraintDescription();
   out << static_cast< quint32 >( field.subType() );
   return out;
 }
 
 QDataStream& operator>>( QDataStream& in, QgsField& field )
 {
-  quint32 type, subType, length, precision;
-  QString name, typeName, comment, alias, defaultValueExpression;
-  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression >> subType;
+  quint32 type, subType, length, precision, constraints, originNotNull, originUnique, originExpression, strengthNotNull, strengthUnique, strengthExpression;
+  QString name, typeName, comment, alias, defaultValueExpression, constraintExpression, constraintDescription;
+  in >> name >> type >> typeName >> length >> precision >> comment >> alias
+  >> defaultValueExpression >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
+  constraintExpression >> constraintDescription >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -320,6 +341,30 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
   field.setComment( comment );
   field.setAlias( alias );
   field.setDefaultValueExpression( defaultValueExpression );
+  QgsFieldConstraints fieldConstraints;
+  if ( constraints & QgsFieldConstraints::ConstraintNotNull )
+  {
+    fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, static_cast< QgsFieldConstraints::ConstraintOrigin>( originNotNull ) );
+    fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, static_cast< QgsFieldConstraints::ConstraintStrength>( strengthNotNull ) );
+  }
+  else
+    fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintNotNull );
+  if ( constraints & QgsFieldConstraints::ConstraintUnique )
+  {
+    fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique, static_cast< QgsFieldConstraints::ConstraintOrigin>( originUnique ) );
+    fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, static_cast< QgsFieldConstraints::ConstraintStrength>( strengthUnique ) );
+  }
+  else
+    fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintUnique );
+  if ( constraints & QgsFieldConstraints::ConstraintExpression )
+  {
+    fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression, static_cast< QgsFieldConstraints::ConstraintOrigin>( originExpression ) );
+    fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, static_cast< QgsFieldConstraints::ConstraintStrength>( strengthExpression ) );
+  }
+  else
+    fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintExpression );
+  fieldConstraints.setConstraintExpression( constraintExpression, constraintDescription );
+  field.setConstraints( fieldConstraints );
   field.setSubType( static_cast< QVariant::Type >( subType ) );
   return in;
 }

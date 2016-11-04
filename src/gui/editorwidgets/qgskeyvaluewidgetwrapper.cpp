@@ -72,7 +72,7 @@ void QgsKeyValueWidgetWrapper::setValue( const QVariant& value )
   mWidget->setMap( value.toMap() );
 }
 
-void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( bool /*constraintValid*/ )
+void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult /*constraintValid*/ )
 {
   // Nothing
 }

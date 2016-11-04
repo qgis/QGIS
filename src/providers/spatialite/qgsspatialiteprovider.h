@@ -446,6 +446,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
                                   int type, int nDims, int little_endian,
                                   int endian_arch );
 
+    void fetchConstraints();
+
     enum GEOS_3D
     {
       GEOS_3D_POINT              = -2147483647,

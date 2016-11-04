@@ -558,9 +558,24 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
-  attributeTypeDialog.setNotNull( cfg.mNotNull );
+  attributeTypeDialog.setNotNull( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull );
+  attributeTypeDialog.setNotNullEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
+  attributeTypeDialog.setUnique( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique );
+  attributeTypeDialog.setUniqueEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
+
+  QgsFieldConstraints constraints = mLayer->fields().at( index ).constraints();
+  QgsFieldConstraints::Constraints providerConstraints = 0;
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
+    providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
+    providerConstraints |= QgsFieldConstraints::ConstraintUnique;
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintOriginProvider )
+    providerConstraints |= QgsFieldConstraints::ConstraintExpression;
+  attributeTypeDialog.setProviderConstraints( providerConstraints );
+
   attributeTypeDialog.setConstraintExpression( cfg.mConstraint );
   attributeTypeDialog.setConstraintExpressionDescription( cfg.mConstraintDescription );
+  attributeTypeDialog.setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
   attributeTypeDialog.setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
 
   attributeTypeDialog.setWidgetConfig( cfg.mEditorWidgetConfig );
@@ -571,13 +586,34 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
-  cfg.mNotNull = attributeTypeDialog.notNull();
+
+  cfg.mConstraints = 0;
+  if ( attributeTypeDialog.notNull() && !( providerConstraints & QgsFieldConstraints::ConstraintNotNull ) )
+  {
+    cfg.mConstraints |= QgsFieldConstraints::ConstraintNotNull;
+  }
+  if ( attributeTypeDialog.unique() && !( providerConstraints & QgsFieldConstraints::ConstraintUnique ) )
+  {
+    cfg.mConstraints |= QgsFieldConstraints::ConstraintUnique;
+  }
+  if ( !attributeTypeDialog.constraintExpression().isEmpty() && !( providerConstraints & QgsFieldConstraints::ConstraintExpression ) )
+  {
+    cfg.mConstraints |= QgsFieldConstraints::ConstraintExpression;
+  }
+
   cfg.mConstraintDescription = attributeTypeDialog.constraintExpressionDescription();
   cfg.mConstraint = attributeTypeDialog.constraintExpression();
   mLayer->setDefaultValueExpression( index, attributeTypeDialog.defaultValueExpression() );
 
   cfg.mEditorWidgetType = attributeTypeDialog.editorWidgetType();
   cfg.mEditorWidgetConfig = attributeTypeDialog.editorWidgetConfig();
+
+  cfg.mConstraintStrength.insert( QgsFieldConstraints::ConstraintNotNull, attributeTypeDialog.notNullEnforced() ?
+                                  QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  cfg.mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, attributeTypeDialog.uniqueEnforced() ?
+                                  QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  cfg.mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, attributeTypeDialog.constraintExpressionEnforced() ?
+                                  QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
 
   pb->setText( attributeTypeDialog.editorWidgetText() );
 
@@ -956,12 +992,23 @@ void QgsFieldsProperties::apply()
 
     editFormConfig.setReadOnly( i, !cfg.mEditable );
     editFormConfig.setLabelOnTop( i, cfg.mLabelOnTop );
-    editFormConfig.setNotNull( i, cfg.mNotNull );
-    editFormConfig.setContraintDescription( i, cfg.mConstraintDescription );
-    editFormConfig.setConstraintExpression( i, cfg.mConstraint );
+    mLayer->setConstraintExpression( i, cfg.mConstraint, cfg.mConstraintDescription );
 
     editFormConfig.setWidgetType( name, cfg.mEditorWidgetType );
     editFormConfig.setWidgetConfig( name, cfg.mEditorWidgetConfig );
+
+    if ( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull )
+    {
+      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
+    }
+    if ( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique )
+    {
+      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
+    }
+    if ( cfg.mConstraints & QgsFieldConstraints::ConstraintExpression )
+    {
+      mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
+    }
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -1026,7 +1073,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
     : mEditable( true )
     , mEditableEnabled( true )
     , mLabelOnTop( false )
-    , mNotNull( false )
+    , mConstraints( 0 )
     , mConstraintDescription( QString() )
     , mButton( nullptr )
 {
@@ -1039,9 +1086,13 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  mNotNull = layer->editFormConfig().notNull( idx );
-  mConstraint = layer->editFormConfig().constraintExpression( idx );
-  mConstraintDescription = layer->editFormConfig().constraintDescription( idx );
+  QgsFieldConstraints constraints = layer->fields().at( idx ).constraints();
+  mConstraints = constraints.constraints();
+  mConstraint = constraints.constraintExpression();
+  mConstraintStrength.insert( QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+  mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+  mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+  mConstraintDescription = constraints.constraintDescription();
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();

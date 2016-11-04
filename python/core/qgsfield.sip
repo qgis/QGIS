@@ -14,6 +14,7 @@ class QgsField
 %End
 
   public:
+
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
@@ -162,6 +163,20 @@ class QgsField
      */
     void setDefaultValueExpression( const QString& expression );
 
+    /**
+     * Returns constraints which are present for the field.
+     * @note added in QGIS 3.0
+     * @see setConstraints()
+     */
+    const QgsFieldConstraints& constraints() const;
+
+    /**
+     * Sets constraints which are present for the field.
+     * @note added in QGIS 3.0
+     * @see constraints()
+     */
+    void setConstraints( const QgsFieldConstraints& constraints );
+
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
      * @see setAlias()
@@ -254,3 +269,4 @@ class QgsField
      */
     const QgsEditorWidgetSetup& editorWidgetSetup() const;
 }; // class QgsField
+
