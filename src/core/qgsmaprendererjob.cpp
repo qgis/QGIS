@@ -286,7 +286,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
         layerJobs.removeLast();
         continue;
       }
-      mypFlattenedImage->fill( 0 );
 
       job.img = mypFlattenedImage;
       QPainter* mypPainter = new QPainter( job.img );
