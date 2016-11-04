@@ -918,7 +918,6 @@ QgsRasterBlock * QgsRasterProjector::block2( int bandNo, QgsRectangle  const & e
       if ( !inside ) continue; // we have everything set to no data
 
       qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
-      QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
