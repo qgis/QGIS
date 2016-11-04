@@ -175,6 +175,7 @@ from .RemoveNullGeometry import RemoveNullGeometry
 from .ExtendLines import ExtendLines
 from .ExtractSpecificNodes import ExtractSpecificNodes
 from .GeometryByExpression import GeometryByExpression
+from .SnapGeometries import SnapGeometriesToLayer
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -237,7 +238,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
-                        ExtractSpecificNodes(), GeometryByExpression()
+                        ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer()
                         ]
 
         if hasMatplotlib:
