@@ -38,6 +38,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastermatrix.cpp
   vector/mersenne-twister.cpp
   vector/qgsgeometryanalyzer.cpp
+  vector/qgsgeometrysnapper.cpp
   vector/qgspointsample.cpp
   vector/qgstransectsample.cpp
   vector/qgszonalstatistics.cpp
@@ -52,6 +53,7 @@ SET(QGIS_ANALYSIS_SRCS
 SET(QGIS_ANALYSIS_MOC_HDRS
   openstreetmap/qgsosmdownload.h
   openstreetmap/qgsosmimport.h
+  vector/qgsgeometrysnapper.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})

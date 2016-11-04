@@ -9,6 +9,7 @@
 %Import core/core.sip
 
 %Include vector/qgsgeometryanalyzer.sip
+%Include vector/qgsgeometrysnapper.sip
 %Include vector/qgsoverlayanalyzer.sip
 %Include vector/qgspointsample.sip
 %Include vector/qgstransectsample.sip

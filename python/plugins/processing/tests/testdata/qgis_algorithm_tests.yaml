@@ -1387,3 +1387,33 @@ tests:
       OUTPUT_LAYER:
         name: expected/geometry_by_expression_line.gml
         type: vector
+
+  - algorithm: qgis:snapgeometriestolayer
+    name: Snap lines to lines
+    params:
+      INPUT:
+        name: snap_lines.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_lines_to_lines.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometriestolayer
+    name: Snap polygons to polygons
+    params:
+      INPUT:
+        name: snap_polys.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: polys.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_polys_to_polys.gml
+        type: vector
