@@ -792,6 +792,36 @@ void TestQgsGeometry::point()
   //boundary
   QgsPointV2 p30( 1.0, 2.0 );
   QVERIFY( !p30.boundary() );
+
+  // distance
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( QgsPointV2( 2, 2 ) ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( 2, 2 ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( QgsPointV2( 3, 2 ) ), 2.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( 3, 2 ), 2.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( QgsPointV2( 1, 3 ) ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( 1, 3 ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( QgsPointV2( 1, 4 ) ), 2.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distance( 1, 4 ), 2.0 );
+  QCOMPARE( QgsPointV2( 1, -2 ).distance( QgsPointV2( 1, -4 ) ), 2.0 );
+  QCOMPARE( QgsPointV2( 1, -2 ).distance( 1, -4 ), 2.0 );
+
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( QgsPointV2( 2, 2 ) ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( 2, 2 ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( QgsPointV2( 3, 2 ) ), 4.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( 3, 2 ), 4.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( QgsPointV2( 1, 3 ) ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( 1, 3 ), 1.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( QgsPointV2( 1, 4 ) ), 4.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).distanceSquared( 1, 4 ), 4.0 );
+  QCOMPARE( QgsPointV2( 1, -2 ).distanceSquared( QgsPointV2( 1, -4 ) ), 4.0 );
+  QCOMPARE( QgsPointV2( 1, -2 ).distanceSquared( 1, -4 ), 4.0 );
+
+  // azimuth
+  QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 1, 2 ) ), 0.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 1, 3 ) ), 0.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 2, 2 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 1, 0 ) ), 180.0 );
+  QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 0, 2 ) ), -90.0 );
 }
 
 void TestQgsGeometry::lineString()

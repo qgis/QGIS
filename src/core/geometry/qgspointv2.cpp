@@ -439,3 +439,30 @@ QPointF QgsPointV2::toQPointF() const
 {
   return QPointF( mX, mY );
 }
+
+double QgsPointV2::distance( double x, double y ) const
+{
+  return sqrt(( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+}
+
+double QgsPointV2::distance( const QgsPointV2& other ) const
+{
+  return sqrt(( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+}
+
+double QgsPointV2::distanceSquared( double x, double y ) const
+{
+  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+}
+
+double QgsPointV2::distanceSquared( const QgsPointV2& other ) const
+{
+  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) ;
+}
+
+double QgsPointV2::azimuth( const QgsPointV2& other ) const
+{
+  double dx = other.x() - mX;
+  double dy = other.y() - mY;
+  return ( atan2( dx, dy ) * 180.0 / M_PI );
+}
