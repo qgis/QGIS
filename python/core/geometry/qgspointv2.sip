@@ -138,6 +138,47 @@ class QgsPointV2: public QgsAbstractGeometry
      */
     QPointF toQPointF() const;
 
+    /**
+     * Returns the distance between this point and a specified x, y coordinate. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, eg
+     * when comparing distances.
+     * @note added in QGIS 3.0
+     * @see distanceSquared()
+    */
+    double distance( double x, double y ) const;
+
+    /**
+     * Returns the 2D distance between this point and another point. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, eg
+     * when comparing distances.
+     * @note added in QGIS 3.0
+    */
+    double distance( const QgsPointV2& other ) const;
+
+    /**
+     * Returns the squared distance between this point a specified x, y coordinate. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared( double x, double y ) const;
+
+    /**
+     * Returns the squared distance between this point another point. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared( const QgsPointV2& other ) const;
+
+    /**
+     * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+     * @note added in QGIS 3.0
+     */
+    double azimuth( const QgsPointV2& other ) const;
+
     //implementation of inherited methods
     virtual QgsRectangle boundingBox() const;
     virtual QString geometryType() const;
