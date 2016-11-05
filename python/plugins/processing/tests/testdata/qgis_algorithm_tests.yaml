@@ -1417,3 +1417,18 @@ tests:
       OUTPUT:
         name: expected/snap_polys_to_polys.gml
         type: vector
+
+  - algorithm: qgis:snapgeometriestolayer
+    name: Snap points to points
+    params:
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: points.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_points_to_points.gml
+        type: vector

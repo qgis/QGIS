@@ -24,6 +24,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapsettings.h"
+#include "qgssurface.h"
+#include "qgscurve.h"
 
 ///@cond PRIVATE
 
@@ -328,7 +330,17 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometry* geom )
   {
     for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
     {
-      for ( int iVert = 0, nVerts = geom->vertexCount( iPart, iRing ) - 1; iVert < nVerts; ++iVert )
+      int nVerts = geom->vertexCount( iPart, iRing );
+
+      if ( dynamic_cast< const QgsSurface* >( geom ) )
+        nVerts--;
+      else if ( const QgsCurve* curve = dynamic_cast< const QgsCurve* >( geom ) )
+      {
+        if ( curve->isClosed() )
+          nVerts--;
+      }
+
+      for ( int iVert = 0; iVert < nVerts; ++iVert )
       {
         CoordIdx* idx = new CoordIdx( geom, QgsVertexId( iPart, iRing, iVert ) );
         CoordIdx* idx1 = new CoordIdx( geom, QgsVertexId( iPart, iRing, iVert + 1 ) );
@@ -469,16 +481,15 @@ void QgsGeometrySnapper::processFeature( QgsFeature& feature )
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) const
 {
-  // can't snap to different geometry types
-  if ( geometry.type() != mReferenceLayer->geometryType() )
-    return geometry;
-
-  QgsPointV2 center = QgsPointV2( geometry.geometry()->boundingBox().center() );
+  QgsPointV2 center = dynamic_cast< const QgsPointV2* >( geometry.geometry() ) ? *dynamic_cast< const QgsPointV2* >( geometry.geometry() ) :
+                      QgsPointV2( geometry.geometry()->boundingBox().center() );
 
   // Get potential reference features and construct snap index
   QList<QgsGeometry> refGeometries;
   mIndexMutex.lock();
-  QgsFeatureIds refFeatureIds = mIndex.intersects( geometry.boundingBox() ).toSet();
+  QgsRectangle searchBounds = geometry.boundingBox();
+  searchBounds.grow( mSnapTolerance );
+  QgsFeatureIds refFeatureIds = mIndex.intersects( searchBounds ).toSet();
   mIndexMutex.unlock();
 
   QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
@@ -540,6 +551,10 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
       }
     }
   }
+
+  //nothing more to do for points
+  if ( dynamic_cast< const QgsPointV2* >( subjGeom ) )
+    return QgsGeometry( subjGeom );
 
   // SnapIndex for subject feature
   QgsSnapIndex* subjSnapIndex = new QgsSnapIndex( center, 10 * mSnapTolerance );
@@ -642,7 +657,14 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
 int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry* geom, int iPart, int iRing ) const
 {
   int nVerts = geom->vertexCount( iPart, iRing );
-  QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
-  QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
-  return back == front ? nVerts - 1 : nVerts;
+
+  if ( dynamic_cast< const QgsSurface* >( geom ) )
+  {
+    QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+    QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+    if ( front == back )
+      return nVerts - 1;
+  }
+
+  return nVerts;
 }

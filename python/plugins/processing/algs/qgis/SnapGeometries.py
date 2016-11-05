@@ -31,7 +31,6 @@ from qgis.core import QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -56,10 +55,6 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         reference_layer = dataobjects.getObjectFromUri(self.getParameterValue(self.REFERENCE_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
-
-        if not layer.geometryType() == reference_layer.geometryType():
-            raise GeoAlgorithmExecutionException(
-                self.tr('Input layer and reference layer must have the same geometry type (eg both are line layers)'))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields(), layer.wkbType(), layer.crs())
