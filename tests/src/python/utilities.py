@@ -17,6 +17,10 @@ import sys
 import glob
 import platform
 import tempfile
+try:
+    from urllib2 import urlopen, HTTPError, URLError
+except ImportError:
+    from urllib.request import urlopen, HTTPError, URLError
 
 from PyQt4.QtCore import QSize, QDir
 from PyQt4.QtGui import QWidget
@@ -748,3 +752,22 @@ class DoxygenParser():
             if doc is not None and list(doc):
                 return True
         return False
+
+
+def waitServer(url, timeout=10):
+    """ Wait for a server to be online and to respond
+        HTTP errors are ignored
+        @param timeout: in seconds
+        @return: True of False
+    """
+    from time import time as now
+    end = now() + timeout
+    while True:
+        try:
+            urlopen(url, timeout=1)
+            return True
+        except (HTTPError, URLError):
+            return True
+        except Exception as e:
+            if now() > end:
+                return False
