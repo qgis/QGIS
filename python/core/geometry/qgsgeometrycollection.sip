@@ -10,7 +10,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     //QgsGeometryCollection& operator=( const QgsGeometryCollection& c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection* clone() const;
+    virtual QgsGeometryCollection* clone() const /Factory/;
 
     /** Returns the number of geometries within the collection.
      */
@@ -85,7 +85,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     /** Returns a geometry without curves. Caller takes ownership
     * @param tolerance segmentation tolerance
     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * @param vertex the vertex id

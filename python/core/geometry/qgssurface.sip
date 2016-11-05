@@ -6,7 +6,7 @@ class QgsSurface: public QgsAbstractGeometry
 
   public:
 
-    virtual QgsPolygonV2* surfaceToPolygon() const = 0;
+    virtual QgsPolygonV2* surfaceToPolygon() const = 0 /Factory/;
 
     virtual QgsRectangle boundingBox() const;
 

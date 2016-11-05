@@ -12,7 +12,7 @@ class QgsCurvePolygon: public QgsSurface
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCurvePolygon* clone() const;
+    virtual QgsCurvePolygon* clone() const /Factory/;
     void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -28,7 +28,7 @@ class QgsCurvePolygon: public QgsSurface
     //surface interface
     virtual double area() const;
     virtual double perimeter() const;
-    QgsPolygonV2* surfaceToPolygon() const;
+    QgsPolygonV2* surfaceToPolygon() const /Factory/;
     virtual QgsAbstractGeometry* boundary() const /Factory/;
 
 

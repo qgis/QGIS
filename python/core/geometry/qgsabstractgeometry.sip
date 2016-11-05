@@ -85,7 +85,7 @@ class QgsAbstractGeometry
 
     /** Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometry* clone() const = 0;
+    virtual QgsAbstractGeometry* clone() const = 0 /Factory/;
 
     /** Clears the geometry, ie reset it to a null geometry
      */

@@ -6,7 +6,7 @@ class QgsMultiLineString: public QgsMultiCurve
 
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiLineString* clone() const;
+    virtual QgsMultiLineString* clone() const /Factory/;
 
     bool fromWkt( const QString& wkt );
 
