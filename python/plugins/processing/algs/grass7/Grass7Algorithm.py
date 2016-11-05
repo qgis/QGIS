@@ -426,7 +426,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     command += ' ' + param.name
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
-                command += ' ' + param.name + '=' + str(param.options[idx])
+                command += ' ' + param.name + '=' + str(param.options[idx][1])
             elif isinstance(param, ParameterString):
                 command += ' ' + param.name + '="' + str(param.value) + '"'
             elif isinstance(param, ParameterPoint):

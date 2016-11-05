@@ -652,22 +652,23 @@ class SelectionWidgetWrapper(WidgetWrapper):
             return MultipleInputPanel(options=self.param.options)
         else:
             widget = QComboBox()
-            widget.addItems(self.param.options)
+            for option in self.param.options:
+                widget.addItem(option[1], option[0])
             if self.param.default:
-                widget.setCurrentIndex(self.param.default)
+                widget.setCurrentIndex(widget.findData(self.param.default))
             return widget
 
     def setValue(self, value):
         if self.param.multiple:
             self.widget.setSelectedItems(value)
         else:
-            self.widget.setCurrentIndex(int(value))
+            self.widget.setCurrentIndex(self.widget.findData(value))
 
     def value(self):
         if self.param.multiple:
             return self.widget.selectedoptions
         else:
-            return self.widget.currentIndex()
+            return self.widget.currentData()
 
 
 class VectorWidgetWrapper(WidgetWrapper):
