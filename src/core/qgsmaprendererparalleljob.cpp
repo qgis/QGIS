@@ -215,6 +215,9 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   if ( job.cached )
     return;
 
+  if ( job.img )
+    job.img->fill( 0 );
+
   QTime t;
   t.start();
   QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< ulong >( &job ), 0, 16 ).arg( job.layerId ), 2 );

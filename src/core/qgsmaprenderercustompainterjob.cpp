@@ -244,6 +244,9 @@ void QgsMapRendererCustomPainterJob::doRender()
       QTime layerTime;
       layerTime.start();
 
+      if ( job.img )
+        job.img->fill( 0 );
+
       job.renderer->render();
 
       job.renderingTime = layerTime.elapsed();
