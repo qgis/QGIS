@@ -18,7 +18,7 @@ class QgsMultiPolygonV2: public QgsMultiSurfaceV2
 
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometryV2* g );
+    virtual bool addGeometry( QgsAbstractGeometryV2* g /Transfer/ );
 
     /** Returns the geometry converted to the more generic curve type QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
