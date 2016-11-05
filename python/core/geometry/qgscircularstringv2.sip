@@ -13,7 +13,7 @@ class QgsCircularStringV2: public QgsCurveV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCircularStringV2* clone() const;
+    virtual QgsCircularStringV2* clone() const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -57,7 +57,7 @@ class QgsCircularStringV2: public QgsCurveV2
     /**
      * @copydoc QgsCurveV2::curveToLine()
      */
-    virtual QgsLineStringV2* curveToLine() const;
+    virtual QgsLineStringV2* curveToLine() const /Factory/;
 
     void draw( QPainter& p ) const;
 

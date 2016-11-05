@@ -10,7 +10,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual bool operator==( const QgsCurveV2& other ) const = 0;
     virtual bool operator!=( const QgsCurveV2& other ) const = 0;
 
-    virtual QgsCurveV2* clone() const = 0;
+    virtual QgsCurveV2* clone() const = 0 /Factory/;
 
     /** Returns the starting point of the curve.
      * @see endPoint
@@ -33,7 +33,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      */
-    virtual QgsLineStringV2* curveToLine() const = 0;
+    virtual QgsLineStringV2* curveToLine() const = 0 /Factory/;
 
     /** Adds a curve to a painter path.
      */

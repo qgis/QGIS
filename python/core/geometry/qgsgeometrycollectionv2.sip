@@ -10,7 +10,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     //QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
     virtual ~QgsGeometryCollectionV2();
 
-    virtual QgsGeometryCollectionV2* clone() const;
+    virtual QgsGeometryCollectionV2* clone() const /Factory/;
 
     /** Returns the number of geometries within the collection.
      */
@@ -85,7 +85,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     bool hasCurvedSegments() const;
 
     /** Returns a geometry without curves. Caller takes ownership*/
-    QgsAbstractGeometryV2* segmentize() const;
+    QgsAbstractGeometryV2* segmentize() const /Factory/;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * @param vertex the vertex id

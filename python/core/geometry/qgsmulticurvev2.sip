@@ -6,7 +6,7 @@ class QgsMultiCurveV2: public QgsGeometryCollectionV2
 
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiCurveV2* clone() const;
+    virtual QgsMultiCurveV2* clone() const /Factory/;
 
     bool fromWkt( const QString& wkt );
 

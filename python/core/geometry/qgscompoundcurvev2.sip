@@ -15,7 +15,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCompoundCurveV2* clone() const;
+    virtual QgsCompoundCurveV2* clone() const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -34,7 +34,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
     virtual QgsPointV2 endPoint() const;
     virtual void points( QList<QgsPointV2>& pts ) const;
     virtual int numPoints() const;
-    virtual QgsLineStringV2* curveToLine() const;
+    virtual QgsLineStringV2* curveToLine() const /Factory/;
 
     /** Returns the number of curves in the geometry.
      */
