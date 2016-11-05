@@ -15,7 +15,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCompoundCurveV2* clone() const;
+    virtual QgsCompoundCurveV2* clone() const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -38,7 +38,7 @@ class QgsCompoundCurveV2: public QgsCurveV2
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns the number of curves in the geometry.
      */

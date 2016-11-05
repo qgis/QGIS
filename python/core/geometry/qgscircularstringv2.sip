@@ -13,7 +13,7 @@ class QgsCircularStringV2: public QgsCurveV2
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCircularStringV2* clone() const;
+    virtual QgsCircularStringV2* clone() const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -58,7 +58,7 @@ class QgsCircularStringV2: public QgsCurveV2
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,

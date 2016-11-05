@@ -11,7 +11,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     bool operator!=( const QgsPolygonV2& other ) const;
 
     virtual QString geometryType() const;
-    virtual QgsPolygonV2* clone() const;
+    virtual QgsPolygonV2* clone() const /Factory/;
     void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr wkb );
@@ -25,7 +25,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2* surfaceToPolygon() const;
+    QgsPolygonV2* surfaceToPolygon() const /Factory/;
 
     /** Returns the geometry converted to the more generic curve type QgsCurvePolygonV2
      @return the converted geometry. Caller takes ownership*/

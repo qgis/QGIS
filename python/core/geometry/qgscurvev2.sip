@@ -10,7 +10,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual bool operator==( const QgsCurveV2& other ) const = 0;
     virtual bool operator!=( const QgsCurveV2& other ) const = 0;
 
-    virtual QgsCurveV2* clone() const = 0;
+    virtual QgsCurveV2* clone() const = 0 /Factory/;
 
     /** Returns the starting point of the curve.
      * @see endPoint
@@ -35,7 +35,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
+    virtual QgsLineStringV2* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
 
     /** Adds a curve to a painter path.
      */
