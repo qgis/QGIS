@@ -152,7 +152,7 @@ class TestQgsServer(unittest.TestCase):
 
     # WMS tests
     def wms_request_compare(self, request, extra=None, reference_file=None):
-        project = self.testdata_path + "test+project.qgs"
+        project = self.testdata_path + "test_project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
@@ -206,7 +206,7 @@ class TestQgsServer(unittest.TestCase):
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
-        project = self.testdata_path + "test+project_inspire.qgs"
+        project = self.testdata_path + "test_project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.quote(project), request)
@@ -235,7 +235,7 @@ class TestQgsServer(unittest.TestCase):
 
     # WFS tests
     def wfs_request_compare(self, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
@@ -269,7 +269,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_request_compare(request)
 
     def wfs_getfeature_compare(self, requestid, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
@@ -316,7 +316,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_getfeature_compare(id, req)
 
     def wfs_getfeature_post_compare(self, requestid, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP={}'.format(urllib.quote(project))
@@ -361,7 +361,7 @@ class TestQgsServer(unittest.TestCase):
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
         parms = {
-            'MAP': self.testdata_path + "test%2Bproject.qgs",
+            'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
             'VERSIONE': '1.0.0',
             'REQUEST': 'GetLegendGraphic',
@@ -378,7 +378,7 @@ class TestQgsServer(unittest.TestCase):
     def test_getLegendGraphics_layertitle(self):
         """Test that does not return an exception but an image"""
         parms = {
-            'MAP': self.testdata_path + "test%2Bproject.qgs",
+            'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
@@ -393,7 +393,7 @@ class TestQgsServer(unittest.TestCase):
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(10, 10))
 
         parms = {
-            'MAP': self.testdata_path + "test%2Bproject.qgs",
+            'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
