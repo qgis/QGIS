@@ -1335,6 +1335,39 @@ static QVariant fcnRegexpMatch( const QVariantList& values, const QgsExpressionC
   return QVariant( str.contains( re ) ? 1 : 0 );
 }
 
+static QVariant fcnRegexpMatches( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString regexp = getStringValue( values.at( 1 ), parent );
+  QString empty = getStringValue( values.at( 2 ), parent );
+
+  QRegularExpression re( regexp );
+  if ( !re.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
+    return QVariant();
+  }
+
+  QRegularExpressionMatch matches = re.match( str );
+  if ( matches.hasMatch() )
+  {
+    QVariantList array;
+    QStringList list = matches.capturedTexts();
+
+    // Skip the first string to only return captured groups
+    for ( QStringList::const_iterator it = ++list.constBegin(); it != list.constEnd(); ++it )
+    {
+      array += ( *it ).isEmpty() == false ? *it : empty;
+    }
+
+    return QVariant( array );
+  }
+  else
+  {
+    return QVariant();
+  }
+}
+
 static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -3745,6 +3778,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( QStringLiteral( "concatenate" ), aggParams << Parameter( QStringLiteral( "concatenator" ), true ), fcnAggregateStringConcat, QStringLiteral( "Aggregates" ), QString(), False, QSet<QString>(), true )
 
     << new StaticFunction( QStringLiteral( "regexp_match" ), ParameterList() << Parameter( QStringLiteral( "string" ) ) << Parameter( QStringLiteral( "regex" ) ), fcnRegexpMatch, QStringList() << QStringLiteral( "Conditionals" ) << QStringLiteral( "String" ) )
+    << new StaticFunction( QStringLiteral( "regexp_matches" ), ParameterList() << Parameter( QStringLiteral( "string" ) ) << Parameter( QStringLiteral( "regex" ) ) << Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnRegexpMatches, QStringLiteral( "Arrays" ) )
+
     << new StaticFunction( QStringLiteral( "now" ), 0, fcnNow, QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$now" ) )
     << new StaticFunction( QStringLiteral( "age" ), 2, fcnAge, QStringLiteral( "Date and Time" ) )
     << new StaticFunction( QStringLiteral( "year" ), 1, fcnYear, QStringLiteral( "Date and Time" ) )

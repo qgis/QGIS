@@ -5,7 +5,7 @@
   "arguments": [
     {"arg":"string", "description":"the input string"},
     {"arg":"delimiter","optional":true,"default":"','","description":"the string delimiter used to split the input string"},
-    {"arg":"emptyvalue","optional":true,"default":"''","description":"the optional string to use as replacement to empty values"}],
+    {"arg":"empty_value","optional":true,"default":"''","description":"the optional string to use as replacement for empty (zero length) matches"}],
   "examples": [ { "expression":"string_to_array('1,2,3',',')", "returns":"array: '1', '2', '3'"},
                 { "expression":"string_to_array('1,,3',',','0')", "returns":"array: '1', '0', '3'"}
   ]
