@@ -177,36 +177,30 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
-        ssrs = str(self.getParameterValue(self.S_SRS))
-        tsrs = str(self.getParameterValue(self.T_SRS))
-        asrs = str(self.getParameterValue(self.A_SRS))
-        schema = str(self.getParameterValue(self.SCHEMA))
-        table = str(self.getParameterValue(self.TABLE))
-        pk = str(self.getParameterValue(self.PK))
-        pkstring = "-lco FID=" + pk
+        ssrs = self.getParameterValue(self.S_SRS)
+        tsrs = self.getParameterValue(self.T_SRS)
+        asrs = self.getParameterValue(self.A_SRS)
+        schema = self.getParameterValue(self.SCHEMA)
+        table = self.getParameterValue(self.TABLE)
+        pk = self.getParameterValue(self.PK)
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
-        geocolumn = str(self.getParameterValue(self.GEOCOLUMN))
-        geocolumnstring = "-lco GEOMETRY_NAME=" + geocolumn
+        geocolumn = self.getParameterValue(self.GEOCOLUMN)
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
-        dimstring = "-lco DIM=" + dim
-        simplify = str(self.getParameterValue(self.SIMPLIFY))
-        segmentize = str(self.getParameterValue(self.SEGMENTIZE))
+        simplify = self.getParameterValue(self.SIMPLIFY)
+        segmentize = self.getParameterValue(self.SEGMENTIZE)
         spat = self.getParameterValue(self.SPAT)
         clip = self.getParameterValue(self.CLIP)
-        where = str(self.getParameterValue(self.WHERE))
-        wherestring = '-where "' + where + '"'
-        gt = str(self.getParameterValue(self.GT))
+        where = self.getParameterValue(self.WHERE)
+        gt = self.getParameterValue(self.GT)
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
         launder = self.getParameterValue(self.LAUNDER)
-        launderstring = "-lco LAUNDER=NO"
         index = self.getParameterValue(self.INDEX)
-        indexstring = "-lco SPATIAL_INDEX=OFF"
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
         promotetomulti = self.getParameterValue(self.PROMOTETOMULTI)
         precision = self.getParameterValue(self.PRECISION)
-        options = str(self.getParameterValue(self.OPTIONS))
+        options = self.getParameterValue(self.OPTIONS)
 
         arguments = []
         arguments.append('-progress')
@@ -222,13 +216,13 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             arguments.append(token)
         arguments.append('active_schema={}'.format(schema or 'public'))
         arguments.append('"')
-        arguments.append(dimstring)
+        arguments.append("-lco DIM=" + dim)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))
         if index:
-            arguments.append(indexstring)
+            arguments.append("-lco SPATIAL_INDEX=OFF")
         if launder:
-            arguments.append(launderstring)
+            arguments.append("-lco LAUNDER=NO")
         if append:
             arguments.append('-append')
         if addfields:
@@ -238,28 +232,28 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if len(self.GEOMTYPE[self.getParameterValue(self.GTYPE)]) > 0:
             arguments.append('-nlt')
             arguments.append(self.GEOMTYPE[self.getParameterValue(self.GTYPE)])
-        if len(geocolumn) > 0:
-            arguments.append(geocolumnstring)
-        if len(pk) > 0:
-            arguments.append(pkstring)
+        if geocolumn:
+            arguments.append("-lco GEOMETRY_NAME=" + geocolumn)
+        if pk:
+            arguments.append("-lco FID=" + pk)
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
-        if len(table) == 0:
+        if not table:
             table = ogrLayerName(inLayer).lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')
         arguments.append(table)
-        if len(ssrs) > 0:
+        if ssrs:
             arguments.append('-s_srs')
             arguments.append(ssrs)
-        if len(tsrs) > 0:
+        if tsrs:
             arguments.append('-t_srs')
             arguments.append(tsrs)
-        if len(asrs) > 0:
+        if asrs:
             arguments.append('-a_srs')
             arguments.append(asrs)
-        if len(spat) > 0:
+        if spat:
             regionCoords = spat.split(',')
             arguments.append('-spat')
             arguments.append(regionCoords[0])
@@ -271,21 +265,21 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if skipfailures:
             arguments.append('-skipfailures')
         if where:
-            arguments.append(wherestring)
-        if len(simplify) > 0:
+            arguments.append('-where "' + where + '"')
+        if simplify:
             arguments.append('-simplify')
             arguments.append(simplify)
-        if len(segmentize) > 0:
+        if segmentize:
             arguments.append('-segmentize')
             arguments.append(segmentize)
-        if len(gt) > 0:
+        if gt:
             arguments.append('-gt')
             arguments.append(gt)
         if promotetomulti:
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
-        if len(options) > 0:
+        if options:
             arguments.append(options)
 
         commands = []
