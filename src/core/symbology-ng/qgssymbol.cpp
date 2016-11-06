@@ -767,6 +767,11 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
         break;
       }
       const QgsPolygonV2& polygon = dynamic_cast<const QgsPolygonV2&>( *segmentizedGeometry.geometry() );
+      if ( !polygon.exteriorRing() )
+      {
+        QgsDebugMsg( "cannot render polygon with no exterior ring" );
+        break;
+      }
       _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsFillSymbol*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 
