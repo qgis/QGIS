@@ -73,7 +73,6 @@ from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.StringInputPanel import StringInputPanel
-from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 
 DIALOG_STANDARD = 'standard'

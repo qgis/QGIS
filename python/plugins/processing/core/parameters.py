@@ -1525,46 +1525,6 @@ class ParameterVector(ParameterDataObject):
                                    [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
 
 
-class ParameterGeometryPredicate(Parameter):
-
-    predicates = ('intersects',
-                  'contains',
-                  'disjoint',
-                  'equals',
-                  'touches',
-                  'overlaps',
-                  'within',
-                  'crosses')
-
-    def __init__(self, name='', description='', left=None, right=None,
-                 optional=False, enabledPredicates=None):
-        Parameter.__init__(self, name, description, None, optional)
-        self.left = left
-        self.right = right
-        self.value = None
-        self.enabledPredicates = enabledPredicates
-        if self.enabledPredicates is None:
-            self.enabledPredicates = self.predicates
-
-    def getValueAsCommandLineParameter(self):
-        return str(self.value)
-
-    def setValue(self, value):
-        if value is None:
-            if not self.optional:
-                return False
-            self.value = None
-            return True
-        elif len(value) == 0 and not self.optional:
-            return False
-
-        if isinstance(value, str):
-            self.value = value.split(';')  # relates to ModelerAlgorithm.resolveValue
-        else:
-            self.value = value
-        return True
-
-
 paramClasses = [c for c in list(sys.modules[__name__].__dict__.values()) if isclass(c) and issubclass(c, Parameter)]
 
 

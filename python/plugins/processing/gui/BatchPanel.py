@@ -38,7 +38,6 @@ from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
@@ -50,7 +49,6 @@ from processing.core.parameters import ParameterPoint
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterGeometryPredicate
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
