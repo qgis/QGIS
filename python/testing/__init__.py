@@ -78,7 +78,7 @@ class TestCase(_TestCase):
             precision = 14
 
         expected_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
-        result_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
+        result_features = sorted(layer_result.getFeatures(request), key=lambda f: f.id())
 
         for feats in zip(expected_features, result_features):
             if feats[0].hasGeometry():
@@ -105,7 +105,7 @@ class TestCase(_TestCase):
                 attr_result = feats[1][field_expected.name()]
                 field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
                 try:
-                    cmp = compare['fields'][field1.name()]
+                    cmp = compare['fields'][field_expected.name()]
                 except KeyError:
                     try:
                         cmp = compare['fields']['__all__']
