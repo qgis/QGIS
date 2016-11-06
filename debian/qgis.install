@@ -11,7 +11,6 @@ usr/lib/qgis/plugins/libroadgraphplugin.so
 usr/lib/qgis/plugins/libheatmapplugin.so
 usr/lib/qgis/plugins/libtopolplugin.so
 usr/lib/qgis/plugins/libgeometrycheckerplugin.so
-usr/lib/qgis/plugins/libgeometrysnapperplugin.so
 usr/lib/qgis/qgis_help
 usr/share/pixmaps/
 usr/share/applications/
