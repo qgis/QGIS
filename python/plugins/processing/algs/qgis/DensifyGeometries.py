@@ -72,13 +72,11 @@ class DensifyGeometries(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            featGeometry = f.geometry()
-            attrs = f.attributes()
-            newGeometry = self.densifyGeometry(featGeometry, int(vertices),
-                                               isPolygon)
-            feature = QgsFeature()
-            feature.setGeometry(newGeometry)
-            feature.setAttributes(attrs)
+            feature = f
+            if feature.hasGeometry():
+                new_geometry = self.densifyGeometry(feature.geometry(), int(vertices),
+                                                    isPolygon)
+                feature.setGeometry(new_geometry)
             writer.addFeature(feature)
             progress.setPercentage(int(current * total))
 
