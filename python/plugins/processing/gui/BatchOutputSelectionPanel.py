@@ -31,6 +31,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
+from qgis.core import QgsMapLayer
 from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
 from qgis.PyQt.QtCore import QSettings
 
@@ -113,9 +114,12 @@ class BatchOutputSelectionPanel(QWidget):
                             if isinstance(param, (ParameterRaster,
                                                   ParameterVector, ParameterTable,
                                                   ParameterMultipleInput)):
-                                s = str(widget.getText())
-                                s = os.path.basename(s)
-                                s = os.path.splitext(s)[0]
+                                v = widget.value()
+                                if isinstance(v, QgsMapLayer):
+                                    s = v.name()
+                                else:
+                                    s = os.path.basename(v)
+                                    s = os.path.splitext(s)[0]
                             elif isinstance(param, ParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
