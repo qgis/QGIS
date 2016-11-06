@@ -7,13 +7,13 @@
   <gml:boundedBy>
     <gml:Box>
       <gml:coord><gml:X>-1</gml:X><gml:Y>-5</gml:Y></gml:coord>
-      <gml:coord><gml:X>11.34678899082569</gml:X><gml:Y>5.288990825688074</gml:Y></gml:coord>
+      <gml:coord><gml:X>11</gml:X><gml:Y>5</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                                              
+                                                                                                                                                             
   <gml:featureMember>
     <ogr:snap_lines_to_lines fid="lines.0">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,2 9,2 9,3 11,5 11.346788990825686,5.288990825688074</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,2 9,2 9,3 11,5</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:snap_lines_to_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -23,7 +23,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:snap_lines_to_lines fid="lines.2">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2,0 2,2 2,2 3,2 3,2</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2,0 2,2 2,2 3,2</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:snap_lines_to_lines>
   </gml:featureMember>
   <gml:featureMember>
@@ -38,7 +38,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:snap_lines_to_lines fid="lines.5">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,-3 10,1 10.208073394495411,0.849724770642202</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,-3 10,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:snap_lines_to_lines>
   </gml:featureMember>
   <gml:featureMember>

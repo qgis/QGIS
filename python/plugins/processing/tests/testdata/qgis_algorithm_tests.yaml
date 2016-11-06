@@ -1432,3 +1432,35 @@ tests:
       OUTPUT:
         name: expected/snap_points_to_points.gml
         type: vector
+
+  - algorithm: qgis:snapgeometriestolayer
+    name: Snap points to lines (prefer nodes)
+    params:
+      BEHAVIOUR: '0'
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_point_to_lines_prefer_nodes.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometriestolayer
+    name: Snap points to lines (prefer closest)
+    params:
+      BEHAVIOUR: '1'
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_point_to_lines_prefer_closest.gml
+        type: vector

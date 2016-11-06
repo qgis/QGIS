@@ -40,26 +40,33 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 
   public:
 
+    //! Snapping modes
+    enum SnapMode
+    {
+      PreferNodes = 0, //!< Prefer to snap to nodes, even when a segment may be closer than a node
+      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment
+    };
+
     /**
      * Constructor for QgsGeometrySnapper. A reference layer which contains geometries to snap to must be
-     * set. The snap tolerance is specified in the layer units for the
-     * reference layer, and it is assumed that all geometries snapped using this object will have the
+     * set. It is assumed that all geometries snapped using this object will have the
      * same CRS as the reference layer (ie, no reprojection is performed).
      */
-    QgsGeometrySnapper( QgsVectorLayer* referenceLayer, double snapTolerance );
+    QgsGeometrySnapper( QgsVectorLayer* referenceLayer );
 
     /**
      * Snaps a geometry to the reference layer and returns the result. The geometry must be in the same
-     * CRS as the reference layer, and must have the same type as the reference layer geometry.
+     * CRS as the reference layer, and must have the same type as the reference layer geometry. The snap tolerance
+     * is specified in the layer units for the reference layer.
      */
-    QgsGeometry snapGeometry( const QgsGeometry& geometry ) const;
+    QgsGeometry snapGeometry( const QgsGeometry& geometry, double snapTolerance, SnapMode mode = PreferNodes ) const;
 
     /**
      * Snaps a set of features to the reference layer and returns the result. This operation is
      * multithreaded for performance. The featureSnapped() signal will be emitted each time a feature
-     * is processed. This method is not safe to call from multiple threads concurrently.
+     * is processed. The snap tolerance is specified in the layer units for the reference layer.
      */
-    QgsFeatureList snapFeatures( const QgsFeatureList& features );
+    QgsFeatureList snapFeatures( const QgsFeatureList& features, double snapTolerance, SnapMode mode = PreferNodes );
 
   signals:
 
@@ -70,8 +77,14 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     struct ProcessFeatureWrapper
     {
       QgsGeometrySnapper* instance;
-      explicit ProcessFeatureWrapper( QgsGeometrySnapper* _instance ) : instance( _instance ) {}
-      void operator()( QgsFeature& feature ) { return instance->processFeature( feature ); }
+      double snapTolerance;
+      SnapMode mode;
+      explicit ProcessFeatureWrapper( QgsGeometrySnapper* _instance, double snapTolerance, SnapMode mode )
+          : instance( _instance )
+          , snapTolerance( snapTolerance )
+          , mode( mode )
+      {}
+      void operator()( QgsFeature& feature ) { return instance->processFeature( feature, snapTolerance, mode ); }
     };
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
@@ -79,13 +92,11 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     QgsVectorLayer* mReferenceLayer;
     QgsFeatureList mInputFeatures;
 
-    double mSnapTolerance;
-
     QgsSpatialIndex mIndex;
     mutable QMutex mIndexMutex;
     mutable QMutex mReferenceLayerMutex;
 
-    void processFeature( QgsFeature& feature );
+    void processFeature( QgsFeature& feature, double snapTolerance, SnapMode mode );
 
     int polyLineSize( const QgsAbstractGeometry* geom, int iPart, int iRing ) const;
 };
