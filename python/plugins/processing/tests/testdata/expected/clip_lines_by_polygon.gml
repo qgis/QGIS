@@ -13,7 +13,7 @@
                                                                                                                
   <gml:featureMember>
     <ogr:clip_lines_by_polygon fid="lines2.0">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>0.776536312849161,2.179050279329609 4.049720670391062,1.334357541899442 5.70391061452514,-1.991620111731844 8.572346368715085,-2.220391061452514 8.565567160553801,-3.0</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>0.776536312849161,2.179050279329609 4.049720670391062,1.334357541899442 5.70391061452514,-1.991620111731844 8.572346368715085,-2.220391061452514 8.565567160553801,-3.0</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
     </ogr:clip_lines_by_polygon>
   </gml:featureMember>
   <gml:featureMember>

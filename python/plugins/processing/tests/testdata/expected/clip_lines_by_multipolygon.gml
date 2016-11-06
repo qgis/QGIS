@@ -18,12 +18,12 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_lines_by_multipolygon fid="lines.3">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>4,1 3,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>4,1 3,1</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
     </ogr:clip_lines_by_multipolygon>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_lines_by_multipolygon fid="lines.0">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>7,2 8,2</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>7,2 8,2</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
     </ogr:clip_lines_by_multipolygon>
   </gml:featureMember>
   <gml:featureMember>

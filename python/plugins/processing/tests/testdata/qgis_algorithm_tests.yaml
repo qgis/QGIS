@@ -132,9 +132,10 @@ tests:
   - name: Densify geometries
     algorithm: qgis:densifygeometries
     params:
-    - name: multipolys.gml
-      type: vector
-    - '4'
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      VERTICES: 4
     results:
       OUTPUT:
         name: expected/multipolys_densify.gml
@@ -331,7 +332,7 @@ tests:
         name: expected/innerRingTouchesOuterRing_output.gml
         compare:
           geometry:
-            precision: 5
+            precision: 0
 
   - name: Dissolve with NULL geometries
     algorithm: qgis:dissolve
@@ -597,6 +598,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/line_offset_round_positive.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:offsetline
     name: Offset line negative
@@ -612,6 +616,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/line_offset_round_negative.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:offsetline
     name: Offset line mitre
@@ -627,6 +634,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/line_offset_mitre.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:offsetline
     name: Offset line bevel
@@ -642,6 +652,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/line_offset_bevel.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:offsetline
     name: Offset multilines
@@ -657,6 +670,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/multiline_offset.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:fixeddistancebuffer
     name: Buffer polygons using bevel
@@ -708,6 +724,9 @@ tests:
       OUTPUT:
         name: expected/buffer_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:fixeddistancebuffer
     name: Buffer lines (flat)
@@ -725,6 +744,9 @@ tests:
       OUTPUT:
         name: expected/buffer_lines_flat.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:fixeddistancebuffer
     name: Buffer lines (square)
@@ -742,9 +764,12 @@ tests:
       OUTPUT:
         name: expected/buffer_lines_square.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:centroids
-    name: Test (qgis:centroids)
+    name: Centroid (lines)
     params:
       INPUT_LAYER:
         name: lines.gml
@@ -753,9 +778,12 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:centroids
-    name: Test (qgis:centroids)
+    name: Centroid (multilines)
     params:
       INPUT_LAYER:
         name: multilines.gml
@@ -764,9 +792,12 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_multilines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:centroids
-    name: Test (qgis:centroids)
+    name: Centroid (multipoints)
     params:
       INPUT_LAYER:
         name: multipoints.gml
@@ -775,9 +806,12 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_multipoint.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:centroids
-    name: Test (qgis:centroids)
+    name: Centroid (multipolygons)
     params:
       INPUT_LAYER:
         name: multipolys.gml
@@ -786,9 +820,12 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_multipolys.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:centroids
-    name: Test (qgis:centroids)
+    name: Centroid (points)
     params:
       INPUT_LAYER:
         name: points.gml
@@ -797,9 +834,12 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_points.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:centroids
-    name: Test (qgis:centroids)
+    name: Centroid (polygons)
     params:
       INPUT_LAYER:
         name: polys.gml
@@ -808,6 +848,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_polys.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:translategeometry
     name: Lines translated
@@ -838,6 +881,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/single_sided_buffer_line.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:singlesidedbuffer
     name: Single sided buffer lines (Right, mitre)
@@ -854,6 +900,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/single_sided_buffer_line_mitre.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:singlesidedbuffer
     name: Single sided buffer multiline (bevel)
@@ -951,6 +1000,9 @@ tests:
       OUTPUT:
         name: expected/simplify_vis_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:simplifygeometries
     name: Simplify (grid)
@@ -964,6 +1016,9 @@ tests:
       OUTPUT:
         name: expected/simplify_grid_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:smoothgeometry
     name: Smooth (lines)
@@ -1238,7 +1293,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/extend_lines.gml
         type: vector
-
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:extendlines
     name: Extend multilines
@@ -1264,6 +1321,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/extract_specific_nodes_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:extractspecificnodes
     name: Extract specific nodes polygons
@@ -1276,6 +1336,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/extract_specific_nodes_polys.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:geometrybyexpression
     name: Geometry by expression (point)
@@ -1306,6 +1369,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/geometry_by_expression_poly.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:geometrybyexpression
     name: Geometry by expression (line)

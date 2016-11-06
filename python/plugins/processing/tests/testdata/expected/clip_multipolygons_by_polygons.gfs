@@ -2,6 +2,7 @@
   <GMLFeatureClass>
     <Name>clip_multipolygons_by_polygons</Name>
     <ElementPath>clip_multipolygons_by_polygons</ElementPath>
+    <!--MULTIPOLYGON-->
     <GeometryType>6</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>

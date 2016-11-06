@@ -2,6 +2,7 @@
   <GMLFeatureClass>
     <Name>innerRingTouchesOuterRing_output</Name>
     <ElementPath>innerRingTouchesOuterRing_output</ElementPath>
+    <!--MULTIPOLYGON-->
     <GeometryType>6</GeometryType>
     <SRSName>EPSG:3003</SRSName>
     <DatasetSpecificInfo>
