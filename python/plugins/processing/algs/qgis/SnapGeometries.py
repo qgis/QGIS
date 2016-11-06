@@ -30,7 +30,7 @@ from qgis.analysis import QgsGeometrySnapper
 from qgis.core import QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector, ParameterNumber
+from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -41,6 +41,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     REFERENCE_LAYER = 'REFERENCE_LAYER'
     TOLERANCE = 'TOLERANCE'
     OUTPUT = 'OUTPUT'
+    BEHAVIOUR = 'BEHAVIOUR'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Snap geometries to layer')
@@ -49,12 +50,20 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))
+
+        self.modes = [self.tr('Prefer aligning nodes'),
+                      self.tr('Prefer closest point')]
+        self.addParameter(ParameterSelection(
+            self.BEHAVIOUR,
+            self.tr('Behaviour'),
+            self.modes, default=0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         reference_layer = dataobjects.getObjectFromUri(self.getParameterValue(self.REFERENCE_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
+        mode = self.getParameterValue(self.BEHAVIOUR)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields(), layer.wkbType(), layer.crs())
@@ -65,9 +74,9 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.progress = progress
         self.total = 100.0 / len(features)
 
-        snapper = QgsGeometrySnapper(reference_layer, tolerance)
+        snapper = QgsGeometrySnapper(reference_layer)
         snapper.featureSnapped.connect(self.featureSnapped)
-        snapped_features = snapper.snapFeatures(features)
+        snapped_features = snapper.snapFeatures(features, tolerance, mode)
         for f in snapped_features:
             writer.addFeature(QgsFeature(f))
 

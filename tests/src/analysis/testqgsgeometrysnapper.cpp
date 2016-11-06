@@ -43,6 +43,7 @@ class TestQgsGeometrySnapper : public QObject
     void snapLineToPoint();
     void snapPointToPoint();
     void snapPointToLine();
+    void snapPointToLinePreferNearest();
     void snapPointToPolygon();
 };
 
@@ -79,22 +80,22 @@ void TestQgsGeometrySnapper::snapPolygonToPolygon()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry polygonGeom = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 9.9 10.1, 0 10, 0.1 -0.1))" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( polygonGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( polygonGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
 
   QgsGeometry polygonGeom2 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 0 10, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom2 );
+  result = snapper.snapGeometry( polygonGeom2, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 0 10, 0 0))" ) );
 
   // insert new vertex
   QgsGeometry polygonGeom3 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 20.5 0.5, 20 10, 0 9.9, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom3 );
+  result = snapper.snapGeometry( polygonGeom3, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 20.5 0.5, 20 10, 10 10, 0 10, 0 0))" ) );
 
   // remove vertex
   QgsGeometry polygonGeom4 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom4 );
+  result = snapper.snapGeometry( polygonGeom4, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
 }
 
@@ -111,42 +112,42 @@ void TestQgsGeometrySnapper::snapLineToLine()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry lineGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 0 10, 0.1 -0.1)" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( lineGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( lineGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10, 0 0)" ) );
 
   QgsGeometry lineGeom2 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 0 10, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom2 );
+  result = snapper.snapGeometry( lineGeom2, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 0 10, 0 0)" ) );
 
   // insert new vertex
   QgsGeometry lineGeom3 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 20.5 0.5, 20 10, 0 9.9, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom3 );
+  result = snapper.snapGeometry( lineGeom3, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 20.5 0.5, 20 10, 10 10, 0 10, 0 0)" ) );
 
   // remove vertex
   QgsGeometry lineGeom4 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom4 );
+  result = snapper.snapGeometry( lineGeom4, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10, 0 0)" ) );
 
 
   // unclosed linestrings
   QgsGeometry lineGeom5 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom5 );
+  result = snapper.snapGeometry( lineGeom5, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10)" ) );
 
   QgsGeometry lineGeom6 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom6 );
+  result = snapper.snapGeometry( lineGeom6, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 0 10)" ) );
 
   // insert new vertex
   QgsGeometry lineGeom7 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 20.5 0.5, 20 10, 0 9.9)" ) );
-  result = snapper.snapGeometry( lineGeom7 );
+  result = snapper.snapGeometry( lineGeom7, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 20.5 0.5, 20 10, 10 10, 0 10)" ) );
 
   // remove vertex
   QgsGeometry lineGeom8 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom8 );
+  result = snapper.snapGeometry( lineGeom8, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10)" ) );
 }
 
@@ -163,42 +164,42 @@ void TestQgsGeometrySnapper::snapLineToPolygon()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry lineGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 0 10, 0.1 -0.1)" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( lineGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( lineGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10, 0 0)" ) );
 
   QgsGeometry lineGeom2 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 0 10, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom2 );
+  result = snapper.snapGeometry( lineGeom2, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 0 10, 0 0)" ) );
 
   // insert new vertex
   QgsGeometry lineGeom3 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 20.5 0.5, 20 10, 0 9.9, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom3 );
+  result = snapper.snapGeometry( lineGeom3, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 20.5 0.5, 20 10, 10 10, 0 10, 0 0)" ) );
 
   // remove vertex
   QgsGeometry lineGeom4 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10, 0.1 -0.1)" ) );
-  result = snapper.snapGeometry( lineGeom4 );
+  result = snapper.snapGeometry( lineGeom4 , 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10, 0 0)" ) );
 
 
   // unclosed linestrings
   QgsGeometry lineGeom5 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom5 );
+  result = snapper.snapGeometry( lineGeom5, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10)" ) );
 
   QgsGeometry lineGeom6 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom6 );
+  result = snapper.snapGeometry( lineGeom6, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 0 10)" ) );
 
   // insert new vertex
   QgsGeometry lineGeom7 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 20.5 0.5, 20 10, 0 9.9)" ) );
-  result = snapper.snapGeometry( lineGeom7 );
+  result = snapper.snapGeometry( lineGeom7, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 20.5 0.5, 20 10, 10 10, 0 10)" ) );
 
   // remove vertex
   QgsGeometry lineGeom8 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom8 );
+  result = snapper.snapGeometry( lineGeom8, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10)" ) );
 }
 
@@ -217,17 +218,17 @@ void TestQgsGeometrySnapper::snapLineToPoint()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry lineGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 10 10, 0 10)" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( lineGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( lineGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 10 10, 0 10)" ) );
 
   QgsGeometry lineGeom2 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 10.1 0, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom2 );
+  result = snapper.snapGeometry( lineGeom2, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 0 10)" ) );
 
   // insert new vertex
   QgsGeometry lineGeom3 = QgsGeometry::fromWkt( QStringLiteral( "LineString(0.1 -0.1, 20.0 0.0, 20 10, 0 10)" ) );
-  result = snapper.snapGeometry( lineGeom3 );
+  result = snapper.snapGeometry( lineGeom3, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 10 0, 20 0, 20 10, 0 10)" ) );
 }
 
@@ -250,42 +251,42 @@ void TestQgsGeometrySnapper::snapPolygonToLine()
 
   // snapping to closed linestring
   QgsGeometry polygonGeom = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 9.9 10.1, 0 10, 0.1 -0.1))" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( polygonGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( polygonGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
 
   QgsGeometry polygonGeom2 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 0 10, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom2 );
+  result = snapper.snapGeometry( polygonGeom2, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 0 10, 0 0))" ) );
 
   // insert new vertex
   QgsGeometry polygonGeom3 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 20.5 0.5, 20 10, 0 9.9, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom3 );
+  result = snapper.snapGeometry( polygonGeom3, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 20.5 0.5, 20 10, 10 10, 0 10, 0 0))" ) );
 
   // remove vertex
   QgsGeometry polygonGeom4 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 9.9 10.1, 5 10, 0 10, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom4 );
+  result = snapper.snapGeometry( polygonGeom4, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
 
 
   // snapping to unclosed linestring
   QgsGeometry polygonGeom5 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((100.1 -0.1, 110.1 0, 109.9 10.1, 100 10, 100.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom5 );
+  result = snapper.snapGeometry( polygonGeom5, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((100 0, 110 0, 110 10, 100 10, 100 0))" ) );
 
   QgsGeometry polygonGeom6 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((100.1 -0.1, 110.1 0, 100 10, 100.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom6 );
+  result = snapper.snapGeometry( polygonGeom6, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((100 0, 110 0, 100 10, 100 0))" ) );
 
   // insert new vertex
   QgsGeometry polygonGeom7 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((100.1 -0.1, 120.5 0.5, 120 10, 100 9.9, 100.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom7 );
+  result = snapper.snapGeometry( polygonGeom7, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((100 0, 110 0, 120.5 0.5, 120 10, 110 10, 100 10, 100 0))" ) );
 
   // remove vertex
   QgsGeometry polygonGeom8 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((100.1 -0.1, 110.1 0, 109.9 10.1, 105 10, 100 10, 100.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom8 );
+  result = snapper.snapGeometry( polygonGeom8, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((100 0, 110 0, 110 10, 100 10, 100 0))" ) );
 }
 
@@ -304,17 +305,17 @@ void TestQgsGeometrySnapper::snapPolygonToPoint()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry polygonGeom = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 10 10, 0 10, 0.1 -0.1))" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( polygonGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( polygonGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
 
   QgsGeometry polygonGeom2 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 10.1 0, 0 10, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom2 );
+  result = snapper.snapGeometry( polygonGeom2, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 0 10, 0 0))" ) );
 
   // insert new vertex
   QgsGeometry polygonGeom3 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0.1 -0.1, 20.0 0.0, 20 10, 0 10, 0.1 -0.1))" ) );
-  result = snapper.snapGeometry( polygonGeom3 );
+  result = snapper.snapGeometry( polygonGeom3, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 20 0, 20 10, 0 10, 0 0))" ) );
 }
 
@@ -333,12 +334,12 @@ void TestQgsGeometrySnapper::snapPointToPoint()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.1 -0.1)" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( pointGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (0 0)" ) );
 
   pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.6 -0.1)" ) );
-  result = snapper.snapGeometry( pointGeom );
+  result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (1 0)" ) );
 }
 
@@ -355,13 +356,35 @@ void TestQgsGeometrySnapper::snapPointToLine()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.1 -0.1)" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( pointGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (0 0)" ) );
 
   pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(10.6 -0.1)" ) );
-  result = snapper.snapGeometry( pointGeom );
+  result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (10 0)" ) );
+
+  pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.5 0.5)" ) );
+  result = snapper.snapGeometry( pointGeom, 1 );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (0 0)" ) );
+}
+
+void TestQgsGeometrySnapper::snapPointToLinePreferNearest()
+{
+  QgsVectorLayer* rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+
+  // closed linestring
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10, 0 10, 0 0)" ) );
+  QgsFeature ff( 0 );
+  ff.setGeometry( refGeom );
+  QgsFeatureList flist;
+  flist << ff;
+  rl->dataProvider()->addFeatures( flist );
+
+  QgsGeometry pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.5 0.5)" ) );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( pointGeom, 1, QgsGeometrySnapper::PreferClosest );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (0.5 0)" ) );
 }
 
 void TestQgsGeometrySnapper::snapPointToPolygon()
@@ -377,12 +400,12 @@ void TestQgsGeometrySnapper::snapPointToPolygon()
   rl->dataProvider()->addFeatures( flist );
 
   QgsGeometry pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(0.1 -0.1)" ) );
-  QgsGeometrySnapper snapper( rl, 1 );
-  QgsGeometry result = snapper.snapGeometry( pointGeom );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (0 0)" ) );
 
   pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(10.6 -0.1)" ) );
-  result = snapper.snapGeometry( pointGeom );
+  result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (10 0)" ) );
 }
 

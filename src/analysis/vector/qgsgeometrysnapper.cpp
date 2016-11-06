@@ -347,7 +347,8 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometry* geom )
         mCoordIdxs.append( idx );
         mCoordIdxs.append( idx1 );
         addPoint( idx );
-        addSegment( idx, idx1 );
+        if ( iVert < nVerts - 1 )
+          addSegment( idx, idx1 );
       }
     }
   }
@@ -456,9 +457,8 @@ QgsSnapIndex::SnapItem* QgsSnapIndex::getSnapItem( const QgsPointV2& pos, double
 
 
 
-QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *referenceLayer, double snapTolerance )
+QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *referenceLayer )
     : mReferenceLayer( referenceLayer )
-    , mSnapTolerance( snapTolerance )
 {
   // Build spatial index
   QgsFeatureRequest req;
@@ -466,20 +466,20 @@ QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *referenceLayer, double s
   mIndex = QgsSpatialIndex( mReferenceLayer->getFeatures( req ) );
 }
 
-QgsFeatureList QgsGeometrySnapper::snapFeatures( const QgsFeatureList& features )
+QgsFeatureList QgsGeometrySnapper::snapFeatures( const QgsFeatureList& features, double snapTolerance, SnapMode mode )
 {
   QgsFeatureList list = features;
-  QtConcurrent::blockingMap( list, ProcessFeatureWrapper( this ) );
+  QtConcurrent::blockingMap( list, ProcessFeatureWrapper( this, snapTolerance, mode ) );
   return list;
 }
 
-void QgsGeometrySnapper::processFeature( QgsFeature& feature )
+void QgsGeometrySnapper::processFeature( QgsFeature& feature, double snapTolerance, SnapMode mode )
 {
   if ( !feature.geometry().isEmpty() )
-    feature.setGeometry( snapGeometry( feature.geometry() ) );
+    feature.setGeometry( snapGeometry( feature.geometry(), snapTolerance, mode ) );
 }
 
-QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) const
+QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry, double snapTolerance, SnapMode mode ) const
 {
   QgsPointV2 center = dynamic_cast< const QgsPointV2* >( geometry.geometry() ) ? *dynamic_cast< const QgsPointV2* >( geometry.geometry() ) :
                       QgsPointV2( geometry.geometry()->boundingBox().center() );
@@ -488,7 +488,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
   QList<QgsGeometry> refGeometries;
   mIndexMutex.lock();
   QgsRectangle searchBounds = geometry.boundingBox();
-  searchBounds.grow( mSnapTolerance );
+  searchBounds.grow( snapTolerance );
   QgsFeatureIds refFeatureIds = mIndex.intersects( searchBounds ).toSet();
   mIndexMutex.unlock();
 
@@ -504,7 +504,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
   mReferenceLayerMutex.unlock();
 
 
-  QgsSnapIndex refSnapIndex( center, 10 * mSnapTolerance );
+  QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
   Q_FOREACH ( const QgsGeometry& geom, refGeometries )
   {
     refSnapIndex.addGeometry( geom.geometry() );
@@ -530,22 +530,57 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
         QgsSnapIndex::SegmentSnapItem* snapSegment = nullptr;
         QgsVertexId vidx( iPart, iRing, iVert );
         QgsPointV2 p = subjGeom->vertexAt( vidx );
-        if ( !refSnapIndex.getSnapItem( p, mSnapTolerance, &snapPoint, &snapSegment ) )
+        if ( !refSnapIndex.getSnapItem( p, snapTolerance, &snapPoint, &snapSegment ) )
         {
           subjPointFlags[iPart][iRing].append( Unsnapped );
         }
         else
         {
-          // Prefer snapping to point
-          if ( snapPoint )
+          switch ( mode )
           {
-            subjGeom->moveVertex( vidx, snapPoint->getSnapPoint( p ) );
-            subjPointFlags[iPart][iRing].append( SnappedToRefNode );
-          }
-          else if ( snapSegment )
-          {
-            subjGeom->moveVertex( vidx, snapSegment->getSnapPoint( p ) );
-            subjPointFlags[iPart][iRing].append( SnappedToRefSegment );
+            case PreferNodes:
+            {
+              // Prefer snapping to point
+              if ( snapPoint )
+              {
+                subjGeom->moveVertex( vidx, snapPoint->getSnapPoint( p ) );
+                subjPointFlags[iPart][iRing].append( SnappedToRefNode );
+              }
+              else if ( snapSegment )
+              {
+                subjGeom->moveVertex( vidx, snapSegment->getSnapPoint( p ) );
+                subjPointFlags[iPart][iRing].append( SnappedToRefSegment );
+              }
+              break;
+            }
+
+            case PreferClosest:
+            {
+              QgsPointV2 nodeSnap, segmentSnap;
+              double distanceNode = DBL_MAX;
+              double distanceSegment = DBL_MAX;
+              if ( snapPoint )
+              {
+                nodeSnap = snapPoint->getSnapPoint( p );
+                distanceNode = nodeSnap.distanceSquared( p );
+              }
+              if ( snapSegment )
+              {
+                segmentSnap = snapSegment->getSnapPoint( p );
+                distanceSegment = segmentSnap.distanceSquared( p );
+              }
+              if ( snapPoint && distanceNode < distanceSegment )
+              {
+                subjGeom->moveVertex( vidx, nodeSnap );
+                subjPointFlags[iPart][iRing].append( SnappedToRefNode );
+              }
+              else if ( snapSegment )
+              {
+                subjGeom->moveVertex( vidx, segmentSnap );
+                subjPointFlags[iPart][iRing].append( SnappedToRefSegment );
+              }
+              break;
+            }
           }
         }
       }
@@ -557,11 +592,11 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
     return QgsGeometry( subjGeom );
 
   // SnapIndex for subject feature
-  QgsSnapIndex* subjSnapIndex = new QgsSnapIndex( center, 10 * mSnapTolerance );
+  QgsSnapIndex* subjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
   subjSnapIndex->addGeometry( subjGeom );
 
   QgsAbstractGeometry* origSubjGeom = subjGeom->clone();
-  QgsSnapIndex* origSubjSnapIndex = new QgsSnapIndex( center, 10 * mSnapTolerance );
+  QgsSnapIndex* origSubjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
   origSubjSnapIndex->addGeometry( origSubjGeom );
 
   // Pass 2: add missing vertices to subject geometry
@@ -577,7 +612,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
           QgsSnapIndex::PointSnapItem* snapPoint = nullptr;
           QgsSnapIndex::SegmentSnapItem* snapSegment = nullptr;
           QgsPointV2 point = refGeom.geometry()->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          if ( subjSnapIndex->getSnapItem( point, mSnapTolerance, &snapPoint, &snapSegment ) )
+          if ( subjSnapIndex->getSnapItem( point, snapTolerance, &snapPoint, &snapSegment ) )
           {
             // Snap to segment, unless a subject point was already snapped to the reference point
             if ( snapPoint && QgsGeometryUtils::sqrDistance2D( snapPoint->getSnapPoint( point ), point ) < 1E-16 )
@@ -595,7 +630,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
               }
 
               // If we are too far away from the original geometry, do nothing
-              if ( !origSubjSnapIndex->getSnapItem( point, mSnapTolerance ) )
+              if ( !origSubjSnapIndex->getSnapItem( point, snapTolerance ) )
               {
                 continue;
               }
@@ -604,7 +639,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry& geometry ) cons
               subjGeom->insertVertex( QgsVertexId( idx->vidx.part, idx->vidx.ring, idx->vidx.vertex + 1 ), point );
               subjPointFlags[idx->vidx.part][idx->vidx.ring].insert( idx->vidx.vertex + 1, SnappedToRefNode );
               delete subjSnapIndex;
-              subjSnapIndex = new QgsSnapIndex( center, 10 * mSnapTolerance );
+              subjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
               subjSnapIndex->addGeometry( subjGeom );
             }
           }
