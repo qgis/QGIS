@@ -72,7 +72,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Symbols in group</string>
+        <string>Symbols in</string>
        </property>
       </widget>
      </item>
@@ -131,17 +131,11 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSaveSymbol">
-       <property name="maximumSize">
-        <size>
-         <width>70</width>
-         <height>16777215</height>
-        </size>
-       </property>
        <property name="toolTip">
         <string>Save symbol</string>
        </property>
        <property name="text">
-        <string>Save</string>
+        <string>Save symbol</string>
        </property>
       </widget>
      </item>

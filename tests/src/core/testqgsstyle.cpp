@@ -65,6 +65,7 @@ class TestStyle : public QObject
     void testCreateColorRamps();
     void testLoadColorRamps();
     void testSaveLoad();
+    void testFavorites();
     void testTags();
 
 };
@@ -258,6 +259,35 @@ void TestStyle::testSaveLoad()
   testLoadColorRamps();
 }
 
+void TestStyle::testFavorites()
+{
+  mStyle->clear();
+
+  // save initial number of favorites to compare against additions / substractions
+  QStringList favorites;
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  int count = favorites.count();
+
+  // add some symbols to favorites
+  mStyle->saveSymbol( "symbolA", QgsMarkerSymbol::createSimple( QgsStringMap() ), true, QStringList() );
+  mStyle->saveSymbol( "symbolB", QgsMarkerSymbol::createSimple( QgsStringMap() ), false, QStringList() );
+  mStyle->saveSymbol( "symbolC", QgsMarkerSymbol::createSimple( QgsStringMap() ), true, QStringList() );
+
+  // check for added symbols to favorites
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  QCOMPARE( favorites.count(), count + 2 );
+  QVERIFY( favorites.contains( "symbolA" ) );
+  QVERIFY( favorites.contains( "symbolC" ) );
+
+  // remove one symbol from favorites
+  mStyle->removeFavorite( QgsStyle::SymbolEntity, "symbolA" );
+
+  // insure favorites updated after removal
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  QCOMPARE( favorites.count(), count + 1 );
+  QVERIFY( favorites.contains( "symbolC" ) );
+}
+
 void TestStyle::testTags()
 {
   mStyle->clear();
@@ -289,7 +319,7 @@ void TestStyle::testTags()
   QVERIFY( !tags.contains( "purple" ) );
 
   //add some symbols
-  QVERIFY( mStyle->saveSymbol( "symbol1", QgsMarkerSymbol::createSimple( QgsStringMap() ), 0, QStringList() << "red" << "starry" ) );
+  QVERIFY( mStyle->saveSymbol( "symbol1", QgsMarkerSymbol::createSimple( QgsStringMap() ), false, QStringList() << "red" << "starry" ) );
   mStyle->addSymbol( QStringLiteral( "blue starry" ), QgsMarkerSymbol::createSimple( QgsStringMap() ), true );
   mStyle->addSymbol( QStringLiteral( "red circle" ), QgsMarkerSymbol::createSimple( QgsStringMap() ), true );
 

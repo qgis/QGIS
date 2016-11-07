@@ -838,7 +838,7 @@
         <prop k="width_unit" v="MM"/>
       </layer>
     </symbol>
-    <symbol alpha="1" type="marker" name="airport">
+    <symbol alpha="1" type="marker" name="airport" favorite="1">
       <layer pass="0" class="SvgMarker" locked="0">
         <prop k="angle" v="0"/>
         <prop k="fill" v="#000000"/>

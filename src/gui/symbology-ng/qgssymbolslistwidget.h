@@ -67,12 +67,15 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void setLineWidth( double width );
     void addSymbolToStyle();
     void saveSymbol();
+
     void symbolAddedToStyle( const QString& name, QgsSymbol* symbol );
+
     void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
 
+    //! Pupulates the groups combo box with available tags and smartgroups
+    void populateGroups();
     void on_groupsCombo_currentIndexChanged( int index );
-    void on_groupsCombo_editTextChanged( const QString &text );
 
     void openStyleManager();
     void clipFeaturesToggled( bool checked );
@@ -99,8 +102,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
     //! Displays alpha value as transparency in mTransparencyLabel
     void displayTransparency( double alpha );
-    //! Recursive function to create the group tree in the widget
-    void populateGroups( const QString& parent = "", const QString& prepend = "" );
 
     QgsSymbolWidgetContext mContext;
 

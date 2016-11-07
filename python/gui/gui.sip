@@ -247,6 +247,7 @@
 %Include symbology-ng/qgsstyleexportimportdialog.sip
 %Include symbology-ng/qgsstylegroupselectiondialog.sip
 %Include symbology-ng/qgsstylemanagerdialog.sip
+%Include symbology-ng/qgsstylesavedialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
 %Include symbology-ng/qgssymbollayerwidget.sip
 %Include symbology-ng/qgssymbollevelsdialog.sip

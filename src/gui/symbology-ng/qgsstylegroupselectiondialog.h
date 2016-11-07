@@ -38,10 +38,10 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
     void setBold( QStandardItem *item );
 
   signals:
-    //! group with groupName has been selected
-    void groupSelected( const QString& groupName );
-    //! group with groupName has been deselected
-    void groupDeselected( const QString& groupName );
+    //! tag with tagName has been selected
+    void tagSelected( const QString& tagName );
+    //! tag with tagName has been deselected
+    void tagDeselected( const QString& tagName );
     //! smartgroup with groupName has been selected
     void smartgroupSelected( const QString& groupName );
     //! smart group with groupName has been deselected
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
      * @brief build group tree
      * @param parent
      */
-    void buildGroupTree( QStandardItem *&parent );
+    void buildTagTree( QStandardItem *&parent );
     QgsStyle* mStyle;
 
 };

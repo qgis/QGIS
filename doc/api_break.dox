@@ -1352,6 +1352,11 @@ QgsSvgCache        {#qgis_api_break_3_0_QgsSvgCache}
 
 - containsParamsV2() was removed. Use containsParamsV3() instead.
 
+QgsStyle (renamed from QgsStyleV2)        {#qgis_api_break_3_0_QgsStyle}
+----------------------------------
+- All group functions have been removed: group(), addGroup(), groupId(), groupName(), groupNames(), groupIds(), symbolsOfGroup(), getGroupRemoveQuery()
+- The StyleEntity::GroupEntity has been removed
+- The SymgroupTable enum has been removed
 
 QgsSymbol (renamed from QgsSymbolV2)        {#qgis_api_break_3_0_QgsSymbol}
 ------------------------------------

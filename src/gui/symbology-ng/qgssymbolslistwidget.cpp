@@ -19,6 +19,7 @@
 #include "qgssizescalewidget.h"
 
 #include "qgsstylemanagerdialog.h"
+#include "qgsstylesavedialog.h"
 #include "qgsdatadefined.h"
 
 #include "qgssymbol.h"
@@ -29,6 +30,8 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
+#include <QAction>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QPainter>
@@ -38,6 +41,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QPushButton>
 #include <QScopedPointer>
 
 
@@ -67,26 +71,20 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   }
   mClipFeaturesAction = new QAction( tr( "Clip features to canvas extent" ), this );
   mClipFeaturesAction->setCheckable( true );
-  connect( mClipFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( clipFeaturesToggled( bool ) ) );
-
-  // populate the groups
-  groupsCombo->addItem( QLatin1String( "" ) );
-  populateGroups();
-  QStringList groups = style->smartgroupNames();
-  Q_FOREACH ( const QString& group, groups )
-  {
-    groupsCombo->addItem( group, QVariant( "smart" ) );
-  }
+  connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
-  connect( mStyle, SIGNAL( symbolSaved( QString, QgsSymbol* ) ), this, SLOT( symbolAddedToStyle( QString, QgsSymbol* ) ) );
-  connect( openStyleManagerButton, SIGNAL( pressed() ), this, SLOT( openStyleManager() ) );
+  connect( mStyle, &QgsStyle::symbolSaved , this, &QgsSymbolsListWidget::symbolAddedToStyle );
+  connect( mStyle, &QgsStyle::groupsModified , this, &QgsSymbolsListWidget::populateGroups );
+
+  connect( openStyleManagerButton, &QPushButton::pressed, this, &QgsSymbolsListWidget::openStyleManager );
 
   lblSymbolName->setText( QLatin1String( "" ) );
-  populateSymbolView();
+
+  populateGroups();
 
   if ( mSymbol )
   {
@@ -119,7 +117,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   btnColor->setColorDialogTitle( tr( "Select color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
 
-  connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
+  connect( btnSaveSymbol, &QPushButton::clicked, this, &QgsSymbolsListWidget::saveSymbol );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
@@ -148,30 +146,72 @@ QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
   return mContext;
 }
 
-void QgsSymbolsListWidget::populateGroups( const QString& parent, const QString& prepend )
+void QgsSymbolsListWidget::populateGroups()
 {
-  QgsSymbolGroupMap groups = mStyle->childGroupNames( parent );
-  QgsSymbolGroupMap::const_iterator i = groups.constBegin();
-  while ( i != groups.constEnd() )
+  groupsCombo->blockSignals( true );
+  groupsCombo->clear();
+
+  groupsCombo->addItem( tr( "Favorites" ), QVariant( "favorite" ) );
+  groupsCombo->addItem( tr( "All Symbols" ), QVariant( "all" ) );
+
+  int index = 2;
+  QStringList tags = mStyle->tags();
+  if ( tags.count() > 0 )
   {
-    QString text;
-    if ( !prepend.isEmpty() )
+    tags.sort();
+    groupsCombo->insertSeparator( index );
+    Q_FOREACH ( const QString& tag, tags )
     {
-      text = prepend + '/' + i.value();
+      groupsCombo->addItem( tag, QVariant( "tag" ) );
+      index++;
     }
-    else
-    {
-      text = i.value();
-    }
-    groupsCombo->addItem( text, QVariant( i.key() ) );
-    populateGroups( i.value(), text );
-    ++i;
   }
+
+  QStringList groups = mStyle->smartgroupNames();
+  if ( groups.count() > 0 )
+  {
+    groups.sort();
+    groupsCombo->insertSeparator( index + 1 );
+    Q_FOREACH ( const QString& group, groups )
+    {
+      groupsCombo->addItem( group, QVariant( "smartgroup" ) );
+    }
+  }
+  groupsCombo->blockSignals( false );
+
+  QSettings settings;
+  index = settings.value( "qgis/symbolsListGroupsIndex", 0 ).toInt();
+  groupsCombo->setCurrentIndex( index );
+
+  populateSymbolView();
 }
 
 void QgsSymbolsListWidget::populateSymbolView()
 {
-  populateSymbols( mStyle->symbolNames() );
+  QStringList symbols;
+  QString text = groupsCombo->currentText();
+  int id;
+
+  if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
+  {
+    symbols = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  }
+  else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
+  {
+    symbols = mStyle->symbolNames();
+  }
+  else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
+  {
+    id = mStyle->smartgroupId( text );
+    symbols = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, id );
+  }
+  else
+  {
+    id = mStyle->tagId( text );
+    symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, id );
+  }
+
+  populateSymbols( symbols );
 }
 
 void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
@@ -357,30 +397,34 @@ void QgsSymbolsListWidget::addSymbolToStyle()
 
 void QgsSymbolsListWidget::saveSymbol()
 {
-  bool ok;
-  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
-                                        tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
-  if ( !ok || name.isEmpty() )
+  QgsStyleSaveDialog saveDlg( this );
+  if ( !saveDlg.exec() )
+    return;
+
+  if ( saveDlg.name().isEmpty() )
     return;
 
   // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( name ) )
+  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
     int res = QMessageBox::warning( this, tr( "Save symbol" ),
                                     tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( name ),
+                                    .arg( saveDlg.name() ),
                                     QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
     }
+    mStyle->removeSymbol( saveDlg.name() );
   }
 
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
   // add new symbol to style and re-populate the list
-  mStyle->addSymbol( name, mSymbol->clone() );
+  mStyle->addSymbol( saveDlg.name(), mSymbol->clone() );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
+  mStyle->saveSymbol( saveDlg.name(), mSymbol->clone(), saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
@@ -537,7 +581,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   // get new instance of symbol from style
   QgsSymbol* s = mStyle->symbol( symbolName );
   QgsUnitTypes::RenderUnit unit = s->outputUnit();
-  // remove all symbol layers from original symbol
+  // remove all symbol layers from original symbolgroupsCombo
   while ( mSymbol->symbolLayerCount() )
     mSymbol->deleteSymbolLayer( 0 );
   // move all symbol layers to our symbol
@@ -557,32 +601,8 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
 
 void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
 {
-  QStringList symbols;
-  QString text = groupsCombo->itemText( index );
-  // List all symbols when empty list item is selected
-  if ( text.isEmpty() )
-  {
-    symbols = mStyle->symbolNames();
-  }
-  else
-  {
-    int groupid;
-    if ( groupsCombo->itemData( index ).toString() == QLatin1String( "smart" ) )
-    {
-      groupid = mStyle->smartgroupId( text );
-      symbols = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, groupid );
-    }
-    else
-    {
-      groupid = groupsCombo->itemData( index ).toInt();
-      symbols = mStyle->symbolsOfGroup( QgsStyle::SymbolEntity, groupid );
-    }
-  }
-  populateSymbols( symbols );
-}
+  QSettings settings;
+  settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
 
-void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
-{
-  QStringList symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, text );
-  populateSymbols( symbols );
+  populateSymbolView();
 }

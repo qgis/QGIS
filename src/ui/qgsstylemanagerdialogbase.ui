@@ -380,26 +380,6 @@ QMenu::item:selected {  background-color: gray; } */
            </property>
           </widget>
          </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Tags</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="tagsLineEdit"/>
-           </item>
-          </layout>
-         </item>
         </layout>
        </item>
       </layout>
@@ -450,15 +430,37 @@ QMenu::item:selected {  background-color: gray; } */
     <string>Edit item</string>
    </property>
   </action>
-  <action name="actnUngroup">
+  <action name="actnAddFavorite">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Ungroup</string>
+    <string>Add to favorites</string>
    </property>
    <property name="toolTip">
-    <string>Ungroup</string>
+    <string>Add to favorites</string>
+   </property>
+  </action>
+  <action name="actnRemoveFavorite">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Remove from favorites</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove from favorites</string>
+   </property>
+  </action>
+  <action name="actnDetag">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Clear tags</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear tags</string>
    </property>
   </action>
   <action name="actnEditSmartGroup">
@@ -484,17 +486,17 @@ QMenu::item:selected {  background-color: gray; } */
     <string>Remove group</string>
    </property>
   </action>
-  <action name="actnGroupSymbols">
+  <action name="actnTagSymbols">
    <property name="text">
-    <string>Group symbols</string>
+    <string>Attach selected tag to symbols</string>
    </property>
   </action>
-  <action name="actnFinishGrouping">
+  <action name="actnFinishTagging">
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Finish grouping</string>
+    <string>Finish tagging</string>
    </property>
    <property name="visible">
     <bool>true</bool>
