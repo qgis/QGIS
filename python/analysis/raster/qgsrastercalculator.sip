@@ -21,7 +21,7 @@ class QgsRasterCalculator
     //! Result of the calculation
     enum Result
     {
-      Success, /*!< Calculation sucessful */
+      Success, /*!< Calculation successful */
       CreateOutputError, /*!< Error creating output data file */
       InputLayerError, /*!< Error reading input layer */
       Cancelled, /*!< User cancelled calculation */

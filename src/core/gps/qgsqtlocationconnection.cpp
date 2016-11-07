@@ -40,7 +40,7 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
 }
 
 //Needed to make connection detectable (half HACK)
-//this signals that the device has started the GPS sucessfully,
+//this signals that the device has started the GPS successfully,
 //not that it has a fix yet.
 void QgsQtLocationConnection::broadcastConnectionAvailable()
 {

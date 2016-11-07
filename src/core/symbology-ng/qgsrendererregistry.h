@@ -193,7 +193,7 @@ class CORE_EXPORT QgsRendererRegistry
 
     //! Removes a renderer from registry.
     //! @param rendererName name of renderer to remove from registry
-    //! @returns true if renderer was sucessfully removed, or false if matching
+    //! @returns true if renderer was successfully removed, or false if matching
     //! renderer could not be found
     bool removeRenderer( const QString& rendererName );
 

@@ -76,7 +76,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void setToleranceUnits( int units );
 
-    //! Slot to store feture after simplification
+    //! Slot to store feature after simplification
     void storeSimplified();
 
     void clearSelection();

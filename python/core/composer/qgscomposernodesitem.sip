@@ -72,7 +72,7 @@ class QgsComposerNodesItem: QgsComposerItem
       */
     int selectedNode();
 
-    /** Unselect a node.
+    /** Deselect a node.
      */
     void unselectNode();
 

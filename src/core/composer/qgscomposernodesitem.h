@@ -111,7 +111,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
       */
     int selectedNode() { return mSelectedNode; }
 
-    /** Unselect a node.
+    /** Deselect a node.
      */
     void unselectNode() { mSelectedNode = -1; }
 

@@ -40,7 +40,7 @@
 * \class eVisDatabaseConnectionGui
 * \brief GUI class for database connections
 * This class provides the GUI component for setting up a database connection and making a sql query.
-* This class effectively provides access to a wide variety of database types. Upon a sucessful query,
+* This class effectively provides access to a wide variety of database types. Upon a successful query,
 * the results are stored in a tabdelimited file the loaded into qgis using the demlimitedtext data provider
 */
 class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnectionGuiBase

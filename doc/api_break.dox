@@ -21,7 +21,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 QGIS 3.0        {#qgis_api_break_3_0}
 ========
 
-Version 3.0 brings changes to many underlying dependancies which QGIS is built upon. Any existing PyQGIS code will
+Version 3.0 brings changes to many underlying dependencies which QGIS is built upon. Any existing PyQGIS code will
 need to be updated to address the changes made within these libraries.
 
 Python 3.0

@@ -2,7 +2,7 @@
  * \class QgsGeometrySnapper
  * \ingroup analysis
  * QgsGeometrySnapper allows a geometry to be snapped to the geometries within a
- * different refence layer. Vertices in the geometries will be modified to
+ * different reference layer. Vertices in the geometries will be modified to
  * match the reference layer features within a specified snap tolerance.
  * \note added in QGIS 3.0
  */

@@ -414,7 +414,7 @@ class QgsVectorFileWriter
     static QStringList defaultLayerOptions( const QString& driverName );
 
     /**
-     * Return edition capabilites for an existing dataset name.
+     * Return edition capabilities for an existing dataset name.
      * @note added in QGIS 3.0
      */
     static EditionCapabilities editionCapabilities( const QString& datasetName );
