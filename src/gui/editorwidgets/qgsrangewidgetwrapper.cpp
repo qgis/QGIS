@@ -175,7 +175,7 @@ QVariant QgsRangeWidgetWrapper::value() const
   if ( mDoubleSpinBox )
   {
     value = mDoubleSpinBox->value();
-    if ( value == mDoubleSpinBox->minimum() && config( QStringLiteral( "AllowNull" ) ).toBool() )
+    if ( value == mDoubleSpinBox->minimum() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
       value = QVariant( field().type() );
     }
@@ -183,7 +183,7 @@ QVariant QgsRangeWidgetWrapper::value() const
   else if ( mIntSpinBox )
   {
     value = mIntSpinBox->value();
-    if ( value == mIntSpinBox->minimum() && config( QStringLiteral( "AllowNull" ) ).toBool() )
+    if ( value == mIntSpinBox->minimum() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
       value = QVariant( field().type() );
     }
@@ -212,7 +212,7 @@ void QgsRangeWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mDoubleSpinBox )
   {
-    if ( value.isNull() && config( QStringLiteral( "AllowNull" ) ).toBool() )
+    if ( value.isNull() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
       mDoubleSpinBox->setValue( mDoubleSpinBox->minimum() );
     }
@@ -224,7 +224,7 @@ void QgsRangeWidgetWrapper::setValue( const QVariant& value )
 
   if ( mIntSpinBox )
   {
-    if ( value.isNull() && config( QStringLiteral( "AllowNull" ) ).toBool() )
+    if ( value.isNull() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
       mIntSpinBox->setValue( mIntSpinBox->minimum() );
     }
