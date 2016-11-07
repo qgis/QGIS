@@ -35,6 +35,7 @@ class QgsGraph;
 /**
 @author Sergey Yakushev
 */
+
 /**
  * \class VrpPluginShortestPathDlg
  * \brief This class implement user interface for finding shortest path between two points.
@@ -43,6 +44,7 @@ class RgShortestPathWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Standard constructor
      */
@@ -54,6 +56,7 @@ class RgShortestPathWidget : public QgsDockWidget
     ~RgShortestPathWidget();
 
   private slots:
+
     /**
      * export path
      */
@@ -100,6 +103,7 @@ class RgShortestPathWidget : public QgsDockWidget
     void helpRequested();
 
   private:
+
     /**
      * return path as a graph
      */

@@ -178,6 +178,7 @@ class QgsSelectedFeature: public QObject
     void beforeRollBack();
 
   private:
+
     /**
      * Deletes whole vertex map.
      */

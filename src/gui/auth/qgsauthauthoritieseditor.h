@@ -36,6 +36,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     Q_OBJECT
 
   public:
+
     /**
      * Widget for viewing and editing certificate authorities directly in database
      * @param parent Parent widget

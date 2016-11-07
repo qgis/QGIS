@@ -120,6 +120,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
 
     //! Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)
     QgsGeometry locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom );
+
     /** Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
      * Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)
      */
@@ -144,6 +145,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     //helper functions for event layer
     void addEventLayerFeature( QgsFeature& feature, const QgsGeometry& geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
                                bool forceSingleType = false );
+
     /** Create geometry offset relative to line geometry.
         @param geom the geometry to modify
         @param lineGeom the line geometry to which the feature is referenced

@@ -544,6 +544,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QGraphicsLineItem* addSnapLine();
     //! Remove custom snap line (and delete the object)
     void removeSnapLine( QGraphicsLineItem* line );
+
     /** Get nearest snap line
      * @note not available in python bindings
      */
@@ -570,6 +571,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
     //! Removes multi frame (but does not delete it)
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
+
     /** Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
       @note not available in python bindings*/
     void addComposerArrow( QgsComposerArrow* arrow );

@@ -26,6 +26,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * @brief Base class for any widget that can be shown as a inline panel
      * @param parent Parent widget.
@@ -131,6 +132,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void widgetChanged();
 
   public slots:
+
     /**
      * Open a panel or dialog depending on dock mode setting
      * If dock mode is true this method will emit the showPanel signal
@@ -176,6 +178,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 {
     Q_OBJECT
   public:
+
     /**
      * @brief Wrapper widget for existing widgets which can't have
      * the inheritance tree changed, e.g dialogs.

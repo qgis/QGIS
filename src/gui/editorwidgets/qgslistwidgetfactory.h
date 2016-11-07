@@ -26,6 +26,7 @@
 class GUI_EXPORT QgsListWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor.
      */

@@ -98,6 +98,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
     void mouseClicked( const QgsPoint& thePoint );
+
     /** Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
     void mouseMoved( const QgsPoint& thePoint );

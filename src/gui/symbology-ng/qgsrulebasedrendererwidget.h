@@ -183,6 +183,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
 
   public:
+
     /**
        * Widget to edit the details of a rule based renderer rule.
        * @param rule The rule to edit.
@@ -216,6 +217,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
      * Apply any changes from the widget to the set rule.
      */
     void apply();
+
     /**
      * Set the widget in dock mode.
      * @param dockMode True for dock mode.

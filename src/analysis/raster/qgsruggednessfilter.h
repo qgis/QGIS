@@ -30,6 +30,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
     ~QgsRuggednessFilter();
 
   protected:
+
     /** Calculates output value from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/
     float processNineCellWindow( float* x11, float* x21, float* x31,

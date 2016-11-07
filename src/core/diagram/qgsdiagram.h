@@ -36,6 +36,7 @@ class CORE_EXPORT QgsDiagram
 {
   public:
     virtual ~QgsDiagram() { clearCache(); }
+
     /** Returns an instance that is equivalent to this one
      * @note added in 2.4 */
     virtual QgsDiagram* clone() const = 0;

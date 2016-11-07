@@ -54,6 +54,7 @@ class QgsGrassModuleCheckBox : public QCheckBox
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      */
     QgsGrassModuleCheckBox( const QString & text, QWidget * parent = 0 );
@@ -83,6 +84,7 @@ class QgsGrassModuleCheckBox : public QCheckBox
 class QgsGrassModuleParam
 {
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -172,6 +174,7 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -238,6 +241,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -334,6 +338,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     bool mUsesRegion;
 };
 /********************** QgsGrassModuleFlag ************************/
+
 /** \class QgsGrassModuleFlag
  *  \brief  GRASS flag
  */
@@ -342,6 +347,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -431,6 +437,7 @@ class QgsGrassModuleField : public QgsGrassModuleOption
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -453,6 +460,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
@@ -583,6 +591,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file

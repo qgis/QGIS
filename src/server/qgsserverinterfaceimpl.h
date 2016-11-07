@@ -53,6 +53,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsServerFiltersMap filters() override { return mFilters; }
     //! Register an access control filter
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
+
     /** Gets the helper over all the registered access control filters
      * @return the access control helper
      */

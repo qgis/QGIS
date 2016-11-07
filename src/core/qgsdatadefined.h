@@ -36,6 +36,7 @@ class QgsDataDefinedPrivate;
 class CORE_EXPORT QgsDataDefined
 {
   public:
+
     /**
      * Construct a new data defined object
      *

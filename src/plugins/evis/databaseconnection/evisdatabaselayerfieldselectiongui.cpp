@@ -76,6 +76,7 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList* fieldList )
  * Public and Private Slots
  *
  */
+
 /**
 * Slot called when the ok/accept button is pressed
 */

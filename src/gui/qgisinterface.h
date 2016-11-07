@@ -356,6 +356,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
+
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.
@@ -583,6 +584,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual int messageTimeout() = 0;
 
   signals:
+
     /** Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
@@ -607,6 +609,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * This signal is emitted when the initialization is complete
      */
     void initializationCompleted();
+
     /** Emitted when a project file is successfully read
      * @note
      * This is useful for plug-ins that store properties with project files.  A
@@ -614,6 +617,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * knows to then check the project properties for any relevant state.
      */
     void projectRead();
+
     /** Emitted when starting an entirely new project
      * @note
      * This is similar to projectRead(); plug-ins might want to be notified

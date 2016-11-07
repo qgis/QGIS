@@ -115,6 +115,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void resizeEvent( QResizeEvent * theEvent ) override;
 
   private:
+
     /**
      * \brief converts the CRS group to a SQL expression fragment
      *

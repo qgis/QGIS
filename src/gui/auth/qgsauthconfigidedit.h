@@ -31,6 +31,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Widget to unlock and edit an authentication configuration ID
      * @param parent Parent widget

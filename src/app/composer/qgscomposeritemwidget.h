@@ -142,6 +142,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
      */
     void on_mFrameColorButton_colorChanged( const QColor& newFrameColor );
     void on_mBackgroundColorButton_clicked();
+
     /** Set the background color
      */
     void on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor );

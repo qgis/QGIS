@@ -64,6 +64,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
     virtual void start() = 0;
 
   signals:
+
     /** Emitted when the download completes
      *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
@@ -191,6 +192,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @note added in 2.3
      */
     virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ); return 1.0; }
+
     /** Read band offset for raster value
      * @note added in 2.3
      */
@@ -417,6 +419,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
   signals:
+
     /** Emit a signal to notify of the progress event.
       * Emitted theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, const QString& theMessage );
@@ -428,6 +431,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void statusChanged( const QString& ) const;
 
   protected:
+
     /** Read block of data
      * @note not available in python bindings
      */

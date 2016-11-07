@@ -185,6 +185,7 @@ class CORE_EXPORT QgsGmlStreamingParser
        @return 0 in case of success
       */
     int readEpsgFromAttribute( int& epsgNr, const XML_Char** attr );
+
     /** Reads attribute as string
        @param attributeName
        @param attr
@@ -193,6 +194,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
     //! Creates a rectangle from a coordinate string.
     bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
+
     /** Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
@@ -212,6 +214,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& ) const;
     int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const;
     int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
+
     /** Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
      * mCurrentWKB. The function deletes the memory in
@@ -276,6 +279,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsWkbPtr mCurrentWKB;
     QgsRectangle mCurrentExtent;
     bool mBoundedByNullFound;
+
     /** WKB intermediate storage during parsing. For points and lines, no
      * intermediate WKB is stored at all. For multipoints and multilines and
      * polygons, only one nested list is used. For multipolygons, both nested lists

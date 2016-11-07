@@ -297,6 +297,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int findNode( double x, double y, double threshold );
 
     // TODO is it used?
+
     /** Read attributes from DB
      *   @param field
      *   @param cat

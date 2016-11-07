@@ -25,6 +25,7 @@ class QTimer;
 class QgsMapLayer;
 
 ///@cond PRIVATE
+
 /**
  * @brief Implementation of simple transparency widget to be used in layer tree view
  *

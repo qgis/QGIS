@@ -62,6 +62,7 @@ class QgsMSLayerCache: public QObject
     @param configFile path of the config file (to invalidate entries if file changes). Can be empty (e.g. layers from sld)
     @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
     void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile = QString(), const QList<QString>& tempFiles = QList<QString>() );
+
     /** Searches for the layer with the given url.
      @return a pointer to the layer or 0 if no such layer*/
     QgsMapLayer* searchLayer( const QString& url, const QString& layerName, const QString& configFile = QString() );
@@ -79,6 +80,7 @@ class QgsMSLayerCache: public QObject
   protected:
     //! Protected singleton constructor
     QgsMSLayerCache();
+
     /** Goes through the list and removes entries and layers
      depending on their time stamps and the number of other
     layers*/
@@ -89,6 +91,7 @@ class QgsMSLayerCache: public QObject
     void freeEntryRessources( QgsMSLayerCacheEntry& entry );
 
   private:
+
     /** Cash entries with pair url/layer name as a key. The layer name is necessary for cases where the same
       url is used several time in a request. It ensures that different layer instances are created for different
       layer names*/

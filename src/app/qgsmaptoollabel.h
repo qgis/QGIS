@@ -38,23 +38,28 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
         @return true if labels of layer can be moved*/
     bool labelMoveable( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const;
     bool labelMoveable( QgsVectorLayer* vlayer, const QgsPalLayerSettings& settings, int& xCol, int& yCol ) const;
+
     /** Returns true if diagram move can be applied to a layer
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
     bool diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const;
+
     /** Returns true if layer has attribute fields set up
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
     bool layerCanPin( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const;
+
     /** Returns true if layer has attribute field set up for diagrams
       @param showCol out: attribute column for data defined diagram showing
       @note added in QGIS 2.16 */
     bool diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const;
+
     /** Returns true if layer has attribute field set up
       @param showCol out: attribute column for data defined label showing*/
     bool labelCanShowHide( QgsVectorLayer* vlayer, int& showCol ) const;
+
     /** Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( QgsVectorLayer *layer, int& rotationCol ) const;

@@ -23,6 +23,7 @@
 
 class QgsComposerMap;
 class QgsScaleBarStyle;
+
 /** \ingroup core
  * A scale bar item that can be added to a map composition.
  */
@@ -232,6 +233,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setLineJoinStyle
      */
     Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+
     /** Sets join style used when drawing the lines in the scalebar
      * @param style Join style for lines
      * @returns nothing
@@ -246,6 +248,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setLineCapStyle
      */
     Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+
     /** Sets cap style used when drawing the lines in the scalebar
      * @param style Cap style for lines
      * @returns nothing

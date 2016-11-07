@@ -31,6 +31,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Create a dialog for setting an associated authentication config, either
      * from existing configs, or creating/removing them from auth database
@@ -106,6 +107,7 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     Q_OBJECT
 
   public:
+
     /**
      * Construct wrapper dialog for select widget to edit an authcfg in a data source URI
      * @param parent Parent widget

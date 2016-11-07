@@ -110,6 +110,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     double mOpacity;
     //! Raster transparency per color or value. Overwrites global alpha value
     QgsRasterTransparency* mRasterTransparency;
+
     /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand;

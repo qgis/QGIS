@@ -38,6 +38,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
 
     //! Tests the connection using the parameters supplied
     bool testConnection();
+
     /**
      * @brief List all databases found for the given server.
      */

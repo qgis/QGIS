@@ -241,11 +241,13 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry geometryFromGMLMultiLineString( const QDomElement& geometryElement );
     //! Static method that creates geometry from GML MultiPolygon
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
+
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element
        @return boolean for success*/
     static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
+
     /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
        and extracts the coordinates as points
        @param coords list where the found coordinates are appended

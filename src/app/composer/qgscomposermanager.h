@@ -59,6 +59,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     void activate();
 
   private:
+
     /** Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;

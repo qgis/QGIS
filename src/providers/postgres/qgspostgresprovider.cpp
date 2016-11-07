@@ -4084,12 +4084,14 @@ QGISEXTERN QgsPostgresProvider * classFactory( const QString *uri )
 {
   return new QgsPostgresProvider( *uri );
 }
+
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
   return  POSTGRES_KEY;
 }
+
 /**
  * Required description function
  */
@@ -4097,6 +4099,7 @@ QGISEXTERN QString description()
 {
   return POSTGRES_DESCRIPTION;
 }
+
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin

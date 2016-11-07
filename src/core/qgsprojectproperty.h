@@ -185,6 +185,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
+
     /**
      * Create a new QgsPropertyKey with the specified identifier.
      */

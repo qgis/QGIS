@@ -297,6 +297,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void numberFeaturesChanged( int numFeatures );
 
   private:
+
     /** Updates the filename expression.
      * @returns true if expression was successfully parsed, false if expression is invalid
      */

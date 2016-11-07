@@ -64,6 +64,7 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     QgsVectorLayer* vectorLayerFromName( const QString& name );
     //! Enables or disables the Ok button depending on the availability of input layers and the output file
     void enableOrDisableOkButton();
+
     /** Get the current output bounding box (might be different to the compound layers bounding box because of user edits)
       @return the bounding box or an empty bounding box in case of error*/
     QgsRectangle currentBoundingBox();

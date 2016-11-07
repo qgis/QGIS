@@ -56,6 +56,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
   public:
 
     // If you add to this, please also add to capabilitiesString()
+
     /**
      * enumeration with capabilities that providers might implement
      */
@@ -91,6 +92,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       TransactionSupport =                          1 << 16,
       //! Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
       CircularGeometries =                          1 << 17,
+
       /** Supports joint updates for attributes and geometry
        * Providers supporting this should still define ChangeGeometries | ChangeAttributeValues
        */
@@ -464,6 +466,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QMap<QString, QString> metadata() const { return QMap<QString, QString>(); };
 
   signals:
+
     /**
      * Signals an error in this provider
      *
@@ -472,6 +475,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     void raiseError( const QString& msg ) const;
 
   protected:
+
     /**
      * Invalidates the min/max cache. This will force the provider to recalculate the
      * cache the next time it is requested.

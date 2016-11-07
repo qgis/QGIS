@@ -94,6 +94,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     //note - must sync with QgsMapCanvas::WheelAction.
     //TODO - QGIS 3.0 move QgsMapCanvas::WheelAction from GUI->CORE and remove this enum
+
     /** Modes for zooming item content
      */
     enum ZoomMode
@@ -108,6 +109,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( QgsComposition* composition, bool manageZValue = true );
+
     /** Constructor with box position and composer object
      @param x x coordinate of item
      @param y y coordinate of item
@@ -578,6 +580,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     //! Item rotation in degrees, clockwise
     double mItemRotation;
+
     /** Temporary evaluated item rotation in degrees, clockwise. Data defined rotation may mean
      * this value differs from mItemRotation.
      */
@@ -665,10 +668,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void itemRotationChanged( double newRotation );
     //! Emitted if the rectangle changes
     void sizeChanged();
+
     /** Emitted if the item's frame style changes
      * @note: this function was introduced in version 2.2
      */
     void frameChanged();
+
     /** Emitted if the item's lock status changes
      * @note: this function was introduced in version 2.5
      */

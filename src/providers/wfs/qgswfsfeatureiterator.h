@@ -141,6 +141,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     bool mStop;
     //! Progress dialog
     QProgressDialog* mProgressDialog;
+
     /** If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */
     bool mProgressDialogShowImmediately;

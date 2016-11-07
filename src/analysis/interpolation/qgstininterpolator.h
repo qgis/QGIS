@@ -63,6 +63,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 
     //! Create dual edge triangulation
     void initialize();
+
     /** Inserts the vertices of a feature into the triangulation
       @param f the feature
       @param zCoord true if the z coordinate is the interpolation attribute

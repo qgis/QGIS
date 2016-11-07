@@ -70,6 +70,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void createTableWidgetContents();
     //! Create new combo box with the options for featureXX / mean / min / max
     QComboBox* createMergeComboBox( QVariant::Type columnType ) const;
+
     /** Returns the table widget column index of a combo box
     @return the column index or -1 in case of error*/
     int findComboColumn( QComboBox* c ) const;

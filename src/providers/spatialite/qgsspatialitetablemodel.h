@@ -32,6 +32,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     void addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql );
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex& index, const QString& sql );
+
     /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is dectected later by thread*/
     void setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type );

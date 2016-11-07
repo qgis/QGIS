@@ -65,6 +65,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void dbChanged();
 
   public slots:
+
     /** Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */

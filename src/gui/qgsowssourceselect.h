@@ -111,6 +111,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     void connectionsChanged();
 
   protected:
+
     /**
      * List of image formats (encodings) supported by provider
      * @return list of format/label pairs

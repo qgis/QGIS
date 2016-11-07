@@ -103,6 +103,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
 
     //Editing operations
+
     /**
      * Adds a list of features
      * @return true in case of success and false in case of failure
@@ -139,6 +140,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual QMap<QString, QString> metadata();
 
   public slots:
+
     /** Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData() override;

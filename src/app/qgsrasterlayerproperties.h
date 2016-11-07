@@ -43,6 +43,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     Q_OBJECT
 
   public:
+
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */

@@ -128,6 +128,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      * @see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const;
+
     /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @note added in 2.3

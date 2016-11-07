@@ -91,6 +91,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     static bool supportsTransaction( const QgsVectorLayer* layer );
 
   signals:
+
     /**
      * Emitted after a rollback
      */

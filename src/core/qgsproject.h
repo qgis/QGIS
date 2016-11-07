@@ -593,6 +593,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void mapThemeCollectionChanged();
 
   public slots:
+
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.
@@ -608,6 +609,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void cleanTransactionGroups( bool force = false );
 
   private:
+
     /**
      * Create a new QgsProject.
      * Private since it's (still) a singleton.

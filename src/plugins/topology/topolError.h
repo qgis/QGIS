@@ -33,6 +33,7 @@ class FeatureLayer
         : layer( nullptr )
         , feature( QgsFeature() )
     {}
+
     /**
      * Constructor
      * @param theLayer layer pointer
@@ -60,30 +61,37 @@ class TopolError
      * A dummy fix - does nothing
      */
     bool fixDummy() { return false; }
+
     /**
      * Snaps to a feature
      */
     bool fixSnap();
+
     /**
      * Moves first feature
      */
     bool fixMoveFirst();
+
     /**
      * Moves second feature
      */
     bool fixMoveSecond();
+
     /**
      * Unions features to the first
      */
     bool fixUnionFirst();
+
     /**
      * Unions features to the first
      */
     bool fixUnionSecond();
+
     /**
      * Deletes first feature
      */
     bool fixDeleteFirst();
+
     /**
      * Deletes second feature
      */
@@ -97,6 +105,7 @@ class TopolError
      * @param fl2 second FeatureLayer pair
      */
     bool fixMove( const FeatureLayer &fl1, const FeatureLayer &fl2 );
+
     /**
      * Unions features to the first one
      * @param fl1 first FeatureLayer pair
@@ -105,6 +114,7 @@ class TopolError
     bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
   public:
+
     /**
      * Constructor
      * @param theBoundingBox bounding box of the two features
@@ -117,27 +127,33 @@ class TopolError
      * Destructor
      */
     virtual ~TopolError() {}
+
     /**
      * Runs fixing function
      * @param fixName name of the fix
      */
     virtual bool fix( const QString& fixName );
+
     /**
      * Returns error's name
      */
     virtual QString name() { return mName; }
+
     /**
      * Returns topology conflict
      */
     virtual QgsGeometry conflict() const { return mConflict; }
+
     /**
      * Returns bounding box of the error
      */
     virtual QgsRectangle boundingBox() { return mBoundingBox; }
+
     /**
      * Returns FeatureLayer pairs from the error
      */
     virtual QList<FeatureLayer> featurePairs() { return mFeaturePairs; }
+
     /**
      * Returns the names of possible fixes
      */

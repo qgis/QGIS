@@ -388,6 +388,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *  @note added in 2.8
      */
     QgsSnappingUtils* snappingUtils() const;
+
     /** Assign an instance of snapping utils to the map canvas.
      * The instance is not owned by the canvas, so it is possible to use one instance in multiple canvases.
      *
@@ -425,6 +426,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance );
+
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
@@ -496,6 +498,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
   signals:
+
     /** Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
@@ -637,6 +640,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QScopedPointer<CanvasProperties> mCanvasProperties;
 
 #if 0
+
     /** Debugging member
      * invoked when a connect() is made to this object
      */
@@ -647,6 +651,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   private:
     /// this class is non-copyable
+
     /**
        @note
 

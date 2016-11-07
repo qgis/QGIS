@@ -89,6 +89,7 @@ class QgsWcsCapabilities : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -246,6 +247,7 @@ class QgsWcsCapabilities : public QObject
     QList<int> parseInts( const QString &text );
     QList<double> parseDoubles( const QString &text );
     QString crsUrnToAuthId( const QString &text );
+
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *

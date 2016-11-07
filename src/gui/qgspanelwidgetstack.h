@@ -86,6 +86,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     QgsPanelWidget* currentPanel();
 
   public slots:
+
     /**
      * Accept the current active widget in the stack.
      *

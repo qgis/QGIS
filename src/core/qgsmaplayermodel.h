@@ -45,6 +45,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @brief QgsMapLayerModel creates a model to display layers in widgets.
      */
     explicit QgsMapLayerModel( QObject *parent = nullptr );
+
     /**
      * @brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      */
@@ -54,10 +55,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @brief setItemsCheckable defines if layers should be selectable in the widget
      */
     void setItemsCheckable( bool checkable );
+
     /**
      * @brief checkAll changes the checkstate for all the layers
      */
     void checkAll( Qt::CheckState checkState );
+
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */

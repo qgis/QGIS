@@ -139,6 +139,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;
 
   protected:
+
     /**
      * Construct a default authentication method
      * @note Non-public since this is an abstract base class

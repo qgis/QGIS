@@ -113,6 +113,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -148,6 +149,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void setConnectionName( QString const & connName );
 
     // TODO: Document this better.
+
     /** \brief   Renders the layer as an image
      *
      *  \return  A QImage - if the attempt to retrieve data for the draw was unsuccessful, returns 0
@@ -171,6 +173,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool isValid() const override;
 
 #if 0
+
     /** Returns true if layer has tile set profiles
      */
     virtual bool hasTiles() const;
@@ -631,6 +634,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     void cancelled();
 
   protected:
+
     /**
      * \brief Relaunch tile request cloning previous request parameters and managing max repeat
      *

@@ -202,13 +202,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * map will use the same configuration as the map canvas uses.
      * @note added in 2.16 */
     bool followVisibilityPreset() const { return mFollowVisibilityPreset; }
+
     /** Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
      * @note added in 2.16 */
     void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
+
     /** Preset name that decides which layers and layer styles are used for map rendering. It is only
      * used when followVisibilityPreset() returns true.
      * @note added in 2.16 */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
+
     /** Sets preset name for map rendering. See followVisibilityPresetName() for more details.
      * @note added in 2.16 */
     void setFollowVisibilityPresetName( const QString& name ) { mFollowVisibilityPresetName = name; }
@@ -472,6 +475,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     //! Map rotation
     double mMapRotation;
+
     /** Temporary evaluated map rotation. Data defined rotation may mean this value
      * differs from mMapRotation*/
     double mEvaluatedMapRotation;
@@ -490,6 +494,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * in mVisibilityPresetName and may be overridden by data-defined expression).
      * This flag has higher priority than mKeepLayerSet. */
     bool mFollowVisibilityPreset;
+
     /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;

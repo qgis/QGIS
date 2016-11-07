@@ -317,6 +317,7 @@ namespace pal
        * @return minimum # of iteration
        */
       int getMinIt();
+
       /**
        * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
        * @return maximum # of iteration

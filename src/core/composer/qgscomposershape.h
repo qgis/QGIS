@@ -73,6 +73,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
     void setShapeStyleSymbol( QgsFillSymbol* symbol );
+
     /** Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
     QgsFillSymbol* shapeStyleSymbol() { return mShapeStyleSymbol; }
@@ -98,11 +99,13 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     virtual void drawFrame( QPainter* p ) override;
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
     virtual void drawBackground( QPainter* p ) override;
+
     /** Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
      * rather than the item's pen */
     virtual double estimatedFrameBleed() const override;
 
   public slots:
+
     /** Should be called after the shape's symbol is changed. Redraws the shape and recalculates
      * its selection bounds.
      * Note: added in version 2.1*/

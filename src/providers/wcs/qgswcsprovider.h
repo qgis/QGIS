@@ -106,6 +106,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -140,6 +141,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void setCoverageCrs( QString const & crs );
 
     // TODO: Document this better.
+
     /** \brief   Renders the layer as an image
      *
      *  \return  A QImage - if the attempt to retrieve data for the draw was unsuccessful, returns 0

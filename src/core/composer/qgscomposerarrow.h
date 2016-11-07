@@ -226,6 +226,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     double mArrowHeadOutlineWidth;
     QColor mArrowHeadOutlineColor;
     QColor mArrowHeadFillColor;
+
     /** Indicates QGIS version to mimic bounding box behaviour for. The line placement changed in version 2.4, so a value
      * of 22 is used to indicate that the line should be drawn using the older placement routine.
      */
@@ -245,10 +246,12 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath );
     //! Apply default graphics settings
     void init();
+
     /** Creates the default line symbol
      * @note added in QGIS 2.5
      */
     void createDefaultLineSymbol();
+
     /** Draws the arrow line
      * @note added in QGIS 2.5
      */

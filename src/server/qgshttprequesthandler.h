@@ -71,6 +71,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void sendHeaders() override;
     virtual void sendBody() override;
     void setHttpResponse( QByteArray *ba, const QString &format );
+
     /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
