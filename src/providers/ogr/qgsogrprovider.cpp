@@ -840,6 +840,7 @@ void QgsOgrProvider::loadFields()
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
   //the attribute fields need to be read again when the encoding changes
   mAttributeFields.clear();
+  mDefaultValues.clear();
   if ( !ogrLayer )
     return;
 
@@ -946,6 +947,13 @@ void QgsOgrProvider::loadFields()
         QgsFieldConstraints constraints;
         constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
         newField.setConstraints( constraints );
+      }
+
+      // check if field has default value
+      QString defaultValue = textEncoding()->toUnicode( OGR_Fld_GetDefault( fldDef ) );
+      if ( !defaultValue.isEmpty() && !OGR_Fld_IsDefaultDriverSpecific( fldDef ) )
+      {
+        mDefaultValues.insert( i + ( mFirstFieldIsFid ? 1 : 0 ), defaultValue );
       }
 #endif
 
@@ -1079,6 +1087,34 @@ QgsRectangle QgsOgrProvider::extent() const
 
   mExtentRect.set( mExtent->MinX, mExtent->MinY, mExtent->MaxX, mExtent->MaxY );
   return mExtentRect;
+}
+
+QVariant QgsOgrProvider::defaultValue( int fieldId ) const
+{
+  if ( fieldId < 0 || fieldId >= mAttributeFields.count() )
+    return QVariant();
+
+  QString defaultVal = mDefaultValues.value( fieldId, QString() );
+  if ( defaultVal.isEmpty() )
+    return QVariant();
+
+  QVariant resultVar = defaultVal;
+  if ( defaultVal == QStringLiteral( "CURRENT_TIMESTAMP" ) )
+    resultVar = QDateTime::currentDateTime();
+  else if ( defaultVal == QStringLiteral( "CURRENT_DATE" ) )
+    resultVar = QDate::currentDate();
+  else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
+    resultVar = QTime::currentTime();
+  else if ( defaultVal.startsWith( '\'' ) )
+  {
+    defaultVal = defaultVal.remove( 0, 1 );
+    defaultVal.chop( 1 );
+    defaultVal.replace( "''", "'" );
+    resultVar = defaultVal;
+  }
+
+  ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
+  return resultVar;
 }
 
 void QgsOgrProvider::updateExtents()

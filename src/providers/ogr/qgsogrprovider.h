@@ -124,6 +124,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual QgsRectangle extent() const override;
 
+    QVariant defaultValue( int fieldId ) const override;
+
     /** Update the extents
      */
     virtual void updateExtents() override;
@@ -297,7 +299,12 @@ class QgsOgrProvider : public QgsVectorDataProvider
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
+
     QgsFields mAttributeFields;
+
+    //! Map of field index to default value
+    QMap<int, QString> mDefaultValues;
+
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
     mutable OGREnvelope* mExtent;
