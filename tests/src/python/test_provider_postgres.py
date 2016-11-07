@@ -28,6 +28,7 @@ from qgis.core import (
     QgsTransactionGroup,
     QgsField,
     QgsFieldConstraints,
+    QgsDataProvider,
     NULL
 )
 from qgis.gui import QgsEditorWidgetRegistry
@@ -84,9 +85,17 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
-        self.assertEqual(self.provider.defaultValue(0), 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)')
+        self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+        self.assertTrue(isinstance(self.provider.defaultValue(0), int))
         self.assertEqual(self.provider.defaultValue(1), NULL)
-        self.assertEqual(self.provider.defaultValue(2), '\'qgis\'::text')
+        self.assertEqual(self.provider.defaultValue(2), 'qgis')
+        self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
+
+    def testDefaultValueClause(self):
+        self.provider.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
+        self.assertEqual(self.provider.defaultValueClause(0), 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)')
+        self.assertFalse(self.provider.defaultValueClause(1))
+        self.assertEqual(self.provider.defaultValueClause(2), '\'qgis\'::text')
 
     def testDateTimeTypes(self):
         vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' % (self.dbconn), "testdatetimes", "postgres")
@@ -248,7 +257,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'), "oid_serial", "postgres")
         self.assertTrue(vl.isValid())
         f = QgsFeature(vl.fields())
-        f['obj_id'] = vl.dataProvider().defaultValue(0)
+        f['obj_id'] = vl.dataProvider().defaultValueClause(0)
         f['name'] = 'Test'
         r, f = vl.dataProvider().addFeatures([f])
         self.assertTrue(r)
@@ -553,17 +562,17 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             oflds = olyr.fields()
             if key is None:
                 # if the pkey was not given, it will create a pkey
-                self.assertEquals(oflds.size(), flds.size() + 1)
-                self.assertEquals(oflds[0].name(), kfnames[0])
+                self.assertEqual(oflds.size(), flds.size() + 1)
+                self.assertEqual(oflds[0].name(), kfnames[0])
                 for i in range(flds.size()):
                     self.assertEqual(oflds[i + 1].name(), flds[i].name())
             else:
                 # pkey was given, no extra field generated
-                self.assertEquals(oflds.size(), flds.size())
+                self.assertEqual(oflds.size(), flds.size())
                 for i in range(oflds.size()):
                     self.assertEqual(oflds[i].name(), flds[i].name())
             pks = olyr.pkAttributeList()
-            self.assertEquals(len(pks), len(kfnames))
+            self.assertEqual(len(pks), len(kfnames))
             for i in range(0, len(kfnames)):
                 self.assertEqual(oflds[pks[i]].name(), kfnames[i])
 

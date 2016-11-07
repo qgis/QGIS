@@ -793,7 +793,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
       if ( !remoteLayer->defaultValueExpression( k ).isEmpty() )
         newAttrs[k] = remoteLayer->defaultValue( k, f, &context );
       else if ( remoteFlds.fieldOrigin( k ) == QgsFields::OriginProvider )
-        newAttrs[k] = remoteLayer->dataProvider()->defaultValue( remoteFlds.fieldOriginIndex( k ) );
+        newAttrs[k] = remoteLayer->dataProvider()->defaultValueClause( remoteFlds.fieldOriginIndex( k ) );
     }
 
     f.setAttributes( newAttrs );
