@@ -1669,7 +1669,7 @@ static bool isSpatialOperator( const QString& tagName )
   static QStringList spatialOps;
   if ( spatialOps.isEmpty() )
   {
-    spatialOps << "BBOX" << "Intersects" << "Contians" << "Crosses" << "Equals"
+    spatialOps << "BBOX" << "Intersects" << "Contains" << "Crosses" << "Equals"
     << "Disjoint" << "Overlaps" << "Touches" << "Within";
   }
 
