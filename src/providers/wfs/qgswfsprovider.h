@@ -132,6 +132,12 @@ class QgsWFSProvider : public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
+    /**
+     * Get some metadata description of the provider.
+     * @return The provider metadata
+     */
+    virtual QMap<QString, QString> metadata();
+
   public slots:
     /** Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/

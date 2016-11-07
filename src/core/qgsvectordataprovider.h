@@ -390,7 +390,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Returns true if the provider is strict about the type of inserted features
      * (e.g. no multipolygon in a polygon layer)
      */
-    virtual bool doesStrictFeatureTypeCheck() const { return true;}
+    virtual bool doesStrictFeatureTypeCheck() const { return true; }
 
     //! Returns a list of available encodings
     static QStringList availableEncodings();
@@ -445,6 +445,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @note added in QGIS 3.0
      */
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
+
+    /**
+     * Get some metadata that will be display in the metadata tab of the layer properties.
+     * @return The provider metadata
+     */
+    virtual QMap<QString, QString> metadata() const { return QMap<QString, QString>(); };
 
   signals:
     /**

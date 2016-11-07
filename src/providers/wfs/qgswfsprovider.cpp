@@ -1100,6 +1100,16 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   }
 }
 
+
+QMap<QString, QString> QgsWFSProvider::metadata()
+{
+  QMap<QString, QString> result;
+  result[tr( "Max Features" )] = mShared->mCaps.maxFeatures == 0 ? tr( "not provided" ) : QString( mShared->mCaps.maxFeatures );
+  result[tr( "Supports Paging" )] = mShared->mCaps.supportsPaging ? tr( "supported" ) : tr( "unsupported" );
+  result[tr( "Supports Joins" )] = mShared->mCaps.supportsJoins ? tr( "supported" ) : tr( "unsupported" );
+  return result;
+}
+
 bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields& fields, QgsWkbTypes::Type& geomType )
 {
   fields.clear();

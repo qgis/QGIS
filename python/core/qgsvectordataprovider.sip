@@ -386,6 +386,12 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
 
+    /**
+     * Get some metadata that will be display in the metadata tab of the layer properties.
+     * @return The provider metadata
+     */
+    virtual QMap<QString, QString> metadata() const;
+
   signals:
     /**
      * Signals an error in this provider
