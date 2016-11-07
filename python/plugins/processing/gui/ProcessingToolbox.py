@@ -108,7 +108,7 @@ class ProcessingToolbox(BASE, WIDGET):
         text = self.searchBox.text().strip(' ').lower()
         for item in list(self.disabledProviderItems.values()):
             item.setHidden(True)
-        self._filterItem(self.algorithmTree.invisibleRootItem(), text)
+        self._filterItem(self.algorithmTree.invisibleRootItem(), [t for t in text.split(' ') if t])
         if text:
             self.algorithmTree.expandAll()
             self.disabledWithMatchingAlgs = []
@@ -137,10 +137,15 @@ class ProcessingToolbox(BASE, WIDGET):
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            # hide = bool(text) and (text not in item.text(0).lower())
-            hide = bool(text) and not any(text in t for t in [item.text(0).lower(), item.data(0, Qt.UserRole).lower()])
+            # hide if every part of text is not contained somewhere in either the item text or item user role
+            item_text = [item.text(0).lower(), item.data(0, Qt.UserRole).lower()]
             if isinstance(item, TreeAlgorithmItem):
-                hide = hide and (text not in item.alg.commandLineName())
+                item_text.append(item.alg.commandLineName())
+
+            hide = bool(text) and not all(
+                any(part in t for t in item_text)
+                for part in text)
+
             item.setHidden(hide)
             return not hide
         else:
