@@ -90,14 +90,14 @@ class GUI_EXPORT QgsVectorLayerTools
      * Copy and move features with defined translation.
      *
      * @param layer The layer
-     * @param request The request for the features to be moved
+     * @param request The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
      * @param dx The translation on x
      * @param dy The translation on y
-     * @return True if successful.
+     * @return True if all features could be copied.
      *
      * TODO QGIS 3: remove const qualifier
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest request, double dx = 0, double dy = 0 ) const = 0;
+    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double dx = 0, double dy = 0 ) const = 0;
 
 };
 

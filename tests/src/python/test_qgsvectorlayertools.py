@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit test utils for provider tests.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+
+from builtins import str
+from builtins import object
+__author__ = 'Denis Rouzaud'
+__date__ = '2016-11-07'
+__copyright__ = 'Copyright 2015, The QGIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+from qgis.core import QgsFeatureRequest, QgsVectorLayer, QgsMapLayerRegistry
+from qgis.testing import start_app, unittest
+from qgis.testing.mocked import get_iface
+
+import os
+
+start_app()
+
+
+class TestQgsVectorLayerTools(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        Setup the involved layers and relations for a n:m relation
+        :return:
+        """
+        cls.dbconn = 'service=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        # Create test layer
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" sql=', 'layer', 'postgres')
+
+        QgsMapLayerRegistry.instance().addMapLayer(cls.vl)
+
+        cls.iface = get_iface()
+
+    def testCopyMoveFeature(self):
+        """ Test copy and move features"""
+        rqst = QgsFeatureRequest()
+        rqst.setFilterFid(4)
+        self.vl.startEditing()
+        (ok, rqst) = self.iface.vectorLayerTools().copyMoveFeature(self.vl, rqst, -0.1, 0.2)
+        self.vl.commitChanges()
+        self.vl.stopEditing()
+        self.assertTrue(ok)
+        for f in self.vl.get(rqst):
+            geom = f.geometry()
+            self.assertEqual(geom.asPoint().x(), -70.432)
+            self.assertEqual(geom.asPoint().y(), 66.53)
+
+
+if __name__ == '__main__':
+    unittest.main()
