@@ -90,7 +90,7 @@ def runandload(name, *args, **kwargs):
 
 def version():
     pluginPath = os.path.split(os.path.dirname(__file__))[0]
-    cfg = configparser.SafeConfigParser()
+    cfg = configparser.ConfigParser()
     cfg.read(os.path.join(pluginPath, 'metadata.txt'))
     ver = cfg.get('general', 'version').split('.')
     return 10000 * int(ver[0]) + 100 * int(ver[1]) + int(ver[2])
