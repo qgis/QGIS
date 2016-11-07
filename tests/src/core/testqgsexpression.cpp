@@ -1096,6 +1096,9 @@ class TestQgsExpression: public QObject
         case QVariant::Time:
           QCOMPARE( result.toTime(), expected.toTime() );
           break;
+        case QVariant::List:
+          QCOMPARE( result.toList(), expected.toList() );
+          break;
         case QVariant::UserType:
         {
           if ( result.userType() == qMetaTypeId<QgsInterval>() )
