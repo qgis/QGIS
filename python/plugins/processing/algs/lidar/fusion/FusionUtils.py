@@ -54,10 +54,9 @@ class FusionUtils(object):
 
     @staticmethod
     def createFileList(files):
-        out = open(FusionUtils.tempFileListFilepath(), 'w')
-        for f in files:
-            out.write(f + '\n')
-        out.close()
+        with open(FusionUtils.tempFileListFilepath(), 'w') as out:
+            for f in files:
+                out.write(f + '\n')
 
     @staticmethod
     def runFusion(commands, progress):

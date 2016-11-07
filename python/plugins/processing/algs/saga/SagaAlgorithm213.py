@@ -156,14 +156,13 @@ class SagaAlgorithm213(SagaAlgorithm212):
                     command += ' -' + param.name.strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
-                f = open(tempTableFile, 'w')
-                f.write('\t'.join([col for col in param.cols]) + '\n')
-                values = param.value.split(',')
-                for i in range(0, len(values), 3):
-                    s = values[i] + '\t' + values[i + 1] + '\t' + values[i
-                                                                         + 2] + '\n'
-                    f.write(s)
-                f.close()
+                with open(tempTableFile, 'w') as f:
+                    f.write('\t'.join([col for col in param.cols]) + '\n')
+                    values = param.value.split(',')
+                    for i in range(0, len(values), 3):
+                        s = values[i] + '\t' + values[i + 1] + '\t' + values[i
+                                                                             + 2] + '\n'
+                        f.write(s)
                 command += ' -' + param.name + ' "' + tempTableFile + '"'
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is

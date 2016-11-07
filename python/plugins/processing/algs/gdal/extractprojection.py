@@ -75,17 +75,15 @@ class ExtractProjection(GdalAlgorithm):
             crs = tmp.ExportToWkt()
             tmp = None
 
-            prj = open(outFileName + '.prj', 'wt')
-            prj.write(crs)
-            prj.close()
+            with open(outFileName + '.prj', 'wt') as prj:
+                prj.write(crs)
 
-        wld = open(outFileName + '.wld', 'wt')
-        wld.write('%0.8f\n' % geotransform[1])
-        wld.write('%0.8f\n' % geotransform[4])
-        wld.write('%0.8f\n' % geotransform[2])
-        wld.write('%0.8f\n' % geotransform[5])
-        wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
-                               * geotransform[2]))
-        wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
-                               * geotransform[5]))
-        wld.close()
+        with open(outFileName + '.wld', 'wt') as wld:
+            wld.write('%0.8f\n' % geotransform[1])
+            wld.write('%0.8f\n' % geotransform[4])
+            wld.write('%0.8f\n' % geotransform[2])
+            wld.write('%0.8f\n' % geotransform[5])
+            wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
+                                   * geotransform[2]))
+            wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
+                                   * geotransform[5]))

@@ -58,15 +58,14 @@ class CommanderWindow(QDialog):
     def commandsFile(self):
         f = os.path.join(self.commandsFolder(), 'commands.py')
         if not os.path.exists(f):
-            out = open(f, 'w')
-            out.write('from qgis.core import *\n')
-            out.write('import processing\n\n')
-            out.write('def removeall():\n')
-            out.write('\tmapreg = QgsMapLayerRegistry.instance()\n')
-            out.write('\tmapreg.removeAllMapLayers()\n\n')
-            out.write('def load(*args):\n')
-            out.write('\tprocessing.load(args[0])\n')
-            out.close()
+            with open(f, 'w') as out:
+                out.write('from qgis.core import *\n')
+                out.write('import processing\n\n')
+                out.write('def removeall():\n')
+                out.write('\tmapreg = QgsMapLayerRegistry.instance()\n')
+                out.write('\tmapreg.removeAllMapLayers()\n\n')
+                out.write('def load(*args):\n')
+                out.write('\tprocessing.load(args[0])\n')
         return f
 
     def algsListHasChanged(self):

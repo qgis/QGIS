@@ -76,14 +76,13 @@ class UniqueValues(GeoAlgorithm):
                                                           values]))
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>')
-        f.write('<meta http-equiv="Content-Type" content="text/html; \
-                 charset=utf-8" /></head><body>')
-        f.write(self.tr('<p>Total unique values: ') + str(len(algData)) + '</p>')
-        f.write(self.tr('<p>Unique values:</p>'))
-        f.write('<ul>')
-        for s in algData:
-            f.write('<li>' + str(s) + '</li>')
-        f.write('</ul></body></html>')
-        f.close()
+        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+            f.write('<html><head>')
+            f.write('<meta http-equiv="Content-Type" content="text/html; \
+                     charset=utf-8" /></head><body>')
+            f.write(self.tr('<p>Total unique values: ') + str(len(algData)) + '</p>')
+            f.write(self.tr('<p>Unique values:</p>'))
+            f.write('<ul>')
+            for s in algData:
+                f.write('<li>' + str(s) + '</li>')
+            f.write('</ul></body></html>')

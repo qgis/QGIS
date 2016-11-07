@@ -139,69 +139,67 @@ class Grass7Algorithm(GeoAlgorithm):
         descs = {}
         _, helpfile = self.help()
         try:
-            infile = open(helpfile)
-            lines = infile.readlines()
-            for i in range(len(lines)):
-                if lines[i].startswith('<DT><b>'):
-                    for param in self.parameters:
-                        searchLine = '<b>' + param.name + '</b>'
-                        if searchLine in lines[i]:
-                            i += 1
-                            descs[param.name] = (lines[i])[4:-6]
-                            break
+            with open(helpfile) as infile:
+                lines = infile.readlines()
+                for i in range(len(lines)):
+                    if lines[i].startswith('<DT><b>'):
+                        for param in self.parameters:
+                            searchLine = '<b>' + param.name + '</b>'
+                            if searchLine in lines[i]:
+                                i += 1
+                                descs[param.name] = (lines[i])[4:-6]
+                                break
 
-            infile.close()
         except Exception:
             pass
         return descs
 
     def defineCharacteristicsFromFile(self):
-        lines = open(self.descriptionFile)
-        line = lines.readline().strip('\n').strip()
-        self.grass7Name = line
-        line = lines.readline().strip('\n').strip()
-        self.name = line
-        self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
-        if " - " not in self.name:
-            self.name = self.grass7Name + " - " + self.name
-            self.i18n_name = self.grass7Name + " - " + self.i18n_name
-        line = lines.readline().strip('\n').strip()
-        self.group = line
-        self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
-        hasRasterOutput = False
-        hasVectorInput = False
-        vectorOutputs = 0
-        line = lines.readline().strip('\n').strip()
-        while line != '':
-            try:
-                line = line.strip('\n').strip()
-                if line.startswith('Hardcoded'):
-                    self.hardcodedStrings.append(line[len('Hardcoded|'):])
-                parameter = getParameterFromString(line)
-                if parameter is not None:
-                    self.addParameter(parameter)
-                    if isinstance(parameter, ParameterVector):
-                        hasVectorInput = True
-                    if isinstance(parameter, ParameterMultipleInput) \
-                       and parameter.datatype < 3:
-                        hasVectorInput = True
-                else:
-                    output = getOutputFromString(line)
-                    self.addOutput(output)
-                    if isinstance(output, OutputRaster):
-                        hasRasterOutput = True
-                    elif isinstance(output, OutputVector):
-                        vectorOutputs += 1
-                    if isinstance(output, OutputHTML):
-                        self.addOutput(OutputFile("rawoutput", output.description +
-                                                  " (raw output)", "txt"))
-                line = lines.readline().strip('\n').strip()
-            except Exception as e:
-                ProcessingLog.addToLog(
-                    ProcessingLog.LOG_ERROR,
-                    self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s' % (self.descriptionFile, line)))
-                raise e
-        lines.close()
+        with open(self.descriptionFile) as lines:
+            line = lines.readline().strip('\n').strip()
+            self.grass7Name = line
+            line = lines.readline().strip('\n').strip()
+            self.name = line
+            self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
+            if " - " not in self.name:
+                self.name = self.grass7Name + " - " + self.name
+                self.i18n_name = self.grass7Name + " - " + self.i18n_name
+            line = lines.readline().strip('\n').strip()
+            self.group = line
+            self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
+            hasRasterOutput = False
+            hasVectorInput = False
+            vectorOutputs = 0
+            line = lines.readline().strip('\n').strip()
+            while line != '':
+                try:
+                    line = line.strip('\n').strip()
+                    if line.startswith('Hardcoded'):
+                        self.hardcodedStrings.append(line[len('Hardcoded|'):])
+                    parameter = getParameterFromString(line)
+                    if parameter is not None:
+                        self.addParameter(parameter)
+                        if isinstance(parameter, ParameterVector):
+                            hasVectorInput = True
+                        if isinstance(parameter, ParameterMultipleInput) \
+                           and parameter.datatype < 3:
+                            hasVectorInput = True
+                    else:
+                        output = getOutputFromString(line)
+                        self.addOutput(output)
+                        if isinstance(output, OutputRaster):
+                            hasRasterOutput = True
+                        elif isinstance(output, OutputVector):
+                            vectorOutputs += 1
+                        if isinstance(output, OutputHTML):
+                            self.addOutput(OutputFile("rawoutput", output.description +
+                                                      " (raw output)", "txt"))
+                    line = lines.readline().strip('\n').strip()
+                except Exception as e:
+                    ProcessingLog.addToLog(
+                        ProcessingLog.LOG_ERROR,
+                        self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s' % (self.descriptionFile, line)))
+                    raise e
 
         self.addParameter(ParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,

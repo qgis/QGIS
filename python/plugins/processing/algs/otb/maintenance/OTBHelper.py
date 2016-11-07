@@ -661,10 +661,9 @@ def create_xml_descriptors():
             if available_app in white_list and available_app not in black_list:
                 logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
                 # TODO Remove this default code when all apps are tested...
-                fh = open("description/%s.xml" % available_app, "w")
-                the_root = get_xml_description_from_application_name(available_app)
-                ET.ElementTree(the_root).write(fh)
-                fh.close()
+                with open("description/%s.xml" % available_app, "w") as fh:
+                    the_root = get_xml_description_from_application_name(available_app)
+                    ET.ElementTree(the_root).write(fh)
                 try:
                     get_automatic_ut_from_xml_description(the_root)
                 except:
@@ -683,12 +682,11 @@ def create_html_description():
 
     for available_app in otbApplication.Registry.GetAvailableApplications():
         try:
-            fh = open("description/doc/%s.html" % available_app, "w")
-            app_instance = otbApplication.Registry.CreateApplication(available_app)
-            app_instance.UpdateParameters()
-            ct = describe_app(app_instance)
-            fh.write(ct)
-            fh.close()
+            with open("description/doc/%s.html" % available_app, "w") as fh:
+                app_instance = otbApplication.Registry.CreateApplication(available_app)
+                app_instance.UpdateParameters()
+                ct = describe_app(app_instance)
+                fh.write(ct)
         except Exception:
             logger.error(traceback.format_exc())
 

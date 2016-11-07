@@ -275,10 +275,9 @@ def remove_parameter_by_criteria(doc, criteria):
 
 
 def defaultWrite(available_app, original_dom_document):
-    fh = open("description/%s.xml" % available_app, "w")
-    the_root = original_dom_document
-    ET.ElementTree(the_root).write(fh)
-    fh.close()
+    with open("description/%s.xml" % available_app, "w") as fh:
+        the_root = original_dom_document
+        ET.ElementTree(the_root).write(fh)
 
 
 def defaultSplit(available_app, original_dom_document, parameter):

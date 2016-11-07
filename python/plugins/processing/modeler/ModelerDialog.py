@@ -324,7 +324,8 @@ class ModelerDialog(BASE, WIDGET):
         if filename:
             text = self.alg.toJson()
             try:
-                fout = codecs.open(filename, 'w', encoding='utf-8')
+                with codecs.open(filename, 'w', encoding='utf-8') as fout:
+                    fout.write(text)
             except:
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
@@ -336,8 +337,6 @@ class ModelerDialog(BASE, WIDGET):
                                                 "have permission to do it). Please, use "
                                                 "the 'Save as...' option."))
                 return
-            fout.write(text)
-            fout.close()
             self.update_model.emit()
             self.bar.pushMessage("", "Model was correctly saved", level=QgsMessageBar.SUCCESS, duration=5)
 

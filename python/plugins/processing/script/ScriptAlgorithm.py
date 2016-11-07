@@ -77,18 +77,17 @@ class ScriptAlgorithm(GeoAlgorithm):
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
         self.group = self.tr('User scripts', 'ScriptAlgorithm')
-        lines = open(self.descriptionFile)
-        line = lines.readline()
-        while line != '':
-            if line.startswith('##'):
-                try:
-                    self.processParameterLine(line.strip('\n'))
-                except:
-                    self.error = self.tr('This script has a syntax errors.\n'
-                                         'Problem with line: %s', 'ScriptAlgorithm') % line
-            self.script += line
+        with open(self.descriptionFile) as lines:
             line = lines.readline()
-        lines.close()
+            while line != '':
+                if line.startswith('##'):
+                    try:
+                        self.processParameterLine(line.strip('\n'))
+                    except:
+                        self.error = self.tr('This script has a syntax errors.\n'
+                                             'Problem with line: %s', 'ScriptAlgorithm') % line
+                self.script += line
+                line = lines.readline()
         if self.group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
             self.showInModeler = False
             self.showInToolbox = False

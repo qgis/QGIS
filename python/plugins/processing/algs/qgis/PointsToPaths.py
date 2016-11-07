@@ -117,26 +117,26 @@ class PointsToPaths(GeoAlgorithm):
 
             fileName = os.path.join(dirName, '%s.txt' % group)
 
-            fl = open(fileName, 'w')
-            fl.write('angle=Azimuth\n')
-            fl.write('heading=Coordinate_System\n')
-            fl.write('dist_units=Default\n')
+            with open(fileName, 'w') as fl:
+                fl.write('angle=Azimuth\n')
+                fl.write('heading=Coordinate_System\n')
+                fl.write('dist_units=Default\n')
 
-            line = []
-            i = 0
-            for node in vertices:
-                line.append(node[1])
+                line = []
+                i = 0
+                for node in vertices:
+                    line.append(node[1])
 
-                if i == 0:
-                    fl.write('startAt=%f;%f;90\n' % (node[1].x(), node[1].y()))
-                    fl.write('survey=Polygonal\n')
-                    fl.write('[data]\n')
-                else:
-                    angle = line[i - 1].azimuth(line[i])
-                    distance = da.measureLine(line[i - 1], line[i])
-                    fl.write('%f;%f;90\n' % (angle, distance))
+                    if i == 0:
+                        fl.write('startAt=%f;%f;90\n' % (node[1].x(), node[1].y()))
+                        fl.write('survey=Polygonal\n')
+                        fl.write('[data]\n')
+                    else:
+                        angle = line[i - 1].azimuth(line[i])
+                        distance = da.measureLine(line[i - 1], line[i])
+                        fl.write('%f;%f;90\n' % (angle, distance))
 
-                i += 1
+                    i += 1
 
             f.setGeometry(QgsGeometry.fromPolyline(line))
             writer.addFeature(f)
@@ -144,4 +144,3 @@ class PointsToPaths(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         del writer
-        fl.close()
