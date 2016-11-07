@@ -350,18 +350,18 @@ class GPKGDBConnector(DBConnector):
 
             if geomtype == ogr.wkbNone:
                 item = list([Table.TableType,
-                            lyr.GetName(),
-                            False, # is_view
+                             lyr.GetName(),
+                             False, # is_view
                              ])
             else:
                 item = list([Table.VectorType,
-                            lyr.GetName(),
-                            False, # is_view
-                            lyr.GetName(),
-                            lyr.GetGeometryColumn(),
-                            geomname,
-                            geomdim,
-                            srid])
+                             lyr.GetName(),
+                             False, # is_view
+                             lyr.GetName(),
+                             lyr.GetGeometryColumn(),
+                             geomname,
+                             geomdim,
+                             srid])
             items.append(item)
         return items
 
