@@ -1558,159 +1558,159 @@ void QgisApp::createActions()
 
   // Project Menu Items
 
-  connect( mActionNewProject, SIGNAL( triggered() ), this, SLOT( fileNew() ) );
-  connect( mActionNewBlankProject, SIGNAL( triggered() ), this, SLOT( fileNewBlank() ) );
-  connect( mActionOpenProject, SIGNAL( triggered() ), this, SLOT( fileOpen() ) );
-  connect( mActionSaveProject, SIGNAL( triggered() ), this, SLOT( fileSave() ) );
-  connect( mActionSaveProjectAs, SIGNAL( triggered() ), this, SLOT( fileSaveAs() ) );
-  connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
-  connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
-  connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
-  connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
-  connect( mActionDxfExport, SIGNAL( triggered() ), this, SLOT( dxfExport() ) );
+  connect( mActionNewProject, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::fileNew ) );
+  connect( mActionNewBlankProject, &QAction::triggered, this, &QgisApp::fileNewBlank );
+  connect( mActionOpenProject, &QAction::triggered, this, &QgisApp::fileOpen );
+  connect( mActionSaveProject, &QAction::triggered, this, &QgisApp::fileSave );
+  connect( mActionSaveProjectAs, &QAction::triggered, this, &QgisApp::fileSaveAs );
+  connect( mActionSaveMapAsImage, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::saveMapAsImage ) );
+  connect( mActionNewPrintComposer, &QAction::triggered, this, &QgisApp::newPrintComposer );
+  connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
+  connect( mActionExit, &QAction::triggered, this, &QgisApp::fileExit );
+  connect( mActionDxfExport, &QAction::triggered, this, &QgisApp::dxfExport );
 
   // Edit Menu Items
 
   connect( mActionUndo, SIGNAL( triggered() ), mUndoWidget, SLOT( undo() ) );
   connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
-  connect( mActionCutFeatures, SIGNAL( triggered() ), this, SLOT( editCut() ) );
-  connect( mActionCopyFeatures, SIGNAL( triggered() ), this, SLOT( editCopy() ) );
-  connect( mActionPasteFeatures, SIGNAL( triggered() ), this, SLOT( editPaste() ) );
-  connect( mActionPasteAsNewVector, SIGNAL( triggered() ), this, SLOT( pasteAsNewVector() ) );
-  connect( mActionPasteAsNewMemoryVector, SIGNAL( triggered() ), this, SLOT( pasteAsNewMemoryVector() ) );
-  connect( mActionCopyStyle, SIGNAL( triggered() ), this, SLOT( copyStyle() ) );
-  connect( mActionPasteStyle, SIGNAL( triggered() ), this, SLOT( pasteStyle() ) );
-  connect( mActionAddFeature, SIGNAL( triggered() ), this, SLOT( addFeature() ) );
-  connect( mActionCircularStringCurvePoint, SIGNAL( triggered() ), this, SLOT( circularStringCurvePoint() ) );
-  connect( mActionCircularStringRadius, SIGNAL( triggered() ), this, SLOT( circularStringRadius() ) );
-  connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
-  connect( mActionRotateFeature, SIGNAL( triggered() ), this, SLOT( rotateFeature() ) );
+  connect( mActionCutFeatures, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::editCut ) );
+  connect( mActionCopyFeatures, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::editCopy ) );
+  connect( mActionPasteFeatures, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::editPaste ) );
+  connect( mActionPasteAsNewVector, &QAction::triggered, this, &QgisApp::pasteAsNewVector );
+  connect( mActionPasteAsNewMemoryVector, &QAction::triggered, this, static_cast < QgsVectorLayer*( QgisApp::* )() > ( &QgisApp::pasteAsNewMemoryVector ) );
+  connect( mActionCopyStyle, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::copyStyle ) );
+  connect( mActionPasteStyle, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::pasteStyle ) );
+  connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
+  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, &QgisApp::circularStringCurvePoint );
+  connect( mActionCircularStringRadius, &QAction::triggered, this, &QgisApp::circularStringRadius );
+  connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
+  connect( mActionRotateFeature, &QAction::triggered, this, &QgisApp::rotateFeature );
 
-  connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
-  connect( mActionSplitFeatures, SIGNAL( triggered() ), this, SLOT( splitFeatures() ) );
-  connect( mActionSplitParts, SIGNAL( triggered() ), this, SLOT( splitParts() ) );
-  connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
-  connect( mActionAddRing, SIGNAL( triggered() ), this, SLOT( addRing() ) );
-  connect( mActionFillRing, SIGNAL( triggered() ), this, SLOT( fillRing() ) );
-  connect( mActionAddPart, SIGNAL( triggered() ), this, SLOT( addPart() ) );
-  connect( mActionSimplifyFeature, SIGNAL( triggered() ), this, SLOT( simplifyFeature() ) );
-  connect( mActionDeleteRing, SIGNAL( triggered() ), this, SLOT( deleteRing() ) );
-  connect( mActionDeletePart, SIGNAL( triggered() ), this, SLOT( deletePart() ) );
-  connect( mActionMergeFeatures, SIGNAL( triggered() ), this, SLOT( mergeSelectedFeatures() ) );
-  connect( mActionMergeFeatureAttributes, SIGNAL( triggered() ), this, SLOT( mergeAttributesOfSelectedFeatures() ) );
-  connect( mActionMultiEditAttributes, SIGNAL( triggered() ), this, SLOT( modifyAttributesOfSelectedFeatures() ) );
-  connect( mActionNodeTool, SIGNAL( triggered() ), this, SLOT( nodeTool() ) );
-  connect( mActionRotatePointSymbols, SIGNAL( triggered() ), this, SLOT( rotatePointSymbols() ) );
-  connect( mActionOffsetPointSymbol, SIGNAL( triggered() ), this, SLOT( offsetPointSymbol() ) );
-  connect( mActionSnappingOptions, SIGNAL( triggered() ), this, SLOT( snappingOptions() ) );
-  connect( mActionOffsetCurve, SIGNAL( triggered() ), this, SLOT( offsetCurve() ) );
+  connect( mActionReshapeFeatures, &QAction::triggered, this, &QgisApp::reshapeFeatures );
+  connect( mActionSplitFeatures, &QAction::triggered, this, &QgisApp::splitFeatures );
+  connect( mActionSplitParts, &QAction::triggered, this, &QgisApp::splitParts );
+  connect( mActionDeleteSelected, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::deleteSelected ) );
+  connect( mActionAddRing, &QAction::triggered, this, &QgisApp::addRing );
+  connect( mActionFillRing, &QAction::triggered, this, &QgisApp::fillRing );
+  connect( mActionAddPart, &QAction::triggered, this, &QgisApp::addPart );
+  connect( mActionSimplifyFeature, &QAction::triggered, this, &QgisApp::simplifyFeature );
+  connect( mActionDeleteRing, &QAction::triggered, this, &QgisApp::deleteRing );
+  connect( mActionDeletePart, &QAction::triggered, this, &QgisApp::deletePart );
+  connect( mActionMergeFeatures, &QAction::triggered, this, &QgisApp::mergeSelectedFeatures );
+  connect( mActionMergeFeatureAttributes, &QAction::triggered, this, &QgisApp::mergeAttributesOfSelectedFeatures );
+  connect( mActionMultiEditAttributes, &QAction::triggered, this, &QgisApp::modifyAttributesOfSelectedFeatures );
+  connect( mActionNodeTool, &QAction::triggered, this, &QgisApp::nodeTool );
+  connect( mActionRotatePointSymbols, &QAction::triggered, this, &QgisApp::rotatePointSymbols );
+  connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
+  connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
+  connect( mActionOffsetCurve, &QAction::triggered, this, &QgisApp::offsetCurve );
 
   // View Menu Items
 
 #ifdef HAVE_TOUCH
-  connect( mActionTouch, SIGNAL( triggered() ), this, SLOT( touch() ) );
+  connect( mActionTouch, &QAction::triggered, this, &QgisApp::touch );
 #endif
-  connect( mActionPan, SIGNAL( triggered() ), this, SLOT( pan() ) );
-  connect( mActionPanToSelected, SIGNAL( triggered() ), this, SLOT( panToSelected() ) );
-  connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
-  connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
-  connect( mActionSelectFeatures, SIGNAL( triggered() ), this, SLOT( selectFeatures() ) );
-  connect( mActionSelectPolygon, SIGNAL( triggered() ), this, SLOT( selectByPolygon() ) );
-  connect( mActionSelectFreehand, SIGNAL( triggered() ), this, SLOT( selectByFreehand() ) );
-  connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
-  connect( mActionDeselectAll, SIGNAL( triggered() ), this, SLOT( deselectAll() ) );
-  connect( mActionSelectAll, SIGNAL( triggered() ), this, SLOT( selectAll() ) );
-  connect( mActionInvertSelection, SIGNAL( triggered() ), this, SLOT( invertSelection() ) );
-  connect( mActionSelectByExpression, SIGNAL( triggered() ), this, SLOT( selectByExpression() ) );
-  connect( mActionSelectByForm, SIGNAL( triggered() ), this, SLOT( selectByForm() ) );
-  connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
-  connect( mActionFeatureAction, SIGNAL( triggered() ), this, SLOT( doFeatureAction() ) );
-  connect( mActionMeasure, SIGNAL( triggered() ), this, SLOT( measure() ) );
-  connect( mActionMeasureArea, SIGNAL( triggered() ), this, SLOT( measureArea() ) );
-  connect( mActionMeasureAngle, SIGNAL( triggered() ), this, SLOT( measureAngle() ) );
-  connect( mActionZoomFullExtent, SIGNAL( triggered() ), this, SLOT( zoomFull() ) );
-  connect( mActionZoomToLayer, SIGNAL( triggered() ), this, SLOT( zoomToLayerExtent() ) );
-  connect( mActionZoomToSelected, SIGNAL( triggered() ), this, SLOT( zoomToSelected() ) );
-  connect( mActionZoomLast, SIGNAL( triggered() ), this, SLOT( zoomToPrevious() ) );
-  connect( mActionZoomNext, SIGNAL( triggered() ), this, SLOT( zoomToNext() ) );
-  connect( mActionZoomActualSize, SIGNAL( triggered() ), this, SLOT( zoomActualSize() ) );
-  connect( mActionMapTips, SIGNAL( toggled( bool ) ), this, SLOT( toggleMapTips( bool ) ) );
-  connect( mActionNewBookmark, SIGNAL( triggered() ), this, SLOT( newBookmark() ) );
-  connect( mActionShowBookmarks, SIGNAL( triggered() ), this, SLOT( showBookmarks() ) );
-  connect( mActionDraw, SIGNAL( triggered() ), this, SLOT( refreshMapCanvas() ) );
-  connect( mActionTextAnnotation, SIGNAL( triggered() ), this, SLOT( addTextAnnotation() ) );
-  connect( mActionFormAnnotation, SIGNAL( triggered() ), this, SLOT( addFormAnnotation() ) );
-  connect( mActionHtmlAnnotation, SIGNAL( triggered() ), this, SLOT( addHtmlAnnotation() ) );
-  connect( mActionSvgAnnotation, SIGNAL( triggered() ), this, SLOT( addSvgAnnotation() ) );
-  connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
-  connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
-  connect( mActionStatisticalSummary, SIGNAL( triggered() ), this, SLOT( showStatisticsDockWidget() ) );
+  connect( mActionPan, &QAction::triggered, this, &QgisApp::pan );
+  connect( mActionPanToSelected, &QAction::triggered, this, &QgisApp::panToSelected );
+  connect( mActionZoomIn, &QAction::triggered, this, &QgisApp::zoomIn );
+  connect( mActionZoomOut, &QAction::triggered, this, &QgisApp::zoomOut );
+  connect( mActionSelectFeatures, &QAction::triggered, this, &QgisApp::selectFeatures );
+  connect( mActionSelectPolygon, &QAction::triggered, this, &QgisApp::selectByPolygon );
+  connect( mActionSelectFreehand, &QAction::triggered, this, &QgisApp::selectByFreehand );
+  connect( mActionSelectRadius, &QAction::triggered, this, &QgisApp::selectByRadius );
+  connect( mActionDeselectAll, &QAction::triggered, this, &QgisApp::deselectAll );
+  connect( mActionSelectAll, &QAction::triggered, this, &QgisApp::selectAll );
+  connect( mActionInvertSelection, &QAction::triggered, this, &QgisApp::invertSelection );
+  connect( mActionSelectByExpression, &QAction::triggered, this, &QgisApp::selectByExpression );
+  connect( mActionSelectByForm, &QAction::triggered, this, &QgisApp::selectByForm );
+  connect( mActionIdentify, &QAction::triggered, this, &QgisApp::identify );
+  connect( mActionFeatureAction, &QAction::triggered, this, &QgisApp::doFeatureAction );
+  connect( mActionMeasure, &QAction::triggered, this, &QgisApp::measure );
+  connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::measureArea );
+  connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
+  connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
+  connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
+  connect( mActionZoomToSelected, &QAction::triggered, this, &QgisApp::zoomToSelected );
+  connect( mActionZoomLast, &QAction::triggered, this, &QgisApp::zoomToPrevious );
+  connect( mActionZoomNext, &QAction::triggered, this, &QgisApp::zoomToNext );
+  connect( mActionZoomActualSize, &QAction::triggered, this, &QgisApp::zoomActualSize );
+  connect( mActionMapTips, &QAction::toggled, this, &QgisApp::toggleMapTips );
+  connect( mActionNewBookmark, &QAction::triggered, this, &QgisApp::newBookmark );
+  connect( mActionShowBookmarks, &QAction::triggered, this, &QgisApp::showBookmarks );
+  connect( mActionDraw, &QAction::triggered, this, &QgisApp::refreshMapCanvas );
+  connect( mActionTextAnnotation, &QAction::triggered, this, &QgisApp::addTextAnnotation );
+  connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
+  connect( mActionHtmlAnnotation, &QAction::triggered, this, &QgisApp::addHtmlAnnotation );
+  connect( mActionSvgAnnotation, &QAction::triggered, this, &QgisApp::addSvgAnnotation );
+  connect( mActionAnnotation, &QAction::triggered, this, &QgisApp::modifyAnnotation );
+  connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
+  connect( mActionStatisticalSummary, &QAction::triggered, this, &QgisApp::showStatisticsDockWidget );
 
   // Layer Menu Items
 
-  connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
-  connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
-  connect( mActionNewGeoPackageLayer, SIGNAL( triggered() ), this, SLOT( newGeoPackageLayer() ) );
-  connect( mActionNewMemoryLayer, SIGNAL( triggered() ), this, SLOT( newMemoryLayer() ) );
-  connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
-  connect( mActionShowAlignRasterTool, SIGNAL( triggered() ), this, SLOT( showAlignRasterTool() ) );
-  connect( mActionEmbedLayers, SIGNAL( triggered() ), this, SLOT( embedLayers() ) );
-  connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition() ) );
-  connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
-  connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
-  connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
-  connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
-  connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
-  connect( mActionAddDb2Layer, SIGNAL( triggered() ), this, SLOT( addDb2Layer() ) );
-  connect( mActionAddOracleLayer, SIGNAL( triggered() ), this, SLOT( addOracleLayer() ) );
-  connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
-  connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
-  connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
-  connect( mActionAddAfsLayer, SIGNAL( triggered() ), this, SLOT( addAfsLayer() ) );
-  connect( mActionAddAmsLayer, SIGNAL( triggered() ), this, SLOT( addAmsLayer() ) );
-  connect( mActionAddDelimitedText, SIGNAL( triggered() ), this, SLOT( addDelimitedTextLayer() ) );
-  connect( mActionAddVirtualLayer, SIGNAL( triggered() ), this, SLOT( addVirtualLayer() ) );
-  connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
-  connect( mActionOpenFieldCalc, SIGNAL( triggered() ), this, SLOT( fieldCalculator() ) );
-  connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
-  connect( mActionSaveLayerEdits, SIGNAL( triggered() ), this, SLOT( saveActiveLayerEdits() ) );
-  connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
-  connect( mActionSaveAllEdits, SIGNAL( triggered() ), this, SLOT( saveAllEdits() ) );
-  connect( mActionRollbackEdits, SIGNAL( triggered() ), this, SLOT( rollbackEdits() ) );
-  connect( mActionRollbackAllEdits, SIGNAL( triggered() ), this, SLOT( rollbackAllEdits() ) );
-  connect( mActionCancelEdits, SIGNAL( triggered() ), this, SLOT( cancelEdits() ) );
-  connect( mActionCancelAllEdits, SIGNAL( triggered() ), this, SLOT( cancelAllEdits() ) );
-  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
-  connect( mActionSaveLayerDefinition, SIGNAL( triggered() ), this, SLOT( saveAsLayerDefinition() ) );
-  connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
-  connect( mActionDuplicateLayer, SIGNAL( triggered() ), this, SLOT( duplicateLayers() ) );
-  connect( mActionSetLayerScaleVisibility, SIGNAL( triggered() ), this, SLOT( setLayerScaleVisibility() ) );
-  connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCrs() ) );
-  connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCrsFromLayer() ) );
-  connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
-  connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
-  connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
-  connect( mActionAddAllToOverview, SIGNAL( triggered() ), this, SLOT( addAllToOverview() ) );
-  connect( mActionRemoveAllFromOverview, SIGNAL( triggered() ), this, SLOT( removeAllFromOverview() ) );
-  connect( mActionShowAllLayers, SIGNAL( triggered() ), this, SLOT( showAllLayers() ) );
-  connect( mActionHideAllLayers, SIGNAL( triggered() ), this, SLOT( hideAllLayers() ) );
-  connect( mActionShowSelectedLayers, SIGNAL( triggered() ), this, SLOT( showSelectedLayers() ) );
-  connect( mActionHideSelectedLayers, SIGNAL( triggered() ), this, SLOT( hideSelectedLayers() ) );
+  connect( mActionNewVectorLayer, &QAction::triggered, this, &QgisApp::newVectorLayer );
+  connect( mActionNewSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::newSpatialiteLayer );
+  connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
+  connect( mActionNewMemoryLayer, &QAction::triggered, this, &QgisApp::newMemoryLayer );
+  connect( mActionShowRasterCalculator, &QAction::triggered, this, &QgisApp::showRasterCalculator );
+  connect( mActionShowAlignRasterTool, &QAction::triggered, this, &QgisApp::showAlignRasterTool );
+  connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
+  connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
+  connect( mActionAddOgrLayer, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::addVectorLayer ) );
+  connect( mActionAddRasterLayer, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::addRasterLayer ) );
+  connect( mActionAddPgLayer, &QAction::triggered, this, &QgisApp::addDatabaseLayer );
+  connect( mActionAddSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::addSpatiaLiteLayer );
+  connect( mActionAddMssqlLayer, &QAction::triggered, this, &QgisApp::addMssqlLayer );
+  connect( mActionAddDb2Layer, &QAction::triggered, this, &QgisApp::addDb2Layer );
+  connect( mActionAddOracleLayer, &QAction::triggered, this, &QgisApp::addOracleLayer );
+  connect( mActionAddWmsLayer, &QAction::triggered, this, &QgisApp::addWmsLayer );
+  connect( mActionAddWcsLayer, &QAction::triggered, this, &QgisApp::addWcsLayer );
+  connect( mActionAddWfsLayer, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::addWfsLayer ) );
+  connect( mActionAddAfsLayer, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::addAfsLayer ) );
+  connect( mActionAddAmsLayer, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::addAmsLayer ) );
+  connect( mActionAddDelimitedText, &QAction::triggered, this, &QgisApp::addDelimitedTextLayer );
+  connect( mActionAddVirtualLayer, &QAction::triggered, this, &QgisApp::addVirtualLayer );
+  connect( mActionOpenTable, &QAction::triggered, this, &QgisApp::attributeTable );
+  connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
+  connect( mActionToggleEditing, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::toggleEditing ) );
+  connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
+  connect( mActionSaveEdits, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::saveEdits ) );
+  connect( mActionSaveAllEdits, &QAction::triggered, this, &QgisApp::saveAllEdits );
+  connect( mActionRollbackEdits, &QAction::triggered, this, &QgisApp::rollbackEdits );
+  connect( mActionRollbackAllEdits, &QAction::triggered, this, &QgisApp::rollbackAllEdits );
+  connect( mActionCancelEdits, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::cancelEdits ) );
+  connect( mActionCancelAllEdits, &QAction::triggered, this, &QgisApp::cancelAllEdits );
+  connect( mActionLayerSaveAs, &QAction::triggered, this, &QgisApp::saveAsFile );
+  connect( mActionSaveLayerDefinition, &QAction::triggered, this, &QgisApp::saveAsLayerDefinition );
+  connect( mActionRemoveLayer, &QAction::triggered, this, &QgisApp::removeLayer );
+  connect( mActionDuplicateLayer, &QAction::triggered, this, static_cast < void ( QgisApp::* )() > ( &QgisApp::duplicateLayers ) );
+  connect( mActionSetLayerScaleVisibility, &QAction::triggered, this, &QgisApp::setLayerScaleVisibility );
+  connect( mActionSetLayerCRS, &QAction::triggered, this, &QgisApp::setLayerCrs );
+  connect( mActionSetProjectCRSFromLayer, &QAction::triggered, this, &QgisApp::setProjectCrsFromLayer );
+  connect( mActionLayerProperties, &QAction::triggered, this, &QgisApp::layerProperties );
+  connect( mActionLayerSubsetString, &QAction::triggered, this, &QgisApp::layerSubsetString );
+  connect( mActionAddToOverview, &QAction::triggered, this, &QgisApp::isInOverview );
+  connect( mActionAddAllToOverview, &QAction::triggered, this, &QgisApp::addAllToOverview );
+  connect( mActionRemoveAllFromOverview, &QAction::triggered, this, &QgisApp::removeAllFromOverview );
+  connect( mActionShowAllLayers, &QAction::triggered, this, &QgisApp::showAllLayers );
+  connect( mActionHideAllLayers, &QAction::triggered, this, &QgisApp::hideAllLayers );
+  connect( mActionShowSelectedLayers, &QAction::triggered, this, &QgisApp::showSelectedLayers );
+  connect( mActionHideSelectedLayers, &QAction::triggered, this, &QgisApp::hideSelectedLayers );
 
   // Plugin Menu Items
 
-  connect( mActionManagePlugins, SIGNAL( triggered() ), this, SLOT( showPluginManager() ) );
-  connect( mActionShowPythonDialog, SIGNAL( triggered() ), this, SLOT( showPythonDialog() ) );
+  connect( mActionManagePlugins, &QAction::triggered, this, &QgisApp::showPluginManager );
+  connect( mActionShowPythonDialog, &QAction::triggered, this, &QgisApp::showPythonDialog );
 
   // Settings Menu Items
 
-  connect( mActionToggleFullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
-  connect( mActionProjectProperties, SIGNAL( triggered() ), this, SLOT( projectProperties() ) );
-  connect( mActionOptions, SIGNAL( triggered() ), this, SLOT( options() ) );
-  connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
-  connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
-  connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManager() ) );
-  connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
+  connect( mActionToggleFullScreen, &QAction::triggered, this, &QgisApp::toggleFullScreen );
+  connect( mActionProjectProperties, &QAction::triggered, this, &QgisApp::projectProperties );
+  connect( mActionOptions, &QAction::triggered, this, &QgisApp::options );
+  connect( mActionCustomProjection, &QAction::triggered, this, &QgisApp::customProjection );
+  connect( mActionConfigureShortcuts, &QAction::triggered, this, &QgisApp::configureShortcuts );
+  connect( mActionStyleManagerV2, &QAction::triggered, this, &QgisApp::showStyleManager );
+  connect( mActionCustomization, &QAction::triggered, this, &QgisApp::customize );
 
 #ifdef Q_OS_MAC
   // Window Menu Items
@@ -1718,15 +1718,15 @@ void QgisApp::createActions()
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
-  connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showActiveWindowMinimized() ) );
+  connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
-  connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleActiveWindowMaximized() ) );
+  connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
-  connect( mActionWindowAllToFront, SIGNAL( triggered() ), this, SLOT( bringAllToFront() ) );
+  connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
   // list of open windows
   mWindowActions = new QActionGroup( this );
@@ -1744,19 +1744,19 @@ void QgisApp::createActions()
   mActionAllEdits->setMenu( menuAllEdits );
 
   // Raster toolbar items
-  connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
-  connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
-  connect( mActionLocalCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( localCumulativeCutStretch() ) );
-  connect( mActionFullCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( fullCumulativeCutStretch() ) );
-  connect( mActionIncreaseBrightness, SIGNAL( triggered() ), this, SLOT( increaseBrightness() ) );
-  connect( mActionDecreaseBrightness, SIGNAL( triggered() ), this, SLOT( decreaseBrightness() ) );
-  connect( mActionIncreaseContrast, SIGNAL( triggered() ), this, SLOT( increaseContrast() ) );
-  connect( mActionDecreaseContrast, SIGNAL( triggered() ), this, SLOT( decreaseContrast() ) );
+  connect( mActionLocalHistogramStretch, &QAction::triggered, this, &QgisApp::localHistogramStretch );
+  connect( mActionFullHistogramStretch, &QAction::triggered, this, &QgisApp::fullHistogramStretch );
+  connect( mActionLocalCumulativeCutStretch, &QAction::triggered, this, &QgisApp::localCumulativeCutStretch );
+  connect( mActionFullCumulativeCutStretch, &QAction::triggered, this, &QgisApp::fullCumulativeCutStretch );
+  connect( mActionIncreaseBrightness, &QAction::triggered, this, &QgisApp::increaseBrightness );
+  connect( mActionDecreaseBrightness, &QAction::triggered, this, &QgisApp::decreaseBrightness );
+  connect( mActionIncreaseContrast, &QAction::triggered, this, &QgisApp::increaseContrast );
+  connect( mActionDecreaseContrast, &QAction::triggered, this, &QgisApp::decreaseContrast );
 
   // Vector Menu Items
-  connect( mActionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
-  connect( mActionOSMImport, SIGNAL( triggered() ), this, SLOT( osmImportDialog() ) );
-  connect( mActionOSMExport, SIGNAL( triggered() ), this, SLOT( osmExportDialog() ) );
+  connect( mActionOSMDownload, &QAction::triggered, this, &QgisApp::osmDownloadDialog );
+  connect( mActionOSMImport, &QAction::triggered, this, &QgisApp::osmImportDialog );
+  connect( mActionOSMExport, &QAction::triggered, this, &QgisApp::osmExportDialog );
 
   // Help Menu Items
 
@@ -1768,23 +1768,23 @@ void QgisApp::createActions()
 
   mActionHelpContents->setEnabled( QFileInfo::exists( QgsApplication::pkgDataPath() + "/doc/index.html" ) );
 
-  connect( mActionHelpContents, SIGNAL( triggered() ), this, SLOT( helpContents() ) );
-  connect( mActionHelpAPI, SIGNAL( triggered() ), this, SLOT( apiDocumentation() ) );
-  connect( mActionReportaBug, SIGNAL( triggered() ), this, SLOT( reportaBug() ) );
-  connect( mActionNeedSupport, SIGNAL( triggered() ), this, SLOT( supportProviders() ) );
-  connect( mActionQgisHomePage, SIGNAL( triggered() ), this, SLOT( helpQgisHomePage() ) );
-  connect( mActionCheckQgisVersion, SIGNAL( triggered() ), this, SLOT( checkQgisVersion() ) );
-  connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
-  connect( mActionSponsors, SIGNAL( triggered() ), this, SLOT( sponsors() ) );
+  connect( mActionHelpContents, &QAction::triggered, this, &QgisApp::helpContents );
+  connect( mActionHelpAPI, &QAction::triggered, this, &QgisApp::apiDocumentation );
+  connect( mActionReportaBug, &QAction::triggered, this, &QgisApp::reportaBug );
+  connect( mActionNeedSupport, &QAction::triggered, this, &QgisApp::supportProviders );
+  connect( mActionQgisHomePage, &QAction::triggered, this, &QgisApp::helpQgisHomePage );
+  connect( mActionCheckQgisVersion, &QAction::triggered, this, &QgisApp::checkQgisVersion );
+  connect( mActionAbout, &QAction::triggered, this, &QgisApp::about );
+  connect( mActionSponsors, &QAction::triggered, this, &QgisApp::sponsors );
 
-  connect( mActionShowPinnedLabels, SIGNAL( toggled( bool ) ), this, SLOT( showPinnedLabels( bool ) ) );
-  connect( mActionPinLabels, SIGNAL( triggered() ), this, SLOT( pinLabels() ) );
-  connect( mActionShowHideLabels, SIGNAL( triggered() ), this, SLOT( showHideLabels() ) );
-  connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
-  connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
-  connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
+  connect( mActionShowPinnedLabels, &QAction::toggled, this, &QgisApp::showPinnedLabels );
+  connect( mActionPinLabels, &QAction::triggered, this, &QgisApp::pinLabels );
+  connect( mActionShowHideLabels, &QAction::triggered, this, &QgisApp::showHideLabels );
+  connect( mActionMoveLabel, &QAction::triggered, this, &QgisApp::moveLabel );
+  connect( mActionRotateLabel, &QAction::triggered, this, &QgisApp::rotateLabel );
+  connect( mActionChangeLabelProperties, &QAction::triggered, this, &QgisApp::changeLabelProperties );
 
-  connect( mActionDiagramProperties, SIGNAL( triggered() ), this, SLOT( diagramProperties() ) );
+  connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
@@ -2804,11 +2804,11 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), &QgsProject::transactionGroupsChanged, this, &QgisApp::onTransactionGroupsChanged );
 
   // connect preview modes actions
-  connect( mActionPreviewModeOff, SIGNAL( triggered() ), this, SLOT( disablePreviewMode() ) );
-  connect( mActionPreviewModeGrayscale, SIGNAL( triggered() ), this, SLOT( activateGrayscalePreview() ) );
-  connect( mActionPreviewModeMono, SIGNAL( triggered() ), this, SLOT( activateMonoPreview() ) );
-  connect( mActionPreviewProtanope, SIGNAL( triggered() ), this, SLOT( activateProtanopePreview() ) );
-  connect( mActionPreviewDeuteranope, SIGNAL( triggered() ), this, SLOT( activateDeuteranopePreview() ) );
+  connect( mActionPreviewModeOff, &QAction::triggered, this, &QgisApp::disablePreviewMode );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, &QgisApp::activateGrayscalePreview );
+  connect( mActionPreviewModeMono, &QAction::triggered, this, &QgisApp::activateMonoPreview );
+  connect( mActionPreviewProtanope, &QAction::triggered, this, &QgisApp::activateProtanopePreview );
+  connect( mActionPreviewDeuteranope, &QAction::triggered, this, &QgisApp::activateDeuteranopePreview );
 
   // setup undo/redo actions
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
@@ -3088,7 +3088,7 @@ void QgisApp::initLayerTreeView()
   mActionFilterLegend->setCheckable( true );
   mActionFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
   mActionFilterLegend->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
-  connect( mActionFilterLegend, SIGNAL( toggled( bool ) ), this, SLOT( updateFilterLegend() ) );
+  connect( mActionFilterLegend, &QAction::toggled, this, &QgisApp::updateFilterLegend );
 
   mLegendExpressionFilterButton = new QgsLegendFilterButton( this );
   mLegendExpressionFilterButton->setToolTip( tr( "Filter legend by expression" ) );
@@ -3099,7 +3099,7 @@ void QgisApp::initLayerTreeView()
   mActionStyleDock->setToolTip( tr( "Open the layer styling dock" ) );
   mActionStyleDock->setShortcut( QStringLiteral( "F7" ) );
   mActionStyleDock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
-  connect( mActionStyleDock, SIGNAL( toggled( bool ) ), this, SLOT( mapStyleDock( bool ) ) );
+  connect( mActionStyleDock, &QAction::toggled, this, &QgisApp::mapStyleDock );
 
   // expand / collapse tool buttons
   QAction* actionExpandAll = new QAction( tr( "Expand All" ), this );

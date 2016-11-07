@@ -606,46 +606,72 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
+    void editCut() { editCut( nullptr );}
+
     /**
-       \param layerContainingSelection  The layer that the selection will be taken from
-                                        (defaults to the active layer on the legend)
+     * cuts selected features on the active layer to the clipboard
+     * @param layerContainingSelection The layer that the selection will be taken from
+                                       (defaults to the active layer on the legend)
      */
-    void editCut( QgsMapLayer *layerContainingSelection = nullptr );
-    //! copies selected features on the active layer to the clipboard
+    void editCut( QgsMapLayer *layerContainingSelection );
+
     /**
-       \param layerContainingSelection  The layer that the selection will be taken from
-                                        (defaults to the active layer on the legend)
+     * copies selected features on the active layer to the clipboard
      */
-    void editCopy( QgsMapLayer *layerContainingSelection = nullptr );
-    //! copies features on the clipboard to the active layer
+    void editCopy() {editCopy( nullptr ); }
     /**
-       \param destinationLayer  The layer that the clipboard will be pasted to
-                                (defaults to the active layer on the legend)
+     * copies selected features on the active layer to the clipboard
+     * @param layerContainingSelection  The layer that the selection will be taken from
+     *                                  (defaults to the active layer on the legend)
      */
-    void editPaste( QgsMapLayer *destinationLayer = nullptr );
+    void editCopy( QgsMapLayer *layerContainingSelection );
+
+    /**
+     * copies features on the clipboard to the active layer
+     */
+    void editPaste() {editPaste( nullptr );}
+    /**
+     * copies features on the clipboard to the active layer
+     * @param destinationLayer  The layer that the clipboard will be pasted to
+     *                          (defaults to the active layer on the legend)
+     */
+    void editPaste( QgsMapLayer *destinationLayer );
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
-    QgsVectorLayer *pasteAsNewMemoryVector( const QString & theLayerName = QString() );
-    //! copies style of the active layer to the clipboard
+    QgsVectorLayer *pasteAsNewMemoryVector() {return pasteAsNewMemoryVector( QString() );}
+    //! copies features on the clipboard to a new memory vector layer
+    QgsVectorLayer *pasteAsNewMemoryVector( const QString & theLayerName );
     /**
-       \param sourceLayer  The layer where the style will be taken from
-                                        (defaults to the active layer on the legend)
+     * copies style of the active layer to the clipboard
      */
-    void copyStyle( QgsMapLayer *sourceLayer = nullptr );
-    //! pastes style on the clipboard to the active layer
+    void copyStyle() {copyStyle( nullptr );}
     /**
-       \param destinationLayer  The layer that the clipboard will be pasted to
-                                (defaults to the active layer on the legend)
+     * copies style of the active layer to the clipboard
+     * @param sourceLayer  The layer where the style will be taken from
+     *                     (defaults to the active layer on the legend)
      */
-    void pasteStyle( QgsMapLayer *destinationLayer = nullptr );
+    void copyStyle( QgsMapLayer *sourceLayer );
+    /**
+     * pastes style on the clipboard to the active layer
+     */
+    void pasteStyle() {pasteStyle( nullptr );}
+    /**
+     * pastes style on the clipboard to the active layer
+     * @param destinationLayer  The layer that the clipboard will be pasted to
+     *                          (defaults to the active layer on the legend)
+     */
+    void pasteStyle( QgsMapLayer *destinationLayer );
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore & featureStore );
     void loadGDALSublayers( const QString& uri, const QStringList& list );
 
     //! Deletes the selected attributes for the currently selected vector layer
-    void deleteSelected( QgsMapLayer *layer = nullptr, QWidget *parent = nullptr, bool promptConfirmation = false );
+    void deleteSelected() {deleteSelected( nullptr );}
+
+    //! Deletes the selected attributes for the currently selected vector layer
+    void deleteSelected( QgsMapLayer *layer, QWidget *parent = nullptr, bool promptConfirmation = false );
 
     //! project was written
     void writeProject( QDomDocument & );
@@ -775,7 +801,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Remove a layer from the map and legend
     void removeLayer();
     //! Duplicate map layer(s) in legend
-    void duplicateLayers( const QList<QgsMapLayer *>& lyrList = QList<QgsMapLayer *>() );
+    void duplicateLayers() {duplicateLayers( QList<QgsMapLayer *>() );}
+    //! Duplicate map layer(s) in legend
+    void duplicateLayers( const QList<QgsMapLayer *>& lyrList );
     //! Set scale visibility of selected layers
     void setLayerScaleVisibility();
     //! Zoom to nearest scale such that current layer is visible
