@@ -472,6 +472,7 @@ class ModelerDialog(BASE, WIDGET):
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())
+        search_strings = text.split(' ')
         allAlgs = algList.algs
         for providerName in list(allAlgs.keys()):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
@@ -486,7 +487,15 @@ class ModelerDialog(BASE, WIDGET):
                     continue
                 if alg.commandLineName() == self.alg.commandLineName():
                     continue
-                if text == '' or text.lower() in alg.name.lower():
+
+                item_text = [alg.name.lower()]
+                item_text.extend(alg.tags.split(','))
+
+                show = not search_strings or all(
+                    any(part in t for t in item_text)
+                    for part in search_strings)
+
+                if show:
                     if alg.group in groups:
                         groupItem = groups[alg.group]
                     else:
