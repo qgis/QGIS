@@ -97,7 +97,7 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   return res;
 }
 
-bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double dx, double dy ) const
+bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest request, double dx, double dy ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -105,16 +105,12 @@ bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeature
     return false;
   }
 
-  int featureCount = ids.count();
-
-  QgsFeatureRequest request;
-  request.setFilterFids( ids );
   QgsFeatureIterator fi = layer->getFeatures( request );
   QgsFeature f;
   QgsAttributeList pkAttrList = layer->pkAttributeList();
 
   int browsedFeatureCount = 0;
-  int addedFeatureCount = 0;
+  int missingFeatureCount = 0;
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
@@ -131,31 +127,19 @@ bool QgsGuiVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeature
     const QgsFeatureId  fid = f.id();
 #endif
     // paste feature
-    if ( layer->addFeature( f, false ) )
+    if ( !layer->addFeature( f, false ) )
     {
-      addedFeatureCount++;
-    }
-    else
-    {
-      QgsDebugMsg( QString( "could not add new feature. copied feature had id: %1" ).arg( fid ) );
+      missingFeatureCount++;
+      QgsDebugMsg( QString( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
     }
   }
 
-  if ( addedFeatureCount == featureCount )
+  if ( !missingFeatureCount )
   {
     res = true;
   }
   {
-    QString msg = QString( tr( "Only %1 out of %2 features were copied." ) ).arg( addedFeatureCount, featureCount );
-    msg.append( " " );
-    if ( browsedFeatureCount == featureCount )
-    {
-      msg.append( tr( "Some features could not be created on the layer." ) );
-    }
-    else
-    {
-      msg.append( tr( "Some features could not be retrieved from the selection." ) );
-    }
+    QString msg = QString( tr( "Only %1 out of %2 features were copied. Some could not be created on the layer." ) ).arg( browsedFeatureCount - missingFeatureCount, browsedFeatureCount );
     QgisApp::instance()->messageBar()->pushMessage( tr( "Copy and move" ), msg, QgsMessageBar::CRITICAL );
   }
   return res;

@@ -57,9 +57,9 @@ bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   return mBackend->saveEdits( layer );
 }
 
-bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureIds ids, double dx, double dy ) const
+bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest request, double dx, double dy ) const
 {
-  return mBackend->copyMoveFeatures( layer, ids, dx, dy );
+  return mBackend->copyMoveFeatures( layer, request, dx, dy );
 }
 
 void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools* tools )
