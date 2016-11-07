@@ -20,9 +20,10 @@ import shutil
 import glob
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsField, QgsFieldConstraints
+from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsField, QgsFieldConstraints, NULL
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 
 start_app()
 
@@ -159,6 +160,48 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertFalse(fields.at(1).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
         self.assertTrue(fields.at(2).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
         self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull), QgsFieldConstraints.ConstraintOriginProvider)
+
+    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
+    def testDefaultValues(self):
+        """ test detection of defaults on OGR layer """
+
+        tmpfile = os.path.join(self.basetestpath, 'testDefaults.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTInteger))
+        fld2 = ogr.FieldDefn('field2', ogr.OFTInteger)
+        fld2.SetDefault('5')
+        lyr.CreateField(fld2)
+        fld3 = ogr.FieldDefn('field3', ogr.OFTString)
+        fld3.SetDefault("'some ''default'")
+        lyr.CreateField(fld3)
+        fld4 = ogr.FieldDefn('field4', ogr.OFTDate)
+        fld4.SetDefault("CURRENT_DATE")
+        lyr.CreateField(fld4)
+        fld5 = ogr.FieldDefn('field5', ogr.OFTTime)
+        fld5.SetDefault("CURRENT_TIME")
+        lyr.CreateField(fld5)
+        fld6 = ogr.FieldDefn('field6', ogr.OFTDateTime)
+        fld6.SetDefault("CURRENT_TIMESTAMP")
+        lyr.CreateField(fld6)
+
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # test some bad indexes
+        self.assertFalse(vl.dataProvider().defaultValue(-1))
+        self.assertFalse(vl.dataProvider().defaultValue(1001))
+
+        # test default
+        self.assertEqual(vl.dataProvider().defaultValue(1), NULL)
+        self.assertEqual(vl.dataProvider().defaultValue(2), 5)
+        self.assertEqual(vl.dataProvider().defaultValue(3), "some 'default")
+        self.assertEqual(vl.dataProvider().defaultValue(4), QDate.currentDate())
+        # time may pass, so we allow 1 second difference here
+        self.assertTrue(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()) < 1)
+        self.assertTrue(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()) < 1)
 
 
 if __name__ == '__main__':
