@@ -1447,7 +1447,10 @@ capabilities have been removed, as they were unused and had no effect.
 - capabilities() now returns a typesafe QgsVectorDataProvider::Capabilities object, not an integer.
 - convertToProviderType() now takes a geometry reference, not a pointer.
 - geometryType() has been renamed to wkbType() to be in line with QgsVectorLayer
-
+- The behaviour of defaultValue() has changed from 2.x. In 2.x, defaultValue() would return a SQL
+clause fragment which must be evaluated by the provider in order to calculate the default value. In
+QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new method defaultValueClause
+has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
 
 
 QgsVectorLayer        {#qgis_api_break_3_0_QgsVectorLayer}
