@@ -176,7 +176,17 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     }
     else
     {
-      v = provider->defaultValueClause( idx );
+      QVariant defaultLiteral = mLayer->dataProvider()->defaultValue( idx );
+      if ( defaultLiteral.isValid() )
+      {
+        v = defaultLiteral;
+      }
+      else
+      {
+        QString defaultClause = provider->defaultValueClause( idx );
+        if ( !defaultClause.isEmpty() )
+          v = defaultClause;
+      }
     }
 
     mFeature->setAttribute( idx, v );
