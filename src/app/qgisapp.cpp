@@ -6988,7 +6988,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
       QgsField fld( vl->fields().at( i ) );
       bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
                             vl->dataProvider() &&
-                            vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( i ) ) == val;
+                            vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
 
       // convert to destination data type
       if ( !isDefaultValue && !fld.convertCompatible( val ) )
@@ -7167,7 +7167,7 @@ void QgisApp::mergeSelectedFeatures()
     QVariant val = attrs.at( i );
     bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
                           vl->dataProvider() &&
-                          vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( i ) ) == val;
+                          vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
 
     // convert to destination data type
     if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val ) )
@@ -7481,7 +7481,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       }
       else
       {
-        defVal = pasteVectorLayer->dataProvider()->defaultValue( dst );
+        defVal = pasteVectorLayer->dataProvider()->defaultValueClause( dst );
       }
 
       if ( defVal.isValid() && !defVal.isNull() )

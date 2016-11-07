@@ -186,7 +186,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     //! Convert values to quoted values for database work *
     static QString quotedValue( const QVariant& value );
 
-    QVariant defaultValue( int fieldId ) const override;
+    QString defaultValueClause( int fieldId ) const override;
 
     //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
@@ -212,7 +212,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     //! Fields
     QgsFields mAttributeFields;
-    QMap<int, QVariant> mDefaultValues;
+    QMap<int, QString> mDefaultValues;
 
     mutable QgsMssqlGeometryParser mParser;
 

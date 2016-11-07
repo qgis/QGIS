@@ -1716,15 +1716,27 @@ bool QgsPostgresProvider::isValid() const
   return mValid;
 }
 
+QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
+{
+  QString defVal = mDefaultValues.value( fieldId, QString() );
+
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    return defVal;
+  }
+
+  return QString();
+}
+
 QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
 {
-  QVariant defVal = mDefaultValues.value( fieldId, QString::null );
+  QString defVal = mDefaultValues.value( fieldId, QString() );
 
-  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isNull() )
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
   {
     QgsField fld = field( fieldId );
 
-    QgsPostgresResult res( connectionRO()->PQexec( QStringLiteral( "SELECT %1" ).arg( defVal.toString() ) ) );
+    QgsPostgresResult res( connectionRO()->PQexec( QStringLiteral( "SELECT %1" ).arg( defVal ) ) );
 
     if ( res.result() )
       return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ) );
@@ -1735,7 +1747,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
     }
   }
 
-  return defVal;
+  return QVariant();
 }
 
 QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const
@@ -1891,7 +1903,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
         delim = ',';
         fieldId << idx;
-        defaultValues << defaultValue( idx ).toString();
+        defaultValues << defaultValueClause( idx );
       }
     }
 
@@ -1928,7 +1940,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       insert += delim + quotedIdentifier( fieldname );
 
-      QString defVal = defaultValue( idx ).toString();
+      QString defVal = defaultValueClause( idx );
 
       if ( i == flist.size() )
       {

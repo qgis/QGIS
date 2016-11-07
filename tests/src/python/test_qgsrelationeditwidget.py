@@ -153,7 +153,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         wrapper = self.createWrapper(self.vl_a, '"name"=\'Douglas Adams\'')  # NOQA
 
         f = QgsFeature(self.vl_b.fields())
-        f.setAttributes([self.vl_b.dataProvider().defaultValue(0), 'The Hitchhiker\'s Guide to the Galaxy'])
+        f.setAttributes([self.vl_b.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy'])
         self.vl_b.addFeature(f)
 
         def choose_linked_feature():
@@ -318,7 +318,7 @@ class VlTools(QgsVectorLayerTools):
             if v:
                 values.append(v)
             else:
-                values.append(layer.dataProvider().defaultValue(i))
+                values.append(layer.dataProvider().defaultValueClause(i))
         f = QgsFeature(layer.fields())
         f.setAttributes(self.values)
         f.setGeometry(defaultGeometry)

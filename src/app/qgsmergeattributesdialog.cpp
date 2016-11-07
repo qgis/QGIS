@@ -540,7 +540,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
       if ( !mVectorLayer->defaultValueExpression( fieldIdx ).isEmpty() )
         results[fieldIdx] = mVectorLayer->defaultValue( fieldIdx, mFeatureList.at( 0 ), &context );
       else if ( mVectorLayer->dataProvider() )
-        results[fieldIdx] = mVectorLayer->dataProvider()->defaultValue( fieldIdx );
+        results[fieldIdx] = mVectorLayer->dataProvider()->defaultValueClause( fieldIdx );
       else
         results[fieldIdx] = QVariant();
       continue;
@@ -567,7 +567,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     }
     else if ( mVectorLayer->dataProvider() )
     {
-      results[fieldIdx] = mVectorLayer->dataProvider()->defaultValue( fieldIdx );
+      results[fieldIdx] = mVectorLayer->dataProvider()->defaultValueClause( fieldIdx );
     }
     widgetIndex++;
   }

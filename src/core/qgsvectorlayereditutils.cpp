@@ -381,7 +381,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
         QgsAttributes newAttributes = feat.attributes();
         Q_FOREACH ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
-          const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
+          const QVariant defaultValue = L->dataProvider()->defaultValueClause( pkIdx );
           if ( !defaultValue.isNull() )
           {
             newAttributes[ pkIdx ] = defaultValue;

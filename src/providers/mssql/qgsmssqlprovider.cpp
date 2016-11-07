@@ -433,7 +433,7 @@ void QgsMssqlProvider::loadFields()
 
         if ( !query.value( 12 ).isNull() )
         {
-          mDefaultValues.insert( i, query.value( 12 ) );
+          mDefaultValues.insert( i, query.value( 12 ).toString() );
         }
         ++i;
       }
@@ -501,12 +501,9 @@ QString QgsMssqlProvider::quotedValue( const QVariant& value )
   }
 }
 
-QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
+QString QgsMssqlProvider::defaultValueClause( int fieldId ) const
 {
-  if ( mDefaultValues.contains( fieldId ) )
-    return mDefaultValues[fieldId];
-  else
-    return QVariant( QString::null );
+  return mDefaultValues.value( fieldId, QString() );
 }
 
 QString QgsMssqlProvider::storageType() const
@@ -815,7 +812,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
+      if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
 
       if ( !first )
@@ -886,7 +883,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
+      if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
 
       QVariant::Type type = fld.type();

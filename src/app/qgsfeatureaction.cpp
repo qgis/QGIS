@@ -176,7 +176,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     }
     else
     {
-      v = provider->defaultValue( idx );
+      v = provider->defaultValueClause( idx );
     }
 
     mFeature->setAttribute( idx, v );

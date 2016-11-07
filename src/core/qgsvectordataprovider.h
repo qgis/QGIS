@@ -277,9 +277,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
                                  const QgsGeometryMap &geometry_map );
 
     /**
-     * Returns the default value for field specified by @c fieldId
+     * Returns any literal default values which are present at the provider for a specified
+     * field index.
+     * @see defaultValueClause()
      */
-    virtual QVariant defaultValue( int fieldId ) const;
+    virtual QVariant defaultValue( int fieldIndex ) const;
+
+    /**
+     * Returns any default value clauses which are present at the provider for a specified
+     * field index. These clauses are usually SQL fragments which must be evaluated by the
+     * provider, eg sequence values.
+     * @see defaultValue()
+     * @note added in QGIS 3.0
+     */
+    virtual QString defaultValueClause( int fieldIndex ) const;
 
     /**
      * Returns any constraints which are present at the provider for a specified
