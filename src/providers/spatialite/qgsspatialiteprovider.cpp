@@ -684,6 +684,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   mAttributeFields.clear();
   mPrimaryKey.clear(); // cazzo cazzo cazzo
   mPrimaryKeyAttrs.clear();
+  mDefaultValues.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
   if ( !fld )
@@ -729,6 +730,8 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     for ( int i = 1; i <= rows; i++ )
     {
       QString name = QString::fromUtf8( results[( i * columns ) + 1] );
+      insertDefaultValue( i - 1, QString::fromUtf8( results[( i * columns ) + 4] ) );
+
       QString pk = results[( i * columns ) + 5];
       QString type = results[( i * columns ) + 2];
       type = type.toLower();
@@ -870,6 +873,37 @@ error:
 
 }
 
+void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultVal )
+{
+  if ( !defaultVal.isEmpty() )
+  {
+    QVariant defaultVariant;
+    switch ( mAttributeFields.at( fieldIndex ).type() )
+    {
+      case QVariant::LongLong:
+        defaultVariant = defaultVal.toLongLong();
+        break;
+
+      case QVariant::Double:
+        defaultVariant = defaultVal.toDouble();
+        break;
+
+      default:
+      {
+        if ( defaultVal.startsWith( '\'' ) )
+          defaultVal = defaultVal.remove( 0, 1 );
+        if ( defaultVal.endsWith( '\'' ) )
+          defaultVal.chop( 1 );
+        defaultVal.replace( "''", "'" );
+
+        defaultVariant = defaultVal;
+        break;
+      }
+    }
+    mDefaultValues.insert( fieldIndex, defaultVariant );
+  }
+}
+
 void QgsSpatiaLiteProvider::loadFields()
 {
   int ret;
@@ -884,6 +918,7 @@ void QgsSpatiaLiteProvider::loadFields()
   QString sql;
 
   mAttributeFields.clear();
+  mDefaultValues.clear();
 
   if ( !mIsQuery )
   {
@@ -921,6 +956,8 @@ void QgsSpatiaLiteProvider::loadFields()
           const TypeSubType fieldType = getVariantType( type );
           mAttributeFields.append( QgsField( name, fieldType.first, type, 0, 0, QString(), fieldType.second ) );
         }
+
+        insertDefaultValue( i - 1, QString::fromUtf8( results[( i * columns ) + 4] ) );
       }
     }
     sqlite3_free_table( results );
@@ -3820,8 +3857,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           }
           else if ( type == QVariant::String )
           {
+            QString stringVal = v.toString();
+
             // binding a TEXT value
-            QByteArray ba = v.toString().toUtf8();
+            QByteArray ba = stringVal.toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
           else if ( type == QVariant::StringList || type == QVariant::List )
@@ -4227,6 +4266,11 @@ abort:
 QgsVectorDataProvider::Capabilities QgsSpatiaLiteProvider::capabilities() const
 {
   return mEnabledCapabilities;
+}
+
+QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
+{
+  return mDefaultValues.value( fieldId, QVariant() );
 }
 
 void QgsSpatiaLiteProvider::closeDb()

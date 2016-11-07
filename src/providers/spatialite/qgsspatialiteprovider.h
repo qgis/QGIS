@@ -165,6 +165,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
+    QVariant defaultValue( int fieldId ) const override;
+
     /** The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
@@ -338,6 +340,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Name of the geometry column in the table
     QString mGeometryColumn;
 
+    //! Map of field index to default value
+    QMap<int, QVariant> mDefaultValues;
+
     //! Name of the SpatialIndex table
     QString mIndexTable;
 
@@ -447,6 +452,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
                                   int endian_arch );
 
     void fetchConstraints();
+
+    void insertDefaultValue( int fieldIndex, QString defaultVal );
 
     enum GEOS_3D
     {

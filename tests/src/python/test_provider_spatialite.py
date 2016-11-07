@@ -139,6 +139,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql = "CREATE TABLE test_constraints(id INTEGER PRIMARY KEY, num INTEGER NOT NULL, desc TEXT UNIQUE, desc2 TEXT, num2 INTEGER NOT NULL UNIQUE)"
         cur.execute(sql)
 
+        # simple table with defaults
+        sql = "CREATE TABLE test_defaults (id INTEGER NOT NULL PRIMARY KEY, name TEXT DEFAULT 'qgis ''is good', number INTEGER DEFAULT 5, number2 REAL DEFAULT 5.7, no_default REAL)"
+        cur.execute(sql)
+
         cur.execute("COMMIT")
         con.close()
 
@@ -460,6 +464,16 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(f.isValid())
 
         self.assertTrue(vl.commitChanges())
+
+    def testDefaultValues(self):
+
+        l = QgsVectorLayer("dbname=%s table='test_defaults' key='id'" % self.dbname, "test_defaults", "spatialite")
+        self.assertTrue(l.isValid())
+
+        self.assertEqual(l.dataProvider().defaultValue(1), "qgis 'is good")
+        self.assertEqual(l.dataProvider().defaultValue(2), 5)
+        self.assertEqual(l.dataProvider().defaultValue(3), 5.7)
+        self.assertFalse(l.dataProvider().defaultValue(4))
 
 
 if __name__ == '__main__':
