@@ -267,7 +267,7 @@ def getObjectFromUri(uri, forceLoad=True):
     for table in tables:
         if normalizeLayerSource(table.source()) == normalizeLayerSource(uri):
             return table
-    if forceLoad:
+    if forceLoad and os.path.exists(uri):
         settings = QSettings()
         prjSetting = settings.value('/Projections/defaultBehaviour')
         settings.setValue('/Projections/defaultBehaviour', '')
