@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"trusty stretch xenial yakkety"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety"))
 	DISTRIBUTION := sid
 endif
 
@@ -144,10 +144,6 @@ endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
-else
-ifneq (,$(findstring $(DISTRIBUTION),"trusty"))
-	CMAKE_OPTS += -DKEEP_GLOBE_CXX_FLAGS=TRUE
-endif
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))

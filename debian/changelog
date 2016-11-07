@@ -2,8 +2,9 @@ qgis (2.99.0) UNRELEASED; urgency=medium
 
   * New development version 2.999 after branch of 2.16
   * move to qt5/python3/ninja
+  * drop trusty support (libqca-2-dev missing)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 06 Oct 2016 13:30:42 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 07 Nov 2016 12:14:47 +0100
 
 qgis (2.16.0) unstable; urgency=medium
 
