@@ -74,6 +74,5 @@ class VectorLayerScatterplot(GeoAlgorithm):
         plt.xlabel(xfieldname)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        with open(output, 'w') as f:
+            f.write('<html><img src="' + plotFilename + '"/></html>')

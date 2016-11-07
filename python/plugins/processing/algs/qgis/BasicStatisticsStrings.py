@@ -154,11 +154,9 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.setOutputValue(self.UNIQUE, uniqueValues)
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>\n')
-        f.write('<meta http-equiv="Content-Type" content="text/html; \
-                charset=utf-8" /></head><body>\n')
-        for s in algData:
-            f.write('<p>' + str(s) + '</p>\n')
-        f.write('</body></html>')
-        f.close()
+        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+            f.write('<html><head>\n')
+            f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>\n')
+            for s in algData:
+                f.write('<p>' + str(s) + '</p>\n')
+            f.write('</body></html>')

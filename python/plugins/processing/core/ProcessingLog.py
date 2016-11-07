@@ -49,10 +49,9 @@ class ProcessingLog(object):
     def logFilename():
         logFilename = userFolder() + os.sep + 'processing.log'
         if not os.path.isfile(logFilename):
-            logfile = codecs.open(logFilename, 'w', encoding='utf-8')
-            logfile.write('Started logging at ' +
-                          datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT) + '\n')
-            logfile.close()
+            with codecs.open(logFilename, 'w', encoding='utf-8') as logfile:
+                logfile.write('Started logging at ' +
+                              datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT) + '\n')
 
         return logFilename
 
@@ -67,10 +66,9 @@ class ProcessingLog(object):
                 line = msgtype + '|' + datetime.datetime.now().strftime(
                     ProcessingLog.DATE_FORMAT) + '|' \
                     + msg + '\n'
-                logfile = codecs.open(ProcessingLog.logFilename(), 'a',
-                                      encoding='utf-8')
-                logfile.write(line)
-                logfile.close()
+                with codecs.open(ProcessingLog.logFilename(), 'a',
+                                 encoding='utf-8') as logfile:
+                    logfile.write(line)
                 algname = msg[len('Processing.runalg("'):]
                 algname = algname[:algname.index('"')]
                 if algname not in ProcessingLog.recentAlgs:

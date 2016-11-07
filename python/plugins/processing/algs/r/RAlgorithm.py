@@ -203,14 +203,12 @@ class RAlgorithm(GeoAlgorithm):
         RUtils.executeRAlgorithm(self, progress)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
-            f = open(htmlfilename, 'w')
-            f.write('<html><img src="' + self.plotsFilename + '"/></html>')
-            f.close()
+            with open(htmlfilename, 'w') as f:
+                f.write('<html><img src="' + self.plotsFilename + '"/></html>')
         if self.showConsoleOutput:
             htmlfilename = self.getOutputValue(RAlgorithm.R_CONSOLE_OUTPUT)
-            f = open(htmlfilename, 'w')
-            f.write(RUtils.getConsoleOutput())
-            f.close()
+            with open(htmlfilename, 'w') as f:
+                f.write(RUtils.getConsoleOutput())
 
     def getFullSetOfRCommands(self):
         commands = []

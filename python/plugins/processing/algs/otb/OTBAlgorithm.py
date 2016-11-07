@@ -132,8 +132,8 @@ class OTBAlgorithm(GeoAlgorithm):
         return all_params
 
     def defineCharacteristicsFromFile(self):
-        content = open(self.descriptionFile).read()
-        dom_model = ET.fromstring(content)
+        with open(self.descriptionFile) as content:
+            dom_model = ET.fromstring(content.read())
 
         self.appkey = dom_model.find('key').text
         self.cliName = dom_model.find('exec').text

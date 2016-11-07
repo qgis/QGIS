@@ -85,45 +85,44 @@ class SagaAlgorithm212(GeoAlgorithm):
         return self._icon
 
     def defineCharacteristicsFromFile(self):
-        lines = open(self.descriptionFile)
-        line = lines.readline().strip('\n').strip()
-        self.name = line
-        if '|' in self.name:
-            tokens = self.name.split('|')
-            self.name = tokens[0]
-            #cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
-            self.cmdname = tokens[1]
-
-        else:
-            self.cmdname = self.name
-            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
-        #_commandLineName is the name used in processing to call the algorithm
-        #Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
-        #call the same SAGA one
-        self._commandLineName = self.createCommandLineName(self.name)
-        self.name = decoratedAlgorithmName(self.name)
-        self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
-        line = lines.readline().strip('\n').strip()
-        self.undecoratedGroup = line
-        self.group = decoratedGroupName(self.undecoratedGroup)
-        self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
-        line = lines.readline().strip('\n').strip()
-        while line != '':
-            if line.startswith('Hardcoded'):
-                self.hardcodedStrings.append(line[len('Hardcoded|'):])
-            elif line.startswith('Parameter'):
-                self.addParameter(getParameterFromString(line))
-            elif line.startswith('AllowUnmatching'):
-                self.allowUnmatchingGridExtents = True
-            elif line.startswith('Extent'):
-                # An extent parameter that wraps 4 SAGA numerical parameters
-                self.extentParamNames = line[6:].strip().split(' ')
-                self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
-                                                  'Output extent'))
-            else:
-                self.addOutput(getOutputFromString(line))
+        with open(self.descriptionFile) as lines:
             line = lines.readline().strip('\n').strip()
-        lines.close()
+            self.name = line
+            if '|' in self.name:
+                tokens = self.name.split('|')
+                self.name = tokens[0]
+                #cmdname is the name of the algorithm in SAGA, that is, the name to use to call it in the console
+                self.cmdname = tokens[1]
+
+            else:
+                self.cmdname = self.name
+                self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
+            #_commandLineName is the name used in processing to call the algorithm
+            #Most of the time will be equal to the cmdname, but in same cases, several processing algorithms
+            #call the same SAGA one
+            self._commandLineName = self.createCommandLineName(self.name)
+            self.name = decoratedAlgorithmName(self.name)
+            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
+            line = lines.readline().strip('\n').strip()
+            self.undecoratedGroup = line
+            self.group = decoratedGroupName(self.undecoratedGroup)
+            self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
+            line = lines.readline().strip('\n').strip()
+            while line != '':
+                if line.startswith('Hardcoded'):
+                    self.hardcodedStrings.append(line[len('Hardcoded|'):])
+                elif line.startswith('Parameter'):
+                    self.addParameter(getParameterFromString(line))
+                elif line.startswith('AllowUnmatching'):
+                    self.allowUnmatchingGridExtents = True
+                elif line.startswith('Extent'):
+                    # An extent parameter that wraps 4 SAGA numerical parameters
+                    self.extentParamNames = line[6:].strip().split(' ')
+                    self.addParameter(ParameterExtent(self.OUTPUT_EXTENT,
+                                                      'Output extent'))
+                else:
+                    self.addOutput(getOutputFromString(line))
+                line = lines.readline().strip('\n').strip()
 
     def processAlgorithm(self, progress):
         commands = list()
@@ -216,13 +215,12 @@ class SagaAlgorithm212(GeoAlgorithm):
                     command += ' -' + param.name
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
-                f = open(tempTableFile, 'w')
-                f.write('\t'.join([col for col in param.cols]) + '\n')
-                values = param.value.split(',')
-                for i in range(0, len(values), 3):
-                    s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
-                    f.write(s)
-                f.close()
+                with open(tempTableFile, 'w') as f:
+                    f.write('\t'.join([col for col in param.cols]) + '\n')
+                    values = param.value.split(',')
+                    for i in range(0, len(values), 3):
+                        s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
+                        f.write(s)
                 command += ' -' + param.name + ' "' + tempTableFile + '"'
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is

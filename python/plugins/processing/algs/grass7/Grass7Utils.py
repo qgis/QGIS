@@ -191,41 +191,37 @@ class Grass7Utils(object):
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
-        outfile = open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w')
-        outfile.write(
-            'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
-        outfile.close()
+        with open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w') as outfile:
+            outfile.write(
+                'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
 
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
-        outfile = open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w')
-        outfile.write('DB_DRIVER: sqlite\n')
-        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
-        outfile.close()
+        with open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w') as outfile:
+            outfile.write('DB_DRIVER: sqlite\n')
+            outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
 
     @staticmethod
     def writeGrass7Window(filename):
-        out = open(filename, 'w')
-        out.write('proj:       0\n')
-        out.write('zone:       0\n')
-        out.write('north:      1\n')
-        out.write('south:      0\n')
-        out.write('east:       1\n')
-        out.write('west:       0\n')
-        out.write('cols:       1\n')
-        out.write('rows:       1\n')
-        out.write('e-w resol:  1\n')
-        out.write('n-s resol:  1\n')
-        out.write('top:        1\n')
-        out.write('bottom:     0\n')
-        out.write('cols3:      1\n')
-        out.write('rows3:      1\n')
-        out.write('depths:     1\n')
-        out.write('e-w resol3: 1\n')
-        out.write('n-s resol3: 1\n')
-        out.write('t-b resol:  1\n')
-
-        out.close()
+        with open(filename, 'w') as out:
+            out.write('proj:       0\n')
+            out.write('zone:       0\n')
+            out.write('north:      1\n')
+            out.write('south:      0\n')
+            out.write('east:       1\n')
+            out.write('west:       0\n')
+            out.write('cols:       1\n')
+            out.write('rows:       1\n')
+            out.write('e-w resol:  1\n')
+            out.write('n-s resol:  1\n')
+            out.write('top:        1\n')
+            out.write('bottom:     0\n')
+            out.write('cols3:      1\n')
+            out.write('rows3:      1\n')
+            out.write('depths:     1\n')
+            out.write('e-w resol3: 1\n')
+            out.write('n-s resol3: 1\n')
+            out.write('t-b resol:  1\n')
 
     @staticmethod
     def prepareGrass7Execution(commands):
@@ -262,7 +258,7 @@ class Grass7Utils(object):
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             env=grassenv
@@ -291,7 +287,7 @@ class Grass7Utils(object):
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
-                stdin=open(os.devnull),
+                stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv

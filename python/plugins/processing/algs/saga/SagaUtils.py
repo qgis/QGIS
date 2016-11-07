@@ -85,26 +85,25 @@ def sagaDescriptionPath():
 
 def createSagaBatchJobFileFromSagaCommands(commands):
 
-    fout = open(sagaBatchJobFilename(), 'w')
-    if isWindows():
-        fout.write('set SAGA=' + sagaPath() + '\n')
-        fout.write('set SAGA_MLB=' + os.path.join(sagaPath(), 'modules') + '\n')
-        fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
-    elif isMac():
-        fout.write('export SAGA_MLB=' + os.path.join(sagaPath(), '../lib/saga') + '\n')
-        fout.write('export PATH=' + sagaPath() + ':$PATH\n')
-    else:
-        pass
-    for command in commands:
-        try:
-            # Python 2
-            fout.write('saga_cmd ' + command.encode('utf8') + '\n')
-        except TypeError:
-            # Python 3
-            fout.write('saga_cmd ' + command + '\n')
+    with open(sagaBatchJobFilename(), 'w') as fout:
+        if isWindows():
+            fout.write('set SAGA=' + sagaPath() + '\n')
+            fout.write('set SAGA_MLB=' + os.path.join(sagaPath(), 'modules') + '\n')
+            fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
+        elif isMac():
+            fout.write('export SAGA_MLB=' + os.path.join(sagaPath(), '../lib/saga') + '\n')
+            fout.write('export PATH=' + sagaPath() + ':$PATH\n')
+        else:
+            pass
+        for command in commands:
+            try:
+                # Python 2
+                fout.write('saga_cmd ' + command.encode('utf8') + '\n')
+            except TypeError:
+                # Python 3
+                fout.write('saga_cmd ' + command + '\n')
 
-    fout.write('exit')
-    fout.close()
+        fout.write('exit')
 
 _installedVersion = None
 _installedVersionFound = False
@@ -133,7 +132,7 @@ def getSagaInstalledVersion(runSaga=False):
             commands,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ).stdout
@@ -168,7 +167,7 @@ def executeSaga(progress):
         command,
         shell=True,
         stdout=subprocess.PIPE,
-        stdin=open(os.devnull),
+        stdin=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
         universal_newlines=True,
     ).stdout

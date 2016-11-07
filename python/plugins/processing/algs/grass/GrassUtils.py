@@ -136,56 +136,53 @@ class GrassUtils(object):
 
         encoding = locale.getpreferredencoding()
         # Temporary gisrc file
-        output = codecs.open(gisrc, 'w', encoding=encoding)
-        location = 'temp_location'
-        gisdbase = GrassUtils.grassDataFolder()
+        with codecs.open(gisrc, 'w', encoding=encoding) as output:
+            location = 'temp_location'
+            gisdbase = GrassUtils.grassDataFolder()
 
-        output.write('GISDBASE: ' + gisdbase + '\n')
-        output.write('LOCATION_NAME: ' + location + '\n')
-        output.write('MAPSET: PERMANENT \n')
-        output.write('GRASS_GUI: text\n')
-        output.close()
+            output.write('GISDBASE: ' + gisdbase + '\n')
+            output.write('LOCATION_NAME: ' + location + '\n')
+            output.write('MAPSET: PERMANENT \n')
+            output.write('GRASS_GUI: text\n')
 
-        output = codecs.open(script, 'w', encoding=encoding)
-        output.write('set HOME=' + os.path.expanduser('~') + '\n')
-        output.write('set GISRC=' + gisrc + '\n')
-        output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
-        output.write('set PATH=' + os.path.join(shell, 'bin') + ';' + os.path.join(shell, 'lib') + ';' + '%PATH%\n')
-        output.write('set WINGISBASE=' + folder + '\n')
-        output.write('set GISBASE=' + folder + '\n')
-        output.write('set GRASS_PROJSHARE=' + os.path.join(folder, 'share', 'proj') + '\n')
-        output.write('set GRASS_MESSAGE_FORMAT=gui\n')
+        with codecs.open(script, 'w', encoding=encoding) as output:
+            output.write('set HOME=' + os.path.expanduser('~') + '\n')
+            output.write('set GISRC=' + gisrc + '\n')
+            output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
+            output.write('set PATH=' + os.path.join(shell, 'bin') + ';' + os.path.join(shell, 'lib') + ';' + '%PATH%\n')
+            output.write('set WINGISBASE=' + folder + '\n')
+            output.write('set GISBASE=' + folder + '\n')
+            output.write('set GRASS_PROJSHARE=' + os.path.join(folder, 'share', 'proj') + '\n')
+            output.write('set GRASS_MESSAGE_FORMAT=gui\n')
 
-        # Replacement code for etc/Init.bat
-        output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
-        output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
-        output.write('\n')
-        output.write('set GRASS_VERSION=' + GrassUtils.getGrassVersion() + '\n')
-        output.write('if not "%LANG%"=="" goto langset\n')
-        output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
-        output.write(':langset\n')
-        output.write('\n')
-        output.write('set PATHEXT=%PATHEXT%;.PY\n')
-        output.write('set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n')
-        output.write('\n')
-        output.write('g.gisenv.exe set="MAPSET=PERMANENT"\n')
-        output.write('g.gisenv.exe set="LOCATION=' + location + '"\n')
-        output.write('g.gisenv.exe set="LOCATION_NAME=' + location + '"\n')
-        output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
-        output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
-        for command in commands:
-            output.write(command + u'\n')
-        output.write('\n')
-        output.write('exit\n')
-        output.close()
+            # Replacement code for etc/Init.bat
+            output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
+            output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
+            output.write('\n')
+            output.write('set GRASS_VERSION=' + GrassUtils.getGrassVersion() + '\n')
+            output.write('if not "%LANG%"=="" goto langset\n')
+            output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
+            output.write(':langset\n')
+            output.write('\n')
+            output.write('set PATHEXT=%PATHEXT%;.PY\n')
+            output.write('set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n')
+            output.write('\n')
+            output.write('g.gisenv.exe set="MAPSET=PERMANENT"\n')
+            output.write('g.gisenv.exe set="LOCATION=' + location + '"\n')
+            output.write('g.gisenv.exe set="LOCATION_NAME=' + location + '"\n')
+            output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
+            output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
+            for command in commands:
+                output.write(command + u'\n')
+            output.write('\n')
+            output.write('exit\n')
 
     @staticmethod
     def createGrassBatchJobFileFromGrassCommands(commands):
-        fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
-        for command in commands:
-            fout.write(command + u'\n')
-        fout.write('exit')
-        fout.close()
+        with codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8') as fout:
+            for command in commands:
+                fout.write(command + u'\n')
+            fout.write('exit')
 
     @staticmethod
     def grassMapsetFolder():
@@ -213,17 +210,15 @@ class GrassUtils(object):
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
         GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
-        outfile = codecs.open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w', encoding='utf-8')
-        outfile.write(
-            'QGIS GRASS interface: temporary data processing location.\n')
-        outfile.close()
+        with codecs.open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w', encoding='utf-8') as outfile:
+            outfile.write(
+                'QGIS GRASS interface: temporary data processing location.\n')
 
         GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'dbf'))
-        outfile = codecs.open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w', encoding='utf-8')
-        outfile.write('DB_DRIVER: dbf\n')
-        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n')
-        outfile.close()
+        with codecs.open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w', encoding='utf-8') as outfile:
+            outfile.write('DB_DRIVER: dbf\n')
+            outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n')
 
     @staticmethod
     def writeGrassWindow(filename):
@@ -282,7 +277,7 @@ class GrassUtils(object):
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             env=grassenv
@@ -312,7 +307,7 @@ class GrassUtils(object):
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
-                stdin=open(os.devnull),
+                stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv

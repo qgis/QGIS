@@ -249,10 +249,10 @@ class GeoAlgorithm(object):
             ns = {}
             ns['progress'] = progress
             ns['alg'] = self
-            f = open(filename)
-            lines = f.readlines()
-            for line in lines:
-                script += line
+            with open(filename) as f:
+                lines = f.readlines()
+                for line in lines:
+                    script += line
             exec(script, ns)
         except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,

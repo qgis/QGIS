@@ -161,7 +161,7 @@ def executeOtb(commands, progress, addToLog=True):
     loglines.append(tr("OTB execution console output"))
     os.putenv('ITK_AUTOLOAD_PATH', otbLibPath())
     fused_command = ''.join(['"%s" ' % re.sub(r'^"|"$', '', c) for c in commands])
-    proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull), stderr=subprocess.STDOUT, universal_newlines=True).stdout
+    proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.STDOUT, universal_newlines=True).stdout
     if isMac():  # This trick avoids having an uninterrupted system call exception if OTB is not installed
         time.sleep(1)
     for line in iter(proc.readline, ""):
@@ -275,10 +275,9 @@ def remove_parameter_by_criteria(doc, criteria):
 
 
 def defaultWrite(available_app, original_dom_document):
-    fh = open("description/%s.xml" % available_app, "w")
-    the_root = original_dom_document
-    ET.ElementTree(the_root).write(fh)
-    fh.close()
+    with open("description/%s.xml" % available_app, "w") as fh:
+        the_root = original_dom_document
+        ET.ElementTree(the_root).write(fh)
 
 
 def defaultSplit(available_app, original_dom_document, parameter):

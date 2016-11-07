@@ -103,10 +103,9 @@ class RUtils(object):
 
     @staticmethod
     def createRScriptFromRCommands(commands):
-        scriptfile = open(RUtils.getRScriptFilename(), 'w')
-        for command in commands:
-            scriptfile.write(command + '\n')
-        scriptfile.close()
+        with open(RUtils.getRScriptFilename(), 'w') as scriptfile:
+            for command in commands:
+                scriptfile.write(command + '\n')
 
     @staticmethod
     def getRScriptFilename():
@@ -147,7 +146,7 @@ class RUtils(object):
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         )
@@ -166,18 +165,18 @@ class RUtils(object):
         RUtils.allConsoleResults = []
         add = False
         if os.path.exists(RUtils.getConsoleOutputFilename()):
-            lines = open(RUtils.getConsoleOutputFilename())
-            for line in lines:
-                line = line.strip().strip(' ')
-                if line.startswith('>'):
-                    line = line[1:].strip(' ')
-                    if line in RUtils.verboseCommands:
-                        add = True
-                    else:
-                        add = False
-                elif add:
-                    RUtils.consoleResults.append('<p>' + line + '</p>\n')
-                RUtils.allConsoleResults.append(line)
+            with open(RUtils.getConsoleOutputFilename()) as lines:
+                for line in lines:
+                    line = line.strip().strip(' ')
+                    if line.startswith('>'):
+                        line = line[1:].strip(' ')
+                        if line in RUtils.verboseCommands:
+                            add = True
+                        else:
+                            add = False
+                    elif add:
+                        RUtils.consoleResults.append('<p>' + line + '</p>\n')
+                    RUtils.allConsoleResults.append(line)
 
     @staticmethod
     def getConsoleOutput():
@@ -214,7 +213,7 @@ class RUtils(object):
             command,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ).stdout
