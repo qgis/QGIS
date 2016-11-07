@@ -71,7 +71,7 @@ class LAStoolsUtils(object):
         loglines.append(QCoreApplication.translate("LAStoolsUtils", "LAStools command line"))
         loglines.append(commandline)
         loglines.append(QCoreApplication.translate("LAStoolsUtils", "LAStools console output"))
-        proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),
+        proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL,
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)

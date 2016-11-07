@@ -44,7 +44,7 @@ class SagaDescriptionCreator(object):
                         command,
                         shell=True,
                         stdout=f2,
-                        stdin=open(os.devnull),
+                        stdin=subprocess.DEVNULL,
                         stderr=subprocess.STDOUT,
                         universal_newlines=True,
                     )
@@ -81,7 +81,7 @@ class SagaDescriptionCreator(object):
                         command,
                         shell=True,
                         stdout=f,
-                        stdin=open(os.devnull),
+                        stdin=subprocess.DEVNULL,
                         stderr=f,
                         universal_newlines=True,
                     )

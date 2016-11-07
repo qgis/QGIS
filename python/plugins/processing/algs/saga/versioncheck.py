@@ -82,7 +82,7 @@ def testDescriptionFile(f):
         command,
         shell=True,
         stdout=subprocess.PIPE,
-        stdin=open(os.devnull),
+        stdin=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
         universal_newlines=True,
     ).stdout
