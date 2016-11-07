@@ -93,6 +93,8 @@ QgsComposerTableV2::QgsComposerTableV2()
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
+    , mHorizontalGrid( true )
+    , mVerticalGrid( true )
     , mBackgroundColor( Qt::white )
     , mWrapBehaviour( TruncateText )
 {

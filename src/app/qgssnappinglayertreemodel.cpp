@@ -141,6 +141,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject* project, QObje
     : QSortFilterProxyModel( parent )
     , mProject( project )
     , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
+    , mLayerTreeModel( nullptr )
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsListChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );

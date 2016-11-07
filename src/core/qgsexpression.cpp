@@ -5905,6 +5905,7 @@ QgsExpression::StaticFunction::StaticFunction( const QString& fnname, const QgsE
     : Function( fnname, params, group, helpText, lazyEval, handlesNull )
     , mFnc( fcn )
     , mAliases( aliases )
+    , mUsesGeometry( false )
     , mUsesGeometryFunc( usesGeometry )
     , mReferencedColumnsFunc( referencedColumns )
 {

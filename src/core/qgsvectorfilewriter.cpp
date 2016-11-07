@@ -2289,6 +2289,7 @@ QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
     , filterExtent( QgsRectangle() )
     , overrideGeometryType( QgsWkbTypes::Unknown )
     , forceMulti( false )
+    , includeZ( false )
     , fieldValueConverter( nullptr )
 {
 }
