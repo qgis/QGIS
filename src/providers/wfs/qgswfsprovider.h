@@ -137,7 +137,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
      * Get some metadata description of the provider.
      * @return The provider metadata
      */
-    virtual QMap<QString, QString> metadata();
+    virtual QgsStringMap metadata();
 
   public slots:
 

@@ -1101,9 +1101,9 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 }
 
 
-QMap<QString, QString> QgsWFSProvider::metadata()
+QgsStringMap QgsWFSProvider::metadata()
 {
-  QMap<QString, QString> result;
+  QgsStringMap result;
   result[tr( "Max Features" )] = mShared->mCaps.maxFeatures == 0 ? tr( "not provided" ) : QString( mShared->mCaps.maxFeatures );
   result[tr( "Supports Paging" )] = mShared->mCaps.supportsPaging ? tr( "supported" ) : tr( "unsupported" );
   result[tr( "Supports Joins" )] = mShared->mCaps.supportsJoins ? tr( "supported" ) : tr( "unsupported" );

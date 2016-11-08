@@ -463,7 +463,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Get some metadata that will be display in the metadata tab of the layer properties.
      * @return The provider metadata
      */
-    virtual QMap<QString, QString> metadata() const { return QMap<QString, QString>(); };
+    virtual QgsStringMap metadata() const { return QMap<QString, QString>(); };
 
   signals:
 

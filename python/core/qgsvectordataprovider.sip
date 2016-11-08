@@ -401,7 +401,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Get some metadata that will be display in the metadata tab of the layer properties.
      * @return The provider metadata
      */
-    virtual QMap<QString, QString> metadata() const;
+    virtual QgsStringMap metadata() const;
 
   signals:
     /**
