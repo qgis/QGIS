@@ -68,6 +68,7 @@ class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
 class QgsAbstractVectorLayerLabeling;
 class QgsPointV2;
+class QgsFeedback;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -1467,6 +1468,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @see maximumValue()
      */
     void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
+
+    /**
+     * Returns unique string values of an attribute which contain a specified subset string. Subset
+     * matching is done in a case-insensitive manner. Note that
+     * in some circumstances when unsaved changes are present for the layer then the returned list
+     * may contain outdated values (for instance when the attribute value in a saved feature has
+     * been changed inside the edit buffer then the previous saved value will be included in the
+     * returned list).
+     * @param index column index for attribute
+     * @param substring substring to match (case insensitive)
+     * @param limit maxmum number of the values to return, or -1 to return all unique values
+     * @param feedback optional feedback object for cancelling request
+     * @returns list of unique strings containing substring
+     */
+    QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
+                                       QgsFeedback* feedback = nullptr ) const;
 
     /** Returns the minimum value for an attribute column or an invalid variant in case of error.
      * Note that in some circumstances when unsaved changes are present for the layer then the

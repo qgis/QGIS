@@ -1295,6 +1295,53 @@ class TestQgsVectorLayer(unittest.TestCase):
         # note - this isn't 100% accurate, since 123 no longer exists - but it avoids looping through all features
         self.assertEqual(set(layer.uniqueValues(1)), set([123, 457, 888, -1, 0, 999, 9999, 481523]))
 
+    def testUniqueStringsMatching(self):
+        """ test retrieving unique strings matching subset """
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes(["apple"])
+        f2 = QgsFeature()
+        f2.setAttributes(["orange"])
+        f3 = QgsFeature()
+        f3.setAttributes(["pear"])
+        f4 = QgsFeature()
+        f4.setAttributes(["BanaNa"])
+        f5 = QgsFeature()
+        f5.setAttributes(["ApriCot"])
+        assert pr.addFeatures([f, f2, f3, f4, f5])
+        assert layer.featureCount() == 5
+
+        # test layer with just provider features
+        self.assertEqual(set(layer.uniqueStringsMatching(0, 'N')), set(['orange', 'BanaNa']))
+
+        # add feature with new value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["waterMelon"])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be included in unique values
+        self.assertEqual(set(layer.uniqueStringsMatching(0, 'N')), set(['orange', 'BanaNa', 'waterMelon']))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["waterMelon"])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(set(layer.uniqueStringsMatching(0, 'N')), set(['orange', 'BanaNa', 'waterMelon']))
+        self.assertEqual(set(layer.uniqueStringsMatching(0, 'aN')), set(['orange', 'BanaNa']))
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["pineapple"])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(set(layer.uniqueStringsMatching(0, 'n')), set(['orange', 'BanaNa', 'waterMelon', 'pineapple']))
+
+        # change an attribute value to a new unique value
+        f = QgsFeature()
+        f1_id = next(layer.getFeatures()).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 0, 'coconut'))
+        # note - this isn't 100% accurate, since orange no longer exists - but it avoids looping through all features
+        self.assertEqual(set(layer.uniqueStringsMatching(0, 'n')), set(['orange', 'BanaNa', 'waterMelon', 'pineapple', 'coconut']))
+
     def testMinValue(self):
         """ test retrieving minimum values """
         layer = createLayerWithFivePoints()

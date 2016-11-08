@@ -209,7 +209,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param substring substring to match (case insensitive)
      * @param limit maxmum number of the values to return, or -1 to return all unique values
      * @param feedback optional feedback object for cancelling request
-     * @returns list of unique strings containg substring
+     * @returns list of unique strings containing substring
      */
     virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
         QgsFeedback* feedback = nullptr ) const;
