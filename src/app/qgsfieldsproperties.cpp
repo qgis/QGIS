@@ -1001,13 +1001,25 @@ void QgsFieldsProperties::apply()
     {
       mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
+    else
+    {
+      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintNotNull );
+    }
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique )
     {
       mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintUnique, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) );
     }
+    else
+    {
+      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintUnique );
+    }
     if ( cfg.mConstraints & QgsFieldConstraints::ConstraintExpression )
     {
       mLayer->setFieldConstraint( i, QgsFieldConstraints::ConstraintExpression, cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) );
+    }
+    else
+    {
+      mLayer->removeFieldConstraint( i, QgsFieldConstraints::ConstraintExpression );
     }
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
