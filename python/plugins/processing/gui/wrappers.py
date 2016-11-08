@@ -741,7 +741,7 @@ class TableWidgetWrapper(WidgetWrapper):
             except:
                 return self.widget.getValue()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.getText()
+            return self.widget.value()
         else:
             def validator(v):
                 return bool(v) or self.param.optional

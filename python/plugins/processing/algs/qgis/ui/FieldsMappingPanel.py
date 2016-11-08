@@ -31,8 +31,8 @@ import os
 from collections import OrderedDict
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtGui import QBrush, QIcon, QSpacerItem
-from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
+from qgis.PyQt.QtGui import QBrush, QIcon
+from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QSpacerItem, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
 from qgis.core import QgsExpression, QgsExpressionContextUtils, QgsApplication, QgsFeature
