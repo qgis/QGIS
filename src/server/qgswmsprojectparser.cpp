@@ -1768,7 +1768,14 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
         layerElem.appendChild( metaUrlElem );
       }
 
-      parentElem.appendChild( layerElem );
+      if ( parentElem.hasChildNodes() )
+      {
+        parentElem.insertBefore( layerElem, parentElem.firstChild() );
+      }
+      else
+      {
+        parentElem.appendChild( layerElem );
+      }
     }
     else
     {
