@@ -433,7 +433,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPointV2 &p )
 {
   writeGroup( code + 10, p.x() );
   writeGroup( code + 20, p.y() );
-  if ( p.is3D() )
+  if ( p.is3D() && qIsFinite( p.z() ) )
     writeGroup( code + 30, p.z() );
 }
 
