@@ -329,16 +329,30 @@ QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
 QgsActionManager        {#qgis_api_break_3_0_QgsActionManager}
 ----------------
 
-- doAction() no longer accepts a substitution map. Use expression context variables instead.
-- The doAction() variant which takes a QgsFeature along has been removed. Use the expression context
-variant instead.
-- expandAction() has been removed. Use QgsExpression::replaceExpressionText() instead.
-- setPythonExecute() was removed. Initialize QgsPythonRunner instead.
+- `doAction()` no longer accepts a substitution map. Use expression context
+  variables instead.
+- The `doAction()` variant which takes a QgsFeature along has been removed. Use
+  the expression context variant instead.
+- `expandAction()` has been removed. Use
+  `QgsExpression::replaceExpressionText()` instead.
+- `setPythonExecute()` was removed. Initialize `QgsPythonRunner` instead.
+- `QgsActionManager::listActions()` has been renamed to `QgsActionManager::actions( actionScope )`.
+- `QgsActionManager::removeAction()` takes an actions UUID instead of an index.
+- `QgsActionManager::doAction()` takes an actions UUID instead of an index.
+- `QgsActionManager::writeXml()` no longer takes a QDomDocument. The document is
+  extracted from the layerNode.
+- `QgsActionManager::at()` has been removed. Use `QgsActionManager::action( id )`
+  to get an action by its UUID.
+- `QgsActionManager::defaultAction()` works on a per-scope basis and with UUIDs
+  instead of indexes.
+
 
 QgsAction             {#qgis_api_break_3_0_QgsAction}
 ---------
 
 - `QgsAction::action()` has been renamed to `QgsAction::command()`.
+- `QgsAction::showInAttributeTable()` has been removed. Use
+  `QgsAction::actionScopes()` instead and check for the 'Feature' scope.
 
 
 QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget}

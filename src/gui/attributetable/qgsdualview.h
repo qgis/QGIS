@@ -353,6 +353,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     Q_OBJECT
 
   public:
+
     /**
      * Create a new attribute table action.
      *
