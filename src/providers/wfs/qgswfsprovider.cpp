@@ -1100,15 +1100,50 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   }
 }
 
-
-QgsStringMap QgsWFSProvider::metadata()
+QVariantMap QgsWFSProvider::metadata() const
 {
-  QgsStringMap result;
-  result[tr( "Max Features" )] = mShared->mCaps.maxFeatures == 0 ? tr( "not provided" ) : QString( mShared->mCaps.maxFeatures );
-  result[tr( "Supports Paging" )] = mShared->mCaps.supportsPaging ? tr( "supported" ) : tr( "unsupported" );
-  result[tr( "Supports Joins" )] = mShared->mCaps.supportsJoins ? tr( "supported" ) : tr( "unsupported" );
+  QVariantMap result;
+  result["MaxFeatures"] = mShared->mCaps.maxFeatures;
+  result["SupportsPaging"] = mShared->mCaps.supportsPaging;
+  result["SupportsJoins"] = mShared->mCaps.supportsJoins;
   return result;
 }
+
+QString QgsWFSProvider::translateMetadataKey( const QString& mdKey ) const
+{
+  if ( mdKey == "MaxFeatures" )
+  {
+    return tr( "Max Features" );
+  }
+  else if ( mdKey == "SupportsPaging" )
+  {
+    return tr( "Supports Paging" );
+  }
+  else if ( mdKey == "SupportsJoins" )
+  {
+    return tr( "Supports Joins" );
+  }
+  else
+  {
+    return mdKey;
+  }
+};
+
+QString QgsWFSProvider::translateMetadataValue( const QString& mdKey, const QVariant& value ) const
+{
+  if ( mdKey == "MaxFeatures" )
+  {
+    return value.toInt() == 0 ? tr( "not provided" ) : value.toString();
+  }
+  else if ( mdKey == "SupportsPaging" || mdKey == "SupportsJoins" )
+  {
+    return value.toBool() ? tr( "supported" ) : tr( "unsupported" );
+  }
+  else
+  {
+    return value.toString();
+  }
+};
 
 bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields& fields, QgsWkbTypes::Type& geomType )
 {

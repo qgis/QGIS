@@ -3890,16 +3890,19 @@ QString QgsVectorLayer::metadata() const
     myMetadata += dataProvider()->description().replace( '\n', QLatin1String( "<br>" ) );
     myMetadata += QLatin1String( "</p>\n" );
 
-    QMap<QString, QString> dataProviderMetadata = mDataProvider->metadata();
+    QVariantMap dataProviderMetadata = mDataProvider->metadata();
     if ( !dataProviderMetadata.isEmpty() )
     {
       myMetadata += "<p class=\"glossy\">" + tr( "Provider Metadata" ) + "</p>\n";
       myMetadata +=  "<p><table><tr><th>" + tr( "Metadata name" ) + "</th><th>" + tr( "Metadata value" ) + "</th></tr>\n";
-      QMapIterator<QString, QString> i( dataProviderMetadata );
+      QMapIterator<QString, QVariant> i( dataProviderMetadata );
       while ( i.hasNext() )
       {
         i.next();
-        myMetadata += "<tr><td>" + i.key() + ":</td><td>" + i.value() + "</td></tr>\n";
+        myMetadata += "<tr>";
+        myMetadata += "<td>" + mDataProvider->translateMetadataKey( i.key() ) + ":</td>";
+        myMetadata += "<td>" + mDataProvider->translateMetadataValue( i.key(), i.value() ) + "</td>";
+        myMetadata += "</tr>\n";
       }
       myMetadata += QLatin1String( "</table></p>\n" );
     }

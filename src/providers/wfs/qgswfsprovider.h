@@ -137,7 +137,22 @@ class QgsWFSProvider : public QgsVectorDataProvider
      * Get some metadata description of the provider.
      * @return The provider metadata
      */
-    virtual QgsStringMap metadata();
+    virtual QVariantMap metadata() const override;
+
+    /**
+     * Get the translated metadata key.
+     * @param mdKey The metadata key
+     * @return The translated metadata value
+     */
+    virtual QString translateMetadataKey( const QString& mdKey ) const override;
+
+    /**
+     * Get the translated metadata value.
+     * @param mdKey The metadata key
+     * @param value The metadata value
+     * @return The translated metadata value
+     */
+    virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const override;
 
   public slots:
 
