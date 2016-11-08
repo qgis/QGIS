@@ -52,20 +52,28 @@ class AddScriptFromFileAction(ToolboxAction):
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
-        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
+        filenames, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
                                                                 self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
                                                                 self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
-        if filename:
-            try:
-                settings.setValue('Processing/lastScriptsDir',
-                                  QFileInfo(filename).absoluteDir().absolutePath())
-                script = ScriptAlgorithm(filename)
-            except WrongScriptException:
+        if filenames:
+            validAlgs = 0
+            wrongAlgs = []
+            for filename in filenames:
+                try:
+                    settings.setValue('Processing/lastScriptsDir',
+                                      QFileInfo(filename).absoluteDir().absolutePath())
+                    script = ScriptAlgorithm(filename)
+                    destFilename = os.path.join(ScriptUtils.scriptsFolders()[0], os.path.basename(filename))
+                    with open(destFilename, 'w') as f:
+                        f.write(script.script)
+                    validAlgs += 1
+                except WrongScriptException:
+                    wrongAlgs.append(os.path.basename(filename))
+            if validAlgs:
+                algList.reloadProvider('script')
+            if wrongAlgs:
                 QMessageBox.warning(self.toolbox,
-                                    self.tr('Error reading script', 'AddScriptFromFileAction'),
-                                    self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
-                return
-            destFilename = os.path.join(ScriptUtils.scriptsFolders()[0], os.path.basename(filename))
-            with open(destFilename, 'w') as f:
-                f.write(script.script)
-            algList.reloadProvider('script')
+                                        self.tr('Error reading scripts', 'AddScriptFromFileAction'),
+                                        self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction')
+                                        + "\n-".join(wrongAlgs))
+
