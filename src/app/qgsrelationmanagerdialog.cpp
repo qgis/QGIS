@@ -134,8 +134,11 @@ void QgsRelationManagerDialog::on_mBtnDiscoverRelations_clicked()
 
 void QgsRelationManagerDialog::on_mBtnRemoveRelation_clicked()
 {
-  if ( mRelationsTable->currentIndex().isValid() )
-    mRelationsTable->removeRow( mRelationsTable->currentItem()->row() );
+  const QModelIndexList rows = mRelationsTable->selectionModel()->selectedRows();
+  for ( int i = rows.size() - 1; i >= 0; --i )
+  {
+    mRelationsTable->removeRow( rows[i].row() );
+  }
 }
 
 QList< QgsRelation > QgsRelationManagerDialog::relations()
