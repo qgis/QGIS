@@ -19,6 +19,7 @@
 #include "qgsfeature.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 
 class QgsGeometryCache;
 class QgsCurve;

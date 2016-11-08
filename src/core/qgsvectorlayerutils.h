@@ -17,6 +17,7 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 
 /** \ingroup core
  * \class QgsVectorLayerUtils
@@ -53,6 +54,17 @@ class CORE_EXPORT QgsVectorLayerUtils
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 
+    /**
+     * Creates a new feature ready for insertion into a layer. Default values and constraints
+     * (eg unique constraints) will automatically be handled. An optional attribute map can be
+     * passed for the new feature to copy as many attribute values as possible from the map,
+     * assuming that they respect the layer's constraints. Note that the created feature is not
+     * automatically inserted into the layer.
+     */
+    static QgsFeature createFeature( QgsVectorLayer* layer,
+                                     const QgsGeometry& geometry = QgsGeometry(),
+                                     const QgsAttributeMap& attributes = QgsAttributeMap(),
+                                     QgsExpressionContext* context = nullptr );
 
 };
 

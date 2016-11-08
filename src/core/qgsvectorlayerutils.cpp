@@ -215,3 +215,95 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
   return valid;
 }
 
+QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsGeometry& geometry,
+    const QgsAttributeMap& attributes, QgsExpressionContext* context )
+{
+  if ( !layer )
+  {
+    return QgsFeature();
+  }
+
+  QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > tempContext;
+  if ( !evalContext )
+  {
+    // no context passed, so we create a default one
+    tempContext.reset( new QgsExpressionContext() );
+    tempContext->appendScope( QgsExpressionContextUtils::globalScope() );
+    tempContext->appendScope( QgsExpressionContextUtils::projectScope() );
+    tempContext->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+    evalContext = tempContext.data();
+  }
+
+  QgsFields fields = layer->fields();
+
+  QgsFeature newFeature( fields );
+  newFeature.setValid( true );
+  newFeature.setGeometry( geometry );
+
+  // initialise attributes
+  newFeature.initAttributes( fields.count() );
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    QVariant v;
+    bool checkUnique = true;
+
+    // in order of priority:
+
+    // 1. client side default expression
+    if ( !layer->defaultValueExpression( idx ).isEmpty() )
+    {
+      // client side default expression set - takes precedence over all. Why? Well, this is the only default
+      // which QGIS users have control over, so we assume that they're deliberately overriding any
+      // provider defaults for some good reason and we should respect that
+      v = layer->defaultValue( idx, newFeature, evalContext );
+    }
+
+    // 2. provider side default value clause
+    // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
+    if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+    {
+      int providerIndex = fields.fieldOriginIndex( idx );
+      QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
+      if ( !providerDefault.isEmpty() )
+      {
+        v = providerDefault;
+        checkUnique = false;
+      }
+    }
+
+    // 3. passed attribute value
+    // note - deliberately not using else if!
+    if ( !v.isValid() && attributes.contains( idx ) )
+    {
+      v = attributes.value( idx );
+    }
+
+    // 4. provider side default literal
+    // note - deliberately not using else if!
+    if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+    {
+      int providerIndex = fields.fieldOriginIndex( idx );
+      v = layer->dataProvider()->defaultValue( providerIndex );
+    }
+
+    // last of all... check that unique constraints are respected
+    // we can't handle not null or expression constraints here, since there's no way to pick a sensible
+    // value if the constraint is violated
+    if ( checkUnique && fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    {
+      if ( QgsVectorLayerUtils::valueExists( layer, idx, v ) )
+      {
+        // unique constraint violated
+        QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValue( layer, idx, v );
+        if ( uniqueValue.isValid() )
+          v = uniqueValue;
+      }
+    }
+
+    newFeature.setAttribute( idx, v );
+  }
+
+  return newFeature;
+}
+

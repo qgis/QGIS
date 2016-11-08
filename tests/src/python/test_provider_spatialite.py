@@ -19,7 +19,7 @@ import sys
 import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry, QgsField, QgsFieldConstraints
+from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry, QgsField, QgsFieldConstraints, QgsVectorLayerUtils
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -185,28 +185,20 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.hasGeometryType())
         layer.startEditing()
-        self.assertEqual(layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0), 0)
-        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPoint(0.75, -0.5), QgsPoint(0.75, 1.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.25), QgsPoint(1.5, 0.25)], 0), 0)
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 4)
 
-    def xtest_SplitFeatureWithFailedCommit(self):
+    def test_SplitFeatureWithMultiKey(self):
         """Create spatialite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg_mk (geometry)" % self.dbname, "test_pg_mk", "spatialite")
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.hasGeometryType())
         layer.startEditing()
-        self.asserEqual(layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0), 0)
-        self.asserEqual(layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0), 0)
-        self.assertFalse(layer.commitChanges())
-        layer.rollBack()
-        feat = next(layer.getFeatures())
-        ref = [[(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]]
-        res = feat.geometry().asPolygon()
-        for ring1, ring2 in zip(ref, res):
-            for p1, p2 in zip(ring1, ring2):
-                for c1, c2 in zip(p1, p2):
-                    self.asserEqual(c1, c2)
+        self.assertEqual(layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0), 0)
+        self.assertTrue(layer.commitChanges())
 
     def test_queries(self):
         """Test loading of query-based layers"""
@@ -475,6 +467,21 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l.dataProvider().defaultValue(3), 5.7)
         self.assertFalse(l.dataProvider().defaultValue(4))
 
+    def testVectorLayerUtilsCreateFeatureWithProviderDefaultLiteral(self):
+        vl = QgsVectorLayer("dbname=%s table='test_defaults' key='id'" % self.dbname, "test_defaults", "spatialite")
+        self.assertEqual(vl.dataProvider().defaultValue(2), 5)
+
+        f = QgsVectorLayerUtils.createFeature(vl)
+        self.assertEqual(f.attributes(), [None, "qgis 'is good", 5, 5.7, None])
+
+        # check that provider passed attribute values take precedence over default literals
+        f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
+        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 5.7, None])
+
+        # test take vector layer default value expression overrides postgres provider default clause
+        vl.setDefaultValueExpression(3, "4*3")
+        f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
+        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 12, None])
 
 if __name__ == '__main__':
     unittest.main()
