@@ -293,6 +293,8 @@ class QgsFeature
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
     sipIsErr = 1;
   }
+
+  sipRes = rv;
 %End
 
     /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
@@ -412,10 +414,12 @@ class QgsFeature
   {
     PyErr_SetString(PyExc_KeyError, a0->toAscii());
     sipIsErr = 1;
+    sipRes = false;
   }
   else
   {
     sipCpp->deleteAttribute( fieldIdx );
+    sipRes = true;
   }
 %End
     /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
