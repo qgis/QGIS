@@ -54,6 +54,12 @@ def createEmptyLayer():
     return layer
 
 
+def createEmptyLayerWithFields():
+    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory")
+    assert layer.pendingFeatureCount() == 0
+    return layer
+
+
 def createLayerWithOnePoint():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
                            "addfeat", "memory")
@@ -168,8 +174,8 @@ class TestQgsVectorLayer(unittest.TestCase):
     # ADD FEATURE
 
     def test_AddFeature(self):
-        layer = createEmptyLayer()
-        feat = QgsFeature()
+        layer = createEmptyLayerWithFields()
+        feat = QgsFeature(layer.fields())
         feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
 
         def checkAfter():
@@ -197,6 +203,12 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         # add feature
         layer.startEditing()
+
+        # try adding feature with incorrect number of fields
+        bad_feature = QgsFeature()
+        self.assertFalse(layer.addFeature(bad_feature))
+
+        # add good feature
         self.assertTrue(layer.addFeature(feat))
 
         checkAfter()
@@ -213,6 +225,68 @@ class TestQgsVectorLayer(unittest.TestCase):
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 1)
 
+    # ADD FEATURES
+
+    def test_AddFeatures(self):
+        layer = createEmptyLayerWithFields()
+        feat1 = QgsFeature(layer.fields())
+        feat1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 2)))
+        feat2 = QgsFeature(layer.fields())
+        feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(11, 12)))
+
+        def checkAfter():
+            self.assertEqual(layer.pendingFeatureCount(), 2)
+
+            # check select+nextFeature
+            it = layer.getFeatures()
+            f1 = next(it)
+            self.assertEqual(f1.geometry().asPoint(), QgsPoint(1, 2))
+            f2 = next(it)
+            self.assertEqual(f2.geometry().asPoint(), QgsPoint(11, 12))
+
+            # check feature at id
+            f1_1 = next(layer.getFeatures(QgsFeatureRequest(f1.id())))
+            self.assertEqual(f1_1.geometry().asPoint(), QgsPoint(1, 2))
+            f2_1 = next(layer.getFeatures(QgsFeatureRequest(f2.id())))
+            self.assertEqual(f2_1.geometry().asPoint(), QgsPoint(11, 12))
+
+        def checkBefore():
+            self.assertEqual(layer.pendingFeatureCount(), 0)
+
+            # check select+nextFeature
+            with self.assertRaises(StopIteration):
+                next(layer.getFeatures())
+
+        checkBefore()
+
+        # try to add feature without editing mode
+        self.assertFalse(layer.addFeatures([feat1, feat2]))
+
+        # add feature
+        layer.startEditing()
+
+        # try adding feature with incorrect number of fields
+        bad_feature = QgsFeature()
+        self.assertFalse(layer.addFeatures([bad_feature]))
+
+        # add good features
+        self.assertTrue(layer.addFeatures([feat1, feat2]))
+
+        checkAfter()
+        self.assertEqual(layer.dataProvider().featureCount(), 0)
+
+        # now try undo/redo
+        layer.undoStack().undo()
+        layer.undoStack().undo()
+        checkBefore()
+        layer.undoStack().redo()
+        layer.undoStack().redo()
+        checkAfter()
+
+        self.assertTrue(layer.commitChanges())
+
+        checkAfter()
+        self.assertEqual(layer.dataProvider().featureCount(), 2)
     # DELETE FEATURE
 
     def test_DeleteFeature(self):

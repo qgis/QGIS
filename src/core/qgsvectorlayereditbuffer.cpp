@@ -135,13 +135,14 @@ bool QgsVectorLayerEditBuffer::addFeatures( QgsFeatureList& features )
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures ) )
     return false;
 
+  bool result = true;
   for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
   {
-    addFeature( *iter );
+    result = result && addFeature( *iter );
   }
 
   L->updateExtents();
-  return true;
+  return result;
 }
 
 
