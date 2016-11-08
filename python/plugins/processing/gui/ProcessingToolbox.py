@@ -141,6 +141,7 @@ class ProcessingToolbox(BASE, WIDGET):
             item_text = [item.text(0).lower(), item.data(0, Qt.UserRole).lower()]
             if isinstance(item, TreeAlgorithmItem):
                 item_text.append(item.alg.commandLineName())
+                item_text.extend(item.data(0, Qt.UserRole + 1))
 
             hide = bool(text) and not all(
                 any(part in t for t in item_text)
@@ -355,6 +356,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.setToolTip(0, name)
         self.setText(0, name)
         self.setData(0, Qt.UserRole, nameEn)
+        self.setData(0, Qt.UserRole + 1, alg.tags.split(','))
 
 
 class TreeActionItem(QTreeWidgetItem):
