@@ -82,6 +82,7 @@
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeedback.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -3221,6 +3222,107 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   Q_ASSERT_X( false, "QgsVectorLayer::uniqueValues()", "Unknown source of the field!" );
+}
+
+QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+{
+  QStringList results;
+  if ( !mDataProvider )
+  {
+    return results;
+  }
+
+  QgsFields::FieldOrigin origin = mFields.fieldOrigin( index );
+  switch ( origin )
+  {
+    case QgsFields::OriginUnknown:
+      return results;
+
+    case QgsFields::OriginProvider: //a provider field
+    {
+      results = mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
+
+      if ( mEditBuffer )
+      {
+        QgsFeatureMap added = mEditBuffer->addedFeatures();
+        QMapIterator< QgsFeatureId, QgsFeature > addedIt( added );
+        while ( addedIt.hasNext() && ( limit < 0 || results.count() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+        {
+          addedIt.next();
+          QVariant v = addedIt.value().attribute( index );
+          if ( v.isValid() )
+          {
+            QString vs = v.toString();
+            if ( vs.contains( substring, Qt::CaseInsensitive ) && !results.contains( vs ) )
+            {
+              results << vs;
+            }
+          }
+        }
+
+        QMapIterator< QgsFeatureId, QgsAttributeMap > it( mEditBuffer->changedAttributeValues() );
+        while ( it.hasNext() && ( limit < 0 || results.count() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+        {
+          it.next();
+          QVariant v = it.value().value( index );
+          if ( v.isValid() )
+          {
+            QString vs = v.toString();
+            if ( vs.contains( substring, Qt::CaseInsensitive ) && !results.contains( vs ) )
+            {
+              results << vs;
+            }
+          }
+        }
+      }
+
+      return results;
+    }
+
+    case QgsFields::OriginEdit:
+      // the layer is editable, but in certain cases it can still be avoided going through all features
+      if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
+           mEditBuffer->mAddedFeatures.isEmpty() &&
+           !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
+           mEditBuffer->mChangedAttributeValues.isEmpty() )
+      {
+        return mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
+      }
+      FALLTHROUGH;
+      //we need to go through each feature
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginExpression:
+    {
+      QgsAttributeList attList;
+      attList << index;
+
+      QgsFeatureRequest request;
+      request.setSubsetOfAttributes( attList );
+      request.setFlags( QgsFeatureRequest::NoGeometry );
+      QString fieldName = mFields.at( index ).name();
+      request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
+      QgsFeatureIterator fit = getFeatures( request );
+
+      QgsFeature f;
+      QString currentValue;
+      while ( fit.nextFeature( f ) )
+      {
+        currentValue = f.attribute( index ).toString();
+        if ( !results.contains( currentValue ) )
+          results << currentValue;
+
+        if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+        {
+          break;
+        }
+      }
+
+      return results;
+    }
+  }
+
+  Q_ASSERT_X( false, "QgsVectorLayer::uniqueStringsMatching()", "Unknown source of the field!" );
+  return results;
 }
 
 QVariant QgsVectorLayer::minimumValue( int index ) const
