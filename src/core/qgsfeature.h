@@ -107,6 +107,14 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
       return true;
     }
 
+    /**
+     * Returns a QgsAttributeMap of the attribute values. Null values are
+     * excluded from the map.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    QgsAttributeMap toMap() const;
+
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };
 

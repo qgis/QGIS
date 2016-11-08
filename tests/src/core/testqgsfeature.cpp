@@ -33,6 +33,7 @@ class TestQgsFeature: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void attributesTest(); //test QgsAttributes
+    void attributesToMap();
     void create();//test creating a feature
     void copy();// test cpy destruction (double delete)
     void assignment();
@@ -118,6 +119,28 @@ void TestQgsFeature::attributesTest()
   //constructed with size
   QgsAttributes attr7( 5 );
   QCOMPARE( attr7.size(), 5 );
+}
+
+void TestQgsFeature::attributesToMap()
+{
+  QgsAttributes attr1;
+  attr1 << QVariant( 5 ) << QVariant() << QVariant( "val" );
+  QgsAttributeMap map1 = attr1.toMap();
+
+  QCOMPARE( map1.count(), 2 );
+  QCOMPARE( map1.value( 0 ), QVariant( 5 ) );
+  QCOMPARE( map1.value( 2 ), QVariant( "val" ) );
+
+  QgsAttributes attr2;
+  attr2 << QVariant() << QVariant( 5 ) << QVariant();
+  QgsAttributeMap map2 = attr2.toMap();
+
+  QCOMPARE( map2.count(), 1 );
+  QCOMPARE( map2.value( 1 ), QVariant( 5 ) );
+
+  QgsAttributes attr3;
+  QgsAttributeMap map3 = attr3.toMap();
+  QVERIFY( map3.isEmpty() );
 }
 
 void TestQgsFeature::create()

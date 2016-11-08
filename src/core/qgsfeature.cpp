@@ -29,6 +29,23 @@ email                : sherman at mrcc.com
  * See details in QEP #17
  ****************************************************************************/
 
+
+QgsAttributeMap QgsAttributes::toMap() const
+{
+  QgsAttributeMap map;
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    QVariant v = at( idx );
+    if ( v.isValid() )
+      map.insert( idx, v );
+  }
+  return map;
+}
+
+//
+// QgsFeature
+//
+
 QgsFeature::QgsFeature( QgsFeatureId id )
 {
   d = new QgsFeaturePrivate( id );
@@ -327,3 +344,4 @@ uint qHash( const QgsFeature& key, uint seed )
 
   return hash;
 }
+
