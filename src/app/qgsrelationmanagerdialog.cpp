@@ -25,6 +25,9 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relation
     , mRelationManager( relationMgr )
 {
   setupUi( this );
+
+  mBtnRemoveRelation->setEnabled( false );
+  connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRelationManagerDialog::onSelectionChanged );
 }
 
 QgsRelationManagerDialog::~QgsRelationManagerDialog()
@@ -158,3 +161,7 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
   return relations;
 }
 
+void QgsRelationManagerDialog::onSelectionChanged()
+{
+  mBtnRemoveRelation->setEnabled( mRelationsTable->selectionModel()->hasSelection() );
+}
