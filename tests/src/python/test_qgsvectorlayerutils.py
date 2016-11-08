@@ -178,6 +178,38 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(len(errors), 2)
         print(errors)
 
+    def testCreateUniqueValue(self):
+        """ test creating a unique value """
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double",
+                               "addfeat", "memory")
+        # add a bunch of features
+        f = QgsFeature()
+        f.setAttributes(["test", 123, 1.0])
+        f1 = QgsFeature(2)
+        f1.setAttributes(["test_1", 124, 1.1])
+        f2 = QgsFeature(3)
+        f2.setAttributes(["test_2", 125, 2.4])
+        f3 = QgsFeature(4)
+        f3.setAttributes(["test_3", 126, 1.7])
+        f4 = QgsFeature(5)
+        f4.setAttributes(["superpig", 127, 0.8])
+        self.assertTrue(layer.dataProvider().addFeatures([f, f1, f2, f3, f4]))
+
+        # bad field indices
+        self.assertFalse(QgsVectorLayerUtils.createUniqueValue(layer, -10))
+        self.assertFalse(QgsVectorLayerUtils.createUniqueValue(layer, 10))
+
+        # integer field
+        self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 1), 128)
+
+        # double field
+        self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 2), 3.0)
+
+        # string field
+        self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0), 'test_4')
+        self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0, 'test_1'), 'test_4')
+        self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0, 'seed'), 'seed')
+        self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0, 'superpig'), 'superpig_1')
 
 if __name__ == '__main__':
     unittest.main()

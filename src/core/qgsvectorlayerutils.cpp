@@ -15,6 +15,7 @@
 
 #include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
+#include <QRegularExpression>
 
 bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds )
 {
@@ -63,6 +64,86 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldInd
   }
 
   return false;
+}
+
+QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer* layer, int fieldIndex, const QVariant& seed )
+{
+  if ( !layer )
+    return QVariant();
+
+  QgsFields fields = layer->fields();
+
+  if ( fieldIndex < 0 || fieldIndex >= fields.count() )
+    return QVariant();
+
+  QgsField field = fields.at( fieldIndex );
+
+  if ( field.isNumeric() )
+  {
+    QVariant maxVal = layer->maximumValue( fieldIndex );
+    QVariant newVar( maxVal.toLongLong() + 1 );
+    if ( field.convertCompatible( newVar ) )
+      return newVar;
+    else
+      return QVariant();
+  }
+  else
+  {
+    switch ( field.type() )
+    {
+      case QVariant::String:
+      {
+        QString base;
+        if ( seed.isValid() )
+          base = seed.toString();
+
+        if ( !base.isEmpty() )
+        {
+          // strip any existing _1, _2 from the seed
+          QRegularExpression rx( "(.*)_\\d+" );
+          QRegularExpressionMatch match = rx.match( base );
+          if ( match.hasMatch() )
+          {
+            base = match.captured( 1 );
+          }
+        }
+        else
+        {
+          // no base seed - fetch first value from layer
+          QgsFeatureRequest req;
+          req.setLimit( 1 );
+          req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
+          req.setFlags( QgsFeatureRequest::NoGeometry );
+          QgsFeature f;
+          layer->getFeatures( req ).nextFeature( f );
+          base = f.attribute( fieldIndex ).toString();
+        }
+
+        // try variants like base_1, base_2, etc until a new value found
+        QStringList vals = layer->uniqueStringsMatching( fieldIndex, base );
+
+        // might already be unique
+        if ( !base.isEmpty() && !vals.contains( base ) )
+          return base;
+
+        for ( int i = 1; i < 10000; ++i )
+        {
+          QString testVal = base + '_' + QString::number( i );
+          if ( !vals.contains( testVal ) )
+            return testVal;
+        }
+
+        // failed
+        return QVariant();
+      }
+
+      default:
+        // todo other types - dates? times?
+        return QVariant();
+    }
+  }
+
+  return QVariant();
 }
 
 bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors,
