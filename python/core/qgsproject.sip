@@ -13,7 +13,7 @@
   properties.
 
 */
-class QgsProject : QObject
+class QgsProject : QObject, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include <qgsproject.h>

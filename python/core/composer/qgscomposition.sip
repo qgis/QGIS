@@ -4,7 +4,7 @@
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
  * or to bring them to front/back.
  * */
-class QgsComposition : QGraphicsScene
+class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include <qgscomposition.h>

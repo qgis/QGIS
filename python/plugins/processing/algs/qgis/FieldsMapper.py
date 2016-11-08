@@ -78,10 +78,7 @@ class FieldsMapper(GeoAlgorithm):
         da.setEllipsoid(QgsProject.instance().readEntry(
             'Measure', '/Ellipsoid', GEO_NONE)[0])
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = layer.createExpressionContext()
 
         for field_def in mapping:
             fields.append(QgsField(name=field_def['name'],
@@ -93,18 +90,12 @@ class FieldsMapper(GeoAlgorithm):
             expression.setGeomCalculator(da)
             expression.setDistanceUnits(QgsProject.instance().distanceUnits())
             expression.setAreaUnits(QgsProject.instance().areaUnits())
-
+            expression.prepare(exp_context)
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(str(field_def['expression']),
-                            str(expression.parserErrorString())))
-            expression.prepare(exp_context)
-            if expression.hasEvalError():
-                raise GeoAlgorithmExecutionException(
-                    self.tr(u'Evaluation error in expression "{}": {}')
-                    .format(str(field_def['expression']),
-                            str(expression.evalErrorString())))
+                    .format(unicode(expression.expression()),
+                            unicode(expression.parserErrorString())))
             expressions.append(expression)
 
         writer = output.getVectorWriter(fields,
@@ -112,8 +103,7 @@ class FieldsMapper(GeoAlgorithm):
                                         layer.crs())
 
         # Create output vector layer with new attributes
-        error = ''
-        calculationSuccess = True
+        error_exp = None
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = vector.features(layer)
@@ -132,8 +122,7 @@ class FieldsMapper(GeoAlgorithm):
                 exp_context.lastScope().setVariable("row_number", rownum)
                 value = expression.evaluate(exp_context)
                 if expression.hasEvalError():
-                    calculationSuccess = False
-                    error = expression.evalErrorString()
+                    error_exp = expression
                     break
 
                 attrs.append(value)
@@ -145,7 +134,8 @@ class FieldsMapper(GeoAlgorithm):
 
         del writer
 
-        if not calculationSuccess:
+        if error_exp is not None:
             raise GeoAlgorithmExecutionException(
-                self.tr('An error occurred while evaluating the calculation'
-                        ' string:\n') + error)
+                self.tr(u'Evaluation error in expression "{}": {}')
+                    .format(unicode(error_exp.expression()),
+                            unicode(error_exp.parserErrorString())))

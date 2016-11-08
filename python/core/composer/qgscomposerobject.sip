@@ -1,7 +1,7 @@
 /** \ingroup core
  * A base class for objects which belong to a map composition.
  */
-class QgsComposerObject : QObject
+class QgsComposerObject : QObject, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include <qgscomposerobject.h>
