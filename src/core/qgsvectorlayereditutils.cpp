@@ -359,9 +359,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     {
       continue;
     }
-    QList<QgsGeometry*> newGeometries;
+    QList<QgsGeometry> newGeometries;
     QList<QgsPoint> topologyTestPoints;
-    QgsGeometry* newGeometry = nullptr;
     QgsGeometry featureGeom = feat.geometry();
     splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == 0 )
@@ -372,9 +371,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
-        newGeometry = newGeometries.at( i );
         QgsFeature newFeature;
-        newFeature.setGeometry( *newGeometry );
+        newFeature.setGeometry( newGeometries.at( i ) );
 
         //use default value where possible for primary key (e.g. autoincrement),
         //and use the value from the original (split) feature if not primary key
@@ -492,7 +490,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
   QgsFeature feat;
   while ( fit.nextFeature( feat ) )
   {
-    QList<QgsGeometry*> newGeometries;
+    QList<QgsGeometry> newGeometries;
     QList<QgsPoint> topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
     splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
@@ -550,8 +548,6 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     {
       returnCode = splitFunctionReturn;
     }
-
-    qDeleteAll( newGeometries );
   }
 
   if ( numberOfSplittedParts == 0 && L->selectedFeatureCount() > 0  && returnCode == 0 )

@@ -253,8 +253,7 @@ QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry >& geometries
     }
     else
     {
-      QgsGeometry part = QgsGeometry( *git );
-      collected.addPart( &part );
+      collected.addPart( *git );
     }
   }
   return collected;
@@ -731,14 +730,14 @@ int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType g
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
-int QgsGeometry::addPart( const QgsGeometry *newPart )
+int QgsGeometry::addPart( const QgsGeometry& newPart )
 {
-  if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
+  if ( !d->geometry || !newPart.d || !newPart.d->geometry )
   {
     return 1;
   }
 
-  return addPart( newPart->d->geometry->clone() );
+  return addPart( newPart.d->geometry->clone() );
 }
 
 int QgsGeometry::addPart( GEOSGeometry *newPart )
@@ -786,7 +785,7 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   return 0;
 }
 
-int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
+int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
 {
   if ( !d->geometry )
   {
@@ -811,7 +810,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     newGeometries.clear();
     for ( int i = 1; i < newGeoms.size(); ++i )
     {
-      newGeometries.push_back( new QgsGeometry( newGeoms.at( i ) ) );
+      newGeometries.push_back( QgsGeometry( newGeoms.at( i ) ) );
     }
   }
 
@@ -1401,7 +1400,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
     QgsGeometry first = results.takeAt( 0 );
     Q_FOREACH ( const QgsGeometry& result, results )
     {
-      first.addPart( & result );
+      first.addPart( result );
     }
     return first;
   }
@@ -1440,7 +1439,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
     QgsGeometry first = results.takeAt( 0 );
     Q_FOREACH ( const QgsGeometry& result, results )
     {
-      first.addPart( & result );
+      first.addPart( result );
     }
     return first;
   }
@@ -1480,7 +1479,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
     QgsGeometry first = results.takeAt( 0 );
     Q_FOREACH ( const QgsGeometry& result, results )
     {
-      first.addPart( & result );
+      first.addPart( result );
     }
     return first;
   }

@@ -402,7 +402,7 @@ class CORE_EXPORT QgsGeometry
      @note available in python bindings as addPartGeometry (added in 2.2)
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsGeometry *newPart );
+    int addPart( const QgsGeometry& newPart );
 
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -432,7 +432,7 @@ class CORE_EXPORT QgsGeometry
     @return 0 in case of success, 1 if geometry has not been split, error else*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitGeometry( const QList<QgsPoint>& splitLine,
-                       QList<QgsGeometry*>&newGeometries,
+                       QList<QgsGeometry>& newGeometries,
                        bool topological,
                        QList<QgsPoint> &topologyTestPoints );
 
