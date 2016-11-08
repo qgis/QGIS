@@ -1333,7 +1333,7 @@ static QVariant fcnRegexpMatch( const QVariantList& values, const QgsExpressionC
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
-  return QVariant( str.contains( re ) ? 1 : 0 );
+  return QVariant(( str.indexOf( re ) + 1 ) );
 }
 
 static QVariant fcnRegexpMatches( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
@@ -1529,7 +1529,7 @@ static QVariant fcnConcat( const QVariantList& values, const QgsExpressionContex
 static QVariant fcnStrpos( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QString string = getStringValue( values.at( 0 ), parent );
-  return string.indexOf( QRegExp( getStringValue( values.at( 1 ), parent ) ) ) + 1;
+  return string.indexOf( getStringValue( values.at( 1 ), parent ) ) + 1;
 }
 
 static QVariant fcnRight( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
