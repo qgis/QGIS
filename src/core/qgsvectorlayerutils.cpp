@@ -14,16 +14,31 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerutils.h"
+#include "qgsvectordataprovider.h"
 
 bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds )
 {
   if ( !layer )
     return false;
 
-  if ( fieldIndex < 0 || fieldIndex >= layer->fields().count() )
+  QgsFields fields = layer->fields();
+
+  if ( fieldIndex < 0 || fieldIndex >= fields.count() )
     return false;
 
-  QString fieldName = layer->fields().at( fieldIndex ).name();
+  // check - if value is a provider side defaultValueClause then we exclude it from the check
+  if ( fields.fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
+  {
+    int providerIdx = fields.fieldOriginIndex( fieldIndex );
+    QString providerDefaultClause = layer->dataProvider()->defaultValueClause( providerIdx );
+    if ( !providerDefaultClause.isEmpty() && value.toString() == providerDefaultClause )
+    {
+      // exempt from check
+      return false;
+    }
+  }
+
+  QString fieldName = fields.at( fieldIndex ).name();
 
   // build up an optimised feature request
   QgsFeatureRequest request;

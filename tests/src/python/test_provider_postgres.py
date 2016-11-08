@@ -29,7 +29,8 @@ from qgis.core import (
     QgsField,
     QgsFieldConstraints,
     QgsDataProvider,
-    NULL
+    NULL,
+    QgsVectorLayerUtils
 )
 from qgis.gui import QgsEditorWidgetRegistry
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
@@ -515,6 +516,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # ...in addition to layer level constraint
         self.assertTrue(vl.fields().at(0).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
         self.assertTrue(vl.fieldConstraints(0) & QgsFieldConstraints.ConstraintUnique)
+
+    def testVectorLayerUtilsUniqueWithProviderDefault(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' % (self.dbconn), "someData", "postgres")
+        default_clause = 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), default_clause)
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 0, 4))
+
+        vl.startEditing()
+        f = QgsFeature(vl.fields())
+        f.setAttribute(0, default_clause)
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 0, default_clause))
 
     # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):
