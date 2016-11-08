@@ -529,6 +529,21 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.addFeatures([f]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 0, default_clause))
 
+    def testVectorLayerUtilsCreateFeatureWithProviderDefault(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' % (self.dbconn), "someData", "postgres")
+        default_clause = 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), default_clause)
+
+        # check that provider default clause takes precendence over passed attribute values
+        # this also checks that the inbuilt unique constraint handling is bypassed in the case of a provider default clause
+        f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
+        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", "'qgis'::text", None, None])
+
+        # test take vector layer default value expression overrides postgres provider default clause
+        vl.setDefaultValueExpression(3, "'mappy'")
+        f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
+        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
+
     # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'

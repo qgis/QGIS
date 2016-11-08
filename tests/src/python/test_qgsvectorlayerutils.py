@@ -24,6 +24,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsFieldConstraints,
                        QgsFields,
                        QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
                        NULL
                        )
 from qgis.testing import start_app, unittest
@@ -210,6 +212,65 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0, 'test_1'), 'test_4')
         self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0, 'seed'), 'seed')
         self.assertEqual(QgsVectorLayerUtils.createUniqueValue(layer, 0, 'superpig'), 'superpig_1')
+
+    def testCreateFeature(self):
+        """ test creating a feature respecting defaults and constraints """
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double",
+                               "addfeat", "memory")
+        # add a bunch of features
+        f = QgsFeature()
+        f.setAttributes(["test", 123, 1.0])
+        f1 = QgsFeature(2)
+        f1.setAttributes(["test_1", 124, 1.1])
+        f2 = QgsFeature(3)
+        f2.setAttributes(["test_2", 125, 2.4])
+        f3 = QgsFeature(4)
+        f3.setAttributes(["test_3", 126, 1.7])
+        f4 = QgsFeature(5)
+        f4.setAttributes(["superpig", 127, 0.8])
+        self.assertTrue(layer.dataProvider().addFeatures([f, f1, f2, f3, f4]))
+
+        # no layer
+        self.assertFalse(QgsVectorLayerUtils.createFeature(None).isValid())
+
+        # basic tests
+        f = QgsVectorLayerUtils.createFeature(layer)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.fields(), layer.fields())
+        self.assertFalse(f.hasGeometry())
+        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+
+        # set geometry
+        g = QgsGeometry.fromPoint(QgsPoint(100, 200))
+        f = QgsVectorLayerUtils.createFeature(layer, g)
+        self.assertTrue(f.hasGeometry())
+        self.assertEqual(f.geometry().exportToWkt(), g.exportToWkt())
+
+        # using attribute map
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
+        self.assertEqual(f.attributes(), ['a', NULL, 6.0])
+
+        # layer with default value expression
+        layer.setDefaultValueExpression(2, '3*4')
+        f = QgsVectorLayerUtils.createFeature(layer)
+        self.assertEqual(f.attributes(), [NULL, NULL, 12.0])
+        # we expect the default value expression to take precedence over the attribute map
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
+        self.assertEqual(f.attributes(), ['a', NULL, 12.0])
+        # layer with default value expression based on geometry
+        layer.setDefaultValueExpression(2, '3*$x')
+        f = QgsVectorLayerUtils.createFeature(layer, g)
+        self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
+        layer.setDefaultValueExpression(2, None)
+
+        # test with violated unique constraints
+        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        self.assertEqual(f.attributes(), ['test_1', 128, NULL])
+        layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        self.assertEqual(f.attributes(), ['test_4', 128, NULL])
+
 
 if __name__ == '__main__':
     unittest.main()

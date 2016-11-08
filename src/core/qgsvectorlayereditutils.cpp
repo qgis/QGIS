@@ -24,6 +24,7 @@
 #include "qgsgeometryfactory.h"
 #include "qgis.h"
 #include "qgswkbtypes.h"
+#include "qgsvectorlayerutils.h"
 
 #include <limits>
 
@@ -371,28 +372,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
-        QgsFeature newFeature;
-        newFeature.setGeometry( newGeometries.at( i ) );
-
-        //use default value where possible for primary key (e.g. autoincrement),
-        //and use the value from the original (split) feature if not primary key
-        QgsAttributes newAttributes = feat.attributes();
-        Q_FOREACH ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
-        {
-          const QVariant defaultValue = L->dataProvider()->defaultValueClause( pkIdx );
-          if ( !defaultValue.isNull() )
-          {
-            newAttributes[ pkIdx ] = defaultValue;
-          }
-          else //try with NULL
-          {
-            newAttributes[ pkIdx ] = QVariant();
-          }
-        }
-
-        newFeature.setAttributes( newAttributes );
-
-        newFeatures.append( newFeature );
+        QgsFeature f = QgsVectorLayerUtils::createFeature( L, newGeometries.at( i ), feat.attributes().toMap() );
+        L->editBuffer()->addFeature( f );
       }
 
       if ( topologicalEditing )
@@ -417,10 +398,6 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     //Maybe user forgot that only the selected features are split
     returnCode = 4;
   }
-
-
-  //now add the new features to this vectorlayer
-  L->editBuffer()->addFeatures( newFeatures );
 
   return returnCode;
 }

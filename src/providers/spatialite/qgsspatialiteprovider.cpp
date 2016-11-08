@@ -762,6 +762,9 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     }
   }
 
+  // check for constraints
+  fetchConstraints();
+
   // for views try to get the primary key from the meta table
   if ( mViewBased && mPrimaryKey.isEmpty() )
   {
@@ -861,6 +864,15 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
   }
   sqlite3_free_table( results );
+
+  Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
+  {
+    //primary keys are unique, not null
+    QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    mAttributeFields[ fieldIdx ].setConstraints( constraints );
+  }
 
   return;
 
