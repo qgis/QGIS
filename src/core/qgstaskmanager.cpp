@@ -172,46 +172,6 @@ long QgsTaskManager::addTask( QgsTask* task, const QgsTaskList& dependencies )
   return mNextTaskId++;
 }
 
-bool QgsTaskManager::deleteTask( long id )
-{
-  QMutexLocker ml( mTaskMutex );
-  QgsTask* task = mTasks.value( id ).task;
-  return deleteTask( task );
-}
-
-bool QgsTaskManager::deleteTask( QgsTask *task )
-{
-  if ( !task )
-    return false;
-
-  bool result = cleanupAndDeleteTask( task );
-
-  // remove from internal task list
-  QMutexLocker ml( mTaskMutex );
-  for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); )
-  {
-    if ( it.value().task == task )
-      it = mTasks.erase( it );
-    else
-      ++it;
-  }
-
-  return result;
-}
-
-void QgsTaskManager::deleteAllTasks()
-{
-  //first tell all tasks to cancel
-  cancelAll();
-
-  QMutexLocker ml( mTaskMutex );
-  Q_FOREACH ( QgsTask* task, tasks() )
-  {
-    deleteTask( task );
-  }
-  emit allTasksFinished();
-}
-
 QgsTask* QgsTaskManager::task( long id ) const
 {
   QMutexLocker ml( mTaskMutex );
@@ -337,6 +297,20 @@ QStringList QgsTaskManager::dependentLayers( long taskId ) const
 {
   QMutexLocker ml( mTaskMutex );
   return mLayerDependencies.value( taskId, QStringList() );
+}
+
+QList<QgsTask*> QgsTaskManager::activeTasks() const
+{
+  QMutexLocker ml( mTaskMutex );
+  QList< QgsTask* > taskList = mActiveTasks;
+  taskList.detach();
+  return taskList;
+}
+
+int QgsTaskManager::countActiveTasks() const
+{
+  QMutexLocker ml( mTaskMutex );
+  return mActiveTasks.count();
 }
 
 void QgsTaskManager::taskProgressChanged( double progress )

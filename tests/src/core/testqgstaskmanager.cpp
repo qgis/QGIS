@@ -70,6 +70,29 @@ class TestTerminationTask : public TestTask
     }
 };
 
+class CancelableTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    ~CancelableTask()
+    {
+      int i = 1;
+      i++;
+
+    }
+
+  protected:
+
+    TaskResult run() override
+    {
+      while ( !isCancelled() )
+        {}
+      return ResultSuccess;
+    }
+};
+
 class SuccessTask : public QgsTask
 {
     Q_OBJECT
@@ -138,7 +161,6 @@ class TestQgsTaskManager : public QObject
     void taskFinished();
     void createInstance();
     void addTask();
-    void deleteTask();
     //void taskTerminationBeforeDelete();
     void taskId();
     void progressChanged();
@@ -301,42 +323,6 @@ void TestQgsTaskManager::addTask()
 
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
-}
-
-void TestQgsTaskManager::deleteTask()
-{
-  //create manager with some tasks
-  QgsTaskManager manager;
-  TestTask* task = new TestTask();
-  TestTask* task2 = new TestTask();
-  TestTask* task3 = new TestTask();
-  manager.addTask( task );
-  manager.addTask( task2 );
-  manager.addTask( task3 );
-
-  QSignalSpy spy( &manager, &QgsTaskManager::taskAboutToBeDeleted );
-
-  //try deleting a non-existant task
-  QVERIFY( !manager.deleteTask( 56 ) );
-  QCOMPARE( spy.count(), 0 );
-
-  //try deleting a task by ID
-  QVERIFY( manager.deleteTask( 1 ) );
-  QCOMPARE( manager.tasks().count(), 2 );
-  QVERIFY( !manager.task( 1 ) );
-  QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
-
-  //can't delete twice
-  QVERIFY( !manager.deleteTask( 1 ) );
-  QCOMPARE( spy.count(), 1 );
-
-  //delete task by reference
-  QVERIFY( manager.deleteTask( task ) );
-  QCOMPARE( manager.tasks().count(), 1 );
-  QVERIFY( !manager.task( 0 ) );
-  QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
 }
 
 #if 0

@@ -274,25 +274,6 @@ class QgsTaskManager : QObject
      */
     long addTask( QgsTask* task /Transfer/, const QgsTaskList& dependencies = QgsTaskList() );
 
-    /** Deletes the specified task, first terminating it if it is currently
-     * running.
-     * @param id task ID
-     * @returns true if task was found and deleted
-     */
-    bool deleteTask( long id );
-
-    /** Deletes the specified task, first terminating it if it is currently
-     * running.
-     * @param task task to delete
-     * @returns true if task was contained in manager and deleted
-     */
-    bool deleteTask( QgsTask* task );
-
-    /** Deletes all tasks in the manager, first terminating them if they are currently
-     * running.
-     */
-    void deleteAllTasks();
-
     /** Returns the task with matching ID.
      * @param id task ID
      * @returns task if found, or nullptr
