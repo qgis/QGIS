@@ -261,16 +261,22 @@ class ModelerParametersDialog(QDialog):
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
     def getAvailableValuesOfType(self, paramType, outType=None, dataType=None):
+        # upgrade paramType to list
+        if type(paramType) is not list:
+            paramType = [paramType]
+
         values = []
         inputs = self.model.inputs
         for i in list(inputs.values()):
             param = i.param
-            if isinstance(param, paramType):
-                if dataType is not None:
-                    if param.datatype in dataType:
+            for t in paramType:
+                if isinstance(param, t):
+                    if dataType is not None:
+                        if param.datatype in dataType:
+                            values.append(ValueFromInput(param.name))
+                    else:
                         values.append(ValueFromInput(param.name))
-                else:
-                    values.append(ValueFromInput(param.name))
+                    break
         if outType is None:
             return values
         if self._algName is None:
