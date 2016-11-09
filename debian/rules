@@ -125,7 +125,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch yakkety"))
 	CMAKE_OPTS += -DWITH_INTERNAL_WEBKIT_BINDINGS=TRUE
 endif
 
