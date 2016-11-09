@@ -139,7 +139,7 @@ void TestQgsFileDownloader::init()
   mError = false;
   mCompleted = false;
   mExited = false;
-  mTempFile = new QTemporaryFile();
+  mTempFile = new QTemporaryFile( QDir::currentPath() + QDir::separator() + "qgs_filedownloader" );
   Q_ASSERT( mTempFile->open() );
   mTempFile->close();
 }
@@ -153,6 +153,7 @@ void TestQgsFileDownloader::cleanup()
 
 void TestQgsFileDownloader::testValidDownload()
 {
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( "http://www.qgis.org" ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( mCompleted );
@@ -164,6 +165,7 @@ void TestQgsFileDownloader::testValidDownload()
 
 void TestQgsFileDownloader::testInValidDownload()
 {
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( "http://www.doesnotexistofthatimsure.qgis" ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -175,6 +177,7 @@ void TestQgsFileDownloader::testInValidDownload()
 
 void TestQgsFileDownloader::testCanceledDownload()
 {
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( "https://github.com/qgis/QGIS/archive/master.zip" ), mTempFile->fileName(), true );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -196,6 +199,7 @@ void TestQgsFileDownloader::testInvalidFile()
 
 void TestQgsFileDownloader::testInvalidUrl()
 {
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( "xyz://www" ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -206,6 +210,7 @@ void TestQgsFileDownloader::testInvalidUrl()
 
 void TestQgsFileDownloader::testBlankUrl()
 {
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( "" ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -229,6 +234,7 @@ void TestQgsFileDownloader::testSslError()
 {
   QFETCH( QString, url );
   QFETCH( QString, result );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( url ), mTempFile->fileName() );
   QCOMPARE( mErrorMessage, result );
   QVERIFY( !mCompleted );
