@@ -2410,6 +2410,9 @@ void QgisApp::createStatusBar()
   connect( mMapCanvas, SIGNAL( renderStarting() ), this, SLOT( canvasRefreshStarted() ) );
   connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( canvasRefreshFinished() ) );
 
+  mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsTaskManager::instance(), statusBar() );
+  statusBar()->addPermanentWidget( mTaskManagerWidget, 0 );
+
   // Bumped the font up one point size since 8 was too
   // small on some platforms. A point size of 9 still provides
   // plenty of display space on 1024x768 resolutions

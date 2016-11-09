@@ -26,11 +26,12 @@ class QgsTask;
 class QTreeView;
 class QProgressBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTaskManagerWidget
- * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+ * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
  * @see QgsTaskManager
- * @note introduced in QGIS 2.16
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 {
@@ -49,11 +50,12 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
     QTreeView* mTreeView;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTaskManagerFloatingWidget
- * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+ * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
  * @see QgsTaskManager
- * @note introduced in QGIS 2.16
+ * \note added in QGIS 2.16
  */
 class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
 {
@@ -69,11 +71,13 @@ class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
 
 };
 
-/** \ingroup gui
- * \class QgsTaskManagerFloatingWidget
- * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager
+/**
+ * \class QgsTaskManagerStatusBarWidget
+ * A compact widget designed for embedding in a status bar, which displays tasks from a
+ * QgsTaskManager and allows for interaction with the manager.
  * @see QgsTaskManager
- * @note introduced in QGIS 2.16
+ * \ingroup gui
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 {
@@ -81,7 +85,7 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget
+    /** Constructor for QgsTaskManagerWidget.
      * @param manager task manager associated with widget
      * @param parent parent widget
      */
@@ -106,11 +110,12 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTaskManagerModel
- * A model representing a QgsTaskManager
+ * A model representing a QgsTaskManager.
  * @see QgsTaskManager
- * @note introduced in QGIS 2.16
+ * \note added in QGIS 2.16
  */
 class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 {
@@ -164,10 +169,11 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsProgressBarDelegate
- * A delegate for showing a progress bar within a view
- * @note introduced in QGIS 2.16
+ * A delegate for showing a progress bar within a view.
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsProgressBarDelegate : public QStyledItemDelegate
 {
@@ -184,10 +190,11 @@ class GUI_EXPORT QgsProgressBarDelegate : public QStyledItemDelegate
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
-/** \ingroup gui
- * \class QgsProgressBarDelegate
+/**
+ * \ingroup gui
+ * \class QgsTaskStatusDelegate
  * A delegate for showing task status within a view. Clicks on the delegate will cause the task to be cancelled (via the model).
- * @note introduced in QGIS 2.16
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsTaskStatusDelegate : public QStyledItemDelegate
 {

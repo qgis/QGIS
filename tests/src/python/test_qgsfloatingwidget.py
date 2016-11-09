@@ -13,8 +13,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-from PyQt.QtGui import QGridLayout
-from PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import QWidget, QGridLayout
 
 import os
 
