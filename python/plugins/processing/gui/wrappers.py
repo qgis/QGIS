@@ -643,7 +643,9 @@ class StringWidgetWrapper(WidgetWrapper):
             if self.param.default:
                 widget.setText(self.param.default)
         else:
-            strings = self.dialog.getAvailableValuesOfType(ParameterString, OutputString)
+            # strings, numbers, files and table fields are all allowed input types
+            strings = self.dialog.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile,
+                                                            ParameterTableField], OutputString)
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             if self.param.multiline:
                 widget = MultilineTextPanel(options)

@@ -62,6 +62,10 @@ class ModelerTest(unittest.TestCase):
         self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType(ParameterFile)),
                          set(['file']))
 
+        # test multiple types
+        self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile])),
+                         set(['string', 'string2', 'number', 'file']))
+
 
 if __name__ == '__main__':
     unittest.main()
