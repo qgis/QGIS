@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsactionmanager.h"
 #include "qgsaction.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -145,52 +146,33 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   if ( !mLayer || !mLayer->isEditable() )
     return false;
 
-  QgsVectorDataProvider *provider = mLayer->dataProvider();
-  QgsAttributeList pkAttrList = mLayer->pkAttributeList();
-
   QSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
-  QgsExpressionContext context = mLayer->createExpressionContext();
+  QgsFields fields = mLayer->fields();
+  QgsAttributeMap initialAttributeValues;
 
-  // add the fields to the QgsFeature
-  const QgsFields& fields = mLayer->fields();
-  mFeature->initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QVariant v;
 
     if ( defaultAttributes.contains( idx ) )
     {
-      v = defaultAttributes.value( idx );
+      initialAttributeValues.insert( idx, defaultAttributes.value( idx ) );
     }
-    else if ( !mLayer->defaultValueExpression( idx ).isEmpty() )
+    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
     {
-      // client side default expression set - use this in preference to reusing last value
-      v = mLayer->defaultValue( idx, *mFeature, &context );
+      initialAttributeValues.insert( idx, sLastUsedValues[ mLayer ][idx] );
     }
-    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) && !pkAttrList.contains( idx ) )
-    {
-      v = sLastUsedValues[ mLayer ][idx];
-    }
-    else
-    {
-      QVariant defaultLiteral = mLayer->dataProvider()->defaultValue( idx );
-      if ( defaultLiteral.isValid() )
-      {
-        v = defaultLiteral;
-      }
-      else
-      {
-        QString defaultClause = provider->defaultValueClause( idx );
-        if ( !defaultClause.isEmpty() )
-          v = defaultClause;
-      }
-    }
-
-    mFeature->setAttribute( idx, v );
   }
+
+  // create new feature template - this will initialise the attributes to valid values, handling default
+  // values and field constraints
+  QgsExpressionContext context = mLayer->createExpressionContext();
+  QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,
+                          &context );
+  *mFeature = newFeature;
 
   //show the dialog to enter attribute values
   //only show if enabled in settings and layer has fields
