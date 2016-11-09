@@ -187,17 +187,18 @@ class edit(object):
 
 class QgsTaskWrapper(QgsTask):
 
-    def __init__(self, description, function, *args, **kwargs):
+    def __init__(self, description, function, on_finished, *args, **kwargs):
         QgsTask.__init__(self, description)
         self.args = args
         self.kwargs = kwargs
         self.function = function
-        self.result = None
+        self.on_finished = on_finished
+        self.returned_values = None
         self.exception = None
 
     def run(self):
         try:
-            self.result = self.function(self, *self.args, **self.kwargs)
+            self.returned_values = self.function(self, *self.args, **self.kwargs)
         except Exception as ex:
             # report error
             self.exception = ex
@@ -205,8 +206,24 @@ class QgsTaskWrapper(QgsTask):
 
         return QgsTask.ResultSuccess
 
+    def finished(self, result):
+        if not self.on_finished:
+            return
 
-def fromFunction(cls, description, function, *args, **kwargs):
-    return QgsTaskWrapper(description, function, *args, **kwargs)
+        try:
+            if self.returned_values:
+                # we want to support singular returned values which are not iterable
+                if hasattr(self.returned_values, '__iter__'):
+                    self.on_finished(result, *self.returned_values)
+                else:
+                    self.on_finished(result, self.returned_values)
+            else:
+                self.on_finished(result)
+        except Exception as ex:
+            self.exception = ex
+
+
+def fromFunction(cls, description, function, *args, on_finished=None, **kwargs):
+    return QgsTaskWrapper(description, function, on_finished, *args, **kwargs)
 
 QgsTask.fromFunction = classmethod(fromFunction)

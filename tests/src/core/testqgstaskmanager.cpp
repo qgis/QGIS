@@ -70,7 +70,7 @@ class TestTerminationTask : public TestTask
     }
 };
 
-class SuccessTask : public TestTask
+class SuccessTask : public QgsTask
 {
     Q_OBJECT
 
@@ -82,7 +82,7 @@ class SuccessTask : public TestTask
     }
 };
 
-class FailTask : public TestTask
+class FailTask : public QgsTask
 {
     Q_OBJECT
 
@@ -91,6 +91,35 @@ class FailTask : public TestTask
     TaskResult run() override
     {
       return ResultFail;
+    }
+
+};
+
+class FinishTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    FinishTask()
+        : desiredResult( QgsTask::ResultPending )
+        , resultObtained( QgsTask::ResultPending )
+    {}
+
+    TaskResult desiredResult;
+    TaskResult resultObtained;
+
+  protected:
+
+    TaskResult run() override
+    {
+      return desiredResult;
+    }
+
+    void finished( TaskResult result ) override
+    {
+      Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
+      resultObtained = result;
     }
 };
 
@@ -106,6 +135,7 @@ class TestQgsTaskManager : public QObject
     void cleanup();// will be called after every testfunction.
     void task();
     void taskResult();
+    void taskFinished();
     void createInstance();
     void addTask();
     void deleteTask();
@@ -206,7 +236,7 @@ void TestQgsTaskManager::task()
 
 void TestQgsTaskManager::taskResult()
 {
-  QScopedPointer< TestTask > task( new SuccessTask() );
+  QScopedPointer< QgsTask > task( new SuccessTask() );
   QCOMPARE( task->status(), QgsTask::Queued );
   QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
 
@@ -330,6 +360,37 @@ void TestQgsTaskManager::taskTerminationBeforeDelete()
 }
 #endif
 
+
+void TestQgsTaskManager::taskFinished()
+{
+  // test that finished is called and passed correct result, and that it is called
+  // from main thread
+  QgsTaskManager manager;
+
+  FinishTask* task = new FinishTask();
+  task->desiredResult = QgsTask::ResultSuccess;
+  manager.addTask( task );
+  while ( task->status() == QgsTask::Running
+          || task->status() == QgsTask::Queued ) { }
+  while ( manager.countActiveTasks() > 0 )
+  {
+    QCoreApplication::processEvents();
+  }
+  QCOMPARE( task->resultObtained, QgsTask::ResultSuccess );
+
+  task = new FinishTask();
+  task->desiredResult = QgsTask::ResultFail;
+  manager.addTask( task );
+
+  while ( task->status() == QgsTask::Running
+          || task->status() == QgsTask::Queued ) { }
+  while ( manager.countActiveTasks() > 0 )
+  {
+    QCoreApplication::processEvents();
+  }
+  QCOMPARE( task->resultObtained, QgsTask::ResultFail );
+}
+
 void TestQgsTaskManager::taskId()
 {
   //test finding task IDs
@@ -380,6 +441,10 @@ void TestQgsTaskManager::progressChanged()
   QCOMPARE( spy2.count(), 0 );
 
   task->emitTaskCompleted();
+  while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
   task2->emitProgressChanged( 80.0 );
   //single running task, so progressChanged(double) should be emitted
   QCOMPARE( spy2.count(), 1 );
@@ -392,6 +457,10 @@ void TestQgsTaskManager::progressChanged()
   QCOMPARE( spy2.count(), 1 );
 
   task2->emitTaskStopped();
+  while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
   task3->emitProgressChanged( 30.0 );
   //single running task, so progressChanged(double) should be emitted
   QCOMPARE( spy2.count(), 2 );
@@ -438,10 +507,16 @@ void TestQgsTaskManager::allTasksFinished()
   QSignalSpy spy( &manager, &QgsTaskManager::allTasksFinished );
 
   task->emitTaskStopped();
-  while ( task->status() == QgsTask::Running ) { }
+  while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
   QCOMPARE( spy.count(), 0 );
   task2->emitTaskCompleted();
-  while ( task2->status() == QgsTask::Running ) { }
+  while ( manager.countActiveTasks() > 0 )
+  {
+    QCoreApplication::processEvents();
+  }
   QCOMPARE( spy.count(), 1 );
 
   TestTask* task3 = new TestTask();
@@ -451,16 +526,25 @@ void TestQgsTaskManager::allTasksFinished()
   manager.addTask( task4 );
   while ( task4->status() != QgsTask::Running ) { }
   task3->emitTaskStopped();
-  while ( task3->status() == QgsTask::Running ) { }
+  while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
   QCOMPARE( spy.count(), 1 );
   TestTask* task5 = new TestTask();
   manager.addTask( task5 );
   while ( task5->status() != QgsTask::Running ) { }
   task4->emitTaskStopped();
-  while ( task4->status() == QgsTask::Running ) { }
+  while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
   QCOMPARE( spy.count(), 1 );
   task5->emitTaskStopped();
-  while ( task5->status() == QgsTask::Running ) { }
+  while ( manager.countActiveTasks() > 0 )
+  {
+    QCoreApplication::processEvents();
+  }
   QCOMPARE( spy.count(), 2 );
 }
 

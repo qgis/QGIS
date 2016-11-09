@@ -365,6 +365,13 @@ void QgsTaskManager::taskStatusChanged( int status )
   if ( id < 0 )
     return;
 
+  if ( status == QgsTask::Terminated || status == QgsTask::Complete )
+  {
+    QgsTask::TaskResult result = status == QgsTask::Complete ? QgsTask::ResultSuccess
+                                 : QgsTask::ResultFail;
+    task->finished( result );
+  }
+
   if ( status == QgsTask::Terminated )
   {
     //recursively cancel dependant tasks

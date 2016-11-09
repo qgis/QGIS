@@ -186,6 +186,18 @@ class QgsTask : QObject
     virtual TaskResult run() = 0;
 
     /**
+     * If the task is managed by a QgsTaskManager, this will be called after the
+     * task has finished (whether through successful completion or via early
+     * termination). The result argument reflects whether
+     * the task was successfully completed or not. This method is always called
+     * from the main thread, so it is safe to create widgets and perform other
+     * operations which require the main thread. However, the GUI will be blocked
+     * for the duration of this method so tasks should avoid performing any
+     * lengthy operations here.
+     */
+    virtual void finished( TaskResult result );
+
+    /**
      * Will return true if task should terminate ASAP. If the task reports the CanCancel
      * flag, then derived classes' run() methods should periodically check this and
      * terminate in a safe manner.
