@@ -89,19 +89,16 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
 
 void QgsIdentifyResultsWebView::downloadRequested( const QNetworkRequest &request )
 {
-  qDebug() << "Download Requested: " << request.url();
   handleDownload( request.url() );
 }
 
 void QgsIdentifyResultsWebView::unsupportedContent( QNetworkReply * reply )
 {
-  qDebug() << "Unsupported Content: " << reply->url();
   handleDownload( reply->url() );
 }
 
 void QgsIdentifyResultsWebView::handleDownload( QUrl url )
 {
-  qDebug() << "Downloading: " << url;
   if ( ! url.isValid() )
   {
     QMessageBox::warning( this, tr( "Invalid URL" ), tr( "The download URL is not valid: %1" ).arg( url.toString( ) ) );
@@ -127,7 +124,6 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
     {
       settings.setValue( DOWNLOADER_LAST_DIR_KEY, QFileInfo( targetFile ).dir().absolutePath( ) );
       // Start the download
-      qDebug() << "Start the download: " << url;
       new QgsFileDownloader( url, targetFile );
     }
   }
