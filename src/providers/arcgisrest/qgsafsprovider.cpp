@@ -132,6 +132,13 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
     if ( mFields.at( idx ).name() == mObjectIdFieldName )
     {
       mObjectIdFieldIdx = idx;
+
+      // primary key is not null, unique
+      QgsFieldConstraints constraints = mFields.at( idx ).constraints();
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+      mFields[ idx ].setConstraints( constraints );
+
       break;
     }
   }

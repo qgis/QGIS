@@ -751,7 +751,16 @@ bool QgsOracleProvider::loadFields()
       type = QVariant::Date;
     }
 
-    mAttributeFields.append( QgsField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) ) );
+    QgsField newField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) );
+
+    QgsFieldConstraints constraints;
+    if ( mPrimaryKeyAttrs.contains( i ) )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    if ( mPrimaryKeyAttrs.contains( i ) )
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    newField.setConstraints( constraints );
+
+    mAttributeFields.append( newField );
     mDefaultValues.append( defvalues.value( field.name(), QVariant() ) );
   }
 
@@ -985,6 +994,15 @@ bool QgsOracleProvider::determinePrimaryKey()
   qry.finish();
 
   mValid = mPrimaryKeyType != pktUnknown;
+
+  Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
+  {
+    //primary keys are unique, not null
+    QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    mAttributeFields[ fieldIdx ].setConstraints( constraints );
+  }
 
   return mValid;
 }

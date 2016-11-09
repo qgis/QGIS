@@ -56,6 +56,7 @@ int QgsMssqlProvider::sConnectionId = 0;
 QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mNumberFeatures( 0 )
+    , mFidColIdx( -1 )
     , mCrs()
     , mWkbType( QgsWkbTypes::Unknown )
 {
@@ -471,6 +472,19 @@ void QgsMssqlProvider::loadFields()
       QgsDebugMsg( error );
       mValid = false;
       setLastError( error );
+    }
+
+    if ( !mFidColName.isEmpty() )
+    {
+      mFidColIdx = mAttributeFields.indexFromName( mFidColName );
+      if ( mFidColIdx >= 0 )
+      {
+        // primary key has not null, unique constraints
+        QgsFieldConstraints constraints = mAttributeFields.at( mFidColIdx ).constraints();
+        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+        constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+        mAttributeFields[ mFidColIdx ].setConstraints( constraints );
+      }
     }
   }
 }
@@ -1481,7 +1495,15 @@ bool QgsMssqlProvider::setSubsetString( const QString& theSQL, bool )
 QString  QgsMssqlProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
-} //  QgsMssqlProvider::name()
+}
+
+QgsAttributeList QgsMssqlProvider::pkAttributeIndexes() const
+{
+  QgsAttributeList list;
+  if ( mFidColIdx >= 0 )
+    list << mFidColIdx;
+  return list;
+}
 
 QStringList QgsMssqlProvider::subLayers() const
 {

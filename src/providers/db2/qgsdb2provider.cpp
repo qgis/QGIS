@@ -33,6 +33,7 @@ int QgsDb2Provider::sConnectionId = 0;
 QgsDb2Provider::QgsDb2Provider( const QString& uri )
     : QgsVectorDataProvider( uri )
     , mNumberFeatures( 0 )
+    , mFidColIdx( -1 )
     , mEnvironment( ENV_LUW )
     , mWkbType( QgsWkbTypes::Unknown )
 {
@@ -330,10 +331,23 @@ void QgsDb2Provider::loadFields()
     }
 // Hack to get primary key since the primaryIndex function above doesn't work
 // on z/OS. Pick first integer column.
-    if ( mFidColName.length() == 0 &&
+    if ( mFidColName.isEmpty() &&
          ( sqlType == QVariant::LongLong || sqlType == QVariant::Int ) )
     {
       mFidColName = f.name();
+    }
+  }
+
+  if ( !mFidColName.isEmpty() )
+  {
+    mFidColIdx = mAttributeFields.indexFromName( mFidColName );
+    if ( mFidColIdx >= 0 )
+    {
+      // primary key has not null, unique constraints
+      QgsFieldConstraints constraints = mAttributeFields.at( mFidColIdx ).constraints();
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+      mAttributeFields[ mFidColIdx ].setConstraints( constraints );
     }
   }
 }
@@ -1662,6 +1676,14 @@ QString QgsDb2Provider::name() const
 QString QgsDb2Provider::description() const
 {
   return PROVIDER_DESCRIPTION;
+}
+
+QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
+{
+  QgsAttributeList list;
+  if ( mFidColIdx >= 0 )
+    list << mFidColIdx;
+  return list;
 }
 
 QGISEXTERN QgsDb2Provider *classFactory( const QString *uri )
