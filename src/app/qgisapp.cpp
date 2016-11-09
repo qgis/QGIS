@@ -241,6 +241,7 @@
 #include "qgsvirtuallayerdefinitionutils.h"
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectorlayerutils.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -7484,7 +7485,6 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   QHash<int, int> remap;
   QgsFields fields = clipboard()->fields();
-  QgsAttributeList pkAttrList = pasteVectorLayer->pkAttributeList();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     int dst = pasteVectorLayer->fields().lookupField( fields.at( idx ).name() );
@@ -7495,33 +7495,14 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 
   QgsExpressionContext context = pasteVectorLayer->createExpressionContext();
-  int dstAttrCount = pasteVectorLayer->fields().count();
 
-  QgsFeatureList::iterator featureIt = features.begin();
-  while ( featureIt != features.end() )
+  QgsFeatureIds newIds;
+
+  QgsFeatureList::const_iterator featureIt = features.constBegin();
+  while ( featureIt != features.constEnd() )
   {
     QgsAttributes srcAttr = featureIt->attributes();
-    QgsAttributes dstAttr( dstAttrCount );
-
-    // pre-initialized with default values
-    for ( int dst = 0; dst < dstAttr.count(); ++dst )
-    {
-      QVariant defVal;
-      if ( !pasteVectorLayer->defaultValueExpression( dst ).isEmpty() )
-      {
-        // client side default expression set - use this in preference to provider default
-        defVal = pasteVectorLayer->defaultValue( dst, *featureIt, &context );
-      }
-      else
-      {
-        defVal = pasteVectorLayer->dataProvider()->defaultValueClause( dst );
-      }
-
-      if ( defVal.isValid() && !defVal.isNull() )
-      {
-        dstAttr[ dst ] = defVal;
-      }
-    }
+    QgsAttributeMap dstAttr;
 
     for ( int src = 0; src < srcAttr.count(); ++src )
     {
@@ -7529,21 +7510,10 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       if ( dst < 0 )
         continue;
 
-      // don't overwrite default value for primary key fields if it's NOT NULL
-      // or for spatialite layers
-      if ( pkAttrList.contains( dst ) )
-      {
-        if ( !dstAttr.at( dst ).isNull() )
-          continue;
-        else if ( pasteVectorLayer->providerType() == QLatin1String( "spatialite" ) )
-          continue;
-      }
-
       dstAttr[ dst ] = srcAttr.at( src );
     }
 
-    featureIt->setAttributes( dstAttr );
-
+    QgsGeometry geom = featureIt->geometry();
     if ( featureIt->hasGeometry() )
     {
       // convert geometry to match destination layer
@@ -7558,25 +7528,29 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
       if ( destType != QgsWkbTypes::UnknownGeometry )
       {
-        QgsGeometry newGeometry = featureIt->geometry().convertToType( destType, destIsMulti );
+        QgsGeometry newGeometry = geom.convertToType( destType, destIsMulti );
         if ( newGeometry.isEmpty() )
         {
-          featureIt = features.erase( featureIt );
           continue;
         }
-        featureIt->setGeometry( newGeometry );
+        geom = newGeometry;
       }
       // avoid intersection if enabled in digitize settings
-      QgsGeometry g = featureIt->geometry();
-      g.avoidIntersections();
-      featureIt->setGeometry( g );
+      geom.avoidIntersections();
     }
+
+    // now create new feature using pasted feature as a template. This automatically handles default
+    // values and field constraints
+    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, dstAttr, &context );
+    pasteVectorLayer->addFeature( newFeature, false );
+    newIds << newFeature.id();
 
     ++featureIt;
   }
 
-  pasteVectorLayer->addFeatures( features );
+  pasteVectorLayer->selectByIds( newIds );
   pasteVectorLayer->endEditCommand();
+  pasteVectorLayer->updateExtents();
 
   int nCopiedFeatures = features.count();
   if ( nCopiedFeatures == 0 )

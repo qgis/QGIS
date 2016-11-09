@@ -32,6 +32,7 @@
 #include "qgsslconnect.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -747,21 +748,22 @@ void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlit
 void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId )
 {
   QString sql = QStringLiteral( "SELECT \"fid\" FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
-  QList<int> newFeatureIds = sqlQueryInts( db, sql );
-
-  QgsFields remoteFlds = remoteLayer->fields();
+  QList<int> featureIdInts = sqlQueryInts( db, sql );
+  QgsFeatureIds newFeatureIds;
+  Q_FOREACH ( int id, featureIdInts )
+  {
+    newFeatureIds << id;
+  }
 
   QgsExpressionContext context = remoteLayer->createExpressionContext();
 
   // get new features from offline layer
   QgsFeatureList features;
-  for ( int i = 0; i < newFeatureIds.size(); i++ )
+  QgsFeatureIterator it = offlineLayer->getFeatures( QgsFeatureRequest().setFilterFids( newFeatureIds ) );
+  QgsFeature feature;
+  while ( it.nextFeature( feature ) )
   {
-    QgsFeature feature;
-    if ( offlineLayer->getFeatures( QgsFeatureRequest().setFilterFid( newFeatureIds.at( i ) ) ).nextFeature( feature ) )
-    {
-      features << feature;
-    }
+    features << feature;
   }
 
   // copy features to remote layer
@@ -771,33 +773,18 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   int newAttrsCount = remoteLayer->fields().count();
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
-    QgsFeature f = *it;
-
     // NOTE: Spatialite provider ignores position of geometry column
     // restore gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
     QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
     QgsAttributes newAttrs( newAttrsCount );
-    QgsAttributes attrs = f.attributes();
+    QgsAttributes attrs = it->attributes();
     for ( int it = 0; it < attrs.count(); ++it )
     {
       newAttrs[ attrLookup[ it ] ] = attrs.at( it );
     }
 
-    // try to use default value from the provider
-    // (important especially e.g. for postgis primary key generated from a sequence)
-    for ( int k = 0; k < newAttrs.count(); ++k )
-    {
-      if ( !newAttrs.at( k ).isNull() )
-        continue;
-
-      if ( !remoteLayer->defaultValueExpression( k ).isEmpty() )
-        newAttrs[k] = remoteLayer->defaultValue( k, f, &context );
-      else if ( remoteFlds.fieldOrigin( k ) == QgsFields::OriginProvider )
-        newAttrs[k] = remoteLayer->dataProvider()->defaultValueClause( remoteFlds.fieldOriginIndex( k ) );
-    }
-
-    f.setAttributes( newAttrs );
-
+    // respect constraints and provider default values
+    QgsFeature f = QgsVectorLayerUtils::createFeature( remoteLayer, it->geometry(), newAttrs.toMap(), &context );
     remoteLayer->addFeature( f, false );
 
     emit progressUpdated( i++ );

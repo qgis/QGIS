@@ -111,7 +111,6 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   //create combo boxes and insert attribute names
   mFields = mVectorLayer->fields();
-  QSet<int> pkAttrList = mVectorLayer->pkAttributeList().toSet();
 
   int col = 0;
   mHiddenAttributes.clear();
@@ -127,7 +126,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mTableWidget->setColumnCount( col + 1 );
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
-    if ( pkAttrList.contains( idx ) )
+    if ( mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
     {
       cb->setCurrentIndex( cb->findData( "skip" ) );
     }
@@ -413,15 +412,17 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     return;
   }
 
-  QSet<int> pkAttributes = mVectorLayer->pkAttributeList().toSet();
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
-    if ( pkAttributes.contains( i ) )
-    {
-      continue;
-    }
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
-    if ( currentComboBox )
+    if ( !currentComboBox )
+      continue;
+
+    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    {
+      currentComboBox->setCurrentIndex( currentComboBox->findData( "skip" ) );
+    }
+    else
     {
       currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     }
@@ -528,8 +529,6 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     return QgsAttributes();
   }
 
-  QgsExpressionContext context = mVectorLayer->createExpressionContext();
-
   int widgetIndex = 0;
   QgsAttributes results( mFields.count() );
   for ( int fieldIdx = 0; fieldIdx < mFields.count(); ++fieldIdx )
@@ -537,12 +536,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( mHiddenAttributes.contains( fieldIdx ) )
     {
       //hidden attribute, set to default value
-      if ( !mVectorLayer->defaultValueExpression( fieldIdx ).isEmpty() )
-        results[fieldIdx] = mVectorLayer->defaultValue( fieldIdx, mFeatureList.at( 0 ), &context );
-      else if ( mVectorLayer->dataProvider() )
-        results[fieldIdx] = mVectorLayer->dataProvider()->defaultValueClause( fieldIdx );
-      else
-        results[fieldIdx] = QVariant();
+      results[fieldIdx] = QVariant();
       continue;
     }
 
@@ -560,14 +554,6 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( comboBox->currentData().toString() != QLatin1String( "skip" ) )
     {
       results[fieldIdx] = currentItem->data( Qt::DisplayRole );
-    }
-    else if ( !mVectorLayer->defaultValueExpression( fieldIdx ).isEmpty() )
-    {
-      results[fieldIdx] = mVectorLayer->defaultValue( fieldIdx, mFeatureList.at( 0 ), &context );
-    }
-    else if ( mVectorLayer->dataProvider() )
-    {
-      results[fieldIdx] = mVectorLayer->dataProvider()->defaultValueClause( fieldIdx );
     }
     widgetIndex++;
   }
