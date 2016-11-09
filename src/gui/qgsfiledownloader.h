@@ -35,6 +35,8 @@
  * If the guiNotificationsEnabled parameter is set to false, the class can still
  * be used through the signals and slots mechanism.
  * The object will destroy itself when the request completes, errors or is canceled.
+ *
+ * @note added in QGIS 2.18.1
  */
 class GUI_EXPORT QgsFileDownloader : public QObject
 {

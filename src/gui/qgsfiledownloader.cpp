@@ -48,13 +48,11 @@ QgsFileDownloader::~QgsFileDownloader()
   {
     mProgressDialog->deleteLater();
   }
-  qDebug() << "QgsFileDownloader instance deleted!" << this;
 }
 
 
 void QgsFileDownloader::startDownload()
 {
-  qDebug() << "QgsFileDownloader instance started!" << this << mUrl;
   QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
@@ -142,7 +140,6 @@ void QgsFileDownloader::onReadyRead()
 
 void QgsFileDownloader::onFinished()
 {
-  qDebug() << "QgsFileDownloader instance finished!" << this;
   // when canceled
   if ( ! mErrors.isEmpty() || mDownloadCanceled )
   {
@@ -150,7 +147,6 @@ void QgsFileDownloader::onFinished()
     mFile.remove();
     if ( mGuiNotificationsEnabled )
       mProgressDialog->hide();
-    qDebug() << "Deleting on error";
   }
   else
   {
@@ -170,7 +166,6 @@ void QgsFileDownloader::onFinished()
     else if ( !redirectionTarget.isNull() )
     {
       QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
-      qDebug( ) << QString( "Redirecting to: %1" ).arg( newUrl.toString( ) );
       mUrl = newUrl;
       mReply->deleteLater();
       mFile.open( QIODevice::WriteOnly );
@@ -180,10 +175,8 @@ void QgsFileDownloader::onFinished()
       return;
     }
     // All done
-    qDebug( ) << "Download completed successfully";
     emit downloadCompleted();
   }
-  qDebug( ) << "Download exited" << this;
   emit downloadExited();
   this->deleteLater();
 }
@@ -191,13 +184,11 @@ void QgsFileDownloader::onFinished()
 void QgsFileDownloader::onNetworkError( QNetworkReply::NetworkError err )
 {
   Q_ASSERT( mReply );
-  qDebug( ) << QString( "Network error %1: %2" ).arg( err ).arg( mReply->errorString() );
   error( QString( "Network error %1: %2" ).arg( err ).arg( mReply->errorString() ) );
 }
 
 void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  //qDebug() << QString("Downloading %1 of %2!").arg(bytesReceived).arg(bytesTotal);
   if ( mDownloadCanceled )
   {
     return;
