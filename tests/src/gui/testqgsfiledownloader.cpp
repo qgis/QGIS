@@ -139,7 +139,7 @@ void TestQgsFileDownloader::init()
   mError = false;
   mCompleted = false;
   mExited = false;
-  mTempFile = new QTemporaryFile( QDir::currentPath() + QDir::separator() + "qgs_filedownloader" );
+  mTempFile = new QTemporaryFile( );
   Q_ASSERT( mTempFile->open() );
   mTempFile->close();
 }

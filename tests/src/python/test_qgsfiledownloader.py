@@ -61,6 +61,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         """Tests a valid download"""
         destination = tempfile.mktemp()
         self._make_download('http://www.qgis.org', destination)
+        self.assertTrue(self.exited_was_called)
         self.assertTrue(self.completed_was_called)
         self.assertTrue(self.progress_was_called)
         self.assertFalse(self.canceled_was_called)
@@ -72,6 +73,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         """Tests an invalid download"""
         destination = tempfile.mktemp()
         self._make_download('http://www.doesnotexistofthatimsure.qgis', destination)
+        self.assertTrue(self.exited_was_called)
         self.assertFalse(self.completed_was_called)
         self.assertTrue(self.progress_was_called)
         self.assertFalse(self.canceled_was_called)
@@ -83,15 +85,45 @@ class TestQgsFileDownloader(unittest.TestCase):
         """Tests user canceled download"""
         destination = tempfile.mktemp()
         self._make_download('https://github.com/qgis/QGIS/archive/master.zip', destination, True)
+        self.assertTrue(self.exited_was_called)
         self.assertFalse(self.completed_was_called)
         self.assertTrue(self.canceled_was_called)
         self.assertFalse(self.error_was_called)
         self.assertFalse(os.path.isfile(destination))
 
+    def test_InvalidUrl(self):
+        destination = tempfile.mktemp()
+        self._make_download('xyz://www', destination)
+        self.assertTrue(self.exited_was_called)
+        self.assertFalse(self.completed_was_called)
+        self.assertFalse(self.canceled_was_called)
+        self.assertTrue(self.error_was_called)
+        self.assertFalse(os.path.isfile(destination))
+        self.assertEqual(self.error_args[1], [u"Network error 301: Protocol \"xyz\" is unknown"])
+
+    def test_InvalidFile(self):
+        self._make_download('https://github.com/qgis/QGIS/archive/master.zip', "")
+        self.assertTrue(self.exited_was_called)
+        self.assertFalse(self.completed_was_called)
+        self.assertFalse(self.canceled_was_called)
+        self.assertTrue(self.error_was_called)
+        self.assertEqual(self.error_args[1], [u"Cannot open output file: "])
+
+    def test_BlankUrl(self):
+        destination = tempfile.mktemp()
+        self._make_download('', destination)
+        self.assertTrue(self.exited_was_called)
+        self.assertFalse(self.completed_was_called)
+        self.assertFalse(self.canceled_was_called)
+        self.assertTrue(self.error_was_called)
+        self.assertFalse(os.path.isfile(destination))
+        self.assertEqual(self.error_args[1], [u"Network error 301: Protocol \"\" is unknown"])
+
     def ssl_compare(self, name, url, error):
         destination = tempfile.mktemp()
         self._make_download(url, destination)
         msg = "Failed in %s: %s" % (name, url)
+        self.assertTrue(self.exited_was_called)
         self.assertFalse(self.completed_was_called, msg)
         self.assertFalse(self.canceled_was_called, msg)
         self.assertTrue(self.error_was_called, msg)

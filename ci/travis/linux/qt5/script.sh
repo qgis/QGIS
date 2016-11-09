@@ -25,5 +25,5 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest|qgis_ziplayertest|qgis_ogcutilstest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -E "qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|qgis_ziplayertest|qgis_ogcutilstest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
 # xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure
