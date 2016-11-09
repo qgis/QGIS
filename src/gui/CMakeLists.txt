@@ -272,6 +272,7 @@ SET(QGIS_GUI_SRCS
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
+  qgsfiledownloader.cpp
 )
 
 IF (WITH_QTWEBKIT)
@@ -403,6 +404,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
+  qgsfiledownloader.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -579,6 +581,7 @@ SET(QGIS_GUI_HDRS
   qgsuserinputdockwidget.h
   qgsvectorlayertools.h
   qgsvertexmarker.h
+  qgsfiledownloader.h
 
   attributetable/qgsfeaturemodel.h
 
