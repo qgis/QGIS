@@ -273,7 +273,7 @@ typedef QList< QgsTask* > QgsTaskList;
 /** \ingroup core
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
- * or accessed via a global instance.
+ * or accessed via QgsApplication::taskManager().
  * \note Added in version 3.0
  */
 class CORE_EXPORT QgsTaskManager : public QObject
@@ -281,10 +281,6 @@ class CORE_EXPORT QgsTaskManager : public QObject
     Q_OBJECT
 
   public:
-
-    /** Returns the global task manager instance pointer, creating the object on the first call.
-     */
-    static QgsTaskManager * instance();
 
     /** Constructor for QgsTaskManager.
      * @param parent parent QObject
@@ -404,8 +400,6 @@ class CORE_EXPORT QgsTaskManager : public QObject
     void layersWillBeRemoved( const QStringList& layerIds );
 
   private:
-
-    static QgsTaskManager *sInstance;
 
     struct TaskInfo
     {

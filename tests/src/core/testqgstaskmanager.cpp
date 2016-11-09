@@ -150,6 +150,7 @@ class FinishTask : public QgsTask
 class TestQgsTaskManager : public QObject
 {
     Q_OBJECT
+  public:
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -159,7 +160,6 @@ class TestQgsTaskManager : public QObject
     void task();
     void taskResult();
     void taskFinished();
-    void createInstance();
     void addTask();
     //void taskTerminationBeforeDelete();
     void taskId();
@@ -170,8 +170,6 @@ class TestQgsTaskManager : public QObject
     void holdTask();
     void dependancies();
     void layerDependencies();
-
-  private:
 
 };
 
@@ -277,12 +275,6 @@ void TestQgsTaskManager::taskResult()
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 1 ).at( 0 ).toInt() ), QgsTask::Terminated );
   QCOMPARE( task->status(), QgsTask::Terminated );
-}
-
-void TestQgsTaskManager::createInstance()
-{
-  QgsTaskManager* manager = QgsTaskManager::instance();
-  QVERIFY( manager );
 }
 
 void TestQgsTaskManager::addTask()

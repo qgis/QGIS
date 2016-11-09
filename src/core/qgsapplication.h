@@ -24,6 +24,7 @@
 
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
+class QgsTaskManager;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -366,6 +367,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note added in 2.4 */
     static void setMaxThreads( int maxThreads );
 
+    /**
+     * Returns the application's task manager, used for managing application
+     * wide background task handling.
+     * @note added in QGIS 3.0
+     */
+    static QgsTaskManager* taskManager();
+
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter( XEvent * event )
@@ -456,6 +464,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     QgsActionScopeRegistry* mActionScopeRegistry;
     QgsRuntimeProfiler* mProfiler;
+    QgsTaskManager* mTaskManager;
 };
 
 #endif

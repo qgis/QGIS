@@ -374,6 +374,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note added in 2.4 */
     static void setMaxThreads( int maxThreads );
 
+    /**
+     * Returns the application's task manager, used for managing application
+     * wide background task handling.
+     * @note added in QGIS 3.0
+     */
+    static QgsTaskManager* taskManager();
+
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );

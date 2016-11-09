@@ -110,18 +110,6 @@ void QgsTask::terminated()
 // QgsTaskManager
 //
 
-// Static calls to enforce singleton behaviour
-QgsTaskManager *QgsTaskManager::sInstance = nullptr;
-QgsTaskManager *QgsTaskManager::instance()
-{
-  if ( !sInstance )
-  {
-    sInstance = new QgsTaskManager();
-  }
-
-  return sInstance;
-}
-
 QgsTaskManager::QgsTaskManager( QObject* parent )
     : QObject( parent )
     , mTaskMutex( new QMutex( QMutex::Recursive ) )

@@ -2410,7 +2410,7 @@ void QgisApp::createStatusBar()
   connect( mMapCanvas, SIGNAL( renderStarting() ), this, SLOT( canvasRefreshStarted() ) );
   connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( canvasRefreshFinished() ) );
 
-  mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsTaskManager::instance(), statusBar() );
+  mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsApplication::taskManager(), statusBar() );
   statusBar()->addPermanentWidget( mTaskManagerWidget, 0 );
 
   // Bumped the font up one point size since 8 was too

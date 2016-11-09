@@ -17,7 +17,8 @@ import os
 
 from qgis.core import (
     QgsTask,
-    QgsTaskManager
+    QgsTaskManager,
+    QgsApplication
 )
 from qgis.PyQt.QtCore import (QCoreApplication)
 
@@ -91,7 +92,7 @@ class TestQgsTaskManager(unittest.TestCase):
         """ test creating task from function """
 
         task = QgsTask.fromFunction('test task', run, 20)
-        QgsTaskManager.instance().addTask(task)
+        QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
             pass
 
@@ -101,7 +102,7 @@ class TestQgsTaskManager(unittest.TestCase):
 
         # try a task which cancels itself
         bad_task = QgsTask.fromFunction('test task2', run, None)
-        QgsTaskManager.instance().addTask(bad_task)
+        QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
             pass
 
@@ -113,7 +114,7 @@ class TestQgsTaskManager(unittest.TestCase):
         """ test creating task from function using kwargs """
 
         task = QgsTask.fromFunction('test task3', run_with_kwargs, result=5, password=1)
-        QgsTaskManager.instance().addTask(task)
+        QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
             pass
 
@@ -124,14 +125,14 @@ class TestQgsTaskManager(unittest.TestCase):
     def testTaskFromFunctionIsCancellable(self):
         """ test that task from function can check cancelled status """
         bad_task = QgsTask.fromFunction('test task4', cancellable)
-        QgsTaskManager.instance().addTask(bad_task)
+        QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.Running:
             pass
 
         bad_task.cancel()
         while bad_task.status() == QgsTask.Running:
             pass
-        while QgsTaskManager.instance().countActiveTasks() > 0:
+        while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
         self.assertEqual(bad_task.status(), QgsTask.Terminated)
@@ -140,7 +141,7 @@ class TestQgsTaskManager(unittest.TestCase):
     def testTaskFromFunctionCanSetProgress(self):
         """ test that task from function can set progress """
         task = QgsTask.fromFunction('test task5', progress_function)
-        QgsTaskManager.instance().addTask(task)
+        QgsApplication.taskManager().addTask(task)
         while task.status() != QgsTask.Running:
             pass
 
@@ -152,16 +153,16 @@ class TestQgsTaskManager(unittest.TestCase):
         task.cancel()
         while task.status() == QgsTask.Running:
             pass
-        while QgsTaskManager.instance().countActiveTasks() > 0:
+        while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
     def testTaskFromFunctionFinished(self):
         """ test that task from function can have callback finished function"""
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_no_val)
-        QgsTaskManager.instance().addTask(task)
+        QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
             pass
-        while QgsTaskManager.instance().countActiveTasks() > 0:
+        while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
         # check that the finished function was called
@@ -172,10 +173,10 @@ class TestQgsTaskManager(unittest.TestCase):
     def testTaskFromFunctionFinishedWithVal(self):
         """ test that task from function can have callback finished function and is passed result values"""
         task = QgsTask.fromFunction('test task', run_single_val_result, on_finished=finished_single_value_result)
-        QgsTaskManager.instance().addTask(task)
+        QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
             pass
-        while QgsTaskManager.instance().countActiveTasks() > 0:
+        while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
         # check that the finished function was called
@@ -186,10 +187,10 @@ class TestQgsTaskManager(unittest.TestCase):
     def testTaskFromFunctionFinishedWithMultipleValues(self):
         """ test that task from function can have callback finished function and is passed multiple result values"""
         task = QgsTask.fromFunction('test task', run_multiple_val_result, on_finished=finished_multiple_value_result)
-        QgsTaskManager.instance().addTask(task)
+        QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
             pass
-        while QgsTaskManager.instance().countActiveTasks() > 0:
+        while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
         # check that the finished function was called

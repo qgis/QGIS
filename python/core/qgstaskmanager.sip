@@ -251,10 +251,6 @@ class QgsTaskManager : QObject
 %End
   public:
 
-    /** Returns the global task manager instance pointer, creating the object on the first call.
-     */
-    static QgsTaskManager * instance();
-
     /** Constructor for QgsTaskManager.
      * @param parent parent QObject
      */
