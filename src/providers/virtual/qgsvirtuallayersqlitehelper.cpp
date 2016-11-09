@@ -30,7 +30,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
     sqlite3_auto_extension( reinterpret_cast < void( * )() > ( qgsvlayerModuleInit ) );
   }
   int r;
-  r = sqlite3_open( path.toLocal8Bit().constData(), &db_ );
+  r = sqlite3_open( path.toUtf8().constData(), &db_ );
   if ( withExtension )
   {
     // reset the automatic extensions
@@ -41,7 +41,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
   {
     QString err = QString( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
     QgsDebugMsg( err );
-    throw std::runtime_error( err.toLocal8Bit().constData() );
+    throw std::runtime_error( err.toUtf8().constData() );
   }
   // enable extended result codes
   sqlite3_extended_result_codes( db_, 1 );
@@ -91,12 +91,12 @@ namespace Sqlite
       : db_( db )
       , nBind_( 1 )
   {
-    QByteArray ba( q.toLocal8Bit() );
+    QByteArray ba( q.toUtf8() );
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
       QString err = QString( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
-      throw std::runtime_error( err.toLocal8Bit().constData() );
+      throw std::runtime_error( err.toUtf8().constData() );
     }
   }
 
@@ -109,7 +109,7 @@ namespace Sqlite
 
   Query& Query::bind( const QString& str, int idx )
   {
-    QByteArray ba( str.toLocal8Bit() );
+    QByteArray ba( str.toUtf8() );
     int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
     if ( r )
     {
@@ -126,11 +126,11 @@ namespace Sqlite
   void Query::exec( sqlite3* db, const QString& sql )
   {
     char *errMsg = nullptr;
-    int r = sqlite3_exec( db, sql.toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
+    int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
       QString err = QString( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
-      throw std::runtime_error( err.toLocal8Bit().constData() );
+      throw std::runtime_error( err.toUtf8().constData() );
     }
   }
 
