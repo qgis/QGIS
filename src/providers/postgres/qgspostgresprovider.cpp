@@ -1002,9 +1002,9 @@ bool QgsPostgresProvider::loadFields()
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
     QgsFieldConstraints constraints;
-    if ( notNullMap[tableoid][attnum] )
+    if ( notNullMap[tableoid][attnum] || mPrimaryKeyAttrs.contains( i ) )
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-    if ( uniqueMap[tableoid][attnum] )
+    if ( uniqueMap[tableoid][attnum] || mPrimaryKeyAttrs.contains( i ) )
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     newField.setConstraints( constraints );
 
@@ -1373,6 +1373,15 @@ bool QgsPostgresProvider::determinePrimaryKey()
   else
   {
     determinePrimaryKeyFromUriKeyColumn();
+  }
+
+  Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
+  {
+    //primary keys are unique, not null
+    QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    mAttributeFields[ fieldIdx ].setConstraints( constraints );
   }
 
   mValid = mPrimaryKeyType != pktUnknown;

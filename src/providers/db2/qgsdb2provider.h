@@ -54,16 +54,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
 
-    /**
-     * Get feature type.
-     * @return int representing the feature type
-     */
     virtual QgsWkbTypes::Type wkbType() const override;
 
-    /**
-     * Number of features in the layer
-     * @return long containing number of features
-     */
     virtual long featureCount() const override;
 
     /**
@@ -79,45 +71,24 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool isValid() const override;
     QString subsetString() const override;
 
-    /**
-     * Mutator for SQL WHERE clause used to limit dataset size.
-     */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Return a provider name
-
-        Essentially just returns the provider key.  Should be used to build file
-        dialogs so that providers can be shown with their supported types. Thus
-        if more than one provider supports a given format, the user is able to
-        select a specific provider to open that file.
-     */
     virtual QString name() const override;
 
-    /** Return description
-
-        Return a terse string describing what the provider is.
-     */
     virtual QString description() const override;
 
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
-     */
+    QgsAttributeList pkAttributeIndexes() const override;
+
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    //! Writes a list of features to the database
     virtual bool addFeatures( QgsFeatureList & flist ) override;
 
-    //! Deletes a feature
     virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
 
-    //! Changes attribute values of existing features
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    //! Changes existing geometries
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     //! Import a vector layer into the database
@@ -155,6 +126,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
     long mNumberFeatures;
+    int mFidColIdx;
     QString mFidColName;
     QString mExtents;
     mutable long mSRId;
