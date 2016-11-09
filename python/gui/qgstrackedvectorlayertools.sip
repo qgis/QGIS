@@ -25,6 +25,7 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
     bool startEditing( QgsVectorLayer* layer ) const ;
     bool stopEditing( QgsVectorLayer* layer, bool allowCancel ) const ;
     bool saveEdits( QgsVectorLayer* layer ) const ;
+    bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = nullptr ) const;
 
     /**
      * Set the vector layer tools that will be used to interact with the data

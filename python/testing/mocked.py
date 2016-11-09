@@ -29,7 +29,7 @@ import os
 import sys
 import mock
 
-from qgis.gui import QgisInterface, QgsMapCanvas, QgsGuiVectorLayerTools
+from qgis.gui import QgisInterface, QgsMapCanvas
 from qgis.core import QgsApplication
 
 from qgis.PyQt.QtWidgets import QMainWindow
@@ -62,9 +62,5 @@ def get_iface():
     canvas = QgsMapCanvas(my_iface.mainWindow())
     canvas.resize(QSize(400, 400))
     my_iface.mapCanvas.return_value = canvas
-    
-    vectorLayerTools = QgsGuiVectorLayerTools()
-    my_iface.vectorLayerTools.return_value = vectorLayerTools
-      
 
     return my_iface

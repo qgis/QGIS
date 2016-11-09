@@ -316,6 +316,7 @@ SET(QGIS_GUI_SRCS
   qgsunitselectionwidget.cpp
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
+  qgsvectorlayertools.cpp
   qgsvertexmarker.cpp
 )
 
@@ -467,10 +468,12 @@ SET(QGIS_GUI_MOC_HDRS
   qgstabwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
+  qgstrackedvectorlayertools.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
+  qgsvectorlayertools.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -660,9 +663,7 @@ SET(QGIS_GUI_HDRS
   qgssvgannotationitem.h
   qgstablewidgetitem.h
   qgstextannotationitem.h
-  qgstrackedvectorlayertools.h
   qgsuserinputdockwidget.h
-  qgsvectorlayertools.h
   qgsvertexmarker.h
 
   attributetable/qgsfeaturemodel.h

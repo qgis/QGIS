@@ -15,9 +15,8 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QgsFeatureRequest, QgsVectorLayer, QgsMapLayerRegistry, QgsVectorLayerTools
 from qgis.testing import start_app, unittest
-from qgis.testing.mocked import get_iface
 
 import os
 
@@ -40,14 +39,14 @@ class TestQgsVectorLayerTools(unittest.TestCase):
 
         QgsMapLayerRegistry.instance().addMapLayer(cls.vl)
 
-        cls.iface = get_iface()
+        cls.vltools = QgsVectorLayerTools()
 
     def testCopyMoveFeature(self):
         """ Test copy and move features"""
         rqst = QgsFeatureRequest()
         rqst.setFilterFid(4)
         self.vl.startEditing()
-        (ok, rqst) = self.iface.vectorLayerTools().copyMoveFeature(self.vl, rqst, -0.1, 0.2)
+        (ok, rqst) = self.vltools.copyMoveFeature(self.vl, rqst, -0.1, 0.2)
         self.vl.commitChanges()
         self.vl.stopEditing()
         self.assertTrue(ok)

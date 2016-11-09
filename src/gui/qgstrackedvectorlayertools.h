@@ -23,6 +23,7 @@
  */
 class GUI_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {
+    Q_OBJECT
   public:
     QgsTrackedVectorLayerTools();
 
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     bool startEditing( QgsVectorLayer* layer ) const override;
     bool stopEditing( QgsVectorLayer* layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer* layer ) const override;
-    bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0 ) const override;
+    bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = nullptr ) const override;
 
     /**
      * Set the vector layer tools that will be used to interact with the data
