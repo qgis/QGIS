@@ -852,6 +852,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp_matches no capturing group" ) << "regexp_matches('some string','.*')" << false << QVariant( QVariantList() );
       QTest::newRow( "regexp_matches invalid" ) << "regexp_matches('invalid','(')" << true << QVariant();
       QTest::newRow( "strpos" ) << "strpos('Hello World','World')" << false << QVariant( 7 );
+      QTest::newRow( "strpos non-regexp" ) << "strpos('Hello.World','.')" << false << QVariant( 6 );
       QTest::newRow( "strpos outside" ) << "strpos('Hello World','blah')" << false << QVariant( 0 );
       QTest::newRow( "left" ) << "left('Hello World',5)" << false << QVariant( "Hello" );
       QTest::newRow( "right" ) << "right('Hello World', 5)" << false << QVariant( "World" );
@@ -911,7 +912,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "coalesce exp" ) << "coalesce(NULL, 1+1)" << false << QVariant( 2 );
       QTest::newRow( "regexp match" ) << "regexp_match('abc','.b.')" << false << QVariant( 1 );
       QTest::newRow( "regexp match invalid" ) << "regexp_match('abc DEF','[[[')" << true << QVariant();
-      QTest::newRow( "regexp match escaped" ) << "regexp_match('abc DEF','\\\\s[A-Z]+')" << false << QVariant( 1 );
+      QTest::newRow( "regexp match escaped" ) << "regexp_match('abc DEF','\\\\s[A-Z]+')" << false << QVariant( 4 );
       QTest::newRow( "regexp match false" ) << "regexp_match('abc DEF','\\\\s[a-z]+')" << false << QVariant( 0 );
       QTest::newRow( "if true" ) << "if(1=1, 1, 0)" << false << QVariant( 1 );
       QTest::newRow( "if false" ) << "if(1=2, 1, 0)" << false << QVariant( 0 );
