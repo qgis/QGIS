@@ -31,6 +31,7 @@ import os
 import time
 import sys
 import uuid
+import math
 
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
@@ -81,13 +82,14 @@ def setTempOutput(out, alg):
 
 
 def getTempFilename(ext=None):
-    path = tempFolder()
+    tmpPath = tempFolder()
+    t = time.time()
+    m = math.floor(t)
+    uid = '{:8x}{:05x}'.format(m, int((t - m) * 1000000))
     if ext is None:
-        filename = path + os.sep + str(time.time()) \
-            + str(getNumExportedLayers())
+        filename = os.path.join(tmpPath, '{}{}'.format(uid, getNumExportedLayers()))
     else:
-        filename = path + os.sep + str(time.time()) \
-            + str(getNumExportedLayers()) + '.' + ext
+        filename = os.path.join(tmpPath, '{}{}.{}'.format(uid, getNumExportedLayers(), ext))
     return filename
 
 
