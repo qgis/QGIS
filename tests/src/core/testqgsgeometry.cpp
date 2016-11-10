@@ -3048,6 +3048,29 @@ void TestQgsGeometry::polygon()
   QCOMPARE( lineBoundary->zAt( 3 ), 10.0 );
   delete boundary;
 
+  // point distance to boundary
+
+  QgsLineString pd1;
+  pd1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 ) << QgsPointV2( 0, 1 ) << QgsPointV2( 0, 0 ) );
+  QgsPolygonV2 pd;
+  // no meaning, but let's not crash
+  ( void )pd.pointDistanceToBoundary( 0, 0 );
+
+  pd.setExteriorRing( pd1.clone() );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0, 0.5 ), 0.0, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.1, 0.5 ), 0.1, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( -0.1, 0.5 ), -0.1, 0.0000000001 );
+  // with a ring
+  QgsLineString pdRing1;
+  pdRing1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0.1, 0.1 ) << QgsPointV2( 0.2, 0.1 ) << QgsPointV2( 0.2, 0.6 )  << QgsPointV2( 0.1, 0.6 ) << QgsPointV2( 0.1, 0.1 ) );
+  pd.setInteriorRings( QList< QgsCurve* >() << pdRing1.clone() );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0, 0.5 ), 0.0, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.1, 0.5 ), 0.0, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.01, 0.5 ), 0.01, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.08, 0.5 ), 0.02, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.12, 0.5 ), -0.02, 0.0000000001 );
+  QGSCOMPARENEAR( pd.pointDistanceToBoundary( -0.1, 0.5 ), -0.1, 0.0000000001 );
+
 }
 
 void TestQgsGeometry::multiPoint()
