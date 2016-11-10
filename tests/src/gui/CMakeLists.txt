@@ -134,5 +134,5 @@ ADD_QGIS_TEST(qgsguitest testqgsgui.cpp)
 ADD_QGIS_TEST(rubberbandtest testqgsrubberband.cpp)
 ADD_QGIS_TEST(scalecombobox testqgsscalecombobox.cpp)
 ADD_QGIS_TEST(spinbox testqgsspinbox.cpp)
-
+ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
 
