@@ -74,6 +74,7 @@ class GdalUtils(object):
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, fused_command)
         progress.setInfo('GDAL command:')
         progress.setCommand(fused_command)
         progress.setInfo('GDAL command output:')
