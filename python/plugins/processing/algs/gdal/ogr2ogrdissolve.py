@@ -85,52 +85,56 @@ class Ogr2OgrDissolve(GdalAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + ogrLayerName(inLayer) + "'"
-        geometry = str(self.getParameterValue(self.GEOMETRY))
-        field = str(self.getParameterValue(self.FIELD))
-        statsatt = str(self.getParameterValue(self.STATSATT))
-        stats = self.getParameterValue(self.STATS)
-        area = self.getParameterValue(self.AREA)
+        geometry = self.getParameterValue(self.GEOMETRY)
+        field = self.getParameterValue(self.FIELD)
         multi = self.getParameterValue(self.MULTI)
-        count = self.getParameterValue(self.COUNT)
         fields = self.getParameterValue(self.FIELDS)
-        querystart = '-dialect sqlite -sql "SELECT ST_Union(' + geometry + ')'
-        queryend = ' FROM ' + layername + ' GROUP BY ' + field + '"'
-        if fields:
-            queryfields = ",*"
-        else:
-            queryfields = "," + field
-        if count:
-            querycount = ", COUNT(" + geometry + ") AS count"
-        else:
-            querycount = ""
-        if stats:
-            querystats = ", SUM(" + statsatt + ") AS sum_diss, MIN(" + statsatt + ") AS min_diss, MAX(" + statsatt + ") AS max_diss, AVG(" + statsatt + ") AS avg_diss"
-        else:
-            querystats = ""
-        if area:
-            queryarea = ", SUM(ST_area(" + geometry + ")) AS area_diss, ST_perimeter(ST_union(" + geometry + ")) AS peri_diss"
-        else:
-            queryarea = ""
+        count = self.getParameterValue(self.COUNT)
+        area = self.getParameterValue(self.AREA)
+        stats = self.getParameterValue(self.STATS)
+        statsatt = self.getParameterValue(self.STATSATT)
+        options = self.getParameterValue(self.OPTIONS)
 
-        query = querystart + queryfields + querycount + querystats + queryarea + queryend
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        layername = ogrLayerName(inLayer)
+
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
-        arguments.append(query)
+        arguments.append('-dialect')
+        arguments.append('sqlite')
+        arguments.append('-sql')
+
+        sql = "SELECT ST_Union('{}')".format(geometry)
+
+        sqlOpts = ''
+        if fields:
+            sqlOpts += ',*'
+        else:
+            sqlOpts += ',{}'.format(field)
+
+        if count:
+            sqlOpts += ", COUNT('{}') AS count".format(geometry)
+
+        if stats:
+            sqlOpts += ", SUM('{0}') AS sum_diss, MIN('{0}') AS min_diss, MAX('{0}') AS max_diss, AVG('{0}') AS avg_diss".format(statsatt)
+
+        if area:
+            sqlOpts += ", SUM(ST_Area('{0}')) AS area_diss, ST_Perimeter(ST_Union('{0}')) AS peri_diss".format(geometry)
+
+        sql = '{}{} FROM {} GROUP BY {}'.format(sql, sqlOpts, layername, field)
+
+        arguments.append(sql)
 
         if not multi:
             arguments.append('-explodecollections')
 
-        if len(options) > 0:
+        if options is not None and len(options) > 0:
             arguments.append(options)
 
         commands = []
@@ -143,4 +147,4 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         return commands
 
     def commandName(self):
-        return "ogr2ogr"
+        return 'ogr2ogr'

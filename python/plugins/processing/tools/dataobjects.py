@@ -315,7 +315,7 @@ def exportVectorLayer(layer, supported=None):
     basename = removeInvalidChars(os.path.basename(layer.source()))
     if basename:
         if not basename.endswith("shp"):
-            basename = basename + ".shp"
+            basename = os.path.splitext(basename)[0] + ".shp"
         output = getTempFilenameInTempFolder(basename)
     else:
         output = getTempFilename("shp")
