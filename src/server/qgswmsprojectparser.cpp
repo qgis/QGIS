@@ -2481,3 +2481,24 @@ QString QgsWmsProjectParser::getCapaServiceUrl( QDomDocument& doc ) const
 
   return url;
 }
+
+bool QgsWmsProjectParser::allowRequestDefinedDatasources() const
+{
+  if ( !mProjectParser->xmlDocument() )
+  {
+    return false;
+  }
+
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( propertiesElem.isNull() )
+  {
+    return false;
+  }
+  QDomElement dsElem = propertiesElem.firstChildElement( "WMSRequestDefinedDataSources" );
+  if ( dsElem.isNull() )
+  {
+    return false;
+  }
+
+  return ( dsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+}

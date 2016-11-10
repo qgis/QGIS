@@ -1894,6 +1894,11 @@ QImage* QgsWmsServer::initializeRendering( QStringList& layersList, QStringList&
   QString gml = mParameters.value( QStringLiteral( "GML" ) );
   if ( !gml.isEmpty() )
   {
+    if ( !mConfigParser->allowRequestDefinedDatasources() )
+    {
+      QgsMessageLog::logMessage( "The project configuration does not allow datasources defined in the request", "Server", QgsMessageLog::CRITICAL );
+      return 0;
+    }
     QDomDocument* gmlDoc = new QDomDocument();
     if ( gmlDoc->setContent( gml, true ) )
     {

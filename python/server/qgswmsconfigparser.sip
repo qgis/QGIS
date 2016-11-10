@@ -123,6 +123,8 @@ class QgsWmsConfigParser
 
     virtual bool useLayerIds() const = 0;
 
+    virtual bool allowRequestDefinedDatasources() const;
+
   private:
 
     QgsWmsConfigParser();

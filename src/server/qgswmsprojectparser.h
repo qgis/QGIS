@@ -127,6 +127,8 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 
     bool useLayerIds() const override { return mProjectParser->useLayerIds(); }
 
+    bool allowRequestDefinedDatasources() const;
+
   private:
     QgsServerProjectParser* mProjectParser;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

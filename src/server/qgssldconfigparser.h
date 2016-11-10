@@ -133,6 +133,8 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
+    bool allowRequestDefinedDatasources() const;
+
   private:
 
     //! SLD as dom document
