@@ -31,6 +31,9 @@
 
 #include <QWidget>
 #include <QList>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
 
 class QCloseEvent;
 class QTreeWidgetItem;
@@ -57,9 +60,13 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
     QSize sizeHint() const override;
   public slots:
     void print();
+    void downloadRequested( const QNetworkRequest &request );
+    void unsupportedContent( QNetworkReply *reply );
   protected:
     void contextMenuEvent( QContextMenuEvent* ) override;
     QgsWebView *createWindow( QWebPage::WebWindowType type ) override;
+  private:
+    void handleDownload( QUrl url );
 };
 
 class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem

@@ -38,6 +38,7 @@
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsstringutils.h"
+#include "qgsfiledownloader.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -55,6 +56,11 @@
 #include <QMessageBox>
 #include <QComboBox>
 #include <QTextDocument>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QRegExp>
 
 //graph
 #include <qwt_plot.h>
@@ -68,6 +74,7 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   // page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  page()->setForwardUnsupportedContent( true );
   page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
   settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
   settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
@@ -75,6 +82,51 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
 #ifdef QGISDEBUG
   settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
+  connect( page(), SIGNAL( downloadRequested( QNetworkRequest ) ), this, SLOT( downloadRequested( QNetworkRequest ) ) );
+  connect( page(), SIGNAL( unsupportedContent( QNetworkReply* ) ), this, SLOT( unsupportedContent( QNetworkReply* ) ) );
+}
+
+
+void QgsIdentifyResultsWebView::downloadRequested( const QNetworkRequest &request )
+{
+  handleDownload( request.url() );
+}
+
+void QgsIdentifyResultsWebView::unsupportedContent( QNetworkReply * reply )
+{
+  handleDownload( reply->url() );
+}
+
+void QgsIdentifyResultsWebView::handleDownload( QUrl url )
+{
+  if ( ! url.isValid() )
+  {
+    QMessageBox::warning( this, tr( "Invalid URL" ), tr( "The download URL is not valid: %1" ).arg( url.toString( ) ) );
+  }
+  else
+  {
+    const QString DOWNLOADER_LAST_DIR_KEY( "Qgis/fileDownloaderLastDir" );
+    QSettings settings;
+    // Try to get some information from the URL
+    QFileInfo info( url.toString( ) );
+    QString savePath = settings.value( DOWNLOADER_LAST_DIR_KEY ).toString( );
+    QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), "_" );
+    if ( ! savePath.isEmpty() && ! fileName.isEmpty( ) )
+    {
+      savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );
+    }
+    QString targetFile = QFileDialog::getSaveFileName( this,
+                         tr( "Save as" ),
+                         savePath,
+                         info.suffix( ).isEmpty() ? QString( ) : "*." +  info.suffix( )
+                                                     );
+    if ( ! targetFile.isEmpty() )
+    {
+      settings.setValue( DOWNLOADER_LAST_DIR_KEY, QFileInfo( targetFile ).dir().absolutePath( ) );
+      // Start the download
+      new QgsFileDownloader( url, targetFile );
+    }
+  }
 }
 
 void QgsIdentifyResultsWebView::print()
