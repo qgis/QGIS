@@ -1464,3 +1464,15 @@ tests:
       OUTPUT:
         name: expected/snap_point_to_lines_prefer_closest.gml
         type: vector
+
+  - algorithm: qgis:poleofinaccessibility
+    name: Pole of inaccessibility (polygons)
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      TOLERANCE: 1.0e-05
+    results:
+      OUTPUT_LAYER:
+        name: expected/pole_inaccessibility_polys.gml
+        type: vector

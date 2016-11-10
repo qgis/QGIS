@@ -21,8 +21,11 @@
 #include "qgspolygon.h"
 #include "qgsmulticurve.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
+
 
 #include <QTransform>
+#include <queue>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometry )
     : mGeometry( geometry.geometry() )
@@ -36,7 +39,7 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometr
  * See details in QEP #17
  ****************************************************************************/
 
-QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y )
+QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
   QList<QgsLineString*> linesToProcess;
 
@@ -86,4 +89,148 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y )
   }
 
   return QgsGeometry();
+}
+
+
+
+// polylabel implementation
+// ported from the original Javascript implementation developed by Vladimir Agafonkin
+// originally licensed under the ISC License
+
+class Cell
+{
+  public:
+    Cell( double x, double y, double h, const QgsPolygonV2* polygon )
+        : x( x )
+        , y( y )
+        , h( h )
+        , d( polygon->pointDistanceToBoundary( x, y ) )
+        , max( d + h * M_SQRT2 )
+    {}
+
+    //! Cell center x
+    double x;
+    //! Cell center y
+    double y;
+    //! Half the cell size
+    double h;
+    //! Distance from cell center to polygon
+    double d;
+    //! Maximum distance to polygon within a cell
+    double max;
+};
+
+struct GreaterThanByMax
+{
+  bool operator()( const Cell* lhs, const Cell* rhs )
+  {
+    return rhs->max > lhs->max;
+  }
+};
+
+Cell* getCentroidCell( const QgsPolygonV2* polygon )
+{
+  double area = 0;
+  double x = 0;
+  double y = 0;
+
+  const QgsLineString* exterior = static_cast< const QgsLineString*>( polygon->exteriorRing() );
+  int len = exterior->numPoints() - 1; //assume closed
+  for ( int i = 0, j = len - 1; i < len; j = i++ )
+  {
+    double aX = exterior->xAt( i );
+    double aY = exterior->yAt( i );
+    double bX = exterior->xAt( j );
+    double bY = exterior->yAt( j );
+    double f = aX * bY - bX * aY;
+    x += ( aX + bX ) * f;
+    y += ( aY + bY ) * f;
+    area += f * 3;
+  }
+  if ( area == 0 )
+    return new Cell( exterior->xAt( 0 ), exterior->yAt( 0 ), 0, polygon );
+  else
+    return new Cell( x / area, y / area, 0.0, polygon );
+}
+
+
+QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ) const
+{
+  if ( !mGeometry || mGeometry->isEmpty() )
+    return QgsGeometry();
+
+  if ( precision <= 0 )
+    return QgsGeometry();
+
+  const QgsSurface* surface = dynamic_cast< const QgsSurface* >( mGeometry );
+  if ( !surface )
+    return QgsGeometry();
+
+  QScopedPointer< QgsPolygonV2 > segmentizedPoly;
+  const QgsPolygonV2* polygon = dynamic_cast< const QgsPolygonV2* >( mGeometry );
+  if ( !polygon )
+  {
+    segmentizedPoly.reset( static_cast< QgsPolygonV2*>( surface->segmentize() ) );
+    polygon = segmentizedPoly.data();
+  }
+
+  // start with the bounding box
+  QgsRectangle bounds = polygon->boundingBox();
+
+  // initial parameters
+  double cellSize = qMin( bounds.width(), bounds.height() );
+
+  if ( qgsDoubleNear( cellSize, 0.0 ) )
+    return QgsGeometry( new QgsPointV2( bounds.xMinimum(), bounds.yMinimum() ) );
+
+  double h = cellSize / 2.0;
+  std::priority_queue< Cell*, std::vector<Cell*>, GreaterThanByMax > cellQueue;
+
+  // cover polygon with initial cells
+  for ( double x = bounds.xMinimum(); x < bounds.xMaximum(); x += cellSize )
+  {
+    for ( double y = bounds.yMinimum(); y < bounds.yMaximum(); y += cellSize )
+    {
+      cellQueue.push( new Cell( x + h, y + h, h, polygon ) );
+    }
+  }
+
+  // take centroid as the first best guess
+  QScopedPointer< Cell > bestCell( getCentroidCell( polygon ) );
+
+  // special case for rectangular polygons
+  QScopedPointer< Cell > bboxCell( new Cell( bounds.xMinimum() + bounds.width() / 2.0,
+                                   bounds.yMinimum() + bounds.height() / 2.0,
+                                   0, polygon ) );
+  if ( bboxCell->d > bestCell->d )
+  {
+    bestCell.reset( bboxCell.take() );
+  }
+
+  while ( cellQueue.size() > 0 )
+  {
+    // pick the most promising cell from the queue
+    QScopedPointer< Cell > cell( cellQueue.top() );
+    cellQueue.pop();
+    Cell* currentCell = cell.data();
+
+    // update the best cell if we found a better one
+    if ( currentCell->d > bestCell->d )
+    {
+      bestCell.reset( cell.take() );
+    }
+
+    // do not drill down further if there's no chance of a better solution
+    if ( currentCell->max - bestCell->d <= precision )
+      continue;
+
+    // split the cell into four cells
+    h = currentCell->h / 2.0;
+    cellQueue.push( new Cell( currentCell->x - h, currentCell->y - h, h, polygon ) );
+    cellQueue.push( new Cell( currentCell->x + h, currentCell->y - h, h, polygon ) );
+    cellQueue.push( new Cell( currentCell->x - h, currentCell->y + h, h, polygon ) );
+    cellQueue.push( new Cell( currentCell->x + h, currentCell->y + h, h, polygon ) );
+  }
+
+  return QgsGeometry( new QgsPointV2( bestCell->x, bestCell->y ) );
 }

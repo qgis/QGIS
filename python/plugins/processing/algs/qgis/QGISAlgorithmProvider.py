@@ -176,6 +176,7 @@ from .ExtendLines import ExtendLines
 from .ExtractSpecificNodes import ExtractSpecificNodes
 from .GeometryByExpression import GeometryByExpression
 from .SnapGeometries import SnapGeometriesToLayer
+from .PoleOfInaccessibility import PoleOfInaccessibility
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -238,7 +239,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
-                        ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer()
+                        ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
+                        PoleOfInaccessibility()
                         ]
 
         if hasMatplotlib:

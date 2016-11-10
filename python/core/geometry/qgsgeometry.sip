@@ -510,14 +510,36 @@ class QgsGeometry
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry simplify( double tolerance )  const;
 
-    /** Returns the center of mass of a geometry
+    /**
+     * Returns the center of mass of a geometry.
      * @note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
+     * @see pointOnSurface()
+     * @see poleOfInaccessibility()
      */
     QgsGeometry centroid() const;
 
-    /** Returns a point within a geometry */
+    /**
+     * Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
+     * of a geometry may be located outside of the geometry itself (eg for concave shapes),
+     * the point on surface will always be inside the geometry.
+     * @see centroid()
+     * @see poleOfInaccessibility()
+     */
     QgsGeometry pointOnSurface() const;
+
+    /**
+     * Calculates the approximate pole of inaccessibility for a surface, which is the
+     * most distant internal point from the boundary of the surface. This function
+     * uses the 'polylabel' algorithm (Vladimir Agafonkin, 2016), which is an iterative
+     * approach guaranteed to find the true pole of inaccessibility within a specified
+     * tolerance. More precise tolerances require more iterations and will take longer
+     * to calculate.
+     * @see centroid()
+     * @see pointOnSurface()
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry poleOfInaccessibility( double precision ) const;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry convexHull() const;
