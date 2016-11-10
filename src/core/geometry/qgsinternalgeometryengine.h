@@ -57,8 +57,9 @@ class QgsInternalGeometryEngine
      * approach guaranteed to find the true pole of inaccessibility within a specified
      * tolerance. More precise tolerances require more iterations and will take longer
      * to calculate.
+     * Optionally, the distance to the polygon boundary from the pole can be stored.
      */
-    QgsGeometry poleOfInaccessibility( double precision ) const;
+    QgsGeometry poleOfInaccessibility( double precision, double* distanceFromBoundary = nullptr ) const;
 
   private:
     const QgsAbstractGeometry* mGeometry;

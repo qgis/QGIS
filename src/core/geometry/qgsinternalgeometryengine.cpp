@@ -97,6 +97,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 // ported from the original Javascript implementation developed by Vladimir Agafonkin
 // originally licensed under the ISC License
 
+/// @cond PRIVATE
 class Cell
 {
   public:
@@ -153,9 +154,13 @@ Cell* getCentroidCell( const QgsPolygonV2* polygon )
     return new Cell( x / area, y / area, 0.0, polygon );
 }
 
+///@endcond
 
-QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ) const
+QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision , double* distanceFromBoundary ) const
 {
+  if ( distanceFromBoundary )
+    *distanceFromBoundary = DBL_MAX;
+
   if ( !mGeometry || mGeometry->isEmpty() )
     return QgsGeometry();
 
@@ -231,6 +236,9 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision )
     cellQueue.push( new Cell( currentCell->x - h, currentCell->y + h, h, polygon ) );
     cellQueue.push( new Cell( currentCell->x + h, currentCell->y + h, h, polygon ) );
   }
+
+  if ( distanceFromBoundary )
+    *distanceFromBoundary = bestCell->d;
 
   return QgsGeometry( new QgsPointV2( bestCell->x, bestCell->y ) );
 }

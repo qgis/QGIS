@@ -17,6 +17,7 @@
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
       <ogr:floatval>44.123456</ogr:floatval>
+      <ogr:dist_pole>1.5</ogr:dist_pole>
     </ogr:pole_inaccessibility_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -25,6 +26,7 @@
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
       <ogr:floatval>0</ogr:floatval>
+      <ogr:dist_pole>0.414211273193359</ogr:dist_pole>
     </ogr:pole_inaccessibility_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -32,6 +34,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.5,5.5</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>bbaaa</ogr:name>
       <ogr:floatval>0.123</ogr:floatval>
+      <ogr:dist_pole>0.5</ogr:dist_pole>
     </ogr:pole_inaccessibility_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -39,6 +42,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>6.585784912109375,-2.414215087890625</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
+      <ogr:dist_pole>0.585784912109375</ogr:dist_pole>
     </ogr:pole_inaccessibility_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -53,6 +57,7 @@
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>3.33</ogr:floatval>
+      <ogr:dist_pole>1.71028189541736</ogr:dist_pole>
     </ogr:pole_inaccessibility_polys>
   </gml:featureMember>
 </ogr:FeatureCollection>

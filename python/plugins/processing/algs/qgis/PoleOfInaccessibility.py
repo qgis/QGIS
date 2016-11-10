@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsField, NULL
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -65,9 +66,12 @@ class PoleOfInaccessibility(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
         tolerance = self.getParameterValue(self.TOLERANCE)
 
+        fields = layer.fields()
+        fields.append(QgsField('dist_pole', QVariant.Double))
+
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
+                fields,
                 QgsWkbTypes.Point,
                 layer.crs())
 
@@ -78,12 +82,19 @@ class PoleOfInaccessibility(GeoAlgorithm):
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
-                output_geometry = input_geometry.poleOfInaccessibility(tolerance)
+                output_geometry, distance = input_geometry.poleOfInaccessibility(tolerance)
                 if not output_geometry:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Error calculating pole of inaccessibility'))
+                attrs = input_feature.attributes()
+                attrs.append(distance)
+                output_feature.setAttributes(attrs)
 
                 output_feature.setGeometry(output_geometry)
+            else:
+                attrs = input_feature.attributes()
+                attrs.append(NULL)
+                output_feature.setAttributes(attrs)
 
             writer.addFeature(output_feature)
             progress.setPercentage(int(current * total))
