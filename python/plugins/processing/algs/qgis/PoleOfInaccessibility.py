@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    PointOnSurface.py
-    --------------
-    Date                 : July 2016
+    PoleOfInaccessibility.py
+    ------------------------
+    Date                 : November 2016
     Copyright            : (C) 2016 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
@@ -18,7 +18,7 @@
 """
 
 __author__ = 'Nyall Dawson'
-__date__ = 'July 2016'
+__date__ = 'November 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
 # This will get replaced with a git SHA1 when you do a git archive323
@@ -33,36 +33,41 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointOnSurface(GeoAlgorithm):
+class PoleOfInaccessibility(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
+    TOLERANCE = 'TOLERANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Point on surface')
+        self.name, self.i18n_name = self.trAlgorithm('Pole of Inaccessibility')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(ParameterNumber(self.TOLERANCE,
+                                          self.tr('Tolerance (layer units)'), default=1.0, minValue=0.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
+        tolerance = self.getParameterValue(self.TOLERANCE)
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
+                layer.fields(),
                 QgsWkbTypes.Point,
                 layer.crs())
 
@@ -73,10 +78,10 @@ class PointOnSurface(GeoAlgorithm):
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
-                output_geometry = input_geometry.pointOnSurface()
+                output_geometry = input_geometry.poleOfInaccessibility(tolerance)
                 if not output_geometry:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating point on surface'))
+                        self.tr('Error calculating pole of inaccessibility'))
 
                 output_feature.setGeometry(output_geometry)
 

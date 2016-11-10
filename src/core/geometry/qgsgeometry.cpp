@@ -1545,6 +1545,13 @@ QgsGeometry QgsGeometry::pointOnSurface() const
   return QgsGeometry( pt.clone() );
 }
 
+QgsGeometry QgsGeometry::poleOfInaccessibility( double precision ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.poleOfInaccessibility( precision );
+}
+
 QgsGeometry QgsGeometry::convexHull() const
 {
   if ( !d->geometry )
