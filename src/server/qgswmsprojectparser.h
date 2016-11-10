@@ -127,7 +127,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 
     bool useLayerIds() const override { return mProjectParser->useLayerIds(); }
 
-    bool allowRequestDefinedDatasources() const;
+    bool allowRequestDefinedDatasources() const override;
 
   private:
     QgsServerProjectParser* mProjectParser;
