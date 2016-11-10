@@ -2581,6 +2581,16 @@ static QVariant fcnPointOnSurface( const QVariantList& values, const QgsExpressi
   QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
+
+static QVariant fcnPoleOfInaccessibility( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double tolerance = getDoubleValue( values.at( 1 ), parent );
+  QgsGeometry geom = fGeom.poleOfInaccessibility( tolerance );
+  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnConvexHull( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -3918,6 +3928,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
                            fcnExtend, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "centroid" ), 1, fcnCentroid, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "point_on_surface" ), 1, fcnPointOnSurface, QStringLiteral( "GeometryGroup" ) )
+    << new StaticFunction( QStringLiteral( "pole_of_inaccessibility" ), ParameterList() << Parameter( QStringLiteral( "geometry" ) )
+                           << Parameter( QStringLiteral( "tolerance" ) ), fcnPoleOfInaccessibility, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "reverse" ), 1, fcnReverse, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "exterior_ring" ), 1, fcnExteriorRing, QStringLiteral( "GeometryGroup" ) )
     << new StaticFunction( QStringLiteral( "interior_ring_n" ), 2, fcnInteriorRingN, QStringLiteral( "GeometryGroup" ) )
