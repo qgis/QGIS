@@ -35,4 +35,12 @@ class QgsPolygonV2: public QgsCurvePolygon
     virtual void setExteriorRing( QgsCurve* ring /Transfer/ );
 
     virtual QgsAbstractGeometry* boundary() const /Factory/;
+
+    /**
+     * Returns the distance from a point to the boundary of the polygon (either the
+     * exterior ring or any closer interior rings). The returned distance will be
+     * negative if the point lies outside the polygon.
+     * @note added in QGIS 3.0
+     */
+    double pointDistanceToBoundary( double x, double y ) const;
 };

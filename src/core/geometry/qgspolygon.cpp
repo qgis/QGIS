@@ -261,6 +261,40 @@ QgsAbstractGeometry* QgsPolygonV2::boundary() const
   }
 }
 
+double QgsPolygonV2::pointDistanceToBoundary( double x, double y ) const
+{
+  if ( !mExteriorRing )
+    return std::numeric_limits< double >::quiet_NaN();
+
+  bool inside = false;
+  double minimumDistance = DBL_MAX;
+  double minDistX = 0.0;
+  double minDistY = 0.0;
+
+  int numRings = mInteriorRings.size() + 1;
+  for ( int ringIndex = 0; ringIndex < numRings; ++ringIndex )
+  {
+    const QgsLineString* ring = static_cast< const QgsLineString* >( ringIndex == 0 ? mExteriorRing : mInteriorRings.at( ringIndex - 1 ) );
+
+    int len = ring->numPoints() - 1; //assume closed
+    for ( int i = 0, j = len - 1; i < len; j = i++ )
+    {
+      double aX = ring->xAt( i );
+      double aY = ring->yAt( i );
+      double bX = ring->xAt( j );
+      double bY = ring->yAt( j );
+
+      if ((( aY > y ) != ( bY > y ) ) &&
+          ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
+        inside = !inside;
+
+      minimumDistance = qMin( minimumDistance, QgsGeometryUtils::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * DBL_EPSILON ) );
+    }
+  }
+
+  return ( inside ? 1 : -1 ) * sqrt( minimumDistance );
+}
+
 QgsPolygonV2* QgsPolygonV2::surfaceToPolygon() const
 {
   return clone();
