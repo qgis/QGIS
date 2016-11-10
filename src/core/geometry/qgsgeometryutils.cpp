@@ -248,30 +248,31 @@ double QgsGeometryUtils::sqrDistance2D( const QgsPointV2& pt1, const QgsPointV2&
 
 double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double& minDistX, double& minDistY, double epsilon )
 {
-  //normal vector
-  double nx = y2 - y1;
-  double ny = -( x2 - x1 );
+  minDistX = x1;
+  minDistY = y1;
 
-  double t;
-  t = ( ptX * ny - ptY * nx - x1 * ny + y1 * nx ) / (( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
+  double dx = x2 - x1;
+  double dy = y2 - y1;
 
-  if ( t < 0.0 )
+  if ( !qgsDoubleNear( dx, 0.0 ) || !qgsDoubleNear( dy, 0.0 ) )
   {
-    minDistX = x1;
-    minDistY = y1;
-  }
-  else if ( t > 1.0 )
-  {
-    minDistX = x2;
-    minDistY = y2;
-  }
-  else
-  {
-    minDistX = x1 + t * ( x2 - x1 );
-    minDistY = y1 + t * ( y2 - y1 );
+    double t = (( ptX - x1 ) * dx + ( ptY - y1 ) * dy ) / ( dx * dx + dy * dy );
+    if ( t > 1 )
+    {
+      minDistX = x2;
+      minDistY = y2;
+    }
+    else if ( t > 0 )
+    {
+      minDistX += dx * t ;
+      minDistY += dy * t ;
+    }
   }
 
-  double dist = ( minDistX - ptX ) * ( minDistX - ptX ) + ( minDistY - ptY ) * ( minDistY - ptY );
+  dx = ptX - minDistX;
+  dy = ptY - minDistY;
+
+  double dist = dx * dx + dy * dy;
 
   //prevent rounding errors if the point is directly on the segment
   if ( qgsDoubleNear( dist, 0.0, epsilon ) )
