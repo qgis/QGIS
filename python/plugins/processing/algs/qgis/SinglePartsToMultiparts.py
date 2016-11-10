@@ -70,7 +70,6 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), geomType, layer.crs())
 
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
@@ -80,23 +79,18 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         collection_attrs = {}
 
         features = vector.features(layer)
-        current = 0
-        total = 100.0 / (len(features))
-
-        features = vector.features(layer)
-        for inFeat in features:
-            atMap = inFeat.attributes()
+        total = 100.0 / len(features)
+        for current, feature in enumerate(features):
+            atMap = feature.attributes()
             idVar = atMap[index]
             key = str(idVar).strip()
             if not key in collection_geom:
                 collection_geom[key] = []
                 collection_attrs[key] = atMap
 
-            inGeom = inFeat.geometry()
-            vType = inGeom.type()
+            inGeom = feature.geometry()
             collection_geom[key].append(inGeom)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         for key, geoms in collection_geom.items():
