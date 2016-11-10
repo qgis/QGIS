@@ -111,6 +111,8 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
 
     bool useLayerIds() const  /*override*/ ;
 
+    bool allowRequestDefinedDatasources() const;
+
   private:
 
     /** Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file*/

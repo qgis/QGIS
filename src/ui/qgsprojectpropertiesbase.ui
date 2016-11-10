@@ -1238,7 +1238,7 @@
                    </widget>
                   </item>
                   <item row="0" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeProjectColors" native="true"/>
+                   <widget class="QgsColorSchemeList" name="mTreeProjectColors"/>
                   </item>
                   <item row="4" column="1">
                    <widget class="QToolButton" name="mButtonImportColors">
@@ -1294,9 +1294,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-961</y>
+                <y>-912</y>
                 <width>674</width>
-                <height>2470</height>
+                <height>2497</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1845,7 +1845,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="11" column="0" colspan="2">
+                  <item row="12" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
                     <item>
                      <widget class="QLabel" name="mWMSImageQualityLabel">
@@ -1879,7 +1879,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="10" column="0" colspan="2">
+                  <item row="11" column="0" colspan="2">
                    <layout class="QGridLayout" name="gridLayout_3">
                     <item row="1" column="1">
                      <widget class="QLabel" name="mMaxWidthLabel">
@@ -1926,7 +1926,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="8" column="0" colspan="2">
+                  <item row="9" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="grpWMSPrecision">
                     <item>
                      <widget class="QLabel" name="label_5">
@@ -1950,7 +1950,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="9" column="0" colspan="2">
+                  <item row="10" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="mWMSUrlLabel">
@@ -2096,10 +2096,17 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="7" column="0">
+                  <item row="8" column="0">
                    <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
                     <property name="text">
                      <string>Segmentize feature info geometry</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QCheckBox" name="mAllowRequestDefinedDataSourcesBox">
+                    <property name="text">
+                     <string>Allow defining datasources in server requests</string>
                     </property>
                    </widget>
                   </item>
@@ -2359,8 +2366,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>779</height>
+                <width>141</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2486,27 +2493,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsProjectionSelector</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselector.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorSchemeList</class>
-   <extends>QWidget</extends>
-   <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2516,9 +2511,21 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelector</class>
+   <class>QgsColorSchemeList</class>
+   <extends>QTreeView</extends>
+   <header>qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselector.h</header>
+   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
