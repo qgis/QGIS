@@ -1545,11 +1545,11 @@ QgsGeometry QgsGeometry::pointOnSurface() const
   return QgsGeometry( pt.clone() );
 }
 
-QgsGeometry QgsGeometry::poleOfInaccessibility( double precision ) const
+QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double* distanceToBoundary ) const
 {
   QgsInternalGeometryEngine engine( *this );
 
-  return engine.poleOfInaccessibility( precision );
+  return engine.poleOfInaccessibility( precision, distanceToBoundary );
 }
 
 QgsGeometry QgsGeometry::convexHull() const

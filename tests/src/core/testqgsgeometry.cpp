@@ -3982,9 +3982,11 @@ void TestQgsGeometry::poleOfInaccessibility()
   QgsGeometry poly1 = QgsGeometry::fromWkt( poly1Wkt );
   QgsGeometry poly2 = QgsGeometry::fromWkt( poly2Wkt );
 
-  QgsPoint point = poly1.poleOfInaccessibility( 1 ).asPoint();
+  double distance;
+  QgsPoint point = poly1.poleOfInaccessibility( 1 , &distance ).asPoint();
   QGSCOMPARENEAR( point.x(), 3867.37, 0.01 );
   QGSCOMPARENEAR( point.y(), 2126.45, 0.01 );
+  QGSCOMPARENEAR( distance, 289.51, 0.01 );
 
   point = poly1.poleOfInaccessibility( 50 ).asPoint();
   QGSCOMPARENEAR( point.x(), 3855.33, 0.01 );

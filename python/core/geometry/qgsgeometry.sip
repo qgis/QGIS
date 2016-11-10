@@ -550,11 +550,12 @@ class QgsGeometry
      * approach guaranteed to find the true pole of inaccessibility within a specified
      * tolerance. More precise tolerances require more iterations and will take longer
      * to calculate.
+     * Optionally, the distance to the polygon boundary from the pole can be stored.
      * @see centroid()
      * @see pointOnSurface()
      * @note added in QGIS 3.0
      */
-    QgsGeometry poleOfInaccessibility( double precision ) const;
+    QgsGeometry poleOfInaccessibility( double precision, double* distanceToBoundary /Out/ = nullptr ) const;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry convexHull() const;
