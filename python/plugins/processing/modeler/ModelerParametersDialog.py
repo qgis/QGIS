@@ -247,7 +247,7 @@ class ModelerParametersDialog(QDialog):
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel([alg.algorithm.name for alg in self.getAvailableDependencies()])
+        return MultipleInputPanel([alg.description for alg in self.getAvailableDependencies()])
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
