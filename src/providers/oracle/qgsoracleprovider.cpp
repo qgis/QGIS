@@ -719,7 +719,9 @@ bool QgsOracleProvider::loadFields()
 
     if ( !mHasSpatialIndex )
     {
-      QgsMessageLog::logMessage( tr( "No spatial index on column %1 found - expect poor performance." )
+      QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
+                                 .arg( mOwnerName )
+                                 .arg( mTableName )
                                  .arg( mGeometryColumn ),
                                  tr( "Oracle" ) );
     }
