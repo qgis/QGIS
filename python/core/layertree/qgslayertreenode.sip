@@ -77,7 +77,7 @@ class QgsLayerTreeNode : QObject
     QList<QgsLayerTreeNode*> children();
 
     //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode *readXml( QDomElement &element );
+    static QgsLayerTreeNode* readXml( QDomElement& element ) /Factory/;
     //! Write layer tree to XML
     virtual void writeXml( QDomElement &parentElement ) = 0;
 
