@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Barscale Options</string>
+   <string>Scalebar Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
