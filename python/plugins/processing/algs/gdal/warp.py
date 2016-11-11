@@ -75,11 +75,12 @@ class warp(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+        self.tags = self.tr('transform,reproject,crs,srs')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
                                        self.tr('Source SRS'), '', optional=True))
         self.addParameter(ParameterCrs(self.DEST_SRS,
-                                       self.tr('Destination SRS'), ''))
+                                       self.tr('Destination SRS'), 'EPSG:4326'))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
                                           '', optional=True))
