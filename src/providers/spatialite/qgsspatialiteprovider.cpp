@@ -3653,9 +3653,6 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
     for ( int i = 0; i < attributevec.count(); ++i )
     {
-      if ( !attributevec.at( i ).isValid() )
-        continue;
-
       if ( i >= attributeFields.count() )
         continue;
 
@@ -3711,8 +3708,6 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         for ( int i = 0; i < attributevec.count(); ++i )
         {
           QVariant v = attributevec.at( i );
-          if ( !v.isValid() )
-            continue;
 
           // binding values for each attribute
           if ( i >= attributeFields.count() )
@@ -3724,7 +3719,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
           QVariant::Type type = attributeFields.at( i ).type();
 
-          if ( v.isNull() )
+          if ( !v.isValid() )
+          {
+            ++ia;
+          }
+          else if ( v.isNull() )
           {
             // binding a NULL value
             sqlite3_bind_null( stmt, ++ia );
