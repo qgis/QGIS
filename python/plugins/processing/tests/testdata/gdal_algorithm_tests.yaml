@@ -86,6 +86,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/buffer_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: gdalogr:buffervectors
     name: OGR basic polygon buffer
@@ -101,6 +104,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/buffer_polys.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: gdalogr:buffervectors
     name: OGR polygon buffer with dissolve
@@ -116,6 +122,10 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/buffer_polys_dissolve.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
+
   - algorithm: gdalogr:createpointsalonglines
     name: OGR points along lines
     params:
@@ -159,3 +169,6 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/one_side_buffer.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
