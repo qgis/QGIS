@@ -360,6 +360,10 @@ class ModelerAlgorithm(GeoAlgorithm):
                 elif isinstance(value, ValueFromOutput):
                     if value.alg == name:
                         return True
+            if alg.name != name:
+                for dep in alg.dependencies:
+                    if (dep == name):
+                        return True
         return False
 
     def getDependsOnAlgorithms(self, name):

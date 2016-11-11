@@ -27,7 +27,11 @@ __revision__ = '$Format:%H$'
 
 from qgis.testing import start_app, unittest
 
-from processing.modeler.ModelerAlgorithm import (ModelerAlgorithm, ModelerParameter)
+from processing.modeler.ModelerAlgorithm import (Algorithm,
+                                                 ModelerAlgorithm,
+                                                 ModelerParameter,
+                                                 ModelerOutput,
+                                                 ValueFromOutput)
 from processing.modeler.ModelerParametersDialog import (ModelerParametersDialog)
 from processing.core.parameters import (ParameterFile,
                                         ParameterNumber,
@@ -66,6 +70,26 @@ class ModelerTest(unittest.TestCase):
         self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile])),
                          set(['string', 'string2', 'number', 'file']))
 
+    def testModelerAlgorithmHasDependencies(self):
+        # test hasDependencies from ModelerAlgorithm
+
+        m = ModelerAlgorithm()
+
+        a = Algorithm("qgis:clip")
+        m.addAlgorithm(a)
+        a2 = Algorithm("qgis:clip")
+        m.addAlgorithm(a2)
+
+        # test parent algorithm dependency
+        self.assertEqual(m.hasDependencies('QGISCLIP_1'), False)
+        a2.dependencies = ['QGISCLIP_1']
+        self.assertEqual(m.hasDependencies('QGISCLIP_1'), True)
+
+        # test output algorithm dependency
+        a2.dependencies = []
+        a.outputs['OUTPUT'] = ModelerOutput('out')
+        a2.params['INPUT'] = ValueFromOutput('QGISCLIP_1', 'OUTPUT')
+        self.assertEqual(m.hasDependencies('QGISCLIP_1'), True)
 
 if __name__ == '__main__':
     unittest.main()
