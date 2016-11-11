@@ -754,7 +754,10 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return self.widget.asExpression()
+            try:
+                return self.widget.asExpression()
+            except:
+                return self.widget.expression()
         else:
             def validator(v):
                 return bool(v) or self.param.optional

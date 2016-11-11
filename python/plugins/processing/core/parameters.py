@@ -1251,12 +1251,13 @@ class ParameterExpression(Parameter):
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        default = definition.strip()[len('expression') + 1:]
-        if default:
-            return ParameterExpression(name, descName, default, optional=isOptional)
-        else:
-            return ParameterExpression(name, descName, optional=isOptional)
+        if definition.lower().strip().startswith('expression'):
+            descName = _createDescriptiveName(name)
+            default = definition.strip()[len('expression') + 1:]
+            if default:
+                return ParameterExpression(name, descName, default, optional=isOptional)
+            else:
+                return ParameterExpression(name, descName, optional=isOptional)
 
 
 class ParameterTable(ParameterDataObject):
