@@ -36,13 +36,12 @@ from functools import cmp_to_key
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
-from qgis.gui import QgsFieldExpressionWidget, QgsExpressionLineEdit
+from qgis.gui import QgsFieldExpressionWidget, QgsExpressionLineEdit, QgsProjectionSelectionWidget
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.core.parameters import (ParameterBoolean,
                                         ParameterPoint,
@@ -222,23 +221,32 @@ class CrsWidgetWrapper(WidgetWrapper):
                 widget.setEditText(self.param.default)
             return widget
         else:
-            return CrsSelectionPanel()
+
+            widget = QgsProjectionSelectionWidget()
+            if self.param.optional:
+                widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
+
+            if self.param.default:
+                crs = QgsCoordinateReferenceSystem(self.param.default)
+                widget.setCrs(crs)
+
+            return widget
 
     def setValue(self, value):
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value)
         else:
-            if isinstance(value, str):  # authId
-                self.widget.crs = value
-            else:
-                self.widget.crs = QgsCoordinateReferenceSystem(value).authid()
-            self.widget.updateText()
+            self.widget.setCrs(QgsCoordinateReferenceSystem(value))
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:
             return self.comboValue()
         else:
-            return self.widget.getValue()
+            crs = self.widget.crs()
+            if crs.isValid():
+                return self.widget.crs().authid()
+            else:
+                return None
 
 
 class ExtentWidgetWrapper(WidgetWrapper):

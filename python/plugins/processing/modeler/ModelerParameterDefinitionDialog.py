@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from qgis.gui import QgsExpressionLineEdit
+from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
+from qgis.core import QgsCoordinateReferenceSystem
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
@@ -54,7 +55,6 @@ from processing.core.parameters import (Parameter,
                                         ParameterFile,
                                         ParameterPoint,
                                         ParameterCrs)
-from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 
 
 class ModelerParameterDefinitionDialog(QDialog):
@@ -247,10 +247,12 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultTextBox = CrsSelectionPanel('EPSG:4326')
+            self.selector = QgsProjectionSelectionWidget()
             if self.param is not None:
-                self.defaultTextBox.setAuthId(self.param.default)
-            self.verticalLayout.addWidget(self.defaultTextBox)
+                self.selector.setCrs(QgsCoordinateReferenceSystem(self.param.default))
+            else:
+                self.selector.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+            self.verticalLayout.addWidget(self.selector)
 
         self.verticalLayout.addSpacing(20)
         self.requiredCheck = QCheckBox()
@@ -361,7 +363,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                                         str(self.defaultTextBox.text()))
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
-            self.param = ParameterCrs(name, description, self.defaultTextBox.getValue())
+            self.param = ParameterCrs(name, description, default=self.selector.crs().authid())
         self.param.optional = not self.requiredCheck.isChecked()
         self.close()
 
