@@ -210,7 +210,8 @@ class ModelerParameterDefinitionDialog(QDialog):
 
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
-            idx = 0
+            self.parentCombo.addItem(self.tr("None"), None)
+            idx = 1
             for param in list(self.alg.inputs.values()):
                 if isinstance(param.param, (ParameterVector, ParameterTable)):
                     self.parentCombo.addItem(param.param.description, param.param.name)
