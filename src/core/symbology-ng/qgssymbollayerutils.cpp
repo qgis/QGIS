@@ -68,7 +68,9 @@ QColor QgsSymbolLayerUtils::decodeColor( const QString& str )
 
 QString QgsSymbolLayerUtils::encodeSldAlpha( int alpha )
 {
-  return QString::number( alpha / 255.0, 'f', 2 );
+  QString result;
+  result.sprintf( "%.2g", alpha / 255.0 );
+  return result;
 }
 
 int QgsSymbolLayerUtils::decodeSldAlpha( const QString& str )
@@ -1950,6 +1952,69 @@ void QgsSymbolLayerUtils::externalGraphicToSld( QDomDocument &doc, QDomElement &
     QDomElement sizeElem = doc.createElement( QStringLiteral( "se:Size" ) );
     sizeElem.appendChild( doc.createTextNode( qgsDoubleToString( size ) ) );
     element.appendChild( sizeElem );
+  }
+}
+
+void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
+    const QString& path, const QColor& fillColor, double size, const QColor& outlineColor, double outlineWidth )
+{
+  // Parametric SVG paths are an extension that few systems will understand, but se:Graphic allows for fallback
+  // symbols, this encodes the full parametric path first, the pure shape second, and a mark with the right colors as
+  // a last resort for systems that cannot do SVG at all
+
+  // encode parametric version with all coloring details (size is going to be encoded by the last fallback)
+  graphicElem.appendChild( doc.createComment( QStringLiteral( "Parametric SVG" ) ) );
+  QString parametricPath = getSvgParametricPath( path, fillColor, outlineColor, outlineWidth );
+  QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, parametricPath, QStringLiteral( "image/svg+xml" ), fillColor, -1 );
+  // also encode a fallback version without parameters, in case a renderer gets confused by the parameters
+  graphicElem.appendChild( doc.createComment( QStringLiteral( "Plain SVG fallback, no parameters" ) ) );
+  QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, path, QStringLiteral( "image/svg+xml" ), fillColor, -1 );
+  // finally encode a simple mark with the right colors/outlines for renderers that cannot do SVG at all
+  graphicElem.appendChild( doc.createComment( QStringLiteral( "Well known marker fallback" ) ) );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "square" ), fillColor, outlineColor, Qt::PenStyle::SolidLine, outlineWidth, -1 );
+
+  // size is encoded here, it's part of se:Graphic, not attached to the single symbol
+  if ( size >= 0 )
+  {
+    QDomElement sizeElem = doc.createElement( QStringLiteral( "se:Size" ) );
+    sizeElem.appendChild( doc.createTextNode( qgsDoubleToString( size ) ) );
+    graphicElem.appendChild( sizeElem );
+  }
+}
+
+
+QString QgsSymbolLayerUtils::getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& borderColor, double borderWidth )
+{
+  QUrl url = QUrl();
+  if ( fillColor.isValid() )
+  {
+    url.addQueryItem( QStringLiteral( "fill" ), fillColor.name() );
+    url.addQueryItem( QStringLiteral( "fill-opacity" ), encodeSldAlpha( fillColor.alpha() ) );
+  }
+  else
+  {
+    url.addQueryItem( "fill", QStringLiteral( "#000000" ) );
+    url.addQueryItem( "fill-opacity", QStringLiteral( "1" ) );
+  }
+  if ( borderColor.isValid() )
+  {
+    url.addQueryItem( QStringLiteral( "outline" ), borderColor.name() );
+    url.addQueryItem( QStringLiteral( "outline-opacity" ), encodeSldAlpha( borderColor.alpha() ) );
+  }
+  else
+  {
+    url.addQueryItem( QStringLiteral( "outline" ), QStringLiteral( "#000000" ) );
+    url.addQueryItem( QStringLiteral( "outline-opacity" ), QStringLiteral( "1" ) );
+  }
+  url.addQueryItem( QStringLiteral( "outline-width" ), QString::number( borderWidth ) );
+  QString params = url.encodedQuery();
+  if ( params.isEmpty() )
+  {
+    return basePath;
+  }
+  else
+  {
+    return basePath + "?" + params;
   }
 }
 

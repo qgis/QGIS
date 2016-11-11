@@ -501,4 +501,20 @@ class QgsSymbolLayerUtils
       */
     static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props );
 
+    /**
+     * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
+     * a fallback SVG without parameters, and a final fallback as a mark with the right colors and outline for systems
+     * that cannot do SVG at all
+     * @note added in 3.0
+     */
+    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
+                                    const QString& path,
+                                    const QColor& fillColor, double size, const QColor& outlineColor, double outlineWidth );
+
+    /**
+     * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
+     * @note added in 3.0
+     */
+    static QString getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& borderColor, double borderWidth );
+
 };

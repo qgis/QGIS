@@ -60,9 +60,9 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         self.assertStaticRotation(root, '50')
 
-    def assertStaticRotation(self, root, expectedValue):
+    def assertStaticRotation(self, root, expectedValue, index=0):
         # Check the rotation element is a literal, not a
-        rotation = root.elementsByTagName('se:Rotation').item(0)
+        rotation = root.elementsByTagName('se:Rotation').item(index)
         literal = rotation.firstChild()
         self.assertEqual("ogc:Literal", literal.nodeName())
         self.assertEqual(expectedValue, literal.firstChild().nodeValue())
@@ -127,10 +127,20 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSvgMarkerUnitDefault(self):
         symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 90)
+        symbol.setFillColor(QColor("blue"))
+        symbol.setOutlineWidth(1)
+        symbol.setOutlineColor(QColor('red'))
+        symbol.setPath('symbols/star.svg')
         symbol.setOffset(QPointF(5, 10))
 
         dom, root = self.symbolToSld(symbol)
         # print("Svg marker mm: " + dom.toString())
+
+        self.assertExternalGraphic(root, 0,
+                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=4', 'image/svg+xml')
+        self.assertExternalGraphic(root, 1,
+                                   'symbols/star.svg', 'image/svg+xml')
+        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ff0000', 4)
 
         # Check the size has been rescaled
         self.assertStaticSize(root, '36')
@@ -141,10 +151,20 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSvgMarkerUnitPixels(self):
         symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 0)
+        symbol.setFillColor(QColor("blue"))
+        symbol.setOutlineWidth(1)
+        symbol.setOutlineColor(QColor('red'))
+        symbol.setPath('symbols/star.svg')
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
         dom, root = self.symbolToSld(symbol)
         # print("Svg marker unit px: " + dom.toString())
+
+        self.assertExternalGraphic(root, 0,
+                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=1', 'image/svg+xml')
+        self.assertExternalGraphic(root, 1,
+                                   'symbols/star.svg', 'image/svg+xml')
+        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ff0000', 1)
 
         # Check the size has not been rescaled
         self.assertStaticSize(root, '10')
@@ -154,7 +174,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         symbol = QgsFontMarkerSymbolLayer('sans', ',', 10, QColor('black'), 45)
         symbol.setOffset(QPointF(5, 10))
         dom, root = self.symbolToSld(symbol)
-        # print "Font marker unit mm: " + dom.toString()
+        # print("Font marker unit mm: " + dom.toString())
 
         # Check the size has been rescaled
         self.assertStaticSize(root, '36')
@@ -300,32 +320,47 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSvgFillDefault(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
+        symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgOutlineWidth(3)
+        symbol.setSvgOutlineColor(QColor('yellow'))
+        symbol.subSymbol().setWidth(10)
 
         dom, root = self.symbolToSld(symbol)
         # print ("Svg fill mm: \n" + dom.toString())
 
+        self.assertExternalGraphic(root, 0,
+                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ffff00&outline-opacity=1&outline-width=11', 'image/svg+xml')
+        self.assertExternalGraphic(root, 1,
+                                   'test/star.svg', 'image/svg+xml')
+        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ffff00', 11)
+
         self.assertStaticRotation(root, '45')
         self.assertStaticSize(root, '36')
-        # width of the svg outline
-        self.assertStrokeWidth(root, 1, 11)
         # width of the polygon outline
-        self.assertStrokeWidth(root, 3, 1)
+        lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
+        self.assertStrokeWidth(lineSymbolizer, 1, 36)
 
     def testSvgFillPixel(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
+        symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgOutlineWidth(3)
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.subSymbol().setWidth(10)
 
         dom, root = self.symbolToSld(symbol)
         # print ("Svg fill px: \n" + dom.toString())
 
+        self.assertExternalGraphic(root, 0,
+                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23000000&outline-opacity=1&outline-width=3', 'image/svg+xml')
+        self.assertExternalGraphic(root, 1,
+                                   'test/star.svg', 'image/svg+xml')
+        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#000000', 3)
+
         self.assertStaticRotation(root, '45')
         self.assertStaticSize(root, '10')
-        # width of the svg outline
-        self.assertStrokeWidth(root, 1, 3)
         # width of the polygon outline
-        self.assertStrokeWidth(root, 3, 0.26)
+        lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
+        self.assertStrokeWidth(lineSymbolizer, 1, 10)
 
     def testLineFillDefault(self):
         symbol = QgsLinePatternFillSymbolLayer()
@@ -497,9 +532,40 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         size = root.elementsByTagName('se:Size').item(0)
         self.assertEqual(expectedValue, size.firstChild().nodeValue())
 
+    def assertExternalGraphic(self, root, index, expectedLink, expectedFormat):
+        graphic = root.elementsByTagName('se:ExternalGraphic').item(index)
+        onlineResource = graphic.firstChildElement('se:OnlineResource')
+        self.assertEqual(expectedLink, onlineResource.attribute('xlink:href'))
+        format = graphic.firstChildElement('se:Format')
+        self.assertEqual(expectedFormat, format.firstChild().nodeValue())
+
     def assertStaticPerpendicularOffset(self, root, expectedValue):
         offset = root.elementsByTagName('se:PerpendicularOffset').item(0)
         self.assertEqual(expectedValue, offset.firstChild().nodeValue())
+
+    def assertWellKnownMark(self, root, index, expectedName, expectedFill, expectedStroke, expectedStrokeWidth):
+        mark = root.elementsByTagName('se:Mark').item(index)
+        wkn = mark.firstChildElement('se:WellKnownName')
+        self.assertEqual(expectedName, wkn.text())
+
+        fill = mark.firstChildElement('se:Fill')
+        if expectedFill is None:
+            self.assertTrue(fill.isNull())
+        else:
+            parameter = fill.firstChildElement('se:SvgParameter')
+            self.assertEqual('fill', parameter.attribute('name'))
+            self.assertEqual(expectedFill, parameter.text())
+
+        stroke = mark.firstChildElement('se:Stroke')
+        if expectedStroke is None:
+            self.assertTrue(stroke.isNull())
+        else:
+            parameter = stroke.firstChildElement('se:SvgParameter')
+            self.assertEqual('stroke', parameter.attribute('name'))
+            self.assertEqual(expectedStroke, parameter.text())
+            parameter = parameter.nextSiblingElement('se:SvgParameter')
+            self.assertEqual('stroke-width', parameter.attribute('name'))
+            self.assertEqual(str(expectedStrokeWidth), parameter.text())
 
     def symbolToSld(self, symbolLayer):
         dom = QDomDocument()
