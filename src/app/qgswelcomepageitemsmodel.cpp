@@ -39,7 +39,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   QAbstractTextDocumentLayout::PaintContext ctx;
-  QStyleOptionViewItemV4 optionV4 = option;
+  QStyleOptionViewItem optionV4 = option;
 
   QColor color;
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )

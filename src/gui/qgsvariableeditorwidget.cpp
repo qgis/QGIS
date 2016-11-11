@@ -479,7 +479,7 @@ void QgsVariableEditorTree::emitChanged()
 void QgsVariableEditorTree::drawRow( QPainter* painter, const QStyleOptionViewItem& option,
                                      const QModelIndex& index ) const
 {
-  QStyleOptionViewItemV3 opt = option;
+  QStyleOptionViewItem opt = option;
   QTreeWidgetItem* item = itemFromIndex( index );
   if ( index.parent().isValid() )
   {
