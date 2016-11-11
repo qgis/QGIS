@@ -53,7 +53,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         downloader.downloadExited.connect(loop.quit)
 
         if cancel:
-            QTimer.singleShot(1000, downloader.onDownloadCanceled)
+            downloader.downloadProgress.connect(downloader.onDownloadCanceled)
 
         loop.exec_()
 
