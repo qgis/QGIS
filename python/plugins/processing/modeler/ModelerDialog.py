@@ -112,9 +112,15 @@ class ModelerDialog(BASE, WIDGET):
 
         def _wheelEvent(event):
             self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
-            factor = 1.05
-            if event.angleDelta().y() > 0:
+
+            settings = QSettings()
+            factor = settings.value('/qgis/zoom_favor', 2.0)
+            if (event.modifiers() == Qt.ControlModifier):
+                factor = 1.0 + (factor - 1.0) / 20.0
+
+            if event.angleDelta().y() < 0:
                 factor = 1 / factor
+
             self.view.scale(factor, factor)
             self.repaintModel()
 
@@ -130,6 +136,22 @@ class ModelerDialog(BASE, WIDGET):
             QGraphicsView.mouseReleaseEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
 
+        def _mousePressEvent(e):
+            if e.button() == Qt.MidButton:
+                self.previousMousePos = e.pos()
+            else:
+                QGraphicsView.mousePressEvent(self.view, e)
+
+        def _mouseMoveEvent(e):
+            if e.buttons() == Qt.MidButton:
+                offset = self.previousMousePos - e.pos()
+                self.previousMousePos = e.pos()
+
+                self.view.verticalScrollBar().setValue(self.view.verticalScrollBar().value() + offset.y())
+                self.view.horizontalScrollBar().setValue(self.view.horizontalScrollBar().value() + offset.x())
+            else:
+                QGraphicsView.mouseMoveEvent(self.view, e)
+
         self.view.setDragMode(QGraphicsView.ScrollHandDrag)
         self.view.dragEnterEvent = _dragEnterEvent
         self.view.dropEvent = _dropEvent
@@ -137,7 +159,8 @@ class ModelerDialog(BASE, WIDGET):
         self.view.wheelEvent = _wheelEvent
         self.view.enterEvent = _enterEvent
         self.view.mousePressEvent = _mousePressEvent
-        self.view.mouseReleaseEvent = _mouseReleaseEvent
+        self.view.mousePressEvent = _mousePressEvent
+        self.view.mouseMoveEvent = _mouseMoveEvent
 
         def _mimeDataInput(items):
             mimeData = QMimeData()
@@ -217,11 +240,14 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.hasChanged:
             ret = QMessageBox.question(
-                self, self.tr('Unsaved changes'),
-                self.tr('There are unsaved changes in model. Continue?'),
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self, self.tr('Save?'),
+                self.tr('There are unsaved changes in this model, do you want to keep those?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
 
-            if ret == QMessageBox.Yes:
+            if ret == QMessageBox.Save:
+                self.saveModel(False)
+                evt.accept()
+            elif ret == QMessageBox.Discard:
                 evt.accept()
             else:
                 evt.ignore()
