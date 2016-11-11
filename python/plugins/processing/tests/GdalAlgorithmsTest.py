@@ -75,31 +75,31 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
         # NOTE: defaults are debatable, see
         # https://github.com/qgis/QGIS/pull/3607#issuecomment-253971020
         self.assertEqual(obj.getConnectionString(),
-                          "host=localhost port=5432 active_schema=public")
+                         "host=localhost port=5432 active_schema=public")
 
         obj.setParameterValue('HOST', 'remote')
         self.assertEqual(obj.getConnectionString(),
-                          "host=remote port=5432 active_schema=public")
+                         "host=remote port=5432 active_schema=public")
 
         obj.setParameterValue('HOST', '')
         self.assertEqual(obj.getConnectionString(),
-                          "port=5432 active_schema=public")
+                         "port=5432 active_schema=public")
 
         obj.setParameterValue('PORT', '5555')
         self.assertEqual(obj.getConnectionString(),
-                          "port=5555 active_schema=public")
+                         "port=5555 active_schema=public")
 
         obj.setParameterValue('PORT', '')
         self.assertEqual(obj.getConnectionString(),
-                          "active_schema=public")
+                         "active_schema=public")
 
         obj.setParameterValue('USER', 'usr')
         self.assertEqual(obj.getConnectionString(),
-                          "active_schema=public user=usr")
+                         "active_schema=public user=usr")
 
         obj.setParameterValue('PASSWORD', 'pwd')
         self.assertEqual(obj.getConnectionString(),
-                          "password=pwd active_schema=public user=usr")
+                         "password=pwd active_schema=public user=usr")
 
 
 if __name__ == '__main__':
