@@ -89,6 +89,8 @@ tests:
         compare:
           geometry:
             precision: 7
+    expectedFailure:
+      - int(1)
 
   - algorithm: gdalogr:buffervectors
     name: OGR basic polygon buffer
