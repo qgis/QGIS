@@ -36,7 +36,7 @@ from functools import cmp_to_key
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
-from qgis.gui import QgsFieldExpressionWidget
+from qgis.gui import QgsFieldExpressionWidget, QgsExpressionLineEdit
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel
@@ -714,7 +714,10 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            widget = QgsFieldExpressionWidget()
+            if self.param.parent_layer:
+                widget = QgsFieldExpressionWidget()
+            else:
+                widget = QgsExpressionLineEdit()
             if self.param.default:
                 widget.setExpression(self.param.default)
         else:
