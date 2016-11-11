@@ -40,7 +40,8 @@ from processing.core.parameters import (Parameter,
                                         ParameterString,
                                         ParameterVector,
                                         ParameterTableField,
-                                        ParameterSelection)
+                                        ParameterSelection,
+                                        ParameterExpression)
 from processing.tools import dataobjects
 from processing.tests.TestData import points2
 
@@ -462,7 +463,30 @@ class ParameterStringTest(unittest.TestCase):
         self.assertTrue(optionalParameter.setValue(None))
         self.assertEqual(optionalParameter.value, None)
 
-        requiredParameter = ParameterCrs('myName', 'myDesc', default='test', optional=False)
+        requiredParameter = ParameterString('myName', 'myDesc', default='test', optional=False)
+        self.assertEqual(requiredParameter.value, 'test')
+        requiredParameter.setValue('check')
+        self.assertEqual(requiredParameter.value, 'check')
+        self.assertFalse(requiredParameter.setValue(None))
+        self.assertEqual(requiredParameter.value, 'check')
+
+
+class ParameterExpressionTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterExpression('myName', 'myDescription')
+        self.assertTrue(parameter.setValue('\'a\' || "field"'))
+        self.assertEqual(parameter.value, '\'a\' || "field"')
+
+    def testOptional(self):
+        optionalParameter = ParameterExpression('myName', 'myDesc', default='test', optional=True)
+        self.assertEqual(optionalParameter.value, 'test')
+        optionalParameter.setValue('check')
+        self.assertEqual(optionalParameter.value, 'check')
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
+
+        requiredParameter = ParameterExpression('myName', 'myDesc', default='test', optional=False)
         self.assertEqual(requiredParameter.value, 'test')
         requiredParameter.setValue('check')
         self.assertEqual(requiredParameter.value, 'check')
