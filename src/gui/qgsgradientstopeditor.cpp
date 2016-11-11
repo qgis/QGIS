@@ -83,7 +83,7 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
                    rect().height() - MARGIN_BOTTOM );
 
   //draw frame
-  QStyleOptionFrameV3 option;
+  QStyleOptionFrame option;
   option.initFrom( this );
   option.state = hasFocus() ? QStyle::State_KeyboardFocusChange : QStyle::State_None;
   option.rect = frameRect;

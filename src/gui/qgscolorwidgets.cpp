@@ -409,7 +409,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   QPainter painter( this );
 
   //draw a frame
-  QStyleOptionFrameV3 option = QStyleOptionFrameV3();
+  QStyleOptionFrame option = QStyleOptionFrame();
   option.initFrom( this );
   option.state = this->hasFocus() ? QStyle::State_Active : QStyle::State_None;
   style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
@@ -774,7 +774,7 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   Q_UNUSED( event );
   QPainter painter( this );
 
-  QStyleOptionFrameV3 option;
+  QStyleOptionFrame option;
   option.initFrom( this );
   option.state = hasFocus() ? QStyle::State_Active :  QStyle::State_None;
   style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
@@ -1020,7 +1020,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
   if ( mShowFrame )
   {
     //draw frame
-    QStyleOptionFrameV3 option;
+    QStyleOptionFrame option;
     option.initFrom( this );
     option.state = hasFocus() ? QStyle::State_KeyboardFocusChange : QStyle::State_None;
     style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
