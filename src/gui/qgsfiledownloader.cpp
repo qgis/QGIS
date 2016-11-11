@@ -95,7 +95,7 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
   Q_UNUSED( reply );
   QStringList errorMessages;
   errorMessages <<  "SSL Errors: ";
-  for ( auto end = errors.size(), i = 0; i != end; ++i )
+  for ( int end = errors.size(), i = 0; i != end; ++i )
   {
     errorMessages << errors[i].errorString();
   }
@@ -106,7 +106,7 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
 
 void QgsFileDownloader::error( QStringList errorMessages )
 {
-  for ( auto end = errorMessages.size(), i = 0; i != end; ++i )
+  for ( int end = errorMessages.size(), i = 0; i != end; ++i )
   {
     mErrors.append( errorMessages[i] );
   }
