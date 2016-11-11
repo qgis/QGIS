@@ -40,6 +40,7 @@ import codecs
 import io
 
 import psycopg2
+from osgeo import ogr
 
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
@@ -536,41 +537,47 @@ def ogrConnectionString(uri):
     return '"' + ogrstr + '"'
 
 
-# The uri parameter is an URI from any QGIS provider,
-# so could have different formats.
-# Example formats:
-#
-# -- PostgreSQL provider
-# port=5493 sslmode=disable key='edge_id' srid=0 type=LineString table="city_data"."edge" (geom) sql=
-#
-# -- Spatialite provider
-# dbname='/tmp/x.sqlite' table="t" (geometry) sql='
-#
-# -- OGR provider (single-layer directory)
-# /tmp/x.gdb
-#
-# -- OGR provider (multi-layer directory)
-# /tmp/x.gdb|layerid=1
-#
-# -- OGR provider (multi-layer directory)
-# /tmp/x.gdb|layername=thelayer
-#
 def ogrLayerName(uri):
-    if 'host' in uri:
-        regex = re.compile('(table=")(.+?)(\.)(.+?)"')
-        r = regex.search(uri)
-        return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
-    elif 'dbname' in uri:
-        regex = re.compile('(table=")(.+?)"')
-        r = regex.search(uri)
-        return r.groups()[1]
-    elif 'layername' in uri:
-        regex = re.compile('(layername=)(.*)')
-        r = regex.search(uri)
-        return r.groups()[1]
-    else:
+    if os.path.isfile(uri):
         return os.path.basename(os.path.splitext(uri)[0])
 
+    if ' table=' in uri:
+        # table="schema"."table"
+        re_table_schema = re.compile(' table="([^"]*)"\."([^"]*)"')
+        r = re_table_schema.search(uri)
+        if r:
+            return r.groups()[0] + '.' + r.groups()[1]
+        # table="table"
+        re_table = re.compile(' table="([^"]*)"')
+        r = re_table.search(uri)
+        if r:
+            return r.groups()[0]
+    elif 'layername' in uri:
+        regex = re.compile('(layername=)([^|]*)')
+        r = regex.search(uri)
+        return r.groups()[1]
+
+    fields = uri.split('|')
+    basePath = fields[0]
+    fields = fields[1:]
+    layerid = 0
+    for f in fields:
+        if f.startswith('layername='):
+            return f.split('=')[1]
+        if f.startswith('layerid='):
+            layerid = int(f.split('=')[1])
+
+    ds = ogr.Open(basePath)
+    if not ds:
+        return None
+
+    ly = ds.GetLayer(layerid)
+    if not ly:
+        return None
+
+    name = ly.GetName()
+    ds = None
+    return name
 
 
 class VectorWriter(object):

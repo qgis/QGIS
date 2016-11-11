@@ -25,16 +25,32 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.testing import start_app, unittest
-from processing.tests.TestData import points
-from processing.tools import vector
+import os
+import shutil
+import tempfile
+
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from qgis.testing import start_app, unittest
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tests.TestData import testDataPath, points
+from processing.tools import vector
+
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 start_app()
 
 
 class VectorTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.cleanup_paths = []
+
+    @classmethod
+    def tearDownClass(cls):
+        for path in cls.cleanup_paths:
+            shutil.rmtree(path)
 
     def testFeatures(self):
         ProcessingConfig.initialize()
@@ -147,6 +163,46 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set(v), set([5, 7, 3]))
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+
+    def testOgrLayerNameExtraction(self):
+        outdir = tempfile.mkdtemp()
+        self.cleanup_paths.append(outdir)
+
+        def _copyFile(dst):
+            shutil.copyfile(os.path.join(testDataPath, 'custom', 'grass7', 'weighted.csv'), dst)
+
+        # OGR provider - single layer
+        _copyFile(os.path.join(outdir, 'a.csv'))
+        name = vector.ogrLayerName(outdir)
+        self.assertEqual(name, 'a')
+
+        # OGR provider - multiple layers
+        _copyFile(os.path.join(outdir, 'b.csv'))
+        name = vector.ogrLayerName(outdir + '|layerid=0')
+        self.assertEqual(name, 'b')
+        name = vector.ogrLayerName(outdir + '|layerid=1')
+        self.assertEqual(name, 'a')
+
+        name = vector.ogrLayerName(outdir + '|layerid=2')
+        self.assertIsNone(name)
+
+        # OGR provider - layername takes precedence
+        name = vector.ogrLayerName(outdir + '|layername=f')
+        self.assertEqual(name, 'f')
+
+        name = vector.ogrLayerName(outdir + '|layerid=0|layername=f')
+        self.assertEqual(name, 'f')
+
+        name = vector.ogrLayerName(outdir + '|layername=f|layerid=0')
+        self.assertEqual(name, 'f')
+
+        # SQLiite provider
+        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
+        self.assertEqual(name, 't')
+
+        # PostgreSQL provider
+        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
+        self.assertEqual(name, 'city_data.edge')
 
 
 if __name__ == '__main__':
