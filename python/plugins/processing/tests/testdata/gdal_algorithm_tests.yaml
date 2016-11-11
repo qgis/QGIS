@@ -153,6 +153,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/offset_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: gdalogr:singlesidedbufferforlines
     name: OGR one-side buffer for lines (left-handed)

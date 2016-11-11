@@ -63,7 +63,7 @@ class OffsetCurve(GdalAlgorithm):
                                           'geometry', optional=False))
         self.addParameter(ParameterNumber(self.RADIUS,
                                           self.tr('Offset distance (positive value for left-sided and negative - for right-sided)'),
-                                          0.0, 99999999.999999, 1000.0,
+                                          -99999999.999999, 99999999.999999, 1000.0,
                                           optional=False))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
                                            self.tr('Dissolve all results'), False))
