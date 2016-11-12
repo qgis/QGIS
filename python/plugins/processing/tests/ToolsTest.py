@@ -179,9 +179,9 @@ class VectorTest(unittest.TestCase):
         # OGR provider - multiple layers
         _copyFile(os.path.join(outdir, 'b.csv'))
         name = vector.ogrLayerName(outdir + '|layerid=0')
-        self.assertEqual(name, 'b')
-        name = vector.ogrLayerName(outdir + '|layerid=1')
         self.assertEqual(name, 'a')
+        name = vector.ogrLayerName(outdir + '|layerid=1')
+        self.assertEqual(name, 'b')
 
         name = vector.ogrLayerName(outdir + '|layerid=2')
         self.assertIsNone(name)
