@@ -59,6 +59,9 @@ def uri_from_name(conn_name):
 
     settings.endGroup()
 
+    if hasattr(authcfg, 'isNull') and authcfg.isNull():
+        authcfg = ''
+
     if service:
         uri.setConnection(service, database, username, password, sslmode, authcfg)
     else:
@@ -202,7 +205,7 @@ class GeoDB(object):
         for i in range(4):
             expandedConnInfo = self.uri.connectionInfo(True)
             try:
-                self.con = psycopg2.connect(expandedConnInfo.encode('utf-8'))
+                self.con = psycopg2.connect(expandedConnInfo)
                 if err is not None:
                     QgsCredentials.instance().put(conninfo,
                                                   self.uri.username(),
