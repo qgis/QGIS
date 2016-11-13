@@ -224,7 +224,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
-  const GEOSGeometry* geos_geom = nullptr;
+  GEOSGeometry* geomCopy = nullptr;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
@@ -232,35 +232,27 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     QgsGeometry* preparedGeom = scopedPreparedGeom.data();
     if ( preparedGeom->isEmpty() )
       return nullptr;
-    geos_geom = preparedGeom->asGeos();
+    geomCopy = preparedGeom->exportToGeos();
   }
   else
   {
-    geos_geom = geom.asGeos();
+    geomCopy = geom.exportToGeos();
   }
 
-  if ( !geos_geom )
+  if ( !geomCopy )
     return nullptr; // invalid geometry
 
-  GEOSGeometry* geomCopy = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
-
-  const GEOSGeometry* geosObstacleGeom = nullptr;
+  GEOSGeometry* geosObstacleGeomClone = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
   if ( mSettings.isObstacle() && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
     QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );
-    geosObstacleGeom = preparedObstacleGeom.asGeos();
+    geosObstacleGeomClone = preparedObstacleGeom.exportToGeos();
   }
   else if ( mSettings.isObstacle() && obstacleGeometry )
   {
-    geosObstacleGeom = obstacleGeometry->asGeos();
+    geosObstacleGeomClone = obstacleGeometry->exportToGeos();
   }
-  GEOSGeometry* geosObstacleGeomClone = nullptr;
-  if ( geosObstacleGeom )
-  {
-    geosObstacleGeomClone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geosObstacleGeom );
-  }
-
 
   double diagramWidth = 0;
   double diagramHeight = 0;

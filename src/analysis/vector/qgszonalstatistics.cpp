@@ -419,16 +419,17 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
-  const GEOSGeometry* polyGeos = poly.asGeos();
+  GEOSGeometry* polyGeos = poly.exportToGeos();
   if ( !polyGeos )
   {
     return;
   }
 
   GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
-  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare_r( geosctxt, poly.asGeos() );
+  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare_r( geosctxt, polyGeos );
   if ( !polyGeosPrepared )
   {
+    GEOSGeom_destroy_r( geosctxt, polyGeos );
     return;
   }
 
@@ -464,6 +465,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
   GEOSGeom_destroy_r( geosctxt, currentCellCenter );
   CPLFree( scanLine );
   GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
+  GEOSGeom_destroy_r( geosctxt, polyGeos );
 }
 
 void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry& poly, int pixelOffsetX,

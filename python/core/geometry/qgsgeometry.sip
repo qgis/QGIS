@@ -103,12 +103,12 @@ class QgsGeometry
      */
     void fromWkb( const QByteArray& wkb );
 
-    /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
+    /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     *  @note this method was added in version 1.1
+     *  @note added in version 3.0
      *  @note not available in python bindings
      */
-    // const GEOSGeometry* asGeos( double precision = 0 ) const;
+    // GEOSGeometry* exportToGeos( double precision = 0 ) const;
 
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * @see type

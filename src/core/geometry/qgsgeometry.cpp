@@ -54,11 +54,10 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ), mGeos( nullptr ) {}
-  ~QgsGeometryPrivate() { delete geometry; GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), mGeos ); }
+  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
+  ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
   QgsAbstractGeometry* geometry;
-  mutable GEOSGeometry* mGeos;
 };
 
 QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() )
@@ -269,18 +268,14 @@ void QgsGeometry::fromWkb( const QByteArray &wkb )
   d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
 }
 
-const GEOSGeometry* QgsGeometry::asGeos( double precision ) const
+GEOSGeometry* QgsGeometry::exportToGeos( double precision ) const
 {
   if ( !d->geometry )
   {
     return nullptr;
   }
 
-  if ( !d->mGeos )
-  {
-    d->mGeos = QgsGeos::asGeos( d->geometry, precision );
-  }
-  return d->mGeos;
+  return QgsGeos::asGeos( d->geometry, precision );
 }
 
 
@@ -320,7 +315,7 @@ void QgsGeometry::fromGeos( GEOSGeometry *geos )
   detach( false );
   delete d->geometry;
   d->geometry = QgsGeos::fromGeos( geos );
-  d->mGeos = geos;
+  GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), geos );
 }
 
 QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist ) const

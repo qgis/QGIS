@@ -31,6 +31,17 @@
 #include <set>
 #include <map>
 
+static bool _canExportToGeos( const QgsGeometry& geom )
+{
+  GEOSGeometry* geosGeom = geom.exportToGeos();
+  if ( geosGeom )
+  {
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
+    return true;
+  }
+  return false;
+}
+
 topolTest::topolTest( QgisInterface* qgsIface )
 {
   theQgsInterface = qgsIface;
@@ -266,7 +277,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
       continue;
     }
 
-    if ( !g1.asGeos() )
+    if ( !_canExportToGeos( g1 ) )
     {
       QgsMessageLog::logMessage( tr( "Failed to import first geometry into GEOS in dangling line test." ), tr( "Topology plugin" ) );
       continue;
@@ -395,7 +406,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
         continue;
       }
 
-      if ( !g2.asGeos() )
+      if ( !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in duplicate geometry test." ), tr( "Topology plugin" ) );
         continue;
@@ -514,7 +525,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         continue;
       }
 
-      if ( !g2.asGeos() )
+      if ( !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in overlaps test." ), tr( "Topology plugin" ) );
         continue;
@@ -609,7 +620,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       continue;
     }
 
-    if ( !g1.asGeos() )
+    if ( !_canExportToGeos( g1 ) )
     {
       continue;
     }
@@ -629,13 +640,13 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
         QgsGeometry polyGeom = QgsGeometry::fromPolygon( polygon );
 
-        geomList.push_back( GEOSGeom_clone_r( geosctxt, polyGeom.asGeos() ) );
+        geomList.push_back( polyGeom.exportToGeos() );
       }
 
     }
     else
     {
-      geomList.push_back( GEOSGeom_clone_r( geosctxt, g1.asGeos() ) );
+      geomList.push_back( g1.exportToGeos() );
     }
   }
 
@@ -753,7 +764,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
       continue;
     }
 
-    if ( !g1.asGeos() )
+    if ( !_canExportToGeos( g1 ) )
     {
       QgsMessageLog::logMessage( tr( "Failed to import first geometry into GEOS in pseudo line test." ), tr( "Topology plugin" ) );
       continue;
@@ -853,10 +864,11 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
       continue;
     }
 
-    if ( !g.asGeos() )
+    GEOSGeometry* gGeos = g.exportToGeos();
+    if ( !gGeos )
       continue;
 
-    if ( !GEOSisValid_r( QgsGeometry::getGEOSHandler(), g.asGeos() ) )
+    if ( !GEOSisValid_r( QgsGeometry::getGEOSHandler(), gGeos ) )
     {
       QgsRectangle r = g.boundingBox();
       QList<FeatureLayer> fls;
@@ -865,6 +877,7 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
       TopolErrorValid* err = new TopolErrorValid( r, g, fls );
       errorList << err;
     }
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), gGeos );
   }
 
   return errorList;
@@ -1234,7 +1247,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !g2.asGeos() )
+      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1320,7 +1333,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !g2.asGeos() )
+      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1410,7 +1423,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !g2.asGeos() )
+      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1484,7 +1497,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry g2 = f.geometry();
-      if ( g2.isEmpty() || !g2.asGeos() )
+      if ( g2.isEmpty() || !_canExportToGeos( g2 ) )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
@@ -1529,7 +1542,7 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
       QgsMessageLog::logMessage( tr( "Missing geometry in multipart check." ), tr( "Topology plugin" ) );
       continue;
     }
-    if ( !g.asGeos() )
+    if ( !_canExportToGeos( g ) )
       continue;
     if ( g.isMultipart() )
     {

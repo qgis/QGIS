@@ -844,6 +844,7 @@ value instead of a pointer. The biggest impact with this change is that PyQGIS c
 result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isEmpty()
 method to determine if a geometry is valid.
 - wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
+- asGeos() has been replaced by exportToGeos(). GEOS representation is no longer cached within QgsGeometry
 - int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints
 - int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPointsV2
 - static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon ) has been renamed to comparePolylines

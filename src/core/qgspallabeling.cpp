@@ -1851,7 +1851,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     geom = QgsGeometry( geom.geometry()->boundary() );
   }
 
-  const GEOSGeometry* geos_geom = nullptr;
+  GEOSGeometry* geos_geom_clone = nullptr;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? &extentGeom : nullptr ) )
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? &extentGeom : nullptr );
@@ -1859,9 +1859,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     if ( geom.isEmpty() )
       return;
   }
-  geos_geom = geom.asGeos();
+  geos_geom_clone = geom.exportToGeos();
 
-  const GEOSGeometry* geosObstacleGeom = nullptr;
   QScopedPointer<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
@@ -1870,16 +1869,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
       scopedObstacleGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) ) );
       obstacleGeometry = scopedObstacleGeom.data();
     }
-    if ( obstacleGeometry )
-    {
-      geosObstacleGeom = obstacleGeometry->asGeos();
-    }
   }
 
   if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, geom, minFeatureSize ) )
     return;
 
-  if ( !geos_geom )
+  if ( !geos_geom_clone )
     return; // invalid geometry
 
   // likelihood exists label will be registered with PAL and may be drawn
@@ -1907,11 +1902,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  GEOSGeometry* geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
   GEOSGeometry* geosObstacleGeomClone = nullptr;
-  if ( geosObstacleGeom )
+  if ( obstacleGeometry )
   {
-    geosObstacleGeomClone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geosObstacleGeom );
+    geosObstacleGeomClone = obstacleGeometry->exportToGeos();
   }
 
 
@@ -2384,20 +2378,17 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
     geom = simplifier.simplify( geom );
   }
 
-  const GEOSGeometry* geos_geom = nullptr;
+  GEOSGeometry* geos_geom_clone = nullptr;
   QScopedPointer<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, &extentGeom ) )
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, &extentGeom );
   }
-  geos_geom = geom.asGeos();
+  geos_geom_clone = geom.exportToGeos();
 
-  if ( !geos_geom )
+  if ( !geos_geom_clone )
     return; // invalid geometry
-
-  GEOSGeometry* geos_geom_clone;
-  geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
 
   //  feature to the layer
   *obstacleFeature = new QgsLabelFeature( f.id(), geos_geom_clone, QSizeF( 0, 0 ) );
@@ -3416,8 +3407,10 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
     }
   }
 
-  if ( !geom.asGeos() )
-    return QgsGeometry();  // there is something really wrong with the geometry
+  // MD: exporting geometry to GEOS just to see if the geometry is wrong...?
+  // if still needed, we could have a more specific test here
+  //if ( !geom.asGeos() )
+  //  return QgsGeometry();  // there is something really wrong with the geometry
 
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
