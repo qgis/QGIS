@@ -35,6 +35,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSize
     , mIsObstacle( false )
     , mObstacleFactor( 1 )
     , mInfo( nullptr )
+    , mPermissibleZoneGeos( nullptr )
     , mPermissibleZoneGeosPrepared( nullptr )
 {
 }
@@ -48,7 +49,10 @@ QgsLabelFeature::~QgsLabelFeature()
     GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mObstacleGeometry );
 
   if ( mPermissibleZoneGeosPrepared )
+  {
     GEOSPreparedGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeosPrepared );
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeos );
+  }
 
   delete mInfo;
 }
@@ -68,15 +72,17 @@ void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
   if ( mPermissibleZoneGeosPrepared )
   {
     GEOSPreparedGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeosPrepared );
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeos );
     mPermissibleZoneGeosPrepared = nullptr;
+    mPermissibleZoneGeos = nullptr;
   }
 
   if ( mPermissibleZone.isEmpty() )
     return;
 
-  const GEOSGeometry* zoneGeos = mPermissibleZone.asGeos();
-  if ( !zoneGeos )
+  mPermissibleZoneGeos = mPermissibleZone.exportToGeos();
+  if ( !mPermissibleZoneGeos )
     return;
 
-  mPermissibleZoneGeosPrepared = GEOSPrepare_r( QgsGeometry::getGEOSHandler(), zoneGeos );
+  mPermissibleZoneGeosPrepared = GEOSPrepare_r( QgsGeometry::getGEOSHandler(), mPermissibleZoneGeos );
 }

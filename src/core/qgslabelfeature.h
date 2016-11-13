@@ -394,6 +394,9 @@ class CORE_EXPORT QgsLabelFeature
 
   private:
 
+    //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
+    GEOSGeometry* mPermissibleZoneGeos;
+
     // TODO - not required when QgsGeometry caches geos preparedness
     const GEOSPreparedGeometry* mPermissibleZoneGeosPrepared;
 

@@ -368,7 +368,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
   }
 
   QgsGeometry geomCopy( mOriginalGeometry );
-  const GEOSGeometry* geosGeom = geomCopy.asGeos();
+  GEOSGeometry* geosGeom = geomCopy.exportToGeos();
   if ( geosGeom )
   {
     QSettings s;
@@ -377,6 +377,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     double mitreLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
 
     GEOSGeometry* offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, mitreLimit );
+    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();
