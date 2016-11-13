@@ -27,18 +27,6 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldInd
   if ( fieldIndex < 0 || fieldIndex >= fields.count() )
     return false;
 
-  // check - if value is a provider side defaultValueClause then we exclude it from the check
-  if ( fields.fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
-  {
-    int providerIdx = fields.fieldOriginIndex( fieldIndex );
-    QString providerDefaultClause = layer->dataProvider()->defaultValueClause( providerIdx );
-    if ( !providerDefaultClause.isEmpty() && value.toString() == providerDefaultClause )
-    {
-      // exempt from check
-      return false;
-    }
-  }
-
   QString fieldName = fields.at( fieldIndex ).name();
 
   // build up an optimised feature request
@@ -272,19 +260,24 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
       }
     }
 
-    // 3. passed attribute value
-    // note - deliberately not using else if!
-    if ( !v.isValid() && attributes.contains( idx ) )
-    {
-      v = attributes.value( idx );
-    }
-
-    // 4. provider side default literal
+    // 3. provider side default literal
     // note - deliberately not using else if!
     if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
       int providerIndex = fields.fieldOriginIndex( idx );
       v = layer->dataProvider()->defaultValue( providerIndex );
+      if ( v.isValid() )
+      {
+        //trust that the provider default has been sensibly set not to violate any constraints
+        checkUnique = false;
+      }
+    }
+
+    // 4. passed attribute value
+    // note - deliberately not using else if!
+    if ( !v.isValid() && attributes.contains( idx ) )
+    {
+      v = attributes.value( idx );
     }
 
     // last of all... check that unique constraints are respected
