@@ -1167,13 +1167,8 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
   QgsGeometry geometry = srcFeature.geometry();
   if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
   {
-    const unsigned char *geom = geometry.asWkb();
-    int geomSize = geometry.wkbSize();
-    unsigned char* copiedGeom = new unsigned char[geomSize];
-    memcpy( copiedGeom, geom, geomSize );
-
     QgsGeometry g;
-    g.fromWkb( copiedGeom, geomSize );
+    g.fromWkb( geometry.exportToWkb() );
     dstFeature.setGeometry( g );
   }
   else

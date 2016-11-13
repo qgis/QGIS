@@ -78,7 +78,9 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 {
   const int header_len = SpatialiteBlobHeader::length;
 
-  const int wkb_size = geom.wkbSize();
+  QByteArray wkb( geom.exportToWkb() );
+
+  const int wkb_size = wkb.length();
   size = header_len + wkb_size;
   blob = new char[size];
 
@@ -104,9 +106,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
   // blob geometry = header + wkb[1:] + 'end'
 
   // copy wkb
-  const unsigned char* wkb = geom.asWkb();
-
-  memcpy( p, wkb + 1, wkb_size - 1 );
+  memcpy( p, wkb.constData() + 1, wkb_size - 1 );
   p += wkb_size - 1;
 
   // end marker

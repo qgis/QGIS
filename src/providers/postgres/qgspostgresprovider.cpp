@@ -2498,10 +2498,11 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList 
   QString param;
 
   QScopedPointer<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
-  const unsigned char *buf = convertedGeom ? convertedGeom->asWkb() : geom.asWkb();
-  size_t wkbSize = convertedGeom ? convertedGeom->wkbSize() : geom.wkbSize();
+  QByteArray wkb( convertedGeom ? convertedGeom->exportToWkb() : geom.exportToWkb() );
+  const char *buf = wkb.constData();
+  int wkbSize = wkb.length();
 
-  for ( size_t i = 0; i < wkbSize; ++i )
+  for ( int i = 0; i < wkbSize; ++i )
   {
     if ( connectionRO()->useWkbHex() )
       param += QStringLiteral( "%1" ).arg(( int ) buf[i], 2, 16, QChar( '0' ) );

@@ -1132,7 +1132,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
                                         const QString& gmlIdBase,
                                         int precision )
 {
-  if ( !geometry || !geometry->asWkb() )
+  if ( !geometry )
     return QDomElement();
 
   // coordinate separator
@@ -1144,7 +1144,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocumen
 
   bool hasZValue = false;
 
-  QgsConstWkbPtr wkbPtr( geometry->asWkb(), geometry->wkbSize() );
+  QByteArray wkb( geometry->exportToWkb() );
+  QgsConstWkbPtr wkbPtr( wkb );
   try
   {
     wkbPtr.readHeader();

@@ -734,13 +734,11 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
   QgsChangedAttributesMap newChangedAttrMap;
   for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
   {
-    const unsigned char *geom = iter->asWkb();
-    int geomSize = iter->wkbSize();
-    if ( geomSize )
+    QByteArray wkb = iter->exportToWkb();
+    if ( !wkb.isEmpty() )
     {
       QgsAttributeMap newAttrMap;
-      QByteArray array(( const char* )geom, geomSize );
-      newAttrMap[idx] = QString( array.toHex().data() );
+      newAttrMap[idx] = QString( wkb.toHex().data() );
       newChangedAttrMap[ iter.key()] = newAttrMap;
 
       QgsGeometry polyBoudingBox = QgsGeometry::fromRect( iter.value().boundingBox() );
@@ -872,9 +870,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
     QgsGeometry geometry = gmlFeature.geometry();
     if ( !mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
     {
-      const unsigned char *geom = geometry.asWkb();
-      int geomSize = geometry.wkbSize();
-      QByteArray array(( const char* )geom, geomSize );
+      QByteArray array( geometry.exportToWkb() );
 
       cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
 

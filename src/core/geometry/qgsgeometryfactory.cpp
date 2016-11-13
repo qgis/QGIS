@@ -30,7 +30,7 @@
 #include "qgswkbtypes.h"
 #include "qgslogger.h"
 
-QgsAbstractGeometry* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
+QgsAbstractGeometry* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr& wkbPtr )
 {
   if ( !wkbPtr )
     return nullptr;
@@ -57,7 +57,7 @@ QgsAbstractGeometry* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
   {
     try
     {
-      geom->fromWkb( wkbPtr );
+      geom->fromWkb( wkbPtr );  // also updates wkbPtr
     }
     catch ( const QgsWkbException &e )
     {

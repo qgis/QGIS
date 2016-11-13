@@ -325,13 +325,13 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   // we need iterator for segments...
 
   QgsPointLocator::MatchList lst;
-  unsigned char* wkb = const_cast<unsigned char*>( geom->asWkb() ); // we're not changing wkb, just need non-const for QgsWkbPtr
-  if ( !wkb )
+  QByteArray wkb( geom->exportToWkb() );
+  if ( wkb.isEmpty() )
     return lst;
 
   _CohenSutherland cs( rect );
 
-  QgsConstWkbPtr wkbPtr( wkb, geom->wkbSize() );
+  QgsConstWkbPtr wkbPtr( wkb );
   wkbPtr.readHeader();
 
   QgsWkbTypes::Type wkbType = geom->wkbType();

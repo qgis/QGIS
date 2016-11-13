@@ -93,30 +93,15 @@ class QgsGeometry
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
+      @note not available in python bindings
      */
-    void fromWkb( unsigned char * wkb /Array/, int length /ArraySize/ );
-%MethodCode
-  // create copy of Python's string and pass it to fromWkb()
-  unsigned char * copy = new unsigned char[a1];
-  memcpy(copy, a0, a1);
-  sipCpp->fromWkb(copy, a1);
-%End
+    // void fromWkb( unsigned char *wkb, int length );
 
     /**
-       Returns the buffer containing this geometry in WKB format.
-       You may wish to use in conjunction with wkbSize().
-       @see wkbSize
+     * Set the geometry, feeding in the buffer containing OGC Well-Known Binary
+     * @note added in 3.0
      */
-    SIP_PYOBJECT asWkb();
-%MethodCode
-  sipRes = PyBytes_FromStringAndSize((const char *)sipCpp->asWkb(), sipCpp->wkbSize());
-%End
-
-    /**
-     * Returns the size of the WKB in asWkb().
-     * @see asWkb
-     */
-    int wkbSize() const;
+    void fromWkb( const QByteArray& wkb );
 
     /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
@@ -592,6 +577,11 @@ class QgsGeometry
 
     /** Returns an extruded version of this geometry. */
     QgsGeometry extrude( double x, double y );
+
+    /** Export the geometry to WKB
+     * @note added in 3.0
+     */
+    QByteArray exportToWkb() const;
 
     /** Exports the geometry to WKT
      *  @note precision parameter added in 2.4

@@ -54,12 +54,10 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ), mWkb( nullptr ), mWkbSize( 0 ), mGeos( nullptr ) {}
-  ~QgsGeometryPrivate() { delete geometry; delete[] mWkb; GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), mGeos ); }
+  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ), mGeos( nullptr ) {}
+  ~QgsGeometryPrivate() { delete geometry; GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), mGeos ); }
   QAtomicInt ref;
   QgsAbstractGeometry* geometry;
-  mutable const unsigned char* mWkb; //store wkb pointer for backward compatibility
-  mutable int mWkbSize;
   mutable GEOSGeometry* mGeos;
 };
 
@@ -114,18 +112,6 @@ void QgsGeometry::detach( bool cloneGeom )
   }
 }
 
-void QgsGeometry::removeWkbGeos()
-{
-  delete[] d->mWkb;
-  d->mWkb = nullptr;
-  d->mWkbSize = 0;
-  if ( d->mGeos )
-  {
-    GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), d->mGeos );
-    d->mGeos = nullptr;
-  }
-}
-
 QgsAbstractGeometry* QgsGeometry::geometry() const
 {
   return d->geometry;
@@ -144,7 +130,6 @@ void QgsGeometry::setGeometry( QgsAbstractGeometry* geometry )
     delete d->geometry;
     d->geometry = nullptr;
   }
-  removeWkbGeos();
 
   d->geometry = geometry;
 }
@@ -266,48 +251,22 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
   if ( d->geometry )
   {
     delete d->geometry;
-    removeWkbGeos();
   }
-  d->geometry = QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr( wkb, length ) );
+  QgsConstWkbPtr ptr( wkb, length );
+  d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
+  delete [] wkb;
+}
+
+void QgsGeometry::fromWkb( const QByteArray &wkb )
+{
+  detach( false );
+
   if ( d->geometry )
   {
-    d->mWkb = wkb;
-    d->mWkbSize = length;
+    delete d->geometry;
   }
-  else
-  {
-    delete [] wkb;
-    d->mWkb = nullptr;
-    d->mWkbSize = 0;
-  }
-}
-
-const unsigned char *QgsGeometry::asWkb() const
-{
-  if ( !d->geometry )
-  {
-    return nullptr;
-  }
-
-  if ( !d->mWkb )
-  {
-    d->mWkb = d->geometry->asWkb( d->mWkbSize );
-  }
-  return d->mWkb;
-}
-
-int QgsGeometry::wkbSize() const
-{
-  if ( !d->geometry )
-  {
-    return 0;
-  }
-
-  if ( !d->mWkb )
-  {
-    d->mWkb = d->geometry->asWkb( d->mWkbSize );
-  }
-  return d->mWkbSize;
+  QgsConstWkbPtr ptr( wkb );
+  d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
 }
 
 const GEOSGeometry* QgsGeometry::asGeos( double precision ) const
@@ -480,7 +439,6 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
 
   detach( true );
 
-  removeWkbGeos();
   return d->geometry->moveVertex( id, QgsPointV2( x, y ) );
 }
 
@@ -499,7 +457,6 @@ bool QgsGeometry::moveVertex( const QgsPointV2& p, int atVertex )
 
   detach( true );
 
-  removeWkbGeos();
   return d->geometry->moveVertex( id, p );
 }
 
@@ -514,7 +471,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
     detach( true );
-    removeWkbGeos();
     //delete geometry instead of point
     return static_cast< QgsGeometryCollection* >( d->geometry )->removeGeometry( atVertex );
   }
@@ -524,7 +480,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
   {
     detach( false );
     delete d->geometry;
-    removeWkbGeos();
     d->geometry = nullptr;
     return true;
   }
@@ -537,7 +492,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
   detach( true );
 
-  removeWkbGeos();
   return d->geometry->deleteVertex( id );
 }
 
@@ -552,7 +506,6 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
     detach( true );
-    removeWkbGeos();
     //insert geometry instead of point
     return static_cast< QgsGeometryCollection* >( d->geometry )->insertGeometry( new QgsPointV2( x, y ), beforeVertex );
   }
@@ -564,8 +517,6 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   }
 
   detach( true );
-
-  removeWkbGeos();
 
   return d->geometry->insertVertex( id, QgsPointV2( x, y ) );
 }
@@ -655,7 +606,6 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
-  removeWkbGeos();
   QgsLineString* ringLine = new QgsLineString();
   QgsPointSequence ringPoints;
   convertPointList( ring, ringPoints );
@@ -673,7 +623,6 @@ int QgsGeometry::addRing( QgsCurve* ring )
 
   detach( true );
 
-  removeWkbGeos();
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
@@ -723,7 +672,6 @@ int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType g
   else
   {
     detach( true );
-    removeWkbGeos();
   }
 
   convertToMultiType();
@@ -750,7 +698,6 @@ int QgsGeometry::addPart( GEOSGeometry *newPart )
   detach( true );
 
   QgsAbstractGeometry* geom = QgsGeos::fromGeos( newPart );
-  removeWkbGeos();
   return QgsGeometryEditUtils::addPart( d->geometry, geom );
 }
 
@@ -764,7 +711,6 @@ int QgsGeometry::translate( double dx, double dy )
   detach( true );
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
-  removeWkbGeos();
   return 0;
 }
 
@@ -781,7 +727,6 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   t.rotate( -rotation );
   t.translate( -center.x(), -center.y() );
   d->geometry->transform( t );
-  removeWkbGeos();
   return 0;
 }
 
@@ -815,7 +760,6 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   }
 
   convertPointList( tp, topologyTestPoints );
-  removeWkbGeos();
   return result;
 }
 
@@ -840,7 +784,6 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     detach( false );
     delete d->geometry;
     d->geometry = geom;
-    removeWkbGeos();
     return 0;
   }
   return errorCode;
@@ -865,7 +808,6 @@ int QgsGeometry::makeDifference( const QgsGeometry* other )
 
   delete d->geometry;
   d->geometry = diffGeom;
-  removeWkbGeos();
   return 0;
 }
 
@@ -1060,7 +1002,6 @@ bool QgsGeometry::convertToMultiType()
   detach( true );
   multiGeom->addGeometry( d->geometry );
   d->geometry = multiGeom;
-  removeWkbGeos();
   return true;
 }
 
@@ -1084,7 +1025,6 @@ bool QgsGeometry::convertToSingleType()
   detach( false );
 
   d->geometry = firstPart;
-  removeWkbGeos();
   return true;
 }
 
@@ -1740,6 +1680,11 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
   return engine.extrude( x, y );
 }
 
+QByteArray QgsGeometry::exportToWkb() const
+{
+  return d->geometry ? d->geometry->asWkb() : QByteArray();
+}
+
 QList<QgsGeometry> QgsGeometry::asGeometryCollection() const
 {
   QList<QgsGeometry> geometryList;
@@ -1810,7 +1755,6 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
 
   detach( true );
   bool ok = QgsGeometryEditUtils::deleteRing( d->geometry, ringNum, partNum );
-  removeWkbGeos();
   return ok;
 }
 
@@ -1829,7 +1773,6 @@ bool QgsGeometry::deletePart( int partNum )
 
   detach( true );
   bool ok = QgsGeometryEditUtils::deletePart( d->geometry, partNum );
-  removeWkbGeos();
   return ok;
 }
 
@@ -1845,7 +1788,6 @@ int QgsGeometry::avoidIntersections( const QHash<QgsVectorLayer *, QSet<QgsFeatu
   {
     detach( false );
     d->geometry = diffGeom;
-    removeWkbGeos();
   }
   return 0;
 }
@@ -1917,7 +1859,6 @@ void QgsGeometry::convertToStraightSegment()
   detach( false );
 
   d->geometry = straightGeom;
-  removeWkbGeos();
 }
 
 bool QgsGeometry::requiresConversionToStraightSegments() const
@@ -1939,7 +1880,6 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
 
   detach();
   d->geometry->transform( ct );
-  removeWkbGeos();
   return 0;
 }
 
@@ -1952,7 +1892,6 @@ int QgsGeometry::transform( const QTransform& ct )
 
   detach();
   d->geometry->transform( ct );
-  removeWkbGeos();
   return 0;
 }
 
@@ -1962,7 +1901,6 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel& mtp )
   {
     detach();
     d->geometry->transform( mtp.transform() );
-    removeWkbGeos();
   }
 }
 
@@ -2679,8 +2617,7 @@ QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometry*
 
 QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )
 {
-  QByteArray byteArray = QByteArray::fromRawData( reinterpret_cast< const char * >( geometry.asWkb() ), geometry.wkbSize() ); // does not copy data and does not take ownership
-  out << byteArray;
+  out << geometry.exportToWkb();
   return out;
 }
 
@@ -2694,8 +2631,6 @@ QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
     return in;
   }
 
-  char *data = new char[byteArray.size()];
-  memcpy( data, byteArray.data(), byteArray.size() );
-  geometry.fromWkb( reinterpret_cast< unsigned char* >( data ), byteArray.size() );
+  geometry.fromWkb( byteArray );
   return in;
 }

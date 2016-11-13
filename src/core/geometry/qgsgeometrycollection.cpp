@@ -185,7 +185,7 @@ void QgsGeometryCollection::draw( QPainter& p ) const
   }
 }
 
-bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   if ( !wkbPtr )
   {
@@ -201,7 +201,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr wkbPtr )
   mGeometries.clear();
   for ( int i = 0; i < nGeometries; ++i )
   {
-    QgsAbstractGeometry* geom = QgsGeometryFactory::geomFromWkb( wkbPtr );
+    QgsAbstractGeometry* geom = QgsGeometryFactory::geomFromWkb( wkbPtr );  // also updates wkbPtr
     if ( geom )
     {
       if ( !addGeometry( geom ) )
@@ -210,7 +210,6 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr wkbPtr )
         mGeometries = geometryListBackup;
         return false;
       }
-      wkbPtr += geom->wkbSize();
     }
   }
   qDeleteAll( geometryListBackup );
@@ -230,39 +229,31 @@ bool QgsGeometryCollection::fromWkt( const QString& wkt )
                             << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 
-int QgsGeometryCollection::wkbSize() const
+QByteArray QgsGeometryCollection::asWkb() const
 {
-  int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  QList<QByteArray> wkbForGeometries;
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( geom )
     {
-      size += geom->wkbSize();
+      QByteArray wkb( geom->asWkb() );
+      binarySize += wkb.length();
+      wkbForGeometries << wkb;
     }
   }
-  return size;
-}
 
-unsigned char* QgsGeometryCollection::asWkb( int& binarySize ) const
-{
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr, binarySize );
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
-  wkb << static_cast<quint32>( mGeometries.size() );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  wkb << static_cast<quint32>( wkbForGeometries.count() );
+  Q_FOREACH ( const QByteArray& wkbForGeometry, wkbForGeometries )
   {
-    int geomWkbLen = 0;
-    if ( geom )
-    {
-      unsigned char* geomWkb = geom->asWkb( geomWkbLen );
-      memcpy( wkb, geomWkb, geomWkbLen );
-      wkb += geomWkbLen;
-      delete[] geomWkb;
-    }
+    wkb << wkbForGeometry;
   }
-  return geomPtr;
+  return wkbArray;
 }
 
 QString QgsGeometryCollection::asWkt( int precision ) const

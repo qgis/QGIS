@@ -14,6 +14,13 @@
  ***************************************************************************/
 #include "qgswkbptr.h"
 
+QgsWkbPtr::QgsWkbPtr( QByteArray &wkb )
+{
+  mP = reinterpret_cast<unsigned char*>( wkb.data() );
+  mStart = mP;
+  mEnd = mP + wkb.length();
+}
+
 QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
 {
   mP = p;
@@ -25,6 +32,14 @@ void QgsWkbPtr::verifyBound( int size ) const
 {
   if ( !mP || mP + size > mEnd )
     throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
+}
+
+QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
+{
+  mP = reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) );
+  mEnd = mP + wkb.length();
+  mEndianSwap = false;
+  mWkbType = QgsWkbTypes::Unknown;
 }
 
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )

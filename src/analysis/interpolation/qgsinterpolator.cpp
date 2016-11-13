@@ -109,7 +109,8 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     return 1;
 
   bool hasZValue = false;
-  QgsConstWkbPtr currentWkbPtr( geom.asWkb(), geom.wkbSize() );
+  QByteArray wkb( geom.exportToWkb() );
+  QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
   vertexData theVertex; //the current vertex
 

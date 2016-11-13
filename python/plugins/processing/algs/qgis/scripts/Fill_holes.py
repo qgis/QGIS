@@ -25,7 +25,7 @@ for feat in processing.features(polyLayer):
     progress.setPercentage(int(100 * l / n))
     l += 1
 
-    g = loads(feat.geometry().asWkb())
+    g = loads(feat.geometry().exportToWkb())
 
     if g.geom_type == 'MultiPolygon':
         resg = [Polygon(p.exterior,

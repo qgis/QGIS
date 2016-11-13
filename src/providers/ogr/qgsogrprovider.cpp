@@ -1204,14 +1204,14 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRFeatureH feature = OGR_F_Create( fdef );
 
-  if ( f.hasGeometry() && f.geometry().wkbSize() > 0 )
+  if ( f.hasGeometry() )
   {
-    const unsigned char* wkb = f.geometry().asWkb();
+    QByteArray wkb( f.geometry().exportToWkb() );
     OGRGeometryH geom = nullptr;
 
-    if ( wkb )
+    if ( !wkb.isEmpty() )
     {
-      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), nullptr, &geom, f.geometry().wkbSize() ) != OGRERR_NONE )
+      if ( OGR_G_CreateFromWkb( reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), nullptr, &geom, wkb.length() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
         return false;
@@ -1733,15 +1733,16 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     }
 
     OGRGeometryH theNewGeometry = nullptr;
+    QByteArray wkb = it->exportToWkb();
     // We might receive null geometries. It is ok, but don't go through the
     // OGR_G_CreateFromWkb() route then
-    if ( it->wkbSize() != 0 )
+    if ( !wkb.isEmpty() )
     {
       //create an OGRGeometry
-      if ( OGR_G_CreateFromWkb( const_cast<unsigned char*>( it->asWkb() ),
+      if ( OGR_G_CreateFromWkb( reinterpret_cast<unsigned char*>( const_cast<char *>( wkb.constData() ) ),
                                 OGR_L_GetSpatialRef( ogrLayer ),
                                 &theNewGeometry,
-                                it->wkbSize() ) != OGRERR_NONE )
+                                wkb.length() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
         OGR_G_DestroyGeometry( theNewGeometry );

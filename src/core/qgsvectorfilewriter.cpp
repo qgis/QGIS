@@ -2117,7 +2117,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
           return nullptr;
         }
 
-        OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom.asWkb() ), static_cast< int >( geom.wkbSize() ) );
+        QByteArray wkb( geom.exportToWkb() );
+        OGRErr err = OGR_G_ImportFromWkb( mGeom2, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -2133,7 +2134,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature& feature )
       }
       else // wkb type matches
       {
-        OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom.asWkb() ), static_cast< int >( geom.wkbSize() ) );
+        QByteArray wkb( geom.exportToWkb() );
+        OGRErr err = OGR_G_ImportFromWkb( mGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )

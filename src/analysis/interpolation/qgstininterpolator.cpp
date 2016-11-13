@@ -201,7 +201,8 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
-  QgsConstWkbPtr currentWkbPtr( g.asWkb(), g.wkbSize() );
+  QByteArray wkb( g.exportToWkb() );
+  QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
   //maybe a structure or break line
   Line3D* line = nullptr;

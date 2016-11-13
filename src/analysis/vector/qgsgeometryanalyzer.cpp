@@ -1153,7 +1153,8 @@ QgsGeometry QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, doub
   QgsMultiPolyline resultGeom;
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
-  QgsConstWkbPtr wkbPtr( lineGeom.asWkb(), lineGeom.wkbSize() );
+  QByteArray wkb( lineGeom.exportToWkb() );
+  QgsConstWkbPtr wkbPtr( wkb );
   wkbPtr.readHeader();
 
   QgsWkbTypes::Type wkbType = lineGeom.wkbType();
@@ -1194,7 +1195,8 @@ QgsGeometry QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsGe
   QgsMultiPoint resultGeom;
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
-  QgsConstWkbPtr wkbPtr( lineGeom.asWkb(), lineGeom.wkbSize() );
+  QByteArray wkb( lineGeom.exportToWkb() );
+  QgsConstWkbPtr wkbPtr( wkb );
   QgsWkbTypes::Type wkbType = lineGeom.wkbType();
 
   if ( wkbType != QgsWkbTypes::LineString25D && wkbType != QgsWkbTypes::MultiLineString25D )

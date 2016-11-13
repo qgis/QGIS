@@ -207,7 +207,7 @@ QgsPointSequence QgsCircularString::compassPointsOnSegment( double p1Angle, doub
   return pointList;
 }
 
-bool QgsCircularString::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsCircularString::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   if ( !wkbPtr )
     return false;
@@ -260,24 +260,20 @@ bool QgsCircularString::fromWkt( const QString& wkt )
   return true;
 }
 
-int QgsCircularString::wkbSize() const
+QByteArray QgsCircularString::asWkb() const
 {
-  int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  size += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
-  return size;
-}
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
 
-unsigned char* QgsCircularString::asWkb( int& binarySize ) const
-{
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr, binarySize );
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   QgsPointSequence pts;
   points( pts );
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
-  return geomPtr;
+  return wkbArray;
 }
 
 QString QgsCircularString::asWkt( int precision ) const
