@@ -34,9 +34,9 @@ import locale
 import os
 from functools import cmp_to_key
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
-from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
-from qgis.gui import QgsFieldExpressionWidget, QgsExpressionLineEdit, QgsProjectionSelectionWidget
+from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication
+from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit, QWidget, QHBoxLayout, QToolButton
+from qgis.gui import QgsFieldExpressionWidget, QgsExpressionLineEdit, QgsProjectionSelectionWidget, QgsGenericProjectionSelector
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel
@@ -107,14 +107,16 @@ class WidgetWrapper(QObject):
         if param.default is not None:
             self.setValue(param.default)
 
-    def comboValue(self, validator=None):
-        idx = self.widget.findText(self.widget.currentText())
+    def comboValue(self, validator=None, combobox=None):
+        if not combobox:
+            combobox = self.widget
+        idx = combobox.findText(combobox.currentText())
         if idx < 0:
-            v = self.widget.currentText().strip()
+            v = combobox.currentText().strip()
             if validator is not None and not validator(v):
                 raise InvalidParameterValue()
             return v
-        return self.widget.itemData(self.widget.currentIndex())
+        return combobox.itemData(combobox.currentIndex())
 
     def createWidget(self):
         pass
@@ -122,21 +124,23 @@ class WidgetWrapper(QObject):
     def setValue(self, value):
         pass
 
-    def setComboValue(self, value):
+    def setComboValue(self, value, combobox=None):
+        if not combobox:
+            combobox = self.widget
         if isinstance(value, list):
             value = value[0]
-        values = [self.widget.itemData(i) for i in range(self.widget.count())]
+        values = [combobox.itemData(i) for i in range(combobox.count())]
         try:
             idx = values.index(value)
-            self.widget.setCurrentIndex(idx)
+            combobox.setCurrentIndex(idx)
             return
         except ValueError:
             pass
-        if self.widget.isEditable():
+        if combobox.isEditable():
             if value is not None:
-                self.widget.setEditText(str(value))
+                combobox.setEditText(str(value))
         else:
-            self.widget.setCurrentIndex(0)
+            combobox.setCurrentIndex(0)
 
     def value(self):
         pass
@@ -206,19 +210,32 @@ class CrsWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_MODELER:
-            widget = QComboBox()
-            widget.setEditable(True)
+            self.combo = QComboBox()
+            widget = QWidget()
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(1)
+            layout.addWidget(self.combo)
+            btn = QToolButton()
+            btn.setIcon(QgsApplication.getThemeIcon("mActionSetProjection.svg"))
+            btn.setToolTip(self.tr("Select CRS"))
+            btn.clicked.connect(self.selectProjection)
+            layout.addWidget(btn)
+
+            widget.setLayout(layout)
+            self.combo.setEditable(True)
             crss = self.dialog.getAvailableValuesOfType(ParameterCrs)
             for crs in crss:
-                widget.addItem(self.dialog.resolveValueDescription(crs), crs)
+                self.combo.addItem(self.dialog.resolveValueDescription(crs), crs)
             raster = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             vector = self.dialog.getAvailableValuesOfType(ParameterVector, OutputVector)
             for r in raster:
-                widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(r), r)
+                self.combo.addItem("Crs of layer " + self.dialog.resolveValueDescription(r), r)
             for v in vector:
-                widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(v), v)
+                self.combo.addItem("Crs of layer " + self.dialog.resolveValueDescription(v), v)
             if not self.param.default:
-                widget.setEditText(self.param.default)
+                self.combo.setEditText(self.param.default)
             return widget
         else:
 
@@ -232,15 +249,24 @@ class CrsWidgetWrapper(WidgetWrapper):
 
             return widget
 
+    def selectProjection(self):
+        dialog = QgsGenericProjectionSelector(self.widget)
+        current_crs = QgsCoordinateReferenceSystem(self.combo.currentText())
+        if current_crs.isValid():
+            dialog.setSelectedCrsId(current_crs.srsid())
+
+        if dialog.exec_():
+            self.setValue(dialog.selectedAuthId())
+
     def setValue(self, value):
         if self.dialogType == DIALOG_MODELER:
-            self.setComboValue(value)
+            self.setComboValue(value, self.combo)
         else:
             self.widget.setCrs(QgsCoordinateReferenceSystem(value))
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:
-            return self.comboValue()
+            return self.comboValue(combobox=self.combo)
         else:
             crs = self.widget.crs()
             if crs.isValid():
