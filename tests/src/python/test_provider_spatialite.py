@@ -474,14 +474,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         f = QgsVectorLayerUtils.createFeature(vl)
         self.assertEqual(f.attributes(), [None, "qgis 'is good", 5, 5.7, None])
 
-        # check that provider passed attribute values take precedence over default literals
+        # check that provider default literals take precedence over passed attribute values
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
-        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 5.7, None])
+        self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 5.7, None])
 
-        # test take vector layer default value expression overrides postgres provider default clause
+        # test that vector layer default value expression overrides provider default literal
         vl.setDefaultValueExpression(3, "4*3")
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
-        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 12, None])
+        self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 12, None])
 
 if __name__ == '__main__':
     unittest.main()
