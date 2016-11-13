@@ -91,7 +91,7 @@ void QgsLineString::clear()
   clearCache();
 }
 
-bool QgsLineString::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsLineString::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   if ( !wkbPtr )
   {
@@ -158,24 +158,20 @@ bool QgsLineString::fromWkt( const QString& wkt )
   return true;
 }
 
-int QgsLineString::wkbSize() const
+QByteArray QgsLineString::asWkb() const
 {
-  int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  size += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
-  return size;
-}
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
 
-unsigned char* QgsLineString::asWkb( int& binarySize ) const
-{
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr, binarySize );
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   QgsPointSequence pts;
   points( pts );
   QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
-  return geomPtr;
+  return wkbArray;
 }
 
 /***************************************************************************

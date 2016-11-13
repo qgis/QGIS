@@ -88,7 +88,7 @@ void QgsCurvePolygon::clear()
 }
 
 
-bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   clear();
   if ( !wkbPtr )
@@ -106,7 +106,6 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr wkbPtr )
   int nRings;
   wkbPtr >> nRings;
   QgsCurve* currentCurve = nullptr;
-  int currentCurveSize = 0;
   for ( int i = 0; i < nRings; ++i )
   {
     QgsWkbTypes::Type curveType = wkbPtr.readHeader();
@@ -128,8 +127,7 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr wkbPtr )
     {
       return false;
     }
-    currentCurve->fromWkb( wkbPtr );
-    currentCurveSize = currentCurve->wkbSize();
+    currentCurve->fromWkb( wkbPtr );  // also updates wkbPtr
     if ( i == 0 )
     {
       mExteriorRing = currentCurve;
@@ -138,7 +136,6 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr wkbPtr )
     {
       mInteriorRings.append( currentCurve );
     }
-    wkbPtr += currentCurveSize;
   }
 
   return true;
@@ -222,43 +219,34 @@ QgsRectangle QgsCurvePolygon::calculateBoundingBox() const
   return QgsRectangle();
 }
 
-int QgsCurvePolygon::wkbSize() const
+QByteArray QgsCurvePolygon::asWkb() const
 {
-  int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  QList<QByteArray> wkbForRings;
   if ( mExteriorRing )
   {
-    size += mExteriorRing->wkbSize();
+    QByteArray wkb( mExteriorRing->asWkb() );
+    binarySize += wkb.length();
+    wkbForRings << wkb;
   }
   Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
   {
-    size += curve->wkbSize();
+    QByteArray wkb( curve->asWkb() );
+    binarySize += wkb.length();
+    wkbForRings << wkb;
   }
-  return size;
-}
 
-unsigned char* QgsCurvePolygon::asWkb( int& binarySize ) const
-{
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkbPtr( geomPtr, binarySize );
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkbPtr( wkbArray );
   wkbPtr << static_cast<char>( QgsApplication::endian() );
   wkbPtr << static_cast<quint32>( wkbType() );
-  wkbPtr << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );
-  if ( mExteriorRing )
+  wkbPtr << static_cast<quint32>( wkbForRings.count() );
+  Q_FOREACH ( const QByteArray& wkb, wkbForRings )
   {
-    int curveWkbLen = 0;
-    unsigned char *ringWkb = mExteriorRing->asWkb( curveWkbLen );
-    memcpy( wkbPtr, ringWkb, curveWkbLen );
-    wkbPtr += curveWkbLen;
+    wkbPtr << wkb;
   }
-  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
-  {
-    int curveWkbLen = 0;
-    unsigned char *ringWkb = curve->asWkb( curveWkbLen );
-    memcpy( wkbPtr, ringWkb, curveWkbLen );
-    wkbPtr += curveWkbLen;
-  }
-  return geomPtr;
+  return wkbArray;
 }
 
 QString QgsCurvePolygon::asWkt( int precision ) const

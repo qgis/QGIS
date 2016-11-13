@@ -15,11 +15,10 @@ class QgsCurvePolygon: public QgsSurface
     virtual QgsCurvePolygon* clone() const /Factory/;
     void clear();
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;

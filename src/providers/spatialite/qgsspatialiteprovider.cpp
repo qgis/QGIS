@@ -3806,8 +3806,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           {
             unsigned char *wkb = nullptr;
             int wkb_size;
-            convertFromGeosWKB( feature->geometry().asWkb(),
-                                feature->geometry().wkbSize(),
+            QByteArray featureWkb = feature->geometry().exportToWkb();
+            convertFromGeosWKB( reinterpret_cast<const unsigned char*>( featureWkb.constData() ),
+                                featureWkb.length(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );
@@ -4216,7 +4217,8 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
     // binding GEOMETRY to Prepared Statement
     unsigned char *wkb = nullptr;
     int wkb_size;
-    convertFromGeosWKB( iter->asWkb(), iter->wkbSize(), &wkb, &wkb_size, nDims );
+    QByteArray iterWkb = iter->exportToWkb();
+    convertFromGeosWKB( reinterpret_cast<const unsigned char*>( iterWkb.constData() ), iterWkb.length(), &wkb, &wkb_size, nDims );
     if ( !wkb )
       sqlite3_bind_null( stmt, 1 );
     else

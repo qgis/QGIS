@@ -101,7 +101,7 @@ QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
   return bbox;
 }
 
-bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   clear();
   if ( !wkbPtr )
@@ -119,7 +119,6 @@ bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr wkbPtr )
   int nCurves;
   wkbPtr >> nCurves;
   QgsCurve* currentCurve = nullptr;
-  int currentCurveSize = 0;
   for ( int i = 0; i < nCurves; ++i )
   {
     QgsWkbTypes::Type curveType = wkbPtr.readHeader();
@@ -136,10 +135,8 @@ bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr wkbPtr )
     {
       return false;
     }
-    currentCurve->fromWkb( wkbPtr );
-    currentCurveSize = currentCurve->wkbSize();
+    currentCurve->fromWkb( wkbPtr );  // also updates wkbPtr
     mCurves.append( currentCurve );
-    wkbPtr += currentCurveSize;
   }
   return true;
 }
@@ -195,33 +192,28 @@ bool QgsCompoundCurve::fromWkt( const QString& wkt )
   return true;
 }
 
-int QgsCompoundCurve::wkbSize() const
+QByteArray QgsCompoundCurve::asWkb() const
 {
-  int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  QList<QByteArray> wkbForCurves;
   Q_FOREACH ( const QgsCurve *curve, mCurves )
   {
-    size += curve->wkbSize();
+    QByteArray wkbForCurve = curve->asWkb();
+    binarySize += wkbForCurve.length();
+    wkbForCurves << wkbForCurve;
   }
-  return size;
-}
 
-unsigned char* QgsCompoundCurve::asWkb( int& binarySize ) const
-{
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr, binarySize );
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );
-  Q_FOREACH ( const QgsCurve* curve, mCurves )
+  Q_FOREACH ( const QByteArray& wkbForCurve, wkbForCurves )
   {
-    int curveWkbLen = 0;
-    unsigned char* curveWkb = curve->asWkb( curveWkbLen );
-    memcpy( wkb, curveWkb, curveWkbLen );
-    wkb += curveWkbLen;
-    delete[] curveWkb;
+    wkb << wkbForCurve;
   }
-  return geomPtr;
+  return wkbArray;
 }
 
 QString QgsCompoundCurve::asWkt( int precision ) const

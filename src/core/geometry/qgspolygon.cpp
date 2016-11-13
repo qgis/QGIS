@@ -77,7 +77,7 @@ void QgsPolygonV2::clear()
   mWkbType = QgsWkbTypes::Polygon;
 }
 
-bool QgsPolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsPolygonV2::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   clear();
   if ( !wkbPtr )
@@ -136,27 +136,23 @@ bool QgsPolygonV2::fromWkb( QgsConstWkbPtr wkbPtr )
   return true;
 }
 
-int QgsPolygonV2::wkbSize() const
+QByteArray QgsPolygonV2::asWkb() const
 {
-  int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
+
+  // Endianness and WkbType is not stored for LinearRings
   if ( mExteriorRing )
   {
-    // Endianness and WkbType is not stored for LinearRings
-    size += mExteriorRing->wkbSize() - ( sizeof( char ) + sizeof( quint32 ) );
+    binarySize += sizeof( quint32 ) + mExteriorRing->numPoints() * ( 2 + mExteriorRing->is3D() + mExteriorRing->isMeasure() ) * sizeof( double );
   }
   Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
   {
-    // Endianness and WkbType is not stored for LinearRings
-    size += curve->wkbSize() - ( sizeof( char ) + sizeof( quint32 ) );
+    binarySize += sizeof( quint32 ) + curve->numPoints() * ( 2 + curve->is3D() + curve->isMeasure() ) * sizeof( double );
   }
-  return size;
-}
 
-unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
-{
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr, binarySize );
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>(( nullptr != mExteriorRing ) + mInteriorRings.size() );
@@ -173,7 +169,7 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
     QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure() );
   }
 
-  return geomPtr;
+  return wkbArray;
 }
 
 void QgsPolygonV2::addInteriorRing( QgsCurve* ring )

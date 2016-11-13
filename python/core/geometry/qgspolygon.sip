@@ -14,12 +14,11 @@ class QgsPolygonV2: public QgsCurvePolygon
     virtual QgsPolygonV2* clone() const /Factory/;
     void clear();
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
 
     // inherited: bool fromWkt( const QString &wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     // inherited: QString asWkt( int precision = 17 ) const;
     // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;

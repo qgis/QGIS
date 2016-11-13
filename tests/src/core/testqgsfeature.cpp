@@ -275,14 +275,14 @@ void TestQgsFeature::geometry()
   feature.setGeometry( QgsGeometry( mGeometry2 ) );
   QVERIFY( feature.hasGeometry() );
   feature.setGeometry( QgsGeometry( mGeometry ) );
-  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
+  QCOMPARE( feature.geometry().exportToWkb(), mGeometry.exportToWkb() );
 
   //test implicit sharing detachment
   QgsFeature copy( feature );
-  QCOMPARE( *copy.geometry().asWkb(), *feature.geometry().asWkb() );
+  QCOMPARE( copy.geometry().exportToWkb(), feature.geometry().exportToWkb() );
   copy.clearGeometry();
   QVERIFY( ! copy.hasGeometry() );
-  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
+  QCOMPARE( feature.geometry().exportToWkb(), mGeometry.exportToWkb() );
 
   //test no crash when setting an empty geometry and triggering a detach
   QgsFeature emptyGeomFeature;
@@ -294,18 +294,18 @@ void TestQgsFeature::geometry()
   //setGeometry
   //always start with a copy so that we can test implicit sharing detachment is working
   copy = feature;
-  QCOMPARE( *copy.geometry().asWkb(), *mGeometry.asWkb() );
+  QCOMPARE( copy.geometry().exportToWkb(), mGeometry.exportToWkb() );
   copy.setGeometry( QgsGeometry( mGeometry2 ) );
-  QCOMPARE( *copy.geometry().asWkb(), *mGeometry2.asWkb() );
-  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
+  QCOMPARE( copy.geometry().exportToWkb(), mGeometry2.exportToWkb() );
+  QCOMPARE( feature.geometry().exportToWkb(), mGeometry.exportToWkb() );
 
   //setGeometry using reference
   copy = feature;
-  QCOMPARE( *copy.geometry().asWkb(), *mGeometry.asWkb() );
+  QCOMPARE( copy.geometry().exportToWkb(), mGeometry.exportToWkb() );
   QgsGeometry geomByRef( mGeometry2 );
   copy.setGeometry( geomByRef );
-  QCOMPARE( *copy.geometry().asWkb(), *geomByRef.asWkb() );
-  QCOMPARE( *feature.geometry().asWkb(), *mGeometry.asWkb() );
+  QCOMPARE( copy.geometry().exportToWkb(), geomByRef.exportToWkb() );
+  QCOMPARE( feature.geometry().exportToWkb(), mGeometry.exportToWkb() );
 
   //clearGeometry
   QgsFeature geomFeature;
@@ -501,7 +501,7 @@ void TestQgsFeature::dataStream()
 
   QCOMPARE( resultFeature.id(), originalFeature.id() );
   QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
-  QCOMPARE( *resultFeature.geometry().asWkb(), *originalFeature.geometry().asWkb() );
+  QCOMPARE( resultFeature.geometry().exportToWkb(), originalFeature.geometry().exportToWkb() );
   QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
 
   //also test with feature empty geometry

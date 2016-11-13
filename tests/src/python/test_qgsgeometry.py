@@ -3394,7 +3394,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # Test that importing an invalid WKB (a MultiPolygon with a CurvePolygon) fails
         geom = QgsGeometry.fromWkt('MultiSurface(((0 0,0 1,1 1,0 0)), CurvePolygon ((0 0,0 1,1 1,0 0)))')
-        wkb = geom.asWkb()
+        wkb = geom.exportToWkb()
         wkb = bytearray(wkb)
         if wkb[1] == QgsWkbTypes.MultiSurface:
             wkb[1] = QgsWkbTypes.MultiPolygon
@@ -3434,10 +3434,10 @@ class TestQgsGeometry(unittest.TestCase):
         wkt += ")"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom is not None
-        wkb1 = geom.asWkb()
+        wkb1 = geom.exportToWkb()
         geom = QgsGeometry()
         geom.fromWkb(wkb1)
-        wkb2 = geom.asWkb()
+        wkb2 = geom.exportToWkb()
         self.assertEqual(wkb1, wkb2)
 
     def testMergeLines(self):

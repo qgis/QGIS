@@ -41,11 +41,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual QgsCurvePolygon* clone() const override;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
+    virtual bool fromWkb( QgsConstWkbPtr& wkb ) override;
     virtual bool fromWkt( const QString& wkt ) override;
 
-    int wkbSize() const override;
-    unsigned char* asWkb( int& binarySize ) const override;
+    QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;

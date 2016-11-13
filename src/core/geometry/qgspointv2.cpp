@@ -96,7 +96,7 @@ QgsPointV2 *QgsPointV2::clone() const
   return new QgsPointV2( *this );
 }
 
-bool QgsPointV2::fromWkb( QgsConstWkbPtr wkbPtr )
+bool QgsPointV2::fromWkb( QgsConstWkbPtr& wkbPtr )
 {
   QgsWkbTypes::Type type = wkbPtr.readHeader();
   if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
@@ -165,24 +165,20 @@ bool QgsPointV2::fromWkt( const QString& wkt )
   return true;
 }
 
-int QgsPointV2::wkbSize() const
-{
-  int size = sizeof( char ) + sizeof( quint32 );
-  size += ( 2 + is3D() + isMeasure() ) * sizeof( double );
-  return size;
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
 
-unsigned char* QgsPointV2::asWkb( int& binarySize ) const
+QByteArray QgsPointV2::asWkb() const
 {
-  binarySize = wkbSize();
-  unsigned char* geomPtr = new unsigned char[binarySize];
-  QgsWkbPtr wkb( geomPtr, binarySize );
+  int binarySize = sizeof( char ) + sizeof( quint32 );
+  binarySize += ( 2 + is3D() + isMeasure() ) * sizeof( double );
+
+  QByteArray wkbArray;
+  wkbArray.resize( binarySize );
+  QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << mX << mY;
@@ -194,7 +190,7 @@ unsigned char* QgsPointV2::asWkb( int& binarySize ) const
   {
     wkb << mM;
   }
-  return geomPtr;
+  return wkbArray;
 }
 
 QString QgsPointV2::asWkt( int precision ) const

@@ -146,21 +146,15 @@ class CORE_EXPORT QgsGeometry
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
+      @note not available in python bindings
      */
     void fromWkb( unsigned char *wkb, int length );
 
     /**
-       Returns the buffer containing this geometry in WKB format.
-       You may wish to use in conjunction with wkbSize().
-       @see wkbSize
+     * Set the geometry, feeding in the buffer containing OGC Well-Known Binary
+     * @note added in 3.0
      */
-    const unsigned char* asWkb() const;
-
-    /**
-     * Returns the size of the WKB in asWkb().
-     * @see asWkb
-     */
-    int wkbSize() const;
+    void fromWkb( const QByteArray& wkb );
 
     /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
@@ -637,6 +631,11 @@ class CORE_EXPORT QgsGeometry
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
 
+    /** Export the geometry to WKB
+     * @note added in 3.0
+     */
+    QByteArray exportToWkb() const;
+
     /** Exports the geometry to WKT
      *  @note precision parameter added in 2.4
      *  @return true in case of success and false else
@@ -937,7 +936,6 @@ class CORE_EXPORT QgsGeometry
     QgsGeometryPrivate* d; //implicitely shared data pointer
 
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
-    void removeWkbGeos();
 
     static void convertToPolyline( const QgsPointSequence &input, QgsPolyline& output );
     static void convertPolygon( const QgsPolygonV2& input, QgsPolygon& output );

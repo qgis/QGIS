@@ -213,7 +213,8 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
 
 bool QgsGPXProvider::addFeature( QgsFeature& f )
 {
-  const unsigned char* geo = f.geometry().asWkb();
+  QByteArray wkb( f.geometry().exportToWkb() );
+  const char* geo = wkb.constData();
   QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;
   QgsGPSObject* obj = nullptr;
