@@ -41,7 +41,8 @@ from processing.core.parameters import (Parameter,
                                         ParameterVector,
                                         ParameterTableField,
                                         ParameterSelection,
-                                        ParameterExpression)
+                                        ParameterExpression,
+                                        getParameterFromString)
 from processing.tools import dataobjects
 from processing.tests.TestData import points2
 
@@ -96,6 +97,19 @@ class ParameterBooleanTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, True)
 
+    def testScriptCode(self):
+        parameter = ParameterBoolean('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterBoolean))
+        self.assertFalse(result.optional)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterBoolean))
+        self.assertTrue(result.optional)
+
 
 class ParameterCRSTest(unittest.TestCase):
 
@@ -118,6 +132,18 @@ class ParameterCRSTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
+
+    def testScriptCode(self):
+        parameter = ParameterCrs('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterCrs))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterCrs))
+        self.assertTrue(result.optional)
 
 
 class ParameterDataObjectTest(unittest.TestCase):
@@ -161,6 +187,18 @@ class ParameterExtentTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2,3,4')
 
+    def testScriptCode(self):
+        parameter = ParameterExtent('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterExtent))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterExtent))
+        self.assertTrue(result.optional)
+
 
 class ParameterPointTest(unittest.TestCase):
 
@@ -190,6 +228,18 @@ class ParameterPointTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, '1,2')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2')
+
+    def testScriptCode(self):
+        parameter = ParameterPoint('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterPoint))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterPoint))
+        self.assertTrue(result.optional)
 
 
 class ParameterSelectionTest(unittest.TestCase):
@@ -282,6 +332,18 @@ class ParameterFileTest(unittest.TestCase):
         parameter = ParameterFile('myName', 'myDesc')
         parameter.setValue('myFile.png')
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '"myFile.png"')
+
+    def testScriptCode(self):
+        parameter = ParameterFile('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterFile))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterFile))
+        self.assertTrue(result.optional)
 
 
 class TestParameterFixedTable(unittest.TestCase):
@@ -393,6 +455,18 @@ class ParameterMultipleInputTest(unittest.TestCase):
 
         # TODO With Layer Name, instead of Layer object
 
+    def testScriptCode(self):
+        parameter = ParameterMultipleInput('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterMultipleInput))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterMultipleInput))
+        self.assertTrue(result.optional)
+
 
 class ParameterNumberTest(unittest.TestCase):
 
@@ -447,6 +521,18 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 5)
 
+    def testScriptCode(self):
+        parameter = ParameterNumber('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterNumber))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterNumber))
+        self.assertTrue(result.optional)
+
 
 class ParameterStringTest(unittest.TestCase):
 
@@ -469,6 +555,18 @@ class ParameterStringTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, 'check')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 'check')
+
+    def testScriptCode(self):
+        parameter = ParameterString('myName', 'myDescription', default='test')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterString))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterString))
+        self.assertTrue(result.optional)
 
 
 class ParameterExpressionTest(unittest.TestCase):
@@ -493,6 +591,18 @@ class ParameterExpressionTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 'check')
 
+    def testScriptCode(self):
+        parameter = ParameterExpression('myName', 'myDescription', default='test')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterExpression))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterExpression))
+        self.assertTrue(result.optional)
+
 
 class ParameterTableFieldTest(unittest.TestCase):
 
@@ -505,6 +615,21 @@ class ParameterTableFieldTest(unittest.TestCase):
         parameter = ParameterTableField(
             'myName', 'myDesc', parent_name, optional=True)
 
+    def testScriptCode(self):
+        parent_name = 'test_parent_layer'
+        test_data = points2()
+        test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')
+        parameter = ParameterTableField(
+            'myName', 'myDesc', parent_name)
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterTableField))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterTableField))
+        self.assertTrue(result.optional)
 
 if __name__ == '__main__':
     unittest.main()

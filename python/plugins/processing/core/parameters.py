@@ -863,14 +863,20 @@ class ParameterNumber(Parameter):
         if self.optional:
             param_type += 'optional '
         param_type += 'number'
-        return '##' + self.name + '=' + param_type + str(self.default)
+        code = '##' + self.name + '=' + param_type
+        if self.default:
+            code += str(self.default)
+        return code
 
     @classmethod
     def fromScriptCode(self, line):
+
         isOptional, name, definition = _splitParameterOptions(line)
         descName = _createDescriptiveName(name)
         if definition.lower().strip().startswith('number'):
-            default = definition.strip()[len('number') + 1:] or None
+            default = definition.strip()[len('number'):] or None
+            if default == 'None':
+                default = None
             return ParameterNumber(name, descName, default=default, optional=isOptional)
 
     def _evaluate(self, value):
