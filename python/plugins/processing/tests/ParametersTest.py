@@ -44,7 +44,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterExpression,
                                         getParameterFromString)
 from processing.tools import dataobjects
-from processing.tests.TestData import points2
+from processing.tests.TestData import points
 
 from qgis.core import (QgsRasterLayer,
                        QgsVectorLayer)
@@ -608,7 +608,7 @@ class ParameterTableFieldTest(unittest.TestCase):
 
     def testOptional(self):
         parent_name = 'test_parent_layer'
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')
         parent = ParameterVector(parent_name, parent_name)
         parent.setValue(test_layer)

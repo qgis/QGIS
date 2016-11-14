@@ -40,7 +40,6 @@ import codecs
 import io
 
 import psycopg2
-
 from osgeo import ogr
 
 from qgis.PyQt.QtCore import QVariant, QSettings
@@ -538,66 +537,46 @@ def ogrConnectionString(uri):
     return '"' + ogrstr + '"'
 
 
-#
-# The uri parameter is an URI from any QGIS provider,
-# so could have different formats.
-# Example formats:
-#
-# -- PostgreSQL provider
-# port=5493 sslmode=disable key='edge_id' srid=0 type=LineString table="city_data"."edge" (geom) sql=
-#
-# -- Spatialite provider
-# dbname='/tmp/x.sqlite' table="t" (geometry) sql='
-#
-# -- OGR provider (single-layer directory)
-# /tmp/x.gdb
-#
-# -- OGR provider (multi-layer directory)
-# /tmp/x.gdb|layerid=1
-#
-# -- OGR provider (multi-layer directory)
-# /tmp/x.gdb|layername=thelayer
-#
 def ogrLayerName(uri):
+    if os.path.isfile(uri):
+        return os.path.basename(os.path.splitext(uri)[0])
 
-    # handle URIs of database providers
     if ' table=' in uri:
-        # Matches table="schema"."table"
+        # table="schema"."table"
         re_table_schema = re.compile(' table="([^"]*)"\."([^"]*)"')
         r = re_table_schema.search(uri)
         if r:
             return r.groups()[0] + '.' + r.groups()[1]
-        # Matches table="table"
+        # table="table"
         re_table = re.compile(' table="([^"]*)"')
         r = re_table.search(uri)
         if r:
             return r.groups()[0]
-
-    # handle URIs of OGR provider with explicit layername
-    if 'layername' in uri:
+    elif 'layername' in uri:
         regex = re.compile('(layername=)([^|]*)')
         r = regex.search(uri)
         return r.groups()[1]
 
     fields = uri.split('|')
-    ogruri = fields[0]
+    basePath = fields[0]
     fields = fields[1:]
     layerid = 0
     for f in fields:
         if f.startswith('layername='):
-            # Name encoded in uri, nothing more needed
             return f.split('=')[1]
         if f.startswith('layerid='):
             layerid = int(f.split('=')[1])
-            # Last layerid= takes precedence, to allow of layername to
-            # take precedence
-    ds = ogr.Open(ogruri)
+
+    ds = ogr.Open(basePath)
     if not ds:
-        return "invalid-uri"
+        return None
+
     ly = ds.GetLayer(layerid)
     if not ly:
-        return "invalid-layerid"
+        return None
+
     name = ly.GetName()
+    ds = None
     return name
 
 
@@ -623,7 +602,7 @@ class VectorWriter(object):
 
         if encoding is None:
             settings = QSettings()
-            encoding = settings.value('/Processing/encoding', 'System', type=str)
+            encoding = settings.value('/Processing/encoding', 'System', str)
 
         if self.destination.startswith(self.MEMORY_LAYER_PREFIX):
             self.isNotFileBased = True
@@ -650,8 +629,6 @@ class VectorWriter(object):
                 QgsCredentials.instance().put(connInfo, user, passwd)
             else:
                 raise GeoAlgorithmExecutionException("Couldn't connect to database")
-            # fix_print_with_import
-            print(uri.uri())
             try:
                 db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
                                    dbname=uri.database(), user=user, passwd=passwd)
@@ -682,8 +659,6 @@ class VectorWriter(object):
         elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
             self.isNotFileBased = True
             uri = QgsDataSourceUri(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
-            # fix_print_with_import
-            print(uri.uri())
             try:
                 db = spatialite.GeoDB(uri=uri)
             except spatialite.DbError as e:

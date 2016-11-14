@@ -38,7 +38,6 @@ tests:
         name: expected/clip_lines_by_polygon.gml
         type: vector
 
-
   - algorithm: qgis:clip
     name: Clip lines by multipolygon
     params:
@@ -109,7 +108,6 @@ tests:
         name: expected/clip_points_by_multipolygons.gml
         type: vector
 
-
   # These datasets should produce a geometry collection and not a polygon only
   # dataset. If the algorithm is fixed, a new test should be introduced to
   # check this behavior.
@@ -152,7 +150,7 @@ tests:
         type: vector
 
   - algorithm: qgis:basicstatisticsfornumericfields
-    name: Test (qgis:basicstatisticsfornumericfields)
+    name: Basic statistics for numeric fields
     params:
     - name: multipolys.gml
       type: vector
@@ -182,7 +180,7 @@ tests:
           - 'Interquartile Range \(IQR\): 0.123'
 
   - algorithm: qgis:basicstatisticsfortextfields
-    name: Test (qgis:basicstatisticsfortextfields)
+    name: Basic statistics for text fields
     params:
     - name: multipolys.gml
       type: vector
@@ -865,7 +863,6 @@ tests:
         name: expected/lines_translated.gml
         type: vector
 
-
   - algorithm: qgis:singlesidedbuffer
     name: Single sided buffer lines (left, round)
     params:
@@ -932,7 +929,7 @@ tests:
         type: vector
 
   - algorithm: qgis:extractnodes
-    name: Test (qgis:extractnodes)
+    name: Extract nodes from polygons
     params:
       INPUT:
         name: polys.gml
@@ -943,7 +940,7 @@ tests:
         type: vector
 
   - algorithm: qgis:extractnodes
-    name: Test (qgis:extractnodes)
+    name: Extract nodes from multilines
     params:
       INPUT:
         name: multilines.gml
@@ -954,7 +951,7 @@ tests:
         type: vector
 
   - algorithm: qgis:extractnodes
-    name: Test (qgis:extractnodes)
+    name: Extract nodes from lines
     params:
       INPUT:
         name: lines.gml
@@ -1138,7 +1135,7 @@ tests:
         type: rasterhash
 
   - algorithm: qgis:lineintersections
-    name: Line Intersection
+    name: Line intersection
     params:
       INPUT_A:
         name: lines.gml
@@ -1296,7 +1293,6 @@ tests:
         compare:
           geometry:
             precision: 7
-
   - algorithm: qgis:extendlines
     name: Extend multilines
     params:

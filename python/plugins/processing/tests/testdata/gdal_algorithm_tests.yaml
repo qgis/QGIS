@@ -27,23 +27,6 @@ tests:
 #        hash: f1fedeb6782f9389cf43590d4c85ada9155ab61fef6dc285aaeb54d6
 #        type: rasterhash
 
-
-  - name: GDAL ogrinfo
-    algorithm: gdalogr:information
-    params:
-      INPUT:
-        name: lines.gml
-        type: vector
-      SUMMARY_ONLY: 'True'
-    results:
-      OUTPUT:
-        name: expected/gdal/vector_info.html
-        type: regex
-        rules:
-          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
-          - 'Geometry: Line String'
-          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
-
   - algorithm: gdalorg:rasterinfo
     name: GDAL gdalinfo
     params:
@@ -60,3 +43,137 @@ tests:
           - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
           - '  NoData Value=-32768'
+
+#  - algorithm: gdalogr:polygonize
+#    name: GDAL polygonize
+#    params:
+#      FIELD: DN
+#      INPUT:
+#        name: raster.tif
+#        type: raster
+#    results:
+#      OUTPUT:
+#        name: expected/gdal/polygonize.gml
+#        type: vector
+
+  - algorithm: gdalogr:information
+    name: GDAL ogrinfo
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR buffer lines
+    params:
+      DISSOLVEALL: false
+      DISTANCE: 1.0
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+    expectedFailure:
+      - int(1)
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR basic polygon buffer
+    params:
+      DISSOLVEALL: false
+      DISTANCE: 0.5
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR polygon buffer with dissolve
+    params:
+      DISSOLVEALL: true
+      DISTANCE: 0.5
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdalogr:createpointsalonglines
+    name: OGR points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
+
+  - algorithm: gdalogr:offsetlinesforlines
+    name: OGR offset lines for lines (right-handed)
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+         name: lines.gml
+         type: vector
+      MULTI: false
+      RADIUS: -0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/offset_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdalogr:singlesidedbufferforlines
+    name: OGR one-side buffer for lines (left-handed)
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '1'
+      MULTI: false
+      RADIUS: 0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/one_side_buffer.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7

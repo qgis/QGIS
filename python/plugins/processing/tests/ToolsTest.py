@@ -25,28 +25,18 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.testing import start_app, unittest
-from processing.tests.TestData import points2
-from processing.tools import vector
-from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
-from processing.core.ProcessingConfig import ProcessingConfig
-
-import os.path
-import errno
+import os
 import shutil
+import tempfile
 
-dataFolder = os.path.join(os.path.dirname(__file__), '../../../../tests/testdata/')
-tmpBaseFolder = os.path.join(os.sep, 'tmp', 'qgis_test', str(os.getpid()))
+from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from qgis.testing import start_app, unittest
 
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tests.TestData import testDataPath, points
+from processing.tools import vector
 
-def mkDirP(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 start_app()
 
@@ -55,67 +45,23 @@ class VectorTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        mkDirP(tmpBaseFolder)
+        cls.cleanup_paths = []
 
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(tmpBaseFolder)
-        pass
-
-    # See http://hub.qgis.org/issues/15698
-    def test_ogrLayerName(self):
-        tmpdir = os.path.join(tmpBaseFolder, 'ogrLayerName')
-        os.mkdir(tmpdir)
-
-        def linkTestfile(f, t):
-            os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
-
-        # URI from OGR provider
-        linkTestfile('geom_data.csv', 'a.csv')
-        name = vector.ogrLayerName(tmpdir)
-        self.assertEqual(name, 'a')
-
-        # URI from OGR provider
-        linkTestfile('wkt_data.csv', 'b.csv')
-        name = vector.ogrLayerName(tmpdir + '|layerid=0')
-        self.assertEqual(name, 'a')
-        name = vector.ogrLayerName(tmpdir + '|layerid=1')
-        self.assertEqual(name, 'b')
-
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layerid=2')
-        self.assertEqual(name, 'invalid-layerid')
-
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layername=f')
-        self.assertEqual(name, 'f') # layername takes precedence
-
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layerid=0|layername=f2')
-        self.assertEqual(name, 'f2') # layername takes precedence
-
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layername=f2|layerid=0')
-        self.assertEqual(name, 'f2') # layername takes precedence
-
-        # URI from Sqlite provider
-        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
-        self.assertEqual(name, 't')
-
-        # URI from PostgreSQL provider
-        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
-        self.assertEqual(name, 'city_data.edge')
+        for path in cls.cleanup_paths:
+            shutil.rmtree(path)
 
     def testFeatures(self):
         ProcessingConfig.initialize()
 
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # test with all features
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test with selected features
         previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -129,15 +75,15 @@ class VectorTest(unittest.TestCase):
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
         test_layer.selectByIds([2, 4, 6])
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # using selected features, but no selection
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
         test_layer.removeSelection()
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test that feature request is honored
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
@@ -157,54 +103,54 @@ class VectorTest(unittest.TestCase):
     def testValues(self):
         ProcessingConfig.initialize()
 
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # field by index
-        res = vector.values(test_layer, 0)
-        self.assertEqual(res[0], [1, 2, 3, 4, 5, 6, 7, 8])
+        res = vector.values(test_layer, 1)
+        self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # field by name
         res = vector.values(test_layer, 'id')
-        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8])
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # two fields
-        res = vector.values(test_layer, 0, 3)
-        self.assertEqual(res[0], [1, 2, 3, 4, 5, 6, 7, 8])
-        self.assertEqual(res[3], [2, 1, 0, 2, 1, 0, 0, 0])
+        res = vector.values(test_layer, 1, 2)
+        self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name
-        res = vector.values(test_layer, 'id', 'id_2')
-        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8])
-        self.assertEqual(res['id_2'], [2, 1, 0, 2, 1, 0, 0, 0])
+        res = vector.values(test_layer, 'id', 'id2')
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(res['id2'], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name and index
-        res = vector.values(test_layer, 'id', 3)
-        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8])
-        self.assertEqual(res[3], [2, 1, 0, 2, 1, 0, 0, 0])
+        res = vector.values(test_layer, 'id', 2)
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # test with selected features
         previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
         test_layer.selectByIds([2, 4, 6])
-        res = vector.values(test_layer, 0)
-        self.assertEqual(set(res[0]), set([5, 7, 3]))
+        res = vector.values(test_layer, 1)
+        self.assertEqual(set(res[1]), set([5, 7, 3]))
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
 
     def testUniqueValues(self):
         ProcessingConfig.initialize()
 
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # field by index
-        v = vector.uniqueValues(test_layer, 3)
+        v = vector.uniqueValues(test_layer, 2)
         self.assertEqual(len(v), len(set(v)))
         self.assertEqual(set(v), set([2, 1, 0]))
 
         # field by name
-        v = vector.uniqueValues(test_layer, 'id_2')
+        v = vector.uniqueValues(test_layer, 'id2')
         self.assertEqual(len(v), len(set(v)))
         self.assertEqual(set(v), set([2, 1, 0]))
 
@@ -217,6 +163,46 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set(v), set([5, 7, 3]))
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+
+    def testOgrLayerNameExtraction(self):
+        outdir = tempfile.mkdtemp()
+        self.cleanup_paths.append(outdir)
+
+        def _copyFile(dst):
+            shutil.copyfile(os.path.join(testDataPath, 'custom', 'grass7', 'weighted.csv'), dst)
+
+        # OGR provider - single layer
+        _copyFile(os.path.join(outdir, 'a.csv'))
+        name = vector.ogrLayerName(outdir)
+        self.assertEqual(name, 'a')
+
+        # OGR provider - multiple layers
+        _copyFile(os.path.join(outdir, 'b.csv'))
+        name = vector.ogrLayerName(outdir + '|layerid=0')
+        self.assertEqual(name, 'a')
+        name = vector.ogrLayerName(outdir + '|layerid=1')
+        self.assertEqual(name, 'b')
+
+        name = vector.ogrLayerName(outdir + '|layerid=2')
+        self.assertIsNone(name)
+
+        # OGR provider - layername takes precedence
+        name = vector.ogrLayerName(outdir + '|layername=f')
+        self.assertEqual(name, 'f')
+
+        name = vector.ogrLayerName(outdir + '|layerid=0|layername=f')
+        self.assertEqual(name, 'f')
+
+        name = vector.ogrLayerName(outdir + '|layername=f|layerid=0')
+        self.assertEqual(name, 'f')
+
+        # SQLiite provider
+        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
+        self.assertEqual(name, 't')
+
+        # PostgreSQL provider
+        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
+        self.assertEqual(name, 'city_data.edge')
 
 
 if __name__ == '__main__':

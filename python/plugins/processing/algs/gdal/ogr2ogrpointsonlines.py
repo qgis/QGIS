@@ -80,7 +80,6 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
 
         arguments.append('-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(')
         arguments.append(geometry)
