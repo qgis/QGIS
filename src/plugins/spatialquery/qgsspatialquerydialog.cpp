@@ -125,23 +125,23 @@ void QgsSpatialQueryDialog::setLayer( bool isTarget, int index )
   {
     if ( mLayerTarget )
     {
-      disconnect( mLayerTarget, SIGNAL( selectionChanged() ),
-                  this, SLOT( signal_layerTarget_selectionFeaturesChanged() ) );
+      disconnect( mLayerTarget, &QgsVectorLayer::selectionChanged,
+                  this, &QgsSpatialQueryDialog::signal_layerTarget_selectionFeaturesChanged );
     }
     mLayerTarget = getLayerFromCombobox( isTarget, index );
-    connect( mLayerTarget, SIGNAL( selectionChanged() ),
-             this, SLOT( signal_layerTarget_selectionFeaturesChanged() ) );
+    connect( mLayerTarget, &QgsVectorLayer::selectionChanged,
+             this, &QgsSpatialQueryDialog::signal_layerTarget_selectionFeaturesChanged );
   }
   else
   {
     if ( mLayerReference )
     {
-      disconnect( mLayerReference, SIGNAL( selectionChanged() ),
-                  this, SLOT( signal_layerReference_selectionFeaturesChanged() ) );
+      disconnect( mLayerReference, &QgsVectorLayer::selectionChanged,
+                  this, &QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged );
     }
     mLayerReference = getLayerFromCombobox( isTarget, index );
-    connect( mLayerReference, SIGNAL( selectionChanged() ),
-             this, SLOT( signal_layerReference_selectionFeaturesChanged() ) );
+    connect( mLayerReference, &QgsVectorLayer::selectionChanged,
+             this, &QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged );
   }
 } // void QgsSpatialQueryDialog::setLayer(bool isTarget, int index)
 
@@ -369,14 +369,14 @@ void QgsSpatialQueryDialog::disconnectAll()
 
   if ( mLayerTarget )
   {
-    disconnect( mLayerTarget, SIGNAL( selectionChanged() ),
-                this, SLOT( signal_layerTarget_selectionFeaturesChanged() ) );
+    disconnect( mLayerTarget, &QgsVectorLayer::selectionChanged,
+                this, &QgsSpatialQueryDialog::signal_layerTarget_selectionFeaturesChanged );
 
   }
   if ( mLayerReference )
   {
-    disconnect( mLayerReference, SIGNAL( selectionChanged() ),
-                this, SLOT( signal_layerReference_selectionFeaturesChanged() ) );
+    disconnect( mLayerReference, &QgsVectorLayer::selectionChanged,
+                this, &QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged );
   }
 } // QgsSpatialQueryDialog::disconnectAll()
 

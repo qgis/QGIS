@@ -38,7 +38,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
   setSortRole( QgsAttributeTableModel::SortRole );
-  connect( layer(), SIGNAL( selectionChanged() ), SLOT( selectionChanged() ) );
+  connect( layer(), &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableFilterModel::selectionChanged );
 }
 
 bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const

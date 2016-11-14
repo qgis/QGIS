@@ -155,8 +155,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     setDataSource( vectorLayerPath, baseName, providerKey, loadDefaultStyleFlag );
   }
 
-  connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
-  connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( repaintRequested() ) );
+  connect( this, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayer::repaintRequested );
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   // Default simplify drawing settings

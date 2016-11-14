@@ -251,14 +251,14 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
   QgsVectorLayer* newLayer = dynamic_cast< QgsVectorLayer* >( layer );
   if ( mLayer && mLayer != newLayer )
   {
-    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
   }
 
   mLayer = newLayer;
 
   if ( mLayer )
   {
-    connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
   }
 
   mFieldExpressionWidget->setLayer( mLayer );
@@ -294,7 +294,7 @@ void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList& layers )
 {
   if ( mLayer && layers.contains( mLayer->id() ) )
   {
-    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
     mLayer = nullptr;
   }
 }
