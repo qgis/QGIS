@@ -1225,7 +1225,7 @@ void QgsWfsServer::startGetFeature( QgsRequestHandler& request, const QString& f
       try
       {
         if ( exportGeom->transform( transform ) == 0 )
-            rect = new QgsRectangle( exportGeom->boundingBox() );
+          rect = new QgsRectangle( exportGeom->boundingBox() );
       }
       catch ( QgsCsException &cse )
       {
