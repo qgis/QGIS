@@ -234,6 +234,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void nodeRemovedChildren();
 
     void nodeVisibilityChanged( QgsLayerTreeNode* node );
+    //! Updates model when node's name has changed
+    //! @note added in 2.18.1
     void nodeNameChanged( QgsLayerTreeNode* node, const QString& name );
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
