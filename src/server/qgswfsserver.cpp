@@ -1218,16 +1218,16 @@ void QgsWfsServer::startGetFeature( QgsRequestHandler& request, const QString& f
   {
     if ( crs.isValid() )
     {
-      QgsGeometry* exportGeom = QgsGeometry::fromRect( *rect );
+      QgsGeometry exportGeom = QgsGeometry::fromRect( *rect );
       QgsCoordinateTransform transform;
       transform.setSourceCrs( crs );
-      transform.setDestCRS( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+      transform.setDestinationCRS( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
       try
       {
-        if ( exportGeom->transform( transform ) == 0 )
-          rect = new QgsRectangle( exportGeom->boundingBox() );
+        if ( exportGeom.transform( transform ) == 0 )
+          rect = new QgsRectangle( exportGeom.boundingBox() );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsException &cse )
       {
         Q_UNUSED( cse );
       }
