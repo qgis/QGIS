@@ -35,6 +35,8 @@ class TestQgsLayerTree : public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
+    void testGroupNameChanged();
+    void testLayerNameChanged();
     void testCheckStateParentToChild();
     void testCheckStateChildToParent();
     void testCheckStateMutuallyExclusive();
@@ -78,6 +80,66 @@ void TestQgsLayerTree::cleanupTestCase()
 {
   delete mRoot;
   QgsApplication::exitQgis();
+}
+
+void TestQgsLayerTree::testGroupNameChanged()
+{
+  QgsLayerTreeNode* secondGroup = mRoot->children()[1];
+
+  QSignalSpy spy( mRoot, SIGNAL( nameChanged( QgsLayerTreeNode*, QString ) ) );
+  secondGroup->setName( "grp2+" );
+
+  QCOMPARE( secondGroup->name(), QString( "grp2+" ) );
+
+  QCOMPARE( spy.count(), 1 );
+  QList<QVariant> arguments = spy.takeFirst();
+  QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode*>(), secondGroup );
+  QCOMPARE( arguments.at( 1 ).toString(), QString( "grp2+" ) );
+
+  secondGroup->setName( "grp2" );
+  QCOMPARE( secondGroup->name(), QString( "grp2" ) );
+}
+
+void TestQgsLayerTree::testLayerNameChanged()
+{
+  QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QgsLayerTreeLayer* n = new QgsLayerTreeLayer( vl->id(), vl->name() );
+  mRoot->addChildNode( n );
+
+  QSignalSpy spy( mRoot, SIGNAL( nameChanged( QgsLayerTreeNode*, QString ) ) );
+
+  QCOMPARE( n->name(), QString( "vl" ) );
+  n->setName( "changed 1" );
+
+  QCOMPARE( n->name(), QString( "changed 1" ) );
+  QCOMPARE( spy.count(), 1 );
+  QList<QVariant> arguments = spy.takeFirst();
+  QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode*>(), n );
+  QCOMPARE( arguments.at( 1 ).toString(), QString( "changed 1" ) );
+
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vl );
+
+  // set name via map layer
+  vl->setName( "changed 2" );
+  QCOMPARE( n->name(), QString( "changed 2" ) );
+  QCOMPARE( spy.count(), 1 );
+  arguments = spy.takeFirst();
+  QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode*>(), n );
+  QCOMPARE( arguments.at( 1 ).toString(), QString( "changed 2" ) );
+
+  // set name via layer tree
+  n->setName( "changed 3" );
+  QCOMPARE( n->name(), QString( "changed 3" ) );
+  QCOMPARE( spy.count(), 1 );
+  arguments = spy.takeFirst();
+  QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode*>(), n );
+  QCOMPARE( arguments.at( 1 ).toString(), QString( "changed 3" ) );
+
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer*>() << vl );
+
+  mRoot->removeChildNode( n );
 }
 
 void TestQgsLayerTree::testCheckStateParentToChild()

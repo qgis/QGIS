@@ -742,6 +742,15 @@ void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode* node )
   emit dataChanged( index, index );
 }
 
+void QgsLayerTreeModel::nodeNameChanged( QgsLayerTreeNode* node, const QString& name )
+{
+  Q_UNUSED( name );
+  Q_ASSERT( node );
+
+  QModelIndex index = node2index( node );
+  emit dataChanged( index, index );
+}
+
 
 void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key )
 {
@@ -854,7 +863,6 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer* nodeLayer )
     connect( layer, SIGNAL( editingStarted() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
     connect( layer, SIGNAL( layerModified() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
-    connect( layer, SIGNAL( nameChanged() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
   }
 }
 
@@ -927,6 +935,7 @@ void QgsLayerTreeModel::connectToRootNode()
   connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
   connect( mRootNode, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
+  connect( mRootNode, SIGNAL( nameChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeNameChanged( QgsLayerTreeNode*, QString ) ) );
 
   connect( mRootNode, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
 
