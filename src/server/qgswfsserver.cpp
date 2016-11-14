@@ -1221,7 +1221,7 @@ void QgsWfsServer::startGetFeature( QgsRequestHandler& request, const QString& f
       QgsGeometry exportGeom = QgsGeometry::fromRect( *rect );
       QgsCoordinateTransform transform;
       transform.setSourceCrs( crs );
-      transform.setDestinationCRS( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+      transform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
       try
       {
         if ( exportGeom.transform( transform ) == 0 )
