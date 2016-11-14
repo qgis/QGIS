@@ -1956,12 +1956,40 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 {
   ( void )writeStyle( node, doc, errorMessage );
 
+<<<<<<< HEAD
   // FIXME
   // edittypes are written to the layerNode
   // by slot QgsEditorWidgetRegistry::writeMapLayer()
   // triggered by signal QgsProject::writeMapLayer()
   // still other editing settings are written here,
   // although they are not part of symbology either
+=======
+  QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
+
+  int index = 0;
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
+    fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
+
+    fieldConfigurationElement.appendChild( fieldElement );
+
+    QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
+
+    // TODO : wrap this part in an if to only save if it was user-modified
+    QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
+    fieldElement.appendChild( editWidgetElement );
+    editWidgetElement.setAttribute( "type", field.editorWidgetSetup().type() );
+
+    QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
+
+    QgsConfigurationMap( widgetSetup.config() ).toXml( editWidgetConfigElement );
+    editWidgetElement.appendChild( editWidgetConfigElement );
+    // END TODO : wrap this part in an if to only save if it was user-modified
+
+    ++index;
+  }
+>>>>>>> dc0c72f... Fixup
 
   QDomElement afField = doc.createElement( QStringLiteral( "annotationform" ) );
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
