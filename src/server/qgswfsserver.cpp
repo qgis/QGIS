@@ -1220,6 +1220,22 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   if ( format == "GeoJSON" )
   {
     fcString = "{\"type\": \"FeatureCollection\",\n";
+    if ( crs.isValid() )
+    {
+      QgsGeometry* exportGeom = QgsGeometry::fromRect( *rect );
+      QgsCoordinateTransform transform;
+      transform.setSourceCrs( crs );
+      transform.setDestCRS( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+      try
+      {
+        if ( exportGeom->transform( transform ) == 0 )
+            rect = new QgsRectangle( exportGeom->boundingBox() );
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
+      }
+    }
     fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), prec ) + ", " + qgsDoubleToString( rect->yMinimum(), prec ) + ", " + qgsDoubleToString( rect->xMaximum(), prec ) + ", " + qgsDoubleToString( rect->yMaximum(), prec ) + "],\n";
     fcString += " \"features\": [\n";
     result = fcString.toUtf8();
