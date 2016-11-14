@@ -661,6 +661,12 @@ QgsDataItem        {#qgis_api_break_3_0_QgsDataItem}
 - emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.
 - Favourites was renamed to Favorites
 
+QgsDataProvider        {#qgis_api_break_3_0_QgsDataProvider}
+---------------
+
+- The duplicate (and unused) dataChanged( int ) signal was removed. Use dataChanged() instead.
+
+
 QgsDataSourceURI        {#qgis_api_break_3_0_QgsDatasourceUri}
 ----------------
 

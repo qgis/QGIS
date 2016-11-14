@@ -112,7 +112,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
     return false;
   }
 
-  connect( this, SIGNAL( afterRollback() ), layer->dataProvider(), SIGNAL( dataChanged() ) );
+  connect( this, &QgsTransaction::afterRollback, layer->dataProvider(), &QgsVectorDataProvider::dataChanged );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
   mLayers.insert( layer );
 

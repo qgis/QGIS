@@ -10258,8 +10258,8 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
 
     if ( provider )
     {
-      connect( provider, SIGNAL( dataChanged() ), layer, SLOT( triggerRepaint() ) );
-      connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
+      connect( provider, &QgsDataProvider::dataChanged, layer, &QgsMapLayer::triggerRepaint );
+      connect( provider, &QgsDataProvider::dataChanged, mMapCanvas, &QgsMapCanvas::refresh );
     }
   }
 }
