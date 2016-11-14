@@ -457,7 +457,7 @@ void QgsSymbolLegendNode::updateLabel()
 
   if ( mEmbeddedInParent )
   {
-    QString layerName = mLayerNode->layerName();
+    QString layerName = mLayerNode->name();
     if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
       layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 

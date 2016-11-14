@@ -996,7 +996,7 @@ void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex 
   }
   else if ( QgsLayerTree::isLayer( currentNode ) )
   {
-    currentText = QgsLayerTree::toLayer( currentNode )->layerName();
+    currentText = QgsLayerTree::toLayer( currentNode )->name();
     QVariant v = currentNode->customProperty( QStringLiteral( "legend/title-label" ) );
     if ( !v.isNull() )
       currentText = v.toString();

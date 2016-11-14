@@ -58,9 +58,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     //! @note added in 3.0
     void setName( const QString& n ) override;
 
-    QString layerName() const;
-    void setLayerName( const QString& n );
-
     Qt::CheckState isVisible() const { return mVisible; }
     void setVisible( Qt::CheckState visible );
 

@@ -92,7 +92,7 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
   {
     QgsLayerTreeNode* node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
-      layerNames << QgsLayerTree::toLayer( node )->layerName();
+      layerNames << QgsLayerTree::toLayer( node )->name();
   }
   return layerNames;
 }

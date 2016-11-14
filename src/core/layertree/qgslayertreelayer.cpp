@@ -73,20 +73,10 @@ void QgsLayerTreeLayer::attachToLayer()
 
 QString QgsLayerTreeLayer::name() const
 {
-  return layerName();
-}
-
-void QgsLayerTreeLayer::setName( const QString& n )
-{
-  setLayerName( n );
-}
-
-QString QgsLayerTreeLayer::layerName() const
-{
   return mLayer ? mLayer->name() : mLayerName;
 }
 
-void QgsLayerTreeLayer::setLayerName( const QString& n )
+void QgsLayerTreeLayer::setName( const QString& n )
 {
   if ( mLayer )
   {
@@ -144,7 +134,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
   elem.setAttribute( QStringLiteral( "id" ), mLayerId );
-  elem.setAttribute( QStringLiteral( "name" ), layerName() );
+  elem.setAttribute( QStringLiteral( "name" ), name() );
   elem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( mVisible ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
 
@@ -155,7 +145,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
 
 QString QgsLayerTreeLayer::dump() const
 {
-  return QStringLiteral( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( layerName() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
+  return QStringLiteral( "LAYER: %1 visible=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mVisible ).arg( mExpanded ).arg( layerId() );
 }
 
 QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const

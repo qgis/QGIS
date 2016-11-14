@@ -113,7 +113,7 @@ static QDomElement _writeOldLegendLayer( QDomDocument& doc, QgsLayerTreeLayer* n
   layerElem.setAttribute( QStringLiteral( "drawingOrder" ), drawingOrder );
   layerElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? "true" : "false" );
   layerElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeLayer->isVisible() ) );
-  layerElem.setAttribute( QStringLiteral( "name" ), nodeLayer->layerName() );
+  layerElem.setAttribute( QStringLiteral( "name" ), nodeLayer->name() );
   layerElem.setAttribute( QStringLiteral( "showFeatureCount" ), nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ) ).toInt() );
 
   QDomElement fileGroupElem = doc.createElement( QStringLiteral( "filegroup" ) );

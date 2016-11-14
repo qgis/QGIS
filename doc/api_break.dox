@@ -941,6 +941,12 @@ QgsLayerTreeGroup        {#qgis_api_break_3_0_QgsLayerTreeGroup}
 - readChildrenFromXML() has been renamed to readChildrenFromXml()
 
 
+QgsLayerTreeLayer        {#qgis_api_break_3_0_QgsLayerTreeLayer}
+-----------------
+
+- setLayerName(), layerName() were renamed to setName(), name()
+
+
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
 -----------------
 

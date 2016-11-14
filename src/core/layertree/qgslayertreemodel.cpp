@@ -198,7 +198,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
-      QString name = nodeLayer->layerName();
+      QString name = nodeLayer->name();
       if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
         QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() );
@@ -417,7 +417,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
-      layer->setLayerName( value.toString() );
+      layer->setName( value.toString() );
       emit dataChanged( index, index );
     }
     else if ( QgsLayerTree::isGroup( node ) )
