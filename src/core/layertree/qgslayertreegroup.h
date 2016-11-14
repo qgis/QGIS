@@ -36,9 +36,9 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup( const QgsLayerTreeGroup& other );
 
     //! Get group's name
-    QString name() const { return mName; }
+    QString name() const override;
     //! Set group's name
-    void setName( const QString& n ) { mName = n; }
+    void setName( const QString& n ) override;
 
     //! Insert a new group node with given name at specified position. Newly created node is owned by this group.
     QgsLayerTreeGroup* insertGroup( int index, const QString& name );

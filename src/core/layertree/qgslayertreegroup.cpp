@@ -46,6 +46,20 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup& other )
   connect( this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 }
 
+QString QgsLayerTreeGroup::name() const
+{
+  return mName;
+}
+
+void QgsLayerTreeGroup::setName( const QString& n )
+{
+  if ( mName == n )
+    return;
+
+  mName = n;
+  emit nameChanged( this, n );
+}
+
 
 QgsLayerTreeGroup* QgsLayerTreeGroup::insertGroup( int index, const QString& name )
 {

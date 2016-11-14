@@ -51,6 +51,13 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     QgsMapLayer* layer() const { return mLayer; }
 
+    //! Get layer's name
+    //! @note added in 2.18.1
+    QString name() const override;
+    //! Set layer's name
+    //! @note added in 2.18.1
+    void setName( const QString& n ) override;
+
     QString layerName() const;
     void setLayerName( const QString& n );
 
@@ -67,6 +74,9 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
   protected slots:
     void registryLayersAdded( const QList<QgsMapLayer*>& layers );
     void registryLayersWillBeRemoved( const QStringList& layerIds );
+    //! Emits a nameChanged() signal if layer's name has changed
+    //! @note added in 2.18.1
+    void layerNameChanged();
 
   signals:
     //! emitted when a previously unavailable layer got loaded

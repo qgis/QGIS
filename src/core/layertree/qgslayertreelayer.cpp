@@ -58,6 +58,7 @@ void QgsLayerTreeLayer::attachToLayer()
   {
     mLayer = l;
     mLayerName = l->name();
+    connect( l, SIGNAL( nameChanged() ), this, SLOT( layerNameChanged() ) );
     // make sure we are notified if the layer is removed
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( registryLayersWillBeRemoved( QStringList ) ) );
   }
@@ -70,6 +71,15 @@ void QgsLayerTreeLayer::attachToLayer()
   }
 }
 
+QString QgsLayerTreeLayer::name() const
+{
+  return layerName();
+}
+
+void QgsLayerTreeLayer::setName( const QString& n )
+{
+  setLayerName( n );
+}
 
 QString QgsLayerTreeLayer::layerName() const
 {
@@ -79,9 +89,19 @@ QString QgsLayerTreeLayer::layerName() const
 void QgsLayerTreeLayer::setLayerName( const QString& n )
 {
   if ( mLayer )
+  {
+    if ( mLayer->name() == n )
+      return;
     mLayer->setName( n );
+    // no need to emit signal: we will be notified from layer's nameChanged() signal
+  }
   else
+  {
+    if ( mLayerName == n )
+      return;
     mLayerName = n;
+    emit nameChanged( this, n );
+  }
 }
 
 void QgsLayerTreeLayer::setVisible( Qt::CheckState state )
@@ -169,4 +189,10 @@ void QgsLayerTreeLayer::registryLayersWillBeRemoved( const QStringList& layerIds
 
     mLayer = nullptr;
   }
+}
+
+void QgsLayerTreeLayer::layerNameChanged()
+{
+  Q_ASSERT( mLayer );
+  emit nameChanged( this, mLayer->name() );
 }

@@ -31,6 +31,13 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     QgsMapLayer* layer() const;
 
+    //! Get layer's name
+    //! @note added in 2.18.1
+    QString name() const;
+    //! Set layer's name
+    //! @note added in 2.18.1
+    void setName( const QString& n );
+
     QString layerName() const;
     void setLayerName( const QString& n );
 
@@ -47,6 +54,9 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
   protected slots:
     void registryLayersAdded( const QList<QgsMapLayer*>& layers );
     void registryLayersWillBeRemoved( const QStringList& layerIds );
+    //! Emits a nameChanged() signal if layer's name has changed
+    //! @note added in 2.18.1
+    void layerNameChanged();
 
   signals:
     //! emitted when a previously unavailable layer got loaded
