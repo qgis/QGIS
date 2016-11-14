@@ -33,6 +33,16 @@ void QgsFieldComboBox::setFilters( QgsFieldProxyModel::Filters filters )
   mFieldProxyModel->setFilters( filters );
 }
 
+void QgsFieldComboBox::setAllowEmptyFieldName( bool allowEmpty )
+{
+  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( allowEmpty );
+}
+
+bool QgsFieldComboBox::allowEmptyFieldName() const
+{
+  return mFieldProxyModel->sourceFieldModel()->allowEmptyFieldName();
+}
+
 void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );

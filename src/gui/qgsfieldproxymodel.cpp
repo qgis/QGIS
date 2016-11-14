@@ -93,6 +93,12 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
 bool QgsFieldProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+  // empty field is always first
+  if ( sourceModel()->data( left, QgsFieldModel::IsEmptyRole ).toBool() )
+    return true;
+  else if ( sourceModel()->data( right, QgsFieldModel::IsEmptyRole ).toBool() )
+    return false;
+
   // order is field order, then expressions
   bool lok, rok;
   int leftId = sourceModel()->data( left, QgsFieldModel::FieldIndexRole ).toInt( &lok );
