@@ -442,8 +442,8 @@ void QgsBrowser::updateCurrentTab()
       QgsRasterLayer *rlayer = qobject_cast< QgsRasterLayer * >( mLayer );
       if ( rlayer )
       {
-        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), rlayer, SLOT( triggerRepaint() ) );
-        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), mapCanvas, SLOT( refresh() ) );
+        connect( rlayer->dataProvider(), &QgsRasterDataProvider::dataChanged, rlayer, &QgsRasterLayer::triggerRepaint );
+        connect( rlayer->dataProvider(), &QgsRasterDataProvider::dataChanged, mapCanvas, &QgsMapCanvas::refresh );
       }
     }
     mDirtyPreview = false;

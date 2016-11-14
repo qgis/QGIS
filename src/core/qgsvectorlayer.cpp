@@ -1628,8 +1628,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       mDataSource.chop( 10 );
   }
 
-  connect( mDataProvider, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
-  connect( mDataProvider, SIGNAL( dataChanged() ), this, SLOT( removeSelection() ) );
+  connect( mDataProvider, &QgsVectorDataProvider::dataChanged, this, &QgsVectorLayer::dataChanged );
+  connect( mDataProvider, &QgsVectorDataProvider::dataChanged, this, &QgsVectorLayer::removeSelection );
 
   return true;
 } // QgsVectorLayer:: setDataProvider
