@@ -2499,7 +2499,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList 
 
   QScopedPointer<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
   QByteArray wkb( convertedGeom ? convertedGeom->exportToWkb() : geom.exportToWkb() );
-  const char *buf = wkb.constData();
+  const unsigned char *buf = reinterpret_cast< const unsigned char * >( wkb.constData() );
   int wkbSize = wkb.length();
 
   for ( int i = 0; i < wkbSize; ++i )
