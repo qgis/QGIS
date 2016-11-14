@@ -143,7 +143,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
   if ( attributeIndex < 0 || attributeIndex >= layer->fields().count() )
     return false;
 
-  QgsField field = layer->fields().at( attributeIndex );
+  QgsFields fields = layer->fields();
+  QgsField field = fields.at( attributeIndex );
   QVariant value = feature.attribute( attributeIndex );
   bool valid = true;
   errors.clear();
@@ -179,11 +180,22 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
        && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) )
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) ) )
   {
-    valid = valid && !value.isNull();
-
-    if ( value.isNull() )
+    bool exempt = false;
+    if ( fields.fieldOrigin( attributeIndex ) == QgsFields::OriginProvider
+         && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
     {
-      errors << QObject::tr( "value is NULL" );
+      int providerIdx = fields.fieldOriginIndex( attributeIndex );
+      exempt = layer->dataProvider()->skipConstraintCheck( providerIdx, QgsFieldConstraints::ConstraintNotNull, value );
+    }
+
+    if ( !exempt )
+    {
+      valid = valid && !value.isNull();
+
+      if ( value.isNull() )
+      {
+        errors << QObject::tr( "value is NULL" );
+      }
     }
   }
 
@@ -191,12 +203,23 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
        && ( strength == QgsFieldConstraints::ConstraintStrengthNotSet || strength == constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) )
        && ( origin == QgsFieldConstraints::ConstraintOriginNotSet || origin == constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) ) )
   {
-    bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
-    valid = valid && !alreadyExists;
-
-    if ( alreadyExists )
+    bool exempt = false;
+    if ( fields.fieldOrigin( attributeIndex ) == QgsFields::OriginProvider
+         && constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
     {
-      errors << QObject::tr( "value is not unique" );
+      int providerIdx = fields.fieldOriginIndex( attributeIndex );
+      exempt = layer->dataProvider()->skipConstraintCheck( providerIdx, QgsFieldConstraints::ConstraintUnique, value );
+    }
+
+    if ( !exempt )
+    {
+      bool alreadyExists = QgsVectorLayerUtils::valueExists( layer, attributeIndex, value, QgsFeatureIds() << feature.id() );
+      valid = valid && !alreadyExists;
+
+      if ( alreadyExists )
+      {
+        errors << QObject::tr( "value is not unique" );
+      }
     }
   }
 

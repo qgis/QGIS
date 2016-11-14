@@ -239,7 +239,13 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Returns any literal default values which are present at the provider for a specified
-     * field index.
+     * field index. Important - this should ONLY be called when creating an attribute to insert
+     * directly into the database. Do not call this method for non-feature creation or modification,
+     * eg when validating an attribute or to compare it against an existing value, as calling it
+     * can cause changes to the underlying data source (eg Postgres provider where the default value
+     * is calculated as a result of a sequence). It is recommended that you instead use the methods
+     * in QgsVectorLayerUtils such as QgsVectorLayerUtils::createFeature()
+     * so that default value handling and validation is automatically carried out.
      * @see defaultValueClause()
      */
     virtual QVariant defaultValue( int fieldIndex ) const;
@@ -257,8 +263,18 @@ class QgsVectorDataProvider : QgsDataProvider
      * Returns any constraints which are present at the provider for a specified
      * field index.
      * @note added in QGIS 3.0
+     * @see skipConstraintCheck()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
+
+    /**
+     * Returns true if a constraint check should be skipped for a specified field (eg if
+     * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
+     * passed which can help refine the skip constraint check.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     */
+    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const;
 
     /**
      * Changes geometries of existing features
