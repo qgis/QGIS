@@ -1856,8 +1856,10 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
 {
   QOCISpatialGeometry g;
 
+  QByteArray wkb = geom.exportToWkb();
+
   wkbPtr ptr;
-  ptr.ucPtr = !geom.isEmpty() ? ( unsigned char * ) geom.asWkb() : 0;
+  ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : 0;
   g.isNull = !ptr.ucPtr;
   g.gtype = -1;
   g.srid  = mSrid < 1 ? -1 : mSrid;
@@ -2274,10 +2276,8 @@ QgsRectangle QgsOracleProvider::extent() const
     if ( ok && qry.next() )
     {
       QByteArray *ba = static_cast<QByteArray*>( qry.value( 0 ).data() );
-      unsigned char *copy = new unsigned char[ba->size()];
-      memcpy( copy, ba->constData(), ba->size() );
       QgsGeometry g;
-      g.fromWkb( copy, ba->size() ); // take ownership
+      g.fromWkb( *ba );
       mLayerExtent = g.boundingBox();
       QgsDebugMsg( "extent: " + mLayerExtent.toString() );
     }
