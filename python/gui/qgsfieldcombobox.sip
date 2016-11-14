@@ -25,6 +25,20 @@ class QgsFieldComboBox : QComboBox
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const;
 
+    /**
+     * Sets whether an optional empty field ("not set") option is shown in the combo box.
+     * @see allowEmptyFieldName()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyFieldName( bool allowEmpty );
+
+    /**
+     * Returns true if the combo box allows the empty field ("not set") choice.
+     * @see setAllowEmptyFieldName()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyFieldName() const;
+
     //! return the currently selected field
     QString currentField() const;
 
