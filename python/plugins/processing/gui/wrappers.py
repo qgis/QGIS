@@ -36,7 +36,12 @@ from functools import cmp_to_key
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit, QWidget, QHBoxLayout, QToolButton
-from qgis.gui import QgsFieldExpressionWidget, QgsExpressionLineEdit, QgsProjectionSelectionWidget, QgsGenericProjectionSelector
+from qgis.gui import (QgsFieldExpressionWidget,
+                      QgsExpressionLineEdit,
+                      QgsProjectionSelectionWidget,
+                      QgsGenericProjectionSelector,
+                      QgsFieldComboBox,
+                      QgsFieldProxyModel)
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel
@@ -861,7 +866,13 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if self.param.multiple:
                 return MultipleInputPanel(options=[])
             else:
-                widget = QComboBox()
+                widget = QgsFieldComboBox()
+                widget.setAllowEmptyFieldName(self.param.optional)
+                if self.param.datatype == ParameterTableField.DATA_TYPE_NUMBER:
+                    widget.setFilters(QgsFieldProxyModel.Numeric)
+                elif self.param.datatype == ParameterTableField.DATA_TYPE_STRING:
+                    widget.setFilters(QgsFieldProxyModel.String)
+
                 return widget
         else:
             widget = QComboBox()
@@ -894,10 +905,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         if self.param.multiple:
             self.widget.updateForOptions(self.getFields())
         else:
-            self.widget.clear()
-            if self.param.optional:
-                self.widget.addItem(self.tr(self.NOT_SET))
-            self.widget.addItems(self.getFields())
+            self.widget.setLayer(self._layer)
+            self.widget.setCurrentIndex(0)
 
     def getFields(self):
         if self._layer is None:
@@ -916,7 +925,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         return sorted(list(fieldNames), key=cmp_to_key(locale.strcoll))
 
     def setValue(self, value):
-        if self.dialogType == DIALOG_STANDARD:
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             if self.param.multiple:
                 options = self.widget.options
                 selected = []
@@ -925,7 +934,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                         selected.append(i)
                 self.widget.setSelectedItems(selected)
             else:
-                self.setComboValue(value)
+                self.widget.setField(value)
         else:
             self.setComboValue(value)
 
@@ -934,9 +943,10 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if self.param.multiple:
                 return [self.widget.options[i] for i in self.widget.selectedoptions]
             else:
-                if self.param.optional and self.widget.currentIndex() == 0:
+                f = self.widget.field()
+                if self.param.optional and not f:
                     return None
-                return self.widget.currentText()
+                return f
         else:
             def validator(v):
                 return bool(v) or self.param.optional
