@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgseditorwidgetautoconf.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsvectordataprovider.h"
 
 /** \ingroup gui
  * Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
@@ -87,8 +88,21 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
 {
   QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QgsEditorWidgetConfig() );
 
-  if ( vl->fields().indexFromName( fieldName ) >= 0 )
+  int fieldIndex = vl->fields().indexFromName( fieldName );
+  if ( fieldIndex >= 0 )
   {
+
+    if ( vl->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
+    {
+      // important check - for provider fields, we CANNOT use auto configured widgets if the field
+      // uses a default value clause - otherwise the widget will obliterate the default value clause
+      // (eg by trying to convert it to a number/date/etc). Instead we have to use a text edit
+      // widget so that the clause remains intact
+      int providerOrigin = vl->fields().fieldOriginIndex( fieldIndex );
+      if ( !vl->dataProvider()->defaultValueClause( providerOrigin ).isEmpty() )
+        return result;
+    }
+
     int bestScore = 0;
     Q_FOREACH ( QSharedPointer<QgsEditorWidgetAutoConfPlugin> cur, plugins )
     {
