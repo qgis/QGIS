@@ -21,7 +21,7 @@ QgsVectorLayerSelectionManager::QgsVectorLayerSelectionManager( QgsVectorLayer* 
     : QgsIFeatureSelectionManager( parent )
     , mLayer( layer )
 {
-  connect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayerSelectionManager::selectionChanged );
 }
 
 int QgsVectorLayerSelectionManager::selectedFeatureCount()

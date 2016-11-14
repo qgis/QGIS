@@ -1388,8 +1388,7 @@ void QgsGrassModuleSelection::onModeChanged()
     if ( vectorLayer )
     {
       onLayerSelectionChanged();
-      connect( vectorLayer, SIGNAL( selectionChanged( const QgsFeatureIds, const QgsFeatureIds, const bool ) ),
-               SLOT( onLayerSelectionChanged() ) );
+      connect( vectorLayer, &QgsVectorLayer::selectionChanged, this, &QgsGrassModuleSelection::onLayerSelectionChanged );
     }
   }
 }

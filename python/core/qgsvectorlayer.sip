@@ -1548,9 +1548,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      */
     void selectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, const bool clearAndSelect );
 
-    /** This signal is emitted when selection was changed */
-    void selectionChanged();
-
     /** This signal is emitted when modifications has been done on layer */
     void layerModified();
 

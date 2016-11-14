@@ -336,7 +336,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
-        disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
+        disconnect( isVectLyr, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
       }
     }
 
@@ -354,7 +354,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
-        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
+        connect( isVectLyr, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
       }
     }
 

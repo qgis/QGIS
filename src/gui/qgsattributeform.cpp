@@ -78,7 +78,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   connect( vl, &QgsVectorLayer::updatedFields, this, &QgsAttributeForm::onUpdatedFields );
   connect( vl, &QgsVectorLayer::beforeAddingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
   connect( vl, &QgsVectorLayer::beforeRemovingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
-  connect( vl, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+  connect( vl, &QgsVectorLayer::selectionChanged, this, &QgsAttributeForm::layerSelectionChanged );
 
   // constraints management
   updateAllConstraints();
