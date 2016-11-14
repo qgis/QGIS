@@ -3407,11 +3407,6 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
     }
   }
 
-  // MD: exporting geometry to GEOS just to see if the geometry is wrong...?
-  // if still needed, we could have a more specific test here
-  //if ( !geom.asGeos() )
-  //  return QgsGeometry();  // there is something really wrong with the geometry
-
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {

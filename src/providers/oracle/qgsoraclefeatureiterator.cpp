@@ -270,11 +270,8 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       QByteArray *ba = static_cast<QByteArray*>( mQry.value( col++ ).data() );
       if ( ba->size() > 0 )
       {
-        unsigned char *copy = new unsigned char[ba->size()];
-        memcpy( copy, ba->constData(), ba->size() );
-
         QgsGeometry g;
-        g.fromWkb( copy, ba->size() );
+        g.fromWkb( *ba );
         feature.setGeometry( g );
       }
       else
@@ -381,13 +378,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
         QByteArray *ba = static_cast<QByteArray*>( v.data() );
         if ( ba->size() > 0 )
         {
-          unsigned char *copy = new unsigned char[ba->size()];
-          memcpy( copy, ba->constData(), ba->size() );
-
-          QgsGeometry *g = new QgsGeometry();
-          g->fromWkb( copy, ba->size() );
-          v = g->exportToWkt();
-          delete g;
+          QgsGeometry g;
+          g.fromWkb( *ba );
+          v = g.exportToWkt();
         }
         else
         {
