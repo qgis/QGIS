@@ -819,7 +819,7 @@ QImage* QgsWmsServer::getLegendGraphics()
     layerNameMap.insert( layerId, ml->name() );
     // set layer name with layer's title to have it in legend
     if ( !ml->title().isEmpty() )
-      layer->setLayerName( ml->title() );
+      layer->setName( ml->title() );
     // set show feature count
     if ( showFeatureCount )
       layer->setCustomProperty( QStringLiteral( "showFeatureCount" ), showFeatureCount );
