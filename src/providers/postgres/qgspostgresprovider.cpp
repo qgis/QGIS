@@ -1806,6 +1806,20 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
   return QVariant();
 }
 
+bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint, const QVariant& value ) const
+{
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    return mDefaultValues.contains( fieldIndex );
+  }
+  else
+  {
+    // stricter check - if we are evaluating default values only on commit then we can only bypass the check
+    // if the attribute values matches the original default clause
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString();
+  }
+}
+
 QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const
 {
   if ( fieldValue.isNull() )

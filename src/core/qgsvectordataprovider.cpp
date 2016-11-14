@@ -114,6 +114,11 @@ QgsFieldConstraints::Constraints QgsVectorDataProvider::fieldConstraints( int fi
   return f.at( fieldIndex ).constraints().constraints();
 }
 
+bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Constraint, const QVariant& ) const
+{
+  return false;
+}
+
 bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   Q_UNUSED( geometry_map );

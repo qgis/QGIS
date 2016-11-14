@@ -520,14 +520,28 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testVectorLayerUtilsUniqueWithProviderDefault(self):
         vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' % (self.dbconn), "someData", "postgres")
         default_clause = 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
         self.assertEqual(vl.dataProvider().defaultValueClause(0), default_clause)
         self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 0, 4))
 
         vl.startEditing()
         f = QgsFeature(vl.fields())
         f.setAttribute(0, default_clause)
-        self.assertTrue(vl.addFeatures([f]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 0, default_clause))
+        self.assertTrue(vl.addFeatures([f]))
+
+        # the default value clause should exist...
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 0, default_clause))
+        # but it should not prevent the attribute being validated
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 0))
+        vl.rollBack()
+
+    def testSkipConstraintCheck(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' % (self.dbconn), "someData", "postgres")
+        default_clause = 'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
+        self.assertTrue(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, default_clause))
+        self.assertFalse(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 59))
 
     def testVectorLayerUtilsCreateFeatureWithProviderDefault(self):
         vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' % (self.dbconn), "someData", "postgres")
