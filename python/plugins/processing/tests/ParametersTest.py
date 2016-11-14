@@ -617,7 +617,7 @@ class ParameterTableFieldTest(unittest.TestCase):
 
     def testScriptCode(self):
         parent_name = 'test_parent_layer'
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')
         parameter = ParameterTableField(
             'myName', 'myDesc', parent_name)
