@@ -33,7 +33,7 @@ class QgsVectorLayer;
  * in your application.
  *
  */
-class GUI_EXPORT QgsVectorLayerTools : public QObject
+class CORE_EXPORT QgsVectorLayerTools : public QObject
 {
     Q_OBJECT
 

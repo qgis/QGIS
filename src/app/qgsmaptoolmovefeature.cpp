@@ -183,8 +183,10 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       case CopyMove:
         QgsFeatureRequest request;
         request.setFilterFids( mMovedFeatures );
-        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy ) )
+        QString* errorMsg = new QString();
+        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg ) )
         {
+          emit messageEmitted( *errorMsg, QgsMessageBar::CRITICAL );
           delete mRubberBand;
           mRubberBand = nullptr;
         }

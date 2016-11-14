@@ -164,12 +164,10 @@
 %Include qgstextannotationitem.sip
 %Include qgstextformatwidget.sip
 %Include qgstextpreview.sip
-%Include qgstrackedvectorlayertools.sip
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsuserinputdockwidget.sip
 %Include qgsvariableeditorwidget.sip
-%Include qgsvectorlayertools.sip
 %Include qgsvertexmarker.sip
 
 %Include attributetable/qgsattributetabledelegate.sip

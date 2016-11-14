@@ -139,6 +139,7 @@
 %Include qgstextrenderer.sip
 %Include qgstolerance.sip
 %Include qgstracer.sip
+%Include qgstrackedvectorlayertools.sip
 %Include qgsunittypes.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
@@ -148,6 +149,7 @@
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
+%Include qgsvectorlayertools.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerutils.sip
 %Include qgsvectorsimplifymethod.sip

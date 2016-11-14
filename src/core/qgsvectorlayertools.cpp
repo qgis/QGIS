@@ -29,7 +29,7 @@ QgsVectorLayerTools::~QgsVectorLayerTools()
 {}
 
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy , QString* errorMsg ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy, QString* errorMsg ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -62,7 +62,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureReq
       geom.translate( dx, dy );
       f.setGeometry( geom );
 #ifdef QGISDEBUG
-      const QgsFeatureId  fid = f.id();
+      const QgsFeatureId fid = f.id();
 #endif
       // paste feature
       if ( !layer->addFeature( f, false ) )

@@ -21,7 +21,7 @@
 /** \ingroup gui
  * \class QgsTrackedVectorLayerTools
  */
-class GUI_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
+class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {
     Q_OBJECT
   public:

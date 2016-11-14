@@ -23,6 +23,24 @@ import os
 start_app()
 
 
+class SubQgsVectorLayerTools(QgsVectorLayerTools):
+
+    def __init__(self):
+        super().__init__()
+
+    def addFeature(self, layer):
+        pass
+
+    def startEditing(self, layer):
+        pass
+
+    def stopEditing(self, layer):
+        pass
+
+    def saveEdits(self, layer):
+        pass
+
+
 class TestQgsVectorLayerTools(unittest.TestCase):
 
     @classmethod
@@ -35,25 +53,23 @@ class TestQgsVectorLayerTools(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" sql=', 'layer', 'postgres')
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" (geom) sql=', 'layer', 'postgres')
 
         QgsMapLayerRegistry.instance().addMapLayer(cls.vl)
 
-        cls.vltools = QgsVectorLayerTools()
+        cls.vltools = SubQgsVectorLayerTools()
 
     def testCopyMoveFeature(self):
         """ Test copy and move features"""
         rqst = QgsFeatureRequest()
         rqst.setFilterFid(4)
         self.vl.startEditing()
-        (ok, rqst) = self.vltools.copyMoveFeature(self.vl, rqst, -0.1, 0.2)
-        self.vl.commitChanges()
-        self.vl.stopEditing()
+        (ok, rqst, msg) = self.vltools.copyMoveFeatures(self.vl, rqst, -0.1, 0.2)
         self.assertTrue(ok)
-        for f in self.vl.get(rqst):
+        for f in self.vl.getFeatures(rqst):
             geom = f.geometry()
-            self.assertEqual(geom.asPoint().x(), -70.432)
-            self.assertEqual(geom.asPoint().y(), 66.53)
+            self.assertAlmostEqual(geom.asPoint().x(), -65.42)
+            self.assertAlmostEqual(geom.asPoint().y(), 78.5)
 
 
 if __name__ == '__main__':
