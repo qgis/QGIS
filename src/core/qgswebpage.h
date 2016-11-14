@@ -174,6 +174,10 @@ class CORE_EXPORT QWebPage : public QObject
       return new QMenu();
     }
 
+    void setForwardUnsupportedContent( bool )
+    {
+    }
+
   signals:
 
   public slots:
