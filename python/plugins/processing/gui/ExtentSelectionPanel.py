@@ -153,7 +153,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if str(self.leText.text()).strip() == '':
+        if str(self.leText.text()).strip() != '':
             return str(self.leText.text())
         else:
             return None
