@@ -624,14 +624,8 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext&
   QgsPaintEffect* effect = generatorLayer->paintEffect();
   if ( effect && effect->enabled() )
   {
-    QPainter* p = context.renderContext().painter();
-    p->save();
-
-    effect->begin( context.renderContext() );
+    QgsEffectPainter p( context.renderContext(), effect );
     generatorLayer->render( context );
-    effect->end( context.renderContext() );
-
-    p->restore();
   }
   else
   {
@@ -1428,15 +1422,10 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer* layer, QPoint
   QgsPaintEffect* effect = layer->paintEffect();
   if ( effect && effect->enabled() )
   {
-    QPainter* p = context.renderContext().painter();
-    p->save();
+    QgsEffectPainter p( context.renderContext() );
     p->translate( point );
-
-    effect->begin( context.renderContext() );
+    p.setEffect( effect );
     layer->renderPoint( nullPoint, context );
-    effect->end( context.renderContext() );
-
-    p->restore();
   }
   else
   {
@@ -1709,15 +1698,10 @@ void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const Q
   QgsPaintEffect* effect = layer->paintEffect();
   if ( effect && effect->enabled() )
   {
-    QPainter* p = context.renderContext().painter();
-    p->save();
+    QgsEffectPainter p( context.renderContext() );
     p->translate( points.boundingRect().topLeft() );
-
-    effect->begin( context.renderContext() );
+    p.setEffect( effect );
     layer->renderPolyline( points.translated( -points.boundingRect().topLeft() ), context );
-    effect->end( context.renderContext() );
-
-    p->restore();
   }
   else
   {
@@ -1794,11 +1778,9 @@ void QgsFillSymbol::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolyg
     QRectF bounds = polygonBounds( points, rings );
     QList<QPolygonF>* translatedRings = translateRings( rings, -bounds.left(), -bounds.top() );
 
-    QPainter* p = context.renderContext().painter();
-    p->save();
+    QgsEffectPainter p( context.renderContext() );
     p->translate( bounds.topLeft() );
-
-    effect->begin( context.renderContext() );
+    p.setEffect( effect );
     if ( layertype == QgsSymbol::Fill )
     {
       ( static_cast<QgsFillSymbolLayer*>( layer ) )->renderPolygon( points.translated( -bounds.topLeft() ), translatedRings, context );
@@ -1808,9 +1790,6 @@ void QgsFillSymbol::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolyg
       ( static_cast<QgsLineSymbolLayer*>( layer ) )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
     }
     delete translatedRings;
-
-    effect->end( context.renderContext() );
-    p->restore();
   }
   else
   {
