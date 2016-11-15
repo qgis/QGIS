@@ -1963,7 +1963,7 @@ Acts on all editable layers</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels And DIagrams</string>
+    <string>Highlight Pinned Labels And Diagrams</string>
    </property>
    <property name="toolTip">
     <string>Highlight Pinned Labels And Diagrams</string>
