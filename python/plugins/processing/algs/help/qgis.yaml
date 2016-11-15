@@ -383,11 +383,11 @@ qgis:selectbyattributesum:
 qgis:selectbyexpression: >
   This algorithm creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
-  For more information about expressions see the<a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
+  For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
 
 qgis:selectbylocation: >
-  This algorithm creates creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
+  This algorithm creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
 
 
 qgis:setstyleforrasterlayer: >
@@ -407,7 +407,7 @@ qgis:snappointstogrid: >
 
 
 qgis:splitlineswithlines: >
-  This algorithm split the lines in a line layer using the lines in another line layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
+  This algorithm splits the lines in a line layer using the lines in another line layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
 
 qgis:splitvectorlayer: >
   This algorithm takes a vector layer and an attribute and generates a set of vector layers in an output folder. Each of the layers created in that folder contains all features from the input layer with the same value for the specified attribute.
@@ -418,7 +418,7 @@ qgis:statisticsbycategories:
 
 
 qgis:sumlinelengths: >
-  This algorithm takes a polygon layer and a lines layer and measure the total length of lines and the total numer of them that cross each polygon.
+  This algorithm takes a polygon layer and a line layer and measure the total length of lines and the total number of them that cross each polygon.
 
   The resulting layer has the same features as the input polygon layer, but with two additional attributes containing the length and lines count of layers across each polygon. The names of these two fields can be configured in the algorithm parameters.
 
@@ -443,7 +443,7 @@ qgis:vectorgrid:
 qgis:vectorlayerhistogram: >
   This algorithm generates a histogram with the values of the attribute of a vector layer.
 
-  The ttribute to use for computing the histogram must be a numeric attribute.
+  The attribute to use for computing the histogram must be a numeric attribute.
 
 qgis:vectorlayerscatterplot:
 
