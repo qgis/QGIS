@@ -24,5 +24,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Set OTB application path (installed in before_install.sh script)
 export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
 
+echo "ls -al /home/travis/virtualenv/python3.3.6/bin/python3"
+ls -al /home/travis/virtualenv/python3.3.6/bin/python3
+
+/home/travis/virtualenv/python3.3.6/bin/python3 -m PyQt5.pyrcc_main ../python/plugins/GdalTools/resources.qrc
+
 xvfb-run ctest -V -E "qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsWFSProviderGUI|qgis_ziplayertest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
 # xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure
