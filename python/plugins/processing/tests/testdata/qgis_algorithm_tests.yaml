@@ -148,6 +148,9 @@ tests:
       OUTPUT:
         name: expected/polys_to_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:basicstatisticsfornumericfields
     name: Basic statistics for numeric fields

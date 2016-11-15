@@ -25,12 +25,12 @@
     </ogr:polys_to_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:polys_to_lines fid="multipolys.1">
+    <ogr:polys_to_lines fid="multipolys.2">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>7,6 7,5 7,4 8,4 9,5 9,6 7,6</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:polys_to_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:polys_to_lines fid="multipolys.2">
+    <ogr:polys_to_lines fid="multipolys.3">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:Bname>Test</ogr:Bname>
       <ogr:Bintval>2</ogr:Bintval>
@@ -38,7 +38,7 @@
     </ogr:polys_to_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:polys_to_lines fid="multipolys.3">
+    <ogr:polys_to_lines fid="multipolys.4">
       <ogr:Bname>Test</ogr:Bname>
       <ogr:Bintval>3</ogr:Bintval>
       <ogr:Bfloatval>0</ogr:Bfloatval>
