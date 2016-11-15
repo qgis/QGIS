@@ -252,7 +252,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
     }
     connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
-    connect( vlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+    connect( vlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     mIsPoint = vlayer->geometryType() == QgsWkbTypes::PointGeometry;
     mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
