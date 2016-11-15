@@ -65,12 +65,12 @@ class QSqlCachedResultPrivate;
 class Q_SQL_EXPORT QSqlCachedResult: public QSqlResult
 {
   public:
-    virtual ~QSqlCachedResult();
+    virtual ~QSqlCachedResult() {}
 
     typedef QVector<QVariant> ValueCache;
 
   protected:
-    QSqlCachedResult( const QSqlDriver * db );
+    QSqlCachedResult( const QSqlDriver * db ) : QSqlResult(db) {}
 
     void init( int colCount );
     void cleanup();
