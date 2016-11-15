@@ -163,7 +163,7 @@ class QueryBuilderDlg(QDialog):
         self.ui.functions.setCurrentIndex(0)
 
     def add_stringfct(self):
-        if self.ui.stringFct.currentIndex() <= 0:
+        if self.ui.stringfct.currentIndex() <= 0:
             return
         ag = self.ui.stringfct.currentText()
 
