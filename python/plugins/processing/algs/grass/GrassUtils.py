@@ -383,7 +383,7 @@ class GrassUtils(object):
                 points(),
                 False,
                 False,
-                'None',
+                None,
                 -1,
                 0.0001,
                 0,
