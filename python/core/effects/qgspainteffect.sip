@@ -306,3 +306,36 @@ class QgsDrawSourceEffect : QgsPaintEffect
     virtual void draw( QgsRenderContext& context );
 
 };
+
+class QgsEffectPainter
+{
+%TypeHeaderCode
+#include <qgspainteffect.h>
+%End
+  public:
+
+    /**
+     * QgsEffectPainter constructor
+     *
+     * @param renderContext the QgsRenderContext object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext );
+
+    /**
+     * QgsEffectPainter constructor alternative if no painter translation is needed
+     *
+     * @param renderContext the QgsRenderContext object
+     * @param effect the QgsPaintEffect object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext, QgsPaintEffect* effect );
+    ~QgsEffectPainter();
+
+    /**
+     * Sets the effect to be painted
+     *
+     * @param effect the QgsPaintEffect object
+     */
+    void setEffect( QgsPaintEffect* effect );
+};

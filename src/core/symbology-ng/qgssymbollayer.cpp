@@ -421,7 +421,16 @@ void QgsMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
 void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   startRender( context );
-  renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
+  QgsPaintEffect* effect = paintEffect();
+  if ( effect && effect->enabled() )
+  {
+    QgsEffectPainter p( context.renderContext(), effect );
+    renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
+  }
+  else
+  {
+    renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
+  }
   stopRender( context );
 }
 
@@ -590,7 +599,16 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize
   points << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 );
 
   startRender( context );
-  renderPolyline( points, context );
+  QgsPaintEffect* effect = paintEffect();
+  if ( effect && effect->enabled() )
+  {
+    QgsEffectPainter p( context.renderContext(), effect );
+    renderPolyline( points, context );
+  }
+  else
+  {
+    renderPolyline( points, context );
+  }
   stopRender( context );
 }
 
@@ -615,7 +633,16 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize
 {
   QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
   startRender( context );
-  renderPolygon( poly, nullptr, context );
+  QgsPaintEffect* effect = paintEffect();
+  if ( effect && effect->enabled() )
+  {
+    QgsEffectPainter p( context.renderContext(), effect );
+    renderPolygon( poly, nullptr, context );
+  }
+  else
+  {
+    renderPolygon( poly, nullptr, context );
+  }
   stopRender( context );
 }
 

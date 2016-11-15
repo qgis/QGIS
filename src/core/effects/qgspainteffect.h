@@ -309,5 +309,56 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     QPainter::CompositionMode mBlendMode;
 };
 
+/** \ingroup core
+ * \class QgsEffectPainter
+ * \brief A class to manager painter saving and restoring required for effect drawing
+ *
+ * \note Added in version 3.0
+ */
+class CORE_EXPORT QgsEffectPainter
+{
+  public:
+
+    /**
+     * QgsEffectPainter constructor
+     *
+     * @param renderContext the QgsRenderContext object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext );
+
+    /**
+     * QgsEffectPainter constructor alternative if no painter translation is needed
+     *
+     * @param renderContext the QgsRenderContext object
+     * @param effect the QgsPaintEffect object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext, QgsPaintEffect* effect );
+    ~QgsEffectPainter();
+
+    /**
+     * Sets the effect to be painted
+     *
+     * @param effect the QgsPaintEffect object
+     */
+    void setEffect( QgsPaintEffect* effect );
+
+    ///@cond PRIVATE
+
+    /**
+     * Access to the painter object
+     *
+     * @note Added in QGIS 3.0
+     */
+    QPainter* operator->() { return mPainter; }
+    ///@endcond
+
+  private:
+    QgsRenderContext& mRenderContext;
+    QPainter* mPainter;
+    QgsPaintEffect* mEffect;
+};
+
 #endif // QGSPAINTEFFECT_H
 
