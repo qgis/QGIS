@@ -257,10 +257,10 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
     return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
   }
 
-  if ( role == IsEmptyRole )
+  if ( role == EmptyRole )
     return isEmpty;
 
-  if ( role == IsAdditionalRole )
+  if ( role == AdditionalRole )
     return additionalIndex >= 0;
 
   if ( role == Qt::CheckStateRole && mItemCheckable )
