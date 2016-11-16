@@ -71,6 +71,10 @@ def _expressionContext():
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
     context.appendScope(QgsExpressionContextUtils.projectScope())
+
+    if iface.mapCanvas():
+        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
+
     processingScope = QgsExpressionContextScope()
     layers = dataobjects.getAllLayers()
     for layer in layers:
@@ -92,12 +96,6 @@ def _expressionContext():
             processingScope.setVariable('%s_band%i_stddev' % (name, i + 1), stats.stdDev)
             processingScope.setVariable('%s_band%i_min' % (name, i + 1), stats.minimumValue)
             processingScope.setVariable('%s_band%i_max' % (name, i + 1), stats.maximumValue)
-
-    extent = iface.mapCanvas().extent()
-    processingScope.setVariable('canvasextent_minx', extent.xMinimum())
-    processingScope.setVariable('canvasextent_miny', extent.yMinimum())
-    processingScope.setVariable('canvasextent_maxx', extent.xMaximum())
-    processingScope.setVariable('canvasextent_maxy', extent.yMaximum())
 
     extent = iface.mapCanvas().fullExtent()
     processingScope.setVariable('fullextent_minx', extent.xMinimum())
