@@ -5746,6 +5746,7 @@ void QgsExpression::initVariableHelp()
   gVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_rotation" ), QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_scale" ), QCoreApplication::translate( "variable_help", "Current scale of map." ) );
+  gVariableHelpTexts.insert( QStringLiteral( "map_extent" ), QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_extent_center" ), QCoreApplication::translate( "variable_help", "Center of map." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_extent_width" ), QCoreApplication::translate( "variable_help", "Width of map." ) );
   gVariableHelpTexts.insert( QStringLiteral( "map_extent_height" ), QCoreApplication::translate( "variable_help", "Height of map." ) );
