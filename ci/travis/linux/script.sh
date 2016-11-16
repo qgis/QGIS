@@ -24,5 +24,5 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Set OTB application path (installed in before_install.sh script)
 export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
 
-xvfb-run ctest -V -E "qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsWFSProviderGUI|qgis_ziplayertest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -E "qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsWFSProviderGUI|PyQgsOfflineEditingWFS|qgis_ziplayertest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
 # xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure
