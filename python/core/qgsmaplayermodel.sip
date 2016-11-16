@@ -20,6 +20,7 @@ class QgsMapLayerModel : QAbstractItemModel
       LayerIdRole, /*!< Stores the map layer ID */
       LayerRole, /*!< Stores pointer to the map layer itself */
       IsEmptyRole, //!< True if index corresponds to the empty (not set) value
+      IsAdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
 
     /**
@@ -67,6 +68,22 @@ class QgsMapLayerModel : QAbstractItemModel
      * @note added in QGIS 3.0
      */
     bool showCrs() const;
+
+    /**
+     * Sets a list of additional (non map layer) items to include at the end of the model.
+     * These may represent additional layers such as layers which are not included in the map
+     * layer registry, or paths to layers which have not yet been loaded into QGIS.
+     * @see additionalItems()
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalItems( const QStringList& items );
+
+    /**
+     * Return the list of additional (non map layer) items included at the end of the model.
+     * @see setAdditionalItems()
+     * @note added in QGIS 3.0
+     */
+    QStringList additionalItems() const;
 
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)

@@ -49,6 +49,11 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setShowCrs(False)
         self.assertFalse(m.showCrs())
 
+        m.setAdditionalItems(['a', 'b'])
+        self.assertEqual(m.additionalItems(), ['a', 'b'])
+        m.setAdditionalItems([])
+        self.assertFalse(m.additionalItems())
+
     def testAddingRemovingLayers(self):
         # test model handles layer addition and removal
         m = QgsMapLayerModel()
@@ -120,6 +125,35 @@ class TestQgsMapLayerModel(unittest.TestCase):
 
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id(), l3.id()])
 
+    def testAdditionalItems(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.rowCount(QModelIndex()), 2)
+
+        m.setAdditionalItems(['a', 'b'])
+        self.assertEqual(m.rowCount(QModelIndex()), 4)
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'b')
+
+        m.setAllowEmptyLayer(True)
+        self.assertEqual(m.rowCount(QModelIndex()), 5)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'b')
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+        self.assertEqual(m.rowCount(QModelIndex()), 3)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'b')
+
     def testIndexFromLayer(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
@@ -164,6 +198,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1 [EPSG:3111]')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2 [EPSG:3111]')
 
+        m.setAdditionalItems(['a'])
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'a')
+
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 
     def testLayerIdRole(self):
@@ -177,6 +214,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.LayerIdRole))
         self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerIdRole), l1.id())
         self.assertEqual(m.data(m.index(2, 0), QgsMapLayerModel.LayerIdRole), l2.id())
+
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.data(m.index(3, 0), QgsMapLayerModel.LayerIdRole))
 
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 
@@ -192,6 +232,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerRole), l1)
         self.assertEqual(m.data(m.index(2, 0), QgsMapLayerModel.LayerRole), l2)
 
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.data(m.index(3, 0), QgsMapLayerModel.LayerRole))
+
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 
     def testIsEmptyRole(self):
@@ -205,6 +248,29 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertTrue(m.data(m.index(0, 0), QgsMapLayerModel.IsEmptyRole))
         self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.IsEmptyRole))
         self.assertFalse(m.data(m.index(2, 0), QgsMapLayerModel.IsEmptyRole))
+
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.data(m.index(3, 0), QgsMapLayerModel.IsEmptyRole))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testIsAdditionalRole(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.IsAdditionalRole))
+        self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.IsAdditionalRole))
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.IsAdditionalRole))
+        self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.IsAdditionalRole))
+        self.assertFalse(m.data(m.index(2, 0), QgsMapLayerModel.IsAdditionalRole))
+
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.IsAdditionalRole))
+        self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.IsAdditionalRole))
+        self.assertFalse(m.data(m.index(2, 0), QgsMapLayerModel.IsAdditionalRole))
+        self.assertTrue(m.data(m.index(3, 0), QgsMapLayerModel.IsAdditionalRole))
 
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 
@@ -233,6 +299,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertTrue(m.data(m.index(1, 0), Qt.CheckStateRole))
         self.assertTrue(m.data(m.index(2, 0), Qt.CheckStateRole))
 
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.data(m.index(3, 0), Qt.CheckStateRole))
+
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 
     def testFlags(self):
@@ -259,6 +328,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertTrue(m.flags(m.index(1, 0)) & Qt.ItemIsUserCheckable)
         self.assertTrue(m.flags(m.index(2, 0)) & Qt.ItemIsUserCheckable)
 
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.flags(m.index(3, 0)) & Qt.ItemIsUserCheckable)
+
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 
     def testSetData(self):
@@ -279,6 +351,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAllowEmptyLayer(True)
         self.assertFalse(m.setData(m.index(0, 0), True, Qt.CheckStateRole))
         self.assertTrue(m.setData(m.index(1, 0), True, Qt.CheckStateRole))
+
+        m.setAdditionalItems(['a'])
+        self.assertFalse(m.setData(m.index(3, 0), True, Qt.CheckStateRole))
 
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 

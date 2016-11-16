@@ -36,6 +36,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
     Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )
     Q_PROPERTY( bool itemsCheckable READ itemsCheckable WRITE setItemsCheckable )
+    Q_PROPERTY( QStringList additionalItems READ additionalItems WRITE setAdditionalItems )
 
   public:
 
@@ -45,6 +46,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
       LayerIdRole = Qt::UserRole + 1, //!< Stores the map layer ID
       LayerRole, //!< Stores pointer to the map layer itself
       IsEmptyRole, //!< True if index corresponds to the empty (not set) value
+      IsAdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
 
     /**
@@ -107,6 +109,22 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     QModelIndex indexFromLayer( QgsMapLayer* layer ) const;
 
+    /**
+     * Sets a list of additional (non map layer) items to include at the end of the model.
+     * These may represent additional layers such as layers which are not included in the map
+     * layer registry, or paths to layers which have not yet been loaded into QGIS.
+     * @see additionalItems()
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalItems( const QStringList& items );
+
+    /**
+     * Return the list of additional (non map layer) items included at the end of the model.
+     * @see setAdditionalItems()
+     * @note added in QGIS 3.0
+     */
+    QStringList additionalItems() const { return mAdditionalItems; }
+
   protected slots:
     void removeLayers( const QStringList& layerIds );
     void addLayers( const QList<QgsMapLayer*>& layers );
@@ -138,6 +156,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     bool mAllowEmpty;
     bool mShowCrs;
+    QStringList mAdditionalItems;
 };
 
 #endif // QGSMAPLAYERMODEL_H

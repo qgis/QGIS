@@ -108,8 +108,37 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
+void QgsMapLayerModel::setAdditionalItems( const QStringList& items )
+{
+  if ( items == mAdditionalItems )
+    return;
+
+  int offset = 0;
+  if ( mAllowEmpty )
+    offset++;
+
+  offset += mLayers.count();
+
+  //remove existing
+  if ( !mAdditionalItems.isEmpty() )
+  {
+    beginRemoveRows( QModelIndex(), offset, offset + mAdditionalItems.count() - 1 );
+    mAdditionalItems.clear();
+    endRemoveRows();
+  }
+
+  //add new
+  beginInsertRows( QModelIndex(), offset, offset + items.count() - 1 );
+  mAdditionalItems = items;
+  endInsertRows();
+}
+
 void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
 {
+  int offset = 0;
+  if ( mAllowEmpty )
+    offset++;
+
   Q_FOREACH ( const QString& layerId, layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
@@ -119,7 +148,7 @@ void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
       QModelIndex index = list[0];
       beginRemoveRows( QModelIndex(), index.row(), index.row() );
       mLayersChecked.remove( layerId );
-      mLayers.removeAt( index.row() );
+      mLayers.removeAt( index.row() - offset );
       endRemoveRows();
     }
   }
@@ -171,7 +200,7 @@ int QgsMapLayerModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return ( mAllowEmpty ? 1 : 0 ) + mLayers.length();
+  return ( mAllowEmpty ? 1 : 0 ) + mLayers.length() + mAdditionalItems.count();
 }
 
 int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
@@ -183,15 +212,19 @@ int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 {
-  bool isEmpty = index.row() == 0 && mAllowEmpty;
-
   if ( !index.isValid() )
     return QVariant();
+
+  bool isEmpty = index.row() == 0 && mAllowEmpty;
+  int additionalIndex = index.row() - ( mAllowEmpty ? 1 : 0 ) - mLayers.count();
 
   if ( role == Qt::DisplayRole )
   {
     if ( index.row() == 0 && mAllowEmpty )
       return QVariant();
+
+    if ( additionalIndex >= 0 )
+      return mAdditionalItems.at( additionalIndex );
 
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
     if ( !layer )
@@ -209,7 +242,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
   if ( role == LayerIdRole )
   {
-    if ( isEmpty )
+    if ( isEmpty || additionalIndex >= 0 )
       return QVariant();
 
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
@@ -218,7 +251,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
   if ( role == LayerRole )
   {
-    if ( isEmpty )
+    if ( isEmpty || additionalIndex >= 0 )
       return QVariant();
 
     return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
@@ -227,9 +260,12 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
   if ( role == IsEmptyRole )
     return isEmpty;
 
+  if ( role == IsAdditionalRole )
+    return additionalIndex >= 0;
+
   if ( role == Qt::CheckStateRole && mItemCheckable )
   {
-    if ( isEmpty )
+    if ( isEmpty || additionalIndex >= 0 )
       return QVariant();
 
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
@@ -238,7 +274,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
   if ( role == Qt::DecorationRole )
   {
-    if ( isEmpty )
+    if ( isEmpty || additionalIndex >= 0 )
       return QVariant();
 
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
@@ -315,9 +351,10 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
   }
 
   bool isEmpty = index.row() == 0 && mAllowEmpty;
+  int additionalIndex = index.row() - ( mAllowEmpty ? 1 : 0 ) - mLayers.count();
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-  if ( mItemCheckable && !isEmpty )
+  if ( mItemCheckable && !isEmpty && additionalIndex < 0 )
   {
     flags |= Qt::ItemIsUserCheckable;
   }
@@ -328,8 +365,9 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   bool isEmpty = index.row() == 0 && mAllowEmpty;
+  int additionalIndex = index.row() - ( mAllowEmpty ? 1 : 0 ) - mLayers.count();
 
-  if ( role == Qt::CheckStateRole && !isEmpty )
+  if ( role == Qt::CheckStateRole && !isEmpty && additionalIndex < 0 )
   {
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
     mLayersChecked[layer->id()] = ( Qt::CheckState )value.toInt();

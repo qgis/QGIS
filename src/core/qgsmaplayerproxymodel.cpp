@@ -78,7 +78,8 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
-  if ( sourceModel()->data( index, QgsMapLayerModel::IsEmptyRole ).toBool() )
+  if ( sourceModel()->data( index, QgsMapLayerModel::IsEmptyRole ).toBool()
+       || sourceModel()->data( index, QgsMapLayerModel::IsAdditionalRole ).toBool() )
     return true;
 
   QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
@@ -132,6 +133,15 @@ bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex
     return true;
   else if ( sourceModel()->data( right, QgsMapLayerModel::IsEmptyRole ).toBool() )
     return false;
+
+  // additional rows are always last
+  bool leftAdditional = sourceModel()->data( left, QgsMapLayerModel::IsAdditionalRole ).toBool();
+  bool rightAdditional = sourceModel()->data( right, QgsMapLayerModel::IsAdditionalRole ).toBool();
+
+  if ( leftAdditional && !rightAdditional )
+    return false;
+  else if ( rightAdditional && !leftAdditional )
+    return true;
 
   // default mode is alphabetical order
   QString leftStr = sourceModel()->data( left ).toString();
