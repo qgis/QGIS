@@ -48,6 +48,16 @@ bool QgsMapLayerComboBox::showCrs() const
   return mProxyModel->sourceLayerModel()->showCrs();
 }
 
+void QgsMapLayerComboBox::setAdditionalItems( const QStringList& items )
+{
+  mProxyModel->sourceLayerModel()->setAdditionalItems( items );
+}
+
+QStringList QgsMapLayerComboBox::additionalItems() const
+{
+  return mProxyModel->sourceLayerModel()->additionalItems();
+}
+
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
   if ( !layer )
