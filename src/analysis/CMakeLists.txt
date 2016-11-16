@@ -1,5 +1,3 @@
-SUBDIRS(network)
-
 #############################################################
 # sources
 
@@ -48,12 +46,22 @@ SET(QGIS_ANALYSIS_SRCS
   openstreetmap/qgsosmdatabase.cpp
   openstreetmap/qgsosmdownload.cpp
   openstreetmap/qgsosmimport.cpp
+
+  network/qgsgraph.cpp
+  network/qgsgraphbuilder.cpp
+  network/qgsspeedarcproperter.cpp
+  network/qgsdistancearcproperter.cpp
+  network/qgslinevectorlayerdirector.cpp
+  network/qgsgraphanalyzer.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
   openstreetmap/qgsosmdownload.h
   openstreetmap/qgsosmimport.h
   vector/qgsgeometrysnapper.h
+
+  network/qgsgraphdirector.h
+  network/qgslinevectorlayerdirector.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -134,6 +142,16 @@ SET(QGIS_ANALYSIS_HDRS
   openstreetmap/qgsosmdatabase.h
   openstreetmap/qgsosmdownload.h
   openstreetmap/qgsosmimport.h
+
+  network/qgsgraph.h
+  network/qgsgraphbuilderintr.h
+  network/qgsgraphbuilder.h
+  network/qgsarcproperter.h
+  network/qgsspeedarcproperter.h
+  network/qgsdistancearcproperter.h
+  network/qgsgraphdirector.h
+  network/qgslinevectorlayerdirector.h
+  network/qgsgraphanalyzer.h
 )
 
 INCLUDE_DIRECTORIES(
@@ -143,6 +161,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
   interpolation
+  network
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}

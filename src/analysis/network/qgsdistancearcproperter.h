@@ -16,13 +16,9 @@
 #ifndef QGSDISTANCEARCPROPERTER_H
 #define QGSDISTANCEARCPROPERTER_H
 
-// QT4 includes
-#include <QVariant>
-
-// QGIS includes
 #include <qgsarcproperter.h>
 
-/** \ingroup networkanalysis
+/** \ingroup analysis
  * \class QgsDistanceArcProperter
  */
 class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter

@@ -1,7 +1,4 @@
 %ModuleHeaderCode
-// fix to allow compilation with sip 4.7 that for some reason
-// doesn't add these includes to the file where the code from
-// ConvertToSubClassCode goes.
 #include <qgsspeedarcproperter.h>
 #include <qgsdistancearcproperter.h>
 %End
@@ -21,6 +18,8 @@ class QgsArcProperter
 %ConvertToSubClassCode
   if ( dynamic_cast< QgsDistanceArcProperter* > ( sipCpp ) != NULL )
     sipType = sipType_QgsDistanceArcProperter;
+  else if ( dynamic_cast< QgsSpeedArcProperter* > ( sipCpp ) != NULL )
+    sipType = sipType_QgsSpeedArcProperter;
   else
     sipType = NULL;
 %End

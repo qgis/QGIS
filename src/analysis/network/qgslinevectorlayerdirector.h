@@ -22,7 +22,7 @@ class QgsGraphBuilderInterface;
 class QgsVectorLayer;
 
 /**
-* \ingroup networkanalysis
+* \ingroup analysis
 * \class QgsLineVectorLayerDirector
 * \brief Determine making the graph from vector line layer
 */

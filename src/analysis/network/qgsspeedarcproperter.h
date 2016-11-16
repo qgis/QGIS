@@ -18,7 +18,7 @@
 
 #include <qgsarcproperter.h>
 
-/** \ingroup networkanalysis
+/** \ingroup analysis
  * \class QgsSpeedArcProperter
  */
 class ANALYSIS_EXPORT QgsSpeedArcProperter : public QgsArcProperter

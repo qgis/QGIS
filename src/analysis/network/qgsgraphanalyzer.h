@@ -22,7 +22,7 @@
 
 class QgsGraph;
 
-/** \ingroup networkanalysis
+/** \ingroup analysis
  * QGIS class with graph analysis functions
  */
 

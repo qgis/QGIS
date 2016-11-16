@@ -24,7 +24,7 @@
 #include <qgsdistancearea.h>
 
 /**
-* \ingroup networkanalysis
+* \ingroup analysis
 * \class QgsGraphBuilderInterface
 * \brief Determine interface for creating a graph. Contains the settings of the graph. QgsGraphBuilder and QgsGraphDirector both use a Builder pattern
 */
