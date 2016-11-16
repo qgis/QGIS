@@ -133,8 +133,17 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * be used for slow data sources, be aware, that the call to this method might take a long time.
      *
      * @param fullCache   True: enable full caching, False: disable full caching
+     * @see hasFullCache()
      */
     void setFullCache( bool fullCache );
+
+    /** Returns true if the cache is complete, ie it contains all features. This may happen as
+     * a result of a call to setFullCache() or by through a feature request which resulted in
+     * all available features being cached.
+     * @see setFullCache()
+     * @note added in QGIS 3.0
+     */
+    bool hasFullCache() const { return mFullCache; }
 
     /**
      * @brief
@@ -196,8 +205,15 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Check if a certain feature id is cached.
      * @param  fid The feature id to look for
      * @return True if this id is in the cache
+     * @see cachedFeatureIds()
      */
-    bool isFidCached( const QgsFeatureId fid );
+    bool isFidCached( const QgsFeatureId fid ) const;
+
+    /** Returns the set of feature IDs for features which are cached.
+     * @note added in QGIS 3.0
+     * @see isFidCached()
+     */
+    QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
@@ -329,5 +345,16 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     friend class QgsCachedFeatureIterator;
     friend class QgsCachedFeatureWriterIterator;
     friend class QgsCachedFeature;
+
+    /** Returns true if the cache contains all the features required for a specified request.
+     * @param featureRequest feature request
+     * @param it will be set to iterator for matching features
+     * @returns true if cache can satisfy request
+     * @note this method only checks for available features, not whether the cache
+     * contains required attributes or geometry. For that, use checkInformationCovered()
+     */
+    bool canUseCacheForRequest( const QgsFeatureRequest& featureRequest, QgsFeatureIterator& it );
+
+    friend class TestVectorLayerCache;
 };
 #endif // QgsVectorLayerCache_H

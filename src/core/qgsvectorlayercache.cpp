@@ -174,11 +174,15 @@ QgsVectorLayer* QgsVectorLayerCache::layer()
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
-  if ( fids.count() < mCache.size() )
+  if ( fids.count() <= mCache.size() )
   {
     Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
     {
       idx->requestCompleted( featureRequest, fids );
+    }
+    if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone )
+    {
+      mFullCache = true;
     }
   }
 }
@@ -266,6 +270,54 @@ void QgsVectorLayerCache::invalidate()
   emit invalidated();
 }
 
+bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator& it )
+{
+  // check first for available indices
+  Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+  {
+    if ( idx->getCacheIterator( it, featureRequest ) )
+    {
+      return true;
+    }
+  }
+
+  // no indexes available, but maybe we have already cached all required features anyway?
+  switch ( featureRequest.filterType() )
+  {
+    case QgsFeatureRequest::FilterFid:
+    {
+      if ( mCache.contains( featureRequest.filterFid() ) )
+      {
+        it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterFids:
+    {
+      if ( mCache.keys().toSet().contains( featureRequest.filterFids() ) )
+      {
+        it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterNone:
+    case QgsFeatureRequest::FilterRect:
+    case QgsFeatureRequest::FilterExpression:
+    {
+      if ( mFullCache )
+      {
+        it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+
+  }
+  return false;
+}
+
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
 {
   QgsFeatureIterator it;
@@ -281,15 +333,8 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     }
     else
     {
-      // Check if an index is able to deliver the requested features
-      Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
-      {
-        if ( idx->getCacheIterator( it, featureRequest ) )
-        {
-          requiresWriterIt = false;
-          break;
-        }
-      }
+      // may still be able to satisfy request using cache
+      requiresWriterIt = !canUseCacheForRequest( featureRequest, it );
     }
   }
   else
@@ -319,7 +364,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
   return it;
 }
 
-bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid )
+bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid ) const
 {
   return mCache.contains( fid );
 }

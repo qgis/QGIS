@@ -136,12 +136,12 @@ void TestQgsDualView::testSelectAll()
   // Only show parts of the canvas, so only one selected feature is visible
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
   mDualView->mTableView->selectAll();
-  QVERIFY( mPointsLayer->selectedFeatureCount() == 10 );
+  QCOMPARE( mPointsLayer->selectedFeatureCount(), 10 );
 
   mPointsLayer->selectByIds( QgsFeatureIds() );
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
   mDualView->mTableView->selectAll();
-  QVERIFY( mPointsLayer->selectedFeatureCount() == 1 );
+  QCOMPARE( mPointsLayer->selectedFeatureCount(), 1 );
 }
 
 void TestQgsDualView::testSort()
