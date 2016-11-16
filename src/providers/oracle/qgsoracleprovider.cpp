@@ -587,8 +587,8 @@ bool QgsOracleProvider::loadFields()
     {
       while ( qry.next() )
       {
-	if( qry.value( 0 ).toString() == mGeometryColumn )
-	  continue;
+        if ( qry.value( 0 ).toString() == mGeometryColumn )
+          continue;
         comments.insert( qry.value( 0 ).toString(), qry.value( 1 ).toString() );
       }
     }
