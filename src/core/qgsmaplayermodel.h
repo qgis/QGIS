@@ -45,8 +45,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     {
       LayerIdRole = Qt::UserRole + 1, //!< Stores the map layer ID
       LayerRole, //!< Stores pointer to the map layer itself
-      IsEmptyRole, //!< True if index corresponds to the empty (not set) value
-      IsAdditionalRole, //!< True if index corresponds to an additional (non map layer) item
+      EmptyRole, //!< True if index corresponds to the empty (not set) value
+      AdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
 
     /**
