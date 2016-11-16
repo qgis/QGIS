@@ -582,13 +582,14 @@ bool QgsOracleProvider::loadFields()
 
     qry.finish();
 
-    if ( exec( qry, QString( "SELECT column_name,comments FROM all_col_comments t WHERE t.owner=%1 AND t.table_name=%2 AND t.column_name<>%3" )
+    if ( exec( qry, QString( "SELECT column_name,comments FROM all_col_comments t WHERE t.owner=%1 AND t.table_name=%2" )
                .arg( quotedValue( mOwnerName ) )
-               .arg( quotedValue( mTableName ) )
-               .arg( quotedValue( mGeometryColumn ) ) ) )
+               .arg( quotedValue( mTableName ) ) ) )
     {
       while ( qry.next() )
       {
+	if( qry.value( 0 ).toString() == mGeometryColumn )
+	  continue;
         comments.insert( qry.value( 0 ).toString(), qry.value( 1 ).toString() );
       }
     }
@@ -2153,7 +2154,7 @@ bool QgsOracleProvider::setSubsetString( const QString& theSQL, bool updateFeatu
   }
   qry.finish();
 
-  if ( mPrimaryKeyType == pktInt && !uniqueData( mQuery, mAttributeFields.at( mPrimaryKeyAttrs[0] ).name() ) )
+  if ( mPrimaryKeyType == pktInt && !mUseEstimatedMetadata && !uniqueData( mQuery, mAttributeFields.at( mPrimaryKeyAttrs[0] ).name() ) )
   {
     mSqlWhereClause = prevWhere;
     return false;
