@@ -218,114 +218,137 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
   bool isEmpty = index.row() == 0 && mAllowEmpty;
   int additionalIndex = index.row() - ( mAllowEmpty ? 1 : 0 ) - mLayers.count();
 
-  if ( role == Qt::DisplayRole )
+  switch ( role )
   {
-    if ( index.row() == 0 && mAllowEmpty )
-      return QVariant();
-
-    if ( additionalIndex >= 0 )
-      return mAdditionalItems.at( additionalIndex );
-
-    QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    if ( !layer )
-      return QVariant();
-
-    if ( !mShowCrs )
+    case Qt::DisplayRole:
     {
-      return layer->name();
-    }
-    else
-    {
-      return tr( "%1 [%2]" ).arg( layer->name(), layer->crs().authid() );
-    }
-  }
+      if ( index.row() == 0 && mAllowEmpty )
+        return QVariant();
 
-  if ( role == LayerIdRole )
-  {
-    if ( isEmpty || additionalIndex >= 0 )
-      return QVariant();
+      if ( additionalIndex >= 0 )
+        return mAdditionalItems.at( additionalIndex );
 
-    QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    return layer ? layer->id() : QVariant();
-  }
+      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      if ( !layer )
+        return QVariant();
 
-  if ( role == LayerRole )
-  {
-    if ( isEmpty || additionalIndex >= 0 )
-      return QVariant();
-
-    return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
-  }
-
-  if ( role == EmptyRole )
-    return isEmpty;
-
-  if ( role == AdditionalRole )
-    return additionalIndex >= 0;
-
-  if ( role == Qt::CheckStateRole && mItemCheckable )
-  {
-    if ( isEmpty || additionalIndex >= 0 )
-      return QVariant();
-
-    QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    return layer ? mLayersChecked[layer->id()] : QVariant();
-  }
-
-  if ( role == Qt::DecorationRole )
-  {
-    if ( isEmpty || additionalIndex >= 0 )
-      return QVariant();
-
-    QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    if ( !layer )
-      return QVariant();
-
-    QgsMapLayer::LayerType type = layer->type();
-    if ( role == Qt::DecorationRole )
-    {
-      switch ( type )
+      if ( !mShowCrs )
       {
-        case QgsMapLayer::RasterLayer:
-        {
-          return QgsLayerItem::iconRaster();
-        }
+        return layer->name();
+      }
+      else
+      {
+        return tr( "%1 [%2]" ).arg( layer->name(), layer->crs().authid() );
+      }
+    }
 
-        case QgsMapLayer::VectorLayer:
+    case LayerIdRole:
+    {
+      if ( isEmpty || additionalIndex >= 0 )
+        return QVariant();
+
+      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      return layer ? layer->id() : QVariant();
+    }
+
+    case LayerRole:
+    {
+      if ( isEmpty || additionalIndex >= 0 )
+        return QVariant();
+
+      return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
+    }
+
+    case EmptyRole:
+      return isEmpty;
+
+    case AdditionalRole:
+      return additionalIndex >= 0;
+
+    case Qt::CheckStateRole:
+    {
+      if ( mItemCheckable )
+      {
+        if ( isEmpty || additionalIndex >= 0 )
+          return QVariant();
+
+        QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+        return layer ? mLayersChecked[layer->id()] : QVariant();
+      }
+
+      return QVariant();
+    }
+
+    case Qt::ToolTipRole:
+    {
+      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      if ( layer )
+      {
+        QString tooltip = "<b>" +
+                          ( layer->title().isEmpty() ? layer->shortName() : layer->title() ) + "</b>";
+        if ( !layer->abstract().isEmpty() )
+          tooltip += "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
+        tooltip += "<br/><i>" + layer->publicSource() + "</i>";
+        return tooltip;
+      }
+      return QVariant();
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( isEmpty || additionalIndex >= 0 )
+        return QVariant();
+
+      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      if ( !layer )
+        return QVariant();
+
+      QgsMapLayer::LayerType type = layer->type();
+      if ( role == Qt::DecorationRole )
+      {
+        switch ( type )
         {
-          QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-          if ( !vl )
+          case QgsMapLayer::RasterLayer:
           {
-            return QIcon();
+            return QgsLayerItem::iconRaster();
           }
-          QgsWkbTypes::GeometryType geomType = vl->geometryType();
-          switch ( geomType )
+
+          case QgsMapLayer::VectorLayer:
           {
-            case QgsWkbTypes::PointGeometry:
-            {
-              return QgsLayerItem::iconPoint();
-            }
-            case QgsWkbTypes::PolygonGeometry :
-            {
-              return QgsLayerItem::iconPolygon();
-            }
-            case QgsWkbTypes::LineGeometry :
-            {
-              return QgsLayerItem::iconLine();
-            }
-            case QgsWkbTypes::NullGeometry :
-            {
-              return QgsLayerItem::iconTable();
-            }
-            default:
+            QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+            if ( !vl )
             {
               return QIcon();
             }
+            QgsWkbTypes::GeometryType geomType = vl->geometryType();
+            switch ( geomType )
+            {
+              case QgsWkbTypes::PointGeometry:
+              {
+                return QgsLayerItem::iconPoint();
+              }
+              case QgsWkbTypes::PolygonGeometry :
+              {
+                return QgsLayerItem::iconPolygon();
+              }
+              case QgsWkbTypes::LineGeometry :
+              {
+                return QgsLayerItem::iconLine();
+              }
+              case QgsWkbTypes::NullGeometry :
+              {
+                return QgsLayerItem::iconTable();
+              }
+              default:
+              {
+                return QIcon();
+              }
+            }
           }
-        }
-        default:
-        {
-          return QIcon();
+          default:
+          {
+            return QIcon();
+          }
         }
       }
     }
