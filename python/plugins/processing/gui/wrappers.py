@@ -44,7 +44,7 @@ from qgis.gui import (QgsFieldExpressionWidget,
                       QgsFieldProxyModel)
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
-from processing.gui.NumberInputPanel import NumberInputPanel
+from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
@@ -517,9 +517,9 @@ class NumberWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return NumberInputPanel(self.param, None)
+            return NumberInputPanel(self.param)
         else:
-            return NumberInputPanel(self.param, self.dialog)
+            return ModellerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
         self.widget.setValue(value)
