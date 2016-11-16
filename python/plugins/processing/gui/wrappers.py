@@ -34,15 +34,17 @@ import locale
 import os
 from functools import cmp_to_key
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication
-from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit, QWidget, QHBoxLayout, QToolButton
+from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer, QgsApplication, QgsWkbTypes, QgsMapLayerProxyModel
+from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit, QWidget, QHBoxLayout, QToolButton, QFileDialog
 from qgis.gui import (QgsFieldExpressionWidget,
                       QgsExpressionLineEdit,
                       QgsProjectionSelectionWidget,
                       QgsGenericProjectionSelector,
                       QgsFieldComboBox,
-                      QgsFieldProxyModel)
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
+                      QgsFieldProxyModel,
+                      QgsMapLayerComboBox
+                      )
+from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, QSettings
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
@@ -155,6 +157,26 @@ class WidgetWrapper(QObject):
 
     def refresh(self):
         pass
+
+    def getFileName(self, initial_value=''):
+        """Shows a file open dialog"""
+        settings = QSettings()
+        if os.path.isdir(initial_value):
+            path = initial_value
+        elif os.path.isdir(os.path.dirname(initial_value)):
+            path = os.path.dirname(initial_value)
+        elif settings.contains('/Processing/LastInputPath'):
+            path = str(settings.value('/Processing/LastInputPath'))
+        else:
+            path = ''
+
+        filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select file'),
+                                                                path, self.tr(
+            'All files (*.*);;') + self.param.getFileFilter())
+        if filename:
+            settings.setValue('/Processing/LastInputPath',
+                              os.path.dirname(str(filename)))
+        return filename, selected_filter
 
 
 class BasicWidgetWrapper(WidgetWrapper):
@@ -534,13 +556,31 @@ class RasterWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            layers = dataobjects.getRasterLayers()
-            items = []
+            widget = QWidget()
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(2)
+            self.combo = QgsMapLayerComboBox()
+            layout.addWidget(self.combo)
+            btn = QToolButton()
+            btn.setText('...')
+            btn.setToolTip(self.tr("Select file"))
+            btn.clicked.connect(self.selectFile)
+            layout.addWidget(btn)
+
+            widget.setLayout(layout)
             if self.param.optional:
-                items.append((self.NOT_SELECTED, None))
-            for layer in layers:
-                items.append((getExtendedLayerName(layer), layer))
-            return InputLayerSelectorPanel(items, self.param)
+                self.combo.setAllowEmptyLayer(True)
+            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
+                self.combo.setShowCrs(True)
+
+            self.combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
+            self.combo.setExcludedProviders(['grass'])
+
+            self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         elif self.dialogType == DIALOG_BATCH:
             return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
         else:
@@ -553,14 +593,14 @@ class RasterWidgetWrapper(WidgetWrapper):
                 widget.setEditText("")
             return widget
 
-    def refresh(self):
-        items = []
-        layers = dataobjects.getRasterLayers()
-        if self.param.optional:
-            items.append((self.NOT_SELECTED, None))
-        for layer in layers:
-            items.append((getExtendedLayerName(layer), layer))
-        self.widget.update(items)
+    def selectFile(self):
+        filename, selected_filter = self.getFileName(self.combo.currentText())
+        if filename:
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            items = self.combo.additionalItems()
+            items.append(filename)
+            self.combo.setAdditionalItems(items)
+            self.combo.setCurrentIndex(self.combo.findText(filename))
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
@@ -572,7 +612,14 @@ class RasterWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
-            return self.widget.getValue()
+            try:
+                layer = self.combo.currentLayer()
+                if layer:
+                    return layer
+                else:
+                    return self.combo.currentText()
+            except:
+                return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
@@ -615,16 +662,43 @@ class VectorWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            layers = dataobjects.getVectorLayers(self.param.datatype)
-            items = []
+            widget = QWidget()
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(2)
+            self.combo = QgsMapLayerComboBox()
+            layout.addWidget(self.combo)
+            btn = QToolButton()
+            btn.setText('...')
+            btn.setToolTip(self.tr("Select file"))
+            btn.clicked.connect(self.selectFile)
+            layout.addWidget(btn)
+
+            widget.setLayout(layout)
+
+            filters = QgsMapLayerProxyModel.Filters()
+            if self.param.datatype == [-1] or -1 in self.param.datatype:
+                filters = QgsMapLayerProxyModel.HasGeometry
+            if QgsWkbTypes.PointGeometry in self.param.datatype:
+                filters |= QgsMapLayerProxyModel.PointLayer
+            if QgsWkbTypes.LineGeometry in self.param.datatype:
+                filters |= QgsMapLayerProxyModel.LineLayer
+            if QgsWkbTypes.PolygonGeometry in self.param.datatype:
+                filters |= QgsMapLayerProxyModel.PolygonLayer
+
             if self.param.optional:
-                items.append((self.NOT_SELECTED, None))
-            for layer in layers:
-                items.append((getExtendedLayerName(layer), layer))
-            widget = InputLayerSelectorPanel(items, self.param)
-            widget.name = self.param.name
-            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+                self.combo.setAllowEmptyLayer(True)
+            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
+                self.combo.setShowCrs(True)
+
+            self.combo.setFilters(filters)
+            self.combo.setExcludedProviders(['grass'])
+
+            self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
+
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -639,18 +713,14 @@ class VectorWidgetWrapper(WidgetWrapper):
                 widget.setEditText("")
             return widget
 
-    def _populate(self, widget):
-        items = []
-        layers = dataobjects.getVectorLayers(self.param.datatype)
-        layers.sort(key=lambda lay: lay.name())
-        if self.param.optional:
-            items.append((self.NOT_SELECTED, None))
-        for layer in layers:
-            items.append((getExtendedLayerName(layer), layer))
-        self.widget.update(items)
-
-    def refresh(self):
-        self._populate(self.widget)
+    def selectFile(self):
+        filename, selected_filter = self.getFileName(self.combo.currentText())
+        if filename:
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            items = self.combo.additionalItems()
+            items.append(filename)
+            self.combo.setAdditionalItems(items)
+            self.combo.setCurrentIndex(self.combo.findText(filename))
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
@@ -663,9 +733,13 @@ class VectorWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             try:
-                return self.widget.itemData(self.widget.currentIndex())
+                layer = self.combo.currentLayer()
+                if layer:
+                    return layer
+                else:
+                    return self.combo.currentText()
             except:
-                return self.widget.getValue()
+                return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.value()
         else:
@@ -809,16 +883,31 @@ class TableWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            widget = QComboBox()
-            layers = dataobjects.getTables()
-            layers.sort(key=lambda lay: lay.name())
+            widget = QWidget()
+            layout = QHBoxLayout()
+            layout.setMargin(0)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(2)
+            self.combo = QgsMapLayerComboBox()
+            layout.addWidget(self.combo)
+            btn = QToolButton()
+            btn.setText('...')
+            btn.setToolTip(self.tr("Select file"))
+            btn.clicked.connect(self.selectFile)
+            layout.addWidget(btn)
+
+            widget.setLayout(layout)
+
             if self.param.optional:
-                widget.addItem(self.NOT_SELECTED, None)
-            for layer in layers:
-                widget.addItem(layer.name(), layer)
-            widget.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-            widget.name = self.param.name
+                self.combo.setAllowEmptyLayer(True)
+
+            self.combo.setFilters(QgsMapLayerProxyModel.VectorLayer)
+            self.combo.setExcludedProviders(['grass'])
+
+            self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
+
         elif self.dialogType == DIALOG_BATCH:
             return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
         else:
@@ -833,6 +922,15 @@ class TableWidgetWrapper(WidgetWrapper):
                 widget.addItem(self.dialog.resolveValueDescription(layer), layer)
             return widget
 
+    def selectFile(self):
+        filename, selected_filter = self.getFileName(self.combo.currentText())
+        if filename:
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            items = self.combo.additionalItems()
+            items.append(filename)
+            self.combo.setAdditionalItems(items)
+            self.combo.setCurrentIndex(self.combo.findText(filename))
+
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
@@ -844,9 +942,13 @@ class TableWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             try:
-                return self.widget.itemData(self.widget.currentIndex())
+                layer = self.combo.currentLayer()
+                if layer:
+                    return layer
+                else:
+                    return self.combo.currentText()
             except:
-                return self.widget.getValue()
+                return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.value()
         else:
