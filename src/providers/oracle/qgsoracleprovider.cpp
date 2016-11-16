@@ -209,6 +209,35 @@ QgsOracleProvider::~QgsOracleProvider()
   disconnectDb();
 }
 
+QString QgsOracleProvider::getWorkspace() const
+{
+  return mUri.param( "dbworkspace" );
+}
+
+void QgsOracleProvider::setWorkspace( const QString &workspace )
+{
+  QgsDataSourceURI prevUri( mUri );
+
+  disconnectDb();
+
+  if ( workspace.isEmpty() )
+    mUri.removeParam( "dbworkspace" );
+  else
+    mUri.setParam( "dbworkspace", workspace );
+
+  mConnection = QgsOracleConn::connectDb( mUri );
+  if ( !mConnection )
+  {
+    mUri = prevUri;
+    QgsDebugMsg( QString( "restoring previous uri:%1" ).arg( mUri.uri() ) );
+    mConnection = QgsOracleConn::connectDb( mUri );
+  }
+  else
+  {
+    setDataSourceUri( mUri.uri() );
+  }
+}
+
 QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
 {
   return new QgsOracleFeatureSource( this );
@@ -2325,7 +2354,7 @@ bool QgsOracleProvider::getGeometryDetails()
     }
 
     if ( exec( qry, QString( mUseEstimatedMetadata
-                             ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<1000) WHERE rownum<=2"
+                             ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2"
                              :  "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ) ) )
     {
       if ( qry.next() )

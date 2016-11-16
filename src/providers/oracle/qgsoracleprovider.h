@@ -54,6 +54,7 @@ enum QgsOraclePrimaryKeyType
 class QgsOracleProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
+    Q_PROPERTY( QString workspace READ getWorkspace WRITE setWorkspace )
 
   public:
 
@@ -280,6 +281,16 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * It returns true. Saving style to db is supported by this provider
      */
     virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
+
+    /**
+     * Switch to oracle workspace
+     */
+    void setWorkspace( const QString &workspace );
+
+    /**
+     * Retrieve oracle workspace name
+     */
+    QString getWorkspace() const;
 
   private:
     QString whereClause( QgsFeatureId featureId ) const;
