@@ -47,7 +47,6 @@ from qgis.gui import (QgsFieldExpressionWidget,
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, QSettings
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
-from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.core.parameters import (ParameterBoolean,
