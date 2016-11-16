@@ -18,6 +18,9 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsrasterdataprovider.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
@@ -71,9 +74,15 @@ QStringList QgsMapLayerProxyModel::exceptedLayerIds() const
   return lst;
 }
 
+void QgsMapLayerProxyModel::setExcludedProviders( const QStringList& providers )
+{
+  mExcludedProviders = providers;
+  invalidateFilter();
+}
+
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mExcludedProviders.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
@@ -90,6 +99,11 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
     return false;
 
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+  if ( vl && mExcludedProviders.contains( vl->dataProvider()->name() ) )
+    return false;
+  QgsRasterLayer* rl = qobject_cast<QgsRasterLayer*>( layer );
+  if ( rl && mExcludedProviders.contains( rl->dataProvider()->name() ) )
+    return false;
 
   if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
     return false;
