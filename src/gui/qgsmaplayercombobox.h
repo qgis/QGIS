@@ -34,6 +34,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
     Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )
+    Q_PROPERTY( QStringList excludedProviders READ excludedProviders WRITE setExcludedProviders )
 
   public:
 
@@ -54,6 +55,20 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
     //! returns the list of excepted layers
     QList<QgsMapLayer*> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
+
+    /**
+     * Sets a list of data providers which should be excluded from the combobox.
+     * @note added in QGIS 3.0
+     * @see excludedProviders()
+     */
+    void setExcludedProviders( const QStringList& providers );
+
+    /**
+     * Returns the list of data providers which are excluded from the combobox.
+     * @see setExcludedProviders()
+     * @note added in QGIS 3.0
+     */
+    QStringList excludedProviders() const;
 
     /**
      * Sets whether an optional empty layer ("not set") option is shown in the combo box.

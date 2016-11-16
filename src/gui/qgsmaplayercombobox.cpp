@@ -28,6 +28,16 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
 }
 
+void QgsMapLayerComboBox::setExcludedProviders( const QStringList& providers )
+{
+  mProxyModel->setExcludedProviders( providers );
+}
+
+QStringList QgsMapLayerComboBox::excludedProviders() const
+{
+  return mProxyModel->excludedProviders();
+}
+
 void QgsMapLayerComboBox::setAllowEmptyLayer( bool allowEmpty )
 {
   mProxyModel->sourceLayerModel()->setAllowEmptyLayer( allowEmpty );
