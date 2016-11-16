@@ -23,7 +23,7 @@ start_app()
 
 
 def create_layer(name):
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+    layer = QgsVectorLayer("Point?crs=EPSG:3111&field=fldtxt:string&field=fldint:integer",
                            name, "memory")
     return layer
 
@@ -43,6 +43,11 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertTrue(m.allowEmptyLayer())
         m.setAllowEmptyLayer(False)
         self.assertFalse(m.allowEmptyLayer())
+
+        m.setShowCrs(True)
+        self.assertTrue(m.showCrs())
+        m.setShowCrs(False)
+        self.assertFalse(m.showCrs())
 
     def testAddingRemovingLayers(self):
         # test model handles layer addition and removal
@@ -143,6 +148,21 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testDisplayRoleShowCrs(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        m.setShowCrs(True)
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1 [EPSG:3111]')
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l2 [EPSG:3111]')
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1 [EPSG:3111]')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2 [EPSG:3111]')
 
         QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
 

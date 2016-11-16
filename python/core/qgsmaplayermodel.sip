@@ -55,6 +55,20 @@ class QgsMapLayerModel : QAbstractItemModel
     bool allowEmptyLayer() const;
 
     /**
+     * Sets whether the CRS of layers is also included in the model's display role.
+     * @see showCrs()
+     * @note added in QGIS 3.0
+     */
+    void setShowCrs( bool showCrs );
+
+    /**
+     * Returns true if the model includes layer's CRS in the display role.
+     * @see setShowCrs()
+     * @note added in QGIS 3.0
+     */
+    bool showCrs() const;
+
+    /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
@@ -75,15 +89,15 @@ class QgsMapLayerModel : QAbstractItemModel
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent ) const;
-    int columnCount( const QModelIndex &parent ) const;
-    QVariant data( const QModelIndex &index, int role ) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
     /**
      * Returns strings for all roles supported by this model.
      */
     QHash<int, QByteArray> roleNames() const;
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role );
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole );
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 };

@@ -32,6 +32,11 @@ class QgsMapLayer;
 class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 {
     Q_OBJECT
+
+    Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
+    Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )
+    Q_PROPERTY( bool itemsCheckable READ itemsCheckable WRITE setItemsCheckable )
+
   public:
 
     //! Item data roles
@@ -77,6 +82,20 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     bool allowEmptyLayer() const { return mAllowEmpty; }
 
     /**
+     * Sets whether the CRS of layers is also included in the model's display role.
+     * @see showCrs()
+     * @note added in QGIS 3.0
+     */
+    void setShowCrs( bool showCrs );
+
+    /**
+     * Returns true if the model includes layer's CRS in the display role.
+     * @see setShowCrs()
+     * @note added in QGIS 3.0
+     */
+    bool showCrs() const { return mShowCrs; }
+
+    /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
@@ -101,9 +120,9 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns strings for all roles supported by this model.
@@ -112,12 +131,13 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     QHash<int, QByteArray> roleNames() const override;
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   private:
 
     bool mAllowEmpty;
+    bool mShowCrs;
 };
 
 #endif // QGSMAPLAYERMODEL_H
