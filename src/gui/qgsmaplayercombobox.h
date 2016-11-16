@@ -32,6 +32,8 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     Q_OBJECT
     Q_FLAGS( QgsMapLayerProxyModel::Filters )
     Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
+    Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )
 
   public:
 
@@ -66,6 +68,20 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * @note added in QGIS 3.0
      */
     bool allowEmptyLayer() const;
+
+    /**
+     * Sets whether the CRS of layers is also included in the combo box text.
+     * @see showCrs()
+     * @note added in QGIS 3.0
+     */
+    void setShowCrs( bool showCrs );
+
+    /**
+     * Returns true if the combo box shows the layer's CRS.
+     * @see setShowCrs()
+     * @note added in QGIS 3.0
+     */
+    bool showCrs() const;
 
     /** Returns the current layer selected in the combo box.
      * @see layer

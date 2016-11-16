@@ -27,6 +27,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject 
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
     , mAllowEmpty( false )
+    , mShowCrs( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( layers );
@@ -37,6 +38,7 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
     , mAllowEmpty( false )
+    , mShowCrs( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addLayers( QList<QgsMapLayer*> ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
@@ -54,7 +56,7 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
   {
     mLayersChecked[key] = checkState;
   }
-  emit dataChanged( index( 0, 0 ), index( mLayers.length() - 1, 0 ) );
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
 void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty )
@@ -74,6 +76,15 @@ void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty )
     mAllowEmpty = false;
     endRemoveRows();
   }
+}
+
+void QgsMapLayerModel::setShowCrs( bool showCrs )
+{
+  if ( mShowCrs == showCrs )
+    return;
+
+  mShowCrs = showCrs;
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ), QVector<int>() << Qt::DisplayRole );
 }
 
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
@@ -183,7 +194,17 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       return QVariant();
 
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    return layer ? layer->name() : QVariant();
+    if ( !layer )
+      return QVariant();
+
+    if ( !mShowCrs )
+    {
+      return layer->name();
+    }
+    else
+    {
+      return tr( "%1 [%2]" ).arg( layer->name(), layer->crs().authid() );
+    }
   }
 
   if ( role == LayerIdRole )

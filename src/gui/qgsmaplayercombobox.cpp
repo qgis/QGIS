@@ -38,6 +38,16 @@ bool QgsMapLayerComboBox::allowEmptyLayer() const
   return mProxyModel->sourceLayerModel()->allowEmptyLayer();
 }
 
+void QgsMapLayerComboBox::setShowCrs( bool showCrs )
+{
+  mProxyModel->sourceLayerModel()->setShowCrs( showCrs );
+}
+
+bool QgsMapLayerComboBox::showCrs() const
+{
+  return mProxyModel->sourceLayerModel()->showCrs();
+}
+
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
   if ( !layer )

@@ -42,6 +42,20 @@ class QgsMapLayerComboBox : QComboBox
      */
     bool allowEmptyLayer() const;
 
+    /**
+     * Sets whether the CRS of layers is also included in the combo box text.
+     * @see showCrs()
+     * @note added in QGIS 3.0
+     */
+    void setShowCrs( bool showCrs );
+
+    /**
+     * Returns true if the combo box shows the layer's CRS.
+     * @see setShowCrs()
+     * @note added in QGIS 3.0
+     */
+    bool showCrs() const;
+
     /** Returns the current layer selected in the combo box.
      * @see layer
      */
