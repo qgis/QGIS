@@ -3,7 +3,7 @@
 %End
 
 /**
-* \ingroup networkanalysis
+* \ingroup analysis
 * \class QgsGraphBuilderInterface
 * \brief Determine interface for creating a graph. Contains the settings of the graph. QgsGraphBuilder and QgsGraphDirector is a Builder pattern
 */

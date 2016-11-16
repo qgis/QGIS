@@ -1,5 +1,5 @@
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraphArc
  * \brief This class implements a graph edge
  */
@@ -38,7 +38,7 @@ class QgsGraphArc
 typedef QList< int > QgsGraphArcIdList;
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraphVertex
  * \brief This class implements a graph vertex
  */
@@ -77,7 +77,7 @@ class QgsGraphVertex
 };
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraph
  * \brief Mathematics graph representation
  */

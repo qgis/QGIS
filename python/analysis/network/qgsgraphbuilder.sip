@@ -1,5 +1,5 @@
 /**
-* \ingroup networkanalysis
+* \ingroup analysis
 * \class QgsGraphBuilder
 * \brief This class making the QgsGraph object
 */

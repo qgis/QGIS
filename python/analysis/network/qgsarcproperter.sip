@@ -4,7 +4,7 @@
 %End
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsArcProperter
  * \brief QgsArcProperter is a strategy pattern.
  * You can use it for customize arc property. For example look at QgsDistanceArcProperter or QgsSpeedArcProperter
