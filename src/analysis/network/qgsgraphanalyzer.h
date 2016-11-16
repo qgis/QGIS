@@ -15,17 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGRAPHANALYZERH
-#define QGSGRAPHANALYZERH
+#ifndef QGSGRAPHANALYZER_H
+#define QGSGRAPHANALYZER_H
 
-//QT-includes
 #include <QVector>
 
-// forward-declaration
 class QgsGraph;
 
 /** \ingroup networkanalysis
- * The QGis class provides graph analysis functions
+ * QGIS class with graph analysis functions
  */
 
 class ANALYSIS_EXPORT QgsGraphAnalyzer
@@ -34,20 +32,21 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
 
     /**
      * solve shortest path problem using dijkstra algorithm
-     * @param source The source graph
-     * @param startVertexIdx index of start vertex
-     * @param criterionNum index of arc property as optimization criterion
-     * @param resultTree array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reacheble and resultTree[ vertexIndex ] == -1 others.
+     * @param source source graph
+     * @param startVertexIdx index of the start vertex
+     * @param criterionNum index of the arc property as optimization criterion
+     * @param resultTree array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
      * @param resultCost array of cost paths
      */
     static void dijkstra( const QgsGraph* source, int startVertexIdx, int criterionNum, QVector<int>* resultTree = nullptr, QVector<double>* resultCost = nullptr );
 
     /**
      * return shortest path tree with root-node in startVertexIdx
-     * @param source The source graph
-     * @param startVertexIdx index of start vertex
-     * @param criterionNum index of edge property as optimization criterion
+     * @param source source graph
+     * @param startVertexIdx index of the start vertex
+     * @param criterionNum index of the edge property as optimization criterion
      */
     static QgsGraph* shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum );
 };
-#endif //QGSGRAPHANALYZERH
+
+#endif // QGSGRAPHANALYZER_H

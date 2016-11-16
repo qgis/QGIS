@@ -1,7 +1,7 @@
 /**
  * \ingroup networkanalysis
  * \class QgsGraphArc
- * \brief This class implement a graph edge
+ * \brief This class implements a graph edge
  */
 class QgsGraphArc
 {
@@ -40,7 +40,7 @@ typedef QList< int > QgsGraphArcIdList;
 /**
  * \ingroup networkanalysis
  * \class QgsGraphVertex
- * \brief This class implement a graph vertex
+ * \brief This class implements a graph vertex
  */
 class QgsGraphVertex
 {

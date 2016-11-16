@@ -23,15 +23,13 @@
  * \file qgsgraph.h
  */
 
-#ifndef QGSGRAPHH
-#define QGSGRAPHH
+#ifndef QGSGRAPH_H
+#define QGSGRAPH_H
 
-// QT4 includes
 #include <QList>
 #include <QVector>
 #include <QVariant>
 
-// QGIS includes
 #include "qgspoint.h"
 
 class QgsGraphVertex;
@@ -39,7 +37,7 @@ class QgsGraphVertex;
 /**
  * \ingroup networkanalysis
  * \class QgsGraphArc
- * \brief This class implement a graph edge
+ * \brief This class implements a graph edge
  */
 class ANALYSIS_EXPORT QgsGraphArc
 {
@@ -83,14 +81,14 @@ typedef QList< int > QgsGraphArcIdList;
 /**
  * \ingroup networkanalysis
  * \class QgsGraphVertex
- * \brief This class implement a graph vertex
+ * \brief This class implements a graph vertex
  */
 class ANALYSIS_EXPORT QgsGraphVertex
 {
   public:
 
     /**
-     * default constructor. It need for QT's container, e.g. QVector
+     * default constructor. It needed for Qt's container, e.g. QVector
      */
     QgsGraphVertex() {}
 
@@ -137,7 +135,7 @@ class ANALYSIS_EXPORT QgsGraph
     // begin graph constructing methods
 
     /**
-     * add vertex to a grap
+     * add vertex to a graph
      */
     int addVertex( const QgsPoint& pt );
 
@@ -178,4 +176,4 @@ class ANALYSIS_EXPORT QgsGraph
     QVector<QgsGraphArc> mGraphArc;
 };
 
-#endif //QGSGRAPHH
+#endif // QGSGRAPH_H

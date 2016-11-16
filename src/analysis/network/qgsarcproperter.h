@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsedgeproperter.h
+  qgsarcproperter.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,13 +13,11 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSEDGEPROPERTERH
-#define QGSEDGEPROPERTERH
+#ifndef QGSARCROPERTER_H
+#define QGSARCROPERTER_H
 
-// QT4 includes
 #include <QVariant>
 
-// QGIS includes
 #include <qgsfeature.h>
 #include <qgsfeaturerequest.h>
 
@@ -27,7 +25,7 @@
  * \ingroup networkanalysis
  * \class QgsArcProperter
  * \brief QgsArcProperter is a strategy pattern.
- * You can use it for customize arc property. For example look at QgsDistanceArcProperter or src/plugins/roadgraph/speedproperter.h
+ * You can use it for customize arc property. For example look at QgsDistanceArcProperter and QgsSpeedArcProperter
  */
 class ANALYSIS_EXPORT QgsArcProperter
 {
@@ -56,4 +54,4 @@ class ANALYSIS_EXPORT QgsArcProperter
       return QVariant();
     }
 };
-#endif //QGSEDGEPROPERTYH
+#endif // QGSARCROPERTER_H

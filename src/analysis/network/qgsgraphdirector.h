@@ -12,19 +12,17 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef QGSGRAPHDIRECTORH
-#define QGSGRAPHDIRECTORH
 
-//QT4 includes
+#ifndef QGSGRAPHDIRECTOR_H
+#define QGSGRAPHDIRECTOR_H
+
 #include <QObject>
 #include <QVector>
 #include <QList>
 
-//QGIS includes
 #include <qgspoint.h>
 #include "qgsarcproperter.h"
 
-//forward declarations
 class QgsGraphBuilderInterface;
 
 /**
@@ -48,11 +46,8 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
      * Make a graph using RgGraphBuilder
      *
      * @param builder   The graph builder
-     *
      * @param additionalPoints  Vector of points that must be tied to the graph
-     *
      * @param tiedPoints  Vector of tied points
-     *
      * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
@@ -77,4 +72,5 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
   protected:
     QList<QgsArcProperter*> mProperterList;
 };
-#endif //QGSGRAPHDIRECTORH
+
+#endif // QGSGRAPHDIRECTOR_H

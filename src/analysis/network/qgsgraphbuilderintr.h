@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsgraphbuilder.h
+  qgsgraphbuilderintr.h
   --------------------------------------
   Date                 : 2010-10-22
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -12,24 +12,21 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef QGSGRAPHBUILDERINTERFACE
-#define QGSGRAPHBUILDERINTERFACE
 
-//QT4 includes
+#ifndef QGSGRAPHBUILDERINTERFACE_H
+#define QGSGRAPHBUILDERINTERFACE_H
+
 #include <QVector>
 #include <QVariant>
 
-//QGIS includes
 #include <qgspoint.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdistancearea.h>
 
-//forward declarations
-
 /**
 * \ingroup networkanalysis
 * \class QgsGraphBuilderInterface
-* \brief Determine interface for creating a graph. Contains the settings of the graph. QgsGraphBuilder and QgsGraphDirector is a Builder pattern
+* \brief Determine interface for creating a graph. Contains the settings of the graph. QgsGraphBuilder and QgsGraphDirector both use a Builder pattern
 */
 class ANALYSIS_EXPORT QgsGraphBuilderInterface
 {
@@ -56,7 +53,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     virtual ~QgsGraphBuilderInterface()
     { }
 
-    //! get destinaltion Crs
+    //! get destinaltion CRS
     QgsCoordinateReferenceSystem destinationCrs() const
     {
       return mCrs;
@@ -120,4 +117,4 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     double mTopologyTolerance;
 
 };
-#endif //QGSGRAPHBUILDERINTERFACE
+#endif // QGSGRAPHBUILDERINTERFACE_H

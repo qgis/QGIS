@@ -14,15 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-// C++ standard includes
+
 #include <limits>
 
-// QT includes
 #include <QMap>
 #include <QVector>
 #include <QPair>
 
-//QGIS-uncludes
 #include "qgsgraph.h"
 #include "qgsgraphanalyzer.h"
 
@@ -49,7 +47,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
   }
 
   // QMultiMap< cost, vertexIdx > not_begin
-  // I use it and not create any struct or class.
+  // I use it and don't create any struct or class
   QMultiMap< double, int > not_begin;
   QMultiMap< double, int >::iterator it;
 
@@ -108,7 +106,7 @@ QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVerte
     }
   }
 
-  // Add arcs to result
+  // Add arcs to the result
   for ( i = 0; i < source->vertexCount(); ++i )
   {
     if ( tree[ i ] != -1 )

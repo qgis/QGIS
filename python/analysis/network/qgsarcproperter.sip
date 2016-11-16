@@ -2,14 +2,15 @@
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add these includes to the file where the code from
 // ConvertToSubClassCode goes.
+#include <qgsspeedarcproperter.h>
 #include <qgsdistancearcproperter.h>
 %End
 
 /**
  * \ingroup networkanalysis
- * \class QgsEdgeProperter
- * \brief QgsEdgeProperter is a strategy pattern.
- * You can use it for customize arc property. For example look at QgsDistanceArcProperter or src/plugins/roadgraph/speedproperter.h
+ * \class QgsArcProperter
+ * \brief QgsArcProperter is a strategy pattern.
+ * You can use it for customize arc property. For example look at QgsDistanceArcProperter or QgsSpeedArcProperter
  */
 class QgsArcProperter
 {

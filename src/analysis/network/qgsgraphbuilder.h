@@ -12,17 +12,14 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef QGSGRAPHBUILDERH
-#define QGSGRAPHBUILDERH
+
+#ifndef QGSGRAPHBUILDER_H
+#define QGSGRAPHBUILDER_H
 
 #include "qgsgraphbuilderintr.h"
 
-//QT4 includes
-
-//QGIS includes
 #include <qgsspatialindex.h>
 
-//forward declarations
 class QgsDistanceArea;
 class QgsCoordinateTransform;
 class QgsGraph;
@@ -30,7 +27,7 @@ class QgsGraph;
 /**
 * \ingroup networkanalysis
 * \class QgsGraphBuilder
-* \brief This class making the QgsGraph object
+* \brief This class is used for making the QgsGraph object
 */
 
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
@@ -60,4 +57,5 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 
     QgsGraph *mGraph;
 };
-#endif //QGSGRAPHBUILDERH
+
+#endif // QGSGRAPHBUILDER_H

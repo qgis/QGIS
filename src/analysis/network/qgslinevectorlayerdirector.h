@@ -12,17 +12,12 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef QGSLINEVECTORLAYERDIRECTORH
-#define QGSLINEVECTORLAYERDIRECTORH
 
-//QT4 includes
+#ifndef QGSLINEVECTORLAYERDIRECTOR_H
+#define QGSLINEVECTORLAYERDIRECTOR_H
 
-//QGIS includes
-
-// Road-graph plugin includes
 #include "qgsgraphdirector.h"
 
-//forward declarations
 class QgsGraphBuilderInterface;
 class QgsVectorLayer;
 
@@ -80,4 +75,4 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
     int mDefaultDirection;
 };
 
-#endif //QGSLINEVECTORLAYERGRAPHDIRECTORH
+#endif // QGSLINEVECTORLAYERDIRECTOR_H

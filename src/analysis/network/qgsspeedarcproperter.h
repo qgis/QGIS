@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdistancearcproperter.h
+  qgsspeedarcproperter.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,22 +13,28 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSDISTANCEARCPROPERTER_H
-#define QGSDISTANCEARCPROPERTER_H
+#ifndef QGSSPEEDARCPROPERTER_H
+#define QGSSPEEDARCPROPERTER_H
 
-// QT4 includes
-#include <QVariant>
-
-// QGIS includes
 #include <qgsarcproperter.h>
 
 /** \ingroup networkanalysis
- * \class QgsDistanceArcProperter
+ * \class QgsSpeedArcProperter
  */
-class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter
+class ANALYSIS_EXPORT QgsSpeedArcProperter : public QgsArcProperter
 {
   public:
-    virtual QVariant property( double distance, const QgsFeature& ) const override;
+    QgsSpeedArcProperter( int attributeId, double defaultValue, double toMetricFactor );
+
+    QVariant property( double distance, const QgsFeature& f ) const override;
+
+    QgsAttributeList requiredAttributes() const override;
+
+  private:
+    int mAttributeId;
+    double mDefaultValue;
+    double mToMetricFactor;
+
 };
 
-#endif // QGSDISTANCEARCPROPERTER_H
+#endif // QGSSPEEDARCPROPERTER_H

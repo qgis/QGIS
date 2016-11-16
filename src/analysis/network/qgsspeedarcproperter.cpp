@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdistancearcproperter.h
+  qgsspeedarcproperter.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,22 +13,32 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSDISTANCEARCPROPERTER_H
-#define QGSDISTANCEARCPROPERTER_H
+#include "qgsspeedarcproperter.h"
 
-// QT4 includes
-#include <QVariant>
-
-// QGIS includes
-#include <qgsarcproperter.h>
-
-/** \ingroup networkanalysis
- * \class QgsDistanceArcProperter
- */
-class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter
+QgsSpeedArcProperter::QgsSpeedArcProperter( int attributeId, double defaultValue, double toMetricFactor )
 {
-  public:
-    virtual QVariant property( double distance, const QgsFeature& ) const override;
-};
+  mAttributeId = attributeId;
+  mDefaultValue = defaultValue;
+  mToMetricFactor = toMetricFactor;
+}
 
-#endif // QGSDISTANCEARCPROPERTER_H
+QVariant QgsSpeedArcProperter::property( double distance, const QgsFeature& f ) const
+{
+  QgsAttributes attrs = f.attributes();
+
+  if ( mAttributeId < 0 || mAttributeId >= attrs.count() )
+    return QVariant( distance / ( mDefaultValue*mToMetricFactor ) );
+
+  double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
+  if ( val <= 0.0 )
+    return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
+
+  return QVariant( val );
+}
+
+QgsAttributeList QgsSpeedArcProperter::requiredAttributes() const
+{
+  QgsAttributeList l;
+  l.push_back( mAttributeId );
+  return l;
+}

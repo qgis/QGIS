@@ -1,13 +1,17 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Sergey Yakushev                                 *
- *   yakushevs <at> list.ru                                                *
- *                                                                         *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- ***************************************************************************/
+  qgslinevectorlayerdirector.cpp
+  --------------------------------------
+  Date                 : 2010-10-20
+  Copyright            : (C) 2010 by Yakushev Sergey
+  Email                : YakushevS@list.ru
+****************************************************************************
+*                                                                          *
+*   This program is free software; you can redistribute it and/or modify   *
+*   it under the terms of the GNU General Public License as published by   *
+*   the Free Software Foundation; either version 2 of the License, or      *
+*   (at your option) any later version.                                    *
+*                                                                          *
+***************************************************************************/
 
 /**
  * \file qgslinevectorlayerdirector.cpp
@@ -17,7 +21,6 @@
 #include "qgslinevectorlayerdirector.h"
 #include "qgsgraphbuilderintr.h"
 
-// Qgis includes
 #include "qgsfeatureiterator.h"
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
@@ -26,7 +29,6 @@
 #include <qgsdistancearea.h>
 #include <qgswkbtypes.h>
 
-// QT includes
 #include <QString>
 #include <QtAlgorithms>
 
@@ -393,4 +395,3 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     emit buildProgress( ++step, featureCount );
   } // while( vl->nextFeature(feature) )
 } // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints, QVector< QgsPoint >& tiedPoint )
-

@@ -1,4 +1,3 @@
-
 class QgsDistanceArcProperter : QgsArcProperter
 {
 %TypeHeaderCode
