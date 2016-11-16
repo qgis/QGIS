@@ -71,7 +71,7 @@ class Polygonize(GeoAlgorithm):
                                    'double', 16, 2))
         allLinesList = []
         features = vector.features(vlayer)
-        progress.setInfo(self.tr('Processing lines...'))
+        progress.setInfo(self.tr('Processing lines…'))
         total = 40.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
@@ -84,17 +84,17 @@ class Polygonize(GeoAlgorithm):
         progress.setPercentage(40)
         allLines = MultiLineString(allLinesList)
 
-        progress.setInfo(self.tr('Noding lines...'))
+        progress.setInfo(self.tr('Noding lines…'))
         allLines = unary_union(allLines)
 
         progress.setPercentage(45)
-        progress.setInfo(self.tr('Polygonizing...'))
+        progress.setInfo(self.tr('Polygonizing…'))
         polygons = list(polygonize([allLines]))
         if not polygons:
             raise GeoAlgorithmExecutionException(self.tr('No polygons were created!'))
         progress.setPercentage(50)
 
-        progress.setInfo('Saving polygons...')
+        progress.setInfo('Saving polygons…')
         writer = output.getVectorWriter(fields, QgsWkbTypes.Polygon, vlayer.crs())
         outFeat = QgsFeature()
         total = 50.0 / len(polygons)

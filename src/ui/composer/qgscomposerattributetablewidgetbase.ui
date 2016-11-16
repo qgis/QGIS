@@ -125,7 +125,7 @@
           <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
-             <string>Attributes...</string>
+             <string>Attributes…</string>
             </property>
            </widget>
           </item>
@@ -222,7 +222,7 @@
             <item>
              <widget class="QToolButton" name="mFeatureFilterButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -410,7 +410,7 @@
           <item row="8" column="1">
            <widget class="QPushButton" name="mAdvancedCustomisationButton">
             <property name="text">
-             <string>Advanced customisation...</string>
+             <string>Advanced customisation…</string>
             </property>
            </widget>
           </item>
@@ -552,7 +552,7 @@
              <item row="0" column="1">
               <widget class="QPushButton" name="mHeaderFontPushButton">
                <property name="text">
-                <string>Choose font...</string>
+                <string>Choose font…</string>
                </property>
               </widget>
              </item>
@@ -655,7 +655,7 @@
              <item row="0" column="1">
               <widget class="QPushButton" name="mContentFontPushButton">
                <property name="text">
-                <string>Choose font...</string>
+                <string>Choose font…</string>
                </property>
               </widget>
              </item>

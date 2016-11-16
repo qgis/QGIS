@@ -103,7 +103,7 @@ bool QgsAuthManager::init( const QString& pluginPath )
     return true;
   mAuthInit = true;
 
-  QgsDebugMsg( "Initializing QCA..." );
+  QgsDebugMsg( "Initializing QCA…" );
   mQcaInitializer = new QCA::Initializer( QCA::Practical, 256 );
 
   QgsDebugMsg( "QCA initialized." );
@@ -123,7 +123,7 @@ bool QgsAuthManager::init( const QString& pluginPath )
     return isDisabled();
   }
 
-  QgsDebugMsg( "Prioritizing qca-ossl over all other QCA providers..." );
+  QgsDebugMsg( "Prioritizing qca-ossl over all other QCA providers…" );
   QCA::ProviderList provds = QCA::providers();
   QStringList prlist;
   Q_FOREACH ( QCA::Provider* p, provds )

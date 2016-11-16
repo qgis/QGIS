@@ -102,7 +102,7 @@
            <item>
             <widget class="QToolButton" name="mSchemeToolButton">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
              <property name="popupMode">
               <enum>QToolButton::InstantPopup</enum>
@@ -851,7 +851,7 @@
   </layout>
   <action name="mActionImportColors">
    <property name="text">
-    <string>Import Colors...</string>
+    <string>Import Colors…</string>
    </property>
    <property name="toolTip">
     <string>Import colors from file</string>
@@ -859,7 +859,7 @@
   </action>
   <action name="mActionExportColors">
    <property name="text">
-    <string>Export Colors...</string>
+    <string>Export Colors…</string>
    </property>
    <property name="toolTip">
     <string>Export colors to file</string>
@@ -875,7 +875,7 @@
   </action>
   <action name="mActionImportPalette">
    <property name="text">
-    <string>Import Palette...</string>
+    <string>Import Palette…</string>
    </property>
    <property name="toolTip">
     <string>Import palette from file</string>
@@ -891,7 +891,7 @@
   </action>
   <action name="mActionNewPalette">
    <property name="text">
-    <string>New Palette...</string>
+    <string>New Palette…</string>
    </property>
    <property name="toolTip">
     <string>Create a new palette</string>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save raster layer as...</string>
+   <string>Save raster layer as…</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -127,7 +127,7 @@ datasets with maximum width and height specified below.</string>
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Browse...</string>
+        <string>Browse…</string>
        </property>
       </widget>
      </item>
@@ -561,7 +561,7 @@ datasets with maximum width and height specified below.</string>
                <string>Add values manually</string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -575,7 +575,7 @@ datasets with maximum width and height specified below.</string>
                <string>Load user defined fully transparent (100%) values </string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -592,7 +592,7 @@ datasets with maximum width and height specified below.</string>
                <string notr="true"/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -606,7 +606,7 @@ datasets with maximum width and height specified below.</string>
                <string>Clear all</string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">

@@ -142,7 +142,7 @@ bool QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
       result = createFromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( theId ) );
       break;
     default:
-      //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
+      //THIS IS BAD…THIS PART OF CODE SHOULD NEVER BE REACHED…
       QgsDebugMsg( "Unexpected case reached!" );
   };
   return result;
@@ -581,7 +581,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &theWkt )
   OSRExportToProj4( d->mCRS, &proj4src );
 
   //now that we have the proj4string, delegate to createFromProj4 so
-  // that we can try to fill in the remaining class members...
+  // that we can try to fill in the remaining class members…
   //create from Proj will set the isValidFlag
   if ( !createFromProj4( proj4src ) )
   {
@@ -694,7 +694,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
   if ( myRecord.empty() )
   {
     // Ticket #722 - aaronr
-    // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
+    // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match…
     // First we check for lat_1 and lat_2
     QRegExp myLat1RegExp( "\\+lat_1=\\S+" );
     QRegExp myLat2RegExp( "\\+lat_2=\\S+" );
@@ -713,14 +713,14 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
       lat1Str = myProj4String.mid( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN );
       lat2Str = myProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
     }
-    // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
+    // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it…
     if ( lat1Str != QLatin1String( "" ) && lat2Str != QLatin1String( "" ) )
     {
-      // Make our new string to check...
+      // Make our new string to check…
       QString theProj4StringModified = myProj4String;
       // First just swap in the lat_2 value for lat_1 value
       theProj4StringModified.replace( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN, lat2Str );
-      // Now we have to find the lat_2 location again since it has potentially moved...
+      // Now we have to find the lat_2 location again since it has potentially moved…
       myStart2 = 0;
       myStart2 = myLat2RegExp.indexIn( theProj4String, myStart2 );
       theProj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
@@ -801,7 +801,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
   }
   else
   {
-    // Last ditch attempt to piece together what we know of the projection to find a match...
+    // Last ditch attempt to piece together what we know of the projection to find a match…
     QgsDebugMsg( "globbing search for srsid from this proj string" );
     setProj4String( myProj4String );
     mySrsId = findMatchingProj();
@@ -1122,7 +1122,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 
     // If the units parameter was created during the Fixup() call
     // above, the name of the units is likely to be 'unknown'. Try to
-    // do better than that ... (but perhaps ogr should be enhanced to
+    // do better than that … (but perhaps ogr should be enhanced to
     // do this instead?).
 
     static const double feetToMeter = 0.3048;
@@ -1540,7 +1540,7 @@ int QgsCoordinateReferenceSystem::openDb( const QString& path, sqlite3 **db, boo
     QgsDebugMsg( "Can't open database: " + QString( sqlite3_errmsg( *db ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    // ... unfortunately it happens on Windows
+    // … unfortunately it happens on Windows
     QgsMessageLog::logMessage( QObject::tr( "Could not open CRS database %1\nError(%2): %3" )
                                .arg( path )
                                .arg( myResult )

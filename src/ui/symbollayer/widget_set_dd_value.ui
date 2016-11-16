@@ -24,7 +24,7 @@
    <item row="0" column="2">
     <widget class="QgsDataDefinedButton" name="mDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

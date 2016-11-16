@@ -1332,7 +1332,7 @@ void QgsPluginManager::clearRepositoryFilter()
 
 void QgsPluginManager::on_buttonRefreshRepos_clicked()
 {
-  QgsDebugMsg( "Refreshing repositories..." );
+  QgsDebugMsg( "Refreshing repositories…" );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().reloadAndExportData()" ) );
 }
 
@@ -1340,7 +1340,7 @@ void QgsPluginManager::on_buttonRefreshRepos_clicked()
 
 void QgsPluginManager::on_buttonAddRep_clicked()
 {
-  QgsDebugMsg( "Adding repository connection..." );
+  QgsDebugMsg( "Adding repository connection…" );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().addRepository()" ) );
 }
 

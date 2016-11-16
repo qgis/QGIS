@@ -42,9 +42,9 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
 
     virtual void setTitle( const QString& title ) override;
 
-    // Call one of the setMessage...() functions first.
+    // Call one of the setMessage…() functions first.
     // Subsequent calls to appendMessage use the format as determined
-    // by the call to setMessage...()
+    // by the call to setMessage…()
 
     // Treats the given text as html.
     void setMessageAsHtml( const QString& msg );

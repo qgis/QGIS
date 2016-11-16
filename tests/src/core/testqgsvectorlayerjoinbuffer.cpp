@@ -17,7 +17,7 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-//qgis includes...
+//qgis includes…
 #include <qgsvectorlayer.h>
 #include "qgsfeatureiterator.h"
 #include "qgslayertreegroup.h"

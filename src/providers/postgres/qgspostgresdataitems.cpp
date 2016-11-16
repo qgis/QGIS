@@ -106,7 +106,7 @@ QList<QAction*> QgsPGConnectionItem::actions()
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction* actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit Connection…" ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
@@ -118,7 +118,7 @@ QList<QAction*> QgsPGConnectionItem::actions()
   separator2->setSeparator( true );
   lst.append( separator2 );
 
-  QAction* actionCreateSchema = new QAction( tr( "Create Schema..." ), this );
+  QAction* actionCreateSchema = new QAction( tr( "Create Schema…" ), this );
   connect( actionCreateSchema, SIGNAL( triggered() ), this, SLOT( createSchema() ) );
   lst.append( actionCreateSchema );
 
@@ -200,7 +200,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, QString toSchema )
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features…" ), tr( "Abort" ), 0, 0, nullptr );
   progress->setWindowTitle( tr( "Import layer" ) );
   progress->setWindowModality( Qt::WindowModal );
   progress->show();
@@ -304,7 +304,7 @@ QList<QAction*> QgsPGLayerItem::actions()
 
   QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
 
-  QAction* actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), this );
+  QAction* actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), this );
   connect( actionRenameLayer, SIGNAL( triggered() ), this, SLOT( renameLayer() ) );
   lst.append( actionRenameLayer );
 
@@ -538,7 +538,7 @@ QList<QAction *> QgsPGSchemaItem::actions()
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction* actionRename = new QAction( tr( "Rename Schema..." ), this );
+  QAction* actionRename = new QAction( tr( "Rename Schema…" ), this );
   connect( actionRename, SIGNAL( triggered() ), this, SLOT( renameSchema() ) );
   lst.append( actionRename );
 
@@ -728,7 +728,7 @@ QList<QAction*> QgsPGRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 

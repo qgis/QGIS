@@ -408,11 +408,11 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsGrassObject mGrassObject;
     // field part of layer or -1 if no field specified
     int mLayerField;
-    // layer type POINT, LINE, ...
+    // layer type POINT, LINE, …
     int mLayerType;
     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA, ( GV_BOUNDARY, GV_CENTROID )
     int mGrassType;
-    // WKBPoint, WKBLineString, ...
+    // WKBPoint, WKBLineString, …
     QgsWkbTypes::Type mQgisType;
     QString mLayerName;
     QgsGrassVectorMapLayer *mLayer;

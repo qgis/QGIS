@@ -237,7 +237,7 @@ void QgsDecorationGrid::render( QPainter * p )
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
       // p->drawLine( vIt->second );
-      // need to convert QLineF to QPolygonF ...
+      // need to convert QLineF to QPolygonF …
       QVector<QPointF> poly;
       poly << vIt->second.p1() << vIt->second.p2();
       mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );
@@ -246,7 +246,7 @@ void QgsDecorationGrid::render( QPainter * p )
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
     {
       // p->drawLine( hIt->second );
-      // need to convert QLineF to QPolygonF ...
+      // need to convert QLineF to QPolygonF …
       QVector<QPointF> poly;
       poly << hIt->second.p1() << hIt->second.p2();
       mLineSymbol->renderPolyline( QPolygonF( poly ), nullptr, context );

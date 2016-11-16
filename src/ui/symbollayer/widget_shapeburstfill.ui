@@ -51,7 +51,7 @@
    <item row="5" column="4">
     <widget class="QgsDataDefinedButton" name="mShadeWholeShapeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -94,14 +94,14 @@
    <item row="6" column="4">
     <widget class="QgsDataDefinedButton" name="mShadeDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="2" column="4">
     <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -184,14 +184,14 @@
    <item row="9" column="4">
     <widget class="QgsDataDefinedButton" name="mBlurRadiusDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="1" column="4">
     <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -247,7 +247,7 @@
    <item row="8" column="4">
     <widget class="QgsDataDefinedButton" name="mIgnoreRingsDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

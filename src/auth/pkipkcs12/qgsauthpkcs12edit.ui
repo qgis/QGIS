@@ -68,7 +68,7 @@
      <item row="0" column="1">
       <widget class="QToolButton" name="btnPkcs12Bundle">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>

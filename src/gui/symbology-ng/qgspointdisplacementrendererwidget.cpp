@@ -187,7 +187,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChange
   QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererId );
   if ( m )
   {
-    // unfortunately renderer conversion is only available through the creation of a widget...
+    // unfortunately renderer conversion is only available through the creation of a widget…
     QgsRendererWidget* tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;

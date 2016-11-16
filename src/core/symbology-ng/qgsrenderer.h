@@ -188,7 +188,7 @@ class CORE_EXPORT QgsFeatureRenderer
     {
       SymbolLevels          = 1,      //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       MoreSymbolsPerFeature = 1 << 2, //!< May use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter                = 1 << 3, //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      Filter                = 1 << 3, //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based …)
       ScaleDependent        = 1 << 4  //!< Depends on scale if feature will be rendered (rule based )
     };
 

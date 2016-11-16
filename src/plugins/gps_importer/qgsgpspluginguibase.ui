@@ -47,7 +47,7 @@
          <item row="0" column="2">
           <widget class="QPushButton" name="pbnGPXSelectFile">
            <property name="text">
-            <string>Browse...</string>
+            <string>Browse…</string>
            </property>
           </widget>
          </item>
@@ -159,7 +159,7 @@
        <item row="0" column="2">
         <widget class="QPushButton" name="pbnIMPInput">
          <property name="text">
-          <string>Browse...</string>
+          <string>Browse…</string>
          </property>
         </widget>
        </item>
@@ -212,7 +212,7 @@
        <item row="4" column="2">
         <widget class="QPushButton" name="pbnIMPOutput">
          <property name="text">
-          <string>Save As...</string>
+          <string>Save As…</string>
          </property>
         </widget>
        </item>
@@ -272,7 +272,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Edit devices...</string>
+          <string>Edit devices…</string>
          </property>
         </widget>
        </item>
@@ -373,7 +373,7 @@
        <item row="4" column="2">
         <widget class="QPushButton" name="pbnDLOutput">
          <property name="text">
-          <string>Save As...</string>
+          <string>Save As…</string>
          </property>
         </widget>
        </item>
@@ -553,7 +553,7 @@
        <item row="0" column="2">
         <widget class="QPushButton" name="pbnCONVInput">
          <property name="text">
-          <string>Browse...</string>
+          <string>Browse…</string>
          </property>
         </widget>
        </item>
@@ -632,7 +632,7 @@
        <item row="2" column="2">
         <widget class="QPushButton" name="pbnCONVOutput">
          <property name="text">
-          <string>Save As...</string>
+          <string>Save As…</string>
          </property>
         </widget>
        </item>

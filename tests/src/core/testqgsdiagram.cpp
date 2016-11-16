@@ -22,7 +22,7 @@
 #include <QDesktopServices>
 #include <QPainter>
 
-//qgis includes...
+//qgis includes…
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
 #include <qgsdiagramrenderer.h>
@@ -72,16 +72,16 @@ class TestQgsDiagram : public QObject
 
       mMapSettings = new QgsMapSettings();
 
-      //create some objects that will be used in all tests...
+      //create some objects that will be used in all tests…
 
       //
-      //create a non spatial layer that will be used in all tests...
+      //create a non spatial layer that will be used in all tests…
       //
       QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
       mTestDataDir = myDataDir + '/';
 
       //
-      //create a point layer that will be used in all tests...
+      //create a point layer that will be used in all tests…
       //
       QString myPointsFileName = mTestDataDir + "points.shp";
       QFileInfo myPointFileInfo( myPointsFileName );

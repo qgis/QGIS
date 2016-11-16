@@ -103,7 +103,7 @@
             <item>
              <widget class="QPushButton" name="mRootPathButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>

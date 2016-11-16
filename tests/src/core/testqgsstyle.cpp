@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QFileInfo>
 
-//qgis includes...
+//qgis includes…
 #include "qgsmultirenderchecker.h"
 #include <qgsapplication.h>
 #include "qgsconfig.h"

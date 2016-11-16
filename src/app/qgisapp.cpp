@@ -903,7 +903,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
-  QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "QGIS starting…" ), QString::null, QgsMessageLog::INFO );
 
   // set QGIS specific srs validation
   connect( this, SIGNAL( customCrsValidation( QgsCoordinateReferenceSystem& ) ),
@@ -4040,7 +4040,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   if ( uri.contains( '|', Qt::CaseSensitive ) )
   {
     // If we get here, there are some options added to the filename.
-    // A valid uri is of the form: filename&option1=value1&option2=value2,...
+    // A valid uri is of the form: filename&option1=value1&option2=value2,…
     // We want only the filename here, so we get the first part of the split.
     QStringList theURIParts = uri.split( '|' );
     uri = theURIParts.at( 0 );
@@ -4800,7 +4800,7 @@ void QgisApp::showRasterCalculator()
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), d.rasterEntries() );
 
-    QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
+    QProgressDialog p( tr( "Calculating…" ), tr( "Abort…" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &p ) );
     switch ( res )
@@ -4954,7 +4954,7 @@ bool QgisApp::addProject( const QString& projectFile )
   mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   mOverviewCanvas->setBackgroundColor( myColor );
 
-  QgsDebugMsg( "Canvas background color restored..." );
+  QgsDebugMsg( "Canvas background color restored…" );
   int myAlphaInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
   myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 );
   myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 );
@@ -4970,7 +4970,7 @@ bool QgisApp::addProject( const QString& projectFile )
   }
 
   mMapCanvas->updateScale();
-  QgsDebugMsg( "Scale restored..." );
+  QgsDebugMsg( "Scale restored…" );
 
   mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
 
@@ -5138,7 +5138,7 @@ void QgisApp::fileSaveAs()
 
   settings.setValue( QStringLiteral( "/UI/lastProjectDir" ), fullPath.path() );
 
-  // make sure the .qgs extension is included in the path name. if not, add it...
+  // make sure the .qgs extension is included in the path name. if not, add it…
   if ( "qgs" != fullPath.suffix().toLower() )
   {
     fullPath.setFile( fullPath.filePath() + ".qgs" );
@@ -5359,7 +5359,7 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
 
   if ( !ok )
   {
-    // we have no idea what this file is...
+    // we have no idea what this file is…
     QgsMessageLog::logMessage( tr( "Unable to load %1" ).arg( fileName ) );
   }
 
@@ -6114,7 +6114,7 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
   }
 
-  QProgressDialog pd( QString(), tr( "Abort..." ), 0, 0 );
+  QProgressDialog pd( QString(), tr( "Abort…" ), 0, 0 );
   // Show the dialo immediately because cloning pipe can take some time (WCS)
   pd.setLabelText( tr( "Reading raster" ) );
   pd.setWindowTitle( tr( "Saving raster" ) );
@@ -6360,7 +6360,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
       }
     }
 
-    // ok if the file existed it should be deleted now so we can continue...
+    // ok if the file existed it should be deleted now so we can continue…
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     QgsVectorFileWriter::WriterError error;
@@ -6548,7 +6548,7 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
 
   QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
-  QProgressDialog progress( tr( "Merging features..." ), tr( "Abort" ), 0, featureList.size(), this );
+  QProgressDialog progress( tr( "Merging features…" ), tr( "Abort" ), 0, featureList.size(), this );
   progress.setWindowModality( Qt::WindowModal );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -9661,7 +9661,7 @@ QMenu* QgisApp::getPluginMenu( const QString& menuName )
   // It doesn't exist, so create
   QMenu *menu = new QMenu( cleanedMenuName, this );
   menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  // Where to put it? - we worked that out above...
+  // Where to put it? - we worked that out above…
   mPluginMenu->insertMenu( before, menu );
 
   return menu;
@@ -11198,7 +11198,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 //
 //
 //
-//    RASTER ONLY RELATED FUNCTIONS BLOCK ENDS....
+//    RASTER ONLY RELATED FUNCTIONS BLOCK ENDS….
 //
 //
 //

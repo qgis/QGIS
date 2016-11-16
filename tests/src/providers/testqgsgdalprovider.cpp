@@ -23,7 +23,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-//qgis includes...
+//qgis includes…
 #include <qgis.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>

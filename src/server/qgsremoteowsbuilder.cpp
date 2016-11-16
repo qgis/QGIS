@@ -370,7 +370,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
 
 QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  //url for sos provider is: "url=... method=... xml=....
+  //url for sos provider is: "url=… method=… xml=….
   QString method = remoteOWSElem.attribute( QStringLiteral( "method" ), QStringLiteral( "POST" ) ); //possible GET/POST/SOAP
 
   //search for <LayerSensorObservationConstraints> node that is sibling of remoteOSW element

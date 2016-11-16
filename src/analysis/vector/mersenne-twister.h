@@ -51,13 +51,13 @@ extern "C"
   void mt_srand( unsigned seed_value );
 
   /*
-   * Extract a pseudo-random integer in the range 0 ... MD_RAND_MAX.
+   * Extract a pseudo-random integer in the range 0 … MD_RAND_MAX.
    * (LIBC REPLACEMENT FUNCTION)
    */
   int mt_rand();
 
   /*
-   * Extract a pseudo-random unsigned 32-bit integer in the range 0 ... MD_UINT32_MAX
+   * Extract a pseudo-random unsigned 32-bit integer in the range 0 … MD_UINT32_MAX
    */
   uint32_t rand_u32();
 

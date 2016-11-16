@@ -660,7 +660,7 @@ def create_xml_descriptors():
         else:
             if available_app in white_list and available_app not in black_list:
                 logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
-                # TODO Remove this default code when all apps are tested...
+                # TODO Remove this default code when all apps are tested…
                 with open("description/%s.xml" % available_app, "w") as fh:
                     the_root = get_xml_description_from_application_name(available_app)
                     ET.ElementTree(the_root).write(fh)

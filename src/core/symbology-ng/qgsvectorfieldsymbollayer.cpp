@@ -263,7 +263,7 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
 
 void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
-  element.appendChild( doc.createComment( QStringLiteral( "VectorField not implemented yet..." ) ) );
+  element.appendChild( doc.createComment( QStringLiteral( "VectorField not implemented yet…" ) ) );
   mLineSymbol->toSld( doc, element, props );
 }
 

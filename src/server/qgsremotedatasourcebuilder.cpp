@@ -139,7 +139,7 @@ QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDom
 
   //create vector layer
 
-  //SOS has a special datasource key...
+  //SOS has a special datasource key…
   if ( formatString.compare( QLatin1String( "SOS" ), Qt::CaseInsensitive ) == 0 )
   {
     QString url = "url=" + tmpFile->fileName() + " method=FILE xml=";

@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     //helper routines
 
-    /** Reads attribute srsName="EpsgCrsId:..."
+    /** Reads attribute srsName="EpsgCrsId:…"
        @param epsgNr result
        @param attr attribute strings
        @return 0 in case of success

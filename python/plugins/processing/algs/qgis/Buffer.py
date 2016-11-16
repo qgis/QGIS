@@ -56,10 +56,10 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
 
             inGeom = inFeat.geometry()
             if not inGeom:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty geometry. Skipping...'.format(inFeat.id()))
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has empty geometry. Skipping…'.format(inFeat.id()))
                 continue
             if not inGeom.isGeosValid():
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has invalid geometry. Skipping...'.format(inFeat.id()))
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has invalid geometry. Skipping…'.format(inFeat.id()))
                 continue
             buffered_geometries.append(inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit))
 
@@ -83,7 +83,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
             if inGeom.isEmpty() or inGeom.isGeosEmpty():
                 pass
             elif not inGeom.isGeosValid():
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has invalid geometry. Skipping...'.format(inFeat.id()))
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Feature {} has invalid geometry. Skipping…'.format(inFeat.id()))
                 continue
             else:
                 outGeom = inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit)

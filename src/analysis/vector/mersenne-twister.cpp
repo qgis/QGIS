@@ -69,7 +69,7 @@ static inline void generate_numbers()
   static const uint32_t MATRIX[2] = {0, 0x9908b0df};
   uint32_t y, i = 0;
 
-  // i = [0 ... 226]
+  // i = [0 … 226]
   while ( i < ( DIFF - 1 ) )
   {
     /*
@@ -83,7 +83,7 @@ static inline void generate_numbers()
   // i = 226
   UNROLL(( i + PERIOD ) % SIZE );
 
-  // i = [227 ... 622]
+  // i = [227 … 622]
   while ( i < ( SIZE - 1 ) )
   {
     /*
@@ -174,7 +174,7 @@ extern "C" int mt_rand()
    * PORTABILITY WARNING:
    *
    * rand_u32() uses all 32-bits for the pseudo-random number,
-   * but rand() must return a number from 0 ... MD_RAND_MAX.
+   * but rand() must return a number from 0 … MD_RAND_MAX.
    *
    * We'll just assume that rand() only uses 31 bits worth of
    * data, and that we're on a two's complement system.

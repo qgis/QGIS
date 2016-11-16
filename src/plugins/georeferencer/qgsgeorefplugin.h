@@ -99,7 +99,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
 
     ////////////////////////////////////////////////////////////////////
     //
-    // MANDATORY PLUGIN MEMBER DECLARATIONS  .....
+    // MANDATORY PLUGIN MEMBER DECLARATIONS  …..
     //
     ////////////////////////////////////////////////////////////////////
 
@@ -109,7 +109,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     QAction * mActionRunGeoref;
     ////////////////////////////////////////////////////////////////////
     //
-    // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
+    // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT…..
     //
     ////////////////////////////////////////////////////////////////////
     QgsGeorefPluginGui *mPluginGui;

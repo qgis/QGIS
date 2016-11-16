@@ -18,7 +18,7 @@
 #include <QDesktopServices>
 
 
-//qgis includes...
+//qgis includes…
 #include <qgsrasterlayer.h>
 #include <qgscliptominmaxenhancement.h>
 #include <qgscontrastenhancement.h>

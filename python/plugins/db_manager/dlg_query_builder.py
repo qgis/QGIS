@@ -42,7 +42,7 @@ class FocusEventFilter(QObject):
 
 
 def insertWithSelection(widget, text):
-    if widget.textCursor().hasSelection():  # user has selectedsomething...
+    if widget.textCursor().hasSelection():  # user has selectedsomething…
         selection = widget.textCursor().selectedText()
         widget.insertPlainText(text + selection + ")")
     else:

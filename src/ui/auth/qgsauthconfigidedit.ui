@@ -69,7 +69,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Unlock to edit the ID&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;7-character alphanumeric only&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#a80b0a;&quot;&gt;Editing may break things!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="icon">
       <iconset resource="../../../images/images.qrc">

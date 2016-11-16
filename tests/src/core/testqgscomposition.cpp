@@ -226,7 +226,7 @@ void TestQgsComposition::shouldExportPage()
   QCOMPARE( mComposition->shouldExportPage( 1 ), true );
   QCOMPARE( mComposition->shouldExportPage( 2 ), true );
 
-  //...and back again...
+  //…and back again…
   htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
   htmlItem->loadHtml();
 

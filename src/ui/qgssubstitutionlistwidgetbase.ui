@@ -61,7 +61,7 @@
      <item>
       <widget class="QToolButton" name="mButtonAdd">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -72,7 +72,7 @@
      <item>
       <widget class="QToolButton" name="mButtonRemove">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -83,7 +83,7 @@
      <item>
       <widget class="QToolButton" name="mButtonImport">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -94,7 +94,7 @@
      <item>
       <widget class="QToolButton" name="mButtonExport">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

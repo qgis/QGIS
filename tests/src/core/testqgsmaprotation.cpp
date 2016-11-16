@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-//qgis includes...
+//qgis includes…
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -84,7 +84,7 @@ void TestQgsMapRotation::initTestCase()
 
   QList<QgsMapLayer *> mapLayers;
 
-  //create a raster layer that will be used in all tests...
+  //create a raster layer that will be used in all tests…
   QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
@@ -92,14 +92,14 @@ void TestQgsMapRotation::initTestCase()
   mRasterLayer->setRenderer( rasterRenderer );
   mapLayers << mRasterLayer;
 
-  //create a point layer that will be used in all tests...
+  //create a point layer that will be used in all tests…
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mapLayers << mPointsLayer;
 
-  //create a line layer that will be used in all tests...
+  //create a line layer that will be used in all tests…
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),

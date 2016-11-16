@@ -68,15 +68,15 @@ class lasheight_classify(LAStoolsAlgorithm):
         self.addParameter(ParameterSelection(lasheight_classify.CLASSIFY_BETWEEN1,
                                              self.tr("classify between height as"), lasheight_classify.CLASSIFY_CLASSES, 0))
         self.addParameter(ParameterNumber(lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_FROM,
-                                          self.tr("between height ... "), None, None, 0.5))
+                                          self.tr("between height … "), None, None, 0.5))
         self.addParameter(ParameterNumber(lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_TO,
-                                          self.tr("... and height"), None, None, 2.0))
+                                          self.tr("… and height"), None, None, 2.0))
         self.addParameter(ParameterSelection(lasheight_classify.CLASSIFY_BETWEEN2,
                                              self.tr("classify between height as"), lasheight_classify.CLASSIFY_CLASSES, 0))
         self.addParameter(ParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_FROM,
-                                          self.tr("between height ..."), None, None, 2.0))
+                                          self.tr("between height …"), None, None, 2.0))
         self.addParameter(ParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_TO,
-                                          self.tr("... and height"), None, None, 5.0))
+                                          self.tr("… and height"), None, None, 5.0))
         self.addParameter(ParameterSelection(lasheight_classify.CLASSIFY_ABOVE,
                                              self.tr("classify above"), lasheight_classify.CLASSIFY_CLASSES, 0))
         self.addParameter(ParameterNumber(lasheight_classify.CLASSIFY_ABOVE_HEIGHT,

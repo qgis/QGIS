@@ -48,7 +48,7 @@ QVector<QgsDataItem*> QgsAfsRootItem::createChildren()
 
 QList<QAction*> QgsAfsRootItem::actions()
 {
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   return QList<QAction*>() << actionNew;
 }
@@ -117,7 +117,7 @@ QList<QAction*> QgsAfsConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit…" ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 

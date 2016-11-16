@@ -378,7 +378,7 @@ void QgsRendererPropertiesDialog::syncToLayer()
     int rendererIdx = cboRenderers->findData( rendererName );
     cboRenderers->setCurrentIndex( rendererIdx );
 
-    // no renderer found... this mustn't happen
+    // no renderer found… this mustn't happen
     Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
   }
 

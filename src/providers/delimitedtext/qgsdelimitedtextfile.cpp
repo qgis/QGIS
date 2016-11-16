@@ -440,7 +440,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
       int col = mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt();
       nameOk = col == fieldNo;
     }
-    // Otherwise it is valid if isn't the name of an existing field...
+    // Otherwise it is valid if isn't the name of an existing field…
     else
     {
       nameOk = ! mFieldNames.contains( name, Qt::CaseInsensitive );
@@ -709,7 +709,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
     QChar c = buffer[cp];
     cp++;
 
-    // If end of line then if escaped or buffered then try to get more...
+    // If end of line then if escaped or buffered then try to get more…
     if ( cp > cpmax )
     {
       if ( quoted || escaped )
@@ -756,7 +756,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       if ( isQuoteChar && isEscape ) isEscape = isQuote;
     }
 
-    // Start or end of quote ...
+    // Start or end of quote …
     if ( isQuote )
     {
       // quote char in quoted field
@@ -791,7 +791,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
         return RecordInvalid;
       }
     }
-    // If escape char, then next char is escaped...
+    // If escape char, then next char is escaped…
     else if ( isEscape )
     {
       escaped = true;
@@ -801,7 +801,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
     {
       field.append( c );
     }
-    // If it is a delimiter, then end of field...
+    // If it is a delimiter, then end of field…
     else if ( isDelim )
     {
       appendField( fields, field, ended );
@@ -829,7 +829,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       started = true;
     }
   }
-  // If reached the end of the record, then add the last field...
+  // If reached the end of the record, then add the last field…
   if ( started )
   {
     appendField( fields, field, ended );

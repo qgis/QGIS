@@ -121,7 +121,7 @@ void QgsLayerTreeGroup::insertChildNodes( int index, const QList<QgsLayerTreeNod
     else if ( mChecked == Qt::Checked )
     {
       // we have not picked a child index yet, but we should pick one now
-      // ... so pick the first one from the newly added
+      // … so pick the first one from the newly added
       if ( index == -1 )
         index = mChildren.count() - nodes.count(); // get real insertion index
       mMutuallyExclusiveChildIndex = index;

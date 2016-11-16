@@ -93,23 +93,23 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
-                self.tr('Save to file...'), self.btnSelect)
+                self.tr('Save to file…'), self.btnSelect)
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
             actionShowExpressionsBuilder = QAction(
-                self.tr('Use expression...'), self.btnSelect)
+                self.tr('Use expression…'), self.btnSelect)
             actionShowExpressionsBuilder.triggered.connect(self.showExpressionsBuilder)
             popupMenu.addAction(actionShowExpressionsBuilder)
 
             if isinstance(self.output, OutputVector) \
                     and self.alg.provider.supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
-                    self.tr('Save to Spatialite table...'), self.btnSelect)
+                    self.tr('Save to Spatialite table…'), self.btnSelect)
                 actionSaveToSpatialite.triggered.connect(self.saveToSpatialite)
                 popupMenu.addAction(actionSaveToSpatialite)
                 actionSaveToPostGIS = QAction(
-                    self.tr('Save to PostGIS table...'), self.btnSelect)
+                    self.tr('Save to PostGIS table…'), self.btnSelect)
                 actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
                 settings = QSettings()
                 settings.beginGroup('/PostgreSQL/connections/')

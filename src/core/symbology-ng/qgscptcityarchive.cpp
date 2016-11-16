@@ -370,7 +370,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   {
     if ( e.tagName() == QLatin1String( "stop" ) )
     {
-      //todo integrate this into symbollayerutils, keep here for now...
+      //todo integrate this into symbollayerutils, keep here for now…
       double offset;
       QString offsetStr = e.attribute( QStringLiteral( "offset" ) ); // offset="50.00%" | offset="0.5"
       QString colorStr = e.attribute( QStringLiteral( "stop-color" ), QLatin1String( "" ) ); // stop-color="rgb(222,235,247)"
@@ -708,7 +708,7 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     init();
 }
 
-// TODO only load file when icon is requested...
+// TODO only load file when icon is requested…
 void QgsCptCityColorRampItem::init()
 {
   if ( mInitialised )

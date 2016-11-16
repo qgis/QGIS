@@ -229,7 +229,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
     static QString libraryPath();
 
-    //! Returns the path with utility executables (help viewer, crssync, ...)
+    //! Returns the path with utility executables (help viewer, crssync, …)
     static QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps

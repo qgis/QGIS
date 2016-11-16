@@ -221,7 +221,7 @@ class CORE_EXPORT QgsStringUtils
      */
     static QString soundex( const QString &string );
 
-    /** Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a ...>
+    /** Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a …>
      * links.
      * @param string string to insert links into
      * @param foundLinks if specified, will be set to true if any links were inserted into the string

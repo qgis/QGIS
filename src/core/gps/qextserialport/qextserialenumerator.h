@@ -77,7 +77,7 @@ class QextSerialRegistrationWidget : public QWidget
   \code
   QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
   Q_FOREACH( QextPortInfo port, ports ) {
-      // inspect port...
+      // inspect port…
   }
   \endcode
 

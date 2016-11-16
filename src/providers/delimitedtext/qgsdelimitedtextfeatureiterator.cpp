@@ -31,7 +31,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     , mTestGeometryExact( false )
 {
 
-  // Determine mode to use based on request...
+  // Determine mode to use based on request…
   QgsDebugMsg( "Setting up QgsDelimitedTextIterator" );
 
   // Does the layer have geometry - will revise later to determine if we actually need to
@@ -97,7 +97,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     mMode = FeatureIds;
     mTestSubset = false;
   }
-  // If have geometry and testing geometry then evaluate options...
+  // If have geometry and testing geometry then evaluate options…
   // If we don't have geometry then all records pass geometry filter.
   // CC: 2013-05-09
   // Not sure about intended relationship between filtering on geometry and

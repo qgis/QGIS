@@ -299,7 +299,7 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     /** \ingroup core
-     * Binary logical/arithmetical operator (AND, OR, =, +, ...) */
+     * Binary logical/arithmetical operator (AND, OR, =, +, …) */
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:

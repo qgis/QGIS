@@ -121,7 +121,7 @@ void QgsComposerSymbolItem::readXml( const QDomElement& itemElem, bool xServerAv
   if ( !symbolsElem.isNull() )
   {
     QgsSymbolMap loadSymbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
-    //we assume there is only one symbol in the map...
+    //we assume there is only one symbol in the map…
     QgsSymbolMap::iterator mapIt = loadSymbolMap.begin();
     if ( mapIt != loadSymbolMap.end() )
     {

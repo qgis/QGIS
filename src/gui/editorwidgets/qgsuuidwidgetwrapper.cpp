@@ -77,5 +77,5 @@ void QgsUuidWidgetWrapper::setValue( const QVariant& value )
 void QgsUuidWidgetWrapper::setEnabled( bool enabled )
 {
   Q_UNUSED( enabled )
-  // Do nothing... it is always disabled
+  // Do nothing… it is always disabled
 }

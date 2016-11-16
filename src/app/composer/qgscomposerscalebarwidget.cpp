@@ -127,7 +127,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   //map combo box
   mMapItemComboBox->setItem( mComposerScaleBar->composerMap() );
 
-  //style...
+  //style…
   QString style = mComposerScaleBar->style();
   mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
   toggleStyleSpecificControls( style );

@@ -599,7 +599,7 @@ void QgsComposerMapGridWidget::setGridItems()
 
   //CRS button
   QgsCoordinateReferenceSystem gridCrs = mComposerMapGrid->crs();
-  QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "change..." );
+  QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "change…" );
   mMapGridCRSButton->setText( crsButtonText );
 }
 

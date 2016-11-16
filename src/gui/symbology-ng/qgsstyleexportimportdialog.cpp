@@ -489,7 +489,7 @@ void QgsStyleExportImportDialog::browse()
   else if ( type == QLatin1String( "official" ) )
   {
     // TODO set URL
-    // downloadStyleXML( QUrl( "http://...." ) );
+    // downloadStyleXML( QUrl( "http://.…" ) );
   }
   else
   {
@@ -514,7 +514,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl& url )
       delete dummy;
     }
     mProgressDlg = new QProgressDialog();
-    mProgressDlg->setLabelText( tr( "Downloading style ... " ) );
+    mProgressDlg->setLabelText( tr( "Downloading style … " ) );
     mProgressDlg->setAutoClose( true );
 
     connect( mProgressDlg, SIGNAL( canceled() ), this, SLOT( downloadCanceled() ) );

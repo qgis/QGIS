@@ -90,7 +90,7 @@ QList<QAction*> QgsWfsConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit…" ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
@@ -155,7 +155,7 @@ QList<QAction*> QgsWfsRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 

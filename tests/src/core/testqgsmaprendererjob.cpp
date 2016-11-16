@@ -21,7 +21,7 @@
 #include <QApplication>
 #include <QDesktopServices>
 
-//qgis includes...
+//qgis includes…
 #include <qgsvectorlayer.h> //defines QgsFieldMap
 #include <qgsvectorfilewriter.h> //logic for writing shpfiles
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
@@ -100,7 +100,7 @@ void TestQgsMapRendererJob::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  //create some objects that will be used in all tests...
+  //create some objects that will be used in all tests…
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Value" ), QVariant::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   mFields.append( myField1 );
@@ -116,7 +116,7 @@ void TestQgsMapRendererJob::initTestCase()
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
   QFile::remove( myTmpDir + "maprender_testdata.qml" );
   QVERIFY( QFile::copy( myQmlFileName, myTmpDir + "maprender_testdata.qml" ) );
-  qDebug( "Checking test dataset exists...\n%s", myFileName.toLocal8Bit().constData() );
+  qDebug( "Checking test dataset exists…\n%s", myFileName.toLocal8Bit().constData() );
   if ( !QFile::exists( myFileName ) )
   {
     qDebug( "Creating test dataset: " );
@@ -176,7 +176,7 @@ void TestQgsMapRendererJob::initTestCase()
     }
   } //file exists
   //
-  //create a poly layer that will be used in all tests...
+  //create a poly layer that will be used in all tests…
   //
   QFileInfo myPolyFileInfo( myFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),

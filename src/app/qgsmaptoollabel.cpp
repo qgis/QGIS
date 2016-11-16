@@ -147,7 +147,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     if ( trunc > 0 && labelText.length() > trunc )
     {
       labelText.truncate( trunc );
-      labelText += QLatin1String( "..." );
+      labelText += QLatin1String( "…" );
     }
     return labelText;
   }
@@ -170,7 +170,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
         if ( trunc > 0 && labelText.length() > trunc )
         {
           labelText.truncate( trunc );
-          labelText += QLatin1String( "..." );
+          labelText += QLatin1String( "…" );
         }
         return labelText;
       }

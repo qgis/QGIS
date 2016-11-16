@@ -204,7 +204,7 @@ QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
     break;
 
     default:
-      QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
+      QgsDebugMsg( "Unknown attribute editor widget type encountered…" );
       break;
   }
   return newWidget;

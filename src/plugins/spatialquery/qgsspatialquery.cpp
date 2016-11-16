@@ -301,7 +301,7 @@ void QgsSpatialQuery::populateIndexResult(
   }
 
   delete geomEngine;
-} // void QgsSpatialQuery::populateIndexResult(...
+} // void QgsSpatialQuery::populateIndexResult(…
 
 void QgsSpatialQuery::populateIndexResultDisjoint(
   QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
@@ -337,5 +337,5 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
     qsetIndexResult.insert( idTarget );
   }
   delete geomEngine;
-} // void QgsSpatialQuery::populateIndexResultDisjoint( ...
+} // void QgsSpatialQuery::populateIndexResultDisjoint( …
 

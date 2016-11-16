@@ -26,7 +26,7 @@
 #include <gdal.h>
 #include "cpl_conv.h"
 
-//qgis includes...
+//qgis includes…
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>

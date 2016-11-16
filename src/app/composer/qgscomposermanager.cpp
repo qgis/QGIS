@@ -475,7 +475,7 @@ void QgsComposerManager::duplicate_clicked()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
+  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer…" ) );
   dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
   dlg->show();
 

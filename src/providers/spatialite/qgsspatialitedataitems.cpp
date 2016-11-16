@@ -166,7 +166,7 @@ QList<QAction*> QgsSLConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  //QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  //QAction* actionEdit = new QAction( tr( "Edit…" ), this );
   //connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   //lst.append( actionEdit );
 
@@ -205,7 +205,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features…" ), tr( "Abort" ), 0, 0, nullptr );
   progress->setWindowTitle( tr( "Import layer" ) );
   progress->setWindowModality( Qt::WindowModal );
   progress->show();
@@ -308,11 +308,11 @@ QList<QAction*> QgsSLRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
-  QAction* actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
+  QAction* actionCreateDatabase = new QAction( tr( "Create Database…" ), this );
   connect( actionCreateDatabase, SIGNAL( triggered() ), this, SLOT( createDatabase() ) );
   lst.append( actionCreateDatabase );
 

@@ -402,7 +402,7 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
 #endif
 
   editOutput = new QLineEdit( this );
-  btnBrowse = new QPushButton( tr( "Browse..." ), this );
+  btnBrowse = new QPushButton( tr( "Browse…" ), this );
   connect( btnBrowse, SIGNAL( clicked( bool ) ), this, SLOT( browseOutputFilename() ) );
 
   QHBoxLayout* layoutOutput = new QHBoxLayout();

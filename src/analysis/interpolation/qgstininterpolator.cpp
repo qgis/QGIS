@@ -98,7 +98,7 @@ void QgsTINInterpolator::initialize()
   QProgressDialog* theProgressDialog = nullptr;
   if ( mShowProgressDialog )
   {
-    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
+    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation…" ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
     theProgressDialog->setWindowModality( Qt::WindowModal );
   }
 
@@ -141,10 +141,10 @@ void QgsTINInterpolator::initialize()
     if ( dec )
     {
       QProgressDialog* progressDialog = nullptr;
-      if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
+      if ( mShowProgressDialog ) //show a progress dialog because it can take a long time…
       {
         progressDialog = new QProgressDialog();
-        progressDialog->setLabelText( QObject::tr( "Estimating normal derivatives..." ) );
+        progressDialog->setLabelText( QObject::tr( "Estimating normal derivatives…" ) );
       }
       dec->estimateFirstDerivatives( progressDialog );
       delete progressDialog;
@@ -433,7 +433,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       break;
     }
     default:
-      //should not happen...
+      //should not happen…
       break;
   }
 

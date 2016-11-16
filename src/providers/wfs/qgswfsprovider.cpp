@@ -661,7 +661,7 @@ bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
 {
   QgsDebugMsg( QString( "theSql = '%1'" ).arg( theSQL ) );
 
-  // Invalid and cancel current download before altering fields, etc...
+  // Invalid and cancel current download before altering fields, etc…
   // (crashes might happen if not done at the beginning)
   mShared->invalidateCache();
 

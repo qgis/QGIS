@@ -306,7 +306,7 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
   QSettings s;
   QString lastOutputDir = s.value( QStringLiteral( "/Interpolation/lastOutputDir" ), QDir::homePath() ).toString();
 
-  QString rasterFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save interpolated raster as..." ), lastOutputDir );
+  QString rasterFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save interpolated raster as…" ), lastOutputDir );
   if ( !rasterFileName.isEmpty() )
   {
     mOutputFileLineEdit->setText( rasterFileName );

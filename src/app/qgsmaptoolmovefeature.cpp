@@ -123,7 +123,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
 
       mMovedFeatures.clear();
-      mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
+      mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one…
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       mRubberBand->setToGeometry( cf.geometry(), vlayer );

@@ -812,7 +812,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   coverage->nativeCrs = domElementText( coverageOfferingElement, QStringLiteral( "supportedCRSs.nativeCRSs" ) );
 
-  // may be GTiff, GeoTIFF, TIFF, GIF, ....
+  // may be GTiff, GeoTIFF, TIFF, GIF, ….
   coverage->supportedFormat = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedFormats.formats" ) );
   QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
@@ -1085,7 +1085,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const & e, QgsWcsCove
 
       if ( tagName == QLatin1String( "SupportedFormat" ) )
       {
-        // image/tiff, ...
+        // image/tiff, …
         // Formats may be here (UMN Mapserver) or may not (GeoServer)
         coverageSummary.supportedFormat << el.text();
       }

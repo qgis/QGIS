@@ -109,7 +109,7 @@ void TestQgsVectorFileWriter::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
-  //create some objects that will be used in all tests...
+  //create some objects that will be used in all tests…
 
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Field1" ), QVariant::String, QStringLiteral( "String" ), 10, 0, QStringLiteral( "Field 1 comment" ) );
@@ -334,7 +334,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
   //
   // We are testing projected coordinate
-  // system vector writing to lets use something fun...
+  // system vector writing to lets use something fun…
   // Jamaica National Grid
   // QGIS CRSID: 1286
   // PostGIS SRID: 24200
@@ -406,7 +406,7 @@ void TestQgsVectorFileWriter::regression1141()
   }
 #endif
 
-  //create some objects that will be used in all tests...
+  //create some objects that will be used in all tests…
   QString encoding = QStringLiteral( "UTF-8" );
   QgsField myField( QStringLiteral( "ąęćń" ), QVariant::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   QgsFields fields;

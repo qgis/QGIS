@@ -155,7 +155,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
         # GDAL Python3 bindings return fields as str and not bytes
         # so no recoding is needed. But this assumes that the underlying
-        # OGR driver always return a Unicode string. hum...
+        # OGR driver always return a Unicode string. hum…
         #ncodec = QTextCodec.codecForName(self.lastEncoding)
         for name in names:
             self.attributeComboBox.addItem(name)

@@ -112,7 +112,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
         def.setGeometryField( reGeom.cap( 1 ) );
         if ( reGeom.captureCount() > 1 )
         {
-          // not used by the spatialite provider for now ...
+          // not used by the spatialite provider for now …
           QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( reGeom.cap( 2 ) );
           if ( wkbType == QgsWkbTypes::Unknown )
           {

@@ -993,7 +993,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     // In the case we requested an extent that includes the extent reported by GetCapabilities response,
     // that we have no filter and we got no features, then it is not unlikely that the capabilities
     // might be wrong. In which case, query one feature so that we got a beginning of extent from
-    // which the user will be able to zoom out. This is far from being ideal...
+    // which the user will be able to zoom out. This is far from being ideal…
     if ( featureCount == 0 && mRect.contains( mCapabilityExtent ) && mWFSFilter.isEmpty() &&
          mCaps.supportsHits && !mGeometryAttribute.isEmpty() && !mTryFetchingOneFeature )
     {

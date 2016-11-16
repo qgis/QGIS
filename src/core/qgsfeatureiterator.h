@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     /**
      * By default, the iterator will fetch all features and check if the feature
      * matches the expression.
-     * If you have a more sophisticated metodology (SQL request for the features...)
+     * If you have a more sophisticated metodology (SQL request for the features…)
      * and you check for the expression in your fetchFeature method, you can just
      * redirect this call to fetchFeature so the default check will be omitted.
      *
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     /**
      * By default, the iterator will fetch all features and check if the id
      * is in the request.
-     * If you have a more sophisticated metodology (SQL request for the features...)
+     * If you have a more sophisticated metodology (SQL request for the features…)
      * and you are sure, that any feature you return from fetchFeature will match
      * if the request was FilterFids you can just redirect this call to fetchFeature
      * so the default check will be omitted.

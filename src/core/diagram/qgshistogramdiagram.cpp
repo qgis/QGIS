@@ -125,7 +125,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
-    default: // just in case...
+    default: // just in case…
       mScaleFactor = maxValue / s.size.width();
       size.scale( s.size.width(), s.barWidth * s.categoryColors.size(), Qt::IgnoreAspectRatio );
       break;

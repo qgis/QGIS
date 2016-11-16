@@ -22,7 +22,7 @@
      <item>
       <widget class="QToolButton" name="mBrowseToolButton">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

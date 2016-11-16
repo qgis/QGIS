@@ -1039,7 +1039,7 @@ void QgsGrassMapcalc::save()
     QMessageBox::warning( this, tr( "Save mapcalc" ), tr( "File name empty" ) );
     return;
   }
-  // TODO!!!: 'escape' < > & ...
+  // TODO!!!: 'escape' < > & …
 
   // Erase objects of Add* tools
   int tool = mTool;

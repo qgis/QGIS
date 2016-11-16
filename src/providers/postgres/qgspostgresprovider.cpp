@@ -541,7 +541,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds& featureIds, const Qg
     {
       QString expr;
 
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      //simple primary key, so prefer to use an "IN (…)" query. These are much faster then multiple chained …OR… clauses
       if ( !featureIds.isEmpty() )
       {
         QString delim;
@@ -2596,7 +2596,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
       throw PGException( result );
     }
 
-    QgsDebugMsg( "iterating over the map of changed geometries..." );
+    QgsDebugMsg( "iterating over the map of changed geometries…" );
 
     for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin();
           iter != geometry_map.constEnd();
@@ -2888,7 +2888,7 @@ bool QgsPostgresProvider::setSubsetString( const QString& theSQL, bool updateFea
   // Update datasource uri too
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
-  // uri? Perhaps this needs some rationalisation.....
+  // uri? Perhaps this needs some rationalisation…..
   setDataSourceUri( mUri.uri( false ) );
 
   if ( updateFeatureCount )

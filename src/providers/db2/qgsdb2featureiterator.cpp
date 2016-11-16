@@ -330,7 +330,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
 
         /**
          * CHAR and VARCHAR fields seem to get corrupted sometimes when directly
-         * calling feature.setAttribute(..., v) with mQuery->value(i). Workaround
+         * calling feature.setAttribute(…, v) with mQuery->value(i). Workaround
          * that seems to fix the problem is to call v = QVariant(v.toString()).
          */
         if ( v.type() == QVariant::String )

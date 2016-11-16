@@ -90,8 +90,8 @@ class CORE_EXPORT QgsLegendRenderer
 
     /** Atom is indivisible set (indivisible into more columns). It may consists
      *  of one or more Nucleon, depending on layer splitting mode:
-     *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
-     *  2) layer split:    [group_title ...] layer_title layer_item
+     *  1) no layer split: [group_title …] layer_title layer_item [layer_item …]
+     *  2) layer split:    [group_title …] layer_title layer_item
      *              or:    layer_item
      *  It means that group titles must not be split from layer title and layer title
      *  must not be split from first item, because it would look bad and it would not

@@ -1234,7 +1234,7 @@ void QgsZipItem::init()
     {
       QString k( *i );
       QgsDebugMsgLevel( "provider " + k, 3 );
-      // some providers hangs with empty uri (Postgis) etc...
+      // some providers hangs with empty uri (Postgis) etc…
       // -> using libraries directly
       QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( k );
       if ( library )

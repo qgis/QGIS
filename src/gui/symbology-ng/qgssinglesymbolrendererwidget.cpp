@@ -62,7 +62,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer* la
   // advanced actions - data defined rendering
   QMenu* advMenu = mSelector->advancedMenu();
 
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
 }
 
 QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()

@@ -61,7 +61,7 @@ void TestQgsRubberband::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  // Setup a map canvas with a vector layer loaded...
+  // Setup a map canvas with a vector layer loaded…
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 

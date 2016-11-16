@@ -201,7 +201,7 @@ QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType typ
 //    QTreeWidget, the row does not reflect that change automaticaly and
 //    consecutive resize of QTreeWidget will cause to shrink QgsIdentifyResultsWebView to the
 //    original row height.  That is expected, Qt: "setItemWidget() should only
-//    be used to display static content...  => we must not change QgsIdentifyResultsWebView
+//    be used to display static content…  => we must not change QgsIdentifyResultsWebView
 //    size after it was inserted to QTreeWidget
 
 // TODO(?): Sometimes it may happen that if multiple QgsIdentifyResultsWebView are inserted to
@@ -268,7 +268,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 {
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
   mWebView->hide();
-  setText( 0, tr( "Loading..." ) );
+  setText( 0, tr( "Loading…" ) );
   connect( mWebView->page(), SIGNAL( loadFinished( bool ) ), this, SLOT( loadFinished( bool ) ) );
 }
 
@@ -1084,7 +1084,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
     mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Layer properties…" ), this, SLOT( layerProperties() ) );
   }
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );

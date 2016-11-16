@@ -66,7 +66,7 @@
    <item row="0" column="2">
     <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -96,7 +96,7 @@
    <item row="1" column="2">
     <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -175,7 +175,7 @@
    <item row="3" column="2">
     <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -208,7 +208,7 @@
    <item row="4" column="2">
     <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -234,7 +234,7 @@
    <item row="5" column="2">
     <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -284,7 +284,7 @@
    <item row="6" column="2">
     <widget class="QgsDataDefinedButton" name="mNameDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

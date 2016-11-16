@@ -117,7 +117,7 @@ void QgsWfsServer::executeRequest()
   if ( request.isEmpty() )
   {
     //do some error handling
-    QgsMessageLog::logMessage( QStringLiteral( "unable to find 'REQUEST' parameter, exiting..." ) );
+    QgsMessageLog::logMessage( QStringLiteral( "unable to find 'REQUEST' parameter, exiting…" ) );
     mRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Please check the value of the REQUEST parameter" ) ) );
     return;
   }

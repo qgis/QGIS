@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QCheckBox>
 
-//qgis includes...
+//qgis includes…
 #include <qgis.h>
 
 /** \ingroup UnitTests

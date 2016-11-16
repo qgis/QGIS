@@ -171,7 +171,7 @@
      <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Print...</string>
+    <string>&amp;Print…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -309,7 +309,7 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Export as &amp;Image...</string>
+    <string>Export as &amp;Image…</string>
    </property>
    <property name="toolTip">
     <string>Export as image</string>
@@ -321,7 +321,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Export as PDF...</string>
+    <string>&amp;Export as PDF…</string>
    </property>
   </action>
   <action name="mActionExportAsSVG">
@@ -330,7 +330,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export as S&amp;VG...</string>
+    <string>Export as S&amp;VG…</string>
    </property>
   </action>
   <action name="mActionAddNewScalebar">
@@ -518,7 +518,7 @@
   </action>
   <action name="mActionLoadFromTemplate">
    <property name="text">
-    <string>&amp;Add Items from Template...</string>
+    <string>&amp;Add Items from Template…</string>
    </property>
    <property name="toolTip">
     <string>Add items from template</string>
@@ -526,7 +526,7 @@
   </action>
   <action name="mActionSaveAsTemplate">
    <property name="text">
-    <string>Save as &amp;Template...</string>
+    <string>Save as &amp;Template…</string>
    </property>
    <property name="toolTip">
     <string>Save as template</string>
@@ -626,7 +626,7 @@
   </action>
   <action name="mActionPageSetup">
    <property name="text">
-    <string>Pa&amp;ge Setup...</string>
+    <string>Pa&amp;ge Setup…</string>
    </property>
    <property name="toolTip">
     <string>Page setup</string>
@@ -712,7 +712,7 @@
   </action>
   <action name="mActionComposerManager">
    <property name="text">
-    <string>Composer &amp;Manager...</string>
+    <string>Composer &amp;Manager…</string>
    </property>
    <property name="toolTip">
     <string>Composer manager</string>
@@ -720,7 +720,7 @@
   </action>
   <action name="mActionNewComposer">
    <property name="text">
-    <string>&amp;New Composer...</string>
+    <string>&amp;New Composer…</string>
    </property>
    <property name="toolTip">
     <string>New composer</string>
@@ -742,7 +742,7 @@
   </action>
   <action name="mActionDuplicateComposer">
    <property name="text">
-    <string>&amp;Duplicate Composer...</string>
+    <string>&amp;Duplicate Composer…</string>
    </property>
    <property name="toolTip">
     <string>Duplicate composer</string>
@@ -883,7 +883,7 @@
      <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
-    <string>Composer &amp;Options...</string>
+    <string>Composer &amp;Options…</string>
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
@@ -966,7 +966,7 @@
      <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Print Atlas...</string>
+    <string>&amp;Print Atlas…</string>
    </property>
   </action>
   <action name="mActionExportAtlasAsImage">
@@ -975,7 +975,7 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Atlas as &amp;Images...</string>
+    <string>Export Atlas as &amp;Images…</string>
    </property>
   </action>
   <action name="mActionExportAtlasAsSVG">
@@ -984,7 +984,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Atlas as S&amp;VG...</string>
+    <string>Export Atlas as S&amp;VG…</string>
    </property>
   </action>
   <action name="mActionExportAtlasAsPDF">
@@ -993,7 +993,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Export Atlas as PDF...</string>
+    <string>&amp;Export Atlas as PDF…</string>
    </property>
    <property name="toolTip">
     <string>Export Atlas as PDF</string>

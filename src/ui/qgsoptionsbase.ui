@@ -3405,7 +3405,7 @@
                        <string>Add predefined scale</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3419,7 +3419,7 @@
                        <string>Remove selected</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3433,7 +3433,7 @@
                        <string>Reset to default scales</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3460,7 +3460,7 @@
                        <string>Import from file</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3474,7 +3474,7 @@
                        <string>Export to file</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">

@@ -374,7 +374,7 @@ QString QgsSQLStatement::NodeBinaryOperator::dump() const
 
   QString rdump( mOpRight->dump() );
 
-  // avoid dumping "IS (NOT ...)" as "IS NOT ..."
+  // avoid dumping "IS (NOT …)" as "IS NOT …"
   if ( mOp == boIs && ruOp && ruOp->op() == uoNot )
   {
     rdump.prepend( '(' ).append( ')' );

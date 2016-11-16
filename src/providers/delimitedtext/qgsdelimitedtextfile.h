@@ -331,7 +331,7 @@ class QgsDelimitedTextFile : public QObject
     void close();
 
     /** Reset the status if the definition is changing (eg clear
-     *  existing field names, etc...
+     *  existing field names, etc…
      */
     void resetDefinition();
 

@@ -112,7 +112,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  *    See authid() and createFromOgcWmsCrs() methods.
  *
  * 2. **PROJ.4 string.** This is a string consisting of a series of key/value pairs in the following
- *    format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
+ *    format: `+param1=value1 +param2=value2 […]`. This is the format natively used by the
  *    underlying proj4 library. For example, the definition of WGS84 looks like this:
  *
  *        +proj=longlat +datum=WGS84 +no_defs

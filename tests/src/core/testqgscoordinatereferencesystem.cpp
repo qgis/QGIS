@@ -638,7 +638,7 @@ void TestQgsCoordinateReferenceSystem::toWkt()
   QString myWkt = myCrs.toWkt();
   debugPrint( myCrs );
 #if GDAL_VERSION_NUM >= 1800
-  //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause...
+  //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause…
   QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
                          "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
                          "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"

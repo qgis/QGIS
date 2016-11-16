@@ -69,7 +69,7 @@
           <item>
            <widget class="QPushButton" name="mLineStyleButton">
             <property name="text">
-             <string>Line style...</string>
+             <string>Line style…</string>
             </property>
            </widget>
           </item>

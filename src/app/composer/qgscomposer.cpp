@@ -914,7 +914,7 @@ void QgsComposer::setTitle( const QString& title )
 bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearExisting )
 {
   // provide feedback, since composer will be hidden when loading template (much faster)
-  QScopedPointer< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ), this ) );
+  QScopedPointer< QDialog > dlg( new QgsBusyIndicatorDialog( tr( "Loading template into composer…" ), this ) );
   dlg->setStyleSheet( mQgis->styleSheet() );
   dlg->show();
 
@@ -1764,7 +1764,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       }
     }
 
-    QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    QProgressDialog progress( tr( "Rendering maps…" ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
     progress.setWindowTitle( tr( "Exporting atlas" ) );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
@@ -1931,7 +1931,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
       QApplication::restoreOverrideCursor();
       return;
     }
-    QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    QProgressDialog progress( tr( "Rendering maps…" ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
     progress.setWindowTitle( tr( "Exporting atlas" ) );
 
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
@@ -2288,7 +2288,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
 
-    QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    QProgressDialog progress( tr( "Rendering maps…" ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
     progress.setWindowTitle( tr( "Exporting atlas" ) );
 
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
@@ -2635,7 +2635,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
       return;
     }
   }
-  QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+  QProgressDialog progress( tr( "Rendering maps…" ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
   progress.setWindowTitle( tr( "Exporting atlas" ) );
 
   do
@@ -3048,7 +3048,7 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
+  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer…" ) );
   dlg->setStyleSheet( mQgis->styleSheet() );
   dlg->show();
 

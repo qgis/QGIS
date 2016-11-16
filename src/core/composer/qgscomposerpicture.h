@@ -26,7 +26,7 @@ class QgsComposerMap;
 class QgsExpression;
 
 /** \ingroup core
- * A composer class that displays svg files or raster format (jpg, png, ...)
+ * A composer class that displays svg files or raster format (jpg, png, …)
  * */
 class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 {

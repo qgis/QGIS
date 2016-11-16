@@ -2427,7 +2427,7 @@ void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement 
    *   </xsd:element>
    *
    * Anyway we will use a ogc:Function to handle geometry transformations
-   * like offset, centroid, ...
+   * like offset, centroid, …
    */
 
   createExpressionElement( doc, geometryElem, geomFunc );
@@ -3676,11 +3676,11 @@ QString QgsSymbolLayerUtils::symbolNameToPath( QString name )
 {
   // copied from QgsSymbol::setNamedPointSymbol - TODO: unify
 
-  // we might have a full path...
+  // we might have a full path…
   if ( QFile( name ).exists() )
     return QFileInfo( name ).canonicalFilePath();
 
-  // or it might be an url...
+  // or it might be an url…
   if ( name.contains( QLatin1String( "://" ) ) )
   {
     QUrl url( name );

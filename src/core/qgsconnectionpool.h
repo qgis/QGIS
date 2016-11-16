@@ -34,11 +34,11 @@
  * Template that stores data related to one server.
  *
  * It is assumed that following functions exist:
- * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
- * - void qgsConnectionPool_ConnectionDestroy(T c)                ... destroy the connection
- * - QString qgsConnectionPool_ConnectionToName(T c)              ... lookup connection's name (path)
- * - void qgsConnectionPool_InvalidateConnection(T c)             ... flag a connection as invalid
- * - bool qgsConnectionPool_ConnectionIsValid(T c)                ... return whether a connection is valid
+ * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  … create a new connection
+ * - void qgsConnectionPool_ConnectionDestroy(T c)                … destroy the connection
+ * - QString qgsConnectionPool_ConnectionToName(T c)              … lookup connection's name (path)
+ * - void qgsConnectionPool_InvalidateConnection(T c)             … flag a connection as invalid
+ * - bool qgsConnectionPool_ConnectionIsValid(T c)                … return whether a connection is valid
  *
  * Because of issues with templates and QObject's signals and slots, this class only provides helper functions for QObject-related
  * functionality - the place which uses the template is resonsible for:

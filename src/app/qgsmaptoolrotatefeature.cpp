@@ -272,7 +272,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
       mStPoint = toCanvasCoordinates( mStartPointMapCoords );
 
       mRotatedFeatures.clear();
-      mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
+      mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one…
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       mRubberBand->setToGeometry( cf.geometry(), vlayer );

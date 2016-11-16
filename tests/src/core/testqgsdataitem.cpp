@@ -18,7 +18,7 @@
 #include <QStringList>
 #include <QSettings>
 
-//qgis includes...
+//qgis includes…
 #include <qgsdataitem.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -73,7 +73,7 @@ void TestQgsDataItem::initTestCase()
   QSettings settings;
   mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
 
-  //create a directory item that will be used in all tests...
+  //create a directory item that will be used in all tests…
   mDirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
 }
 

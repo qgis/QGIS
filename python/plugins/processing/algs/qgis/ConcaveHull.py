@@ -67,12 +67,12 @@ class ConcaveHull(GeoAlgorithm):
         no_multigeom = self.getParameterValue(self.NO_MULTIGEOMETRY)
 
         # Delaunay triangulation from input point layer
-        progress.setText(self.tr('Creating Delaunay triangles...'))
+        progress.setText(self.tr('Creating Delaunay triangles…'))
         delone_triangles = processing.runalg("qgis:delaunaytriangulation", layer, None)['OUTPUT']
         delaunay_layer = processing.getObject(delone_triangles)
 
         # Get max edge length from Delaunay triangles
-        progress.setText(self.tr('Computing edges max length...'))
+        progress.setText(self.tr('Computing edges max length…'))
         features = delaunay_layer.getFeatures()
         if len(features) == 0:
             raise GeoAlgorithmExecutionException(self.tr('No Delaunay triangles created.'))
@@ -89,7 +89,7 @@ class ConcaveHull(GeoAlgorithm):
         max_length = max(lengths)
 
         # Get features with longest edge longer than alpha*max_length
-        progress.setText(self.tr('Removing features...'))
+        progress.setText(self.tr('Removing features…'))
         counter = 50. / len(edges)
         i = 0
         ids = []
@@ -106,13 +106,13 @@ class ConcaveHull(GeoAlgorithm):
         delaunay_layer.commitChanges()
 
         # Dissolve all Delaunay triangles
-        progress.setText(self.tr('Dissolving Delaunay triangles...'))
+        progress.setText(self.tr('Dissolving Delaunay triangles…'))
         dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
                                       True, None, None)['OUTPUT']
         dissolved_layer = processing.getObject(dissolved)
 
         # Save result
-        progress.setText(self.tr('Saving data...'))
+        progress.setText(self.tr('Saving data…'))
         feat = QgsFeature()
         dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(0)).nextFeature(feat)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(

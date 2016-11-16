@@ -129,7 +129,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.setupUi(self)
 
         if hasattr(self.leFilter, 'setPlaceholderText'):
-            self.leFilter.setPlaceholderText(self.tr('Search...'))
+            self.leFilter.setPlaceholderText(self.tr('Search…'))
 
         self.manager = QgsNetworkAccessManager.instance()
 

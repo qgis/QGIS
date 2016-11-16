@@ -106,7 +106,7 @@ QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
 }
 
 //
-// Main class begins now...
+// Main class begins now…
 //
 
 QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent ) : QObject( parent )

@@ -280,7 +280,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   mLayoutBrowser->addWidget( mBrowserView );
 
   mWidgetFilter->hide();
-  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items..." ) );
+  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items…" ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
 
   QMenu* menu = new QMenu( this );
@@ -345,7 +345,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 instances ow browser
     mBrowserView->setModel( mProxyModel );
-    // provide a horizontal scroll bar instead of using ellipse (...) for longer items
+    // provide a horizontal scroll bar instead of using ellipse (…) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
@@ -397,7 +397,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
       // only favorites can be removed
       menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
     }
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
@@ -408,11 +408,11 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   {
     menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer() ) );
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favorites )
   {
-    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
+    menu->addAction( tr( "Add a Directory…" ), this, SLOT( addFavoriteDirectory() ) );
 
   }
 

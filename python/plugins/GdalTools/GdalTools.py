@@ -132,17 +132,17 @@ class GdalTools(object):
         self.projectionsMenu = QMenu(QCoreApplication.translate("GdalTools", "Projections"), self.iface.mainWindow())
         self.projectionsMenu.setObjectName("projectionsMenu")
 
-        self.warp = QAction(QIcon(":/icons/warp.png"), QCoreApplication.translate("GdalTools", "Warp (Reproject)..."), self.iface.mainWindow())
+        self.warp = QAction(QIcon(":/icons/warp.png"), QCoreApplication.translate("GdalTools", "Warp (Reproject)…"), self.iface.mainWindow())
         self.warp.setObjectName("warp")
         self.warp.setStatusTip(QCoreApplication.translate("GdalTools", "Warp an image into a new coordinate system"))
         self.warp.triggered.connect(self.doWarp)
 
-        self.projection = QAction(QIcon(":icons/projection-add.png"), QCoreApplication.translate("GdalTools", "Assign Projection..."), self.iface.mainWindow())
+        self.projection = QAction(QIcon(":icons/projection-add.png"), QCoreApplication.translate("GdalTools", "Assign Projection…"), self.iface.mainWindow())
         self.projection.setObjectName("projection")
         self.projection.setStatusTip(QCoreApplication.translate("GdalTools", "Add projection info to the raster"))
         self.projection.triggered.connect(self.doProjection)
 
-        self.extractProj = QAction(QIcon(":icons/projection-export.png"), QCoreApplication.translate("GdalTools", "Extract Projection..."), self.iface.mainWindow())
+        self.extractProj = QAction(QIcon(":icons/projection-export.png"), QCoreApplication.translate("GdalTools", "Extract Projection…"), self.iface.mainWindow())
         self.extractProj.setObjectName("extractProj")
         self.extractProj.setStatusTip(QCoreApplication.translate("GdalTools", "Extract projection information from raster(s)"))
         self.extractProj.triggered.connect(self.doExtractProj)
@@ -154,30 +154,30 @@ class GdalTools(object):
         self.conversionMenu.setObjectName("conversionMenu")
 
         if self.GdalVersionNum >= 1300:
-            self.rasterize = QAction(QIcon(":/icons/rasterize.png"), QCoreApplication.translate("GdalTools", "Rasterize (Vector to Raster)..."), self.iface.mainWindow())
+            self.rasterize = QAction(QIcon(":/icons/rasterize.png"), QCoreApplication.translate("GdalTools", "Rasterize (Vector to Raster)…"), self.iface.mainWindow())
             self.rasterize.setObjectName("rasterize")
             self.rasterize.setStatusTip(QCoreApplication.translate("GdalTools", "Burns vector geometries into a raster"))
             self.rasterize.triggered.connect(self.doRasterize)
             self.conversionMenu.addAction(self.rasterize)
 
         if self.GdalVersionNum >= 1600:
-            self.polygonize = QAction(QIcon(":/icons/polygonize.png"), QCoreApplication.translate("GdalTools", "Polygonize (Raster to Vector)..."), self.iface.mainWindow())
+            self.polygonize = QAction(QIcon(":/icons/polygonize.png"), QCoreApplication.translate("GdalTools", "Polygonize (Raster to Vector)…"), self.iface.mainWindow())
             self.polygonize.setObjectName("polygonize")
             self.polygonize.setStatusTip(QCoreApplication.translate("GdalTools", "Produces a polygon feature layer from a raster"))
             self.polygonize.triggered.connect(self.doPolygonize)
             self.conversionMenu.addAction(self.polygonize)
 
-        self.translate = QAction(QIcon(":/icons/translate.png"), QCoreApplication.translate("GdalTools", "Translate (Convert Format)..."), self.iface.mainWindow())
+        self.translate = QAction(QIcon(":/icons/translate.png"), QCoreApplication.translate("GdalTools", "Translate (Convert Format)…"), self.iface.mainWindow())
         self.translate.setObjectName("translate")
         self.translate.setStatusTip(QCoreApplication.translate("GdalTools", "Converts raster data between different formats"))
         self.translate.triggered.connect(self.doTranslate)
 
-        self.paletted = QAction(QIcon(":icons/24-to-8-bits.png"), QCoreApplication.translate("GdalTools", "RGB to PCT..."), self.iface.mainWindow())
+        self.paletted = QAction(QIcon(":icons/24-to-8-bits.png"), QCoreApplication.translate("GdalTools", "RGB to PCT…"), self.iface.mainWindow())
         self.paletted.setObjectName("paletted")
         self.paletted.setStatusTip(QCoreApplication.translate("GdalTools", "Convert a 24bit RGB image to 8bit paletted"))
         self.paletted.triggered.connect(self.doPaletted)
 
-        self.rgb = QAction(QIcon(":icons/8-to-24-bits.png"), QCoreApplication.translate("GdalTools", "PCT to RGB..."), self.iface.mainWindow())
+        self.rgb = QAction(QIcon(":icons/8-to-24-bits.png"), QCoreApplication.translate("GdalTools", "PCT to RGB…"), self.iface.mainWindow())
         self.rgb.setObjectName("rgb")
         self.rgb.setStatusTip(QCoreApplication.translate("GdalTools", "Convert an 8bit paletted image to 24bit RGB"))
         self.rgb.triggered.connect(self.doRGB)
@@ -189,13 +189,13 @@ class GdalTools(object):
         self.extractionMenu.setObjectName("extractionMenu")
 
         if self.GdalVersionNum >= 1600:
-            self.contour = QAction(QIcon(":/icons/contour.png"), QCoreApplication.translate("GdalTools", "Contour..."), self.iface.mainWindow())
+            self.contour = QAction(QIcon(":/icons/contour.png"), QCoreApplication.translate("GdalTools", "Contour…"), self.iface.mainWindow())
             self.contour.setObjectName("contour")
             self.contour.setStatusTip(QCoreApplication.translate("GdalTools", "Builds vector contour lines from a DEM"))
             self.contour.triggered.connect(self.doContour)
             self.extractionMenu.addAction(self.contour)
 
-        self.clipper = QAction(QIcon(":icons/raster-clip.png"), QCoreApplication.translate("GdalTools", "Clipper..."), self.iface.mainWindow())
+        self.clipper = QAction(QIcon(":icons/raster-clip.png"), QCoreApplication.translate("GdalTools", "Clipper…"), self.iface.mainWindow())
         self.clipper.setObjectName("clipper")
         #self.clipper.setStatusTip( QCoreApplication.translate( "GdalTools", "Converts raster data between different formats") )
         self.clipper.triggered.connect(self.doClipper)
@@ -207,42 +207,42 @@ class GdalTools(object):
         self.analysisMenu.setObjectName("analysisMenu")
 
         if self.GdalVersionNum >= 1600:
-            self.sieve = QAction(QIcon(":/icons/sieve.png"), QCoreApplication.translate("GdalTools", "Sieve..."), self.iface.mainWindow())
+            self.sieve = QAction(QIcon(":/icons/sieve.png"), QCoreApplication.translate("GdalTools", "Sieve…"), self.iface.mainWindow())
             self.sieve.setObjectName("sieve")
             self.sieve.setStatusTip(QCoreApplication.translate("GdalTools", "Removes small raster polygons"))
             self.sieve.triggered.connect(self.doSieve)
             self.analysisMenu.addAction(self.sieve)
 
         if self.GdalVersionNum >= 1500:
-            self.nearBlack = QAction(QIcon(":/icons/nearblack.png"), QCoreApplication.translate("GdalTools", "Near Black..."), self.iface.mainWindow())
+            self.nearBlack = QAction(QIcon(":/icons/nearblack.png"), QCoreApplication.translate("GdalTools", "Near Black…"), self.iface.mainWindow())
             self.nearBlack.setObjectName("nearBlack")
             self.nearBlack.setStatusTip(QCoreApplication.translate("GdalTools", "Convert nearly black/white borders to exact value"))
             self.nearBlack.triggered.connect(self.doNearBlack)
             self.analysisMenu.addAction(self.nearBlack)
 
         if self.GdalVersionNum >= 1700:
-            self.fillNodata = QAction(QIcon(":/icons/fillnodata.png"), QCoreApplication.translate("GdalTools", "Fill nodata..."), self.iface.mainWindow())
+            self.fillNodata = QAction(QIcon(":/icons/fillnodata.png"), QCoreApplication.translate("GdalTools", "Fill nodata…"), self.iface.mainWindow())
             self.fillNodata.setObjectName("fillNodata")
             self.fillNodata.setStatusTip(QCoreApplication.translate("GdalTools", "Fill raster regions by interpolation from edges"))
             self.fillNodata.triggered.connect(self.doFillNodata)
             self.analysisMenu.addAction(self.fillNodata)
 
         if self.GdalVersionNum >= 1600:
-            self.proximity = QAction(QIcon(":/icons/proximity.png"), QCoreApplication.translate("GdalTools", "Proximity (Raster Distance)..."), self.iface.mainWindow())
+            self.proximity = QAction(QIcon(":/icons/proximity.png"), QCoreApplication.translate("GdalTools", "Proximity (Raster Distance)…"), self.iface.mainWindow())
             self.proximity.setObjectName("proximity")
             self.proximity.setStatusTip(QCoreApplication.translate("GdalTools", "Produces a raster proximity map"))
             self.proximity.triggered.connect(self.doProximity)
             self.analysisMenu.addAction(self.proximity)
 
         if self.GdalVersionNum >= 1500:
-            self.grid = QAction(QIcon(":/icons/grid.png"), QCoreApplication.translate("GdalTools", "Grid (Interpolation)..."), self.iface.mainWindow())
+            self.grid = QAction(QIcon(":/icons/grid.png"), QCoreApplication.translate("GdalTools", "Grid (Interpolation)…"), self.iface.mainWindow())
             self.grid.setObjectName("grid")
             self.grid.setStatusTip(QCoreApplication.translate("GdalTools", "Create raster from the scattered data"))
             self.grid.triggered.connect(self.doGrid)
             self.analysisMenu.addAction(self.grid)
 
         if self.GdalVersionNum >= 1700:
-            self.dem = QAction(QIcon(":icons/dem.png"), QCoreApplication.translate("GdalTools", "DEM (Terrain Models)..."), self.iface.mainWindow())
+            self.dem = QAction(QIcon(":icons/dem.png"), QCoreApplication.translate("GdalTools", "DEM (Terrain Models)…"), self.iface.mainWindow())
             self.dem.setObjectName("dem")
             self.dem.setStatusTip(QCoreApplication.translate("GdalTools", "Tool to analyze and visualize DEMs"))
             self.dem.triggered.connect(self.doDEM)
@@ -255,28 +255,28 @@ class GdalTools(object):
         self.miscellaneousMenu.setObjectName("miscellaneousMenu")
 
         if self.GdalVersionNum >= 1600:
-            self.buildVRT = QAction(QIcon(":/icons/vrt.png"), QCoreApplication.translate("GdalTools", "Build Virtual Raster (Catalog)..."), self.iface.mainWindow())
+            self.buildVRT = QAction(QIcon(":/icons/vrt.png"), QCoreApplication.translate("GdalTools", "Build Virtual Raster (Catalog)…"), self.iface.mainWindow())
             self.buildVRT.setObjectName("buildVRT")
             self.buildVRT.setStatusTip(QCoreApplication.translate("GdalTools", "Builds a VRT from a list of datasets"))
             self.buildVRT.triggered.connect(self.doBuildVRT)
             self.miscellaneousMenu.addAction(self.buildVRT)
 
-        self.merge = QAction(QIcon(":/icons/merge.png"), QCoreApplication.translate("GdalTools", "Merge..."), self.iface.mainWindow())
+        self.merge = QAction(QIcon(":/icons/merge.png"), QCoreApplication.translate("GdalTools", "Merge…"), self.iface.mainWindow())
         self.merge.setObjectName("merge")
         self.merge.setStatusTip(QCoreApplication.translate("GdalTools", "Build a quick mosaic from a set of images"))
         self.merge.triggered.connect(self.doMerge)
 
-        self.info = QAction(QIcon(":/icons/raster-info.png"), QCoreApplication.translate("GdalTools", "Information..."), self.iface.mainWindow())
+        self.info = QAction(QIcon(":/icons/raster-info.png"), QCoreApplication.translate("GdalTools", "Information…"), self.iface.mainWindow())
         self.info.setObjectName("info")
         self.info.setStatusTip(QCoreApplication.translate("GdalTools", "Lists information about raster dataset"))
         self.info.triggered.connect(self.doInfo)
 
-        self.overview = QAction(QIcon(":icons/raster-overview.png"), QCoreApplication.translate("GdalTools", "Build Overviews (Pyramids)..."), self.iface.mainWindow())
+        self.overview = QAction(QIcon(":icons/raster-overview.png"), QCoreApplication.translate("GdalTools", "Build Overviews (Pyramids)…"), self.iface.mainWindow())
         self.overview.setObjectName("overview")
         self.overview.setStatusTip(QCoreApplication.translate("GdalTools", "Builds or rebuilds overview images"))
         self.overview.triggered.connect(self.doOverview)
 
-        self.tileindex = QAction(QIcon(":icons/tiles.png"), QCoreApplication.translate("GdalTools", "Tile Index..."), self.iface.mainWindow())
+        self.tileindex = QAction(QIcon(":icons/tiles.png"), QCoreApplication.translate("GdalTools", "Tile Index…"), self.iface.mainWindow())
         self.tileindex.setObjectName("tileindex")
         self.tileindex.setStatusTip(QCoreApplication.translate("GdalTools", "Build a shapefile as a raster tileindex"))
         self.tileindex.triggered.connect(self.doTileIndex)
@@ -292,7 +292,7 @@ class GdalTools(object):
 
         self._menuActions.append(self.menu.addMenu(self.miscellaneousMenu))
 
-        self.settings = QAction(QCoreApplication.translate("GdalTools", "GdalTools Settings..."), self.iface.mainWindow())
+        self.settings = QAction(QCoreApplication.translate("GdalTools", "GdalTools Settings…"), self.iface.mainWindow())
         self.settings.setObjectName("settings")
         self.settings.setStatusTip(QCoreApplication.translate("GdalTools", "Various settings for Gdal Tools"))
         self.settings.triggered.connect(self.doSettings)

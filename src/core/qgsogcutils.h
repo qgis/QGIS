@@ -56,8 +56,8 @@ class CORE_EXPORT QgsOgcUtils
 
     /** Static method that creates geometry from GML
      @param xmlString xml representation of the geometry. GML elements are expected to be
-       in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
-       "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+       in default namespace (\verbatim {<Point>…</Point> \endverbatim) or in
+       "gml" namespace (\verbatim <gml:Point>…</gml:Point> \endverbatim)
      */
     static QgsGeometry geometryFromGML( const QString& xmlString );
 

@@ -69,7 +69,7 @@ void TestQgsDualView::initTestCase()
   QgsApplication::showSettings();
   QgsEditorWidgetRegistry::initEditors();
 
-  // Setup a map canvas with a vector layer loaded...
+  // Setup a map canvas with a vector layer loaded…
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 

@@ -246,7 +246,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   QSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
-  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
+  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as…" ), lastUsedDir, filterString );
   if ( fileName.isNull() )
   {
     return QLatin1String( "" );
@@ -289,7 +289,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     }
     else
     {
-      QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
+      QgsDebugMsg( "Resolving newEmptyDataSource(…) failed" );
       return QString::null;
     }
   }

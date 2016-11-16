@@ -105,7 +105,7 @@ void FeaturePart::extractCoords( const GEOSGeometry* geom )
         FeaturePart* hole = new FeaturePart( mLF, interior );
         hole->holeOf = nullptr;
         // possibly not needed. it's not done for the exterior ring, so I'm not sure
-        // why it's just done here...
+        // why it's just done here…
         GeomFunction::reorderPolygon( hole->nbPoints, hole->x, hole->y );
 
         mHoles << hole;
@@ -1192,7 +1192,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     int orientation = 0;
     if ( !( flags & FLAG_MAP_ORIENTATION ) )
     {
-      //... but if we are using line orientation flags, then we can only accept a single orientation,
+      //… but if we are using line orientation flags, then we can only accept a single orientation,
       // as we need to ensure that the labels fall inside or outside the polyline or polygon (and not mixed)
       orientation = 1;
     }
@@ -1225,7 +1225,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
       {
         diff = fabs( tmp->getAlpha() - angle_last );
         if ( diff > 2*M_PI ) diff -= 2 * M_PI;
-        diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
+        diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg…
         angle_diff += diff;
       }
 

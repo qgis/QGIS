@@ -60,7 +60,7 @@
    <item row="1" column="2">
     <widget class="QgsDataDefinedButton" name="mVerticalDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -110,7 +110,7 @@
    <item row="0" column="2">
     <widget class="QgsDataDefinedButton" name="mHorizontalDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -160,7 +160,7 @@
    <item row="2" column="2">
     <widget class="QgsDataDefinedButton" name="mHorizontalDisplacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -203,7 +203,7 @@
    <item row="3" column="2">
     <widget class="QgsDataDefinedButton" name="mVerticalDisplacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

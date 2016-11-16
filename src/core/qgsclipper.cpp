@@ -95,7 +95,7 @@ QPolygonF QgsClipper::clippedLine( const QgsCurve& curve, const QgsRectangle& cl
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,
                                         const QgsRectangle& clipRect, QPolygonF& pts )
 {
-  //test the different edge combinations...
+  //test the different edge combinations…
   if ( qgsDoubleNear( x0, clipRect.xMinimum() ) )
   {
     if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )

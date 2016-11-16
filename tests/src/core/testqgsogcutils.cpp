@@ -17,7 +17,7 @@
 #include <QtTest/QtTest>
 #include <QSharedPointer>
 
-//qgis includes...
+//qgis includes…
 #include <qgsgeometry.h>
 #include <qgsogcutils.h>
 #include "qgsapplication.h"

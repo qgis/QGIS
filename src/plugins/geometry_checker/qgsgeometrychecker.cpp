@@ -215,7 +215,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
       continue;
     }
 
-    // If no match is found and the error is not fixed or obsolete, set it to obsolete if...
+    // If no match is found and the error is not fixed or obsolete, set it to obsolete if…
     if ( err->status() < QgsGeometryCheckError::StatusFixed &&
          (
            // it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked

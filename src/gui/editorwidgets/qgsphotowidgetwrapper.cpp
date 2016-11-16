@@ -165,7 +165,7 @@ QWidget* QgsPhotoWidgetWrapper::createWidget( QWidget* parent )
   QgsFilterLineEdit* le = new QgsFilterLineEdit();
   QgsPixmapLabel* label = new QgsPixmapLabel();
   label->setObjectName( QStringLiteral( "PhotoLabel" ) );
-  QPushButton* pb = new QPushButton( tr( "..." ) );
+  QPushButton* pb = new QPushButton( tr( "…" ) );
   pb->setObjectName( QStringLiteral( "FileChooserButton" ) );
 
   layout->addWidget( label, 0, 0, 1, 2 );

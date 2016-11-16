@@ -281,7 +281,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     //DefaultSRS is always the first entry in the feature srs list
     QDomNodeList defaultCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "DefaultSRS" ) );
     if ( defaultCRSList.length() == 0 )
-      // In WFS 2.0, this is spelled DefaultCRS...
+      // In WFS 2.0, this is spelled DefaultCRS…
       defaultCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "DefaultCRS" ) );
     if ( defaultCRSList.length() > 0 )
     {
@@ -295,7 +295,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     //OtherSRS
     QDomNodeList otherCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "OtherSRS" ) );
     if ( otherCRSList.length() == 0 )
-      // In WFS 2.0, this is spelled OtherCRS...
+      // In WFS 2.0, this is spelled OtherCRS…
       otherCRSList = featureTypeElem.elementsByTagName( QStringLiteral( "OtherCRS" ) );
     for ( int i = 0; i < otherCRSList.size(); ++i )
     {

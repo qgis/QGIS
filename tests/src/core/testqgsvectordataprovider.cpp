@@ -171,7 +171,7 @@ void TestQgsVectorDataProvider::select_checkContents()
 
 void TestQgsVectorDataProvider::select_checkSubset_data()
 {
-  // test that only a subset is returned ... need line features
+  // test that only a subset is returned … need line features
 
   QTest::addColumn<QgsFeatureRequest>( "request" );
   QTest::addColumn<int>( "count" );

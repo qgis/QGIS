@@ -386,7 +386,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
 
   if ( qgsDoubleNear( det, 0.0 ) )
   {
-    // Could potentially happen.... One solution.
+    // Could potentially happen…. One solution.
     double t = -B / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;

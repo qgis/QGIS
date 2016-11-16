@@ -32,7 +32,7 @@ QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle(): QgsScaleBarStyle( nullpt
 
 QgsSingleBoxScaleBarStyle::~QgsSingleBoxScaleBarStyle()
 {
-  //nothing to do...
+  //nothing to do…
 }
 
 void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const

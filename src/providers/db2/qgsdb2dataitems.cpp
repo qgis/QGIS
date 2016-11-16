@@ -254,7 +254,7 @@ QList<QAction*> QgsDb2ConnectionItem::actions()
   connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
   lst.append( actionRefresh );
 
-  QAction* actionEdit = new QAction( tr( "Edit connection..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit connection…" ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
@@ -321,7 +321,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
   // TODO: probably should show a GUI with settings etc
   qApp->setOverrideCursor( Qt::WaitCursor );
 
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features…" ), tr( "Abort" ), 0, 0, nullptr );
   progress->setWindowTitle( tr( "Import layer" ) );
   progress->setWindowModality( Qt::WindowModal );
   progress->show();
@@ -445,7 +445,7 @@ QList<QAction*> QgsDb2RootItem::actions()
 {
   QList<QAction*> actionList;
 
-  QAction* action = new QAction( tr( "New Connection..." ), this );
+  QAction* action = new QAction( tr( "New Connection…" ), this );
   connect( action, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   actionList.append( action );
   QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );

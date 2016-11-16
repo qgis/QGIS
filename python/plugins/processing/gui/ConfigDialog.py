@@ -81,7 +81,7 @@ class ConfigDialog(BASE, WIDGET):
             QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
+            self.searchBox.setPlaceholderText(self.tr('Search…'))
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
@@ -379,7 +379,7 @@ class FileDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText(self.tr('…'))
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
@@ -426,7 +426,7 @@ class MultipleDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText(self.tr('…'))
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)

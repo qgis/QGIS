@@ -138,7 +138,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
       myPreferredUnits = QgsUnitTypes::DistanceMeters;
     QgsUnitTypes::DistanceUnit myMapUnits = canvas->mapUnits();
 
-    // Adjust units meter/feet/... or vice versa
+    // Adjust units meter/feet/… or vice versa
     myMapUnitsPerPixelDouble *= QgsUnitTypes::fromUnitToUnitFactor( myMapUnits, myPreferredUnits );
     myMapUnits = myPreferredUnits;
 

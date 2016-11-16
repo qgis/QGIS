@@ -151,7 +151,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( int x, i
         layer = layerList.value( i );
 
       emit identifyProgress( i, mCanvas->layerCount() );
-      emit identifyMessage( tr( "Identifying on %1..." ).arg( layer->name() ) );
+      emit identifyMessage( tr( "Identifying on %1…" ).arg( layer->name() ) );
 
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;

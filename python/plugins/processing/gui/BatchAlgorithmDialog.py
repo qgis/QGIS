@@ -120,12 +120,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             pass
 
         for count, alg in enumerate(self.algs):
-            self.setText(self.tr('\nProcessing algorithm %d/%d...') % (count + 1, len(self.algs)))
-            self.setInfo(self.tr('<b>Algorithm %s starting...</b>' % alg.name))
+            self.setText(self.tr('\nProcessing algorithm %d/%d…') % (count + 1, len(self.algs)))
+            self.setInfo(self.tr('<b>Algorithm %s starting…</b>' % alg.name))
             if runalg(alg, self) and not self.canceled:
                 if self.load[count]:
                     handleAlgorithmResults(alg, self, False)
-                self.setInfo(self.tr('Algorithm %s correctly executed...') % alg.name)
+                self.setInfo(self.tr('Algorithm %s correctly executed…') % alg.name)
             else:
                 QApplication.restoreOverrideCursor()
                 return

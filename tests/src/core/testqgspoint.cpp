@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QDesktopServices>
 
-//qgis includes...
+//qgis includes…
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 //header for class being tested

@@ -1498,7 +1498,7 @@ QgsGrassModuleFile::QgsGrassModuleFile(
 
   QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit();
-  mBrowseButton = new QPushButton( QStringLiteral( "..." ) );
+  mBrowseButton = new QPushButton( QStringLiteral( "…" ) );
   l->addWidget( mLineEdit );
   l->addWidget( mBrowseButton );
 

@@ -75,7 +75,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     //! Process a colorization and update resultant HSL & RGB values
     void processColorization( int &r, int &g, int &b, int &h, int &s, int &l );
 
-    //! Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)
+    //! Current saturation value. Range: -100 (desaturated) … 0 (no change) … 100 (increased)
     int mSaturation;
     double mSaturationScale;
 

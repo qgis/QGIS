@@ -291,7 +291,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
       }
       else
       {
-        errCause = QStringLiteral( "Resolving createDb(...) failed" );
+        errCause = QStringLiteral( "Resolving createDb(…) failed" );
       }
     }
     delete myLib;

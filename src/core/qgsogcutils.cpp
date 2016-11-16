@@ -1963,7 +1963,7 @@ QgsExpression::Node* QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element
 
   QgsExpression::Node *root = nullptr;
 
-  // the literal content can have more children (e.g. CDATA section, text, ...)
+  // the literal content can have more children (e.g. CDATA section, text, …)
   QDomNode childNode = element.firstChild();
   while ( !childNode.isNull() )
   {
@@ -2477,7 +2477,7 @@ static bool isGeometryColumn( const QgsExpression::Node* node )
 
 static QgsGeometry geometryFromConstExpr( const QgsExpression::Node* node )
 {
-  // Right now we support only geomFromWKT(' ..... ')
+  // Right now we support only geomFromWKT(' ….. ')
   // Ideally we should support any constant sub-expression (not dependent on feature's geometry or attributes)
 
   if ( node->nodeType() == QgsExpression::ntFunction )
@@ -2528,7 +2528,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
     else
     {
-      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('...'))" );
+      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('…'))" );
       return QDomElement();
     }
   }
@@ -2616,7 +2616,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     return QDomElement();
   }
 
-  // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
+  // this is somehow wrong - we are just hoping that the other side supports the same functions as we do…
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( QStringLiteral( "name" ), fd->name() );
   Q_FOREACH ( QgsExpression::Node* n, node->args()->list() )

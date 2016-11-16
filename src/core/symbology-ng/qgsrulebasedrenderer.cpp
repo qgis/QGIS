@@ -129,7 +129,7 @@ QgsRuleBasedRenderer::Rule* QgsRuleBasedRenderer::Rule::takeChildAt( int i )
 
 QgsRuleBasedRenderer::Rule* QgsRuleBasedRenderer::Rule::findRuleByKey( const QString& key )
 {
-  // we could use a hash / map for search if this will be slow...
+  // we could use a hash / map for search if this will be slow…
 
   if ( key == mRuleKey )
     return this;
@@ -1093,7 +1093,7 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule* ini
 {
   QString attr = r->classAttribute();
   // categorizedAttr could be either an attribute name or an expression.
-  // the only way to differentiate is to test it as an expression...
+  // the only way to differentiate is to test it as an expression…
   QgsExpression testExpr( attr );
   if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
   {
@@ -1123,7 +1123,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule* initial
 {
   QString attr = r->classAttribute();
   // categorizedAttr could be either an attribute name or an expression.
-  // the only way to differentiate is to test it as an expression...
+  // the only way to differentiate is to test it as an expression…
   QgsExpression testExpr( attr );
   if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
   {
@@ -1220,7 +1220,7 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
     QString attr = categorizedRenderer->classAttribute();
     // categorizedAttr could be either an attribute name or an expression.
-    // the only way to differentiate is to test it as an expression...
+    // the only way to differentiate is to test it as an expression…
     QgsExpression testExpr( attr );
     if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
     {
@@ -1282,7 +1282,7 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
     QString attr = graduatedRenderer->classAttribute();
     // categorizedAttr could be either an attribute name or an expression.
-    // the only way to differentiate is to test it as an expression...
+    // the only way to differentiate is to test it as an expression…
     QgsExpression testExpr( attr );
     if ( testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) ) )
     {

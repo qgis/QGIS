@@ -80,10 +80,10 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
 
   if ( mFullCache )
   {
-    // Add a little more than necessary...
+    // Add a little more than necessary…
     setCacheSize( mLayer->featureCount() + 100 );
 
-    // Initialize the cache...
+    // Initialize the cache…
     QgsFeatureIterator it( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
                            .setSubsetOfAttributes( mCachedAttributes )
                            .setFlags( mCacheGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ) );
@@ -391,7 +391,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
     }
   }
 
-  // If the request needs geometry but we don't cache this...
+  // If the request needs geometry but we don't cache this…
   if ( !featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
        && !mCacheGeometry )
   {

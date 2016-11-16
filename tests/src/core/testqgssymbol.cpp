@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QFileInfo>
 
-//qgis includes...
+//qgis includes…
 #include "qgsmultirenderchecker.h"
 #include <qgsapplication.h>
 #include "qgsconfig.h"
@@ -104,7 +104,7 @@ void TestQgsSymbol::initTestCase()
   }
 
   //
-  //create a point layer that will be used in all tests...
+  //create a point layer that will be used in all tests…
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
@@ -117,7 +117,7 @@ void TestQgsSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
-  //create a poly layer that will be used in all tests...
+  //create a poly layer that will be used in all tests…
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
@@ -129,7 +129,7 @@ void TestQgsSymbol::initTestCase()
 
 
   //
-  // Create a line layer that will be used in all tests...
+  // Create a line layer that will be used in all tests…
   //
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );

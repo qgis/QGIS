@@ -45,10 +45,10 @@ static SpatialIndex::Region rect2region( const QgsRectangle& rect )
 }
 
 
-// Ahh.... another magic number. Taken from QgsVectorLayer::snapToGeometry() call to closestSegmentWithContext().
+// Ahh…. another magic number. Taken from QgsVectorLayer::snapToGeometry() call to closestSegmentWithContext().
 // The default epsilon used for sqrDistToSegment (1e-8) is too high when working with lat/lon coordinates
 // I still do not fully understand why the sqrDistToSegment() code uses epsilon and if the square distance
-// is lower than epsilon it will have a special logic...
+// is lower than epsilon it will have a special logic…
 static const double POINT_LOC_EPSILON = 1e-12;
 
 ////////////////////////////////////////////////////////////////////////////
@@ -322,7 +322,7 @@ struct _CohenSutherland
 static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, const QgsRectangle& rect, QgsVectorLayer *vl, QgsFeatureId fid )
 {
   // this code is stupidly based on QgsGeometry::closestSegmentWithContext
-  // we need iterator for segments...
+  // we need iterator for segments…
 
   QgsPointLocator::MatchList lst;
   QByteArray wkb( geom->exportToWkb() );

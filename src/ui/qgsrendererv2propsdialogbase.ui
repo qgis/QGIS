@@ -178,7 +178,7 @@
                   <normaloff>:/images/themes/default/sort.svg</normaloff>:/images/themes/default/sort.svg</iconset>
                 </property>
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                </widget>
               </item>

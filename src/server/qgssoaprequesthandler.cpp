@@ -222,7 +222,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
         QFile common( QStringLiteral( "common.xml" ) );
         if ( !common.open( QIODevice::ReadOnly ) )
         {
-          //throw an exception...
+          //throw an exception…
           QgsDebugMsg( "external orchestra common capabilities not found" );
         }
         else
@@ -296,7 +296,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
         QFile wmsService( QStringLiteral( "wms_metadata.xml" ) );
         if ( !wmsService.open( QIODevice::ReadOnly ) )
         {
-          //throw an exception...
+          //throw an exception…
           QgsDebugMsg( "external wms service capabilities not found" );
         }
         else
@@ -343,7 +343,7 @@ void QgsSOAPRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
         QFile common( QStringLiteral( "common.xml" ) );
         if ( !common.open( QIODevice::ReadOnly ) )
         {
-          //throw an exception...
+          //throw an exception…
           QgsDebugMsg( "external orchestra common capabilities not found" );
         }
         else
@@ -423,7 +423,7 @@ void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc, const Q
 void QgsSOAPRequestHandler::setGetPrintResponse( QByteArray* ba )
 {
   Q_UNUSED( ba );
-  //soon...
+  //soon…
 }
 
 void QgsSOAPRequestHandler::setServiceException( const QgsMapServiceException& ex )

@@ -139,7 +139,7 @@ class TableDataModel(BaseTableModel):
         pass
 
     def rowCount(self, index=None):
-        # case for tables with no columns ... any reason to use them? :-)
+        # case for tables with no columns … any reason to use them? :-)
         return self.table.rowCount if self.table.rowCount is not None and self.columnCount(index) > 0 else 0
 
 

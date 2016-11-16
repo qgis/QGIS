@@ -56,7 +56,7 @@ class QDomElement;
  * - "showFeatureCount" - whether to show feature counts in layer tree (vector only)
  * - "embedded" - whether the node comes from an external project
  * - "embedded_project" - path to the external project (embedded root node only)
- * - "legend/..." - properties for legend appearance customization
+ * - "legend/…" - properties for legend appearance customization
  * - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
  *
  * @see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup

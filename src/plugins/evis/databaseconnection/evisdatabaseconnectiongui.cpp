@@ -223,7 +223,7 @@ void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int cur
 */
 void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
 {
-  teditConsole->append( tr( "New Database connection requested..." ) );
+  teditConsole->append( tr( "New Database connection requested…" ) );
   bool errors = false;
 
   if ( cboxDatabaseType->currentText() == tr( "Undefined" ) )

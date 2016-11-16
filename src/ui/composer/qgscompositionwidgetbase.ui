@@ -166,7 +166,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mPaperHeightDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -199,7 +199,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mPaperWidthDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -223,7 +223,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mPaperSizeDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -257,7 +257,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mPaperOrientationDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -403,7 +403,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mNumPagesDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -419,7 +419,7 @@
           <item row="1" column="1">
            <widget class="QPushButton" name="mPageStyleButton">
             <property name="text">
-             <string>Change...</string>
+             <string>Change…</string>
             </property>
            </widget>
           </item>

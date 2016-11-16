@@ -230,7 +230,7 @@ QgsPoint QgsMapToPixel::transform( const QgsPoint &p ) const
 {
   qreal x = p.x(), y = p.y();
   transformInPlace( x, y );
-// QgsDebugMsg(QString("Point to pixel...X : %1-->%2, Y: %3 -->%4").arg(p.x()).arg(dx).arg(p.y()).arg(dy));
+// QgsDebugMsg(QString("Point to pixel…X : %1-->%2, Y: %3 -->%4").arg(p.x()).arg(dx).arg(p.y()).arg(dy));
   return QgsPoint( x, y );
 }
 
@@ -238,7 +238,7 @@ void QgsMapToPixel::transform( QgsPoint *p ) const
 {
   qreal x = p->x(), y = p->y();
   transformInPlace( x, y );
-// QgsDebugMsg(QString("Point to pixel...X : %1-->%2, Y: %3 -->%4").arg(p->x()).arg(x).arg(p->y()).arg(y));
+// QgsDebugMsg(QString("Point to pixel…X : %1-->%2, Y: %3 -->%4").arg(p->x()).arg(x).arg(p->y()).arg(y));
   p->set( x, y );
 }
 

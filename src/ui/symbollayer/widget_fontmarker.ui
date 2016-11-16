@@ -165,7 +165,7 @@
    <item row="2" column="2">
     <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -247,7 +247,7 @@
    <item row="5" column="2">
     <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -261,7 +261,7 @@
    <item row="4" column="2">
     <widget class="QgsDataDefinedButton" name="mJoinStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -310,7 +310,7 @@
    <item row="3" column="2">
     <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -384,7 +384,7 @@
    <item row="1" column="2">
     <widget class="QgsDataDefinedButton" name="mColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -418,35 +418,35 @@
    <item row="6" column="2">
     <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="7" column="2">
     <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="8" column="2">
     <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="9" column="2">
     <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="10" column="2">
     <widget class="QgsDataDefinedButton" name="mCharDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

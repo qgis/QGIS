@@ -115,7 +115,7 @@ void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
 
 void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 {
-  // The following conditions should not be hit! OK will not be enabled...
+  // The following conditions should not be hit! OK will not be enabled…
   if ( txtLayerName->text().isEmpty() )
   {
     QMessageBox::warning( this, tr( "No layer name" ), tr( "Please enter a layer name before adding the layer to the map" ) );
@@ -444,7 +444,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : QLatin1String( "" );
-      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "...";
+      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "…";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
@@ -698,9 +698,9 @@ bool QgsDelimitedTextSourceSelect::validate()
   }
   if ( ! message.isEmpty() )
   {
-    // continue...
+    // continue…
   }
-  // Hopefully won't hit this none-specific message, but just in case ...
+  // Hopefully won't hit this none-specific message, but just in case …
   else if ( ! mFile->isValid() )
   {
     message = tr( "Definition of filename and delimiters is not valid" );

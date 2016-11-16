@@ -584,7 +584,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Parsed response of server's capabilities - initially (or on error) may be invalid
     QgsWmsCapabilities mCaps;
 
-    //! User's settings (URI, authorization, layer, style, ...)
+    //! User's settings (URI, authorization, layer, style, …)
     QgsWmsSettings mSettings;
 };
 

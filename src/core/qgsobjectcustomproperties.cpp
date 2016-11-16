@@ -49,7 +49,7 @@ void QgsObjectCustomProperties::remove( const QString& key )
 void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QString& keyStartsWith )
 {
   QDomNode propsNode = parentNode.namedItem( QStringLiteral( "customproperties" ) );
-  if ( propsNode.isNull() ) // no properties stored...
+  if ( propsNode.isNull() ) // no properties stored…
     return;
 
   if ( !keyStartsWith.isEmpty() )

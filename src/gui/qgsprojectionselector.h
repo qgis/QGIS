@@ -34,7 +34,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     ~QgsProjectionSelector();
 
     /**
-     * \brief Populate the proj tree view with user defined projection names...
+     * \brief Populate the proj tree view with user defined projection names…
      *
      * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
      *                  list of projections by.  This is useful in (e.g.) WMS situations
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void loadUserCrsList( QSet<QString> *crsFilter = nullptr );
 
     /**
-     * \brief Populate the proj tree view with system projection names...
+     * \brief Populate the proj tree view with system projection names…
      *
      * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
      *                  list of projections by.  This is useful in (e.g.) WMS situations

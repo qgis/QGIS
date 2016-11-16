@@ -386,7 +386,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   }
   // GML does not specify that gml:FeatureAssociationType elements should end
   // with 'Member' apart standard gml:featureMember, but it is quite usual to
-  // that the names ends with 'Member', e.g.: osgb:topographicMember, cityMember,...
+  // that the names ends with 'Member', e.g.: osgb:topographicMember, cityMember,…
   // so this is really fail if the name does not contain 'Member'
 
   else if ( localName.endsWith( QLatin1String( "member" ), Qt::CaseInsensitive ) )
@@ -417,7 +417,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( parseMode == QgsGmlSchema::attribute && ns == GML_NAMESPACE && mGeometryTypes.indexOf( localName ) >= 0 )
   {
-    // Geometry (Point,MultiPoint,...) in geometry attribute
+    // Geometry (Point,MultiPoint,…) in geometry attribute
     QStringList &geometryAttributes = mFeatureClassMap[mCurrentFeatureName].geometryAttributes();
     if ( geometryAttributes.count( mAttributeName ) == 0 )
     {

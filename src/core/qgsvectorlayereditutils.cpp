@@ -507,7 +507,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
           break;
       }
 
-      // For test only: Exception already thrown here...
+      // For test only: Exception already thrown here…
       // feat.geometry()->asWkb();
 
       if ( !addPartRet )

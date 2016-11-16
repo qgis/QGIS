@@ -95,7 +95,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
                 if isText:
                     self.txtHelp.setHtml(algHelp)
                 else:
-                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    html = self.tr('<p>Downloading algorithm help… Please wait.</p>')
                     self.txtHelp.setHtml(html)
                     rq = QNetworkRequest(algHelp)
                     self.reply = QgsNetworkAccessManager.instance().get(rq)

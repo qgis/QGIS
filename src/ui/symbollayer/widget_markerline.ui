@@ -159,21 +159,21 @@
       <item row="0" column="0">
        <widget class="QgsDataDefinedButton" name="mPlacementDDBtn">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
        <widget class="QgsDataDefinedButton" name="mIntervalDDBtn">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
       <item row="6" column="2">
        <widget class="QgsDataDefinedButton" name="mOffsetAlongLineDDBtn">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -234,7 +234,7 @@
      <item>
       <widget class="QgsDataDefinedButton" name="mLineOffsetDDBtn">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

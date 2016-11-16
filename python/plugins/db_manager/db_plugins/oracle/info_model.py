@@ -475,7 +475,7 @@ class ORTableInfo(TableInfo):
 
     def getMViewInfo(self):
         """If the table is a materialized view, grab more
-        information...
+        information…
         """
         ret = []
         tbl = []

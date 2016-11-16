@@ -67,7 +67,7 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
   int length1 = string1.length();
   int length2 = string2.length();
 
-  //empty strings? solution is trivial...
+  //empty strings? solution is trivial…
   if ( string1.isEmpty() )
   {
     return length2;
@@ -102,7 +102,7 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
     length2--;
   }
 
-  //fully checked either string? if so, the answer is easy...
+  //fully checked either string? if so, the answer is easy…
   if ( length1 == 0 )
   {
     return length2;
@@ -148,7 +148,7 @@ QString QgsStringUtils::longestCommonSubstring( const QString& string1, const QS
 {
   if ( string1.isEmpty() || string2.isEmpty() )
   {
-    //empty strings, solution is trivial...
+    //empty strings, solution is trivial…
     return QString();
   }
 
@@ -211,7 +211,7 @@ int QgsStringUtils::hammingDistance( const QString& string1, const QString& stri
 {
   if ( string1.isEmpty() && string2.isEmpty() )
   {
-    //empty strings, solution is trivial...
+    //empty strings, solution is trivial…
     return 0;
   }
 

@@ -733,7 +733,7 @@ bool QgsRasterHistogramWidget::histoSaveAsImage( const QString& theFilename,
   myPainter.end();
 
   // "fix" for bug in qwt5 - legend and plot shifts a bit
-  // can't see how to avoid this without picking qwt5 apart...
+  // can't see how to avoid this without picking qwt5 apart…
   refreshHistogram();
   refreshHistogram();
 #endif

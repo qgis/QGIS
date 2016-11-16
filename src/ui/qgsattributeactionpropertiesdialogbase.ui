@@ -41,7 +41,7 @@
      <item>
       <widget class="QToolButton" name="mChooseIconButton">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -111,7 +111,7 @@
             <string>Clicking the button will let you select an application to use as the action</string>
            </property>
            <property name="text">
-            <string>...</string>
+            <string>…</string>
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">

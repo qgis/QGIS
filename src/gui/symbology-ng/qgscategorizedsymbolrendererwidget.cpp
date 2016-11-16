@@ -464,8 +464,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   QMenu* advMenu = new QMenu;
 
   advMenu->addAction( tr( "Match to saved symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
-  advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Match to symbols from file…" ), this, SLOT( matchToSymbolsFromXml() ) );
+  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
 
   btnAdvanced->setMenu( advMenu );
 

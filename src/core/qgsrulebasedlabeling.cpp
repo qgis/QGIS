@@ -154,7 +154,7 @@ void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
 
 const QgsRuleBasedLabeling::Rule* QgsRuleBasedLabeling::Rule::findRuleByKey( const QString& key ) const
 {
-  // we could use a hash / map for search if this will be slow...
+  // we could use a hash / map for search if this will be slow…
 
   if ( key == mRuleKey )
     return this;

@@ -72,7 +72,7 @@ using namespace pal;
   and "Designing Better Maps", Brewer (2005) (p76)
   Note that while they agree on positions 1-4, 5-8 are more contentious so I've selected these placements
   based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
-  with Denis Wood on anything cartography related...!)
+  with Denis Wood on anything cartography related…!)
 */
 QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEFAULT_PLACEMENT_ORDER = QVector< QgsPalLayerSettings::PredefinedPointPosition >()
     << QgsPalLayerSettings::TopRight
@@ -2238,7 +2238,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
                      labelFontMetrics.data(), xform, context.rasterScaleFactor(), maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
-  // TODO: allow layer-wide feature dist in PAL...?
+  // TODO: allow layer-wide feature dist in PAL…?
 
   // data defined label-feature distance?
   double distance = dist;

@@ -133,7 +133,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mScaleDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -161,7 +161,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mMapRotationDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -198,7 +198,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mStylePresetsDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -235,7 +235,7 @@
             <item>
              <widget class="QToolButton" name="mLayerListFromPresetButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="popupMode">
                <enum>QToolButton::InstantPopup</enum>
@@ -245,7 +245,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mLayersDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -300,7 +300,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mXMinDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -327,7 +327,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mYMinDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -354,7 +354,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mXMaxDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -381,7 +381,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mYMaxDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -459,7 +459,7 @@
             <item>
              <widget class="QgsDataDefinedButton" name="mAtlasMarginDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -594,7 +594,7 @@
             <item>
              <widget class="QPushButton" name="mGridPropertiesButton">
               <property name="text">
-               <string>Modify grid...</string>
+               <string>Modify grid…</string>
               </property>
              </widget>
             </item>
@@ -732,7 +732,7 @@
              <item row="1" column="1">
               <widget class="QPushButton" name="mOverviewFrameStyleButton">
                <property name="text">
-                <string>Change...</string>
+                <string>Change…</string>
                </property>
               </widget>
              </item>
