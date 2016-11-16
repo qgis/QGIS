@@ -26,6 +26,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject 
     : QAbstractItemModel( parent )
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
+    , mAllowEmpty( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( layers );
@@ -35,6 +36,7 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
     : QAbstractItemModel( parent )
     , mLayersChecked( QMap<QString, Qt::CheckState>() )
     , mItemCheckable( false )
+    , mAllowEmpty( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addLayers( QList<QgsMapLayer*> ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
@@ -55,6 +57,25 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
   emit dataChanged( index( 0, 0 ), index( mLayers.length() - 1, 0 ) );
 }
 
+void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty )
+{
+  if ( allowEmpty == mAllowEmpty )
+    return;
+
+  if ( allowEmpty )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = true;
+    endInsertRows();
+  }
+  else
+  {
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = false;
+    endRemoveRows();
+  }
+}
+
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
 {
   QList<QgsMapLayer *> layers;
@@ -71,6 +92,8 @@ QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState 
 QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
 {
   int r = mLayers.indexOf( layer );
+  if ( r >= 0 && mAllowEmpty )
+    r++;
   return index( r, 0 );
 }
 
@@ -93,7 +116,11 @@ void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
 
 void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *>& layers )
 {
-  beginInsertRows( QModelIndex(), mLayers.count(), mLayers.count() + layers.count() - 1 );
+  int offset = 0;
+  if ( mAllowEmpty )
+    offset++;
+
+  beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     mLayers.append( layer );
@@ -104,9 +131,17 @@ void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *>& layers )
 
 QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &parent ) const
 {
+  int offset = 0;
+  if ( mAllowEmpty )
+    offset++;
+
   if ( hasIndex( row, column, parent ) )
   {
-    return createIndex( row, column, mLayers[row] );
+    QgsMapLayer* layer = nullptr;
+    if ( row - offset >= 0 && row - offset < mLayers.count() )
+      layer = mLayers.at( row - offset );
+
+    return createIndex( row, column, layer );
   }
 
   return QModelIndex();
@@ -122,7 +157,10 @@ QModelIndex QgsMapLayerModel::parent( const QModelIndex &child ) const
 
 int QgsMapLayerModel::rowCount( const QModelIndex &parent ) const
 {
-  return parent.isValid() ? 0 : mLayers.length();
+  if ( parent.isValid() )
+    return 0;
+
+  return ( mAllowEmpty ? 1 : 0 ) + mLayers.length();
 }
 
 int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
@@ -134,35 +172,58 @@ int QgsMapLayerModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !index.internalPointer() )
+  bool isEmpty = index.row() == 0 && mAllowEmpty;
+
+  if ( !index.isValid() )
     return QVariant();
 
   if ( role == Qt::DisplayRole )
   {
+    if ( index.row() == 0 && mAllowEmpty )
+      return QVariant();
+
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    return layer->name();
+    return layer ? layer->name() : QVariant();
   }
 
   if ( role == LayerIdRole )
   {
+    if ( isEmpty )
+      return QVariant();
+
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    return layer->id();
+    return layer ? layer->id() : QVariant();
   }
 
   if ( role == LayerRole )
   {
+    if ( isEmpty )
+      return QVariant();
+
     return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
   }
 
+  if ( role == IsEmptyRole )
+    return isEmpty;
+
   if ( role == Qt::CheckStateRole && mItemCheckable )
   {
+    if ( isEmpty )
+      return QVariant();
+
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
-    return mLayersChecked[layer->id()];
+    return layer ? mLayersChecked[layer->id()] : QVariant();
   }
 
   if ( role == Qt::DecorationRole )
   {
+    if ( isEmpty )
+      return QVariant();
+
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+    if ( !layer )
+      return QVariant();
+
     QgsMapLayer::LayerType type = layer->type();
     if ( role == Qt::DecorationRole )
     {
@@ -232,8 +293,10 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
     return 0;
   }
 
+  bool isEmpty = index.row() == 0 && mAllowEmpty;
+
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-  if ( mItemCheckable )
+  if ( mItemCheckable && !isEmpty )
   {
     flags |= Qt::ItemIsUserCheckable;
   }
@@ -243,7 +306,9 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( role == Qt::CheckStateRole )
+  bool isEmpty = index.row() == 0 && mAllowEmpty;
+
+  if ( role == Qt::CheckStateRole && !isEmpty )
   {
     QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
     mLayersChecked[layer->id()] = ( Qt::CheckState )value.toInt();

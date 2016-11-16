@@ -1,0 +1,266 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsMapLayerModel
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Nyall Dawson'
+__date__ = '16/11/2016'
+__copyright__ = 'Copyright 2016, The QGIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+import qgis  # NOQA
+
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsMapLayerModel
+from qgis.PyQt.QtCore import Qt, QModelIndex
+
+from qgis.testing import start_app, unittest
+
+start_app()
+
+
+def create_layer(name):
+    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                           name, "memory")
+    return layer
+
+
+class TestQgsMapLayerModel(unittest.TestCase):
+
+    def testGettersSetters(self):
+        """ test model getters/setters """
+        m = QgsMapLayerModel()
+
+        m.setItemsCheckable(True)
+        self.assertTrue(m.itemsCheckable())
+        m.setItemsCheckable(False)
+        self.assertFalse(m.itemsCheckable())
+
+        m.setAllowEmptyLayer(True)
+        self.assertTrue(m.allowEmptyLayer())
+        m.setAllowEmptyLayer(False)
+        self.assertFalse(m.allowEmptyLayer())
+
+    def testAddingRemovingLayers(self):
+        # test model handles layer addition and removal
+        m = QgsMapLayerModel()
+
+        self.assertEqual(m.rowCount(QModelIndex()), 0)
+
+        l1 = create_layer('l1')
+        QgsMapLayerRegistry.instance().addMapLayer(l1)
+        self.assertEqual(m.rowCount(QModelIndex()), 1)
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayer(l2)
+        self.assertEqual(m.rowCount(QModelIndex()), 2)
+        QgsMapLayerRegistry.instance().removeMapLayer(l1)
+        self.assertEqual(m.rowCount(QModelIndex()), 1)
+        QgsMapLayerRegistry.instance().removeMapLayer(l2)
+        self.assertEqual(m.rowCount(QModelIndex()), 0)
+
+        # try creating a model when layers already exist in registry
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.rowCount(QModelIndex()), 2)
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+        self.assertEqual(m.rowCount(QModelIndex()), 0)
+
+    def testCheckAll(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        m.setItemsCheckable(True)
+        self.assertFalse(m.layersChecked())
+        self.assertEqual(set(m.layersChecked(Qt.Unchecked)), set([l1, l2]))
+
+        m.checkAll(Qt.Checked)
+        self.assertEqual(set(m.layersChecked()), set([l1, l2]))
+        self.assertFalse(set(m.layersChecked(Qt.Unchecked)))
+
+        m.checkAll(Qt.Unchecked)
+        self.assertFalse(m.layersChecked())
+        self.assertEqual(set(m.layersChecked(Qt.Unchecked)), set([l1, l2]))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testAllowEmpty(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.rowCount(QModelIndex()), 2)
+
+        m.setAllowEmptyLayer(True)
+        self.assertEqual(m.rowCount(QModelIndex()), 3)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        m.setAllowEmptyLayer(False)
+        self.assertEqual(m.rowCount(QModelIndex()), 2)
+        self.assertTrue(m.data(m.index(0, 0), Qt.DisplayRole))
+
+        # add layers after allow empty is true
+        m.setAllowEmptyLayer(True)
+        l3 = create_layer('l3')
+        QgsMapLayerRegistry.instance().addMapLayers([l3])
+        self.assertEqual(m.rowCount(QModelIndex()), 4)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l3')
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id(), l3.id()])
+
+    def testIndexFromLayer(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        l3 = create_layer('l3') # not in registry
+
+        self.assertEqual(m.indexFromLayer(l1).row(), 0)
+        self.assertEqual(m.indexFromLayer(l2).row(), 1)
+        self.assertFalse(m.indexFromLayer(l3).isValid())
+
+        m.setAllowEmptyLayer(True)
+        self.assertEqual(m.indexFromLayer(l1).row(), 1)
+        self.assertEqual(m.indexFromLayer(l2).row(), 2)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testDisplayRole(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l2')
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testLayerIdRole(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.data(m.index(0, 0), QgsMapLayerModel.LayerIdRole), l1.id())
+        self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerIdRole), l2.id())
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.LayerIdRole))
+        self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerIdRole), l1.id())
+        self.assertEqual(m.data(m.index(2, 0), QgsMapLayerModel.LayerIdRole), l2.id())
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testLayerRole(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.data(m.index(0, 0), QgsMapLayerModel.LayerRole), l1)
+        self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerRole), l2)
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.LayerRole))
+        self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerRole), l1)
+        self.assertEqual(m.data(m.index(2, 0), QgsMapLayerModel.LayerRole), l2)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testIsEmptyRole(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.IsEmptyRole))
+        self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.IsEmptyRole))
+        m.setAllowEmptyLayer(True)
+        self.assertTrue(m.data(m.index(0, 0), QgsMapLayerModel.IsEmptyRole))
+        self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.IsEmptyRole))
+        self.assertFalse(m.data(m.index(2, 0), QgsMapLayerModel.IsEmptyRole))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testCheckStateRole(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+
+        # not checkable
+        self.assertFalse(m.data(m.index(0, 0), Qt.CheckStateRole))
+        self.assertFalse(m.data(m.index(1, 0), Qt.CheckStateRole))
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), Qt.CheckStateRole))
+        self.assertFalse(m.data(m.index(1, 0), Qt.CheckStateRole))
+        self.assertFalse(m.data(m.index(2, 0), Qt.CheckStateRole))
+        m.setAllowEmptyLayer(False)
+
+        # checkable
+        m.setItemsCheckable(True)
+        m.checkAll(Qt.Checked)
+        self.assertTrue(m.data(m.index(0, 0), Qt.CheckStateRole))
+        self.assertTrue(m.data(m.index(1, 0), Qt.CheckStateRole))
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.data(m.index(0, 0), Qt.CheckStateRole))
+        self.assertTrue(m.data(m.index(1, 0), Qt.CheckStateRole))
+        self.assertTrue(m.data(m.index(2, 0), Qt.CheckStateRole))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testFlags(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+
+        # not checkable
+        self.assertFalse(m.flags(m.index(0, 0)) & Qt.ItemIsUserCheckable)
+        self.assertFalse(m.flags(m.index(1, 0)) & Qt.ItemIsUserCheckable)
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.flags(m.index(0, 0)) & Qt.ItemIsUserCheckable)
+        self.assertFalse(m.flags(m.index(1, 0)) & Qt.ItemIsUserCheckable)
+        self.assertFalse(m.flags(m.index(2, 0)) & Qt.ItemIsUserCheckable)
+        m.setAllowEmptyLayer(False)
+
+        # checkable
+        m.setItemsCheckable(True)
+        self.assertTrue(m.flags(m.index(0, 0)) & Qt.ItemIsUserCheckable)
+        self.assertTrue(m.flags(m.index(1, 0)) & Qt.ItemIsUserCheckable)
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.flags(m.index(0, 0)) & Qt.ItemIsUserCheckable)
+        self.assertTrue(m.flags(m.index(1, 0)) & Qt.ItemIsUserCheckable)
+        self.assertTrue(m.flags(m.index(2, 0)) & Qt.ItemIsUserCheckable)
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+    def testSetData(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsMapLayerRegistry.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+
+        # set checked
+        m.setItemsCheckable(True)
+        self.assertTrue(m.setData(m.index(0, 0), True, Qt.CheckStateRole))
+        self.assertTrue(m.data(m.index(0, 0), Qt.CheckStateRole))
+        self.assertFalse(m.data(m.index(1, 0), Qt.CheckStateRole))
+        self.assertTrue(m.setData(m.index(1, 0), True, Qt.CheckStateRole))
+        self.assertTrue(m.data(m.index(0, 0), Qt.CheckStateRole))
+        self.assertTrue(m.data(m.index(1, 0), Qt.CheckStateRole))
+
+        m.setAllowEmptyLayer(True)
+        self.assertFalse(m.setData(m.index(0, 0), True, Qt.CheckStateRole))
+        self.assertTrue(m.setData(m.index(1, 0), True, Qt.CheckStateRole))
+
+        QgsMapLayerRegistry.instance().removeMapLayers([l1.id(), l2.id()])
+
+if __name__ == '__main__':
+    unittest.main()

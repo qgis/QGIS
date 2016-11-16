@@ -28,6 +28,20 @@ class QgsMapLayerComboBox : QComboBox
     //! returns the list of excepted layers
     QList<QgsMapLayer*> exceptedLayerList() const;
 
+    /**
+     * Sets whether an optional empty layer ("not set") option is shown in the combo box.
+     * @see allowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyLayer( bool allowEmpty );
+
+    /**
+     * Returns true if the combo box allows the empty layer ("not set") choice.
+     * @see setAllowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyLayer() const;
+
     /** Returns the current layer selected in the combo box.
      * @see layer
      */

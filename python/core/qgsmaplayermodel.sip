@@ -19,6 +19,7 @@ class QgsMapLayerModel : QAbstractItemModel
     {
       LayerIdRole, /*!< Stores the map layer ID */
       LayerRole, /*!< Stores pointer to the map layer itself */
+      IsEmptyRole, //!< True if index corresponds to the empty (not set) value
     };
 
     /**
@@ -38,6 +39,21 @@ class QgsMapLayerModel : QAbstractItemModel
      * @brief checkAll changes the checkstate for all the layers
      */
     void checkAll( Qt::CheckState checkState );
+
+    /**
+     * Sets whether an optional empty layer ("not set") option is present in the model.
+     * @see allowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyLayer( bool allowEmpty );
+
+    /**
+     * Returns true if the model allows the empty layer ("not set") choice.
+     * @see setAllowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyLayer() const;
+
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */

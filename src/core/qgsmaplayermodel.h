@@ -39,6 +39,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     {
       LayerIdRole = Qt::UserRole + 1, //!< Stores the map layer ID
       LayerRole, //!< Stores pointer to the map layer itself
+      IsEmptyRole, //!< True if index corresponds to the empty (not set) value
     };
 
     /**
@@ -62,6 +63,20 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void checkAll( Qt::CheckState checkState );
 
     /**
+     * Sets whether an optional empty layer ("not set") option is present in the model.
+     * @see allowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyLayer( bool allowEmpty );
+
+    /**
+     * Returns true if the model allows the empty layer ("not set") choice.
+     * @see setAllowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyLayer() const { return mAllowEmpty; }
+
+    /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
@@ -72,7 +87,6 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @brief indexFromLayer returns the model index for a given layer
      */
     QModelIndex indexFromLayer( QgsMapLayer* layer ) const;
-
 
   protected slots:
     void removeLayers( const QStringList& layerIds );
@@ -100,6 +114,10 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+  private:
+
+    bool mAllowEmpty;
 };
 
 #endif // QGSMAPLAYERMODEL_H
