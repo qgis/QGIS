@@ -20,14 +20,25 @@
 
 /** \ingroup analysis
  * \class QgsSpeedArcProperter
+ * \note added in QGIS 3.0
+ *
+ * \brief Used for calculating arc property taking into account travel time.
  */
 class ANALYSIS_EXPORT QgsSpeedArcProperter : public QgsArcProperter
 {
   public:
+
+    /**
+     * Constructor for QgsSpeedArcProperter.
+     */
     QgsSpeedArcProperter( int attributeId, double defaultValue, double toMetricFactor );
 
+    //! Returns caluclated edge property
     QVariant property( double distance, const QgsFeature& f ) const override;
 
+    /** QgsGraphDirector will call this method for fetching attributes
+     * needed to calculate arc properties from the source layer
+     */
     QgsAttributeList requiredAttributes() const override;
 
   private:
