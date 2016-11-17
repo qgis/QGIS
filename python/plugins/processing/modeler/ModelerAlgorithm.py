@@ -200,7 +200,7 @@ class ValueFromOutput(object):
             return False
 
     def __str__(self):
-        return self.alg + "," + self.output
+        return self.alg + ":" + self.output
 
     def asPythonParameter(self):
         return "outputs_%s['%s']" % (self.alg, self.output)
