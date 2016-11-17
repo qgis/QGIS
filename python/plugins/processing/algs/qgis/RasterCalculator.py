@@ -119,7 +119,7 @@ class RasterCalculator(GeoAlgorithm):
                                 float(extent[1]), float(extent[3]))
         else:
             if layersDict:
-                bbox = layersDict.values()[0].extent()
+                bbox = list(layersDict.values())[0].extent()
                 for lyr in layersDict.values():
                     bbox.combineExtentWith(lyr.extent())
             else:
