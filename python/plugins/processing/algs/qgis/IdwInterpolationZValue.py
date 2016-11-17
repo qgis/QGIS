@@ -36,6 +36,7 @@ from qgis.analysis import (QgsInterpolator,
                            )
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
