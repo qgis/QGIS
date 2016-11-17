@@ -180,6 +180,9 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
 <tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsLimitedRandomColorRampDialogBase
 <tr><th>QgsSymbolV2<th>QgsSymbol
+<tr><th>QgsArcProperter<th>QgsStrategy
+<tr><th>QgsDistanceArcProperter<th>QgsDistanceStrategy
+<tr><th>QgsGraphArc<th>QgsGraphEdge
 </table>
 
 <table>
@@ -205,6 +208,17 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorLayerEditUtils<td>deleteVertexV2<td>deleteVertex
 <tr><td>QgsComposerSymbolItem<td>symbolV2<td>symbol
 <tr><td>QgsServerInterface<td>capabiblitiesCache<td>capabilitiesCache
+<tr><td>QgsGraphEdge<td>property<td>cost
+<tr><td>QgsGraphEdge<td>properties<td>strategies
+<tr><td>QgsGraphVertex<td>outArc<td>outEdges
+<tr><td>QgsGraphVertex<td>inArc<td>inEdges
+<tr><td>QgsGraph<td>addArc<td>addEdges
+<tr><td>QgsGraph<td>arcCount<td>edgeCount
+<tr><td>QgsGraph<td>arc<td>edge
+<tr><td>QgsGraphBuilder<td>addArc<td>addEdge
+<tr><td>QgsGraphBuilderInterface<td>addArc<td>addEdge
+<tr><td>QgsGraphDirectory<td>addProperter<td>addStrategy
+<tr><td>QgsStrategy<td>addProperter<td>addStrategy
 </table>
 
 
