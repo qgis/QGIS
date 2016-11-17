@@ -46,6 +46,8 @@ class ExtractByLocation(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+        self.tags = self.tr('extract,filter,location,intersects,contains,within')
+
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to select from')))
         self.addParameter(ParameterVector(self.INTERSECT,
