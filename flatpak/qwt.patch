@@ -1,0 +1,12 @@
+diff -Naur qwt-1/qwtconfig.pri qwt-2/qwtconfig.pri
+--- qwt-1/qwtconfig.pri	2014-12-11 15:13:13.513186492 +0100
++++ qwt-2/qwtconfig.pri	2016-11-17 15:49:24.272532454 +0100
+@@ -19,7 +19,7 @@
+ QWT_INSTALL_PREFIX = $$[QT_INSTALL_PREFIX]
+ 
+ unix {
+-    QWT_INSTALL_PREFIX    = /usr/local/qwt-$$QWT_VERSION
++    QWT_INSTALL_PREFIX    = /app
+     # QWT_INSTALL_PREFIX = /usr/local/qwt-$$QWT_VERSION-qt-$$QT_VERSION
+ }
+ 

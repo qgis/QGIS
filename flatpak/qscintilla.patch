@@ -1,0 +1,133 @@
+diff -Naur qscintilla-a/Python/configure.py qscintilla-3/Python/configure.py
+--- qscintilla-a/Python/configure.py	2016-11-17 16:48:51.402995006 +0100
++++ qscintilla-3/Python/configure.py	2016-11-17 16:49:17.180969716 +0100
+@@ -293,7 +293,7 @@
+         version of Qt.  target_configuration is the target configuration.
+         """
+ 
+-        qmake = {'CONFIG': 'qscintilla2'}
++        qmake = {'CONFIG': 'qscintilla2-qt5'}
+ 
+         if target_configuration.qsci_inc_dir is not None:
+             qmake['INCLUDEPATH'] = quote(target_configuration.qsci_inc_dir)
+@@ -319,7 +319,7 @@
+             lib_dir = target_configuration.qt_lib_dir
+ 
+         return os.path.join(lib_dir,
+-                'libqscintilla2.%s.dylib' % QSCI_API_MAJOR)
++                'libqscintilla2-qt5.%s.dylib' % QSCI_API_MAJOR)
+ 
+ 
+ ###############################################################################
+diff -Naur qscintilla-a/Qt4Qt5/features/qscintilla2.prf qscintilla-3/Qt4Qt5/features/qscintilla2.prf
+--- qscintilla-a/Qt4Qt5/features/qscintilla2.prf	2016-11-17 16:48:51.407995002 +0100
++++ qscintilla-3/Qt4Qt5/features/qscintilla2.prf	1970-01-01 01:00:00.000000000 +0100
+@@ -1,27 +0,0 @@
+-greaterThan(QT_MAJOR_VERSION, 4) {
+-    QT += widgets printsupport
+-
+-    greaterThan(QT_MINOR_VERSION, 1) {
+-        macx:QT += macextras
+-    }
+-}
+-
+-DEFINES += QSCINTILLA_DLL
+-
+-INCLUDEPATH += $$[QT_INSTALL_HEADERS]
+-
+-LIBS += -L$$[QT_INSTALL_LIBS]
+-
+-CONFIG(debug, debug|release) {
+-    mac: {
+-        LIBS += -lqscintilla2_debug
+-    } else {
+-        win32: {
+-            LIBS += -lqscintilla2d
+-        } else {
+-            LIBS += -lqscintilla2
+-        }
+-    }
+-} else {
+-    LIBS += -lqscintilla2
+-}
+diff -Naur qscintilla-a/Qt4Qt5/features/qscintilla2-qt5.prf qscintilla-3/Qt4Qt5/features/qscintilla2-qt5.prf
+--- qscintilla-a/Qt4Qt5/features/qscintilla2-qt5.prf	1970-01-01 01:00:00.000000000 +0100
++++ qscintilla-3/Qt4Qt5/features/qscintilla2-qt5.prf	2016-11-17 16:49:17.182969714 +0100
+@@ -0,0 +1,27 @@
++greaterThan(QT_MAJOR_VERSION, 4) {
++    QT += widgets printsupport
++
++    greaterThan(QT_MINOR_VERSION, 1) {
++        macx:QT += macextras
++    }
++}
++
++DEFINES += QSCINTILLA_DLL
++
++INCLUDEPATH += $$[QT_INSTALL_HEADERS]
++
++LIBS += -L$$[QT_INSTALL_LIBS]
++
++CONFIG(debug, debug|release) {
++    mac: {
++        LIBS += -lqscintilla2-qt5_debug
++    } else {
++        win32: {
++            LIBS += -lqscintilla2d
++        } else {
++            LIBS += -lqscintilla2-qt5
++        }
++    }
++} else {
++    LIBS += -lqscintilla2-qt5
++}
+diff -Naur qscintilla-a/Qt4Qt5/qscintilla.pro qscintilla-3/Qt4Qt5/qscintilla.pro
+--- qscintilla-a/Qt4Qt5/qscintilla.pro	2016-11-17 16:48:51.411994998 +0100
++++ qscintilla-3/Qt4Qt5/qscintilla.pro	2016-11-17 16:52:18.689791638 +0100
+@@ -23,7 +23,7 @@
+ !win32:VERSION = 12.0.2
+ 
+ TEMPLATE = lib
+-TARGET = qscintilla2
++TARGET = qscintilla2-qt5
+ CONFIG += qt warn_off release thread exceptions hide_symbols
+ INCLUDEPATH += . ../include ../lexlib ../src
+ 
+@@ -47,30 +47,26 @@
+ # Scintilla namespace rather than pollute the global namespace.
+ #DEFINES += SCI_NAMESPACE
+ 
+-target.path = $$[QT_INSTALL_LIBS]
++target.path = /app/lib
+ INSTALLS += target
+ 
+-header.path = $$[QT_INSTALL_HEADERS]
++header.path = /app/include
+ header.files = Qsci
+ INSTALLS += header
+ 
+-trans.path = $$[QT_INSTALL_TRANSLATIONS]
++trans.path = /app/translations
+ trans.files = qscintilla_*.qm
+ INSTALLS += trans
+ 
+-qsci.path = $$[QT_INSTALL_DATA]
++qsci.path = /app/share
+ qsci.files = ../qsci
+ INSTALLS += qsci
+ 
+-greaterThan(QT_MAJOR_VERSION, 4) {
+-    features.path = $$[QT_HOST_DATA]/mkspecs/features
+-} else {
+-    features.path = $$[QT_INSTALL_DATA]/mkspecs/features
+-}
++features.path = /app/share/mkspecs/features
+ CONFIG(staticlib) {
+-    features.files = $$PWD/features_staticlib/qscintilla2.prf
++    features.files = $$PWD/features_staticlib/qscintilla2-qt5.prf
+ } else {
+-    features.files = $$PWD/features/qscintilla2.prf
++    features.files = $$PWD/features/qscintilla2-qt5.prf
+ }
+ INSTALLS += features
+ 

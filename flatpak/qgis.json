@@ -1,0 +1,118 @@
+{
+    "id": "org.qgis.qgis",
+    "branch": "master",
+    "runtime": "org.kde.Platform",
+    "runtime-version": "master",
+    "sdk": "org.kde.Sdk",
+    "command": "qgis",
+    "tags": ["nightly"],
+    "desktop-file-name-prefix": "(Nightly) ",
+    "finish-args": ["--share=ipc", "--socket=x11", "--filesystem=host" ],
+    "separate-locales": false,
+
+    "modules": [
+        {
+            "name": "qgis",
+            "cmake": true,
+            "sources": [
+              {
+                "type": "archive",
+                "path": "qgis.tar.gz"
+              }
+            ],
+            "config-opts": [
+              "-DQWT_LIBRARY=/app/lib/libqwt.so"
+            ],
+            "post-install": [ "mkdir -p /app/share/applications", "cp debian/qgis.desktop /app/share/applications/org.qgis.qgis.desktop" ],
+            "modules": [
+              {
+                "name": "proj",
+                "sources": [ { "type": "archive", "url": "http://download.osgeo.org/proj/proj-4.9.3.tar.gz", "sha256": "6984542fea333488de5c82eea58d699e4aff4b359200a9971537cd7e047185f7" } ]
+              },
+              {
+                "name": "geos",
+                "sources": [ { "type": "archive", "url": "http://download.osgeo.org/geos/geos-3.6.0.tar.bz2", "sha256": "1fe7644f3240c8422b0143830ff142e44e8b01333c12f67681ccaab92142f2ea" }
+                ]
+              },
+              {
+                "name": "spatialindex",
+                "sources": [ { "type": "archive", "url": "http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.bz2", "sha256": "31ec0a9305c3bd6b4ad60a5261cba5402366dd7d1969a8846099717778e9a50a" } ]
+              },
+              {
+                "name": "sip",
+                "sources": [
+                  { "type": "archive", "url": "http://sourceforge.net/projects/pyqt/files/sip/sip-4.18/sip-4.18.tar.gz", "sha256": "f1dc5c81c07a9ad97edcd4a0af964a41e420024ba7ca165afd2b351efd249cb6" },
+                  {
+                      "type": "script",
+                      "commands": ["python3 configure.py -b /app/bin -d /app/lib/python3.4/site-packages -e /app/include -v /app/share/sip" ],
+                      "dest-filename": "configure"
+                  }
+                ]
+              },
+              {
+                "name": "pyqt5",
+                "sources": [
+                  { "type": "archive", "url": "http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.7/PyQt5_gpl-5.7.tar.gz", "sha256": "892693ba5f79989abb2061dad2d5c4e6f127e9dd3240f73f8220c7152cd35b05" },
+                  {
+                      "type": "script",
+                      "commands": ["python3 configure.py -b /app/bin -d /app/lib/python3.4/site-packages -v /app/share/sip/PyQt5 --qml-plugindir=/app/lib/plugins/PyQt5 --confirm-license" ],
+                      "dest-filename": "configure"
+                  }
+                ]
+              },
+              {
+                "name": "spatialite",
+                "sources": [ { "type": "archive", "url": "http://www.gaia-gis.it/gaia-sins/libspatialite-sources/libspatialite-4.3.0a.tar.gz", "sha256": "88900030a4762904a7880273f292e5e8ca6b15b7c6c3fb88ffa9e67ee8a5a499" } ],
+                "modules": [
+                  {
+                    "name": "freexl",
+                    "sources": [ { "type": "archive", "url": "http://www.gaia-gis.it/gaia-sins/freexl-sources/freexl-1.0.2.tar.gz", "sha256": "b39a4814a0f53f5e09a9192c41e3e51bd658843f770399023a963eb064f6409d" } ]
+                  }
+                ]
+              },
+              {
+                "name": "postgresql",
+                "sources": [ { "type": "archive", "url": "https://ftp.postgresql.org/pub/source/v9.6.0/postgresql-9.6.0.tar.bz2", "sha256": "3b5fe9634b80a4511aac1832a087586a7caa8c3413619562bdda009a015863ce" } ]
+              },
+              {
+                "name": "gdal",
+                "sources": [ { "type": "archive", "url": "http://download.osgeo.org/gdal/2.1.2/gdal-2.1.2.tar.gz", "sha256": "69761c38acac8c6d3ea71304341f6982b5d66125a1a80d9088b6bfd2019125c9" } ]
+              },
+              {
+                "name": "qca",
+                "cmake": true,
+                "config-opts": ["-DQT4_BUILD=OFF", "-DQCA_SUFFIX=qt5"],
+                "sources": [
+                  { "type": "archive", "url": "http://delta.affinix.com/download/qca/2.0/qca-2.1.0.tar.gz", "sha256": "226dcd76138c3738cdc15863607a96b3758a4c3efd3c47295939bcea4e7a9284" },
+                  { "type": "patch", "path": "qca_qio.patch" }
+                ]
+              },
+              {
+                "name": "qscintilla",
+                "sources": [
+                  { "type": "archive", "url": "http://sourceforge.net/projects/pyqt/files/QScintilla2/QScintilla-2.9.3/QScintilla_gpl-2.9.3.tar.gz", "sha256": "98aab93d73b05635867c2fc757acb383b5856a0b416e3fd7659f1879996ddb7e" },
+                  { "type": "patch", "path": "qscintilla.patch" },
+                  {
+                      "type": "script",
+                      "commands": ["qmake" ],
+                      "dest-filename": "Qt4Qt5/configure"
+                  }
+                ],
+                "subdir": "Qt4Qt5"
+              },
+              {
+                "name": "qwt",
+                "sources": [
+                  { "type": "archive", "url": "http://downloads.sourceforge.net/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2", "sha256": "2b08f18d1d3970e7c3c6096d850f17aea6b54459389731d3ce715d193e243d0c" },
+                  { "type": "patch", "path": "qwt.patch" },
+                  {
+                      "type": "script",
+                      "commands": ["qmake" ],
+                      "dest-filename": "configure"
+                  }
+                ]
+              }
+            ]
+        }
+    ]
+}
