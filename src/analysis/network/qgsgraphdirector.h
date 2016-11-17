@@ -47,8 +47,8 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
      *
      * @param builder the graph builder
      * @param additionalPoints list of points that should be snapped to the graph
-     * @param tiedPoints list of snapped points
-     * @note if tiedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
+     * @param snappedPoints list of snapped points
+     * @note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPoint > &additionalPoints,
