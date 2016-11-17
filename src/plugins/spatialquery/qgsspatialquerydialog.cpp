@@ -286,7 +286,7 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
     msg = tr( "Using the field \"%1\" for subset" ).arg( fieldFID );
     return verifyTry;
   }
-  msg = tr( "Sorry! Only this providers are enable: OGR, POSTGRES and SPATIALITE." );
+  msg = tr( "Sorry! Only this providers are enabled: OGR, POSTGRES and SPATIALITE." );
   return verifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 
