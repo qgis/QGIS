@@ -51,12 +51,17 @@ class ExtractByAttribute(GeoAlgorithm):
                  '<',
                  '<=',
                  'begins with',
-                 'contains'
+                 'contains',
+                 'is null',
+                 'is not null'
                  ]
+    STRING_OPERATORS = ['begins with',
+                        'contains']
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract by attribute')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+        self.tags = self.tr('extract,filter,attribute,value,contains,null,field')
 
         self.i18n_operators = ['=',
                                '!=',
@@ -65,7 +70,9 @@ class ExtractByAttribute(GeoAlgorithm):
                                '<',
                                '<=',
                                self.tr('begins with'),
-                               self.tr('contains')]
+                               self.tr('contains'),
+                               self.tr('is null'),
+                               self.tr('is not null')]
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
@@ -73,7 +80,7 @@ class ExtractByAttribute(GeoAlgorithm):
                                               self.tr('Selection attribute'), self.INPUT))
         self.addParameter(ParameterSelection(self.OPERATOR,
                                              self.tr('Operator'), self.i18n_operators))
-        self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
+        self.addParameter(ParameterString(self.VALUE, self.tr('Value'), optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (attribute)')))
 
@@ -90,25 +97,23 @@ class ExtractByAttribute(GeoAlgorithm):
         idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()
 
-        if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:
-            op = ''.join(['"%s", ' % o for o in self.OPERATORS[-2:]])
+        if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
+            op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
             raise GeoAlgorithmExecutionException(
                 self.tr('Operators %s can be used only with string fields.' % op))
 
-        if fieldType in [QVariant.Int, QVariant.Double, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
-            expr = '"%s" %s %s' % (fieldName, operator, value)
-        elif fieldType == QVariant.String:
-            if operator not in self.OPERATORS[-2:]:
-                expr = """"%s" %s '%s'""" % (fieldName, operator, value)
-            elif operator == 'begins with':
-                expr = """"%s" LIKE '%s%%'""" % (fieldName, value)
-            elif operator == 'contains':
-                expr = """"%s" LIKE '%%%s%%'""" % (fieldName, value)
-        elif fieldType in [QVariant.Date, QVariant.DateTime]:
-            expr = """"%s" %s '%s'""" % (fieldName, operator, value)
+        field_ref = QgsExpression.quotedColumnRef(fieldName)
+        quoted_val = QgsExpression.quotedValue(value)
+        if operator == 'is null':
+            expr = '{} IS NULL'.format(field_ref)
+        elif operator == 'is not null':
+            expr = '{} IS NOT NULL'.format(field_ref)
+        elif operator == 'begins with':
+            expr = """%s LIKE '%s%%'""" % (field_ref, value)
+        elif operator == 'contains':
+            expr = """%s LIKE '%%%s%%'""" % (field_ref, value)
         else:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Unsupported field type "%s"' % fields[idx].typeName()))
+            expr = '{} {} {}'.format(field_ref, operator, quoted_val)
 
         expression = QgsExpression(expr)
         if not expression.hasParserError():
