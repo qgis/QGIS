@@ -60,7 +60,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             layers = dataobjects.getRasterLayers(sorting=False)
             options = {}
             for lyr in layers:
-                for n in xrange(lyr.bandCount()):
+                for n in range(lyr.bandCount()):
                     name = '{:s}@{:d}'.format(lyr.name(), n + 1)
                     options[name] = name
             return self._panel(options)
@@ -75,7 +75,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         layers = dataobjects.getRasterLayers()
         options = {}
         for lyr in layers:
-            for n in xrange(lyr.bandCount()):
+            for n in range(lyr.bandCount()):
                 options[lyr.name()] = '{:s}@{:d}'.format(lyr.name(), n + 1)
         self.widget.setList(options)
 

@@ -103,7 +103,7 @@ class RasterCalculator(GeoAlgorithm):
 
         entries = []
         for name, lyr in layersDict.items():
-            for n in xrange(lyr.bandCount()):
+            for n in range(lyr.bandCount()):
                 entry = QgsRasterCalculatorEntry()
                 entry.ref = '{:s}@{:d}'.format(name, n + 1)
                 entry.raster = lyr
