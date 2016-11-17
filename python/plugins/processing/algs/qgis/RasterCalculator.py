@@ -61,20 +61,19 @@ class RasterCalculator(GeoAlgorithm):
         class ParameterRasterCalculatorExpression(ParameterString):
 
             def evaluateForModeler(self, value, model):
-                # print value
                 for i in list(model.inputs.values()):
                     param = i.param
                     if isinstance(param, ParameterRaster):
-                        new = "%s@" % os.path.basename(param.value)
-                        old = "%s@" % param.name
+                        new = "{}@".format(os.path.basename(param.value))
+                        old = "{}@".format(param.name)
                         value = value.replace(old, new)
 
                     for alg in list(model.algs.values()):
                         for out in alg.algorithm.outputs:
                             if isinstance(out, OutputRaster):
                                 if out.value:
-                                    new = "%s@" % os.path.basename(out.value)
-                                    old = "%s:%s@" % (alg.name, out.name)
+                                    new = "{}@".format(os.path.basename(out.value))
+                                    old = "{}:{}@".format(alg.name, out.name)
                                     value = value.replace(old, new)
                 return value
 
@@ -106,7 +105,7 @@ class RasterCalculator(GeoAlgorithm):
         for name, lyr in layersDict.items():
             for n in xrange(lyr.bandCount()):
                 entry = QgsRasterCalculatorEntry()
-                entry.ref = '%s@%i' % (name, n + 1)
+                entry.ref = '{:s}@{:d}'.format(name, n + 1)
                 entry.raster = lyr
                 entry.bandNumber = n + 1
                 entries.append(entry)
@@ -149,7 +148,7 @@ class RasterCalculator(GeoAlgorithm):
         expression = algorithm.params[self.EXPRESSION]
         for i in list(model.inputs.values()):
             param = i.param
-            if isinstance(param, ParameterRaster) and "%s@" % param.name in expression:
+            if isinstance(param, ParameterRaster) and "{}@".format(param.name) in expression:
                 values.append(ValueFromInput(param.name))
 
         if algorithm.name:
@@ -160,7 +159,7 @@ class RasterCalculator(GeoAlgorithm):
             if alg.name not in dependent:
                 for out in alg.algorithm.outputs:
                     if (isinstance(out, OutputRaster)
-                            and "%s:%s@" % (alg.name, out.name) in expression):
+                            and "{}:{}@".format(alg.name, out.name) in expression):
                         values.append(ValueFromOutput(alg.name, out.name))
 
         algorithm.params[self.LAYERS] = values

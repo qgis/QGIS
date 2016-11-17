@@ -28,10 +28,10 @@ class ExpressionWidget(BASE, WIDGET):
 
         def addButtonText(text):
             if any(c for c in text if c.islower()):
-                self.text.insertPlainText(" %s()" % text)
+                self.text.insertPlainText(" {}()".format(text))
                 self.text.moveCursor(QTextCursor.PreviousCharacter, QTextCursor.MoveAnchor)
             else:
-                self.text.insertPlainText(" %s " % text)
+                self.text.insertPlainText(" {} ".format(text))
         buttons = [b for b in self.buttonsGroupBox.children()if isinstance(b, QPushButton)]
         for button in buttons:
             button.clicked.connect(partial(addButtonText, button.text()))
@@ -61,14 +61,14 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             options = {}
             for lyr in layers:
                 for n in xrange(lyr.bandCount()):
-                    name = '%s@%i' % (lyr.name(), n + 1)
+                    name = '{:s}@{:d}'.format(lyr.name(), n + 1)
                     options[name] = name
             return self._panel(options)
         elif self.dialogType == DIALOG_BATCH:
             return QLineEdit()
         else:
             layers = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
-            options = {self.dialog.resolveValueDescription(lyr): "%s@1" % lyr for lyr in layers}
+            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(lyr) for lyr in layers}
             return self._panel(options)
 
     def refresh(self):
@@ -76,7 +76,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         options = {}
         for lyr in layers:
             for n in xrange(lyr.bandCount()):
-                options[lyr.name()] = '%s@%i' % (lyr.name(), n + 1)
+                options[lyr.name()] = '{:s}@{:d}'.format(lyr.name(), n + 1)
         self.widget.setList(options)
 
     def setValue(self, value):
