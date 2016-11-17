@@ -34,7 +34,7 @@ QgsActionScopeRegistry::QgsActionScopeRegistry( QObject* parent )
 
   mActionScopes.insert( QgsActionScope( QStringLiteral( "Field" ), tr( "Field Scope" ), tr( "Available for individual fields. For example in the attribute table." ), fieldScope ) );
   mActionScopes.insert( QgsActionScope( QStringLiteral( "Feature" ), tr( "Feature Scope" ), tr( "Available for individual features. For example on feature forms or per row in the attribute table." ) ) );
-  mActionScopes.insert( QgsActionScope( QStringLiteral( "Layer Scope" ), tr( "Layer Scope" ), tr( "Available as layer global action. For example on top of the attribute table." ) ) );
+  mActionScopes.insert( QgsActionScope( QStringLiteral( "Layer" ), tr( "Layer Scope" ), tr( "Available as layer global action. For example on top of the attribute table." ) ) );
 }
 
 QSet<QgsActionScope> QgsActionScopeRegistry::actionScopes() const

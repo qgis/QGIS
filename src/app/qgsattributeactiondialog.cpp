@@ -299,13 +299,14 @@ void QgsAttributeActionDialog::updateButtons()
 void QgsAttributeActionDialog::addDefaultActions()
 {
   int pos = 0;
-  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), QStringLiteral( "echo \"[% \"MY_FIELD\" %]\"" ), QLatin1String( "" ), true, tr( "Attribute Value" ), QSet<QString>() << QStringLiteral( "FieldSpecific" ) );
+  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), QStringLiteral( "echo \"[% \"MY_FIELD\" %]\"" ), QLatin1String( "" ), true, tr( "Attribute Value" ), QSet<QString>() << QStringLiteral( "Field" ) );
   insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), QStringLiteral( "ogr2ogr -f \"ESRI Shapefile\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"" ), QLatin1String( "" ), true, tr( "Run application" ), QSet<QString>() << QStringLiteral( "AttributeTable" ) << QStringLiteral( "Canvas" ) );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")" ), QLatin1String( "" ), false, tr( "Feature ID" ), QSet<QString>() << QStringLiteral( "AttributeTable" ) << QStringLiteral( "Canvas" ) );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Current field's value\", \"[% @current_field %]\")" ), QLatin1String( "" ), false, tr( "Field Value" ), QSet<QString>() << QStringLiteral( "FieldSpecific" ) );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")" ), QLatin1String( "" ), false, tr( "Feature ID" ), QSet<QString>() << QStringLiteral( "Feature" ) << QStringLiteral( "Canvas" ) );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Current field's value\", \"[% @current_field %]\")" ), QLatin1String( "" ), false, tr( "Field Value" ), QSet<QString>() << QStringLiteral( "Field" ) );
   insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Clicked coords\", \"layer: [% @layer_id %]\\ncoords: ([% @click_x %],[% @click_y %])\")" ), QLatin1String( "" ), false, tr( "Clicked Coordinate" ), QSet<QString>() << QStringLiteral( "Canvas" ) );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), QStringLiteral( "[% \"PATH\" %]" ), QLatin1String( "" ), false, tr( "Open file" ), QSet<QString>() << QStringLiteral( "AttributeTable" ) << QStringLiteral( "Canvas" ) );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), QStringLiteral( "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]" ), QLatin1String( "" ), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "FieldSpecific" ) );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), QStringLiteral( "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]" ), QLatin1String( "" ), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "Field" ) );
+  insertRow( pos++, QgsAction::GenericPython, tr( "List feature ids" ), QStringLiteral( "" ), QLatin1String( "" ), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "Field" ) );
 }
 
 void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
