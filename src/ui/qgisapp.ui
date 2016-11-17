@@ -1701,7 +1701,7 @@
    </property>
    <property name="toolTip">
     <string>Rotate Label
-Ctl (Cmd) increments by 15 deg.</string>
+Ctrl (Cmd) increments by 15 deg.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1949,7 +1949,7 @@ Ctl (Cmd) increments by 15 deg.</string>
    <property name="toolTip">
     <string>Pin/Unpin Labels And Diagrams
 Click or marquee on label/diagram to pin
-Shift unpins, Ctl (Cmd) toggles state
+Shift unpins, Ctrl (Cmd) toggles state
 Acts on all editable layers</string>
    </property>
   </action>
