@@ -546,7 +546,6 @@ QMenu::item:selected {  background-color: gray; } */
   <tabstop>btnRemoveGroup</tabstop>
   <tabstop>btnManageGroups</tabstop>
   <tabstop>searchBox</tabstop>
-  <tabstop>tagsLineEdit</tabstop>
   <tabstop>tabItemType</tabstop>
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>
