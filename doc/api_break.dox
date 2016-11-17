@@ -251,6 +251,7 @@ General changes        {#qgis_api_break_3_0_global}
 - All importXML() methods have been renamed to importXml()
 - All methods taking or returning QGis::WkbType have been changed to use QgsWkbTypes::Type
 - All methods taking or returning QGis::GeometryType have been changed to use QgsWkbTypes::GeometryType
+- Network analysis library has been merged into analysis library
 
 
 Data Providers        {#qgis_api_break_3_0_DataProviders}
@@ -768,7 +769,7 @@ QgsEditFormConfig        {#qgis_api_break_3_0_QgsEditFormConfig}
 - widgetType() and widgetConfig() now reflect only the user configured values.
 QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
 - widgetType(), widgetConfig(), setWidgetType(), setWidgetConfig() and removeWidgetConfig() now only take a string as first parameter. Access by index has been removed.
-- expression(), setExpression(), expressionDescription() and setExpressionDescription() 
+- expression(), setExpression(), expressionDescription() and setExpressionDescription()
 have been removed. Use QgsVectorLayer.setConstraintExpression()/constraintExpression(),
 or QgsField.constraintExpression()/QgsField.constraintDescription() instead.
 - notNull() and setNotNull() have been removed. Use QgsVectorLayer.setFieldConstraint()/fieldConstraints(), or QgsField.constraints() instead.
