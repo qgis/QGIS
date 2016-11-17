@@ -243,7 +243,7 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
     itemFont.setPointSize( 10 );
     item->setFont( itemFont );
     // create preview icon
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( s, previewSize );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( s, previewSize, 15 );
     item->setIcon( icon );
     // add to model
     model->appendRow( item );

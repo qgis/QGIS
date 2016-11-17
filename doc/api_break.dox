@@ -1423,6 +1423,7 @@ QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break
 
 - encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.
 - The signatures for wellKnownMarkerToSld() and wellKnownMarkerFromSld() were changed.
+- The symbolPreviewPixmap() customContext is now the fourth parameter
 
 
 QgsSymbolSelectorWidget        {#qgis_api_break_3_0_QgsSymbolSelectorWidget}

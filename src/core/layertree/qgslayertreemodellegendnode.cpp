@@ -168,7 +168,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext* context ) const
   if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Marker )
   {
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ),
+              QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ), 0,
                   context ).toImage(),
               minSz,
               true ).size();
@@ -176,7 +176,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext* context ) const
   else if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Line )
   {
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), QSize( minSz.width(), 512 ),
+              QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), QSize( minSz.width(), 512 ), 0,
                   context ).toImage(),
               minSz,
               true ).size();
@@ -273,7 +273,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       if ( mItem.symbol() )
       {
         QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
-        pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), mIconSize, context.data() );
+        pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), mIconSize, 0, context.data() );
       }
       else
       {

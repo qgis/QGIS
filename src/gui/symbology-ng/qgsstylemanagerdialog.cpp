@@ -236,17 +236,8 @@ void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
   actnExportAsPNG->setVisible( flag );
   actnExportAsSVG->setVisible( flag );
 
-  // set icon and grid size, depending on type
-  if ( currentItemType() == 1 || currentItemType() == 3 )
-  {
-    listItems->setIconSize( QSize( 75, 50 ) );
-    listItems->setGridSize( QSize( 100, 80 ) );
-  }
-  else
-  {
-    listItems->setIconSize( QSize( 50, 50 ) );
-    listItems->setGridSize( QSize( 75, 80 ) );
-  }
+  listItems->setIconSize( QSize( 100, 90 ) );
+  listItems->setGridSize( QSize( 120, 110 ) );
 
   populateList();
 }
@@ -275,7 +266,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList& symbolNames, boo
     if ( symbol && symbol->type() == type )
     {
       QStandardItem* item = new QStandardItem( name );
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize() );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 18 );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
@@ -301,7 +292,7 @@ void QgsStyleManagerDialog::populateColorRamps( const QStringList& colorRamps, b
     QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
 
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize(), 18 );
     item->setIcon( icon );
     item->setData( name ); // used to find out original name when user edited the name
     item->setCheckable( check );
