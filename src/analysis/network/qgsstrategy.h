@@ -24,6 +24,7 @@
 /**
  * \ingroup analysis
  * \class QgsStrategy
+ * \note added in QGIS 3.0
  * \brief QgsStrategy defines strategy used for calculation of the edge cost. For example it can
  * take into account travel distance, amount of time or money. Currently there are two strategies
  * implemented in the analysis library: QgsDistanceStrategy and QgsSpeedStrategy.
