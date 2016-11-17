@@ -31,10 +31,8 @@ QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget* parent ) : QWid
   mConditionId = id;
 
   mCondCombo->addItem( tr( "has the tag" ), QVariant( "tag" ) );
-  mCondCombo->addItem( tr( "is a member of group" ), QVariant( "group" ) );
   mCondCombo->addItem( tr( "has a part of name matching" ), QVariant( "name" ) );
   mCondCombo->addItem( tr( "does NOT have the tag" ), QVariant( "!tag" ) );
-  mCondCombo->addItem( tr( "is NOT a member of group" ), QVariant( "!group" ) );
   mCondCombo->addItem( tr( "has NO part of name matching" ), QVariant( "!name" ) );
 
   mRemoveBtn->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
@@ -159,7 +157,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
 void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map )
 {
   QStringList constraints;
-  constraints << QStringLiteral( "tag" ) << QStringLiteral( "group" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!group" ) << QStringLiteral( "!name" );
+  constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
 
   // clear any defaults
   Q_FOREACH ( int id, mConditionMap.keys() )

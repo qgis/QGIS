@@ -28,6 +28,7 @@
 #include <QDomNode>
 #include <QDomNodeList>
 #include <QFile>
+#include <QSettings>
 #include <QTextStream>
 #include <QByteArray>
 
@@ -96,13 +97,13 @@ bool QgsStyle::addSymbol( const QString& name, QgsSymbol* symbol, bool update )
   {
     mSymbols.insert( name, symbol );
     if ( update )
-      saveSymbol( name, symbol, 0, QStringList() );
+      saveSymbol( name, symbol, false, QStringList() );
   }
 
   return true;
 }
 
-bool QgsStyle::saveSymbol( const QString& name, QgsSymbol* symbol, int groupid, const QStringList& tags )
+bool QgsStyle::saveSymbol( const QString& name, QgsSymbol* symbol, bool favorite, const QStringList& tags )
 {
   // TODO add support for groups
   QDomDocument doc( QStringLiteral( "dummy" ) );
@@ -118,7 +119,7 @@ bool QgsStyle::saveSymbol( const QString& name, QgsSymbol* symbol, int groupid, 
   stream.setCodec( "UTF-8" );
   symEl.save( stream, 4 );
   char *query = sqlite3_mprintf( "INSERT INTO symbol VALUES (NULL, '%q', '%q', %d);",
-                                 name.toUtf8().constData(), xmlArray.constData(), groupid );
+                                 name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
 
   if ( !runEmptyQuery( query ) )
   {
@@ -207,11 +208,12 @@ bool QgsStyle::addColorRamp( const QString& name, QgsColorRamp* colorRamp, bool 
   return true;
 }
 
-bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, int groupid, const QStringList& tags )
+bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, bool favorite, const QStringList& tags )
 {
   // insert it into the database
   QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp, doc );
+
   if ( rampEl.isNull() )
   {
     QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );
@@ -223,8 +225,7 @@ bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, int group
   stream.setCodec( "UTF-8" );
   rampEl.save( stream, 4 );
   char *query = sqlite3_mprintf( "INSERT INTO colorramp VALUES (NULL, '%q', '%q', %d);",
-                                 name.toUtf8().constData(), xmlArray.constData(), groupid );
-
+                                 name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
   if ( !runEmptyQuery( query ) )
   {
     QgsDebugMsg( "Couldn't insert colorramp into the database!" );
@@ -301,8 +302,8 @@ bool QgsStyle::load( const QString& filename )
   }
 
   // Make sure there are no Null fields in parenting symbols ang groups
-  char *query = sqlite3_mprintf( "UPDATE symbol SET groupid=0 WHERE groupid IS NULL;"
-                                 "UPDATE colorramp SET groupid=0 WHERE groupid IS NULL;"
+  char *query = sqlite3_mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
+                                 "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
                                  "UPDATE symgroup SET parent=0 WHERE parent IS NULL;" );
   runEmptyQuery( query );
 
@@ -460,97 +461,22 @@ bool QgsStyle::renameColorRamp( const QString& oldName, const QString& newName )
   return true;
 }
 
-QStringList QgsStyle::groupNames()
-{
-  QStringList groupNames;
-  sqlite3_stmt *ppStmt;
-  const char *query = "SELECT * FROM symgroup";
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    groupNames << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymgroupName ) ) );
-  }
-  sqlite3_finalize( ppStmt );
-  return groupNames;
-}
-
-QList<int> QgsStyle::groupIds() const
-{
-  QList<int> groupIds;
-  sqlite3_stmt *ppStmt;
-  const char *query = "SELECT * FROM symgroup";
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    groupIds << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymgroupId ) ) ).toInt();
-  }
-  sqlite3_finalize( ppStmt );
-  return groupIds;
-}
-
-QgsSymbolGroupMap QgsStyle::childGroupNames( const QString& parent )
-{
-  // get the name list from the sqlite database and return as a QStringList
-  if ( !mCurrentDB )
-  {
-    QgsDebugMsg( "Cannot open database for listing groups" );
-    return QgsSymbolGroupMap();
-  }
-
-  char *query = nullptr;
-  int nError;
-  sqlite3_stmt *ppStmt;
-
-  // decide the query to be run based on parent group
-  if ( parent == QLatin1String( "" ) || parent == QString() )
-  {
-    query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent=0" );
-  }
-  else
-  {
-    char *subquery = sqlite3_mprintf( "SELECT * FROM symgroup WHERE name='%q'", parent.toUtf8().constData() );
-    nError = sqlite3_prepare_v2( mCurrentDB, subquery, -1, &ppStmt, nullptr );
-    if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-    {
-      query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent=%d", sqlite3_column_int( ppStmt, SymgroupId ) );
-    }
-    sqlite3_finalize( ppStmt );
-  }
-
-  if ( !query )
-    return QgsSymbolGroupMap();
-
-  QgsSymbolGroupMap groupNames;
-
-  // Now run the query and retrieve the group names
-  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    QString group = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymgroupName ) ) );
-    groupNames.insert( sqlite3_column_int( ppStmt, SymgroupId ), group );
-  }
-
-  sqlite3_finalize( ppStmt );
-
-  return groupNames;
-}
-
-QStringList QgsStyle::symbolsOfGroup( StyleEntity type, int groupid )
+QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
 {
   if ( !mCurrentDB )
   {
-    QgsDebugMsg( QString( "Cannot Open database for getting group symbols of groupid: %1" ).arg( groupid ) );
+    QgsDebugMsg( QString( "Cannot Open database for getting favorite symbols" ) );
     return QStringList();
   }
 
   char *query;
   if ( type == SymbolEntity )
   {
-    query = sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d", groupid );
+    query = sqlite3_mprintf( "SELECT name FROM symbol WHERE favorite=1" );
   }
   else if ( type == ColorrampEntity )
   {
-    query = sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid=%d", groupid );
+    query = sqlite3_mprintf( "SELECT name FROM colorramp WHERE favorite=1" );
   }
   else
   {
@@ -572,7 +498,7 @@ QStringList QgsStyle::symbolsOfGroup( StyleEntity type, int groupid )
   return symbols;
 }
 
-QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid )
+QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
 {
   if ( !mCurrentDB )
   {
@@ -587,7 +513,7 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid )
   }
   else if ( type == ColorrampEntity )
   {
-    subquery = sqlite3_mprintf( "SELECT symbol_id FROM ctagmap WHERE tag_id=%d", tagid );
+    subquery = sqlite3_mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id=%d", tagid );
   }
   else
   {
@@ -598,15 +524,15 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid )
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, subquery, -1, &ppStmt, nullptr );
 
-  // get the symbol <-> tag connection from table 'tagmap'
+  // get the symbol <-> tag connection from table 'tagmap'/'ctagmap'
   QStringList symbols;
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    int symbolId = sqlite3_column_int( ppStmt, 0 );
+    int id = sqlite3_column_int( ppStmt, 0 );
 
     char *query = type == SymbolEntity
-                  ? sqlite3_mprintf( "SELECT name FROM symbol WHERE id=%d", symbolId )
-                  : sqlite3_mprintf( "SELECT name FROM colorramp WHERE id=%d", symbolId );
+                  ? sqlite3_mprintf( "SELECT name FROM symbol WHERE id=%d", id )
+                  : sqlite3_mprintf( "SELECT name FROM colorramp WHERE id=%d", id );
 
     sqlite3_stmt *ppStmt2;
     int sErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt2, nullptr );
@@ -621,23 +547,6 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid )
   return symbols;
 }
 
-int QgsStyle::addGroup( const QString& groupName, int parentid )
-{
-  if ( !mCurrentDB )
-    return 0;
-
-  char *query = sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', %d)", groupName.toUtf8().constData(), parentid );
-
-  sqlite3_stmt *ppStmt;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  if ( nErr == SQLITE_OK )
-    ( void )sqlite3_step( ppStmt );
-
-  sqlite3_finalize( ppStmt );
-
-  return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
-}
-
 int QgsStyle::addTag( const QString& tagname )
 {
   if ( !mCurrentDB )
@@ -649,6 +558,11 @@ int QgsStyle::addTag( const QString& tagname )
   if ( nErr == SQLITE_OK )
     ( void )sqlite3_step( ppStmt );
   sqlite3_finalize( ppStmt );
+
+  QSettings settings;
+  settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
+
+  emit groupsModified();
 
   return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
 }
@@ -676,69 +590,60 @@ QStringList QgsStyle::tags() const
 
 void QgsStyle::rename( StyleEntity type, int id, const QString& newName )
 {
+  bool groupRenamed = false;
   char *query;
   switch ( type )
   {
     case SymbolEntity:
       query = sqlite3_mprintf( "UPDATE symbol SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
       break;
-    case GroupEntity:
-      query = sqlite3_mprintf( "UPDATE symgroup SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
-      break;
-    case TagEntity:
-      query = sqlite3_mprintf( "UPDATE tag SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
-      break;
     case ColorrampEntity:
       query = sqlite3_mprintf( "UPDATE colorramp SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
       break;
+    case TagEntity:
+      query = sqlite3_mprintf( "UPDATE tag SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
+      groupRenamed = true;
+      break;
     case SmartgroupEntity:
       query = sqlite3_mprintf( "UPDATE smartgroup SET name='%q' WHERE id=%d", newName.toUtf8().constData(), id );
+      groupRenamed = true;
       break;
     default:
       QgsDebugMsg( "Invalid Style Entity indicated" );
       return;
   }
   if ( !runEmptyQuery( query ) )
+  {
     mErrorString = QStringLiteral( "Could not rename!" );
-}
-
-char* QgsStyle::getGroupRemoveQuery( int id )
-{
-  char *query = sqlite3_mprintf( "SELECT parent FROM symgroup WHERE id=%d", id );
-
-  sqlite3_stmt *ppStmt;
-  int err = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-
-  int parentid = 0;
-  if ( err == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-    parentid = sqlite3_column_int( ppStmt, 0 );
-
-  sqlite3_finalize( ppStmt );
-
-  return sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE groupid=%d;"
-                          "UPDATE symgroup SET parent=%d WHERE parent=%d;"
-                          "DELETE FROM symgroup WHERE id=%d", parentid, id, parentid, id, id );
+  }
+  else
+  {
+    if ( groupRenamed )
+    {
+      emit groupsModified();
+    }
+  }
 }
 
 void QgsStyle::remove( StyleEntity type, int id )
 {
+  bool groupRemoved = false;
   char *query;
   switch ( type )
   {
     case SymbolEntity:
       query = sqlite3_mprintf( "DELETE FROM symbol WHERE id=%d; DELETE FROM tagmap WHERE symbol_id=%d", id, id );
       break;
-    case GroupEntity:
-      query = getGroupRemoveQuery( id );
-      break;
-    case TagEntity:
-      query = sqlite3_mprintf( "DELETE FROM tag WHERE id=%d; DELETE FROM tagmap WHERE tag_id=%d", id, id );
-      break;
     case ColorrampEntity:
       query = sqlite3_mprintf( "DELETE FROM colorramp WHERE id=%d", id );
       break;
+    case TagEntity:
+      query = sqlite3_mprintf( "DELETE FROM tag WHERE id=%d; DELETE FROM tagmap WHERE tag_id=%d", id, id );
+      groupRemoved = true;
+      break;
     case SmartgroupEntity:
       query = sqlite3_mprintf( "DELETE FROM smartgroup WHERE id=%d", id );
+      groupRemoved = true;
       break;
     default:
       QgsDebugMsg( "Invalid Style Entity indicated" );
@@ -748,6 +653,16 @@ void QgsStyle::remove( StyleEntity type, int id )
   if ( !runEmptyQuery( query ) )
   {
     QgsDebugMsg( "Could not delete entity!" );
+  }
+  else
+  {
+    if ( groupRemoved )
+    {
+      QSettings settings;
+      settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
+
+      emit groupsModified();
+    }
   }
 }
 
@@ -772,17 +687,38 @@ bool QgsStyle::runEmptyQuery( char *query, bool freeQuery )
   return zErr == SQLITE_OK;
 }
 
-bool QgsStyle::group( StyleEntity type, const QString& name, int groupid )
+bool QgsStyle::addFavorite( StyleEntity type, const QString& name )
 {
   char *query;
 
   switch ( type )
   {
     case SymbolEntity:
-      query = sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
+      query = sqlite3_mprintf( "UPDATE symbol SET favorite=1 WHERE name='%q'", name.toUtf8().constData() );
       break;
     case ColorrampEntity:
-      query = sqlite3_mprintf( "UPDATE colorramp SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
+      query = sqlite3_mprintf( "UPDATE colorramp SET favorite=1 WHERE name='%q'", name.toUtf8().constData() );
+      break;
+
+    default:
+      QgsDebugMsg( "Wrong entity value. cannot apply group" );
+      return false;
+  }
+
+  return runEmptyQuery( query );
+}
+
+bool QgsStyle::removeFavorite( StyleEntity type, const QString& name )
+{
+  char *query;
+
+  switch ( type )
+  {
+    case SymbolEntity:
+      query = sqlite3_mprintf( "UPDATE symbol SET favorite=0 WHERE name='%q'", name.toUtf8().constData() );
+      break;
+    case ColorrampEntity:
+      query = sqlite3_mprintf( "UPDATE colorramp SET favorite=0 WHERE name='%q'", name.toUtf8().constData() );
       break;
 
     default:
@@ -882,37 +818,41 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString& symbol, const QString
     return false;
   }
 
-
-  Q_FOREACH ( const QString &tag, tags )
+  QString tag;
+  Q_FOREACH ( const QString &t, tags )
   {
-    // sql: gets the id of the tag if present or insert the tag and get the id of the tag
-    char *query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q'", tag.toUtf8().constData() );
-
-    sqlite3_stmt *ppStmt;
-    int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-
-    int tagid;
-    if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+    tag = t.trimmed();
+    if ( tag != "" )
     {
-      tagid = sqlite3_column_int( ppStmt, 0 );
-    }
-    else
-    {
-      tagid = addTag( tag );
-    }
+      // sql: gets the id of the tag if present or insert the tag and get the id of the tag
+      char *query = sqlite3_mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", tag.toUtf8().toLower().constData() );
 
-    sqlite3_finalize( ppStmt );
+      sqlite3_stmt *ppStmt;
+      int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
 
-    // Now map the tag to the symbol
-    query = type == SymbolEntity
-            ? sqlite3_mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
-            : sqlite3_mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
+      int tagid;
+      if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+      {
+        tagid = sqlite3_column_int( ppStmt, 0 );
+      }
+      else
+      {
+        tagid = addTag( tag );
+      }
 
-    char *zErr = nullptr;
-    nErr = sqlite3_exec( mCurrentDB, query, nullptr, nullptr, &zErr );
-    if ( nErr )
-    {
-      QgsDebugMsg( zErr );
+      sqlite3_finalize( ppStmt );
+
+      // Now map the tag to the symbol
+      query = type == SymbolEntity
+              ? sqlite3_mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
+              : sqlite3_mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
+
+      char *zErr = nullptr;
+      nErr = sqlite3_exec( mCurrentDB, query, nullptr, nullptr, &zErr );
+      if ( nErr )
+      {
+        QgsDebugMsg( zErr );
+      }
     }
   }
 
@@ -977,6 +917,45 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString& symbol, const QStri
   return true;
 }
 
+bool QgsStyle::detagSymbol( StyleEntity type, const QString& symbol )
+{
+  if ( !mCurrentDB )
+  {
+    QgsDebugMsg( "Sorry! Cannot open database for detgging." );
+    return false;
+  }
+
+  char *query = type == SymbolEntity
+                ? sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() )
+                : sqlite3_mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
+  sqlite3_stmt *ppStmt;
+  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+
+  int symbolid = 0;
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbolid = sqlite3_column_int( ppStmt, 0 );
+  }
+  else
+  {
+    sqlite3_finalize( ppStmt );
+    return false;
+  }
+
+  sqlite3_finalize( ppStmt );
+
+  // remove all tags
+  query = type == SymbolEntity
+          ? sqlite3_mprintf( "DELETE FROM tagmap WHERE symbol_id=%d", symbolid )
+          : sqlite3_mprintf( "DELETE FROM ctagmap WHERE colorramp_id=%d", symbolid );
+  runEmptyQuery( query );
+
+  // TODO Perform tag cleanup
+  // check the number of entries for a given tag in the tagmap
+  // if the count is 0, then remove( TagEntity, tagid )
+  return true;
+}
+
 QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString& symbol )
 {
   if ( !mCurrentDB )
@@ -1018,7 +997,7 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString& symbol )
 
 int QgsStyle::getId( const QString& table, const QString& name )
 {
-  char *query = sqlite3_mprintf( "SELECT id FROM %q WHERE name='%q'", table.toUtf8().constData(), name.toUtf8().constData() );
+  char *query = sqlite3_mprintf( "SELECT id FROM %q WHERE LOWER(name)='%q'", table.toUtf8().constData(), name.toUtf8().toLower().constData() );
 
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
@@ -1062,16 +1041,6 @@ int QgsStyle::colorrampId( const QString& name )
   return getId( QStringLiteral( "colorramp" ), name );
 }
 
-int QgsStyle::groupId( const QString& name )
-{
-  return getId( QStringLiteral( "symgroup" ), name );
-}
-
-QString QgsStyle::groupName( int groupId ) const
-{
-  return getName( QStringLiteral( "symgroup" ), groupId );
-}
-
 int QgsStyle::tagId( const QString& name )
 {
   return getId( QStringLiteral( "tag" ), name );
@@ -1113,6 +1082,10 @@ int QgsStyle::addSmartgroup( const QString& name, const QString& op, const QgsSm
 
   if ( runEmptyQuery( query ) )
   {
+    QSettings settings;
+    settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
+
+    emit groupsModified();
     return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
   }
   else
@@ -1211,12 +1184,6 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = symbolsWithTag( type, tagId( param ) );
       }
-      else if ( constraint == QLatin1String( "group" ) )
-      {
-        // XXX Validating group id might be a good idea here
-        resultNames = symbolsOfGroup( type, groupId( param ) );
-
-      }
       else if ( constraint == QLatin1String( "name" ) )
       {
         if ( type == SymbolEntity )
@@ -1232,15 +1199,6 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsWithTag( type, tagId( param ) );
-        Q_FOREACH ( const QString& name, unwanted )
-        {
-          resultNames.removeAll( name );
-        }
-      }
-      else if ( constraint == QLatin1String( "!group" ) )
-      {
-        resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
-        QStringList unwanted = symbolsOfGroup( type, groupId( param ) );
         Q_FOREACH ( const QString& name, unwanted )
         {
           resultNames.removeAll( name );

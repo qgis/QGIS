@@ -38,6 +38,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsstyleexportimportdialog.cpp
   symbology-ng/qgsstylegroupselectiondialog.cpp
   symbology-ng/qgsstylemanagerdialog.cpp
+  symbology-ng/qgsstylesavedialog.cpp
   symbology-ng/qgssvgselectorwidget.cpp
   symbology-ng/qgssymbollayerwidget.cpp
   symbology-ng/qgssymbollevelsdialog.cpp
@@ -511,6 +512,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsstyleexportimportdialog.h
   symbology-ng/qgsstylegroupselectiondialog.h
   symbology-ng/qgsstylemanagerdialog.h
+  symbology-ng/qgsstylesavedialog.h
   symbology-ng/qgssvgselectorwidget.h
   symbology-ng/qgssymbollayerwidget.h
   symbology-ng/qgssymbollevelsdialog.h

@@ -41,15 +41,15 @@ class QgsStyleExportImportDialog : QDialog
      */
     void clearSelection();
     /**
-     * Select the symbols belonging to the given group
-     * @param groupName the name of the group to be selected
+     * Select the symbols belonging to the given tag
+     * @param tagName the name of the tag to be selected
      */
-    void selectGroup( const QString& groupName );
+    void selectTag( const QString& tagName );
     /**
-     * Deselect the symbols belonging to the given group
-     * @param groupName the name of the group to be deselected
+     * Deselect the symbols belonging to the given tag
+     * @param tagName the name of the tag to be deselected
      */
-    void deselectGroup( const QString& groupName );
+    void deselectTag( const QString& tagName );
     /**
      * @brief selectSmartgroup selects all symbols from a smart group
      * @param groupName
