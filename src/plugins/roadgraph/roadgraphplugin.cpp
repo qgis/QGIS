@@ -29,14 +29,14 @@
 #include <qgslinevectorlayerdirector.h>
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
-#include <qgsdistancearcproperter.h>
+#include <qgsdistancestrategy.h>
+#include <qgsspeedstrategy.h>
 #include "qgsdockwidget.h"
 
 // Road grap plugin includes
 #include "roadgraphplugin.h"
 #include "shortestpathwidget.h"
 #include "settingsdlg.h"
-#include "speedproperter.h"
 #include "units.h"
 
 #include "linevectorlayersettings.h"
@@ -218,9 +218,9 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
                                       mSettings->mBothDirectionVal,
                                       mSettings->mDefaultDirection
                                     );
-    director->addProperter( new QgsDistanceArcProperter() );
-    director->addProperter( new RgSpeedProperter( layer->fields().lookupField( mSettings->mSpeed ),
-                            mSettings->mDefaultSpeed, speedUnit.multipler() ) );
+    director->addStrategy( new QgsDistanceStrategy() );
+    director->addStrategy( new QgsSpeedStrategy( layer->fields().lookupField( mSettings->mSpeed ),
+                           mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
   }
   return nullptr;

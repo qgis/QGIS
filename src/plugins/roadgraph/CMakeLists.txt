@@ -10,7 +10,6 @@ SET (VRP_SRCS
   linevectorlayersettings.cpp
   linevectorlayerwidget.cpp
   exportdlg.cpp
-  speedproperter.cpp
 )
 
 #SET ([pluginlcasename]_UIS [pluginlcasename]guibase.ui)

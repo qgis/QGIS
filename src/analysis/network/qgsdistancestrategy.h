@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdistancearcproperter.h
+  qgsdistancestrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,18 +13,20 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSDISTANCEARCPROPERTER_H
-#define QGSDISTANCEARCPROPERTER_H
+#ifndef QGSDISTANCESTRATEGY_H
+#define QGSDISTANCESTRATEGY_H
 
-#include <qgsarcproperter.h>
+#include <qgsstrategy.h>
 
 /** \ingroup analysis
- * \class QgsDistanceArcProperter
+ * \class QgsDistanceStrategy
+ * \brief Strategy for caclucating edge cost based on its length. Should be
+ * used for finding shortest path between two points.
  */
-class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter
+class ANALYSIS_EXPORT QgsDistanceStrategy : public QgsStrategy
 {
   public:
-    virtual QVariant property( double distance, const QgsFeature& ) const override;
+    virtual QVariant cost( double distance, const QgsFeature& ) const override;
 };
 
 #endif // QGSDISTANCEARCPROPERTER_H

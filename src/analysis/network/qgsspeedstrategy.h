@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsspeedarcproperter.h
+  qgsspeedstrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,31 +13,32 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSSPEEDARCPROPERTER_H
-#define QGSSPEEDARCPROPERTER_H
+#ifndef QGSSPEEDSTRATEGY_H
+#define QGSSPEEDSTRATEGY_H
 
-#include <qgsarcproperter.h>
+#include <qgsstrategy.h>
 
 /** \ingroup analysis
- * \class QgsSpeedArcProperter
+ * \class QgsSpeedStrategy
  * \note added in QGIS 3.0
- *
- * \brief Used for calculating arc property taking into account travel time.
+ * \brief Strategy for caclucating edge cost based on travel time. Should be
+ * used for finding fastest path between two points.
  */
-class ANALYSIS_EXPORT QgsSpeedArcProperter : public QgsArcProperter
+class ANALYSIS_EXPORT QgsSpeedStrategy : public QgsStrategy
 {
   public:
 
     /**
-     * Constructor for QgsSpeedArcProperter.
+     * Default constructor
      */
-    QgsSpeedArcProperter( int attributeId, double defaultValue, double toMetricFactor );
+    QgsSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 
-    //! Returns caluclated edge property
-    QVariant property( double distance, const QgsFeature& f ) const override;
+    //! Returns edge cost
+    QVariant cost( double distance, const QgsFeature& f ) const override;
 
-    /** QgsGraphDirector will call this method for fetching attributes
-     * needed to calculate arc properties from the source layer
+    /**
+     * Returns list of the source layer attributes needed for cost calculation.
+     * This method called by QgsGraphDirector.
      */
     QgsAttributeList requiredAttributes() const override;
 
@@ -48,4 +49,4 @@ class ANALYSIS_EXPORT QgsSpeedArcProperter : public QgsArcProperter
 
 };
 
-#endif // QGSSPEEDARCPROPERTER_H
+#endif // QGSSPEEDSTRATEGY_H

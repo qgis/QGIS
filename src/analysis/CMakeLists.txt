@@ -49,8 +49,8 @@ SET(QGIS_ANALYSIS_SRCS
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
-  network/qgsspeedarcproperter.cpp
-  network/qgsdistancearcproperter.cpp
+  network/qgsspeedstrategy.cpp
+  network/qgsdistancestrategy.cpp
   network/qgslinevectorlayerdirector.cpp
   network/qgsgraphanalyzer.cpp
 )
@@ -144,11 +144,11 @@ SET(QGIS_ANALYSIS_HDRS
   openstreetmap/qgsosmimport.h
 
   network/qgsgraph.h
-  network/qgsgraphbuilderintr.h
+  network/qgsgraphbuilderinterface.h
   network/qgsgraphbuilder.h
-  network/qgsarcproperter.h
-  network/qgsspeedarcproperter.h
-  network/qgsdistancearcproperter.h
+  network/qgsstrategy.h
+  network/qgsspeedstrategy.h
+  network/qgsdistancestrategy.h
   network/qgsgraphdirector.h
   network/qgslinevectorlayerdirector.h
   network/qgsgraphanalyzer.h

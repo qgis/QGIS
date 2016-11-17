@@ -1,19 +1,17 @@
 /***************************************************************************
-    qgsgraphanlyzer.cpp - QGIS Tools for graph analysis
-                             -------------------
-    begin                : 14 april 2011
-    copyright            : (C) Sergey Yakushev
-    email                : Yakushevs@list.ru
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+  qgsgraphanalyzer.cpp
+  --------------------------------------
+  Date                 : 2011-04-14
+  Copyright            : (C) 2010 by Yakushev Sergey
+  Email                : YakushevS <at> list.ru
+****************************************************************************
+*                                                                          *
+*   This program is free software; you can redistribute it and/or modify   *
+*   it under the terms of the GNU General Public License as published by   *
+*   the Free Software Foundation; either version 2 of the License, or      *
+*   (at your option) any later version.                                    *
+*                                                                          *
+***************************************************************************/
 
 #include <limits>
 
@@ -61,12 +59,12 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
     not_begin.erase( it );
 
     // edge index list
-    QgsGraphArcIdList l = source->vertex( curVertex ).outArc();
-    QgsGraphArcIdList::iterator arcIt;
+    QgsGraphEdgeIds l = source->vertex( curVertex ).outEdges();
+    QgsGraphEdgeIds::iterator arcIt;
     for ( arcIt = l.begin(); arcIt != l.end(); ++arcIt )
     {
-      const QgsGraphArc arc = source->arc( *arcIt );
-      double cost = arc.property( criterionNum ).toDouble() + curCost;
+      const QgsGraphEdge arc = source->edge( *arcIt );
+      double cost = arc.cost( criterionNum ).toDouble() + curCost;
 
       if ( cost < ( *result )[ arc.inVertex()] )
       {
@@ -111,10 +109,10 @@ QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVerte
   {
     if ( tree[ i ] != -1 )
     {
-      const QgsGraphArc& arc = source->arc( tree[i] );
+      const QgsGraphEdge& arc = source->edge( tree[i] );
 
-      treeResult->addArc( source2result[ arc.outVertex()], source2result[ arc.inVertex()],
-                          arc.properties() );
+      treeResult->addEdge( source2result[ arc.outVertex()], source2result[ arc.inVertex()],
+                           arc.strategies() );
     }
   }
 

@@ -15,7 +15,7 @@
 
 /**
  * \file qgsgraphbuilder.cpp
- * \brief implementation of QgsGraphBuilder
+ * \brief implementation of the QgsGraphBuilder
  */
 
 #include "qgsgraphbuilder.h"
@@ -40,9 +40,9 @@ void QgsGraphBuilder::addVertex( int, const QgsPoint& pt )
   mGraph->addVertex( pt );
 }
 
-void QgsGraphBuilder::addArc( int pt1id, const QgsPoint&, int pt2id, const QgsPoint&, const QVector< QVariant >& prop )
+void QgsGraphBuilder::addEdge( int pt1id, const QgsPoint&, int pt2id, const QgsPoint&, const QVector< QVariant >& prop )
 {
-  mGraph->addArc( pt1id, pt2id, prop );
+  mGraph->addEdge( pt1id, pt2id, prop );
 }
 
 QgsGraph* QgsGraphBuilder::graph()

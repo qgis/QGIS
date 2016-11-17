@@ -19,7 +19,7 @@
  */
 
 #include "qgslinevectorlayerdirector.h"
-#include "qgsgraphbuilderintr.h"
+#include "qgsgraphbuilderinterface.h"
 
 #include "qgsfeatureiterator.h"
 #include <qgsvectorlayer.h>
@@ -129,7 +129,7 @@ QString QgsLineVectorLayerDirector::name() const
 }
 
 void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
-    QVector< QgsPoint >& tiedPoint ) const
+    QVector< QgsPoint >& snappedPoints ) const
 {
   QgsVectorLayer *vl = mVectorLayer;
 
@@ -150,7 +150,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     ct.setDestinationCrs( vl->crs() );
   }
 
-  tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
+  snappedPoints = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
 
   TiePointInfo tmpInfo;
   tmpInfo.mLength = std::numeric_limits<double>::infinity();
@@ -209,7 +209,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
               info.mLastPoint = pt2;
 
               pointLengthMap[ i ] = info;
-              tiedPoint[ i ] = info.mTiedPoint;
+              snappedPoints[ i ] = info.mTiedPoint;
             }
           }
         }
@@ -223,11 +223,11 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
   // add tied point to graph
   int i = 0;
-  for ( i = 0; i < tiedPoint.size(); ++i )
+  for ( i = 0; i < snappedPoints.size(); ++i )
   {
-    if ( tiedPoint[ i ] != QgsPoint( 0.0, 0.0 ) )
+    if ( snappedPoints[ i ] != QgsPoint( 0.0, 0.0 ) )
     {
-      points.push_back( tiedPoint [ i ] );
+      points.push_back( snappedPoints [ i ] );
     }
   }
 
@@ -240,8 +240,8 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   for ( i = 0;i < points.size();++i )
     builder->addVertex( i, points[ i ] );
 
-  for ( i = 0; i < tiedPoint.size() ; ++i )
-    tiedPoint[ i ] = *( my_binary_search( points.begin(), points.end(), tiedPoint[ i ], pointCompare ) );
+  for ( i = 0; i < snappedPoints.size() ; ++i )
+    snappedPoints[ i ] = *( my_binary_search( points.begin(), points.end(), snappedPoints[ i ], pointCompare ) );
 
   qSort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
@@ -253,10 +253,10 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       tmpAttr.push_back( mDirectionFieldId );
     }
 
-    QList< QgsArcProperter* >::const_iterator it;
+    QList< QgsStrategy* >::const_iterator it;
     QgsAttributeList::const_iterator it2;
 
-    for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
+    for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
     {
       QgsAttributeList tmp = ( *it )->requiredAttributes();
       for ( it2 = tmp.begin(); it2 != tmp.end(); ++it2 )
@@ -366,21 +366,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               double distance = builder->distanceArea()->measureLine( pt1, pt2 );
               QVector< QVariant > prop;
-              QList< QgsArcProperter* >::const_iterator it;
-              for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
+              QList< QgsStrategy* >::const_iterator it;
+              for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
               {
-                prop.push_back(( *it )->property( distance, feature ) );
+                prop.push_back(( *it )->cost( distance, feature ) );
               }
 
               if ( directionType == 1 ||
                    directionType == 3 )
               {
-                builder->addArc( pt1idx, pt1, pt2idx, pt2, prop );
+                builder->addEdge( pt1idx, pt1, pt2idx, pt2, prop );
               }
               if ( directionType == 2 ||
                    directionType == 3 )
               {
-                builder->addArc( pt2idx, pt2, pt1idx, pt1, prop );
+                builder->addEdge( pt2idx, pt2, pt1idx, pt1, prop );
               }
             }
             pt1idx = pt2idx;

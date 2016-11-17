@@ -33,12 +33,13 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
   public:
 
     /**
+     * Default constructor
      * @param myLayer source vector layer
-     * @param directionFieldId feield contain road direction value
+     * @param directionFieldId field contain road direction value
      * @param directDirectionValue value for one-way road
-     * @param reverseDirectionValue value for reverse one-way road
-     * @param bothDirectionValue value for road
-     * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both direction
+     * @param reverseDirectionValue value for reversed one-way road
+     * @param bothDirectionValue value for bidirectional road
+     * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both directions
      */
     QgsLineVectorLayerDirector( QgsVectorLayer* myLayer,
                                 int directionFieldId,
@@ -56,7 +57,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPoint >& additionalPoints,
-                    QVector< QgsPoint>& tiedPoints ) const override;
+                    QVector< QgsPoint>& snappedPoints ) const override;
 
     QString name() const override;
 

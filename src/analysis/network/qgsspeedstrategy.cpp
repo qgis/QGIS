@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdistancearcproperter.h
+  qgsspeedstrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,10 +13,32 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "qgsdistancearcproperter.h"
+#include "qgsspeedstrategy.h"
 
-QVariant QgsDistanceArcProperter::property( double distance, const QgsFeature& f ) const
+QgsSpeedStrategy::QgsSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor )
 {
-  Q_UNUSED( f );
-  return QVariant( distance );
+  mAttributeId = attributeId;
+  mDefaultValue = defaultValue;
+  mToMetricFactor = toMetricFactor;
+}
+
+QVariant QgsSpeedStrategy::cost( double distance, const QgsFeature& f ) const
+{
+  QgsAttributes attrs = f.attributes();
+
+  if ( mAttributeId < 0 || mAttributeId >= attrs.count() )
+    return QVariant( distance / ( mDefaultValue * mToMetricFactor ) );
+
+  double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
+  if ( val <= 0.0 )
+    return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
+
+  return QVariant( val );
+}
+
+QgsAttributeList QgsSpeedStrategy::requiredAttributes() const
+{
+  QgsAttributeList l;
+  l.push_back( mAttributeId );
+  return l;
 }

@@ -34,7 +34,7 @@ class QgsLineVectorLayerDirector : QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPoint >& additionalPoints,
-                    QVector< QgsPoint>& tiedPoints /Out/ ) const;
+                    QVector< QgsPoint>& snappedPoints /Out/ ) const;
 
     QString name() const;
 };

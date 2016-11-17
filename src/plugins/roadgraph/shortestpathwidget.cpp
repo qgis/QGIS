@@ -340,13 +340,13 @@ void RgShortestPathWidget::findingPath()
     if ( stopVertexIdx < 0 )
       break;
 
-    QgsGraphArcIdList l = path->vertex( stopVertexIdx ).inArc();
+    QgsGraphEdgeIds l = path->vertex( stopVertexIdx ).inEdges();
     if ( l.empty() )
       break;
-    const QgsGraphArc& e = path->arc( l.front() );
+    const QgsGraphEdge& e = path->edge( l.front() );
 
-    cost += e.property( 0 ).toDouble();
-    time += e.property( 1 ).toDouble();
+    cost += e.cost( 0 ).toDouble();
+    time += e.cost( 1 ).toDouble();
 
     p.push_front( path->vertex( e.inVertex() ).point() );
 
@@ -414,13 +414,13 @@ void RgShortestPathWidget::exportPath()
     if ( stopVertexIdx < 0 )
       break;
 
-    QgsGraphArcIdList l = path->vertex( stopVertexIdx ).inArc();
+    QgsGraphEdgeIds l = path->vertex( stopVertexIdx ).inEdges();
     if ( l.empty() )
       break;
-    const QgsGraphArc& e = path->arc( l.front() );
+    const QgsGraphEdge& e = path->edge( l.front() );
 
-    cost += e.property( 0 ).toDouble();
-    time += e.property( 1 ).toDouble();
+    cost += e.cost( 0 ).toDouble();
+    time += e.cost( 1 ).toDouble();
 
     p.push_front( ct.transform( path->vertex( e.inVertex() ).point() ) );
     stopVertexIdx = e.outVertex();

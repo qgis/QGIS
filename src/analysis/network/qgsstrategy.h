@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsarcproperter.h
+  qgsstrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,8 +13,8 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSARCROPERTER_H
-#define QGSARCROPERTER_H
+#ifndef QGSSTRATERGY_H
+#define QGSSTRATERGY_H
 
 #include <QVariant>
 
@@ -23,35 +23,39 @@
 
 /**
  * \ingroup analysis
- * \class QgsArcProperter
- * \brief QgsArcProperter is a strategy pattern.
- * You can use it for customize arc property. For example look at QgsDistanceArcProperter and QgsSpeedArcProperter
+ * \class QgsStrategy
+ * \brief QgsStrategy defines strategy used for calculation of the edge cost. For example it can
+ * take into account travel distance, amount of time or money. Currently there are two strategies
+ * implemented in the analysis library: QgsDistanceStrategy and QgsSpeedStrategy.
+ * QgsStrategy implemented with strategy design pattern.
  */
-class ANALYSIS_EXPORT QgsArcProperter
+class ANALYSIS_EXPORT QgsStrategy
 {
   public:
 
     /**
-     * default constructor
+     * Default constructor
      */
-    QgsArcProperter() {}
+    QgsStrategy() {}
 
-    virtual ~QgsArcProperter() {}
+    virtual ~QgsStrategy() {}
 
     /**
-     * QgsGraphDirector call this method for fetching attribute from source layer
-     * \return required attributes list
+     * Returns list of the source layer attributes needed for cost calculation.
+     * This method called by QgsGraphDirector.
+     * \return list of required attributes
      */
     virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
 
     /**
-     * calculate and return adge property
+     * Return edge cost
      */
-    virtual QVariant property( double distance, const QgsFeature &f ) const
+    virtual QVariant cost( double distance, const QgsFeature &f ) const
     {
       Q_UNUSED( distance );
       Q_UNUSED( f );
       return QVariant();
     }
 };
-#endif // QGSARCROPERTER_H
+
+#endif // QGSSTRATERGY_H
