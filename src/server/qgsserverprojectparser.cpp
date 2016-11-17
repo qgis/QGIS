@@ -80,6 +80,17 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
   {
     QgsProject::instance()->setFileName( mProjectPath );
   }
+
+  // Set the project scope variables
+  QStringList variableNames = readListEntry( "Variables", "variableNames" );
+  QStringList variableValues = readListEntry( "Variables", "variableValues" );
+
+  //read values
+
+  //append standard values
+
+  QgsProject::instance()->writeEntry( "Variables", "/variableNames", variableNames );
+  QgsProject::instance()->writeEntry( "Variables", "/variableValues", variableValues );
 }
 
 QgsServerProjectParser::QgsServerProjectParser()
@@ -1610,6 +1621,36 @@ void QgsServerProjectParser::addGetFeatureLayers( const QDomElement& layerElem )
     }
     idx += rx.matchedLength();
   }
+}
+
+QStringList QgsServerProjectParser::readListEntry( const QString& scope, const QString& key ) const
+{
+  QStringList entryList;
+  QDomElement propertiesElement = propertiesElem();
+  if ( propertiesElement.isNull() )
+  {
+    return entryList;
+  }
+
+  QDomElement scopeElem = propertiesElement.firstChildElement( scope );
+  if ( scopeElem.isNull() )
+  {
+    return entryList;
+  }
+
+  QDomElement keyElem = scopeElem.firstChildElement( key );
+  if ( keyElem.isNull() )
+  {
+    return entryList;
+  }
+
+  QDomNodeList valueNodeList = keyElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueNodeList.size(); ++i )
+  {
+    entryList.append( valueNodeList.at( i ).toElement().text() );
+  }
+
+  return entryList;
 }
 
 

@@ -2079,6 +2079,16 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     mMapRenderer->setOutputUnits( QgsMapRenderer::Pixels ); //SLD units are in pixels normally
   }
 
+  //Clear expression context and set project variables
+  QgsRenderContext* ctx = mMapRenderer->rendererContext();
+  if ( ctx )
+  {
+    QgsExpressionContext newContext;
+    ctx->setExpressionContext( newContext );
+    QgsExpressionContext&  expCtx = ctx->expressionContext();
+    expCtx.appendScope( QgsExpressionContextUtils::projectScope() );
+  }
+
   return 0;
 }
 
