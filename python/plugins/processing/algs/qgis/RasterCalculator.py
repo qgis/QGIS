@@ -68,7 +68,6 @@ class RasterCalculator(GeoAlgorithm):
     
                     for alg in list(model.algs.values()):
                         for out in alg.algorithm.outputs:
-                            print out, out.value
                             if isinstance(out, OutputRaster):
                                 if out.value:
                                     new = "%s@" % os.path.basename(out.value)
