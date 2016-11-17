@@ -1093,7 +1093,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if self.param.multiple:
                 return [self.widget.options[i] for i in self.widget.selectedoptions]
             else:
-                f = self.widget.field()
+                f = self.widget.currentField()
                 if self.param.optional and not f:
                     return None
                 return f
