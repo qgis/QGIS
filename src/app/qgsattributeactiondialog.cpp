@@ -306,7 +306,7 @@ void QgsAttributeActionDialog::addDefaultActions()
   insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Clicked coords\", \"layer: [% @layer_id %]\\ncoords: ([% @click_x %],[% @click_y %])\")" ), QLatin1String( "" ), false, tr( "Clicked Coordinate" ), QSet<QString>() << QStringLiteral( "Canvas" ) );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), QStringLiteral( "[% \"PATH\" %]" ), QLatin1String( "" ), false, tr( "Open file" ), QSet<QString>() << QStringLiteral( "AttributeTable" ) << QStringLiteral( "Canvas" ) );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), QStringLiteral( "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]" ), QLatin1String( "" ), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "Field" ) );
-  insertRow( pos++, QgsAction::GenericPython, tr( "List feature ids" ), QStringLiteral( "" ), QLatin1String( "" ), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "Field" ) );
+  insertRow( pos++, QgsAction::GenericPython, tr( "List feature ids" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nlayer = QgsMapLayerRegistry.instance().mapLayer('[% @layer_id %]')\nif layer.selectedFeatureCount():\n    ids = layer.selectedFeaturesIds()\nelse:\n    ids = [f.id() for f in layer.getFeatures()]\n\nQtWidgets.QMessageBox.information(None, \"Feature ids\", ', '.join([str(id) for id in ids]))" ), QLatin1String( "" ), false, tr( "List feature ids" ), QSet<QString>() << QStringLiteral( "Layer" ) );
 }
 
 void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
