@@ -39,7 +39,6 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import runalg, runalgIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -63,7 +62,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.setMainWidget(ParametersPanel(self, alg))
+        self.setMainWidget(alg.getParametersPanel(self))
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -99,14 +98,17 @@ class AlgorithmDialog(AlgorithmDialogBase):
         for output in outputs:
             if output.hidden:
                 continue
-            output.value = self.mainWidget.valueItems[output.name].getValue()
+            output.value = self.mainWidget.outputWidgets[output.name].getValue()
             if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                 output.open = self.mainWidget.checkBoxes[output.name].isChecked()
 
         return True
 
-    def setParamValue(self, param, wrapper, alg=None):
-        return param.setValue(wrapper.value())
+    def setParamValue(self, param, wrapper):
+        if wrapper.widget:
+            return param.setValue(wrapper.value())
+        else:
+            return True
 
     def checkExtentCRS(self):
         unmatchingCRS = False
@@ -131,7 +133,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True
             if isinstance(param, ParameterExtent):
-                value = self.mainWidget.valueItems[param.name].leText.text().strip()
+                value = self.mainWidget.wrappers[param.name].widget.leText.text().strip()
                 if value:
                     hasExtent = True
 

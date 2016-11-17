@@ -123,7 +123,6 @@ class Parameter(object):
 
         self.optional = parseBool(optional)
 
-        # TODO: make deep copy and deep update
         self.metadata = deepcopy(self.default_metadata)
         self.metadata.update(deepcopy(metadata))
 
@@ -179,7 +178,7 @@ class Parameter(object):
     def wrapper(self, dialog, row=0, col=0):
         wrapper = self.metadata.get('widget_wrapper', None)
         # wrapper metadata should be a class path
-        if isinstance(wrapper, str):
+        if isinstance(wrapper, basestring):
             tokens = wrapper.split('.')
             mod = __import__('.'.join(tokens[:-1]), fromlist=[tokens[-1]])
             wrapper = getattr(mod, tokens[-1])
@@ -362,7 +361,10 @@ class ParameterExtent(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
+        if self.value is not None:
+            return '"' + str(self.value) + '"'
+        else:
+            return str(None)
 
     def getAsScriptCode(self):
         param_type = ''
@@ -582,8 +584,8 @@ class ParameterMultipleInput(ParameterDataObject):
 
     exported = None
 
-    def __init__(self, name='', description='', datatype=-1, optional=False):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+    def __init__(self, name='', description='', datatype=-1, optional=False, metadata={}):
+        ParameterDataObject.__init__(self, name, description, None, optional, metadata=metadata)
         self.datatype = int(float(datatype))
         self.exported = None
         self.minNumInputs = 0
@@ -1133,8 +1135,8 @@ class ParameterString(Parameter):
     ESCAPED_NEWLINE = '\\n'
 
     def __init__(self, name='', description='', default=None, multiline=False,
-                 optional=False, evaluateExpressions=False):
-        Parameter.__init__(self, name, description, default, optional)
+                 optional=False, evaluateExpressions=False, metadata={}):
+        Parameter.__init__(self, name, description, default, optional, metadata)
         self.multiline = parseBool(multiline)
         self.evaluateExpressions = parseBool(evaluateExpressions)
 

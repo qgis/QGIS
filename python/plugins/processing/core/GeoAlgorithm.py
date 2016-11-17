@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -38,6 +35,9 @@ from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
 from qgis.core import QgsVectorLayer, QgsRasterLayer
 
+from builtins import str
+from builtins import object
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -46,9 +46,7 @@ from processing.core.parameters import ParameterRaster, ParameterVector, Paramet
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
-from processing.tools.system import setTempOutput
 from processing.algs.help import shortHelp
-
 
 class GeoAlgorithm(object):
 
@@ -134,6 +132,10 @@ class GeoAlgorithm(object):
         """
         pass
 
+
+    def getParametersPanel(self, parent):
+        return ParametersPanel(parent, self) 
+    
     def getCustomParametersDialog(self):
         """If the algorithm has a custom parameters dialog, it should
         be returned here, ready to be executed.
@@ -183,6 +185,12 @@ class GeoAlgorithm(object):
         calling from the console.
         """
         return None
+    
+    def processBeforeAddingToModeler(self, alg, model):
+        """Add here any task that has to be performed before adding an algorithm
+        to a model, such as changing the value of a parameter depending on value
+        of another one""" 
+        pass 
 
     # =========================================================
 

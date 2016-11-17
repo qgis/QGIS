@@ -67,10 +67,9 @@ class ParametersPanel(BASE, WIDGET):
 
         self.parent = parent
         self.alg = alg
-        self.valueItems = {}
         self.wrappers = {}
+        self.outputWidgets = {}
         self.labels = {}
-        self.widgets = {}
         self.checkBoxes = {}
         self.dependentItems = {}
         self.iterateButtons = {}
@@ -102,41 +101,39 @@ class ParametersPanel(BASE, WIDGET):
 
             wrapper = self.getWidgetWrapperFromParameter(param)
             self.wrappers[param.name] = wrapper
-            self.valueItems[param.name] = wrapper.widget
             widget = wrapper.widget
 
-            if isinstance(param, ParameterVector):
-                layout = QHBoxLayout()
-                layout.setSpacing(2)
-                layout.setMargin(0)
-                layout.addWidget(widget)
-                button = QToolButton()
-                icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
-                button.setIcon(icon)
-                button.setToolTip(self.tr('Iterate over this layer'))
-                button.setCheckable(True)
-                layout.addWidget(button)
-                self.iterateButtons[param.name] = button
-                button.toggled.connect(self.buttonToggled)
-                widget = QWidget()
-                widget.setLayout(layout)
-
-            tooltips = self.alg.getParameterDescriptions()
-            widget.setToolTip(tooltips.get(param.name, param.description))
-
-            label = QLabel(desc)
-            # label.setToolTip(tooltip)
-            self.labels[param.name] = label
-            if param.isAdvanced:
-                self.layoutAdvanced.addWidget(label)
-                self.layoutAdvanced.addWidget(widget)
-            else:
-                self.layoutMain.insertWidget(
-                    self.layoutMain.count() - 2, label)
-                self.layoutMain.insertWidget(
-                    self.layoutMain.count() - 2, widget)
-
-            self.widgets[param.name] = widget
+            if widget is not None:
+                if isinstance(param, ParameterVector):
+                    layout = QHBoxLayout()
+                    layout.setSpacing(2)
+                    layout.setMargin(0)
+                    layout.addWidget(widget)
+                    button = QToolButton()
+                    icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
+                    button.setIcon(icon)
+                    button.setToolTip(self.tr('Iterate over this layer'))
+                    button.setCheckable(True)
+                    layout.addWidget(button)
+                    self.iterateButtons[param.name] = button
+                    button.toggled.connect(self.buttonToggled)
+                    widget = QWidget()
+                    widget.setLayout(layout)
+    
+                tooltips = self.alg.getParameterDescriptions()
+                widget.setToolTip(tooltips.get(param.name, param.description))
+    
+                label = QLabel(desc)
+                # label.setToolTip(tooltip)
+                self.labels[param.name] = label
+                if param.isAdvanced:
+                    self.layoutAdvanced.addWidget(label)
+                    self.layoutAdvanced.addWidget(widget)
+                else:
+                    self.layoutMain.insertWidget(
+                        self.layoutMain.count() - 2, label)
+                    self.layoutMain.insertWidget(
+                        self.layoutMain.count() - 2, widget)
 
         for output in self.alg.outputs:
             if output.hidden:
@@ -152,8 +149,7 @@ class ParametersPanel(BASE, WIDGET):
                 check.setChecked(True)
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name] = check
-            self.valueItems[output.name] = widget
-
+            self.outputWidgets[output.name] = widget
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
 
