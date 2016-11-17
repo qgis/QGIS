@@ -175,6 +175,9 @@ class SERVER_EXPORT QgsServerProjectParser
 
     /** Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
+
+    /** Reads list entry from project properties*/
+    QStringList readListEntry( const QString& scope, const QString& key ) const;
 };
 
 #endif // QGSSERVERPROJECTPARSER_H
