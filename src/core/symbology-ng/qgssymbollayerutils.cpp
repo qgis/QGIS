@@ -574,12 +574,12 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 
-QIcon QgsSymbolLayerUtils::symbolPreviewIcon( QgsSymbol* symbol, QSize size )
+QIcon QgsSymbolLayerUtils::symbolPreviewIcon( QgsSymbol* symbol, QSize size, int padding )
 {
-  return QIcon( symbolPreviewPixmap( symbol, size ) );
+  return QIcon( symbolPreviewPixmap( symbol, size, padding ) );
 }
 
-QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext )
+QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol* symbol, QSize size, int padding, QgsRenderContext* customContext )
 {
   Q_ASSERT( symbol );
 
@@ -588,9 +588,21 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol* symbol, QSize size,
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
+
   if ( customContext )
+  {
     customContext->setPainter( &painter );
+  }
+
+  if ( padding > 0 )
+  {
+    size.setWidth( size.rwidth() - ( padding * 2 ) );
+    size.setHeight( size.rheight() - ( padding * 2 ) );
+    painter.translate( padding, padding );
+  }
+
   symbol->drawPreviewIcon( &painter, size, customContext );
+
   painter.end();
   return pixmap;
 }
@@ -636,12 +648,12 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUni
   return QIcon( pixmap );
 }
 
-QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsColorRamp* ramp, QSize size )
+QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsColorRamp* ramp, QSize size, int padding )
 {
-  return QIcon( colorRampPreviewPixmap( ramp, size ) );
+  return QIcon( colorRampPreviewPixmap( ramp, size, padding ) );
 }
 
-QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size )
+QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size, int padding )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -650,7 +662,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp* ramp, QSize s
   painter.begin( &pixmap );
 
   //draw stippled background, for transparent images
-  drawStippledBackground( &painter, QRect( 0, 0, size.width(), size.height() ) );
+  drawStippledBackground( &painter, QRect( padding, padding, size.width() - padding * 2, size.height() - padding  * 2 ) );
 
   // antialising makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
@@ -658,7 +670,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp* ramp, QSize s
   {
     QPen pen( ramp->color( static_cast< double >( i ) / size.width() ) );
     painter.setPen( pen );
-    painter.drawLine( i, 0, i, size.height() - 1 );
+    painter.drawLine( i, 0 + padding, i, size.height() - 1 - padding );
   }
   painter.end();
   return pixmap;

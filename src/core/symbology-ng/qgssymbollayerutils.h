@@ -138,7 +138,23 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
-    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size );
+    /** Returns an icon preview for a color ramp.
+     * @param symbol symbol
+     * @param size target pixmap size
+     * @param padding space between icon edge and symbol
+     * @see symbolPreviewPixmap()
+     */
+    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size, int padding = 0 );
+
+    /** Returns a pixmap preview for a color ramp.
+     * @param symbol symbol
+     * @param size target pixmap size
+     * @param padding space between icon edge and symbol
+     * @param customContext render context to use when rendering symbol
+     * @note customContext parameter added in 2.6
+     * @see symbolPreviewIcon()
+     */
+    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, int padding = 0, QgsRenderContext* customContext = nullptr );
 
     /** Draws a symbol layer preview to a QPicture
      * @param layer symbol layer to draw
@@ -161,24 +177,23 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    /** Returns a icon preview for a color ramp.
+    /** Returns an icon preview for a color ramp.
      * @param ramp color ramp
      * @param size target icon size
+     * @param padding space between icon edge and color ramp
      * @see colorRampPreviewPixmap()
      */
-    static QIcon colorRampPreviewIcon( QgsColorRamp* ramp, QSize size );
+    static QIcon colorRampPreviewIcon( QgsColorRamp* ramp, QSize size, int padding = 0 );
 
     /** Returns a pixmap preview for a color ramp.
      * @param ramp color ramp
      * @param size target pixmap size
+     * @param padding space between icon edge and color ramp
      * @see colorRampPreviewIcon()
      */
-    static QPixmap colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size );
+    static QPixmap colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size, int padding = 0 );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
-
-    //! @note customContext parameter added in 2.6
-    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = nullptr );
 
     //! Returns the maximum estimated bleed for the symbol
     static double estimateMaxSymbolBleed( QgsSymbol* symbol );
