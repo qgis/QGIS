@@ -995,6 +995,27 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString& symbol )
   return tagList;
 }
 
+QString QgsStyle::tag( int id ) const
+{
+  if ( !mCurrentDB )
+    return QString();
+
+  sqlite3_stmt *ppStmt;
+
+  char *query = sqlite3_mprintf( "SELECT name FROM tag WHERE id=%d", id );
+  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+
+  QString tag;
+  if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    tag = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+  }
+
+  sqlite3_finalize( ppStmt );
+
+  return tag;
+}
+
 int QgsStyle::getId( const QString& table, const QString& name )
 {
   char *query = sqlite3_mprintf( "SELECT id FROM %q WHERE LOWER(name)='%q'", table.toUtf8().constData(), name.toUtf8().toLower().constData() );

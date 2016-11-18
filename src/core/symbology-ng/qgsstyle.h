@@ -301,6 +301,9 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     QStringList tagsOfSymbol( StyleEntity type, const QString& symbol );
 
+    //! Returns the tag name for the given id
+    QString tag( int id ) const;
+
     //! Returns the smart groups map with id as key and name as value
     QgsSymbolGroupMap smartgroupsListMap();
 

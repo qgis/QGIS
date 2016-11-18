@@ -63,7 +63,11 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void groupChanged( const QModelIndex& );
     void groupRenamed( QStandardItem * );
-    void addGroup();
+    //! add a tag
+    int addTag();
+    //! add a smartgroup
+    int addSmartgroup();
+    //! remove a tag or smartgroup
     void removeGroup();
 
     //! carry out symbol tagging using check boxes
@@ -97,7 +101,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Remove selected symbols from favorites
     void removeFavoriteSelectedSymbols();
     //! Tag selected symbols using menu item selection
-    void tagSelectedSymbols();
+    void tagSelectedSymbols( bool newTag = false );
     //! Remove all tags from selected symbols
     void detagSelectedSymbols();
 

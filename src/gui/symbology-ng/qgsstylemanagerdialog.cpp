@@ -30,13 +30,14 @@
 #include "qgsstyleexportimportdialog.h"
 #include "qgssmartgroupeditordialog.h"
 
+#include <QAction>
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QSettings>
 #include <QStandardItemModel>
-#include <QAction>
 #include <QMenu>
 
 #include "qgsapplication.h"
@@ -59,28 +60,33 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
-  searchBox->setPlaceholderText( tr( "Type here to filter symbols..." ) );
+  searchBox->setPlaceholderText( tr( "Filter symbols…" ) );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
   connect( listItems, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editItem() ) );
 
-  connect( btnAddItem, SIGNAL( clicked() ), this, SLOT( addItem() ) );
-  connect( actnEditItem, SIGNAL( triggered( bool ) ), this, SLOT( editItem() ) );
-  connect( actnRemoveItem, SIGNAL( triggered( bool ) ), this, SLOT( removeItem() ) );
-
-  btnRemoveItem->setDefaultAction( actnRemoveItem );
-  btnEditItem->setDefaultAction( actnEditItem );
+  connect( btnAddItem, &QPushButton::clicked, [=]( bool ) { addItem(); }
+         );
+  connect( btnEditItem, &QPushButton::clicked, [=]( bool ) { editItem(); }
+         );
+  connect( actnEditItem, &QAction::triggered, [=]( bool ) { editItem(); }
+         );
+  connect( btnRemoveItem, &QPushButton::clicked, [=]( bool ) { removeItem(); }
+         );
+  connect( actnRemoveItem, &QAction::triggered, [=]( bool ) { removeItem(); }
+         );
 
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
+  QAction *exportAction = new QAction( tr( "Export symbol(s)…" ), this );
+  exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
+  shareMenu->addAction( exportAction );
+  QAction *importAction = new QAction( tr( "Import symbol(s)…" ), this );
+  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
+  shareMenu->addAction( importAction );
+  shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
   shareMenu->addAction( actnExportAsSVG );
-  QAction *exportAction = new QAction( tr( "Export..." ), this );
-  shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import..." ), this );
-  shareMenu->addAction( importAction );
-  exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
-  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
   connect( actnExportAsPNG, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
   connect( actnExportAsSVG, SIGNAL( triggered() ), this, SLOT( exportItemsSVG() ) );
   connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
@@ -106,6 +112,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   groupTree->setModel( groupModel );
   groupTree->setHeaderHidden( true );
   populateGroups();
+  groupTree->setCurrentIndex( groupTree->model()->index( 0, 0 ) );
+
   connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
            this, SLOT( groupChanged( const QModelIndex& ) ) );
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
@@ -167,8 +175,12 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, SIGNAL( triggered( bool ) ), this, SLOT( editSmartgroupAction() ) );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddGroup, SIGNAL( triggered( bool ) ), this, SLOT( addGroup() ) );
-  mGroupTreeContextMenu->addAction( actnAddGroup );
+  connect( actnAddTag, &QAction::triggered, [=]( bool ) { addTag(); }
+         );
+  mGroupTreeContextMenu->addAction( actnAddTag );
+  connect( actnAddSmartgroup, &QAction::triggered, [=]( bool ) { addSmartgroup(); }
+         );
+  mGroupTreeContextMenu->addAction( actnAddSmartgroup );
   connect( actnRemoveGroup, SIGNAL( triggered( bool ) ), this, SLOT( removeGroup() ) );
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
@@ -232,6 +244,7 @@ void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
+  searchBox->setPlaceholderText( flag ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
   btnAddItem->setMenu( flag ? nullptr : mMenuBtnAddItemColorRamp );
   actnExportAsPNG->setVisible( flag );
   actnExportAsSVG->setVisible( flag );
@@ -945,24 +958,25 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
   if ( category == QLatin1String( "all" ) || category == QLatin1String( "tags" ) || category == QLatin1String( "smartgroups" ) )
   {
     enableGroupInputs( false );
-    if ( category == QLatin1String( "tags" ) || category == QLatin1String( "smartgroups" ) )
+    if ( category == QLatin1String( "tags" ) )
     {
-      btnAddGroup->setEnabled( true );
-      actnAddGroup->setEnabled( true );
+      actnAddTag->setEnabled( true );
+      actnAddSmartgroup->setEnabled( false );
+    }
+    else if ( category == QLatin1String( "smartgroups" ) )
+    {
+      actnAddTag->setEnabled( false );
+      actnAddSmartgroup->setEnabled( true );
     }
     symbolNames = currentItemType() < 3 ? mStyle->symbolNames() : mStyle->colorRampNames();
   }
   else if ( category == QLatin1String( "favorite" ) )
   {
-    btnAddGroup->setEnabled( true );
-    actnAddGroup->setEnabled( true );
     enableGroupInputs( false );
-
     symbolNames = mStyle->symbolsOfFavorite( type );
   }
   else if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    btnRemoveGroup->setEnabled( true );
     actnRemoveGroup->setEnabled( true );
     btnManageGroups->setEnabled( true );
     int groupId = index.data( Qt::UserRole + 1 ).toInt();
@@ -995,7 +1009,8 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
   }
 
   actnEditSmartGroup->setVisible( false );
-  actnAddGroup->setVisible( false );
+  actnAddTag->setVisible( false );
+  actnAddSmartgroup->setVisible( false );
   actnRemoveGroup->setVisible( false );
   actnTagSymbols->setVisible( false );
   actnFinishTagging->setVisible( false );
@@ -1006,81 +1021,60 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
     {
       actnEditSmartGroup->setVisible( !mGrouppingMode );
     }
-    else
+    else if ( index.parent().data( Qt::UserRole + 1 ).toString() == QLatin1String( "tags" ) )
     {
-      actnAddGroup->setVisible( !mGrouppingMode );
+      actnAddTag->setVisible( !mGrouppingMode );
       actnTagSymbols->setVisible( !mGrouppingMode );
       actnFinishTagging->setVisible( mGrouppingMode );
     }
     actnRemoveGroup->setVisible( true );
   }
-  else if ( index.data( Qt::UserRole + 1 ) == "tags" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
+  else if ( index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    actnAddGroup->setVisible( !mGrouppingMode );
+    actnAddSmartgroup->setVisible( !mGrouppingMode );
+  }
+  else if ( index.data( Qt::UserRole + 1 ) == "tags" )
+  {
+    actnAddTag->setVisible( !mGrouppingMode );
   }
 }
 
-void QgsStyleManagerDialog::addGroup()
+int QgsStyleManagerDialog::addTag()
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
-  QModelIndex index = groupTree->currentIndex();
-
-  // don't allow creation of tag/smartgroup against system-defined groupings
-  QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == QLatin1String( "all" ) || data == "favorite" )
+  QModelIndex index;
+  for ( int i = 0; i < groupTree->model()->rowCount(); i++ )
   {
-    int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
-                                     tr( "The parent group you have selected is not user editable.\n"
-                                         "Kindly select a user defined group." ) );
-    if ( err )
-      return;
+    index = groupTree->model()->index( i, 0 );
+    QString data = index.data( Qt::UserRole + 1 ).toString();
+    if ( data == QLatin1String( "tags" ) )
+    {
+      break;
+    }
   }
 
   QString itemName;
   int id;
+  bool ok;
+  itemName = QInputDialog::getText( this, tr( "Tag name" ),
+                                    tr( "Please enter name for the new tag:" ), QLineEdit::Normal, tr( "New tag" ), &ok ).trimmed();
+  if ( !ok || itemName.isEmpty() )
+    return 0;
 
-  //
-  if ( index.parent() !=  QModelIndex() )
+  int check = mStyle->tagId( itemName );
+  if ( check > 0 )
   {
-    index = index.parent();
-    data = index.data( Qt::UserRole + 1 ).toString();
+    QMessageBox::critical( this, tr( "Error!" ),
+                           tr( "Tag name already exists in your symbol database." ) );
+    return 0;
   }
-
-  if ( data == QLatin1String( "smartgroups" ) )
+  id = mStyle->addTag( itemName );
+  if ( !id )
   {
-    // create a smartgroup
-    QgsSmartGroupEditorDialog dlg( mStyle, this );
-    if ( dlg.exec() == QDialog::Rejected )
-      return;
-    id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
-    if ( !id )
-      return;
-    itemName = dlg.smartgroupName();
-  }
-  else
-  {
-    // create a tag
-    bool ok;
-    itemName = QInputDialog::getText( this, tr( "Tag name" ),
-                                      tr( "Please enter name for the new tag:" ), QLineEdit::Normal, tr( "New tag" ), &ok ).trimmed();
-    if ( !ok || itemName.isEmpty() )
-      return;
-
-    int check = mStyle->tagId( itemName );
-    if ( check > 0 )
-    {
-      QMessageBox::critical( this, tr( "Error!" ),
-                             tr( "Tag name already exists in your symbol database." ) );
-      return;
-    }
-    id = mStyle->addTag( itemName );
-    if ( !id )
-    {
-      QMessageBox::critical( this, tr( "Error!" ),
-                             tr( "New tag could not be created.\n"
-                                 "There was a problem with your symbol database." ) );
-      return;
-    }
+    QMessageBox::critical( this, tr( "Error!" ),
+                           tr( "New tag could not be created.\n"
+                               "There was a problem with your symbol database." ) );
+    return 0;
   }
 
   QStandardItem *parentItem = model->itemFromIndex( index );
@@ -1088,7 +1082,39 @@ void QgsStyleManagerDialog::addGroup()
   childItem->setData( id );
   parentItem->appendRow( childItem );
 
-  groupTree->setCurrentIndex( childItem->index() );
+  return id;
+}
+
+int QgsStyleManagerDialog::addSmartgroup()
+{
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QModelIndex index;
+  for ( int i = 0; i < groupTree->model()->rowCount(); i++ )
+  {
+    index = groupTree->model()->index( i, 0 );
+    QString data = index.data( Qt::UserRole + 1 ).toString();
+    if ( data == QLatin1String( "smartgroups" ) )
+    {
+      break;
+    }
+  }
+
+  QString itemName;
+  int id;
+  QgsSmartGroupEditorDialog dlg( mStyle, this );
+  if ( dlg.exec() == QDialog::Rejected )
+    return 0;
+  id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
+  if ( !id )
+    return 0;
+  itemName = dlg.smartgroupName();
+
+  QStandardItem *parentItem = model->itemFromIndex( index );
+  QStandardItem *childItem = new QStandardItem( itemName );
+  childItem->setData( id );
+  parentItem->appendRow( childItem );
+
+  return id;
 }
 
 void QgsStyleManagerDialog::removeGroup()
@@ -1280,9 +1306,10 @@ void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection& select
 void QgsStyleManagerDialog::enableSymbolInputs( bool enable )
 {
   groupTree->setEnabled( enable );
-  btnAddGroup->setEnabled( enable );
-  actnAddGroup->setEnabled( enable );
-  btnRemoveGroup->setEnabled( enable );
+  btnAddTag->setEnabled( enable );
+  btnAddSmartgroup->setEnabled( enable );
+  actnAddTag->setEnabled( enable );
+  actnAddSmartgroup->setEnabled( enable );
   actnRemoveGroup->setEnabled( enable );
   btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
   searchBox->setEnabled( enable );
@@ -1290,8 +1317,6 @@ void QgsStyleManagerDialog::enableSymbolInputs( bool enable )
 
 void QgsStyleManagerDialog::enableGroupInputs( bool enable )
 {
-  btnAddGroup->setEnabled( enable );
-  btnRemoveGroup->setEnabled( enable );
   actnRemoveGroup->setEnabled( enable );
   btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
 }
@@ -1351,9 +1376,19 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   {
     a = new QAction( tag, mGroupListMenu );
     a->setData( tag );
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( tagSelectedSymbols() ) );
+    connect( a, &QAction::triggered, this, [=]( bool ) { tagSelectedSymbols(); }
+           );
     mGroupListMenu->addAction( a );
   }
+
+  if ( tags.count() > 0 )
+  {
+    mGroupListMenu->addSeparator();
+  }
+  a = new QAction( "Create new tag... ", mGroupListMenu );
+  connect( a, &QAction::triggered, this, [=]( bool ) { tagSelectedSymbols( true ); }
+         );
+  mGroupListMenu->addAction( a );
 
   mGroupMenu->popup( globalPos );
 }
@@ -1392,10 +1427,9 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
   populateList();
 }
 
-void QgsStyleManagerDialog::tagSelectedSymbols()
+void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
 {
   QAction* selectedItem = qobject_cast<QAction*>( sender() );
-
   if ( selectedItem )
   {
     QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
@@ -1404,7 +1438,23 @@ void QgsStyleManagerDialog::tagSelectedSymbols()
       QgsDebugMsg( "unknown entity type" );
       return;
     }
-    QString tag = selectedItem->data().toString();
+
+    QString tag;
+    if ( newTag )
+    {
+      int id = addTag();
+      if ( id == 0 )
+      {
+        return;
+      }
+
+      tag = mStyle->tag( id );
+    }
+    else
+    {
+      tag = selectedItem->data().toString();
+    }
+
     QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex& index, indexes )
     {
