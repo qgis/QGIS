@@ -492,7 +492,7 @@
         <file>themes/default/scale_bar.png</file>
         <file>themes/default/stars_empty.png</file>
         <file>themes/default/stars_full.png</file>
-        <file>themes/default/styleicons/color.png</file>
+        <file>themes/default/styleicons/color.svg</file>
         <file>themes/default/styleicons/style-line.png</file>
         <file>themes/default/styleicons/style-point.png</file>
         <file>themes/default/styleicons/style-polygon.png</file>

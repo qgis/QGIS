@@ -887,7 +887,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/color.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/color.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -903,7 +903,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/style-polygon.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconPolygonLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -930,7 +930,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/style-line.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconLineLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -982,7 +982,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/style-point.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconPointLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>

@@ -211,6 +211,7 @@ void QgsSymbolsListWidget::populateSymbolView()
     symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, id );
   }
 
+  symbols.sort();
   populateSymbols( symbols );
 }
 
@@ -233,10 +234,11 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
       delete s;
       continue;
     }
+    QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, names[i] );
     QStandardItem* item = new QStandardItem( names[i] );
     item->setData( names[i], Qt::UserRole ); //so we can load symbol with that name
     item->setText( names[i] );
-    item->setToolTip( names[i] );
+    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( names[i] ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     // Set font to 10points to show reasonable text
     QFont itemFont = item->font();
