@@ -388,7 +388,7 @@ void TestStyle::testTags()
 
   //searching returns symbols with matching tags
   symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, QStringLiteral( "red" ) );
-  QCOMPARE( symbols.count(), 2 );
+  QCOMPARE( symbols.count(), 13 );
   QVERIFY( symbols.contains( "symbol1" ) );
   QVERIFY( symbols.contains( "red circle" ) );
   symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, QStringLiteral( "symbol1" ) );
@@ -399,7 +399,7 @@ void TestStyle::testTags()
   QVERIFY( symbols.contains( "symbol1" ) );
   QVERIFY( symbols.contains( "blue starry" ) );
   symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, QStringLiteral( "blue" ) );
-  QCOMPARE( symbols.count(), 1 );
+  QCOMPARE( symbols.count(), 12 );
   QVERIFY( symbols.contains( "blue starry" ) );
   symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, QStringLiteral( "round" ) );
   QCOMPARE( symbols.count(), 1 );
