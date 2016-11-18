@@ -842,16 +842,19 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString& symbol, const QString
 
       sqlite3_finalize( ppStmt );
 
-      // Now map the tag to the symbol
-      query = type == SymbolEntity
-              ? sqlite3_mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
-              : sqlite3_mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
-
-      char *zErr = nullptr;
-      nErr = sqlite3_exec( mCurrentDB, query, nullptr, nullptr, &zErr );
-      if ( nErr )
+      // Now map the tag to the symbol if it's not already tagged
+      if ( !symbolHasTag( type, symbol, tag ) )
       {
-        QgsDebugMsg( zErr );
+        query = type == SymbolEntity
+                ? sqlite3_mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
+                : sqlite3_mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
+
+        char *zErr = nullptr;
+        nErr = sqlite3_exec( mCurrentDB, query, nullptr, nullptr, &zErr );
+        if ( nErr )
+        {
+          QgsDebugMsg( zErr );
+        }
       }
     }
   }
@@ -993,6 +996,43 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString& symbol )
   sqlite3_finalize( ppStmt );
 
   return tagList;
+}
+
+bool QgsStyle::symbolHasTag( StyleEntity type, const QString& symbol, const QString& tag )
+{
+  if ( !mCurrentDB )
+  {
+    QgsDebugMsg( "Sorry! Cannot open database for getting the tags." );
+    return false;
+  }
+
+  int symbolid = type == SymbolEntity ? symbolId( symbol ) : colorrampId( symbol );
+  if ( !symbolid )
+  {
+    return false;
+  }
+  int tagid = tagId( tag );
+  if ( !tagid )
+  {
+    return false;
+  }
+
+  // get the ids of tags for the symbol
+  char *query = type == SymbolEntity
+                ? sqlite3_mprintf( "SELECT tag_id FROM tagmap WHERE tag_id=%d AND symbol_id=%d", tagid, symbolid )
+                : sqlite3_mprintf( "SELECT tag_id FROM ctagmap WHERE tag_id=%d AND colorramp_id=%d", tagid, symbolid );
+
+  sqlite3_stmt *ppStmt;
+  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QString QgsStyle::tag( int id ) const

@@ -236,6 +236,15 @@ class QgsStyle : QObject
      */
     QStringList tagsOfSymbol( StyleEntity type, const QString& symbol );
 
+    /** Returns wheter a given tag is associated with the symbol
+     *
+     *  \param type is either SymbolEntity or ColorrampEntity
+     *  \param symbol is the name of the symbol or color ramp
+     *  \param tag the name of the tag to look for
+     *  \return A boolean value identicating whether a tag was found attached to the symbol
+     */
+    bool symbolHasTag( StyleEntity type, const QString& symbol, const QString& tag );
+
     //! Returns the tag name for the given id
     QString tag( int id ) const;
 

@@ -271,19 +271,19 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList& symbolNames, boo
   model->clear();
 
   int type = currentItemType();
-
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
     QString name = symbolNames[i];
     QgsSymbol* symbol = mStyle->symbol( name );
     if ( symbol && symbol->type() == type )
     {
+      QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, name );
       QStandardItem* item = new QStandardItem( name );
       QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 18 );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
-      item->setToolTip( name );
+      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
       // add to model
       model->appendRow( item );
     }
@@ -994,6 +994,7 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
     }
   }
 
+  symbolNames.sort();
   if ( currentItemType() < 3 )
   {
     populateSymbols( symbolNames, mGrouppingMode );
@@ -1271,14 +1272,14 @@ void QgsStyleManagerDialog::setSymbolsChecked( const QStringList& symbols )
 void QgsStyleManagerDialog::filterSymbols( const QString& qword )
 {
   QStringList items;
+  items = mStyle->findSymbols( currentItemType() < 3 ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity, qword );
+  items.sort();
   if ( currentItemType() == 3 )
   {
-    items = mStyle->findSymbols( QgsStyle::ColorrampEntity, qword );
     populateColorRamps( items );
   }
   else
   {
-    items = mStyle->findSymbols( QgsStyle::SymbolEntity, qword );
     populateSymbols( items );
   }
 }
