@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsSpatialIndex
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -63,13 +63,14 @@ class SplitWithLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                                                                      layerA.wkbType(), layerA.crs())
 
-        spatialIndex = vector.spatialindex(splitLayer)
+        spatialIndex = QgsSpatialIndex()
         splitGeoms = {}
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes([])
 
         for aSplitFeature in vector.features(splitLayer, request):
             splitGeoms[aSplitFeature.id()] = aSplitFeature.geometry()
+            spatialIndex.insertFeature(aSplitFeature)
             # honor the case that user has selection on split layer and has setting "use selection"
 
         outFeat = QgsFeature()
