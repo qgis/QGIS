@@ -1544,4 +1544,11 @@ tests:
         name: expected/extract_by_attribute_greater.gml
         type: vector
 
-
+  - algorithm: qgis:createattributeindex
+    name: Create Attribute Index (only tests for python errors, does not check result)
+    params:
+      FIELD: fid
+      INPUT:
+        name: lines.gml
+        type: vector
+    results: {}
