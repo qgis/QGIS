@@ -301,7 +301,10 @@ void TestStyle::testTags()
   id = mStyle->addTag( QStringLiteral( "blue" ) );
   QCOMPARE( id, mStyle->tagId( "blue" ) );
   id = mStyle->addTag( QStringLiteral( "purple" ) );
+
+  //check tagid and tag return values
   QCOMPARE( id, mStyle->tagId( "purple" ) );
+  QCOMPARE( QStringLiteral( "purple" ), mStyle->tag( id ) );
 
   QStringList tags = mStyle->tags();
   QCOMPARE( tags.count(), 5 );
@@ -347,6 +350,12 @@ void TestStyle::testTags()
   QCOMPARE( tags.count(), 2 );
   QVERIFY( tags.contains( "red" ) );
   QVERIFY( tags.contains( "starry" ) );
+
+  //check that a given tag is attached to a symbol
+  QVERIFY( mStyle->symbolHasTag( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ), QStringLiteral( "blue" ) ) );
+
+  //check that a given tag is not attached to a symbol
+  QCOMPARE( false, mStyle->symbolHasTag( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ), QStringLiteral( "notblue" ) ) );
 
   //remove a tag, including a non-present tag
   QVERIFY( mStyle->detagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << "bad" << "blue" ) );
