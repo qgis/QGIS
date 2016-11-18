@@ -2198,9 +2198,8 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   if ( ctx )
   {
     QgsExpressionContext newContext;
+    newContext.appendScope( QgsExpressionContextUtils::projectScope() );
     ctx->setExpressionContext( newContext );
-    QgsExpressionContext&  expCtx = ctx->expressionContext();
-    expCtx.appendScope( QgsExpressionContextUtils::projectScope() );
   }
 
   return 0;
