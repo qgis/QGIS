@@ -207,7 +207,7 @@ class ModelerParametersDialog(QDialog):
                 if isText:
                     self.txtHelp.setHtml(algHelp)
                 else:
-                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                    html = self.tr('<p>Downloading algorithm help… Please wait.</p>')
                     self.txtHelp.setHtml(html)
                     self.tabWidget.addTab(self.txtHelp, 'Help')
                     self.reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(algHelp))

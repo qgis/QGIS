@@ -40,7 +40,7 @@
         <string>Open script</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+O, Return</string>
@@ -56,7 +56,7 @@
         <string>Save</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+S</string>
@@ -69,10 +69,10 @@
      <item>
       <widget class="QToolButton" name="btnSaveAs">
        <property name="toolTip">
-        <string>Save as...</string>
+        <string>Save as…</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+Shift+S</string>
@@ -95,7 +95,7 @@
         <string>Edit script help</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -115,7 +115,7 @@
         <string>Run algorithm</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>F5</string>
@@ -138,7 +138,7 @@
         <string>Cut</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+X</string>
@@ -154,7 +154,7 @@
         <string>Copy</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+C</string>
@@ -170,7 +170,7 @@
         <string>Paste</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+V</string>
@@ -193,7 +193,7 @@
         <string>Undo</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+Z</string>
@@ -209,7 +209,7 @@
         <string>Redo</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+Shift+Z</string>
@@ -229,7 +229,7 @@
      <item>
       <widget class="QToolButton" name="btnSnippets">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>

@@ -74,7 +74,7 @@
    <item row="5" column="2">
     <widget class="QgsDataDefinedButton" name="mSpreadDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -172,7 +172,7 @@
    <item row="8" column="2" rowspan="2">
     <widget class="QgsDataDefinedButton" name="mRefPoint1YDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -257,14 +257,14 @@
    <item row="17" column="2">
     <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
     <widget class="QgsDataDefinedButton" name="mCoordinateModeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -301,7 +301,7 @@
    <item row="3" column="2">
     <widget class="QgsDataDefinedButton" name="mGradientTypeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -315,21 +315,21 @@
    <item row="0" column="2">
     <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="13" column="2" rowspan="2">
     <widget class="QgsDataDefinedButton" name="mRefPoint2YDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="15" column="2">
     <widget class="QgsDataDefinedButton" name="mRefPoint2CentroidDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -432,14 +432,14 @@
    <item row="10" column="2">
     <widget class="QgsDataDefinedButton" name="mRefPoint1CentroidDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -483,7 +483,7 @@
    <item row="6" column="2" rowspan="2">
     <widget class="QgsDataDefinedButton" name="mRefPoint1XDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -497,7 +497,7 @@
    <item row="12" column="2">
     <widget class="QgsDataDefinedButton" name="mRefPoint2XDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

@@ -305,7 +305,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
           {
             QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( *lIt );
             QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
-            //can only add topological points if background layer is editable...
+            //can only add topological points if background layer is editable…
             if ( vl && vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
             {
               vl->addTopologicalPoints( f->geometry() );

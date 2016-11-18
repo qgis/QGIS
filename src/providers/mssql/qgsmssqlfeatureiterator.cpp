@@ -70,7 +70,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   // build sql statement
 
-  // note: 'SELECT ' is added later, to account for 'SELECT TOP...' type queries
+  // note: 'SELECT ' is added later, to account for 'SELECT TOP…' type queries
   mStatement += QStringLiteral( "[%1]" ).arg( mSource->mFidColName );
   mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
   mAttributesToFetch.append( mFidCol );

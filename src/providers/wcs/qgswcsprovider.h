@@ -447,7 +447,7 @@ class QgsWcsDownloadHandler : public QObject
 
     QgsRasterBlockFeedback* mFeedback;
 
-    static int sErrors; // this should be ideally per-provider...?
+    static int sErrors; // this should be ideally per-provider…?
 };
 
 

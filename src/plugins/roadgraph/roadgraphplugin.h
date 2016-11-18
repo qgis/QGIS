@@ -37,7 +37,7 @@ class RgLineVectorLayerSettings;
 /**
 * \class RoadGraphPlugin
 * \brief Road graph plugin for QGIS
-* This plugin can solve the shotrest path problem and etc...
+* This plugin can solve the shotrest path problem and etc…
 */
 class RoadGraphPlugin: public QObject, public QgisPlugin
 {
@@ -115,7 +115,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
 
     ////////////////////////////////////////////////////////////////////
     //
-    // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
+    // MANDATORY PLUGIN PROPERTY DECLARATIONS  …..
     //
     ////////////////////////////////////////////////////////////////////
 
@@ -123,7 +123,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
 
     ////////////////////////////////////////////////////////////////////
-    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
+    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT…..
     //
     ////////////////////////////////////////////////////////////////////
 

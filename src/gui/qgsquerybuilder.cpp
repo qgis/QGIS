@@ -83,7 +83,7 @@ void QgsQueryBuilder::populateFields()
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
   }
 
-  // All fields get ... setup
+  // All fields get … setup
   setupLstFieldsModel();
 }
 

@@ -60,7 +60,7 @@ class TestQgsMapToolSelect : public QObject
       return out;
     }
 
-    // TODO: make this a QgsGeometry member...
+    // TODO: make this a QgsGeometry member…
     QgsGeometry geomFromHexWKB( const char *hexwkb )
     {
       int wkbsize;

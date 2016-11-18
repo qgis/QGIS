@@ -71,7 +71,7 @@ QgsComposition::QgsComposition( const QgsMapSettings& mapSettings )
 
 void QgsComposition::init()
 {
-  // these members should be ideally in constructor's initialization list, but now we have two constructors...
+  // these members should be ideally in constructor's initialization list, but now we have two constructors…
   mPlotStyle = QgsComposition::Preview;
   mPageWidth = 297;
   mPageHeight = 210;
@@ -214,7 +214,7 @@ void QgsComposition::setAllUnselected()
   //we can't use QGraphicsScene::clearSelection, as that emits no signals
   //and we don't know which items are being unselected
   //accordingly, we can't inform the composition model of selection changes
-  //instead, do the clear selection manually...
+  //instead, do the clear selection manually…
   QList<QGraphicsItem *> selectedItemList = selectedItems();
   QList<QGraphicsItem *>::iterator itemIter = selectedItemList.begin();
 
@@ -723,7 +723,7 @@ const QgsComposerItem* QgsComposition::getComposerItemById( const QString& theId
 #if 0
 const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, bool inAllComposers ) const
 {
-  //This does not work since it seems impossible to get the QgisApp::instance() from here... Is there a workaround ?
+  //This does not work since it seems impossible to get the QgisApp::instance() from here… Is there a workaround ?
   QSet<QgsComposer*> composers = QSet<QgsComposer*>();
 
   if ( inAllComposers )

@@ -103,7 +103,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     void deleteRubberBands();
 
     /** Returns current label's text
-      @param trunc number of chars to truncate to, with ... added */
+      @param trunc number of chars to truncate to, with … added */
     QString currentLabelText( int trunc = 0 );
 
     void currentAlignment( QString& hali, QString& vali );

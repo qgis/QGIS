@@ -2262,7 +2262,7 @@ QgsSymbolLayer* QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   Q_UNUSED( layerName );
-  Q_UNUSED( shift ); //todo...
+  Q_UNUSED( shift ); //todo…
 
   //size
   double size = mSize;

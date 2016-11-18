@@ -338,9 +338,9 @@ bool QgsAttributeForm::saveEdits()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed...
+          if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed…
               || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-              || mLayer->editFormConfig().readOnly( i ) )                           // or the field cannot be edited ...
+              || mLayer->editFormConfig().readOnly( i ) )                           // or the field cannot be edited …
           {
             continue;
           }
@@ -491,7 +491,7 @@ bool QgsAttributeForm::saveMultiEdits()
       continue;
 
     if ( !w->currentValue().isValid() // if the widget returns invalid (== do not change)
-         || mLayer->editFormConfig().readOnly( wIt.key() ) ) // or the field cannot be edited ...
+         || mLayer->editFormConfig().readOnly( wIt.key() ) ) // or the field cannot be edited …
     {
       continue;
     }
@@ -1658,7 +1658,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
     }
 
     default:
-      QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
+      QgsDebugMsg( "Unknown attribute editor widget type encountered…" );
       break;
   }
 

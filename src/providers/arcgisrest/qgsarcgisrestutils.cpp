@@ -196,7 +196,7 @@ static QgsAbstractGeometry* parseEsriGeometryPoint( const QVariantMap& geometryD
 
 static QgsAbstractGeometry* parseEsriGeometryMultiPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
-  // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
+  // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], … ]}
   QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;

@@ -162,7 +162,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
 
-    // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
+    // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, …)
     void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
     int renderingPass() const { return mRenderingPass; }
 

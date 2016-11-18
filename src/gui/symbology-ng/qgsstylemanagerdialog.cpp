@@ -59,7 +59,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
-  searchBox->setPlaceholderText( tr( "Type here to filter symbols..." ) );
+  searchBox->setPlaceholderText( tr( "Type here to filter symbols…" ) );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
@@ -75,9 +75,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
   shareMenu->addAction( actnExportAsPNG );
   shareMenu->addAction( actnExportAsSVG );
-  QAction *exportAction = new QAction( tr( "Export..." ), this );
+  QAction *exportAction = new QAction( tr( "Export…" ), this );
   shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import..." ), this );
+  QAction *importAction = new QAction( tr( "Import…" ), this );
   shareMenu->addAction( importAction );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );

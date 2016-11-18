@@ -946,7 +946,7 @@ def setMacOSXDefaultEnvironment():
     if platform.system() != "Darwin":
         return
 
-    # QgsApplication.prefixPath() contains the path to qgis executable (i.e. .../Qgis.app/MacOS)
+    # QgsApplication.prefixPath() contains the path to qgis executable (i.e. …/Qgis.app/MacOS)
     # get the path to Qgis application folder
     qgis_app = u"%s/.." % QgsApplication.prefixPath()
     qgis_app = QDir(qgis_app).absolutePath()

@@ -318,7 +318,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         RuleList& children() { return mChildren; }
 
         /**
-         * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
+         * Returns all children, grand-children, grand-grand-children, grand-gra… you get it
          *
          * @return A list of descendant rules
          */

@@ -143,7 +143,7 @@ void QgsWmsServer::executeRequest()
   QString request = mParameters.value( QStringLiteral( "REQUEST" ) );
   if ( request.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "unable to find 'REQUEST' parameter, exiting..." ) );
+    QgsMessageLog::logMessage( QStringLiteral( "unable to find 'REQUEST' parameter, exiting…" ) );
     mRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Please check the value of the REQUEST parameter" ) ) );
     cleanupAfterRequest();
     return;

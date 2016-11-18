@@ -73,7 +73,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 5)
         self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
-        self.runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
+        self.runAsBatchButton = QPushButton(self.tr("Run as batch process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         layout.addWidget(self.runAsBatchButton)
         self.cornerWidget.setLayout(layout)
@@ -180,7 +180,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     break
 
             self.progressBar.setMaximum(0)
-            self.lblProgress.setText(self.tr('Processing algorithm...'))
+            self.lblProgress.setText(self.tr('Processing algorithm…'))
             # Make sure the Log tab is visible before executing the algorithm
             try:
                 self.tabWidget.setCurrentIndex(1)
@@ -191,7 +191,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo(
-                self.tr('<b>Algorithm %s starting...</b>') % self.alg.name)
+                self.tr('<b>Algorithm %s starting…</b>') % self.alg.name)
 
             if self.iterateParam:
                 if runalgIterating(self.alg, self.iterateParam, self):

@@ -222,7 +222,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
     // For project file backward compatibility we must support old format:
     // 1. mode: <url>
     //    example: http://example.org/wms?
-    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>...,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
+    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>…,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
     //    example: tiled=256;256;0.703;0.351,url=http://example.org/tilecache?
     //    example: featureCount=10,http://example.org/wms?
     //    example: ignoreUrl=GetMap;GetFeatureInfo,username=cimrman,password=jara,url=http://example.org/wms?
@@ -254,7 +254,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
           {
             // in < 1.9 tiled= may apper in to variants:
             // tiled=width;height - non tiled mode, specifies max width and max height
-            // tiled=width;height;resolutions-1;resolution2;... - tile mode
+            // tiled=width;height;resolutions-1;resolution2;… - tile mode
 
             QStringList params = item.mid( 6 ).split( ';' );
 
@@ -1566,7 +1566,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   }
 
   // now get the style node out and pass it over to the layer
-  // to deserialise...
+  // to deserialise…
   QDomElement namedLayerElem = myRoot.firstChildElement( QStringLiteral( "NamedLayer" ) );
   if ( namedLayerElem.isNull() )
   {

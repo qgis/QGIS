@@ -352,7 +352,7 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString& theString,
     {
       //time to wrap
       //@todo deal with long strings that have no spaces
-      //forcing a break at current pos...
+      //forcing a break at current pos…
       myList << myStringToPreviousSpace.trimmed();
       i = myPreviousSpacePos;
       myStringToPreviousSpace = QLatin1String( "" );

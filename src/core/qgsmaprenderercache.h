@@ -26,7 +26,7 @@
 /** \ingroup core
  * This class is responsible for keeping cache of rendered images of individual layers.
  *
- * Once a layer has rendered image stored in the cache (using setCacheImage(...)),
+ * Once a layer has rendered image stored in the cache (using setCacheImage(…)),
  * the cache listens to repaintRequested() signals from layer. If triggered, the cache
  * removes the rendered image (and disconnects from the layer).
  *

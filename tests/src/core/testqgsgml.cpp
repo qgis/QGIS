@@ -17,7 +17,7 @@
 #include <QtTest/QtTest>
 #include <QUrl>
 
-//qgis includes...
+//qgis includes…
 #include <qgsgeometry.h>
 #include <qgsgml.h>
 #include "qgsapplication.h"

@@ -195,7 +195,7 @@ class ModelerDialog(BASE, WIDGET):
         self.btnRun.setIcon(QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
+            self.searchBox.setPlaceholderText(self.tr('Search…'))
         if hasattr(self.textName, 'setPlaceholderText'):
             self.textName.setPlaceholderText(self.tr('[Enter model name here]'))
         if hasattr(self.textGroup, 'setPlaceholderText'):
@@ -361,7 +361,7 @@ class ModelerDialog(BASE, WIDGET):
                                         self.tr("This model can't be saved in its "
                                                 "original location (probably you do not "
                                                 "have permission to do it). Please, use "
-                                                "the 'Save as...' option."))
+                                                "the 'Save as…' option."))
                 return
             self.update_model.emit()
             self.bar.pushMessage("", "Model was correctly saved", level=QgsMessageBar.SUCCESS, duration=5)

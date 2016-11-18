@@ -33,7 +33,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
 
   if ( providerType == QgsSublayersDialog::Ogr )
   {
-    setWindowTitle( tr( "Select vector layers to add..." ) );
+    setWindowTitle( tr( "Select vector layers to add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) );
     mShowCount = true;
@@ -41,12 +41,12 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
-    setWindowTitle( tr( "Select raster layers to add..." ) );
+    setWindowTitle( tr( "Select raster layers to add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
   }
   else
   {
-    setWindowTitle( tr( "Select layers to add..." ) );
+    setWindowTitle( tr( "Select layers to add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
     mShowType = true;

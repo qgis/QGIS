@@ -128,7 +128,7 @@ void QgsColorButton::showColorDialog()
     bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
     if ( useNative )
     {
-      // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
+      // why would anyone want this? who knows…. maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
       newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
     }
     else
@@ -510,7 +510,7 @@ void QgsColorButton::prepareMenu()
   mMenu->addAction( pickColorAction );
   connect( pickColorAction, SIGNAL( triggered() ), this, SLOT( activatePicker() ) );
 #endif
-  QAction* chooseColorAction = new QAction( tr( "Choose color..." ), this );
+  QAction* chooseColorAction = new QAction( tr( "Choose color…" ), this );
   mMenu->addAction( chooseColorAction );
   connect( chooseColorAction, SIGNAL( triggered() ), this, SLOT( showColorDialog() ) );
 }

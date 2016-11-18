@@ -21,7 +21,7 @@
 #include <QDir>
 #include <QDesktopServices>
 
-//qgis includes...
+//qgis includes…
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -84,7 +84,7 @@ void TestQgsInvertedPolygon::initTestCase()
   mTestDataDir = myDataDir + '/';
 
   //
-  //create a poly layer that will be used in all tests...
+  //create a poly layer that will be used in all tests…
   //
   QString myPolysFileName = mTestDataDir + "polys_overlapping.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );

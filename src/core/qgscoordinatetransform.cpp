@@ -154,7 +154,7 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, Tra
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( "Rect projection..." );
+  QgsDebugMsg( "Rect projection…" );
   QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( theRect.xMinimum() ).arg( x1 ) );
   QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( theRect.yMinimum() ).arg( y1 ) );
   QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( theRect.xMaximum() ).arg( x2 ) );
@@ -369,7 +369,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   QVector<double> y( nXPoints * nYPoints );
   QVector<double> z( nXPoints * nYPoints );
 
-  QgsDebugMsgLevel( "Entering transformBoundingBox...", 4 );
+  QgsDebugMsgLevel( "Entering transformBoundingBox…", 4 );
 
   // Populate the vectors
 
@@ -388,7 +388,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     {
       x[( i*nXPoints ) + j] = pointX;
       y[( i*nXPoints ) + j] = pointY;
-      // and the height...
+      // and the height…
       z[( i*nXPoints ) + j] = 0.0;
       // QgsDebugMsg(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]));
       pointX += dx;
@@ -501,7 +501,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   if ( projResult != 0 )
   {
-    //something bad happened....
+    //something bad happened….
     QString points;
 
     for ( int i = 0; i < numPoints; ++i )

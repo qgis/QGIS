@@ -878,7 +878,7 @@ p, li { white-space: pre-wrap; }
                           <string>Add a new plugin repository</string>
                          </property>
                          <property name="text">
-                          <string>Add...</string>
+                          <string>Add…</string>
                          </property>
                         </widget>
                        </item>
@@ -897,7 +897,7 @@ p, li { white-space: pre-wrap; }
                           <string>Edit the selected repository</string>
                          </property>
                          <property name="text">
-                          <string>Edit...</string>
+                          <string>Edit…</string>
                          </property>
                         </widget>
                        </item>

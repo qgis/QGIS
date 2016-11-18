@@ -668,7 +668,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
   painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
   painter.drawText( 0, margin + fontHeight, msg );
-  //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds..."));
+  //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds…"));
   painter.end();
 
   return theImage;
@@ -676,7 +676,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
 
 void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
 {
-  QString msg = QStringLiteral( "Downloading... %1/%2" ).arg( cur ).arg( tot );
+  QString msg = QStringLiteral( "Downloading… %1/%2" ).arg( cur ).arg( tot );
   //QgsDebugMsg ( QString("XXX %1").arg(msg) );
   mImage = renderMessage( msg );
   emit dataChanged();
@@ -694,7 +694,7 @@ void QgsWmsLegendNode::getLegendGraphicErrored( const QString& msg )
   mFetcher.reset();
 
   mValid = true; // we consider it valid anyway
-  // ... but remove validity after 5 seconds
+  // … but remove validity after 5 seconds
   //QTimer::singleShot(5000, this, SLOT(invalidateMapBasedData()));
 }
 

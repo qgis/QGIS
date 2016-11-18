@@ -164,7 +164,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                       qgsDoubleNear( srcCurve.yAt( 0 ), srcCurve.yAt( numPoints - 1 ) );
     }
 
-    // Process each vertex...
+    // Process each vertex…
     switch ( simplifyAlgorithm )
     {
       case SnapToGrid:

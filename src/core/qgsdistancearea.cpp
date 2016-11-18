@@ -525,7 +525,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, Qgs
       QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
       pp1 = mCoordTransform.transform( p1 );
       pp2 = mCoordTransform.transform( p2 );
-      QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
+      QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating…" ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
       result = computeDistanceBearing( pp1, pp2 );
     }
     else

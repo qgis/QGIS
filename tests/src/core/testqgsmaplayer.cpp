@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-//qgis includes...
+//qgis includes…
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -87,8 +87,8 @@ void TestQgsMapLayer::initTestCase()
 
 void TestQgsMapLayer::init()
 {
-  //create some objects that will be used in all tests...
-  //create a map layer that will be used in all tests...
+  //create some objects that will be used in all tests…
+  //create a map layer that will be used in all tests…
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
   myFileName = myFileName + "/points.shp";
   QFileInfo myMapFileInfo( myFileName );

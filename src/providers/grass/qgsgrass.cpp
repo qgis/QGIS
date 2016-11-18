@@ -146,8 +146,8 @@ bool QgsGrassObject::setFromUri( const QString& uri )
     // /gisdbase_path/location/mapset/vector_map/layer
     // QFileInfo.canonicalPath() on non existing file does not work (returns empty string)
     // QFileInfo.absolutePath() does not necessarily remove symbolic links or redundant "." or ".."
-    QDir dir = fi.dir(); // .../mapset/vector_map - does not exist
-    if ( dir.cdUp() ) // .../mapset/
+    QDir dir = fi.dir(); // …/mapset/vector_map - does not exist
+    if ( dir.cdUp() ) // …/mapset/
     {
       QString path = dir.canonicalPath();
       QRegExp rx( "(.*)/([^/]*)/([^/]*)" );

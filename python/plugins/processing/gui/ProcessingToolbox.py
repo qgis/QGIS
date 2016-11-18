@@ -78,7 +78,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 self.txtTip.setVisible(self.disabledProviders())
         self.txtTip.linkActivated.connect(openSettings)
         if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
+            self.searchBox.setPlaceholderText(self.tr('Search…'))
 
         self.fillTree()
 

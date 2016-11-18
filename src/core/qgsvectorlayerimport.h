@@ -29,8 +29,8 @@ class QgsFields;
 /** \ingroup core
   * A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
- 1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
- 2. create an instance of the class and issue calls to addFeature(...)
+ 1. static call to QgsVectorFileWriter::writeAsShapefile(…) which saves the whole vector layer
+ 2. create an instance of the class and issue calls to addFeature(…)
  */
 class CORE_EXPORT QgsVectorLayerImport
 {

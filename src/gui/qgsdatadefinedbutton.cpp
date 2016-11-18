@@ -74,14 +74,14 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   f.setBold( true );
   mActionActive->setFont( f );
 
-  mActionDescription = new QAction( tr( "Description..." ), this );
+  mActionDescription = new QAction( tr( "Description…" ), this );
 
-  mActionExpDialog = new QAction( tr( "Edit..." ), this );
+  mActionExpDialog = new QAction( tr( "Edit…" ), this );
   mActionExpression = nullptr;
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
-  mActionAssistant = new QAction( tr( "Assistant..." ), this );
+  mActionAssistant = new QAction( tr( "Assistant…" ), this );
   QFont assistantFont = mActionAssistant->font();
   assistantFont.setBold( true );
   mActionAssistant->setFont( assistantFont );
@@ -367,7 +367,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
     if ( expString.length() > 35 )
     {
       expString.truncate( 35 );
-      expString.append( "..." );
+      expString.append( "…" );
     }
 
     expString.prepend( tr( "Current: " ) );
@@ -609,7 +609,7 @@ void QgsDataDefinedButton::updateGui()
   if ( deftip.length() > 75 )
   {
     deftip.truncate( 75 );
-    deftip.append( "..." );
+    deftip.append( "…" );
   }
 
   mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype, deftip );
@@ -698,7 +698,7 @@ void QgsDataDefinedButton::registerExpressionContextGenerator( QgsExpressionCont
 
 void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )
 {
-  mActionAssistant->setText( title.isEmpty() ? tr( "Assistant..." ) : title );
+  mActionAssistant->setText( title.isEmpty() ? tr( "Assistant…" ) : title );
   mAssistant.reset( assistant );
   mAssistant.data()->setParent( this, Qt::Dialog );
 }

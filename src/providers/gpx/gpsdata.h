@@ -75,7 +75,7 @@ class QgsGPSExtended : public QgsGPSObject
 };
 
 
-// they both have the same data members in GPX, so...
+// they both have the same data members in GPX, so…
 typedef QgsGPSPoint QgsRoutepoint;
 typedef QgsGPSPoint QgsTrackpoint;
 

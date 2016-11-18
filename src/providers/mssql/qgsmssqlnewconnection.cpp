@@ -149,7 +149,7 @@ QgsMssqlNewConnection::~QgsMssqlNewConnection()
 
 bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
 {
-  bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "....." ) );
+  bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "..…" ) );
   // Gross but needed to show the last message.
   qApp->processEvents();
 

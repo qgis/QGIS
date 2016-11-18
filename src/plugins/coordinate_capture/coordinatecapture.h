@@ -151,7 +151,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
 
     ////////////////////////////////////////////////////////////////////
     //
-    // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
+    // MANDATORY PLUGIN PROPERTY DECLARATIONS  …..
     //
     ////////////////////////////////////////////////////////////////////
 
@@ -161,7 +161,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     QAction * mQActionPointer;
     ////////////////////////////////////////////////////////////////////
     //
-    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
+    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT…..
     //
     ////////////////////////////////////////////////////////////////////
 };

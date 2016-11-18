@@ -88,7 +88,7 @@
        <item>
         <widget class="QPushButton" name="selectTargetSRSButton">
          <property name="text">
-          <string>Select...</string>
+          <string>Select…</string>
          </property>
         </widget>
        </item>

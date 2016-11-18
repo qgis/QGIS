@@ -64,7 +64,7 @@ void QgsColorRampComboBox::populate( QgsStyle* style )
 
   if ( !mShowGradientOnly )
     addItem( tr( "Random colors" ) );
-  addItem( tr( "New color ramp..." ) );
+  addItem( tr( "New color ramp…" ) );
   connect( this, SIGNAL( activated( int ) ), SLOT( colorRampChanged( int ) ) );
 }
 
@@ -106,7 +106,7 @@ void QgsColorRampComboBox::colorRampChanged( int index )
   if ( index != count() - 1 )
     return;
 
-  // last item: "new color ramp..."
+  // last item: "new color ramp…"
   QString rampName;
   if ( !mShowGradientOnly )
   {
@@ -127,7 +127,7 @@ void QgsColorRampComboBox::colorRampChanged( int index )
   insertItem( index, icon, rampName );
   blockSignals( false );
 
-  // ... and set it as active
+  // … and set it as active
   setCurrentIndex( index );
 
   // make sure the color ramp is stored

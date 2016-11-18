@@ -118,7 +118,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   }
   if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
   {
-    // sometimes you may feel a bit dizzy...
+    // sometimes you may feel a bit dizzy…
     if ( mDizzyTimer->isActive() )
     {
       mDizzyTimer->stop();

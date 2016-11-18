@@ -217,7 +217,7 @@ QList<QAction*> QgsWMSConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit…" ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
@@ -399,7 +399,7 @@ QList<QAction*> QgsWMSRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
@@ -497,7 +497,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 
 QList<QAction *> QgsXyzTileRootItem::actions()
 {
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   return QList<QAction*>() << actionNew;
 }

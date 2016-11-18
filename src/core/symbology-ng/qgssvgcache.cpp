@@ -310,7 +310,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
 
   entry->svgContent = svgDoc.toByteArray( 0 );
 
-  // toByteArray screws up tspans inside text by adding new lines before and after each span... this should help, at the
+  // toByteArray screws up tspans inside text by adding new lines before and after each span… this should help, at the
   // risk of potentially breaking some svgs where the newline is desired
   entry->svgContent.replace( "\n<tspan", "<tspan" );
   entry->svgContent.replace( "</tspan>\n", "</tspan>" );
@@ -388,7 +388,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     }
   }
 
-  // maybe it's a url...
+  // maybe it's a url…
   if ( !path.contains( QLatin1String( "://" ) ) ) // otherwise short, relative SVG paths might be considered URLs
   {
     return mMissingSvg;
@@ -412,14 +412,14 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
       }
     }
 
-    // not found...
+    // not found…
     return mMissingSvg;
   }
 
   // the url points to a remote resource, download it!
   QNetworkReply *reply = nullptr;
 
-  // The following code blocks until the file is downloaded...
+  // The following code blocks until the file is downloaded…
   // TODO: use signals to get reply finished notification, in this moment
   // it's executed while rendering.
   while ( 1 )

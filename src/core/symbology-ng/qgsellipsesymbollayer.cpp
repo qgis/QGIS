@@ -894,7 +894,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
     return true;
   }
 
-  return false; //soon...
+  return false; //soon…
 }
 
 

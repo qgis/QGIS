@@ -423,7 +423,7 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
 {
   XML_ParserFree( mParser );
 
-  // Normally a sane user of this class should have consumed everything...
+  // Normally a sane user of this class should have consumed everything…
   Q_FOREACH ( QgsGmlFeaturePtrGmlIdPair featPair, mFeatureList )
   {
     delete featPair.first;

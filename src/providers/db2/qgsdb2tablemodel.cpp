@@ -84,7 +84,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
       needToDetect
-      ? tr( "Detecting..." )
+      ? tr( "Detecting…" )
       : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
@@ -105,12 +105,12 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
       pkCol = pkText;
       break;
     default:
-      pkText = tr( "Select..." );
+      pkText = tr( "Select…" );
       break;
   }
 
   QStandardItem *pkItem = new QStandardItem( pkText );
-  if ( pkText == tr( "Select..." ) )
+  if ( pkText == tr( "Select…" ) )
     pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
 
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
@@ -135,7 +135,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   bool detailsFromThread = needToDetect ||
                            ( wkbType != QgsWkbTypes::NoGeometry && layerProperty.srid.isEmpty() );
 
-  if ( detailsFromThread || pkText == tr( "Select..." ) )
+  if ( detailsFromThread || pkText == tr( "Select…" ) )
   {
     Qt::ItemFlags flags = Qt::ItemIsSelectable;
     if ( detailsFromThread )
@@ -254,10 +254,10 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
 
       if ( typeList.isEmpty() )
       {
-        row[ dbtmType ]->setText( tr( "Select..." ) );
+        row[ dbtmType ]->setText( tr( "Select…" ) );
         row[ dbtmType ]->setFlags( row[ dbtmType ]->flags() | Qt::ItemIsEditable );
 
-        row[ dbtmSrid ]->setText( tr( "Enter..." ) );
+        row[ dbtmSrid ]->setText( tr( "Enter…" ) );
         row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
 
         Q_FOREACH ( QStandardItem *item, row )

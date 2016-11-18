@@ -72,7 +72,7 @@ void QgsPostRequestHandler::parseInput()
     else
     {
       QgsMessageLog::logMessage( QStringLiteral( "error, no query string found but a QDomDocument" ) );
-      return; //no query string? something must be wrong...
+      return; //no query string? something must be wrong…
     }
 
     requestStringToParameterMap( queryString, mParameterMap );

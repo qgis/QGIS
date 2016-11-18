@@ -146,7 +146,7 @@ void QgsOWSSourceSelect::populateFormats()
     mProviderFormats = providerFormats();
     for ( int i = 0; i < mProviderFormats.size(); i++ )
     {
-      // GDAL mime types may be image/tiff, image/png, ...
+      // GDAL mime types may be image/tiff, image/png, …
       mMimeLabelMap.insert( mProviderFormats[i].format, mProviderFormats[i].label );
     }
   }

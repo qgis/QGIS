@@ -51,7 +51,7 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
 
 void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
 {
-  QgsMessageLog::logMessage( QStringLiteral( "Checking byte array is ok to set..." ) );
+  QgsMessageLog::logMessage( QStringLiteral( "Checking byte array is ok to set…" ) );
   if ( !ba )
   {
     return;
@@ -61,7 +61,7 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
   {
     return;
   }
-  QgsMessageLog::logMessage( QStringLiteral( "Byte array looks good, setting response..." ) );
+  QgsMessageLog::logMessage( QStringLiteral( "Byte array looks good, setting response…" ) );
   appendBody( *ba );
   mInfoFormat = format;
 }
@@ -253,7 +253,7 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* img, int imageQuality = -1 )
 {
   Q_UNUSED( service );
-  QgsMessageLog::logMessage( QStringLiteral( "setting getmap response..." ) );
+  QgsMessageLog::logMessage( QStringLiteral( "setting getmap response…" ) );
   if ( img )
   {
     bool png16Bit = ( mFormatString.compare( QLatin1String( "image/png; mode=16bit" ), Qt::CaseInsensitive ) == 0 );
@@ -262,7 +262,7 @@ void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* i
     bool isBase64 = mFormatString.endsWith( QLatin1String( ";base64" ), Qt::CaseInsensitive );
     if ( mFormat != QLatin1String( "PNG" ) && mFormat != QLatin1String( "JPG" ) && !png16Bit && !png8Bit && !png1Bit )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "service exception - incorrect image format requested..." ) );
+      QgsMessageLog::logMessage( QStringLiteral( "service exception - incorrect image format requested…" ) );
       setServiceException( QgsMapServiceException( QStringLiteral( "InvalidFormat" ), "Output format '" + mFormatString + "' is not supported in the GetMap request" ) );
       return;
     }

@@ -25,7 +25,7 @@
 #include <QImage>
 #include <QPainter>
 
-//qgis includes...
+//qgis includes…
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsmaptopixelgeometrysimplifier.h>

@@ -101,7 +101,7 @@ void RoadGraphPlugin::initGui()
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mQShortestPathDock );
 
   // Create the action for tool
-  mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings..." ), this );
+  mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings…" ), this );
   mQSettingsAction->setObjectName( QStringLiteral( "mQSettingsAction" ) );
 
   // Set the what's this text

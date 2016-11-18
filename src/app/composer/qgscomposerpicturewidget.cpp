@@ -509,7 +509,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
   QFileInfoList fileList = directory.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator fileIt = fileList.constBegin();
 
-  QProgressDialog progress( QStringLiteral( "Adding Icons..." ), QStringLiteral( "Abort" ), 0, fileList.size() - 1, this );
+  QProgressDialog progress( QStringLiteral( "Adding Icons…" ), QStringLiteral( "Abort" ), 0, fileList.size() - 1, this );
   //cancel button does not seem to work properly with modal dialog
   //progress.setWindowModality(Qt::WindowModal);
 

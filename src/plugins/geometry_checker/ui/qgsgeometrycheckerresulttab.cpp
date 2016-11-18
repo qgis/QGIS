@@ -76,7 +76,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, 
 
   ui.progressBarFixErrors->setVisible( false );
   ui.tableWidgetErrors->horizontalHeader()->setSortIndicator( 0, Qt::AscendingOrder );
-  // Not sure why, but this is needed...
+  // Not sure why, but this is needed…
   ui.tableWidgetErrors->setSortingEnabled( true );
   ui.tableWidgetErrors->setSortingEnabled( false );
 }

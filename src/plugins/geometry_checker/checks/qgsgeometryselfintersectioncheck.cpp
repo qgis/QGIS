@@ -183,7 +183,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
     ringGeom2->setPoints( ring2 );
 
     QgsAbstractGeometry* part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
-    // If is a polygon...
+    // If is a polygon…
     if ( dynamic_cast<QgsCurvePolygon*>( part ) )
     {
       QgsCurvePolygon* poly = static_cast<QgsCurvePolygon*>( part );

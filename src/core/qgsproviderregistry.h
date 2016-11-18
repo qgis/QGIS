@@ -191,20 +191,20 @@ class CORE_EXPORT QgsProviderRegistry
     /** Available database drivers string for vector databases
      *
      * This is a string of form:
-     * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
+     * DriverNameToShow,DriverName;DriverNameToShow,DriverName;…
      */
     QString mDatabaseDrivers;
 
     /** Available directory drivers string for vector databases
      * This is a string of form:
-     * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
+     * DriverNameToShow,DriverName;DriverNameToShow,DriverName;…
      */
     QString mDirectoryDrivers;
 
     /** Available protocol drivers string for vector databases
      *
      * This is a string of form:
-     * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
+     * DriverNameToShow,DriverName;DriverNameToShow,DriverName;…
      */
     QString mProtocolDrivers;
 

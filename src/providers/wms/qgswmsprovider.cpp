@@ -116,7 +116,7 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
 
   // URL may contain username/password information for a WMS
   // requiring authentication. In this case the URL is prefixed
-  // with username=user,password=pass,url=http://xxx.xxx.xx/yyy...
+  // with username=user,password=pass,url=http://xxx.xxx.xx/yyy…
 
   if ( !mSettings.parseUri( uri ) )
   {
@@ -1185,7 +1185,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
-  // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
+  // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) … to get a square)
   QgsPoint topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
   QgsPoint bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
   QgsPoint topLeft = ct.transform( topLeftLonLat );
@@ -2806,7 +2806,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
           // How to find which part is GML and which XSD? Both have
           // Content-Type: application/binary
           // different are Content-Disposition but it is not reliable.
-          // We could analyze beginning of bodies...
+          // We could analyze beginning of bodies…
           gmlPart = 0;
           xsdPart = 1;
         }
@@ -3141,7 +3141,7 @@ void QgsWmsProvider::identifyReplyFinished()
     }
     else
     {
-      // TODO: check headers, xsd ...
+      // TODO: check headers, xsd …
       QgsDebugMsg( QString( "%1 parts" ).arg( parser.parts() ) );
       mIdentifyResultBodies = parser.bodies();
       mIdentifyResultHeaders = parser.headers();

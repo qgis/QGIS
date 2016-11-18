@@ -89,7 +89,7 @@ void QgsProjectFileTransform::dump()
                .arg( mCurrentVersion.minorVersion() )
                .arg( mCurrentVersion.subVersion() ) );
 #ifdef QGISDEBUG
-  // Using QgsDebugMsg() didn't print the entire mDom...
+  // Using QgsDebugMsg() didn't print the entire mDom…
   std::cout << mDom.toString( 2 ).toLatin1().constData(); // OK
 #endif
 }
@@ -100,7 +100,7 @@ void QgsProjectFileTransform::dump()
 
 void QgsProjectFileTransform::transform081to090()
 {
-  QgsDebugMsg( "Entering..." );
+  QgsDebugMsg( "Entering…" );
   if ( ! mDom.isNull() )
   {
     // Start with inserting a mapcanvas element and populate it
@@ -368,7 +368,7 @@ void QgsProjectFileTransform::transform0110to1000()
 
 void QgsProjectFileTransform::transform1100to1200()
 {
-  QgsDebugMsg( "Entering..." );
+  QgsDebugMsg( "Entering…" );
   if ( mDom.isNull() )
     return;
 
@@ -942,7 +942,7 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, c
 
 void QgsProjectFileTransform::transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem )
 {
-  //soon...
+  //soon…
   Q_UNUSED( doc );
   Q_UNUSED( orig );
   Q_UNUSED( rendererElem );

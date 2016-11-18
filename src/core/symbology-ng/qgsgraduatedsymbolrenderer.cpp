@@ -572,7 +572,7 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   //   NI1 = (int) (q * (n+1))
   //   NI2 = NI1 + 1
   //   r = q * (n+1) - (int) (q * (n+1))
-  // (indices of X: 1...n)
+  // (indices of X: 1…n)
 
   // sort the values first
   qSort( values );
@@ -686,7 +686,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   {
     // for now, sample at least maximumSize values or a 10% sample, whichever
     // is larger. This will produce a more representative sample for very large
-    // layers, but could end up being computationally intensive...
+    // layers, but could end up being computationally intensive…
 
     sample.resize( qMax( maximumSize, values.size() / 10 ) );
 

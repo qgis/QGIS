@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QPainter>
 
-//qgis includes...
+//qgis includes…
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>

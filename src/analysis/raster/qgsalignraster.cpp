@@ -316,7 +316,7 @@ bool QgsAlignRaster::checkInputParameters()
 
   // align to grid - shrink the rect if necessary
   // output raster grid configuration (with no rotation/shear)
-  // ... and raster width/height
+  // … and raster width/height
 
   double originX = ceil_with_tolerance(( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
   double originY = ceil_with_tolerance(( finalExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
@@ -332,7 +332,7 @@ bool QgsAlignRaster::checkInputParameters()
   mXSize = xSize;
   mYSize = ySize;
 
-  // build final geotransform...
+  // build final geotransform…
   mGeoTransform[0] = originX;
   mGeoTransform[1] = mCellSizeX;
   mGeoTransform[2] = 0;
@@ -394,7 +394,7 @@ int QgsAlignRaster::suggestedReferenceLayer() const
   QSizeF cs;
   int i = 0;
 
-  // using WGS84 as a destination CRS... but maybe some projected CRS
+  // using WGS84 as a destination CRS… but maybe some projected CRS
   // would be a better a choice to more accurately compute areas?
   // (Why earth is not flat???)
   QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );

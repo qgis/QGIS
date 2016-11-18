@@ -461,7 +461,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   if ( mUserProjListDone )
     return;
 
-  QgsDebugMsg( "Fetching user projection list..." );
+  QgsDebugMsg( "Fetching user projection list…" );
 
   // convert our Coordinate Reference System filter into the SQL expression
   QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
@@ -485,7 +485,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   //return straight away if the user has not created any custom projections
   if ( !QFileInfo::exists( databaseFileName ) )
   {
-    QgsDebugMsg( "Users qgis.db not found...skipping" );
+    QgsDebugMsg( "Users qgis.db not found…skipping" );
     mUserProjListDone = true;
     return;
   }
@@ -998,6 +998,6 @@ void QgsProjectionSelector::showDBMissingWarning( const QString& theFileName )
 
   QMessageBox::critical( this, tr( "Resource Location Error" ),
                          tr( "Error reading database file from: \n %1\n"
-                             "Because of this the projection selector will not work..." )
+                             "Because of this the projection selector will not work…" )
                          .arg( theFileName ) );
 }

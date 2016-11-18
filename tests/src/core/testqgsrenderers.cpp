@@ -21,7 +21,7 @@
 #include <QDir>
 #include <QDesktopServices>
 
-//qgis includes...
+//qgis includes…
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
@@ -83,11 +83,11 @@ void TestQgsRenderers::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  //create some objects that will be used in all tests...
+  //create some objects that will be used in all tests…
 
 
   //
-  //create a point layer that will be used in all tests...
+  //create a point layer that will be used in all tests…
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
@@ -100,7 +100,7 @@ void TestQgsRenderers::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
-  //create a poly layer that will be used in all tests...
+  //create a poly layer that will be used in all tests…
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
@@ -112,7 +112,7 @@ void TestQgsRenderers::initTestCase()
 
 
   //
-  // Create a line layer that will be used in all tests...
+  // Create a line layer that will be used in all tests…
   //
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );

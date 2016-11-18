@@ -88,7 +88,7 @@
      <item>
       <widget class="QToolButton" name="mBrowseToolButton">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -214,35 +214,35 @@
    <item row="0" column="2">
     <widget class="QgsDataDefinedButton" name="mTextureWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
     <widget class="QgsDataDefinedButton" name="mFilColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="3" column="2">
     <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
     <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -314,7 +314,7 @@
    <item row="6" column="2">
     <widget class="QgsDataDefinedButton" name="mSVGDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

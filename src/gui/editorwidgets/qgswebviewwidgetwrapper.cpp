@@ -75,7 +75,7 @@ QWidget* QgsWebViewWidgetWrapper::createWidget( QWidget* parent )
   QgsFilterLineEdit* le = new QgsFilterLineEdit();
   QWebView* webView = new QWebView();
   webView->setObjectName( QStringLiteral( "EditorWebView" ) );
-  QPushButton* pb = new QPushButton( tr( "..." ) );
+  QPushButton* pb = new QPushButton( tr( "…" ) );
   pb->setObjectName( QStringLiteral( "FileChooserButton" ) );
 
   layout->addWidget( webView, 0, 0, 1, 2 );

@@ -614,7 +614,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnAddScale">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -625,7 +625,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnRemoveScale">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -636,7 +636,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnImportScales">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -647,7 +647,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnExportScales">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -857,7 +857,7 @@
                   <item row="0" column="5">
                    <widget class="QToolButton" name="pbtnStyleMarker">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -910,7 +910,7 @@
                   <item row="1" column="5">
                    <widget class="QToolButton" name="pbtnStyleLine">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -999,7 +999,7 @@
                   <item row="2" column="5">
                    <widget class="QToolButton" name="pbtnStyleFill">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1046,7 +1046,7 @@
                   <item row="3" column="5">
                    <widget class="QToolButton" name="pbtnStyleColorRamp">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">

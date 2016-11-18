@@ -202,7 +202,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
 
     QString mCurrentFeatureName;
 
-    // List of know geometries (Point, Multipoint,...)
+    // List of know geometries (Point, Multipoint,…)
     QStringList mGeometryTypes;
 
     /* Feature classes map with element paths as keys */

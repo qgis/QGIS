@@ -82,7 +82,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     /** Test the constructed sql statement to see if the vector layer data provider likes it.
      * The number of rows that would be returned is displayed in a message box.
-     * The test uses a "select count(*) from ..." query to test the SQL
+     * The test uses a "select count(*) from …" query to test the SQL
      * statement.
      */
     void test();

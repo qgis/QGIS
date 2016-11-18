@@ -206,7 +206,7 @@ static void dumpBacktrace( unsigned int depth )
   // environment (dup()+close() combo, wait(), juggling with file descriptors).
   // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
   // that if the operations on descriptors are not serialized, things will get nasty.
-  // That's why there's this lovely mutex here...
+  // That's why there's this lovely mutex here…
   static QMutex mutex;
   QMutexLocker locker( &mutex );
 
@@ -763,7 +763,7 @@ int main( int argc, char *argv[] )
 
 
   /////////////////////////////////////////////////////////////////////
-  // Now we have the handlers for the different behaviours...
+  // Now we have the handlers for the different behaviours…
   ////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////
@@ -1010,7 +1010,7 @@ int main( int argc, char *argv[] )
   // For non static builds on mac and win (static builds are not supported)
   // we need to be sure we can find the qt image
   // plugins. In mac be sure to look in the
-  // application bundle...
+  // application bundle…
 #ifdef Q_OS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
@@ -1252,7 +1252,7 @@ int main( int argc, char *argv[] )
   }
 
   /////////////////////////////////////////////////////////////////////
-  // Continue on to interactive gui...
+  // Continue on to interactive gui…
   /////////////////////////////////////////////////////////////////////
   qgis->show();
   myApp.connect( &myApp, SIGNAL( lastWindowClosed() ), &myApp, SLOT( quit() ) );

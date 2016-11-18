@@ -215,11 +215,11 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
   bool goodDirn = false;
 
-  // Get the shown extent...
+  // Get the shown extent…
   QgsRectangle canvasExtent = mapCanvas->extent();
-  // ... and all layers extent, ...
+  // … and all layers extent, …
   QgsRectangle fullExtent = mapCanvas->fullExtent();
-  // ... and combine
+  // … and combine
   QgsRectangle extent = canvasExtent.intersect( & fullExtent );
 
   // If no layers are added or shown, we can't get any direction

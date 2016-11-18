@@ -97,7 +97,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 #endif
     // we store here paths in unicode strings
     // the str constant will contain utf8 code (through runString)
-    // so we call '...'.decode('utf-8') to make a unicode string
+    // so we call '…'.decode('utf-8') to make a unicode string
 #if (PY_VERSION_HEX < 0x03000000)
     pluginpaths << '"' + p + "\".decode('utf-8')";
 #else
@@ -315,7 +315,7 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 
-  // TODO: convert special characters from unicode strings u"..." to \uXXXX
+  // TODO: convert special characters from unicode strings u"…" to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
   PyObject* obj = PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );

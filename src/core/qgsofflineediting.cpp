@@ -491,7 +491,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     return nullptr;
 
   QString tableName = layer->id();
-  QgsDebugMsgLevel( QString( "Creating offline table %1 ..." ).arg( tableName ), 4 );
+  QgsDebugMsgLevel( QString( "Creating offline table %1 …" ).arg( tableName ), 4 );
 
   // create table
   QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );

@@ -92,7 +92,7 @@
           <item row="2" column="0">
            <widget class="QPushButton" name="mInsertExpressionButton">
             <property name="text">
-             <string>Insert an expression...</string>
+             <string>Insert an expression…</string>
             </property>
            </widget>
           </item>
@@ -254,7 +254,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Font...</string>
+             <string>Font…</string>
             </property>
            </widget>
           </item>

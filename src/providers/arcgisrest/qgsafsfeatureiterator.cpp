@@ -20,7 +20,7 @@
 
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider* provider )
-// FIXME: ugly const_cast...
+// FIXME: ugly const_cast…
     : mProvider( const_cast<QgsAfsProvider*>( provider ) )
 {
 }

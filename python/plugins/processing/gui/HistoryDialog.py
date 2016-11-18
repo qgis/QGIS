@@ -58,7 +58,7 @@ class HistoryDialog(BASE, WIDGET):
         self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
-        self.saveButton = QPushButton(self.tr('Save As...'))
+        self.saveButton = QPushButton(self.tr('Save As…'))
         self.saveButton.setToolTip(self.tr('Save history'))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
 

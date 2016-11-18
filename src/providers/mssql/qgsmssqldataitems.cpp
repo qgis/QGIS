@@ -337,7 +337,7 @@ QList<QAction*> QgsMssqlConnectionItem::actions()
   connect( actionShowNoGeom, SIGNAL( toggled( bool ) ), this, SLOT( setAllowGeometrylessTables( bool ) ) );
   lst.append( actionShowNoGeom );
 
-  QAction* actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  QAction* actionEdit = new QAction( tr( "Edit Connection…" ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
@@ -387,7 +387,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData* data, const QString& t
   // TODO: probably should show a GUI with settings etc
   qApp->setOverrideCursor( Qt::WaitCursor );
 
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features…" ), tr( "Abort" ), 0, 0, nullptr );
   progress->setWindowTitle( tr( "Import layer" ) );
   progress->setWindowModality( Qt::WindowModal );
   progress->show();
@@ -629,7 +629,7 @@ QList<QAction*> QgsMssqlRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection…" ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 

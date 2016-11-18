@@ -36,7 +36,7 @@ int main( int argc, char **argv )
   QString urlStr( argv[1] );
   QUrl url( urlStr );
 #ifdef Q_OS_WIN
-  // openUrl on windows fails to open 'file://c:...' it must be 'file:///c:...' (3 slashes)
+  // openUrl on windows fails to open 'file://c:…' it must be 'file:///c:…' (3 slashes)
   if ( url.scheme() == "file" )
   {
     // this does not work, the drive was already removed by QT:

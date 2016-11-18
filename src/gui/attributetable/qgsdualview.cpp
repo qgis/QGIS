@@ -129,7 +129,7 @@ void QgsDualView::columnBoxInit()
 
   if ( displayExpression.isEmpty() )
   {
-    // ... there isn't really much to display
+    // … there isn't really much to display
     displayExpression = QStringLiteral( "'[Please define preview text]'" );
   }
 
@@ -437,7 +437,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( hide, SIGNAL( triggered( bool ) ), this, SLOT( hideColumn() ) );
   hide->setData( col );
   mHorizontalHeaderMenu->addAction( hide );
-  QAction* setWidth = new QAction( tr( "&Set width..." ), mHorizontalHeaderMenu );
+  QAction* setWidth = new QAction( tr( "&Set width…" ), mHorizontalHeaderMenu );
   connect( setWidth, SIGNAL( triggered( bool ) ), this, SLOT( resizeColumn() ) );
   setWidth->setData( col );
   mHorizontalHeaderMenu->addAction( setWidth );
@@ -447,10 +447,10 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mHorizontalHeaderMenu->addAction( optimizeWidth );
 
   mHorizontalHeaderMenu->addSeparator();
-  QAction* organize = new QAction( tr( "&Organize columns..." ), mHorizontalHeaderMenu );
+  QAction* organize = new QAction( tr( "&Organize columns…" ), mHorizontalHeaderMenu );
   connect( organize, SIGNAL( triggered( bool ) ), this, SLOT( organizeColumns() ) );
   mHorizontalHeaderMenu->addAction( organize );
-  QAction* sort = new QAction( tr( "&Sort..." ), mHorizontalHeaderMenu );
+  QAction* sort = new QAction( tr( "&Sort…" ), mHorizontalHeaderMenu );
   connect( sort, SIGNAL( triggered( bool ) ), this, SLOT( modifySort() ) );
   mHorizontalHeaderMenu->addAction( sort );
 
@@ -698,7 +698,7 @@ void QgsDualView::progress( int i, bool& cancel )
 {
   if ( !mProgressDlg )
   {
-    mProgressDlg = new QProgressDialog( tr( "Loading features..." ), tr( "Abort" ), 0, 0, this );
+    mProgressDlg = new QProgressDialog( tr( "Loading features…" ), tr( "Abort" ), 0, 0, this );
     mProgressDlg->setWindowTitle( tr( "Attribute table" ) );
     mProgressDlg->setWindowModality( Qt::WindowModal );
     mProgressDlg->show();

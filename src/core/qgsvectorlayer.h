@@ -1146,13 +1146,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     inline QgsFields pendingFields() const { return mFields; }
 
     /**
-     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+     * Returns list of attribute indexes. i.e. a list from 0 … fieldCount()
      * Alias for {@link attributeList()}
      */
     inline QgsAttributeList pendingAllAttributesList() const { return mFields.allAttributesList(); }
 
     /**
-     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+     * Returns list of attribute indexes. i.e. a list from 0 … fieldCount()
      * Alias for {@link attributeList()}
      */
     inline QgsAttributeList attributeList() const { return mFields.allAttributesList(); }

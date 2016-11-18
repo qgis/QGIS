@@ -107,7 +107,7 @@ class QgsWmsServer: public QgsOWSServer
     QDomDocument describeLayer();
 
     /** Returns printed page as binary
-      @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
+      @param formatString out: format of the print output (e.g. pdf, svg, png, …)
       @return printed page as binary or 0 in case of error*/
     QByteArray* getPrint( const QString& formatString );
 
@@ -216,7 +216,7 @@ class QgsWmsServer: public QgsOWSServer
     //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
     static void groupStringList( QStringList& list, const QString& groupString );
 
-    /** Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
+    /** Select vector features with ids specified in parameter SELECTED, e.g. …&SELECTED=layer1:1,2,9;layer2:3,5,10&…
       @return list with layer ids where selections have been created*/
     QStringList applyFeatureSelections( const QStringList& layerList ) const;
     //! Clear all feature selections in the given layers

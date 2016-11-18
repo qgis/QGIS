@@ -520,7 +520,7 @@ QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
   // rewritten to cope with a value of Qgis::Unknown. To make this
   // need known, the following message is printed every time we get
   // here.
-  QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur..." );
+  QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur…" );
 
   return QgsWkbTypes::UnknownGeometry;
 }
@@ -4062,7 +4062,7 @@ QString QgsVectorLayer::metadata() const
   myMetadata += tr( "Extents" );
   myMetadata += QLatin1String( "</p>\n" );
 
-  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
+  //extents in layer cs  TODO…maybe make a little nested table to improve layout…
   myMetadata += "<p class=\"glossy\">" + tr( "In layer spatial reference system units" ) + "</p>\n";
   myMetadata += QLatin1String( "<p>" );
   // Try to be a bit clever over what number format we use for the

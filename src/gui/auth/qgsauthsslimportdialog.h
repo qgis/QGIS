@@ -16,7 +16,7 @@
 
 /****************************************************************************
 **
-** Portions of this code were derived from the following...
+** Portions of this code were derived from the following…
 **
 ** qt-everywhere-opensource-src-4.8.6/examples/network/
 **   securesocketclient/certificateinfo.h (and .cpp)

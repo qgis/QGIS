@@ -502,7 +502,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand* other )
 
   const QgsMapLayerStyleCommand* otherCmd = static_cast<const QgsMapLayerStyleCommand*>( other );
   if ( otherCmd->mLayer != mLayer )
-    return false;  // should never happen though...
+    return false;  // should never happen though…
 
   // only merge commands if they are created shortly after each other
   // (e.g. user keeps modifying one property)

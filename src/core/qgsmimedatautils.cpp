@@ -128,7 +128,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils
     }
     else
     {
-      // plugin layers do not have a standard way of storing their URI...
+      // plugin layers do not have a standard way of storing their URI…
       return;
     }
     uris << uri;

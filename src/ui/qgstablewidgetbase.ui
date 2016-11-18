@@ -31,7 +31,7 @@
         <string>Add entry</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../../images/images.qrc">
@@ -48,7 +48,7 @@
         <string>Remove entry</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../../images/images.qrc">

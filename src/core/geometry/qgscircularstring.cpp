@@ -682,7 +682,7 @@ void QgsCircularString::transform( const QTransform& t )
 #if 0
 void QgsCircularString::clip( const QgsRectangle& rect )
 {
-  //todo...
+  //todo…
 }
 #endif
 
@@ -914,7 +914,7 @@ void QgsCircularString::sumUpArea( double& sum ) const
 
     if ( d > radius )
     {
-      //d cannot be greater than radius, something must be wrong...
+      //d cannot be greater than radius, something must be wrong…
       continue;
     }
 

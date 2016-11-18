@@ -4994,7 +4994,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
 
   QString rdump( mOpRight->dump() );
 
-  // avoid dumping "IS (NOT ...)" as "IS NOT ..."
+  // avoid dumping "IS (NOT …)" as "IS NOT …"
   if ( mOp == boIs && ruOp && ruOp->op() == uoNot )
   {
     rdump.prepend( '(' ).append( ')' );
@@ -5641,7 +5641,7 @@ QString QgsExpression::helpText( QString name )
 
         if ( v.mVariableLenArguments )
         {
-          helpContents += QLatin1String( "..." );
+          helpContents += QLatin1String( "…" );
         }
 
         helpContents += ')';
@@ -5862,7 +5862,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
     QString previewString = value.toString();
     if ( previewString.length() > MAX_PREVIEW + 3 )
     {
-      return QString( tr( "'%1...'" ) ).arg( previewString.left( MAX_PREVIEW ) );
+      return QString( tr( "'%1…'" ) ).arg( previewString.left( MAX_PREVIEW ) );
     }
     else
     {
@@ -5879,7 +5879,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
       mapStr.append( it.key() ).append( ": " ).append( formatPreviewString( it.value() ) );
       if ( mapStr.length() > MAX_PREVIEW + 3 )
       {
-        mapStr = QString( tr( "%1..." ) ).arg( mapStr.left( MAX_PREVIEW ) );
+        mapStr = QString( tr( "%1…" ) ).arg( mapStr.left( MAX_PREVIEW ) );
         break;
       }
     }
@@ -5895,7 +5895,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
       listStr.append( formatPreviewString( *it ) );
       if ( listStr.length() > MAX_PREVIEW + 3 )
       {
-        listStr = QString( tr( "%1..." ) ).arg( listStr.left( MAX_PREVIEW ) );
+        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW ) );
         break;
       }
     }

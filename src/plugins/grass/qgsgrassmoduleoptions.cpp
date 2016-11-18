@@ -947,7 +947,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
   // of the interface description (see http://hub.qgis.org/issues/4547)
   QTextCodec *codec = 0;
 
-  QgsDebugMsg( "trying to get encoding name from XML interface description..." );
+  QgsDebugMsg( "trying to get encoding name from XML interface description…" );
 
   // XXX: getting the encoding using a regular expression works
   // until GRASS will use UTF-16 or UTF-32.
@@ -979,7 +979,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   if ( codec )
   {
-    QgsDebugMsg( QString( "parsing XML interface description using '%1' codec..." ).arg( QString::fromUtf8( codec->name() ) ) );
+    QgsDebugMsg( QString( "parsing XML interface description using '%1' codec…" ).arg( QString::fromUtf8( codec->name() ) ) );
     ok = gDoc.setContent( codec->toUnicode( baDesc ), false, &err, &line, &column );
     if ( !ok )
     {

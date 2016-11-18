@@ -78,7 +78,7 @@
           <item>
            <widget class="QPushButton" name="mLineStyleButton">
             <property name="text">
-             <string>Line style...</string>
+             <string>Line style…</string>
             </property>
            </widget>
           </item>
@@ -247,7 +247,7 @@
             <item>
              <widget class="QToolButton" name="mStartMarkerToolButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -268,7 +268,7 @@
             <item>
              <widget class="QToolButton" name="mEndMarkerToolButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>

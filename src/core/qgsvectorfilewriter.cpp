@@ -1564,7 +1564,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                        ) );
 
   layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new StringOption(
-                         QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
+                         QObject::tr( "column_name1[,column_name2, …] A list of (String) columns that "
                                       "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
                                       "for databases that have big string blobs. However, use with care, since "
                                       "the value of such columns will be seen as compressed binary content with "
@@ -1646,7 +1646,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                        ) );
 
   layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new StringOption(
-                         QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
+                         QObject::tr( "column_name1[,column_name2, …] A list of (String) columns that "
                                       "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
                                       "for databases that have big string blobs. However, use with care, since "
                                       "the value of such columns will be seen as compressed binary content with "

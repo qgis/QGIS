@@ -577,7 +577,7 @@ void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
     oldIndex = ( newIndex + 1 ) % 2;
   }
 
-  // resize pages to minimum - this works well with gdaltools merge ui, but not raster save as...
+  // resize pages to minimum - this works well with gdaltools merge ui, but not raster save as…
   mOptionsStackedWidget->setCurrentIndex( newIndex );
   mOptionsStackedWidget->widget( newIndex )->setSizePolicy(
     QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );

@@ -85,7 +85,7 @@ void QgsWCSServer::executeRequest()
   if ( request.isEmpty() )
   {
     //do some error handling
-    QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+    QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting…" );
     mRequestHandler->setServiceException( QgsMapServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Please check the value of the REQUEST parameter" ) ) );
     return;
   }

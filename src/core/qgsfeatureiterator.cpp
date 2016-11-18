@@ -53,7 +53,7 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
     else
     {
       dataOk = false;
-      // even the zombie dies at this point...
+      // even the zombie dies at this point…
       mZombie = false;
     }
   }

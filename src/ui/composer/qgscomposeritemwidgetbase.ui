@@ -81,28 +81,28 @@
         <item row="1" column="3">
          <widget class="QgsDataDefinedButton" name="mXPositionDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
         <item row="2" column="3">
          <widget class="QgsDataDefinedButton" name="mYPositionDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
         <item row="3" column="3">
          <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
         <item row="4" column="3">
          <widget class="QgsDataDefinedButton" name="mHeightDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -382,7 +382,7 @@
         <item>
          <widget class="QgsDataDefinedButton" name="mItemRotationDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -635,7 +635,7 @@
         <item>
          <widget class="QgsDataDefinedButton" name="mBlendModeDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -676,7 +676,7 @@
         <item>
          <widget class="QgsDataDefinedButton" name="mTransparencyDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -694,7 +694,7 @@
         <item>
          <widget class="QgsDataDefinedButton" name="mExcludePrintsDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>

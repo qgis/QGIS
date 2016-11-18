@@ -117,7 +117,7 @@ QString QgsFeatureRenderer::dump() const
 
 QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
 {
-  // <renderer-v2 type=""> ... </renderer-v2>
+  // <renderer-v2 type=""> … </renderer-v2>
 
   if ( element.isNull() )
     return nullptr;
@@ -244,7 +244,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   {
     rendererType = QStringLiteral( "singleSymbol" );
   }
-  QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
+  QgsDebugMsg( QString( "Instantiating a '%1' renderer…" ).arg( rendererType ) );
 
   // create the renderer and return it
   QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererType );

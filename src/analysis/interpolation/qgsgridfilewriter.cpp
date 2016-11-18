@@ -70,7 +70,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   QProgressDialog* progressDialog = nullptr;
   if ( showProgressDialog )
   {
-    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
+    progressDialog = new QProgressDialog( QObject::tr( "Interpolating…" ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
     progressDialog->setWindowModality( Qt::WindowModal );
   }
 

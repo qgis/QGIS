@@ -708,7 +708,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
 #if 0
   if ( mProgressDialog )
   {
-    mProgressDialog->setLabelText( QObject::tr( "Building Pyramids..." ) );
+    mProgressDialog->setLabelText( QObject::tr( "Building Pyramids…" ) );
     mProgressDialog->setValue( 0 );
     mProgressDialog->setWindowModality( Qt::WindowModal );
     mProgressDialog->show();

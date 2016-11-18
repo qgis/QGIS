@@ -96,8 +96,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   QPushButton* b = new QPushButton( tr( "Style" ) );
   QMenu* m = new QMenu( this );
-  m->addAction( tr( "Load Style..." ), this, SLOT( loadStyle_clicked() ) );
-  m->addAction( tr( "Save Style..." ), this, SLOT( saveStyleAs_clicked() ) );
+  m->addAction( tr( "Load Style…" ), this, SLOT( loadStyle_clicked() ) );
+  m->addAction( tr( "Save Style…" ), this, SLOT( saveStyleAs_clicked() ) );
   m->addSeparator();
   m->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
@@ -140,7 +140,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
-  // set up the scale based layer visibility stuff....
+  // set up the scale based layer visibility stuff….
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( 1.0 / lyr->maximumScale(), 1.0 / lyr->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
@@ -908,7 +908,7 @@ void QgsRasterLayerProperties::apply()
    */
   mRasterLayer->setName( mLayerOrigNameLineEd->text() );
 
-  // set up the scale based layer visibility stuff....
+  // set up the scale based layer visibility stuff….
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   // caution: layer uses scale denoms, widget uses true scales
   mRasterLayer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );

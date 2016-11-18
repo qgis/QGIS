@@ -288,7 +288,7 @@
            <item>
             <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>
@@ -331,7 +331,7 @@
            <item>
             <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>
@@ -381,7 +381,7 @@
            <item>
             <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>

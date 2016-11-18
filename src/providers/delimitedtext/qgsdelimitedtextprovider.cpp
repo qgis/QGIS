@@ -269,7 +269,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filenam
 
   if ( message )
   {
-    // Would be a useful info message, but don't want dialog to pop up every time...
+    // Would be a useful info message, but don't want dialog to pop up every time…
     // *message=tr("Reading field types from %1").arg(csvtInfo.fileName());
   }
 
@@ -346,7 +346,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   if ( ! mFile->isValid() )
   {
-    // uri is invalid so the layer must be too...
+    // uri is invalid so the layer must be too…
 
     messages.append( tr( "File cannot be opened or delimiter parameters are not valid" ) );
     reportErrors( messages );
@@ -621,7 +621,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   for ( int i = 0; i < fieldNames.size(); i++ )
   {
-    // Skip over WKT field ... don't want to display in attribute table
+    // Skip over WKT field … don't want to display in attribute table
     if ( i == mWktFieldIndex ) continue;
 
     // Add the field index lookup for the column
@@ -951,7 +951,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList& messages, bool s
         QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
     }
 
-    // Display errors in a dialog...
+    // Display errors in a dialog…
     if ( mShowInvalidLines && showDialog )
     {
       QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();

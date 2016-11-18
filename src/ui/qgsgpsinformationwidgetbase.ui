@@ -128,7 +128,7 @@ gray = no data
         <string>Reset track</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -149,7 +149,7 @@ gray = no data
         <string>Position</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -163,7 +163,7 @@ gray = no data
         <string>Signal</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -177,7 +177,7 @@ gray = no data
         <string>Satellite</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -191,7 +191,7 @@ gray = no data
         <string>Options</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -205,7 +205,7 @@ gray = no data
         <string>Debug</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -722,7 +722,7 @@ gray = no data
                    <string>Refresh serial device list</string>
                   </property>
                   <property name="text">
-                   <string>...</string>
+                   <string>…</string>
                   </property>
                   <property name="icon">
                    <iconset resource="../../images/images.qrc">
@@ -978,7 +978,7 @@ gray = no data
                  <string>browse for log file</string>
                 </property>
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                </widget>
               </item>

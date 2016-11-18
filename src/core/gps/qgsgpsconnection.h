@@ -95,9 +95,9 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
 
   protected:
-    //! Data source (e.g. serial device, socket, file,...)
+    //! Data source (e.g. serial device, socket, file,…)
     QIODevice* mSource;
-    //! Last state of the gps related variables (e.g. position, time, ...)
+    //! Last state of the gps related variables (e.g. position, time, …)
     QgsGPSInformation mLastGPSInformation;
     //! Connection status
     Status mStatus;

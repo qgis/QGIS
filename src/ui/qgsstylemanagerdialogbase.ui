@@ -424,7 +424,7 @@ QMenu::item:selected {  background-color: gray; } */
      <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
    </property>
    <property name="text">
-    <string>Edit item...</string>
+    <string>Edit item…</string>
    </property>
    <property name="toolTip">
     <string>Edit item</string>
@@ -465,7 +465,7 @@ QMenu::item:selected {  background-color: gray; } */
   </action>
   <action name="actnEditSmartGroup">
    <property name="text">
-    <string>Edit smart group...</string>
+    <string>Edit smart group…</string>
    </property>
   </action>
   <action name="actnAddGroup">
@@ -511,7 +511,7 @@ QMenu::item:selected {  background-color: gray; } */
      <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
    </property>
    <property name="text">
-    <string>Export selected symbol(s) as PNG...</string>
+    <string>Export selected symbol(s) as PNG…</string>
    </property>
    <property name="toolTip">
     <string>Export selected symbo(s) as PNG</string>
@@ -526,7 +526,7 @@ QMenu::item:selected {  background-color: gray; } */
      <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
    </property>
    <property name="text">
-    <string>Export selected symbol(s) as SVG...</string>
+    <string>Export selected symbol(s) as SVG…</string>
    </property>
    <property name="toolTip">
     <string>Export selected symbol(s) as SVG</string>

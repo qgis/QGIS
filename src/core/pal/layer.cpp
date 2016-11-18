@@ -270,7 +270,7 @@ bool Layer::registerFeature( QgsLabelFeature* lf )
 
   mMutex.unlock();
 
-  // if using only biggest parts...
+  // if using only biggest parts…
   if (( mMode == LabelPerFeature || lf->hasFixedPosition() ) && biggest_part )
   {
     addFeaturePart( biggest_part, lf->labelText() );
@@ -345,7 +345,7 @@ static FeaturePart* _findConnectedPart( FeaturePart* partCheck, QLinkedList<Feat
     ++p;
   }
 
-  return nullptr; // no connected part found...
+  return nullptr; // no connected part found…
 }
 
 void Layer::joinConnectedFeatures()

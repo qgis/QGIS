@@ -71,7 +71,7 @@ QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
   container->setAutoFillBackground( true );
 
   QLineEdit* le = new QgsFilterLineEdit();
-  QPushButton* pbn = new QPushButton( tr( "..." ) );
+  QPushButton* pbn = new QPushButton( tr( "…" ) );
   QGridLayout* layout = new QGridLayout();
 
   layout->setMargin( 0 );

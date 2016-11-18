@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-//qgis includes...
+//qgis includes…
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -82,7 +82,7 @@ void TestQgsMarkerLineSymbol::initTestCase()
 
   QList<QgsMapLayer *> mapLayers;
 
-  //create a line layer that will be used in all tests...
+  //create a line layer that will be used in all tests…
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),

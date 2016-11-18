@@ -78,7 +78,7 @@ class ProcessingPlugin(object):
 
         self.modelerAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'model.png')),
-            self.tr('Graphical &Modeler...'), self.iface.mainWindow())
+            self.tr('Graphical &Modeler…'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction, 'Ctrl+Alt+M')
@@ -86,7 +86,7 @@ class ProcessingPlugin(object):
 
         self.historyAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'history.gif')),
-            self.tr('&History...'), self.iface.mainWindow())
+            self.tr('&History…'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
@@ -94,7 +94,7 @@ class ProcessingPlugin(object):
 
         self.configAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'config.png')),
-            self.tr('&Options...'), self.iface.mainWindow())
+            self.tr('&Options…'), self.iface.mainWindow())
         self.configAction.setObjectName('configAction')
         self.configAction.triggered.connect(self.openConfig)
         self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
@@ -102,7 +102,7 @@ class ProcessingPlugin(object):
 
         self.resultsAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'results.png')),
-            self.tr('&Results Viewer...'), self.iface.mainWindow())
+            self.tr('&Results Viewer…'), self.iface.mainWindow())
         self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.triggered.connect(self.openResults)
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')

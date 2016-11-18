@@ -44,7 +44,7 @@
       <item row="1" column="1">
        <widget class="QgsColorButton" name="mRoofColorButton">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -58,7 +58,7 @@
       <item row="2" column="1">
        <widget class="QgsColorButton" name="mWallColorButton">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -91,7 +91,7 @@
          <item row="0" column="1">
           <widget class="QgsColorButton" name="mShadowColorButton">
            <property name="text">
-            <string>...</string>
+            <string>…</string>
            </property>
           </widget>
          </item>

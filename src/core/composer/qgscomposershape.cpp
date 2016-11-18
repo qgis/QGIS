@@ -336,7 +336,7 @@ bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument&
     properties.insert( QStringLiteral( "color_border" ), QgsSymbolLayerUtils::encodeColor( pen().color() ) );
     properties.insert( QStringLiteral( "width_border" ), QString::number( pen().widthF() ) );
 
-    //for pre 2.0 projects, shape color and outline were specified in a different element...
+    //for pre 2.0 projects, shape color and outline were specified in a different element…
     QDomNodeList outlineColorList = itemElem.elementsByTagName( QStringLiteral( "OutlineColor" ) );
     if ( !outlineColorList.isEmpty() )
     {

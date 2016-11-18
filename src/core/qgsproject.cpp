@@ -516,7 +516,7 @@ void _getProperties( const QDomDocument& doc, QgsPropertyKey& project_properties
 
   if ( properties.count() > 1 )
   {
-    QgsDebugMsg( "there appears to be more than one ``properties'' XML tag ... bailing" );
+    QgsDebugMsg( "there appears to be more than one ``properties'' XML tag … bailing" );
     return;
   }
   else if ( properties.count() < 1 )  // no properties found, so we're done
@@ -529,7 +529,7 @@ void _getProperties( const QDomDocument& doc, QgsPropertyKey& project_properties
 
   if ( scopes.count() < 1 )
   {
-    QgsDebugMsg( "empty ``properties'' XML tag ... bailing" );
+    QgsDebugMsg( "empty ``properties'' XML tag … bailing" );
     return;
   }
 
@@ -624,7 +624,7 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig& snappingConfig )
 bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes )
 {
   // Layer order is set by the restoring the legend settings from project file.
-  // This is done on the 'readProject( ... )' signal
+  // This is done on the 'readProject( … )' signal
 
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
 

@@ -129,7 +129,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            self.tr('Feature {} has empty '
                                                    'width, height or angle. '
-                                                   'Skipping...'.format(feat.id())))
+                                                   'Skipping…'.format(feat.id())))
                     continue
 
                 xOffset = w / 2.0
@@ -154,7 +154,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            self.tr('Feature {} has empty '
                                                    'width or height. '
-                                                   'Skipping...'.format(feat.id())))
+                                                   'Skipping…'.format(feat.id())))
                     continue
 
                 xOffset = w / 2.0
@@ -182,7 +182,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            self.tr('Feature {} has empty '
                                                    'width, height or angle. '
-                                                   'Skipping...'.format(feat.id())))
+                                                   'Skipping…'.format(feat.id())))
                     continue
 
                 xOffset = w / 2.0
@@ -207,7 +207,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            self.tr('Feature {} has empty '
                                                    'width or height. '
-                                                   'Skipping...'.format(feat.id())))
+                                                   'Skipping…'.format(feat.id())))
                     continue
 
                 xOffset = w / 2.0
@@ -235,7 +235,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            self.tr('Feature {} has empty '
                                                    'width, height or angle. '
-                                                   'Skipping...'.format(feat.id())))
+                                                   'Skipping…'.format(feat.id())))
                     continue
 
                 xOffset = w / 2.0
@@ -262,7 +262,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
                                            self.tr('Feature {} has empty '
                                                    'width or height. '
-                                                   'Skipping...'.format(feat.id())))
+                                                   'Skipping…'.format(feat.id())))
                     continue
 
                 xOffset = w / 2.0

@@ -105,7 +105,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsDb2TableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsDb2TableModel::dbtmPkCol )
@@ -763,7 +763,7 @@ void QgsDb2GeomColumnTypeThread::run()
       layerProperty.srid = QLatin1String( "" );
     }
 
-    // Now tell the layer list dialog box...
+    // Now tell the layer list dialog box…
     emit setLayerType( layerProperty );
   }
 }

@@ -1528,7 +1528,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
       else
       {
         msgCode = query.boundValue( outCode ).toInt();
-        msgText = query.boundValue( outMsg ).toString();  // never gets a value...
+        msgText = query.boundValue( outMsg ).toString();  // never gets a value…
         if ( 0 != msgCode )
         {
           QgsDebugMsg( QString( "Register failed with code: %1; text: '%2'" ).arg( msgCode ).arg( msgText.toString() ) );

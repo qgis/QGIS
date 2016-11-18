@@ -288,7 +288,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   // find the solution
   labels = p.solveProblem( problem, mFlags.testFlag( UseAllLabels ) );
 
-  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
+  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms … labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
   t.restart();
 
   if ( context.renderingStopped() )

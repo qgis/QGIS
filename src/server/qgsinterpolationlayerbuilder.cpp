@@ -117,7 +117,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QDomNodeList resolutionNodeList = elem.elementsByTagName( QStringLiteral( "Resolution" ) );
   if ( resolutionNodeList.size() < 1 )
   {
-    //use default values...
+    //use default values…
     nCols = 100;
     nRows = 100;
   }

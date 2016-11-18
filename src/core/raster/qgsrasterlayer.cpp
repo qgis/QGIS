@@ -435,7 +435,7 @@ QString QgsRasterLayer::metadata() const
     //check if full stats for this layer have already been collected
     if ( !provider->hasStatistics( myIteratorInt ) )  //not collected
     {
-      QgsDebugMsgLevel( ".....no", 4 );
+      QgsDebugMsgLevel( "…..no", 4 );
 
       myMetadata += QLatin1String( "<p>" );
       myMetadata += tr( "No Stats" );
@@ -446,7 +446,7 @@ QString QgsRasterLayer::metadata() const
     }
     else                    // collected - show full detail
     {
-      QgsDebugMsgLevel( ".....yes", 4 );
+      QgsDebugMsgLevel( "…..yes", 4 );
 
       QgsRasterBandStats myRasterBandStats = provider->bandStatistics( myIteratorInt );
       //Min Val
@@ -532,12 +532,12 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
   if ( mDataProvider->colorInterpretation( theBandNumber ) == QgsRaster::PaletteIndex )
   {
-    QgsDebugMsgLevel( "....found paletted image", 4 );
+    QgsDebugMsgLevel( "….found paletted image", 4 );
     QgsColorRampShader myShader;
     QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( theBandNumber );
     if ( !myColorRampItemList.isEmpty() )
     {
-      QgsDebugMsgLevel( "....got color ramp item list", 4 );
+      QgsDebugMsgLevel( "….got color ramp item list", 4 );
       myShader.setColorRampItemList( myColorRampItemList );
       myShader.setColorRampType( QgsColorRampShader::DISCRETE );
       // Draw image
@@ -588,7 +588,7 @@ QString QgsRasterLayer::providerType() const
 double QgsRasterLayer::rasterUnitsPerPixelX()
 {
 // We return one raster pixel per map unit pixel
-// One raster pixel can have several raster units...
+// One raster pixel can have several raster units…
 
 // We can only use one of the mGeoTransform[], so go with the
 // horisontal one.
@@ -688,7 +688,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
 
-  //decide what type of layer this is...
+  //decide what type of layer this is…
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
   QgsDebugMsgLevel( "bandCount = " + QString::number( mDataProvider->bandCount() ), 4 );
   QgsDebugMsgLevel( "dataType = " + QString::number( mDataProvider->dataType( 1 ) ), 4 );

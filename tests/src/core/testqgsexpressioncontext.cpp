@@ -264,7 +264,7 @@ void TestQgsExpressionContext::contextStack()
   QCOMPARE( context.scope( 1 ), scope2 );
   QCOMPARE( context.lastScope(), scope2 );
   QCOMPARE( context.indexOfScope( scope2 ), 1 );
-  //test without setting variable first...
+  //test without setting variable first…
   QVERIFY( context.hasVariable( "test" ) );
   QCOMPARE( context.variable( "test" ).toInt(), 1 );
   QCOMPARE( context.variableNames().length(), 1 );
@@ -352,7 +352,7 @@ void TestQgsExpressionContext::contextStackFunctions()
 
   //add a second scope, should override the first
   context << new QgsExpressionContextScope();
-  //test without setting function first...
+  //test without setting function first…
   QVERIFY( context.hasFunction( "get_test_value" ) );
   QVERIFY( context.function( "get_test_value" ) );
   QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, 0 ).toInt(), 42 );

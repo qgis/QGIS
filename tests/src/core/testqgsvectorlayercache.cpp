@@ -18,7 +18,7 @@
 #include <QObject>
 #include <QTemporaryFile>
 
-//qgis includes...
+//qgis includes…
 #include "qgsfeatureiterator.h"
 #include <qgsvectorlayercache.h>
 #include <qgsvectordataprovider.h>
@@ -183,7 +183,7 @@ void TestVectorLayerCache::testFeatureActions()
   // Get a random feature to clone
   mPointsLayer->getFeatures( QgsFeatureRequest().setFilterFid( 1 ) ).nextFeature( f );
 
-  // Add feature...
+  // Add feature…
   mPointsLayer->startEditing();
   QVERIFY( mPointsLayer->addFeature( f ) );
 
@@ -195,7 +195,7 @@ void TestVectorLayerCache::testFeatureActions()
 
   QVERIFY( mVectorLayerCache->featureAtId( fid, f ) );
 
-  // Delete feature...
+  // Delete feature…
   mPointsLayer->startEditing();
   QVERIFY( mPointsLayer->deleteFeature( fid ) );
 

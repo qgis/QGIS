@@ -1960,7 +1960,7 @@ void QgsOgrProvider::computeCapabilities()
 
     if ( OGR_L_TestCapability( ogrLayer, "FastFeatureCount" ) )
       // true if this layer can return a feature count
-      // (via OGRLayer::GetFeatureCount()) efficiently ... ie. without counting
+      // (via OGRLayer::GetFeatureCount()) efficiently … ie. without counting
       // the features. In some cases this will return true until a spatial
       // filter is installed after which it will return false.
     {
@@ -1969,7 +1969,7 @@ void QgsOgrProvider::computeCapabilities()
 
     if ( OGR_L_TestCapability( ogrLayer, "FastGetExtent" ) )
       // true if this layer can return its data extent
-      // (via OGRLayer::GetExtent()) efficiently ... ie. without scanning
+      // (via OGRLayer::GetExtent()) efficiently … ie. without scanning
       // all the features. In some cases this will return true until a
       // spatial filter is installed after which it will return false.
     {
@@ -3356,7 +3356,7 @@ void QgsOgrProvider::recalculateFeatureCount()
 
 bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
 {
-  // FIXME probably other drivers too...
+  // FIXME probably other drivers too…
   return ogrDriverName != QLatin1String( "ESRI Shapefile" ) || ( mOGRGeomType == wkbPoint || mOGRGeomType == wkbPoint25D );
 }
 

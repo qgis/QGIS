@@ -142,7 +142,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  *   QgsLabelingEngine engine;
  *   engine.setMapSettings( mapSettings );
  *   // add one or more providers
- *   engine.addProvider( ... );
+ *   engine.addProvider( … );
  *   // compute the labeling and draw labels (using painter from the context)
  *   engine.run( context );
  * \endcode

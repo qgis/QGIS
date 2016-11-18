@@ -144,7 +144,7 @@ void QgsLogger::logMessageToFile( const QString& theMessage )
   if ( sLogFile.isEmpty() )
     return;
 
-  //Maybe more efficient to keep the file open for the life of qgis...
+  //Maybe more efficient to keep the file open for the life of qgis…
   QFile file( sLogFile );
   if ( !file.open( QIODevice::Append ) )
     return;

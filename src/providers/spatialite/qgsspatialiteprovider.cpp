@@ -742,7 +742,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       { // set the actual type name, as given by sqlite
         QgsField& field = mAttributeFields[fieldIndex];
         field.setTypeName( type );
-        // TODO: column 4 tells us if the field is nullable. Should use that info...
+        // TODO: column 4 tells us if the field is nullable. Should use that info…
         if ( field.type() == QVariant::String )
         { // if the type seems unknown, fix it with what we actually have
           TypeSubType typeSubType = getVariantType( type );
@@ -5568,7 +5568,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     return false;
   }
 
-  // if not table exist... create is
+  // if not table exist… create is
   int howMany = 0;
   if ( 1 == rows )
   {

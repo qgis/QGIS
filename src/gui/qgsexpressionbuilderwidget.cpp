@@ -727,7 +727,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
 void QgsExpressionBuilderWidget::on_txtPython_textChanged()
 {
-  lblAutoSave->setText( QStringLiteral( "Saving..." ) );
+  lblAutoSave->setText( QStringLiteral( "Saving…" ) );
   if ( mAutoSave )
   {
     autosave();

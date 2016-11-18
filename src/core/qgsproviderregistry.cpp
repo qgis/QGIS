@@ -122,7 +122,7 @@ void QgsProviderRegistry::init()
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
@@ -131,7 +131,7 @@ void QgsProviderRegistry::init()
     isprovider_t *hasType = reinterpret_cast< isprovider_t * >( cast_to_fptr( myLib.resolve( "type" ) ) );
     if ( hasType )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (has type method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (has type method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -139,14 +139,14 @@ void QgsProviderRegistry::init()
     isprovider_t *isProvider = reinterpret_cast< isprovider_t * >( cast_to_fptr( myLib.resolve( "isProvider" ) ) );
     if ( !isProvider )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no isProvider method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (no isProvider method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     // check to see if this is a provider plugin
     if ( !isProvider() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (not a provider)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (not a provider)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -154,14 +154,14 @@ void QgsProviderRegistry::init()
     description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     providerkey_t *pKey = reinterpret_cast< providerkey_t * >( cast_to_fptr( myLib.resolve( "providerKey" ) ) );
     if ( !pKey )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no providerKey method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (no providerKey method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -198,7 +198,7 @@ void QgsProviderRegistry::init()
       if ( !fileVectorFilters.isEmpty() )
         mVectorFileFilters += fileVectorFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QString( "Checking %1: …loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
     }
 
     // now get raster file filters, if any
@@ -214,7 +214,7 @@ void QgsProviderRegistry::init()
       if ( !fileRasterFilters.isEmpty() )
         mRasterFileFilters += fileRasterFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QString( "Checking %1: …loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
   }
 } // QgsProviderRegistry ctor

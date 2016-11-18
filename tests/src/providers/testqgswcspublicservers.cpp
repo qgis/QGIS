@@ -75,7 +75,7 @@ void TestQgsWcsPublicServers::init()
   // init QGIS's paths - true means that all path will be inited from prefix
 
   // Unfortunately this seems to be the only way to set timeout, we try to reset it
-  // at the end but it can be canceled before ...
+  // at the end but it can be canceled before …
   QSettings settings;
   mOrigTimeout = settings.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt();
   settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mTimeout );

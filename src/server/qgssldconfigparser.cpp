@@ -760,12 +760,12 @@ void QgsSLDConfigParser::inspireCapabilities( QDomElement& parentElement, QDomDo
 
 void QgsSLDConfigParser::setScaleDenominator( double )
 {
-  //soon...
+  //soon…
 }
 
 void QgsSLDConfigParser::addExternalGMLData( const QString &, QDomDocument * )
 {
-  //soon...
+  //soon…
 }
 
 QList< QPair< QString, QgsLayerCoordinateTransform > > QgsSLDConfigParser::layerCoordinateTransforms() const
@@ -1036,7 +1036,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
                                 GDALTermProgress, nullptr );*/
 
 
-  //do the stuff that is also done in the main method of gdal_contour...
+  //do the stuff that is also done in the main method of gdal_contour…
   /* -------------------------------------------------------------------- */
   /*      Open source raster file.                                        */
   /* -------------------------------------------------------------------- */
@@ -1159,7 +1159,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   OGR_DS_Destroy( hDS );
   GDALClose( hSrcDS );
 
-  //todo: store those three files elsewhere...
+  //todo: store those three files elsewhere…
   //mark shp, dbf and shx to delete after the request
   mFilePathsToRemove.push_back( tmpBaseName + ".shp" );
   mFilePathsToRemove.push_back( tmpBaseName + ".dbf" );

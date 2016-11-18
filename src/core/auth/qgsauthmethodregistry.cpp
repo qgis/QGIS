@@ -102,7 +102,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
@@ -110,14 +110,14 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     isauthmethod_t *isAuthMethod = reinterpret_cast< isauthmethod_t * >( cast_to_fptr( myLib.resolve( "isAuthMethod" ) ) );
     if ( !isAuthMethod )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no isAuthMethod method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (no isAuthMethod method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     // check to see if this is an auth method plugin
     if ( !isAuthMethod() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (not an auth method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (not an auth method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -125,14 +125,14 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     methodkey_t *pKey = reinterpret_cast< methodkey_t * >( cast_to_fptr( myLib.resolve( "authMethodKey" ) ) );
     if ( !pKey )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no authMethodKey method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QString( "Checking %1: …invalid (no authMethodKey method)" ).arg( myLib.fileName() ) );
       continue;
     }
 

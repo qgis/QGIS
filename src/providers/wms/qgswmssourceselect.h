@@ -136,7 +136,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QMap<QString, int> mMimeMap;
 
 
-    // Clear layers list, crs, encodings ...
+    // Clear layers list, crs, encodings …
     void clear();
 
     /**

@@ -532,7 +532,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   // second resampling and read with GDALRasterIO to another temporary data block
   // extended to fit src grid. The problem was that with src resolution much bigger
   // than dst res, the target could become very large
-  // in theory it was going to infinity when zooming in ...
+  // in theory it was going to infinity when zooming in …
 
   // Note: original approach for xRes > srcXRes, yRes > srcYRes was to read directly with GDALRasterIO
   // but we would face this problem:
@@ -543,7 +543,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   //  a) 'Stretch' the src and align the start edge of src to the start edge of dst.
   //     That means however, that to the target cells may be assigned values of source
   //     which are not nearest to the center of dst cells. Usualy probably not a problem
-  //     but we are not precise. The shift is in maximum ... TODO
+  //     but we are not precise. The shift is in maximum … TODO
   //  b) We could cut the first destination column and left only the second one which is
   //     completely covered by src. No (significant) stretching is applied in that
   //     case, but the first column may be rendered as without values event if its center
@@ -1568,7 +1568,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     }
 
     // if needed close the gdal dataset and reopen it in read / write mode
-    // TODO this doesn't seem to work anymore... must fix it before 2.0!!!
+    // TODO this doesn't seem to work anymore… must fix it before 2.0!!!
     // no errors are reported, but pyramids are not present in file.
     if ( GDALGetAccess( mGdalDataset ) == GA_ReadOnly )
     {
@@ -1733,7 +1733,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   if ( true ) // GDAL #4831 fix
 #endif
   {
-    QgsDebugMsg( "Reopening dataset ..." );
+    QgsDebugMsg( "Reopening dataset …" );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
     mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
@@ -1805,12 +1805,12 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
           myRasterPyramid.xDim = myOverviewXDim;
           myRasterPyramid.yDim = myOverviewYDim;
           myRasterPyramid.exists = true;
-          QgsDebugMsg( ".....YES!" );
+          QgsDebugMsg( "…..YES!" );
         }
         else
         {
           //no match
-          QgsDebugMsg( ".....no." );
+          QgsDebugMsg( "…..no." );
         }
       }
     }
@@ -1896,12 +1896,12 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
           myRasterPyramid.xDim = myOverviewXDim;
           myRasterPyramid.yDim = myOverviewYDim;
           myRasterPyramid.exists = true;
-          QgsDebugMsg( ".....YES!" );
+          QgsDebugMsg( "…..YES!" );
         }
         else
         {
           //no match
-          QgsDebugMsg( ".....no." );
+          QgsDebugMsg( "…..no." );
         }
       }
     }
@@ -2120,7 +2120,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
         theFileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
 
-        break;            // ... to next driver, if any.
+        break;            // … to next driver, if any.
       }
 
       ++myGdalDriverMetadata;
@@ -2138,7 +2138,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       // long time to prevent the catch-all line from getting too
       // large.
 
-      // ... OTOH, there are some drivers with missing
+      // … OTOH, there are some drivers with missing
       // DMD_EXTENSION; so let's check for them here and handle
       // them appropriately
 

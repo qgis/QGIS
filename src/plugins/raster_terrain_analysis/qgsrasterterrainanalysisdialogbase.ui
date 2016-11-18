@@ -37,7 +37,7 @@
    <item row="1" column="2">
     <widget class="QToolButton" name="mOutputLayerToolButton">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -130,7 +130,7 @@
       <item row="0" column="2">
        <widget class="QPushButton" name="mExportToCsvButton">
         <property name="text">
-         <string>Export distribution...</string>
+         <string>Export distribution…</string>
         </property>
        </widget>
       </item>
@@ -197,14 +197,14 @@
       <item row="2" column="0">
        <widget class="QPushButton" name="mExportColorsButton">
         <property name="text">
-         <string>Export colors...</string>
+         <string>Export colors…</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1" colspan="2">
        <widget class="QPushButton" name="mImportColorsButton">
         <property name="text">
-         <string>Import colors...</string>
+         <string>Import colors…</string>
         </property>
        </widget>
       </item>

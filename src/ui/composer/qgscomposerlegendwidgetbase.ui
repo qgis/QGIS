@@ -285,7 +285,7 @@
                <string>Add group</string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -465,28 +465,28 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Title font...</string>
+             <string>Title font…</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="mLayerFontButton">
             <property name="text">
-             <string>Subgroup font...</string>
+             <string>Subgroup font…</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="mGroupFontButton">
             <property name="text">
-             <string>Group font...</string>
+             <string>Group font…</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="mItemFontButton">
             <property name="text">
-             <string>Item font...</string>
+             <string>Item font…</string>
             </property>
            </widget>
           </item>

@@ -83,7 +83,7 @@
        <item>
         <widget class="QPushButton" name="selectDesiredSRSButton">
          <property name="text">
-          <string>Select...</string>
+          <string>Select…</string>
          </property>
         </widget>
        </item>

@@ -34,7 +34,7 @@
         <string>Open model</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+O</string>
@@ -50,7 +50,7 @@
         <string>Save</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+S</string>
@@ -63,10 +63,10 @@
      <item>
       <widget class="QToolButton" name="btnSaveAs">
        <property name="toolTip">
-        <string>Save as...</string>
+        <string>Save as…</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>Ctrl+Shift+S</string>
@@ -89,7 +89,7 @@
         <string>Export as image</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -102,7 +102,7 @@
         <string>Export as Python script</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -122,7 +122,7 @@
         <string>Edit model help</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -142,7 +142,7 @@
         <string>Run model</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
        <property name="shortcut">
         <string>F5</string>

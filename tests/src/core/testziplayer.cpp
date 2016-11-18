@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QFileInfo>
 
-//qgis includes...
+//qgis includes…
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>

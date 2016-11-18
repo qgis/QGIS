@@ -37,7 +37,7 @@ void QgsGetRequestHandler::parseInput()
   else
   {
     QgsDebugMsg( "error, no query string found" );
-    return; //no query string? something must be wrong...
+    return; //no query string? something must be wrong…
   }
 
   requestStringToParameterMap( queryString, mParameterMap );

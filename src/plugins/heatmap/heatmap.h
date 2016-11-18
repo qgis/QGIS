@@ -119,7 +119,7 @@ class Heatmap: public QObject, public QgisPlugin
     //! Triangular kernel function
     double triangularKernel( const double distance, const int bandwidth, const OutputValues outputType ) const;
 
-    // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
+    // MANDATORY PLUGIN PROPERTY DECLARATIONS  …..
 
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;

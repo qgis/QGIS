@@ -547,7 +547,7 @@ bool QgsTracer::initGraph()
   }
   catch ( GEOSException &e )
   {
-    // no big deal... we will just not have nicely noded linework, potentially
+    // no big deal… we will just not have nicely noded linework, potentially
     // missing some intersections
 
     mHasTopologyProblem = true;

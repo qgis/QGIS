@@ -41,7 +41,7 @@ QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
 }
 
 //
-// Main class begins now...
+// Main class begins now…
 //
 
 QgsColorSchemeRegistry::QgsColorSchemeRegistry()

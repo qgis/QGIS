@@ -278,7 +278,7 @@ void rulesDialog::addRule()
   newItem = new QTableWidgetItem( layer2ID );
   mRulesTable->setItem( row, 5, newItem );
 
-  // save state to the project file.....
+  // save state to the project file…..
   QString postfix = QStringLiteral( "%1" ).arg( row );
   QgsProject* project = QgsProject::instance();
 

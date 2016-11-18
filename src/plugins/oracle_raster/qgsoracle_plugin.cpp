@@ -55,10 +55,10 @@ QgsOraclePlugin::~QgsOraclePlugin()
 void QgsOraclePlugin::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleraster.svg" ), tr( "Add Oracle GeoRaster Layer..." ), this );
+  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleraster.svg" ), tr( "Add Oracle GeoRaster Layer…" ), this );
   mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   // Set the what's this text
-  mQActionPointer->setWhatsThis( tr( "Add a Oracle Spatial GeoRaster..." ) );
+  mQActionPointer->setWhatsThis( tr( "Add a Oracle Spatial GeoRaster…" ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
 

@@ -416,8 +416,8 @@ void QgsGPSInformationWidget::connectGps()
     port = QStringLiteral( "internalGPS" );
   }
 
-  mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );
-  showStatusBarMessage( tr( "Connecting to GPS device..." ) );
+  mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
+  showStatusBarMessage( tr( "Connecting to GPS device…" ) );
 
   QgsGPSDetector *detector = new QgsGPSDetector( port );
   connect( detector, SIGNAL( detected( QgsGPSConnection * ) ), this, SLOT( connected( QgsGPSConnection * ) ) );
@@ -489,7 +489,7 @@ void QgsGPSInformationWidget::disconnectGps()
     delete mpMapMarker;
     mpMapMarker = nullptr;
   }
-  mGPSPlainTextEdit->appendPlainText( tr( "Disconnected..." ) );
+  mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
   mConnectButton->setChecked( false );
   mConnectButton->setText( tr( "&Connect" ) );
   showStatusBarMessage( tr( "Disconnected from GPS device." ) );
@@ -917,7 +917,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       }
       else if ( avoidIntersectionsReturn == 2 )
       {
-        //bail out...
+        //bail out…
         QMessageBox::critical( nullptr, tr( "Error" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type" ) );
         delete f;
         connectGpsSlot();
@@ -946,7 +946,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     {
       if ( mCbxAutoCommit->isChecked() )
       {
-        if ( !vlayer->commitChanges() ) //swiped... er... appropriated from QgisApp saveEdits()
+        if ( !vlayer->commitChanges() ) //swiped… er… appropriated from QgisApp saveEdits()
         {
           QMessageBox::information( this,
                                     tr( "Error" ),
@@ -1035,7 +1035,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
   QString myPath = myFI.path();
   settings.setValue( settingPath, myPath );
 
-  // make sure the .nmea extension is included in the path name. if not, add it...
+  // make sure the .nmea extension is included in the path name. if not, add it…
   if ( "nmea" != myFI.suffix() )
   {
     saveFilePath = myFI.filePath() + ".nmea";

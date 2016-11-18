@@ -267,7 +267,7 @@ int main( int argc, char *argv[] )
   }
 
   // Add any remaining args to the file list - we will attempt to load them
-  // as layers in the map view further down....
+  // as layers in the map view further down….
   QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
   if ( optind < argc )
   {
@@ -351,7 +351,7 @@ int main( int argc, char *argv[] )
 #endif // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////////
-  // Now we have the handlers for the different behaviours...
+  // Now we have the handlers for the different behaviours…
   ////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////
@@ -431,13 +431,13 @@ int main( int argc, char *argv[] )
   // For non static builds on mac and win (static builds are not supported)
   // we need to be sure we can find the qt image
   // plugins. In mac be sure to look in the
-  // application bundle...
+  // application bundle…
 #ifdef Q_OS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
 #ifdef Q_OS_MACX
-  //qDebug("Adding qt image plugins to plugin search path...");
+  //qDebug("Adding qt image plugins to plugin search path…");
   CFURLRef myBundleRef = CFBundleCopyBundleURL( CFBundleGetMainBundle() );
   CFStringRef myMacPath = CFURLCopyFileSystemPath( myBundleRef, kCFURLPOSIXPathStyle );
   const char *mypPathPtr = CFStringGetCStringPtr( myMacPath, CFStringGetSystemEncoding() );
@@ -447,7 +447,7 @@ int main( int argc, char *argv[] )
   // if we are not in a bundle assume that the app is built
   // as a non bundle app and that image plugins will be
   // in system Qt frameworks. If the app is a bundle
-  // lets try to set the qt plugin search path...
+  // lets try to set the qt plugin search path…
   QFileInfo myInfo( myPath );
   if ( myInfo.isBundle() )
   {

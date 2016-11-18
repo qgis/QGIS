@@ -64,7 +64,7 @@ typedef QList<LayerRenderJob> LayerRenderJobs;
  * amount of time.
  *
  * Common use case:
- * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+ * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, …)
  * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
  * 2. connect to job's finished() signal
  * 3. call start(). Map rendering will start in background, the function immediately returns

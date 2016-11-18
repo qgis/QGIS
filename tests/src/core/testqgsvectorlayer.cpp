@@ -21,7 +21,7 @@
 #include <QDir>
 #include <QDesktopServices>
 
-//qgis includes...
+//qgis includes…
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
@@ -112,10 +112,10 @@ void TestQgsVectorLayer::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  //create some objects that will be used in all tests...
+  //create some objects that will be used in all tests…
 
   //
-  //create a non spatial layer that will be used in all tests...
+  //create a non spatial layer that will be used in all tests…
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
@@ -127,7 +127,7 @@ void TestQgsVectorLayer::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpNonSpatialLayer );
   //
-  //create a point layer that will be used in all tests...
+  //create a point layer that will be used in all tests…
   //
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
@@ -138,7 +138,7 @@ void TestQgsVectorLayer::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
-  //create a poly layer that will be used in all tests...
+  //create a poly layer that will be used in all tests…
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
@@ -150,7 +150,7 @@ void TestQgsVectorLayer::initTestCase()
 
 
   //
-  // Create a line layer that will be used in all tests...
+  // Create a line layer that will be used in all tests…
   //
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );

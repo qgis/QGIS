@@ -81,7 +81,7 @@ struct QgsWmsOperationType
 // TODO: Fill to WMS specifications
 struct QgsWmsRequestProperty
 {
-  // QgsWmsGetCapabilitiesProperty   ...
+  // QgsWmsGetCapabilitiesProperty   …
   // -- don't include since if we can get the capabilities,
   //    we already know what's in this part.
   QgsWmsOperationType     getMap;

@@ -21,7 +21,7 @@
 #include <QDir>
 #include <QDesktopServices>
 
-//qgis includes...
+//qgis includes…
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
@@ -87,12 +87,12 @@ void TestQgsShapeburst::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  //create some objects that will be used in all tests...
+  //create some objects that will be used in all tests…
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
-  //create a poly layer that will be used in all tests...
+  //create a poly layer that will be used in all tests…
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );

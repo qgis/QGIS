@@ -227,7 +227,7 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
     return false;
   }
 
-  //create a world file to go with the image...
+  //create a world file to go with the image…
 
   QFile wldFile( QDir::tempPath() + '/' + theTestName + "_result.wld" );
   if ( wldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -479,7 +479,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
     mReport += QLatin1String( "</td></tr>" );
     if ( mElapsedTimeTarget != 0 && mElapsedTimeTarget < mElapsedTime )
     {
-      //test failed because it took too long...
+      //test failed because it took too long…
       qDebug( "Test failed because render step took too long" );
       mReport += QLatin1String( "<tr><td colspan = 3>\n" );
       mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );

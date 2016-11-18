@@ -26,7 +26,7 @@
 #include "cpl_conv.h"
 #include "gdal.h"
 
-//qgis includes...
+//qgis includes…
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
@@ -142,8 +142,8 @@ void TestQgsRasterLayer::initTestCase()
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
-  //create some objects that will be used in all tests...
-  //create a raster layer that will be used in all tests...
+  //create some objects that will be used in all tests…
+  //create a raster layer that will be used in all tests…
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
@@ -518,7 +518,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   qDebug( "%s", myResult.toLocal8Bit().constData() );
   QVERIFY( myResult.isEmpty() );
   //
-  // Lets verify we have pyramids now...
+  // Lets verify we have pyramids now…
   //
   myPyramidList = mypLayer->dataProvider()->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
@@ -528,7 +528,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   }
 
   //
-  // And that they were indeed in an external file...
+  // And that they were indeed in an external file…
   //
   QVERIFY( QFile::exists( myTempPath + "landsat.tif.ovr" ) );
 

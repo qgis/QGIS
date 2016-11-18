@@ -78,7 +78,7 @@ class TestQgsExpression: public QObject
       QgsApplication::createDB();
       QgsApplication::showSettings();
 
-      //create a point layer that will be used in all tests...
+      //create a point layer that will be used in all tests…
       QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
       QString pointsFileName = testDataDir + "points.shp";
       QFileInfo pointFileInfo( pointsFileName );
@@ -907,7 +907,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "implicit text->double" ) << "'5.1'+2" << false << QVariant( 7.1 );
       QTest::newRow( "implicit text->bool" ) << "'0.1' or 0" << false << QVariant( 1 );
 
-      // conditions (without base expression, i.e. CASE WHEN ... THEN ... END)
+      // conditions (without base expression, i.e. CASE WHEN … THEN … END)
       QTest::newRow( "condition when" ) << "case when 2>1 then 'good' end" << false << QVariant( "good" );
       QTest::newRow( "condition else" ) << "case when 1=0 then 'bad' else 678 end" << false << QVariant( 678 );
       QTest::newRow( "condition null" ) << "case when length(123)=0 then 111 end" << false << QVariant();

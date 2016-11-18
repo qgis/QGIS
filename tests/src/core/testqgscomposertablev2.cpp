@@ -418,7 +418,7 @@ void TestQgsComposerTableV2::attributeTableRepeat()
     mComposerAttributeTable->setMaximumNumberOfFeatures( features );
   }
 
-  //and then the reverse....
+  //and then the reverse….
   for ( int features = 50; features > 1; --features )
   {
     mComposerAttributeTable->setMaximumNumberOfFeatures( features );

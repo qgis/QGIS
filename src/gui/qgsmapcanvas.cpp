@@ -390,7 +390,7 @@ void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
     disconnect( this,       SIGNAL( destinationCrsChanged() ),
                 mMapOverview, SLOT( destinationCrsChanged() ) );
 
-    // map overview is not owned by map canvas so don't delete it...
+    // map overview is not owned by map canvas so don't delete it…
   }
 
   mMapOverview = overview;
@@ -573,7 +573,7 @@ void QgsMapCanvas::refreshMap()
 
   QgsDebugMsgLevel( "CANVAS refresh!", 3 );
 
-  stopRendering(); // if any...
+  stopRendering(); // if any…
 
   //build the expression context
   QgsExpressionContext expressionContext;
@@ -764,7 +764,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   painter.end();
   image.save( theFileName, theFormat.toLocal8Bit().data() );
 
-  //create a world file to go with the image...
+  //create a world file to go with the image…
   QgsRectangle myRect = mapSettings().visibleExtent();
   QString myHeader;
   // note: use 17 places of precision for all numbers output

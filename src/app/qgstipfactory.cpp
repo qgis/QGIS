@@ -22,9 +22,9 @@
 QgsTipFactory::QgsTipFactory() : QObject()
 {
   // I'm just doing this in a simple way so
-  // its easy for translators...later
+  // its easy for translators…later
   // it its worth the time I'll move this data
-  // into a sqlite database...
+  // into a sqlite database…
   QgsTip myTip;
   myTip.setTitle( tr( "QGIS is open source" ) );
   myTip.setContent( tr( "QGIS is open source software."
@@ -64,7 +64,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
-  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'. For articles we suggest you write 'QGIS is ....'"
+  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'. For articles we suggest you write 'QGIS is ….'"
                       ) );
   addGenericTip( myTip );
   myTip.setTitle( tr( "How do I refer to QGIS?" ) );

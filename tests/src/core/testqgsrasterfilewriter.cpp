@@ -25,7 +25,7 @@
 
 #include "cpl_conv.h"
 
-//qgis includes...
+//qgis includes…
 #include <qgsrasterchecker.h>
 #include "qgsrasterdataprovider.h"
 #include <qgsrasterlayer.h>
@@ -65,8 +65,8 @@ void TestQgsRasterFileWriter::initTestCase()
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
-  //create some objects that will be used in all tests...
-  //create a raster layer that will be used in all tests...
+  //create some objects that will be used in all tests…
+  //create a raster layer that will be used in all tests…
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport += QLatin1String( "<h1>Raster File Writer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
@@ -143,7 +143,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   QgsRasterNuller *nuller = new QgsRasterNuller();
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
-    //nuller->setNoData( ... );
+    //nuller->setNoData( … );
   }
   if ( !pipe->insert( 1, nuller ) )
   {

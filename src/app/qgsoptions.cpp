@@ -1281,7 +1281,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/Map/logCanvasRefreshEvent" ), mLogCanvasRefreshChkBx->isChecked() );
 
   //check behaviour so default projection when new layer is added with no
-  //projection defined...
+  //projection defined…
   if ( radPromptForProjection->isChecked() )
   {
     mSettings->setValue( QStringLiteral( "/Projections/defaultBehaviour" ), "prompt" );

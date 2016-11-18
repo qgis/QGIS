@@ -80,7 +80,7 @@ class GrassUtils(object):
     @staticmethod
     def getGrassVersion():
         # I do not know if this should be removed or let the user enter it
-        # or something like that... This is just a temporary thing
+        # or something like that… This is just a temporary thing
         return '6.4.0'
 
     @staticmethod

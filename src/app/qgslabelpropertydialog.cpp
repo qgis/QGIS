@@ -80,7 +80,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
   }
   QgsAttributes attributeValues = mCurLabelFeat.attributes();
 
-  //get layerproperties. Problem: only for pallabeling...
+  //get layerproperties. Problem: only for pallabeling…
 
   blockElementSignals( true );
 
@@ -219,7 +219,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
 {
   //loop through data defined properties and set all the GUI widget values. We can do this
   //even if the data defined property is set to an expression, as it's useful to show
-  //users what the evaluated property is...
+  //users what the evaluated property is…
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()

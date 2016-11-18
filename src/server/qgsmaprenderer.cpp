@@ -252,13 +252,13 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
   if ( mExtent.isEmpty() )
   {
-    QgsDebugMsg( "empty extent... not rendering" );
+    QgsDebugMsg( "empty extent… not rendering" );
     return;
   }
 
   if ( qgsDoubleNear( mSize.width(), 1.0 ) && qgsDoubleNear( mSize.height(), 1.0 ) )
   {
-    QgsDebugMsg( "size 1x1... not rendering" );
+    QgsDebugMsg( "size 1x1… not rendering" );
     return;
   }
 
@@ -375,7 +375,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     // incompatible with having a QPainter active (the one that is
     // passed into this function), as Qt produces a number of errors
     // when try to do so. I'm (Gavin) not sure how to fix this, but
-    // added these comments and debug statement to help others...
+    // added these comments and debug statement to help others…
     QgsDebugMsg( "If there is a QPaintEngine error here, it is caused by an emit call" );
 
     //emit drawingProgress(myRenderCounter++, mLayerSet.size());

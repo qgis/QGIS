@@ -840,7 +840,7 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
     *px = x[i] + dx * distr / di;
     *py = y[i] + dy * distr / di;
   }
-  else    // just select last point...
+  else    // just select last point…
   {
     *px = x[i];
     *py = y[i];

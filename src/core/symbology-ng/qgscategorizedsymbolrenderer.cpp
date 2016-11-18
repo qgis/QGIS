@@ -163,7 +163,7 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString& attrN
   {
     if ( !cat.symbol() )
     {
-      QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+      QgsDebugMsg( "invalid symbol in a category! ignoring…" );
     }
     mCategories << cat;
   }
@@ -317,7 +317,7 @@ void QgsCategorizedSymbolRenderer::addCategory( const QgsRendererCategory &cat )
 {
   if ( !cat.symbol() )
   {
-    QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+    QgsDebugMsg( "invalid symbol in a category! ignoring…" );
     return;
   }
 

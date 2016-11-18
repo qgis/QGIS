@@ -138,7 +138,7 @@ class DBTree(QTreeView):
             menu.addAction(self.tr("Remove"), self.delete)
 
         elif not index.parent().isValid() and item.typeName() in ("spatialite", "gpkg"):
-            menu.addAction(self.tr("New Connection..."), self.newConnection)
+            menu.addAction(self.tr("New Connection…"), self.newConnection)
 
         if not menu.isEmpty():
             menu.exec_(ev.globalPos())

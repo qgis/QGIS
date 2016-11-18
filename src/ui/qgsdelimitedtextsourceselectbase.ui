@@ -89,7 +89,7 @@
            <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
           </property>
           <property name="text">
-           <string>Browse...</string>
+           <string>Browse…</string>
           </property>
           <property name="flat">
            <bool>false</bool>

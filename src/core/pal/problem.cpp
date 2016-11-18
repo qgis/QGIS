@@ -1356,7 +1356,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               }
             }
           }
-          else   // Current label == -1   end of chain ...
+          else   // Current label == -1   end of chain …
           {
             if ( !retainedChain || delta + inactiveCost[subseed] < delta_best )
             {
@@ -1636,7 +1636,7 @@ inline Chain *Problem::chain( int seed )
             }
 
           }
-          else   // Current label == -1   end of chain ...
+          else   // Current label == -1   end of chain …
           {
             if ( !retainedChain || delta + inactiveCost[seed] < delta_best )
             {

@@ -237,7 +237,7 @@ QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
 void QgsRasterLayerRenderer::Feedback::onNewData()
 {
   if ( !renderPartialOutput() )
-    return;  // we were not asked for partial renders and we may not have a temporary image for overwriting...
+    return;  // we were not asked for partial renders and we may not have a temporary image for overwriting…
 
   // update only once upon a time
   // (preview itself takes some time)

@@ -174,7 +174,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   mAssistantPreviewSymbol = new QgsLineSymbol();
 
   if ( vectorLayer() )
-    mPenWidthDDBtn->setAssistant( tr( "Width Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+    mPenWidthDDBtn->setAssistant( tr( "Width Assistant…" ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
@@ -421,7 +421,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+    mSizeDDBtn->setAssistant( tr( "Size Assistant…" ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -839,7 +839,7 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+    mSizeDDBtn->setAssistant( tr( "Size Assistant…" ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
   QSize size = lstNames->iconSize();
   double markerSize = DEFAULT_POINT_SIZE * 2;
@@ -1787,7 +1787,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+    mSizeDDBtn->setAssistant( tr( "Size Assistant…" ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 }
 
 QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget()
@@ -2693,7 +2693,7 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   mAssistantPreviewSymbol = new QgsMarkerSymbol();
 
   if ( vectorLayer() )
-    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
+    mSizeDDBtn->setAssistant( tr( "Size Assistant…" ), new QgsSizeScaleWidget( vectorLayer(), mAssistantPreviewSymbol ) );
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );

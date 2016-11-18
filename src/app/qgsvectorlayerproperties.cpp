@@ -155,15 +155,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   // Create the menu for the save style button to choose the output format
   mSaveAsMenu = new QMenu( this );
-  mSaveAsMenu->addAction( tr( "QGIS Layer Style File..." ) );
-  mSaveAsMenu->addAction( tr( "SLD File..." ) );
+  mSaveAsMenu->addAction( tr( "QGIS Layer Style File…" ) );
+  mSaveAsMenu->addAction( tr( "SLD File…" ) );
 
   //Only if the provider support loading & saving styles to db add new choices
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
   {
     //for loading
     mLoadStyleMenu = new QMenu( this );
-    mLoadStyleMenu->addAction( tr( "Load from file..." ) );
+    mLoadStyleMenu->addAction( tr( "Load from file…" ) );
     mLoadStyleMenu->addAction( tr( "Load from database" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
@@ -397,7 +397,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
   mDisplayExpressionWidget->setField( mLayer->displayExpression() );
 
-  // set up the scale based layer visibility stuff....
+  // set up the scale based layer visibility stuff….
   mScaleRangeWidget->setScaleRange( 1.0 / mLayer->maximumScale(), 1.0 / mLayer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
@@ -490,7 +490,7 @@ void QgsVectorLayerProperties::apply()
   }
   mOriginalSubsetSQL = mLayer->subsetString();
 
-  // set up the scale based layer visibility stuff....
+  // set up the scale based layer visibility stuff….
   mLayer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
   // caution: layer uses scale denoms, widget uses true scales
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScaleDenom() );
@@ -660,7 +660,7 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
     //TODO If the sql is changed in the prop dialog, the layer extent should be recalculated
 
     // The datasource for the layer needs to be updated with the new sql since this gets
-    // saved to the project file. This should happen at the map layer level...
+    // saved to the project file. This should happen at the map layer level…
 
   }
   // delete the query builder object
