@@ -5,7 +5,7 @@
     SplitWithLines.py
     ---------------------
     Date                 : November 2014
-    Revised              : September 2016
+    Revised              : November 2016
     Copyright            : (C) 2014 by Bernhard Ströbl
     Email                : bernhard dot stroebl at jena dot de
 ***************************************************************************
@@ -51,7 +51,7 @@ class SplitWithLines(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Splitted')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Split')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
