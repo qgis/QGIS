@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
 from builtins import str
 from builtins import range
 
@@ -33,10 +34,9 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
+from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
-
-from .fieldsmapping import ParameterFieldsMapping
 
 
 class FieldsMapper(GeoAlgorithm):
@@ -55,6 +55,38 @@ class FieldsMapper(GeoAlgorithm):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))
+
+        class ParameterFieldsMapping(Parameter):
+
+            default_metadata = {
+                'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
+            }
+
+            def __init__(self, name='', description='', parent=None):
+                Parameter.__init__(self, name, description)
+                self.parent = parent
+                self.value = []
+
+            def getValueAsCommandLineParameter(self):
+                return '"' + str(self.value) + '"'
+
+            def setValue(self, value):
+                if value is None:
+                    return False
+                if isinstance(value, list):
+                    self.value = value
+                    return True
+                if isinstance(value, str):
+                    try:
+                        self.value = eval(value)
+                        return True
+                    except Exception as e:
+                        # fix_print_with_import
+                        print(str(e))  # display error in console
+                        return False
+                return False
+
+
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
                                                  self.tr('Fields mapping'),
                                                  self.INPUT_LAYER))
