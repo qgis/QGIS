@@ -2,10 +2,11 @@
 
 """
 ***************************************************************************
+    SplitLinesWithLines.py
     DEPRECATED, replaced by SplitWithLines.py
     ---------------------
     Date                 : November 2014
-    Revised              : February 2016
+    Revised              : November 2016
     Copyright            : (C) 2014 by Bernhard Ströbl
     Email                : bernhard dot stroebl at jena dot de
 ***************************************************************************
@@ -41,6 +42,11 @@ class SplitLinesWithLines(GeoAlgorithm):
     INPUT_B = 'INPUT_B'
 
     OUTPUT = 'OUTPUT'
+
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use SplitWithLines instead
+        self.showInToolbox = False
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split lines with lines')

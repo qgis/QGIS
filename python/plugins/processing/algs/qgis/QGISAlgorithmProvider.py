@@ -139,6 +139,7 @@ from .SelectByExpression import SelectByExpression
 from .SelectByAttributeSum import SelectByAttributeSum
 from .HypsometricCurves import HypsometricCurves
 from .SplitWithLines import SplitWithLines
+from .SplitLinesWithLines import SplitLinesWithLines
 from .FieldsMapper import FieldsMapper
 from .Datasources2Vrt import Datasources2Vrt
 from .CheckValidity import CheckValidity
@@ -205,7 +206,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
-                        SplitWithLines(), CreateConstantRaster(),
+                        SplitWithLines(), SplitLinesWithLines(),  CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
