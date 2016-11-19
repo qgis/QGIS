@@ -102,12 +102,12 @@ bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
   return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
 }
 
-QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
+QgsLineVectorLayerDirector::QgsLineVectorLayerDirector(QgsVectorLayer *myLayer,
     int directionFieldId,
     const QString& directDirectionValue,
     const QString& reverseDirectionValue,
     const QString& bothDirectionValue,
-    int defaultDirection
+    const RoadDirection defaultDirection
                                                       )
 {
   mVectorLayer            = myLayer;
@@ -284,21 +284,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
   while ( fit.nextFeature( feature ) )
   {
-    int directionType = mDefaultDirection;
+    RoadDirection directionType = mDefaultDirection;
 
     // What direction have feature?
     QString str = feature.attribute( mDirectionFieldId ).toString();
     if ( str == mBothDirectionValue )
     {
-      directionType = 3;
+      directionType = RoadDirection::RoadBidirectional;
     }
     else if ( str == mDirectDirectionValue )
     {
-      directionType = 1;
+      directionType = RoadDirection::RoadDirect;
     }
     else if ( str == mReverseDirectionValue )
     {
-      directionType = 2;
+      directionType = RoadDirection::RoadReversed;
     }
 
     // begin features segments and add arc to the Graph;
@@ -372,13 +372,13 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
                 prop.push_back(( *it )->cost( distance, feature ) );
               }
 
-              if ( directionType == 1 ||
-                   directionType == 3 )
+              if ( directionType == RoadDirection::RoadDirect ||
+                   directionType == RoadDirection::RoadBidirectional )
               {
                 builder->addEdge( pt1idx, pt1, pt2idx, pt2, prop );
               }
-              if ( directionType == 2 ||
-                   directionType == 3 )
+              if ( directionType == RoadDirection::RoadReversed ||
+                   directionType == RoadDirection::RoadBidirectional )
               {
                 builder->addEdge( pt2idx, pt2, pt1idx, pt1, prop );
               }

@@ -143,13 +143,13 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
 
   switch ( s->mDefaultDirection )
   {
-    case RgLineVectorLayerSettings::Both:
+    case QgsLineVectorLayerDirector::RoadDirection::RoadBidirectional:
       mcbDirectionDefault->setCurrentIndex( 0 );
       break;
-    case RgLineVectorLayerSettings::FirstPointToLastPoint:
+    case QgsLineVectorLayerDirector::RoadDirection::RoadDirect:
       mcbDirectionDefault->setCurrentIndex( 1 );
       break;
-    case RgLineVectorLayerSettings::LastPointToFirstPoint:
+    case QgsLineVectorLayerDirector::RoadDirection::RoadReversed:
       mcbDirectionDefault->setCurrentIndex( 2 );
       break;
   }

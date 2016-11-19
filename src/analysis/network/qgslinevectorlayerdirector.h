@@ -1,5 +1,5 @@
 /***************************************************************************
-  linevectorlayerdirector.h
+  qgslinevectorlayerdirector.h
   --------------------------------------
   Date                 : 2010-10-20
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -32,21 +32,35 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
 
   public:
 
+    /** Road direction
+     * Road can be one-way with direct flow (one can move only from the start
+     * point to the end point), one-way with reversed flow (one can move only
+     * from the end point to the start point) and bidirectional or two-way
+     * (one can move in any direction)
+     */
+    enum RoadDirection
+    {
+      RoadDirect,        //!< One-way direct
+      RoadReversed,      //!< One-way reversed
+      RoadBidirectional, //!< Two-way
+    };
+
     /**
      * Default constructor
      * @param myLayer source vector layer
      * @param directionFieldId field contain road direction value
-     * @param directDirectionValue value for one-way road
+     * @param directDirectionValue value for direct one-way road
      * @param reverseDirectionValue value for reversed one-way road
-     * @param bothDirectionValue value for bidirectional road
-     * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both directions
+     * @param bothDirectionValue value for two-way (bidirectional) road
+     * @param defaultDirection default road direction. Will be used if corresponding
+     * attribute value is not set or does not equal to the given values
      */
     QgsLineVectorLayerDirector( QgsVectorLayer* myLayer,
                                 int directionFieldId,
                                 const QString& directDirectionValue,
                                 const QString& reverseDirectionValue,
                                 const QString& bothDirectionValue,
-                                int defaultDirection
+                                const RoadDirection defaultDirection
                               );
 
     //! Destructor
@@ -72,8 +86,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
 
     QString mBothDirectionValue;
 
-    //FIXME: need enum
-    int mDefaultDirection;
+    RoadDirection mDefaultDirection;
 };
 
 #endif // QGSLINEVECTORLAYERDIRECTOR_H
