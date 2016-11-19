@@ -29,8 +29,8 @@
 #include <qgslinevectorlayerdirector.h>
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
-#include <qgsdistancestrategy.h>
-#include <qgsspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+#include <qgsnetworkspeedstrategy.h>
 #include "qgsdockwidget.h"
 
 // Road grap plugin includes
@@ -218,8 +218,8 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
                                       mSettings->mBothDirectionVal,
                                       mSettings->mDefaultDirection
                                     );
-    director->addStrategy( new QgsDistanceStrategy() );
-    director->addStrategy( new QgsSpeedStrategy( layer->fields().lookupField( mSettings->mSpeed ),
+    director->addStrategy( new QgsNetworkDistanceStrategy() );
+    director->addStrategy( new QgsNetworkSpeedStrategy( layer->fields().lookupField( mSettings->mSpeed ),
                            mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
   }

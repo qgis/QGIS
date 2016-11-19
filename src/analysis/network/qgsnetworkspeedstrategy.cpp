@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdistancestrategy.h
+  qgsspeedstrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,10 +13,32 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "qgsdistancestrategy.h"
+#include "qgsnetworkspeedstrategy.h"
 
-QVariant QgsDistanceStrategy::cost( double distance, const QgsFeature& f ) const
+QgsNetworkSpeedStrategy::QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor )
 {
-  Q_UNUSED( f );
-  return QVariant( distance );
+  mAttributeId = attributeId;
+  mDefaultValue = defaultValue;
+  mToMetricFactor = toMetricFactor;
+}
+
+QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature& f ) const
+{
+  QgsAttributes attrs = f.attributes();
+
+  if ( mAttributeId < 0 || mAttributeId >= attrs.count() )
+    return QVariant( distance / ( mDefaultValue * mToMetricFactor ) );
+
+  double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
+  if ( val <= 0.0 )
+    return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
+
+  return QVariant( val );
+}
+
+QgsAttributeList QgsNetworkSpeedStrategy::requiredAttributes() const
+{
+  QgsAttributeList l;
+  l.push_back( mAttributeId );
+  return l;
 }

@@ -21,7 +21,7 @@
 #include <QList>
 
 #include <qgspoint.h>
-#include "qgsstrategy.h"
+#include "qgsnetworkstrategy.h"
 
 class QgsGraphBuilderInterface;
 
@@ -60,7 +60,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     }
 
     //! Add optimization strategy
-    void addStrategy( QgsStrategy* prop )
+    void addStrategy( QgsNetworkStrategy* prop )
     {
       mStrategies.push_back( prop );
     }
@@ -69,7 +69,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     virtual QString name() const = 0;
 
   protected:
-    QList<QgsStrategy*> mStrategies;
+    QList<QgsNetworkStrategy*> mStrategies;
 };
 
 #endif // QGSGRAPHDIRECTOR_H

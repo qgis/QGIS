@@ -253,7 +253,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       tmpAttr.push_back( mDirectionFieldId );
     }
 
-    QList< QgsStrategy* >::const_iterator it;
+    QList< QgsNetworkStrategy* >::const_iterator it;
     QgsAttributeList::const_iterator it2;
 
     for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
@@ -366,7 +366,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               double distance = builder->distanceArea()->measureLine( pt1, pt2 );
               QVector< QVariant > prop;
-              QList< QgsStrategy* >::const_iterator it;
+              QList< QgsNetworkStrategy* >::const_iterator it;
               for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
               {
                 prop.push_back(( *it )->cost( distance, feature ) );

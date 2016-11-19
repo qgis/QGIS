@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsstrategy.h
+  qgsnetworkspeedstrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,45 +13,40 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSSTRATERGY_H
-#define QGSSTRATERGY_H
+#ifndef QGSNETWORKSPEEDSTRATEGY_H
+#define QGSNETWORKSPEEDSTRATEGY_H
 
-#include <QVariant>
+#include <qgsnetworkstrategy.h>
 
-#include <qgsfeature.h>
-#include <qgsfeaturerequest.h>
-
-/**
- * \ingroup analysis
- * \class QgsStrategy
+/** \ingroup analysis
+ * \class QgsSpeedStrategy
  * \note added in QGIS 3.0
- * \brief QgsStrategy defines strategy used for calculation of the edge cost. For example it can
- * take into account travel distance, amount of time or money. Currently there are two strategies
- * implemented in the analysis library: QgsDistanceStrategy and QgsSpeedStrategy.
- * QgsStrategy implemented with strategy design pattern.
+ * \brief Strategy for caclucating edge cost based on travel time. Should be
+ * used for finding fastest path between two points.
  */
-class ANALYSIS_EXPORT QgsStrategy
+class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
 {
   public:
 
     /**
      * Default constructor
      */
-    QgsStrategy() {}
+    QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 
-    virtual ~QgsStrategy() {}
+    //! Returns edge cost
+    QVariant cost( double distance, const QgsFeature& f ) const override;
 
     /**
      * Returns list of the source layer attributes needed for cost calculation.
      * This method called by QgsGraphDirector.
-     * \return list of required attributes
      */
-    virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
+    QgsAttributeList requiredAttributes() const override;
 
-    /**
-     * Return edge cost
-     */
-    virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
+  private:
+    int mAttributeId;
+    double mDefaultValue;
+    double mToMetricFactor;
+
 };
 
-#endif // QGSSTRATERGY_H
+#endif // QGSNETWORKSPEEDSTRATEGY_H

@@ -54,9 +54,9 @@
 %Include raster/qgstotalcurvaturefilter.sip
 
 %Include network/qgsgraph.sip
-%Include network/qgsstrategy.sip
-%Include network/qgsspeedstrategy.sip
-%Include network/qgsdistancestrategy.sip
+%Include network/qgsnetworkstrategy.sip
+%Include network/qgsnetworkspeedstrategy.sip
+%Include network/qgsnetworkdistancestrategy.sip
 %Include network/qgsgraphbuilderinterface.sip
 %Include network/qgsgraphbuilder.sip
 %Include network/qgsgraphdirector.sip

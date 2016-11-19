@@ -1,7 +1,7 @@
-class QgsDistanceStrategy : QgsStrategy
+class QgsNetworkDistanceStrategy : QgsNetworkStrategy
 {
 %TypeHeaderCode
-#include <qgsdistancestrategy.h>
+#include <qgsnetworkdistancestrategy.h>
 %End
 
   public:

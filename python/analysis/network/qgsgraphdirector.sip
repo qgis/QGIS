@@ -42,7 +42,7 @@ class QgsGraphDirector : QObject
                             QVector< QgsPoint > &snappedPoints /Out/ ) const;
 
     //! Add optimization strategy
-    void addStrategy( QgsStrategy* prop /Transfer/);
+    void addStrategy( QgsNetworkStrategy* prop /Transfer/);
 
     //! Returns director name
     virtual QString name() const = 0;

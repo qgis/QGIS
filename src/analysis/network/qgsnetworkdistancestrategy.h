@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsspeedstrategy.h
+  qgsnetworkdistancestrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,40 +13,21 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSSPEEDSTRATEGY_H
-#define QGSSPEEDSTRATEGY_H
+#ifndef QGSNETWORKDISTANCESTRATEGY_H
+#define QGSNETWORKDISTANCESTRATEGY_H
 
-#include <qgsstrategy.h>
+#include <qgsnetworkstrategy.h>
 
 /** \ingroup analysis
- * \class QgsSpeedStrategy
+ * \class QgsNetworkDistanceStrategy
  * \note added in QGIS 3.0
- * \brief Strategy for caclucating edge cost based on travel time. Should be
- * used for finding fastest path between two points.
+ * \brief Strategy for caclulating edge cost based on its length. Should be
+ * used for finding shortest path between two points.
  */
-class ANALYSIS_EXPORT QgsSpeedStrategy : public QgsStrategy
+class ANALYSIS_EXPORT QgsNetworkDistanceStrategy : public QgsNetworkStrategy
 {
   public:
-
-    /**
-     * Default constructor
-     */
-    QgsSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
-
-    //! Returns edge cost
-    QVariant cost( double distance, const QgsFeature& f ) const override;
-
-    /**
-     * Returns list of the source layer attributes needed for cost calculation.
-     * This method called by QgsGraphDirector.
-     */
-    QgsAttributeList requiredAttributes() const override;
-
-  private:
-    int mAttributeId;
-    double mDefaultValue;
-    double mToMetricFactor;
-
+    virtual QVariant cost( double distance, const QgsFeature& ) const override;
 };
 
-#endif // QGSSPEEDSTRATEGY_H
+#endif // QGSNETWORKDISTANCESTRATEGY_H
