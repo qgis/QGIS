@@ -15,14 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="0" rowspan="3">
-    <widget class="QListWidget" name="selectionListWidget">
-     <property name="minimumSize">
-      <size>
-       <width>333</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QListWidget" name="selectionListWidget"/>
    </item>
    <item row="1" column="0">
     <widget class="QCheckBox" name="labelOnTopCheckBox">
