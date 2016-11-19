@@ -151,6 +151,12 @@ void QgsStyleExportImportDialog::doExportImport()
                             .arg( mTempStyle->errorString() ) );
       return;
     }
+    else
+    {
+      QMessageBox::information( this, tr( "Export successful" ),
+                                tr( "The selected symbols were successfully exported to file:\n%1" )
+                                .arg( mFileName ) );
+    }
   }
   else // import
   {
@@ -192,7 +198,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
     name = styleNames[i];
     QgsSymbol* symbol = style->symbol( name );
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
     model->appendRow( item );
     delete symbol;
@@ -207,7 +213,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
     QScopedPointer< QgsColorRamp > ramp( style->colorRamp( name ) );
 
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize(), 15 );
     item->setIcon( icon );
     model->appendRow( item );
   }
