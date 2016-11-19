@@ -46,5 +46,5 @@ class QgsStrategy
     /**
      * Return edge cost
      */
-    virtual QVariant cost( double distance, const QgsFeature &f ) const;
+    virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
 };

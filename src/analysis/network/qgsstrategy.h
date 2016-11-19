@@ -51,12 +51,7 @@ class ANALYSIS_EXPORT QgsStrategy
     /**
      * Return edge cost
      */
-    virtual QVariant cost( double distance, const QgsFeature &f ) const
-    {
-      Q_UNUSED( distance );
-      Q_UNUSED( f );
-      return QVariant();
-    }
+    virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
 };
 
 #endif // QGSSTRATERGY_H
