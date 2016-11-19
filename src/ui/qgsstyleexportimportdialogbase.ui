@@ -43,10 +43,10 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="tagLabel">
        <property name="text">
-        <string>Tag(s)</string>
+        <string>Additional tag(s)</string>
        </property>
       </widget>
      </item>
@@ -63,10 +63,23 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="2">
-      <widget class="QLineEdit" name="mSymbolTags"/>
+     <item row="3" column="0" colspan="3">
+      <widget class="QCheckBox" name="mIgnoreXMLTags">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Do not import embedded tags</string>
+       </property>
+      </widget>
      </item>
      <item row="4" column="1" colspan="2">
+      <widget class="QLineEdit" name="mSymbolTags"/>
+     </item>
+     <item row="5" column="1" colspan="2">
       <widget class="QLabel" name="tagHintLabel">
        <property name="text">
         <string>Tip: separate multiple tags with commas</string>

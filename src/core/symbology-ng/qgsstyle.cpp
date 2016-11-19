@@ -1533,10 +1533,26 @@ bool QgsStyle::importXml( const QString& filename )
     {
       if ( e.tagName() == QLatin1String( "symbol" ) )
       {
+        QString name = e.attribute( QStringLiteral( "name" ) );
+        QStringList tags;
+        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        {
+          tags = e.attribute( QStringLiteral( "tags" ) ).split( "," );
+        }
+        bool favorite = false;
+        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == "1" )
+        {
+          favorite = true;
+        }
+
         QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol( e );
         if ( symbol )
         {
-          symbols.insert( e.attribute( QStringLiteral( "name" ) ), symbol );
+          addSymbol( name, symbol );
+          if ( mCurrentDB )
+          {
+            saveSymbol( name, symbol, favorite, tags );
+          }
         }
       }
       else
@@ -1550,12 +1566,12 @@ bool QgsStyle::importXml( const QString& filename )
   {
     // for the old version, use the utility function to solve @symbol@layer subsymbols
     symbols = QgsSymbolLayerUtils::loadSymbols( symbolsElement );
-  }
 
-  // save the symbols with proper name
-  for ( QMap<QString, QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
-  {
-    addSymbol( it.key(), it.value() );
+    // save the symbols with proper name
+    for ( QMap<QString, QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
+    {
+      addSymbol( it.key(), it.value() );
+    }
   }
 
   // load color ramps
@@ -1565,10 +1581,26 @@ bool QgsStyle::importXml( const QString& filename )
   {
     if ( e.tagName() == QLatin1String( "colorramp" ) )
     {
+      QString name = e.attribute( QStringLiteral( "name" ) );
+      QStringList tags;
+      if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+      {
+        tags = e.attribute( QStringLiteral( "tags" ) ).split( "," );
+      }
+      bool favorite = false;
+      if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == "1" )
+      {
+        favorite = true;
+      }
+
       QgsColorRamp* ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
-        addColorRamp( e.attribute( QStringLiteral( "name" ) ), ramp );
+        addColorRamp( name, ramp );
+        if ( mCurrentDB )
+        {
+          saveColorRamp( name, ramp, favorite, tags );
+        }
       }
     }
     else

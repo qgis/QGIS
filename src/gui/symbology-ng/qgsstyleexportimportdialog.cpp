@@ -56,6 +56,8 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
            this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   mTempStyle = new QgsStyle();
+  mTempStyle->createMemoryDB();
+
   // TODO validate
   mFileName = QLatin1String( "" );
   mProgressDlg = nullptr;
@@ -92,6 +94,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
     locationLineEdit->setHidden( true );
 
     mFavorite->setHidden( true );
+    mIgnoreXMLTags->setHidden( true );
 
     pb = new QPushButton( tr( "Select by group" ) );
     buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
@@ -215,25 +218,44 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
 {
   QString symbolName;
   QgsSymbol* symbol;
+  QStringList symbolTags;
+  bool symbolFavorite;
   QgsColorRamp *ramp = nullptr;
   QModelIndex index;
   bool isSymbol = true;
   bool prompt = true;
   bool overwrite = true;
-  QStringList tags;
 
-  // get the groupid when going for import
-  if ( mDialogMode == Import )
-  {
-    // get the name the user entered
-    tags = mSymbolTags->text().split( ',' );
-  }
+  QStringList importTags = mSymbolTags->text().split( ',' );
+
+  QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
 
   for ( int i = 0; i < selection->size(); ++i )
   {
     index = selection->at( i );
     symbolName = index.model()->data( index, 0 ).toString();
     symbol = src->symbol( symbolName );
+
+    if ( !mIgnoreXMLTags->isChecked() )
+    {
+      symbolTags = src->tagsOfSymbol( !symbol ? QgsStyle::ColorrampEntity : QgsStyle::SymbolEntity, symbolName );
+    }
+    else
+    {
+      symbolTags.clear();
+    }
+
+    if ( mDialogMode == Import )
+    {
+      symbolTags << importTags;
+      symbolFavorite = mFavorite->isChecked();
+    }
+    else
+    {
+      symbolFavorite = !symbol ? favoriteColorramps.contains( symbolName ) : favoriteSymbols.contains( symbolName );
+    }
+
     if ( !symbol )
     {
       isSymbol = false;
@@ -256,8 +278,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
             continue;
           case QMessageBox::Yes:
             dst->addSymbol( symbolName, symbol );
-            if ( mDialogMode == Import )
-              dst->saveSymbol( symbolName, symbol, mFavorite->isChecked(), tags );
+            dst->saveSymbol( symbolName, symbol, symbolFavorite, symbolTags );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -273,8 +294,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
       if ( dst->symbolNames().contains( symbolName ) && overwrite )
       {
         dst->addSymbol( symbolName, symbol );
-        if ( mDialogMode == Import )
-          dst->saveSymbol( symbolName, symbol, mFavorite->isChecked(), tags );
+        dst->saveSymbol( symbolName, symbol, symbolFavorite, symbolTags );
       }
       else if ( dst->symbolNames().contains( symbolName ) && !overwrite )
       {
@@ -283,8 +303,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
       else
       {
         dst->addSymbol( symbolName, symbol );
-        if ( mDialogMode == Import )
-          dst->saveSymbol( symbolName, symbol, mFavorite->isChecked(), tags );
+        dst->saveSymbol( symbolName, symbol, symbolFavorite, symbolTags );
       }
     }
     else
@@ -303,8 +322,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
             continue;
           case QMessageBox::Yes:
             dst->addColorRamp( symbolName, ramp );
-            if ( mDialogMode == Import )
-              dst->saveColorRamp( symbolName, ramp, mFavorite->isChecked(), tags );
+            dst->saveColorRamp( symbolName, ramp, symbolFavorite, symbolTags );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -320,8 +338,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
       if ( dst->colorRampNames().contains( symbolName ) && overwrite )
       {
         dst->addColorRamp( symbolName, ramp );
-        if ( mDialogMode == Import )
-          dst->saveColorRamp( symbolName, ramp, mFavorite->isChecked(), tags );
+        dst->saveColorRamp( symbolName, ramp, symbolFavorite, symbolTags );
       }
       else if ( dst->colorRampNames().contains( symbolName ) && !overwrite )
       {
@@ -330,8 +347,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
       else
       {
         dst->addColorRamp( symbolName, ramp );
-        if ( mDialogMode == Import )
-          dst->saveColorRamp( symbolName, ramp, mFavorite->isChecked() , tags );
+        dst->saveColorRamp( symbolName, ramp, symbolFavorite, symbolTags );
       }
     }
   }
