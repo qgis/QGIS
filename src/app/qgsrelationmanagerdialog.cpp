@@ -84,7 +84,6 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
 {
   QgsRelationAddDlg addDlg;
-  addDlg.addLayers( mLayers );
 
   if ( addDlg.exec() )
   {

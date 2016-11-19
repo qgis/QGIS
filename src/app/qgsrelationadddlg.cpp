@@ -16,6 +16,7 @@
 
 #include "qgsrelationadddlg.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerproxymodel.h"
 
 #include <QPushButton>
 
@@ -24,45 +25,41 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
 {
   setupUi( this );
 
+  connect( mCbxReferencingLayer, &QgsMapLayerComboBox::layerChanged, this, [=]( QgsMapLayer * layer ) { mCbxReferencingField->setLayer( layer ); }
+         );
+  connect( mCbxReferencedLayer, &QgsMapLayerComboBox::layerChanged, this, [=]( QgsMapLayer * layer ) { mCbxReferencedField->setLayer( layer ); }
+         );
+
+  mCbxReferencingLayer->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mCbxReferencingField->setLayer( mCbxReferencingLayer->currentLayer() );
+  mCbxReferencedLayer->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mCbxReferencedField->setLayer( mCbxReferencedLayer->currentLayer() );
+
   mTxtRelationId->setPlaceholderText( tr( "[Generated automatically]" ) );
   checkDefinitionValid();
 
-  connect( mCbxReferencingLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( checkDefinitionValid() ) );
-  connect( mCbxReferencingField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( checkDefinitionValid() ) );
-  connect( mCbxReferencedLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( checkDefinitionValid() ) );
-  connect( mCbxReferencedField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( checkDefinitionValid() ) );
-}
-
-void QgsRelationAddDlg::addLayers( const QList< QgsVectorLayer* >& layers )
-{
-  mCbxReferencingLayer->addItem( QLatin1String( "" ), "" );
-  mCbxReferencedLayer->addItem( QLatin1String( "" ), "" );
-
-  Q_FOREACH ( QgsVectorLayer* layer, layers )
-  {
-    mCbxReferencingLayer->addItem( layer->name(), layer->id() );
-    mCbxReferencedLayer->addItem( layer->name(), layer->id() );
-
-    mLayers.insert( layer->id(), layer );
-  }
+  connect( mCbxReferencingLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddDlg::checkDefinitionValid );
+  connect( mCbxReferencingField, &QgsFieldComboBox::fieldChanged, this, &QgsRelationAddDlg::checkDefinitionValid );
+  connect( mCbxReferencedLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddDlg::checkDefinitionValid );
+  connect( mCbxReferencedField, &QgsFieldComboBox::fieldChanged, this, &QgsRelationAddDlg::checkDefinitionValid );
 }
 
 QString QgsRelationAddDlg::referencingLayerId()
 {
-  return mCbxReferencingLayer->currentData().toString();
+  return mCbxReferencingLayer->currentLayer()->id();
 }
 
 QString QgsRelationAddDlg::referencedLayerId()
 {
-  return mCbxReferencedLayer->currentData().toString();
+  return mCbxReferencedLayer->currentLayer()->id();
 }
 
 QList< QPair< QString, QString > > QgsRelationAddDlg::references()
 {
   QList< QPair< QString, QString > > references;
 
-  QString referencingField = mCbxReferencingField->currentData().toString();
-  QString referencedField = mCbxReferencedField->currentData().toString();
+  QString referencingField = mCbxReferencingField->currentField();
+  QString referencedField = mCbxReferencedField->currentField();
 
   references.append( QPair<QString, QString> ( referencingField, referencedField ) );
 
@@ -79,15 +76,6 @@ QString QgsRelationAddDlg::relationName()
   return mTxtRelationName->text();
 }
 
-void QgsRelationAddDlg::on_mCbxReferencingLayer_currentIndexChanged( int index )
-{
-  loadLayerAttributes( mCbxReferencingField, mLayers[mCbxReferencingLayer->itemData( index ).toString()] );
-}
-
-void QgsRelationAddDlg::on_mCbxReferencedLayer_currentIndexChanged( int index )
-{
-  loadLayerAttributes( mCbxReferencedField, mLayers[mCbxReferencedLayer->itemData( index ).toString()] );
-}
 
 void QgsRelationAddDlg::checkDefinitionValid()
 {
@@ -95,19 +83,4 @@ void QgsRelationAddDlg::checkDefinitionValid()
       && mCbxReferencedField->currentIndex() != -1
       && mCbxReferencingLayer->currentIndex() != -1
       && mCbxReferencingField->currentIndex() != -1 );
-}
-
-void QgsRelationAddDlg::loadLayerAttributes( QComboBox* cbx, QgsVectorLayer* layer )
-{
-  cbx->clear();
-
-  if ( !layer )
-  {
-    return;
-  }
-
-  Q_FOREACH ( const QgsField& fld, layer->fields().toList() )
-  {
-    cbx->addItem( fld.name(), fld.name() );
-  }
 }

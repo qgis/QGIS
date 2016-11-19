@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="4" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencingLayer"/>
+    <widget class="QgsMapLayerComboBox" name="mCbxReferencingLayer"/>
    </item>
    <item row="9" column="0">
     <widget class="QLabel" name="label_5">
@@ -49,7 +49,7 @@
     </widget>
    </item>
    <item row="5" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencingField"/>
+    <widget class="QgsFieldComboBox" name="mCbxReferencingField"/>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="label_2">
@@ -73,19 +73,31 @@
     </widget>
    </item>
    <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencedField"/>
+    <widget class="QgsFieldComboBox" name="mCbxReferencedField"/>
    </item>
    <item row="9" column="1" colspan="2">
     <widget class="QLineEdit" name="mTxtRelationId"/>
    </item>
    <item row="2" column="1" colspan="2">
-    <widget class="QComboBox" name="mCbxReferencedLayer"/>
+    <widget class="QgsMapLayerComboBox" name="mCbxReferencedLayer"/>
    </item>
    <item row="1" column="1" colspan="2">
     <widget class="QLineEdit" name="mTxtRelationName"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mTxtRelationName</tabstop>
   <tabstop>mCbxReferencedLayer</tabstop>
