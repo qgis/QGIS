@@ -208,6 +208,9 @@ class QgsStyle : QObject
     //! Changes ramp's name
     bool renameColorRamp( const QString& oldName, const QString& newName );
 
+    //! Creates a temporary memory database
+    bool createMemoryDB();
+
     //! Loads a file into the style
     bool load( const QString& filename );
 

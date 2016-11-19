@@ -289,6 +289,42 @@ bool QgsStyle::openDB( const QString& filename )
   return true;
 }
 
+bool QgsStyle::createMemoryDB()
+{
+  mErrorString.clear();
+  if ( !openDB( QStringLiteral( ":memory:" ) ) )
+  {
+    mErrorString = QStringLiteral( "Unable to create temporary memory database" );
+    QgsDebugMsg( mErrorString );
+    return false;
+  }
+  char *query = sqlite3_mprintf( "CREATE TABLE symbol("\
+                                 "id INTEGER PRIMARY KEY,"\
+                                 "name TEXT UNIQUE,"\
+                                 "xml TEXT,"\
+                                 "favorite INTEGER);"\
+                                 "CREATE TABLE colorramp("\
+                                 "id INTEGER PRIMARY KEY,"\
+                                 "name TEXT UNIQUE,"\
+                                 "xml TEXT,"\
+                                 "favorite INTEGER);"\
+                                 "CREATE TABLE tag("\
+                                 "id INTEGER PRIMARY KEY,"\
+                                 "name TEXT);"\
+                                 "CREATE TABLE tagmap("\
+                                 "tag_id INTEGER NOT NULL,"\
+                                 "symbol_id INTEGER);"\
+                                 "CREATE TABLE ctagmap("\
+                                 "tag_id INTEGER NOT NULL,"\
+                                 "colorramp_id INTEGER);"\
+                                 "CREATE TABLE smartgroup("\
+                                 "id INTEGER PRIMARY KEY,"\
+                                 "name TEXT,"\
+                                 "xml TEXT);" );
+  runEmptyQuery( query );
+  return true;
+}
+
 bool QgsStyle::load( const QString& filename )
 {
   mErrorString.clear();
@@ -1391,14 +1427,42 @@ bool QgsStyle::exportXml( const QString& filename )
   root.setAttribute( QStringLiteral( "version" ), STYLE_CURRENT_VERSION );
   doc.appendChild( root );
 
-  // TODO work on the groups and tags
+  QStringList favoriteSymbols = symbolsOfFavorite( SymbolEntity );
+  QStringList favoriteColorramps = symbolsOfFavorite( ColorrampEntity );
+
+  // save symbols and attach tags
   QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, QStringLiteral( "symbols" ), doc );
-  QDomElement rampsElem = doc.createElement( QStringLiteral( "colorramps" ) );
+  QDomNodeList symbolsList = symbolsElem.elementsByTagName( QStringLiteral( "symbol" ) );
+  int nbSymbols = symbolsList.count();
+  for ( int i = 0; i < nbSymbols; ++i )
+  {
+    QDomElement symbol = symbolsList.at( i ).toElement();
+    QString name = symbol.attribute( QStringLiteral( "name" ) );
+    QStringList tags = tagsOfSymbol( SymbolEntity, name );
+    if ( tags.count() > 0 )
+    {
+      symbol.setAttribute( QStringLiteral( "tags" ), tags.join( "," ) );
+    }
+    if ( favoriteSymbols.contains( name ) )
+    {
+      symbol.setAttribute( QStringLiteral( "favorite" ), "1" );
+    }
+  }
 
   // save color ramps
+  QDomElement rampsElem = doc.createElement( QStringLiteral( "colorramps" ) );
   for ( QMap<QString, QgsColorRamp*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
   {
     QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
+    QStringList tags = tagsOfSymbol( ColorrampEntity, itr.key() );
+    if ( tags.count() > 0 )
+    {
+      rampEl.setAttribute( QStringLiteral( "tags" ), tags.join( "," ) );
+    }
+    if ( favoriteColorramps.contains( itr.key() ) )
+    {
+      rampEl.setAttribute( QStringLiteral( "favorite" ), "1" );
+    }
     rampsElem.appendChild( rampEl );
   }
 
