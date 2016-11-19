@@ -538,6 +538,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
     mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
     mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes;
+    mEnabledCapabilities |= QgsVectorDataProvider::CreateAttributeIndex;
   }
 
   alreadyDone = false;
@@ -4005,6 +4006,71 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   }
 
   return ret == SQLITE_OK;
+}
+
+QString createIndexName( QString tableName, QString field )
+{
+  QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  tableName.replace( safeExp, QStringLiteral( "_" ) );
+  field.replace( safeExp, QStringLiteral( "_" ) );
+  return QStringLiteral( "%1_%2_idx" ).arg( tableName, field );
+}
+
+bool QgsSpatiaLiteProvider::createAttributeIndex( int field )
+{
+  char *errMsg = nullptr;
+  bool toCommit = false;
+
+  if ( field < 0 || field >= mAttributeFields.count() )
+    return false;
+
+  QString sql;
+  QString fieldName;
+
+  int ret = sqlite3_exec( mSqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    // some error occurred
+    goto abort;
+  }
+  toCommit = true;
+
+  fieldName = mAttributeFields.at( field ).name();
+
+  sql = QStringLiteral( "CREATE INDEX IF NOT EXISTS %1 ON \"%2\" (%3)" )
+        .arg( createIndexName( mTableName, fieldName ),
+              mTableName,
+              quotedIdentifier( fieldName ) );
+  ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    // some error occurred
+    goto abort;
+  }
+
+  ret = sqlite3_exec( mSqliteHandle, "COMMIT", nullptr, nullptr, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    // some error occurred
+    goto abort;
+  }
+
+  return true;
+
+abort:
+  pushError( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errMsg ? errMsg : tr( "unknown cause" ) ) );
+  if ( errMsg )
+  {
+    sqlite3_free( errMsg );
+  }
+
+  if ( toCommit )
+  {
+    // ROLLBACK after some previous error
+    ( void )sqlite3_exec( mSqliteHandle, "ROLLBACK", nullptr, nullptr, nullptr );
+  }
+
+  return false;
 }
 
 bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
