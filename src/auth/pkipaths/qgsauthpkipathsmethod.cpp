@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QFile>
 #include <QUuid>
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QtCrypto>
 #include <QSslConfiguration>
 #include <QSslError>

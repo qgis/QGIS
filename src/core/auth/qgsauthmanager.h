@@ -26,7 +26,7 @@
 #include <QSqlQuery>
 #include <QStringList>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslCertificate>
 #include <QSslKey>
 #include <QtCrypto>
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Remove an authentication setting
     bool removeAuthSetting( const QString& key );
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     ////////////////// Certificate calls ///////////////////////
 
     //! Initialize various SSL authentication caches
@@ -581,7 +581,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool authDbTransactionQuery( QSqlQuery *query ) const;
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     void insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate> &certs );
 #endif
 
@@ -625,7 +625,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mScheduledDbEraseRequestCount;
     QMutex *mMutex;
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
     // appending removes duplicates
     QMap<QString, QPair<QgsAuthCertUtils::CaCertSource , QSslCertificate> > mCaCertsCache;

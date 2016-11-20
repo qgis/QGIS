@@ -54,7 +54,7 @@
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif
 #include <QStatusBar>
@@ -110,7 +110,7 @@
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include "qgsauthcertutils.h"
 #include "qgsauthsslerrorsdialog.h"
 #endif
@@ -11521,7 +11521,7 @@ void QgisApp::namSetup()
   connect( nam, SIGNAL( requestTimedOut( QNetworkReply* ) ),
            this, SLOT( namRequestTimedOut( QNetworkReply* ) ) );
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
   connect( nam, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
            this, SLOT( namSslErrors( QNetworkReply *, const QList<QSslError> & ) ) );
 #endif
@@ -11643,7 +11643,7 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
   auth->setPassword( password );
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
   // stop the timeout timer, or app crashes if the user (or slot) takes longer than

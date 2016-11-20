@@ -20,7 +20,7 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QProgressDialog>
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslError>
 #endif
 
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     void onRequestTimedOut();
     //! Called to start the download
     void startDownload();
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
     /**
      * Called on SSL network Errors

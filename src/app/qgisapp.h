@@ -674,7 +674,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! request credentials for network manager
     void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
     void namRequestTimedOut( QNetworkReply *reply );

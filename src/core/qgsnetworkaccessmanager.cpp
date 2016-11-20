@@ -32,7 +32,7 @@
 #include <QNetworkReply>
 #include <QThreadStorage>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif
 
@@ -182,7 +182,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
   bool ishttps = pReq->url().scheme().toLower() == QLatin1String( "https" );
   if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
   {
@@ -305,7 +305,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     connect( this, SIGNAL( requestTimedOut( QNetworkReply* ) ),
              smMainNAM, SIGNAL( requestTimedOut( QNetworkReply* ) ) );
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     connect( this, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
              smMainNAM, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
              Qt::BlockingQueuedConnection );

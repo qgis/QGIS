@@ -156,7 +156,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 }
 
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 //////////////////////////////////////////////////////
 // QgsPkiBundle

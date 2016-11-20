@@ -82,7 +82,7 @@ class TestQgsFileDownloader: public QObject
     void testInvalidFile();
     void testInvalidUrl();
     void testBlankUrl();
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     void testSslError_data();
     void testSslError();
 #endif
@@ -219,7 +219,7 @@ void TestQgsFileDownloader::testBlankUrl()
   QCOMPARE( mErrorMessage, QString( "Network error 301: Protocol \"\" is unknown" ) );
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 void TestQgsFileDownloader::testSslError_data()
 {
   QTest::addColumn<QString>( "url" );
