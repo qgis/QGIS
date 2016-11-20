@@ -50,7 +50,6 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
   connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
 
   QStandardItemModel* model = new QStandardItemModel( listItems );
-
   listItems->setModel( model );
   connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
            this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
@@ -196,10 +195,16 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   for ( int i = 0; i < styleNames.count(); ++i )
   {
     name = styleNames[i];
+    QStringList tags = style->tagsOfSymbol( QgsStyle::SymbolEntity, name );
     QgsSymbol* symbol = style->symbol( name );
     QStandardItem* item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
+    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+    // Set font to 10points to show reasonable text
+    QFont itemFont = item->font();
+    itemFont.setPointSize( 10 );
+    item->setFont( itemFont );
     model->appendRow( item );
     delete symbol;
   }
