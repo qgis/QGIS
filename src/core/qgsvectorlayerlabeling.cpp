@@ -17,6 +17,8 @@
 #include "qgspallabeling.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgis.h"
 
 
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
@@ -87,4 +89,51 @@ QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomEl
   }
 
   return new QgsVectorLayerSimpleLabeling( QgsPalLayerSettings() );
+}
+
+void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) const
+{
+
+  if ( mSettings->drawLabels )
+  {
+    QDomDocument doc = parent.ownerDocument();
+
+    QDomElement ruleElement = doc.createElement( QStringLiteral( "se:Rule" ) );
+    parent.appendChild( ruleElement );
+
+    QDomElement textSymbolizerElement = doc.createElement( QStringLiteral( "se:TextSymbolizer" ) );
+    ruleElement.appendChild( textSymbolizerElement );
+
+    // label
+    QDomElement labelElement = doc.createElement( QStringLiteral( "se:Label" ) );
+    textSymbolizerElement.appendChild( labelElement );
+
+    if ( mSettings->isExpression )
+    {
+      labelElement.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( mSettings->getLabelExpression()->dump() ) ) );
+      labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
+    }
+    else
+    {
+      QDomElement propertyNameElement = doc.createElement( QStringLiteral( "ogc:PropertyName" ) );
+      propertyNameElement.appendChild( doc.createTextNode( mSettings->fieldName ) );
+      labelElement.appendChild( propertyNameElement );
+    }
+
+    // font
+    QDomElement fontElement = doc.createElement( QStringLiteral( "se:Font" ) );
+    textSymbolizerElement.appendChild( fontElement );
+    QgsTextFormat format = mSettings->format();
+    fontElement.appendChild( QgsSymbolLayerUtils::createSvgParameterElement( doc, QStringLiteral( "font-family" ), format.font().family() ) );
+    double fontSize = QgsSymbolLayerUtils::rescaleUom( format.size(), format.sizeUnit(), props );
+    fontElement.appendChild( QgsSymbolLayerUtils::createSvgParameterElement( doc, QStringLiteral( "font-size" ), QString::number( fontSize ) ) );
+
+
+    // fill
+    QDomElement fillElement = doc.createElement( QStringLiteral( "se:Fill" ) );
+    textSymbolizerElement.appendChild( fillElement );
+    fillElement.appendChild( QgsSymbolLayerUtils::createSvgParameterElement( doc, QStringLiteral( "fill" ), format.color().name() ) );
+  }
+
+
 }

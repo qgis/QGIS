@@ -2205,20 +2205,34 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
 {
   Q_UNUSED( errorMessage );
 
-  // store the Name element
-  QDomElement nameNode = doc.createElement( QStringLiteral( "se:Name" ) );
-  nameNode.appendChild( doc.createTextNode( name() ) );
-  node.appendChild( nameNode );
-
   QgsStringMap localProps = QgsStringMap( props );
   if ( hasScaleBasedVisibility() )
   {
     QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
   }
 
-  if ( isSpatial() )
-  {
-    node.appendChild( mRenderer->writeSld( doc, name(), localProps ) );
+  if ( isSpatial() ) {
+    // store the Name element
+    QDomElement nameNode = doc.createElement( "se:Name" );
+    nameNode.appendChild( doc.createTextNode( name() ) );
+    node.appendChild( nameNode );
+
+    QDomElement userStyleElem = doc.createElement( "UserStyle" );
+    node.appendChild( userStyleElem );
+
+    QDomElement nameElem = doc.createElement( "se:Name" );
+    nameElem.appendChild( doc.createTextNode( name() ) );
+
+    userStyleElem.appendChild( nameElem );
+
+    QDomElement featureTypeStyleElem = doc.createElement( "se:FeatureTypeStyle" );
+    userStyleElem.appendChild( featureTypeStyleElem );
+
+    mRenderer->toSld( doc, featureTypeStyleElem, localProps );
+    if ( mLabeling != nullptr )
+    {
+      mLabeling->toSld( featureTypeStyleElem, localProps );
+    }
   }
   return true;
 }

@@ -546,6 +546,60 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         ltValue = lt.childNodes().item(1)
         self.assertEquals(max, ltValue.toElement().text())
 
+    def testSimpleLabelling(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+
+        dom, root = self.layerToSld(layer)
+        # print("Simple label text symbolizer" + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        self.assertPropertyName(ts, 'se:Label', 'NAME')
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEquals('Liberation Mono', self.assertSvgParameter(font, 'font-family').text())
+        self.assertEquals('9', self.assertSvgParameter(font, 'font-size').text())
+
+        fill = self.assertElement(ts, 'se:Fill', 0)
+        self.assertEquals('#000000', self.assertSvgParameter(fill, "fill").text())
+
+    def loadStyleWithCustomProperties(self, layer, qmlFileName):
+        # load the style, only vector symbology
+        path = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), qmlFileName))
+
+        # labelling is in custom properties, they need to be loaded separately
+        status = layer.loadNamedStyle(path)
+        doc = QDomDocument()
+        file = QFile(path)
+        file.open(QIODevice.ReadOnly)
+        doc.setContent(file, True)
+        file.close()
+        flag = layer.readCustomProperties(doc.documentElement())
+
+    def assertElement(self, container, elementName, index):
+        list = container.elementsByTagName(elementName)
+        self.assertTrue(list.size() > index, 'Expected to find at least ' + str(index + 1) + ' ' + elementName + ' in ' + container.nodeName() + ' but found ' + str(list.size()))
+        node = list.item(index)
+        self.assertTrue(node.isElement(), 'Found node but it''s not an element')
+        return node.toElement()
+
+    def getTextSymbolizer(self, root, ruleIndex, textSymbolizerIndex):
+        rule = self.assertElement(root, 'se:Rule', ruleIndex)
+        textSymbolizer = self.assertElement(rule, 'se:TextSymbolizer', textSymbolizerIndex)
+        return textSymbolizer
+
+    def assertPropertyName(self, root, containerProperty, expectedAttributeName):
+        container = root.elementsByTagName(containerProperty).item(0).toElement()
+        property = container.elementsByTagName("ogc:PropertyName").item(0).toElement()
+        self.assertEqual(expectedAttributeName, property.text())
+
+    def assertSvgParameter(self, container, expectedName):
+        list = container.elementsByTagName("se:SvgParameter")
+        for i in range(0, list.size()):
+            item = list.item(i)
+            if item.isElement and item.isElement() and item.toElement().attribute('name') == expectedName:
+                return item.toElement()
+        self.fail('Could not find a se:SvgParameter named ' + expectedName + ' in ' + container.nodeName())
+
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()
 
