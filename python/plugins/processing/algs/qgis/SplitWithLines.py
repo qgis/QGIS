@@ -112,19 +112,27 @@ class SplitWithLines(GeoAlgorithm):
                             if inFeatA.id() == i:
                                 continue
 
-                        if inGeom.intersects(splitGeom):
+                        engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                        engine.prepareGeometry()
+
+                        if engine.intersects(splitGeom.geometry()):
                             splittingLines.append(splitGeom)
 
                     if len(splittingLines) > 0:
                         for splitGeom in splittingLines:
-                            splitterPList = vector.extractPoints(splitGeom)
+                            splitterPList = None
                             outGeoms = []
 
                             while len(inGeoms) > 0:
                                 inGeom = inGeoms.pop()
+                                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                                engine.prepareGeometry()
                                 inPoints = vector.extractPoints(inGeom)
 
-                                if inGeom.intersects(splitGeom):
+                                if engine.intersects(splitGeom.geometry()):
+                                    if splitterPList == None:
+                                        splitterPList = vector.extractPoints(splitGeom)
+
                                     try:
                                         result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                     except:
