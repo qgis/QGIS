@@ -273,7 +273,19 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Changes ramp's name
     bool renameColorRamp( const QString& oldName, const QString& newName );
 
-    //! Loads a file into the style
+    /** Creates a temporary memory database
+     *
+     *  This function is used if you do not need to associate styles with a permanent on-disk database.
+     *  \return returns the success state of the temporary memory database creation
+     */
+    bool createMemoryDB();
+
+    /** Loads a file into the style
+     *
+     *  This function will populate styles from an on-disk database.
+     *  \param filename location of the database to load styles from
+     *  \return returns the success state of the database being loaded
+     */
     bool load( const QString& filename );
 
     //! Saves style into a file (will use current filename if empty string is passed)

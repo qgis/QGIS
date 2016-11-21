@@ -93,15 +93,9 @@ void TestStyle::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
-  // initialize with a clean style
-  QFile styleFile( QgsApplication::userStylePath() );
-  if ( styleFile.exists() )
-  {
-    styleFile.remove();
-    QgsDebugMsg( "removed user style file " + styleFile.fileName() );
-  }
-  mStyle = QgsStyle::defaultStyle();
-  // mStyle->clear();
+  //initize a temporary memory-based style for tests to avoid clashing with shipped symbols
+  mStyle = new QgsStyle();
+  mStyle->createMemoryDB();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
@@ -114,6 +108,7 @@ void TestStyle::cleanupTestCase()
   // don't save
   // mStyle->save();
   delete mStyle;
+
   QgsCptCityArchive::clearArchives();
   QgsApplication::exitQgis();
 
@@ -186,8 +181,7 @@ void TestStyle::testCreateColorRamps()
 void TestStyle::testLoadColorRamps()
 {
   QStringList colorRamps = mStyle->colorRampNames();
-  QStringList colorRampsTest = QStringList() << QStringLiteral( "BrBG" ) << QStringLiteral( "Spectral" )
-                               << QStringLiteral( "test_gradient" ) << QStringLiteral( "test_random" )
+  QStringList colorRampsTest = QStringList() << QStringLiteral( "test_gradient" ) << QStringLiteral( "test_random" )
                                << QStringLiteral( "test_cb1" ) << QStringLiteral( "test_cb2" );
 
   // values for color tests
@@ -235,11 +229,6 @@ void TestStyle::testLoadColorRamps()
 
 void TestStyle::testSaveLoad()
 {
-  // save not needed anymore, because used update=true in addColorRamp()
-  // mStyle->save();
-  mStyle->clear();
-  mStyle->load( QgsApplication::userStylePath() );
-
   // basic test to see that ramp is present
   QStringList colorRamps = mStyle->colorRampNames();
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
@@ -261,8 +250,6 @@ void TestStyle::testSaveLoad()
 
 void TestStyle::testFavorites()
 {
-  mStyle->clear();
-
   // save initial number of favorites to compare against additions / substractions
   QStringList favorites;
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -290,7 +277,6 @@ void TestStyle::testFavorites()
 
 void TestStyle::testTags()
 {
-  mStyle->clear();
   //add some tags
   int id = mStyle->addTag( QStringLiteral( "red" ) );
   QCOMPARE( id, mStyle->tagId( "red" ) );
