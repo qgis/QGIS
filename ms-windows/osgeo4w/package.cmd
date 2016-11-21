@@ -325,7 +325,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
-	"apps/%PACKAGENAME%/resources/symbology-ng-style.db" ^
+	"apps/%PACKAGENAME%/resources/symbology-ng-style.xml" ^
 	"apps/%PACKAGENAME%/resources/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/svg/" ^
 	"apps/%PACKAGENAME%/crssync.exe" ^
