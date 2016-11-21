@@ -28,7 +28,8 @@ class QgsGraphBuilderInterface;
 /**
  * \ingroup analysis
  * \class QgsGraphDirector
- * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
+ * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector implemented
+ * using "builder" design patter.
  */
 class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 {

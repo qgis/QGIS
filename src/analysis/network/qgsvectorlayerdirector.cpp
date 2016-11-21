@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 /**
- * \file qgslinevectorlayerdirector.cpp
- * \brief implementation of QgsLineVectorLayerDirector
+ * \file qgsvectorlayerdirector.cpp
+ * \brief implementation of QgsVectorLayerDirector
  */
 
 #include "qgsvectorlayerdirector.h"
@@ -108,7 +108,7 @@ QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
     const QString& reverseDirectionValue,
     const QString& bothDirectionValue,
     const Direction defaultDirection
-                                                      )
+                                              )
 {
   mVectorLayer            = myLayer;
   mDirectionFieldId       = directionFieldId;
@@ -129,7 +129,7 @@ QString QgsVectorLayerDirector::name() const
 }
 
 void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
-    QVector< QgsPoint >& snappedPoints ) const
+                                        QVector< QgsPoint >& snappedPoints ) const
 {
   QgsVectorLayer *vl = mVectorLayer;
 

@@ -5,7 +5,8 @@
 /**
  * \ingroup analysis
  * \class QgsGraphDirector
- * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
+ * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector
+ * are implemented using "builder" design patter.
  */
 class QgsGraphDirector : QObject
 {

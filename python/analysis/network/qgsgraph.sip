@@ -79,7 +79,7 @@ class QgsGraphVertex
 /**
  * \ingroup analysis
  * \class QgsGraph
- * \brief Mathematics graph representation
+ * \brief Mathematical graph representation
  */
 
 class QgsGraph

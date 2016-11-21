@@ -124,7 +124,7 @@ class ANALYSIS_EXPORT QgsGraphVertex
 /**
  * \ingroup analysis
  * \class QgsGraph
- * \brief Mathematics graph representation
+ * \brief Mathematical graph representation
  */
 
 class ANALYSIS_EXPORT QgsGraph
