@@ -1008,6 +1008,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
   endProfile();
 
+  mSplash->showMessage( tr( "Populate saved styles" ), Qt::AlignHCenter | Qt::AlignBottom );
+  startProfile( QStringLiteral( "Populate saved styles" ) );
+  QgsStyle::defaultStyle();
+  endProfile();
+
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString::null, QgsMessageLog::INFO );

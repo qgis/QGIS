@@ -55,7 +55,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
            this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
   mTempStyle = new QgsStyle();
-  mTempStyle->createMemoryDB();
+  mTempStyle->createMemoryDb();
 
   // TODO validate
   mFileName = QLatin1String( "" );

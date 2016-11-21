@@ -273,16 +273,36 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Changes ramp's name
     bool renameColorRamp( const QString& oldName, const QString& newName );
 
+    /** Creates an on-disk database
+     *
+     *  This function creates a new on-disk permanent style database.
+     *  \return returns the success state of the database creation
+     *  \note added in QGIS 3.0
+     *  \see createMemoryDb()
+     */
+    bool createDb( const QString& filename );
+
     /** Creates a temporary memory database
      *
-     *  This function is used if you do not need to associate styles with a permanent on-disk database.
+     *  This function is used to create a temporary style database in case a permanent on-disk database is not needed.
      *  \return returns the success state of the temporary memory database creation
+     *  \note added in QGIS 3.0
+     *  \see createDb()
      */
-    bool createMemoryDB();
+    bool createMemoryDb();
+
+    /** Creates tables structure for new database
+     *
+     *  This function is used to create the tables structure in a newly-created database.
+     *  \return returns the success state of the temporary memory database creation
+     *  \note added in QGIS 3.0
+     *  \see createDB(), createMemoryDB()
+     */
+    void createTables();
 
     /** Loads a file into the style
      *
-     *  This function will populate styles from an on-disk database.
+     *  This function will load an on-disk database and populate styles.
      *  \param filename location of the database to load styles from
      *  \return returns the success state of the database being loaded
      */
