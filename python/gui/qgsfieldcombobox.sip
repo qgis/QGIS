@@ -42,7 +42,10 @@ class QgsFieldComboBox : QComboBox
     //! return the currently selected field
     QString currentField() const;
 
-    //! Returns the currently used layer
+    /**
+     * Returns the layer currently associated with the combobox.
+     * @see setLayer()
+     */
     QgsVectorLayer* layer() const;
 
   signals:
@@ -50,10 +53,12 @@ class QgsFieldComboBox : QComboBox
     void fieldChanged( const QString& fieldName );
 
   public slots:
-    //! set the layer of which the fields are listed
-    void setLayer( QgsVectorLayer* layer );
 
-    //! convenience slot to connect QgsMapLayerComboBox layer signal
+    /**
+     * Sets the layer for which fields are listed in the combobox. If no layer is set
+     * or a non-vector layer is set then the combobox will be empty.
+     * @see layer()
+     */
     void setLayer( QgsMapLayer* layer );
 
     //! setField sets the currently selected field

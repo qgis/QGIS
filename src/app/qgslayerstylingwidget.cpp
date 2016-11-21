@@ -83,7 +83,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<
 
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( updateCurrentWidgetLayer() ) );
   connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-  connect( mLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( setLayer( QgsMapLayer* ) ) );
+  connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, SIGNAL( toggled( bool ) ), this, SLOT( liveApplyToggled( bool ) ) );
 
   mStackedWidget->setCurrentIndex( 0 );

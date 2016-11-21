@@ -842,6 +842,18 @@ QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}
 - copyPaintEffect() was removed. copyRendererData() should be used instead.
 
 
+QgsFieldCombobox        {#qgis_api_break_3_0_QgsFieldCombobox}
+----------------
+
+- The setLayer( QgsVectorlayer* ) slot has been removed. Use the setLayer( QgsMapLayer* ) slot instead.
+
+
+QgsFieldExpressionWidget        {#qgis_api_break_3_0_QgsFieldExpressionWidget}
+------------------------
+
+- The setLayer( QgsVectorlayer* ) slot has been removed. Use the setLayer( QgsMapLayer* ) slot instead.
+
+
 QgsFields        {#qgis_api_break_3_0_QgsFields}
 ---------
 

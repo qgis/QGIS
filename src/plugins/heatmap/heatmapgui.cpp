@@ -71,8 +71,8 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVari
 
   mRadiusFieldCombo->setFilters( QgsFieldProxyModel::Numeric );
   mWeightFieldCombo->setFilters( QgsFieldProxyModel::Numeric );
-  connect( mInputLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), mRadiusFieldCombo, SLOT( setLayer( QgsMapLayer* ) ) );
-  connect( mInputLayerCombo, SIGNAL( layerChanged( QgsMapLayer* ) ), mWeightFieldCombo, SLOT( setLayer( QgsMapLayer* ) ) );
+  connect( mInputLayerCombo, &QgsMapLayerComboBox::layerChanged, mRadiusFieldCombo, &QgsFieldComboBox::setLayer );
+  connect( mInputLayerCombo, &QgsMapLayerComboBox::layerChanged, mWeightFieldCombo, &QgsFieldComboBox::setLayer );
   mRadiusFieldCombo->setLayer( mInputLayerCombo->currentLayer() );
   mWeightFieldCombo->setLayer( mInputLayerCombo->currentLayer() );
 
