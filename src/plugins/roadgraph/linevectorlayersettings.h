@@ -95,7 +95,7 @@ class RgLineVectorLayerSettings: public RgSettings
     /**
      * contained Default direction
      */
-    QgsLineVectorLayerDirector::RoadDirection mDefaultDirection;
+    QgsLineVectorLayerDirector::Direction mDefaultDirection;
 
     /**
      * contained speed filed name

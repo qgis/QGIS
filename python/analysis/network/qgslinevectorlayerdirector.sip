@@ -16,11 +16,11 @@ class QgsLineVectorLayerDirector : QgsGraphDirector
      * from the end point to the start point) and bidirectional or two-way
      * (one can move in any direction)
      */
-    enum RoadDirection
+    enum Direction
     {
-      RoadDirect,        //!< One-way direct
-      RoadReversed,      //!< One-way reversed
-      RoadBidirectional, //!< Two-way
+      DirectionForward,     //!< One-way direct
+      DirectionBackward,    //!< One-way reversed
+      DirectionBoth,        //!< Two-way
     };
 
     /**
@@ -37,7 +37,7 @@ class QgsLineVectorLayerDirector : QgsGraphDirector
                                 const QString& directDirectionValue,
                                 const QString& reverseDirectionValue,
                                 const QString& bothDirectionValue,
-                                const RoadDirection defaultDirection
+                                const Direction defaultDirection
                               );
 
     //! Destructor
