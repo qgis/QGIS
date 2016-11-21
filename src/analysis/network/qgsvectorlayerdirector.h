@@ -24,6 +24,7 @@ class QgsVectorLayer;
 /**
 * \ingroup analysis
 * \class QgsVectorLayerDirector
+* \note added in QGIS 3.0
 * \brief Determine making the graph from vector line layer
 */
 class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
