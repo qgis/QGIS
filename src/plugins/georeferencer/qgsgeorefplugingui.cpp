@@ -32,7 +32,6 @@
 #include <QList>
 
 #include "qgisinterface.h"
-#include "qgslegendinterface.h"
 #include "qgsapplication.h"
 
 #include "qgscomposition.h"

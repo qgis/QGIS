@@ -28,6 +28,7 @@
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
+#include "qgsapplayertreeviewmenuprovider.h"
 #include "qgscomposer.h"
 #include "qgscomposerview.h"
 #include "qgsmaplayer.h"
@@ -48,7 +49,6 @@
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis )
     , mTimer( nullptr )
-    , legendIface( _qgis->layerTreeView() )
     , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
@@ -76,11 +76,6 @@ QgisAppInterface::~QgisAppInterface()
 {
 }
 
-QgsLegendInterface* QgisAppInterface::legendInterface()
-{
-  return &legendIface;
-}
-
 QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
 {
   return &pluginManagerIface;
@@ -89,6 +84,34 @@ QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
 QgsLayerTreeView*QgisAppInterface::layerTreeView()
 {
   return qgis->layerTreeView();
+}
+
+void QgisAppInterface::addCustomActionForLayerType( QAction* action,
+    QString menu, QgsMapLayer::LayerType type, bool allLayers )
+{
+  QgsAppLayerTreeViewMenuProvider* menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider*>( qgis->layerTreeView()->menuProvider() );
+  if ( !menuProvider )
+    return;
+
+  menuProvider->addLegendLayerAction( action, menu, type, allLayers );
+}
+
+void QgisAppInterface::addCustomActionForLayer( QAction* action, QgsMapLayer* layer )
+{
+  QgsAppLayerTreeViewMenuProvider* menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider*>( qgis->layerTreeView()->menuProvider() );
+  if ( !menuProvider )
+    return;
+
+  menuProvider->addLegendLayerActionForLayer( action, layer );
+}
+
+bool QgisAppInterface::removeCustomActionForLayerType( QAction* action )
+{
+  QgsAppLayerTreeViewMenuProvider* menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider*>( qgis->layerTreeView()->menuProvider() );
+  if ( !menuProvider )
+    return false;
+
+  return menuProvider->removeLegendLayerAction( action );
 }
 
 void QgisAppInterface::zoomFull()

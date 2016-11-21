@@ -240,6 +240,11 @@ so there is no longer a need for the separate cache class. Code which previously
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.
+- QgsLegendInterface was removed. It was replaced by layer tree API (QgsLayerTreeNode class and others).
+  Methods that deal with custom actions in main window's layer tree context menu were moved to QgisInterface:
+  - addLegendLayerAction() moved to QgisInterface::addCustomActionForLayerType()
+  - addLegendLayerActionForLayer() moved to QgisInterface::addCustomActionForLayer()
+  - removeLegendLayerAction() moved to QgisInterface::removeCustomActionForLayerType()
 - QgsLegendModel was removed.
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.

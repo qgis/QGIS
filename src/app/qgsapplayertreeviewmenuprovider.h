@@ -24,15 +24,13 @@ class QAction;
 
 struct LegendLayerAction
 {
-  LegendLayerAction( QAction* a, const QString& m, const QString& i, bool all )
+  LegendLayerAction( QAction* a, const QString& m, bool all )
       : action( a )
       , menu( m )
-      , id( i )
       , allLayers( all )
   {}
   QAction* action;
   QString menu;
-  QString id;
   bool allLayers;
   QList<QgsMapLayer*> layers;
 };
@@ -47,7 +45,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 
     QMenu* createContextMenu() override;
 
-    void addLegendLayerAction( QAction* action, const QString& menu, const QString& id,
+    void addLegendLayerAction( QAction* action, const QString& menu,
                                QgsMapLayer::LayerType type, bool allLayers );
     bool removeLegendLayerAction( QAction* action );
     void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );

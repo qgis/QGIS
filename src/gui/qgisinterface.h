@@ -32,7 +32,6 @@ class QgsCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
-class QgsLegendInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -49,6 +48,7 @@ class QgsVectorLayerTools;
 #include <map>
 
 #include "qgis.h"
+#include "qgsmaplayer.h"
 
 
 /** \ingroup gui
@@ -75,12 +75,35 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Virtual destructor
     virtual ~QgisInterface();
 
-    //! Get pointer to legend interface
-    virtual QgsLegendInterface* legendInterface() = 0;
-
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView* layerTreeView() = 0;
+
+    /** Add action to context menu for layers in the layer tree.
+     * If allLayers is true, then the action will be available for all layers of given type,
+     * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
+     * after this call.
+     *
+     * If menu argument is not empty, the action will be also added to a menu within the main window,
+     * creating menu with the given name if it does not exist yet.
+     *
+     * @see removeCustomActionForLayerType()
+     * @see addCustomActionForLayer()
+     */
+    virtual void addCustomActionForLayerType( QAction* action, QString menu,
+        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+
+    /** Add action to context menu for a specific layer in the layer tree.
+     * It is necessary to first call addCustomActionForLayerType() with allLayers=false
+     * in order for this method to have any effect.
+     * @see addCustomActionForLayerType()
+     */
+    virtual void addCustomActionForLayer( QAction* action, QgsMapLayer* layer ) = 0;
+
+    /** Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
+     * @see addCustomActionForLayerType()
+     */
+    virtual bool removeCustomActionForLayerType( QAction* action ) = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 

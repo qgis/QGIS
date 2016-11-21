@@ -240,7 +240,6 @@ SET(QGIS_GUI_SRCS
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
-  qgslegendinterface.cpp
   qgslimitedrandomcolorrampdialog.cpp
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp
@@ -404,7 +403,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgskeyvaluewidget.h
   qgslistwidget.h
   qgslegendfilterbutton.h
-  qgslegendinterface.h
   qgslimitedrandomcolorrampdialog.h
   qgslonglongvalidator.h
   qgsludialog.h

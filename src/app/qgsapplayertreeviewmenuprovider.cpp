@@ -333,10 +333,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
 
 
-void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, const QString& menu, const QString& id,
+void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, const QString& menu,
     QgsMapLayer::LayerType type, bool allLayers )
 {
-  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, allLayers ) );
 }
 
 bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )

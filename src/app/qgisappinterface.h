@@ -19,7 +19,6 @@
 #define QGISIFACE_H
 
 #include "qgisinterface.h"
-#include "qgsapplegendinterface.h"
 #include "qgsapppluginmanagerinterface.h"
 
 class QgisApp;
@@ -46,11 +45,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgisAppInterface( QgisApp *qgisapp );
     ~QgisAppInterface();
 
-    QgsLegendInterface* legendInterface() override;
-
     QgsPluginManagerInterface* pluginManagerInterface() override;
 
     QgsLayerTreeView* layerTreeView() override;
+
+    virtual void addCustomActionForLayerType( QAction* action, QString menu,
+        QgsMapLayer::LayerType type, bool allLayers ) override;
+    virtual void addCustomActionForLayer( QAction* action, QgsMapLayer* layer ) override;
+    virtual bool removeCustomActionForLayerType( QAction* action ) override;
 
     /* Exposed functions */
 
@@ -531,9 +533,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgisApp *qgis;
 
     QTimer *mTimer;
-
-    //! Pointer to the LegendInterface object
-    QgsAppLegendInterface legendIface;
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
