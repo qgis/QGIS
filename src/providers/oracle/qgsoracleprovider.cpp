@@ -2353,9 +2353,14 @@ bool QgsOracleProvider::getGeometryDetails()
                                  .arg( qry.lastQuery() ), tr( "Oracle" ) );
     }
 
-    if ( exec( qry, QString( mUseEstimatedMetadata
-                             ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2"
-                             :  "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ) ) )
+    if ( mUseEstimatedMetadata && mRequestedGeomType != QGis::WKBUnknown )
+    {
+      QgsDebugMsg( "Trusting requested geometry type" );
+      detectedType = mRequestedGeomType;
+    }
+    else if ( exec( qry, QString( mUseEstimatedMetadata
+                                  ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2"
+                                  :  "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ) ) )
     {
       if ( qry.next() )
       {
