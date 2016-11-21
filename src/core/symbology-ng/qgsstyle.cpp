@@ -1555,6 +1555,11 @@ bool QgsStyle::importXml( const QString& filename )
   QDomElement symbolsElement = docEl.firstChildElement( QStringLiteral( "symbols" ) );
   QDomElement e = symbolsElement.firstChildElement();
 
+  // gain speed by re-grouping the INSERT statements in a transaction
+  char* query;
+  query = sqlite3_mprintf( "BEGIN TRANSACTION;" );
+  runEmptyQuery( query );
+
   if ( version == STYLE_CURRENT_VERSION )
   {
     // For the new style, load symbols individualy
@@ -1638,6 +1643,9 @@ bool QgsStyle::importXml( const QString& filename )
     }
     e = e.nextSiblingElement();
   }
+
+  query = sqlite3_mprintf( "COMMIT TRANSACTION;" );
+  runEmptyQuery( query );
 
   mFileName = filename;
   return true;
