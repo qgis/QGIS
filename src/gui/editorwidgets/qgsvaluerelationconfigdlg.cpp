@@ -23,8 +23,8 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fi
 {
   setupUi( this );
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
-  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), mKeyColumn, SLOT( setLayer( QgsMapLayer* ) ) );
-  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), mValueColumn, SLOT( setLayer( QgsMapLayer* ) ) );
+  connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
+  connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
   connect( mEditExpression, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 
   connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SIGNAL( changed() ) );

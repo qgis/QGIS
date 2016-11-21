@@ -111,7 +111,10 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     QString expression() const;
 
-    //! Returns the currently used layer
+    /**
+     * Returns the layer currently associated with the widget.
+     * @see setLayer()
+     */
     QgsVectorLayer* layer() const;
 
     /**
@@ -133,10 +136,11 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 //    void returnPressed();
 
   public slots:
-    //! set the layer used to display the fields and expression
-    void setLayer( QgsVectorLayer* layer );
 
-    //! convenience slot to connect QgsMapLayerComboBox layer signal
+    /**
+     * Sets the layer used to display the fields and expression.
+     * @see layer()
+     */
     void setLayer( QgsMapLayer* layer );
 
     //! sets the current row in the widget

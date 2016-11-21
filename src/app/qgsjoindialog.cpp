@@ -43,8 +43,8 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
 
   mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
-  connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mJoinFieldComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
-  connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( joinedLayerChanged( QgsMapLayer* ) ) );
+  connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, mJoinFieldComboBox, &QgsFieldComboBox::setLayer );
+  connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::joinedLayerChanged );
 
   mCacheInMemoryCheckBox->setChecked( true );
 
@@ -55,7 +55,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
     joinedLayerChanged( joinLayer );
   }
 
-  connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( checkDefinitionValid() ) );
+  connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::checkDefinitionValid );
   connect( mJoinFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( checkDefinitionValid() ) );
   connect( mTargetFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( checkDefinitionValid() ) );
 

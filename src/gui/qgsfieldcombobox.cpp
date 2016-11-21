@@ -45,16 +45,8 @@ bool QgsFieldComboBox::allowEmptyFieldName() const
 
 void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
-  {
-    setLayer( vl );
-  }
-}
-
-void QgsFieldComboBox::setLayer( QgsVectorLayer *layer )
-{
-  mFieldProxyModel->sourceFieldModel()->setLayer( layer );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+  mFieldProxyModel->sourceFieldModel()->setLayer( vl );
 }
 
 QgsVectorLayer *QgsFieldComboBox::layer() const

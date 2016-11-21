@@ -154,24 +154,17 @@ void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpr
 
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
-  {
-    setLayer( vl );
-  }
-}
+  QgsVectorLayer* vl = qobject_cast< QgsVectorLayer* >( layer );
 
-void QgsFieldExpressionWidget::setLayer( QgsVectorLayer *layer )
-{
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
     disconnect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), this, SLOT( reloadLayer() ) );
 
-  if ( layer )
-    mExpressionContext = layer->createExpressionContext();
+  if ( vl )
+    mExpressionContext = vl->createExpressionContext();
   else
     mExpressionContext = QgsProject::instance()->createExpressionContext();
 
-  mFieldProxyModel->sourceFieldModel()->setLayer( layer );
+  mFieldProxyModel->sourceFieldModel()->setLayer( vl );
 
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
     connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );

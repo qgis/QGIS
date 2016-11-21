@@ -18,6 +18,7 @@
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QTableWidget>
 #include <QKeyEvent>

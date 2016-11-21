@@ -25,10 +25,8 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
 {
   setupUi( this );
 
-  connect( mCbxReferencingLayer, &QgsMapLayerComboBox::layerChanged, this, [=]( QgsMapLayer * layer ) { mCbxReferencingField->setLayer( layer ); }
-         );
-  connect( mCbxReferencedLayer, &QgsMapLayerComboBox::layerChanged, this, [=]( QgsMapLayer * layer ) { mCbxReferencedField->setLayer( layer ); }
-         );
+  connect( mCbxReferencingLayer, &QgsMapLayerComboBox::layerChanged, mCbxReferencingField, &QgsFieldComboBox::setLayer );
+  connect( mCbxReferencedLayer, &QgsMapLayerComboBox::layerChanged, mCbxReferencedField, &QgsFieldComboBox::setLayer );
 
   mCbxReferencingLayer->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mCbxReferencingField->setLayer( mCbxReferencingLayer->currentLayer() );
