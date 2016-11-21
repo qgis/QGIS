@@ -25,6 +25,7 @@ class QFont;
 /** \ingroup gui
  * /namespace QgisGui
  * The QgisGui namespace contains constants and helper functions used throughout the QGIS GUI.
+ * \note not available in Python bindings
  */
 namespace QgisGui
 {
@@ -47,6 +48,21 @@ namespace QgisGui
    * the dialog is a fixed size and does not have a size grip.
    */
   static const Qt::WindowFlags ModalDialogFlags = nullptr;
+
+  /**
+   * Minimum magnification level allowed in map canvases.
+   * @see CANVAS_MAGNIFICATION_MAX
+   * @note added in QGIS 3.0
+   */
+  constexpr double CANVAS_MAGNIFICATION_MIN = 0.1;
+
+  /**
+   * Maximum magnification level allowed in map canvases.
+   * @see CANVAS_MAGNIFICATION_MAX
+   * @note added in QGIS 3.0
+   */
+  // Must be a factor of 2, so zooming in to max from 100% then zooming back out will result in 100% mag
+  constexpr double CANVAS_MAGNIFICATION_MAX = 16.0;
 
   /**
     Open files, preferring to have the default file selector be the

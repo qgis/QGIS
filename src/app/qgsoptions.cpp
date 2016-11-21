@@ -600,8 +600,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / mSettings->value( "/qgis/simplifyMaxScale", 1 ).toFloat() );
 
   // Magnifier
-  double magnifierMin = 100 * mSettings->value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
-  double magnifierMax = 100 * mSettings->value( "/qgis/magnifier_factor_max", 10 ).toDouble();
+  double magnifierMin = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
+  double magnifierMax = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
   double magnifierVal = 100 * mSettings->value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
   doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
