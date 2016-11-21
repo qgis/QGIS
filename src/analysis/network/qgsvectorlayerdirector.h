@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgslinevectorlayerdirector.h
+  qgsvectorlayerdirector.h
   --------------------------------------
   Date                 : 2010-10-20
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,8 +13,8 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSLINEVECTORLAYERDIRECTOR_H
-#define QGSLINEVECTORLAYERDIRECTOR_H
+#ifndef QGSVECTORLAYERDIRECTOR_H
+#define QGSVECTORLAYERDIRECTOR_H
 
 #include "qgsgraphdirector.h"
 
@@ -23,10 +23,10 @@ class QgsVectorLayer;
 
 /**
 * \ingroup analysis
-* \class QgsLineVectorLayerDirector
+* \class QgsVectorLayerDirector
 * \brief Determine making the graph from vector line layer
 */
-class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
+class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 {
     Q_OBJECT
 
@@ -55,7 +55,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
      * @param defaultDirection default road direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
-    QgsLineVectorLayerDirector( QgsVectorLayer* myLayer,
+    QgsVectorLayerDirector( QgsVectorLayer* myLayer,
                                 int directionFieldId,
                                 const QString& directDirectionValue,
                                 const QString& reverseDirectionValue,
@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
                               );
 
     //! Destructor
-    virtual ~QgsLineVectorLayerDirector();
+    virtual ~QgsVectorLayerDirector();
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
@@ -84,4 +84,4 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
     Direction mDefaultDirection;
 };
 
-#endif // QGSLINEVECTORLAYERDIRECTOR_H
+#endif // QGSVECTORLAYERDIRECTOR_H

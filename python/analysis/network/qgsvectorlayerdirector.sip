@@ -1,12 +1,12 @@
 /**
 * \ingroup analysis
-* \class QgsLineVectorLayerDirector
+* \class QgsVectorLayerDirector
 * \brief Determine making the graph from vector line layer
 */
-class QgsLineVectorLayerDirector : QgsGraphDirector
+class QgsVectorLayerDirector : QgsGraphDirector
 {
 %TypeHeaderCode
-#include <qgslinevectorlayerdirector.h>
+#include <qgsvectorlayerdirector.h>
 %End
 
   public:
@@ -32,16 +32,16 @@ class QgsLineVectorLayerDirector : QgsGraphDirector
      * @param defaultDirection default road direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
-    QgsLineVectorLayerDirector( QgsVectorLayer* myLayer,
-                                int directionFieldId,
-                                const QString& directDirectionValue,
-                                const QString& reverseDirectionValue,
-                                const QString& bothDirectionValue,
-                                const Direction defaultDirection
-                              );
+    QgsVectorLayerDirector( QgsVectorLayer* myLayer,
+                            int directionFieldId,
+                            const QString& directDirectionValue,
+                            const QString& reverseDirectionValue,
+                            const QString& bothDirectionValue,
+                            const Direction defaultDirection
+                          );
 
     //! Destructor
-    virtual ~QgsLineVectorLayerDirector();
+    virtual ~QgsVectorLayerDirector();
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION

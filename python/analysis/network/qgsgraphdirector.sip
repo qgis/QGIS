@@ -1,5 +1,5 @@
 %ModuleHeaderCode
-#include <qgslinevectorlayerdirector.h>
+#include <qgsvectorlayerdirector.h>
 %End
 
 /**
@@ -14,8 +14,8 @@ class QgsGraphDirector : QObject
 %End
 
 %ConvertToSubClassCode
-  if ( dynamic_cast< QgsLineVectorLayerDirector* > ( sipCpp ) != NULL )
-    sipType = sipType_QgsLineVectorLayerDirector;
+  if ( dynamic_cast< QgsVectorLayerDirector* > ( sipCpp ) != NULL )
+    sipType = sipType_QgsVectorLayerDirector;
   else
     sipType = NULL;
 %End

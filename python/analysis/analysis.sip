@@ -60,5 +60,5 @@
 %Include network/qgsgraphbuilderinterface.sip
 %Include network/qgsgraphbuilder.sip
 %Include network/qgsgraphdirector.sip
-%Include network/qgslinevectorlayerdirector.sip
+%Include network/qgsvectorlayerdirector.sip
 %Include network/qgsgraphanalyzer.sip

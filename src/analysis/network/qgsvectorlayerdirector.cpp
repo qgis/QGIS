@@ -18,7 +18,7 @@
  * \brief implementation of QgsLineVectorLayerDirector
  */
 
-#include "qgslinevectorlayerdirector.h"
+#include "qgsvectorlayerdirector.h"
 #include "qgsgraphbuilderinterface.h"
 
 #include "qgsfeatureiterator.h"
@@ -102,7 +102,7 @@ bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
   return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
 }
 
-QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
+QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
     int directionFieldId,
     const QString& directDirectionValue,
     const QString& reverseDirectionValue,
@@ -118,17 +118,17 @@ QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
   mBothDirectionValue     = bothDirectionValue;
 }
 
-QgsLineVectorLayerDirector::~QgsLineVectorLayerDirector()
+QgsVectorLayerDirector::~QgsVectorLayerDirector()
 {
 
 }
 
-QString QgsLineVectorLayerDirector::name() const
+QString QgsVectorLayerDirector::name() const
 {
   return QStringLiteral( "Vector line" );
 }
 
-void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
+void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
     QVector< QgsPoint >& snappedPoints ) const
 {
   QgsVectorLayer *vl = mVectorLayer;

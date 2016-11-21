@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 
-#include <qgslinevectorlayerdirector.h>
+#include <qgsvectorlayerdirector.h>
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
 #include <qgsnetworkdistancestrategy.h>
@@ -210,14 +210,14 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   {
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
 
-    QgsLineVectorLayerDirector * director =
-      new QgsLineVectorLayerDirector( layer,
-                                      layer->fields().lookupField( mSettings->mDirection ),
-                                      mSettings->mFirstPointToLastPointDirectionVal,
-                                      mSettings->mLastPointToFirstPointDirectionVal,
-                                      mSettings->mBothDirectionVal,
-                                      mSettings->mDefaultDirection
-                                    );
+    QgsVectorLayerDirector * director =
+      new QgsVectorLayerDirector( layer,
+                                  layer->fields().lookupField( mSettings->mDirection ),
+                                  mSettings->mFirstPointToLastPointDirectionVal,
+                                  mSettings->mLastPointToFirstPointDirectionVal,
+                                  mSettings->mBothDirectionVal,
+                                  mSettings->mDefaultDirection
+                                );
     director->addStrategy( new QgsNetworkDistanceStrategy() );
     director->addStrategy( new QgsNetworkSpeedStrategy( layer->fields().lookupField( mSettings->mSpeed ),
                            mSettings->mDefaultSpeed, speedUnit.multipler() ) );

@@ -51,7 +51,7 @@ SET(QGIS_ANALYSIS_SRCS
   network/qgsgraphbuilder.cpp
   network/qgsnetworkspeedstrategy.cpp
   network/qgsnetworkdistancestrategy.cpp
-  network/qgslinevectorlayerdirector.cpp
+  network/qgsvectorlayerdirector.cpp
   network/qgsgraphanalyzer.cpp
 )
 
@@ -61,7 +61,7 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   vector/qgsgeometrysnapper.h
 
   network/qgsgraphdirector.h
-  network/qgslinevectorlayerdirector.h
+  network/qgsvectorlayerdirector.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -150,7 +150,7 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsnetworkspeedstrategy.h
   network/qgsnetworkdistancestrategy.h
   network/qgsgraphdirector.h
-  network/qgslinevectorlayerdirector.h
+  network/qgsvectorlayerdirector.h
   network/qgsgraphanalyzer.h
 )
 

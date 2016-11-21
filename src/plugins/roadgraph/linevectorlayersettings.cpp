@@ -29,7 +29,7 @@
 //standard includes
 
 RgLineVectorLayerSettings::RgLineVectorLayerSettings()
-    : mDefaultDirection( QgsLineVectorLayerDirector::Direction::DirectionBoth )
+    : mDefaultDirection( QgsVectorLayerDirector::Direction::DirectionBoth )
     , mDefaultSpeed( 40 )
 {
 }
@@ -58,7 +58,7 @@ bool RgLineVectorLayerSettings::test()
 
 void RgLineVectorLayerSettings::read( const QgsProject *project )
 {
-  mDefaultDirection = static_cast<QgsLineVectorLayerDirector::Direction>( project->readNumEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultDirection" ) ) );
+  mDefaultDirection = static_cast<QgsVectorLayerDirector::Direction>( project->readNumEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultDirection" ) ) );
   mDirection = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/directionField" ) );
   mFirstPointToLastPointDirectionVal =
     project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/FirstPointToLastPointDirectionVal" ) );
@@ -105,15 +105,15 @@ void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
 
   if ( w->mcbDirectionDefault->currentIndex() == 0 )
   {
-    mDefaultDirection = QgsLineVectorLayerDirector::Direction::DirectionBoth;
+    mDefaultDirection = QgsVectorLayerDirector::Direction::DirectionBoth;
   }
   else if ( w->mcbDirectionDefault->currentIndex() == 1 )
   {
-    mDefaultDirection = QgsLineVectorLayerDirector::Direction::DirectionForward;
+    mDefaultDirection = QgsVectorLayerDirector::Direction::DirectionForward;
   }
   else if ( w->mcbDirectionDefault->currentIndex() == 2 )
   {
-    mDefaultDirection = QgsLineVectorLayerDirector::Direction::DirectionBackward;
+    mDefaultDirection = QgsVectorLayerDirector::Direction::DirectionBackward;
   }
 
   mSpeed = w->mcbSpeed->currentText();
