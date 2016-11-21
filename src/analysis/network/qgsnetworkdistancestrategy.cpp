@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsedgeproperter.h
+  qgsdistancestrategy.h
   --------------------------------------
   Date                 : 2011-04-01
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -13,21 +13,10 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSEDGEDISTANCEPROPERTERH
-#define QGSEDGEDISTANCEPROPERTERH
+#include "qgsnetworkdistancestrategy.h"
 
-// QT4 includes
-#include <QVariant>
-
-// QGIS includes
-#include <qgsarcproperter.h>
-
-/** \ingroup networkanalysis
- * \class QgsDistanceArcProperter
- */
-class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter
+QVariant QgsNetworkDistanceStrategy::cost( double distance, const QgsFeature& f ) const
 {
-  public:
-    virtual QVariant property( double distance, const QgsFeature& ) const override;
-};
-#endif //QGSEDGEDISTANCEPROPERTYH
+  Q_UNUSED( f );
+  return QVariant( distance );
+}

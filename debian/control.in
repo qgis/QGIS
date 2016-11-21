@@ -132,18 +132,6 @@ Description: QGIS - shared analysis library
  .
  This package contains the shared analysis library.
 
-Package: libqgis-networkanalysis{QGIS_ABI}
-Architecture: any
-Section: libs
-Depends:
- ${shlibs:Depends},
- ${misc:Depends}
-Description: QGIS - shared network analysis library
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the shared network analysis library.
-
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
@@ -207,7 +195,6 @@ Depends:
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
- libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  libsqlite3-dev,
@@ -244,7 +231,6 @@ Depends:
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
- libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  ${misc:Depends}

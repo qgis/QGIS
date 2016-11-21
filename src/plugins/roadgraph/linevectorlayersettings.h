@@ -17,6 +17,8 @@
 //  QT includes
 #include <qstring.h>
 
+#include <qgsvectorlayerdirector.h>
+
 // Qgis includes
 
 // standard includes
@@ -93,7 +95,7 @@ class RgLineVectorLayerSettings: public RgSettings
     /**
      * contained Default direction
      */
-    DirectionType mDefaultDirection;
+    QgsVectorLayerDirector::Direction mDefaultDirection;
 
     /**
      * contained speed filed name

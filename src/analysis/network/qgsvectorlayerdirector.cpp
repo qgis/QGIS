@@ -1,23 +1,26 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Sergey Yakushev                                 *
- *   yakushevs <at> list.ru                                                *
- *                                                                         *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- ***************************************************************************/
+  qgslinevectorlayerdirector.cpp
+  --------------------------------------
+  Date                 : 2010-10-20
+  Copyright            : (C) 2010 by Yakushev Sergey
+  Email                : YakushevS@list.ru
+****************************************************************************
+*                                                                          *
+*   This program is free software; you can redistribute it and/or modify   *
+*   it under the terms of the GNU General Public License as published by   *
+*   the Free Software Foundation; either version 2 of the License, or      *
+*   (at your option) any later version.                                    *
+*                                                                          *
+***************************************************************************/
 
 /**
- * \file qgslinevectorlayerdirector.cpp
- * \brief implementation of QgsLineVectorLayerDirector
+ * \file qgsvectorlayerdirector.cpp
+ * \brief implementation of QgsVectorLayerDirector
  */
 
-#include "qgslinevectorlayerdirector.h"
-#include "qgsgraphbuilderintr.h"
+#include "qgsvectorlayerdirector.h"
+#include "qgsgraphbuilderinterface.h"
 
-// Qgis includes
 #include "qgsfeatureiterator.h"
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
@@ -26,7 +29,6 @@
 #include <qgsdistancearea.h>
 #include <qgswkbtypes.h>
 
-// QT includes
 #include <QString>
 #include <QtAlgorithms>
 
@@ -100,13 +102,13 @@ bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
   return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
 }
 
-QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
+QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
     int directionFieldId,
     const QString& directDirectionValue,
     const QString& reverseDirectionValue,
     const QString& bothDirectionValue,
-    int defaultDirection
-                                                      )
+    const Direction defaultDirection
+                                              )
 {
   mVectorLayer            = myLayer;
   mDirectionFieldId       = directionFieldId;
@@ -116,18 +118,18 @@ QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
   mBothDirectionValue     = bothDirectionValue;
 }
 
-QgsLineVectorLayerDirector::~QgsLineVectorLayerDirector()
+QgsVectorLayerDirector::~QgsVectorLayerDirector()
 {
 
 }
 
-QString QgsLineVectorLayerDirector::name() const
+QString QgsVectorLayerDirector::name() const
 {
   return QStringLiteral( "Vector line" );
 }
 
-void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
-    QVector< QgsPoint >& tiedPoint ) const
+void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
+                                        QVector< QgsPoint >& snappedPoints ) const
 {
   QgsVectorLayer *vl = mVectorLayer;
 
@@ -148,7 +150,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     ct.setDestinationCrs( vl->crs() );
   }
 
-  tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
+  snappedPoints = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
 
   TiePointInfo tmpInfo;
   tmpInfo.mLength = std::numeric_limits<double>::infinity();
@@ -207,7 +209,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
               info.mLastPoint = pt2;
 
               pointLengthMap[ i ] = info;
-              tiedPoint[ i ] = info.mTiedPoint;
+              snappedPoints[ i ] = info.mTiedPoint;
             }
           }
         }
@@ -221,11 +223,11 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
   // add tied point to graph
   int i = 0;
-  for ( i = 0; i < tiedPoint.size(); ++i )
+  for ( i = 0; i < snappedPoints.size(); ++i )
   {
-    if ( tiedPoint[ i ] != QgsPoint( 0.0, 0.0 ) )
+    if ( snappedPoints[ i ] != QgsPoint( 0.0, 0.0 ) )
     {
-      points.push_back( tiedPoint [ i ] );
+      points.push_back( snappedPoints [ i ] );
     }
   }
 
@@ -238,8 +240,8 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   for ( i = 0;i < points.size();++i )
     builder->addVertex( i, points[ i ] );
 
-  for ( i = 0; i < tiedPoint.size() ; ++i )
-    tiedPoint[ i ] = *( my_binary_search( points.begin(), points.end(), tiedPoint[ i ], pointCompare ) );
+  for ( i = 0; i < snappedPoints.size() ; ++i )
+    snappedPoints[ i ] = *( my_binary_search( points.begin(), points.end(), snappedPoints[ i ], pointCompare ) );
 
   qSort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
@@ -251,10 +253,10 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       tmpAttr.push_back( mDirectionFieldId );
     }
 
-    QList< QgsArcProperter* >::const_iterator it;
+    QList< QgsNetworkStrategy* >::const_iterator it;
     QgsAttributeList::const_iterator it2;
 
-    for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
+    for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
     {
       QgsAttributeList tmp = ( *it )->requiredAttributes();
       for ( it2 = tmp.begin(); it2 != tmp.end(); ++it2 )
@@ -282,21 +284,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
   while ( fit.nextFeature( feature ) )
   {
-    int directionType = mDefaultDirection;
+    Direction directionType = mDefaultDirection;
 
     // What direction have feature?
     QString str = feature.attribute( mDirectionFieldId ).toString();
     if ( str == mBothDirectionValue )
     {
-      directionType = 3;
+      directionType = Direction::DirectionBoth;
     }
     else if ( str == mDirectDirectionValue )
     {
-      directionType = 1;
+      directionType = Direction::DirectionForward;
     }
     else if ( str == mReverseDirectionValue )
     {
-      directionType = 2;
+      directionType = Direction::DirectionBackward;
     }
 
     // begin features segments and add arc to the Graph;
@@ -364,21 +366,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               double distance = builder->distanceArea()->measureLine( pt1, pt2 );
               QVector< QVariant > prop;
-              QList< QgsArcProperter* >::const_iterator it;
-              for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
+              QList< QgsNetworkStrategy* >::const_iterator it;
+              for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
               {
-                prop.push_back(( *it )->property( distance, feature ) );
+                prop.push_back(( *it )->cost( distance, feature ) );
               }
 
-              if ( directionType == 1 ||
-                   directionType == 3 )
+              if ( directionType == Direction::DirectionForward ||
+                   directionType == Direction::DirectionBoth )
               {
-                builder->addArc( pt1idx, pt1, pt2idx, pt2, prop );
+                builder->addEdge( pt1idx, pt1, pt2idx, pt2, prop );
               }
-              if ( directionType == 2 ||
-                   directionType == 3 )
+              if ( directionType == Direction::DirectionBackward ||
+                   directionType == Direction::DirectionBoth )
               {
-                builder->addArc( pt2idx, pt2, pt1idx, pt1, prop );
+                builder->addEdge( pt2idx, pt2, pt1idx, pt1, prop );
               }
             }
             pt1idx = pt2idx;
@@ -393,4 +395,3 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     emit buildProgress( ++step, featureCount );
   } // while( vl->nextFeature(feature) )
 } // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints, QVector< QgsPoint >& tiedPoint )
-

@@ -26,17 +26,17 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 
-#include <qgslinevectorlayerdirector.h>
+#include <qgsvectorlayerdirector.h>
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
-#include <qgsdistancearcproperter.h>
+#include <qgsnetworkdistancestrategy.h>
+#include <qgsnetworkspeedstrategy.h>
 #include "qgsdockwidget.h"
 
 // Road grap plugin includes
 #include "roadgraphplugin.h"
 #include "shortestpathwidget.h"
 #include "settingsdlg.h"
-#include "speedproperter.h"
 #include "units.h"
 
 #include "linevectorlayersettings.h"
@@ -210,17 +210,17 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   {
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
 
-    QgsLineVectorLayerDirector * director =
-      new QgsLineVectorLayerDirector( layer,
-                                      layer->fields().lookupField( mSettings->mDirection ),
-                                      mSettings->mFirstPointToLastPointDirectionVal,
-                                      mSettings->mLastPointToFirstPointDirectionVal,
-                                      mSettings->mBothDirectionVal,
-                                      mSettings->mDefaultDirection
-                                    );
-    director->addProperter( new QgsDistanceArcProperter() );
-    director->addProperter( new RgSpeedProperter( layer->fields().lookupField( mSettings->mSpeed ),
-                            mSettings->mDefaultSpeed, speedUnit.multipler() ) );
+    QgsVectorLayerDirector * director =
+      new QgsVectorLayerDirector( layer,
+                                  layer->fields().lookupField( mSettings->mDirection ),
+                                  mSettings->mFirstPointToLastPointDirectionVal,
+                                  mSettings->mLastPointToFirstPointDirectionVal,
+                                  mSettings->mBothDirectionVal,
+                                  mSettings->mDefaultDirection
+                                );
+    director->addStrategy( new QgsNetworkDistanceStrategy() );
+    director->addStrategy( new QgsNetworkSpeedStrategy( layer->fields().lookupField( mSettings->mSpeed ),
+                           mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
   }
   return nullptr;

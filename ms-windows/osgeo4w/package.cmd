@@ -299,7 +299,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/bin/qgispython.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_analysis.dll" ^
-	"apps/%PACKAGENAME%/bin/qgis_networkanalysis.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_core.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_gui.dll" ^
 	"apps/%PACKAGENAME%/doc/" ^

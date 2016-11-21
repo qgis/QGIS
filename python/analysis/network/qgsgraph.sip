@@ -1,46 +1,46 @@
 /**
- * \ingroup networkanalysis
- * \class QgsGraphArc
- * \brief This class implement a graph edge
+ * \ingroup analysis
+ * \class QgsGraphEdge
+ * \brief This class implements a graph edge
  */
-class QgsGraphArc
+class QgsGraphEdge
 {
 %TypeHeaderCode
 #include <qgsgraph.h>
 %End
 
   public:
-    QgsGraphArc();
+    QgsGraphEdge();
 
     /**
-     * return property value
-     * @param propertyIndex property index
+     * Returns edge cost calculated using specified strategy
+     * @param strategyIndex strategy index
      */
-    QVariant property( int propertyIndex ) const;
+    QVariant cost( int strategyIndex ) const;
 
     /**
-     * get array of properties
+     * Returns array of available strategies
      */
-    QVector< QVariant > properties() const;
+    QVector< QVariant > strategies() const;
 
     /**
-     * return index of outgoing vertex
+     * Returns index of the outgoing vertex
      */
     int outVertex() const;
 
     /**
-     * return index of incoming vertex
+     * Returns index of the incoming vertex
      */
     int inVertex() const;
 };
 
 
-typedef QList< int > QgsGraphArcIdList;
+typedef QList< int > QgsGraphEdgeIds;
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraphVertex
- * \brief This class implement a graph vertex
+ * \brief This class implements a graph vertex
  */
 class QgsGraphVertex
 {
@@ -50,7 +50,7 @@ class QgsGraphVertex
 
   public:
     /**
-     * default constructor. It need for QT's container, e.g. QVector
+     * Default constructor. It is needed for Qt's container, e.g. QVector
      */
     QgsGraphVertex();
 
@@ -61,25 +61,25 @@ class QgsGraphVertex
     QgsGraphVertex( const QgsPoint& point );
 
     /**
-     * return outgoing edges
+     * Returns outgoing edges ids
      */
-    QgsGraphArcIdList outArc() const;
+    QgsGraphEdgeIds outEdges() const;
 
     /**
-     * return incoming edges
+     * Return incoming edges ids
      */
-    QgsGraphArcIdList inArc() const;
+    QgsGraphEdgeIds inEdges() const;
 
     /**
-     * return vertex point
+     * Returns point associated with graph vertex
      */
     QgsPoint point() const;
 };
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraph
- * \brief Mathematics graph representation
+ * \brief Mathematical graph representation
  */
 
 class QgsGraph
@@ -91,39 +91,40 @@ class QgsGraph
   public:
     QgsGraph();
 
-    // begin graph constructing methods
+    // Graph constructing methods
+
     /**
-     * add vertex to a grap
+     * Add a vertex to the graph
      */
     int addVertex( const QgsPoint& pt );
 
     /**
-     * add edge to a graph
+     * Add an edge to the graph
      */
-    int addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
+    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& strategies );
 
     /**
-     * return vertex count
+     * Returns number of graph vertices
      */
     int vertexCount() const;
 
     /**
-     * return vertex at index
+     * Returns vertex at given index
      */
     const QgsGraphVertex& vertex( int idx ) const;
 
     /**
-      * return edge count
+      * Returns number of graph edges
       */
-    int arcCount() const;
+    int edgeCount() const;
 
     /**
-     * return edge at index
+     * Returns edge at given index
      */
-    const QgsGraphArc& arc( int idx ) const;
+    const QgsGraphEdge& edge( int idx ) const;
 
     /**
-     * find vertex by point
+     * Find vertex by associated point
      * \return vertex index
      */
     int findVertex( const QgsPoint& pt ) const;

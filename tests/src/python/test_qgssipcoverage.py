@@ -23,7 +23,6 @@ from termcolor import colored
 from qgis.analysis import *         # NOQA
 from qgis.core import *             # NOQA
 from qgis.gui import *              # NOQA
-from qgis.networkanalysis import *  # NOQA
 try:
     from qgis.server import *       # NOQA
 except:

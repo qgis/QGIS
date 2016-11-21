@@ -12,25 +12,24 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef QGSGRAPHDIRECTORH
-#define QGSGRAPHDIRECTORH
 
-//QT4 includes
+#ifndef QGSGRAPHDIRECTOR_H
+#define QGSGRAPHDIRECTOR_H
+
 #include <QObject>
 #include <QVector>
 #include <QList>
 
-//QGIS includes
 #include <qgspoint.h>
-#include "qgsarcproperter.h"
+#include "qgsnetworkstrategy.h"
 
-//forward declarations
 class QgsGraphBuilderInterface;
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraphDirector
- * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
+ * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector implemented
+ * using "builder" design patter.
  */
 class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 {
@@ -45,36 +44,33 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     virtual ~QgsGraphDirector() { }
 
     /**
-     * Make a graph using RgGraphBuilder
+     * Make a graph using QgsGraphBuilder
      *
-     * @param builder   The graph builder
-     *
-     * @param additionalPoints  Vector of points that must be tied to the graph
-     *
-     * @param tiedPoints  Vector of tied points
-     *
-     * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
+     * @param builder the graph builder
+     * @param additionalPoints list of points that should be snapped to the graph
+     * @param snappedPoints list of snapped points
+     * @note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPoint > &additionalPoints,
-                            QVector< QgsPoint > &tiedPoints ) const
+                            QVector< QgsPoint > &snappedPoints ) const
     {
       Q_UNUSED( builder );
       Q_UNUSED( additionalPoints );
-      Q_UNUSED( tiedPoints );
+      Q_UNUSED( snappedPoints );
     }
 
-    void addProperter( QgsArcProperter* prop )
+    //! Add optimization strategy
+    void addStrategy( QgsNetworkStrategy* prop )
     {
-      mProperterList.push_back( prop );
+      mStrategies.push_back( prop );
     }
 
-    /**
-     * return Director name
-     */
+    //! Returns director name
     virtual QString name() const = 0;
 
   protected:
-    QList<QgsArcProperter*> mProperterList;
+    QList<QgsNetworkStrategy*> mStrategies;
 };
-#endif //QGSGRAPHDIRECTORH
+
+#endif // QGSGRAPHDIRECTOR_H

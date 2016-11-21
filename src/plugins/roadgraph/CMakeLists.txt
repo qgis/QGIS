@@ -10,7 +10,6 @@ SET (VRP_SRCS
   linevectorlayersettings.cpp
   linevectorlayerwidget.cpp
   exportdlg.cpp
-  speedproperter.cpp
 )
 
 #SET ([pluginlcasename]_UIS [pluginlcasename]guibase.ui)
@@ -50,7 +49,7 @@ ADD_LIBRARY (roadgraphplugin MODULE ${VRP_SRCS} ${VRP_MOC_SRCS} ${VRP_RCC_SRCS})
 TARGET_LINK_LIBRARIES(roadgraphplugin
   qgis_core
   qgis_gui
-  qgis_networkanalysis
+  qgis_analysis
 )
 
 

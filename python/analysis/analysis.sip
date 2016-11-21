@@ -52,3 +52,13 @@
 %Include raster/qgsruggednessfilter.sip
 %Include raster/qgsslopefilter.sip
 %Include raster/qgstotalcurvaturefilter.sip
+
+%Include network/qgsgraph.sip
+%Include network/qgsnetworkstrategy.sip
+%Include network/qgsnetworkspeedstrategy.sip
+%Include network/qgsnetworkdistancestrategy.sip
+%Include network/qgsgraphbuilderinterface.sip
+%Include network/qgsgraphbuilder.sip
+%Include network/qgsgraphdirector.sip
+%Include network/qgsvectorlayerdirector.sip
+%Include network/qgsgraphanalyzer.sip
