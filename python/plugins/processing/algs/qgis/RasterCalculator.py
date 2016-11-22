@@ -55,17 +55,17 @@ class RasterCalculator(GeoAlgorithm):
                                           self.tr('Input layers'),
                                           datatype=dataobjects.TYPE_RASTER,
                                           optional=True,
-                                          metadata = {'widget_wrapper': LayersListWidgetWrapper}))
-        class ParameterExpression(ParameterString):
-            def evaluateForModeler(self, value, model): 
-                #print value                   
+                                          metadata={'widget_wrapper': LayersListWidgetWrapper}))
+        class ParameterRasterCalculatorExpression(ParameterString):
+            def evaluateForModeler(self, value, model):
+                # print value
                 for i in list(model.inputs.values()):
                     param = i.param
                     if isinstance(param, ParameterRaster):
                         new = "%s@" % os.path.basename(param.value)
                         old = "%s@" % param.name
                         value = value.replace(old, new)
-    
+
                     for alg in list(model.algs.values()):
                         for out in alg.algorithm.outputs:
                             if isinstance(out, OutputRaster):
@@ -75,15 +75,15 @@ class RasterCalculator(GeoAlgorithm):
                                     value = value.replace(old, new)
                 return value
 
-        self.addParameter(ParameterExpression(self.EXPRESSION, self.tr('Expression'), 
+        self.addParameter(ParameterRasterCalculatorExpression(self.EXPRESSION, self.tr('Expression'),
                                           multiline=True,
-                                          metadata = {'widget_wrapper': ExpressionWidgetWrapper}))
+                                          metadata={'widget_wrapper': ExpressionWidgetWrapper}))
         self.addParameter(ParameterNumber(self.CELLSIZE,
                                           self.tr('Cellsize (use 0 or empty to set it automatically)'),
                                           minValue=0.0, default=0.0, optional=True))
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Output extent'),
-                                          optional=True))        
+                                          optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
 
 
@@ -149,14 +149,14 @@ class RasterCalculator(GeoAlgorithm):
             if isinstance(param, ParameterRaster) and "%s@" % param.name in expression:
                 values.append(ValueFromInput(param.name))
 
-        if algorithm.name:            
+        if algorithm.name:
             dependent = model.getDependentAlgorithms(algorithm.name)
         else:
             dependent = []
         for alg in list(model.algs.values()):
             if alg.name not in dependent:
                 for out in alg.algorithm.outputs:
-                    if (isinstance(out, OutputRaster) 
+                    if (isinstance(out, OutputRaster)
                             and "%s:%s@" % (alg.name, out.name) in expression):
                         values.append(ValueFromOutput(alg.name, out.name))
 
