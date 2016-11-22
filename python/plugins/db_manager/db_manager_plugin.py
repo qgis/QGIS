@@ -56,7 +56,7 @@ class DBManagerPlugin(object):
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
-        self.iface.legendInterface().addLegendLayerAction(self.layerAction, "", "dbManagerUpdateSqlLayer", QgsMapLayer.VectorLayer, False)
+        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
         for l in list(QgsMapLayerRegistry.instance().mapLayers().values()):
             self.onLayerWasAdded(l)
         QgsMapLayerRegistry.instance().layerWasAdded.connect(self.onLayerWasAdded)
@@ -72,7 +72,7 @@ class DBManagerPlugin(object):
         else:
             self.iface.removeToolBarIcon(self.action)
 
-        self.iface.legendInterface().removeLegendLayerAction(self.layerAction)
+        self.iface.removeCustomActionForLayerType(self.layerAction)
         QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
 
         if self.dlg is not None:
@@ -82,7 +82,7 @@ class DBManagerPlugin(object):
         if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             uri = QgsDataSourceUri(aMapLayer.source())
             if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
-                self.iface.legendInterface().addLegendLayerActionForLayer(self.layerAction, aMapLayer)
+                self.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')
@@ -90,7 +90,7 @@ class DBManagerPlugin(object):
         # url.queryItemValue('geometry')
 
     def onUpdateSqlLayer(self):
-        l = self.iface.legendInterface().currentLayer()
+        l = self.iface.activeLayer()
         if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             uri = QgsDataSourceUri(l.source())
             if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):

@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject, QgsMapLayerRegistry
 from qgis.gui import QgsMessageViewer
 from qgis.utils import iface
 
@@ -118,10 +118,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
     def populateLayers(self):
         self.cboInputLayer.clear()
-        for index, layer in enumerate(iface.legendInterface().layers()):
+        for nodeLayer in QgsProject.instance().layerTreeRoot().findLayers():
+            layer = nodeLayer.layer()
             # TODO: add import raster support!
             if layer.type() == QgsMapLayer.VectorLayer:
-                self.cboInputLayer.addItem(layer.name(), index)
+                self.cboInputLayer.addItem(layer.name(), layer.id())
 
     def deleteInputLayer(self):
         """ unset the input layer, then destroy it but only if it was created from this dialog """
@@ -181,8 +182,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
             self.inLayerMustBeDestroyed = True
 
         else:
-            legendIndex = self.cboInputLayer.itemData(index)
-            self.inLayer = iface.legendInterface().layers()[legendIndex]
+            layerId = self.cboInputLayer.itemData(index)
+            self.inLayer = QgsMapLayerRegistry.instance().mapLayer(layerId)
             self.inLayerMustBeDestroyed = False
 
         self.checkSupports()
