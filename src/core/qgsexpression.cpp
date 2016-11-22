@@ -54,6 +54,8 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsmessagelog.h"
 #include "qgscsexception.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
@@ -3423,6 +3425,75 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   return QVariant();
 }
 
+static QVariant fcnGetRasterBandStat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QString layerIdOrName = getStringValue( values.at( 0 ), parent );
+
+  //try to find a matching layer by name
+  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIdOrName ); //search by id first
+  if ( !layer )
+  {
+    QList<QgsMapLayer *> layersByName = QgsMapLayerRegistry::instance()->mapLayersByName( layerIdOrName );
+    if ( !layersByName.isEmpty() )
+    {
+      layer = layersByName.at( 0 );
+    }
+  }
+
+  if ( !layer )
+    return QVariant();
+
+  QgsRasterLayer* rl = qobject_cast< QgsRasterLayer* >( layer );
+  if ( !rl )
+    return QVariant();
+
+  int band = getIntValue( values.at( 1 ), parent );
+  if ( band < 1 || band > rl->bandCount() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid band number %1 for layer %2" ).arg( band ).arg( layerIdOrName ) );
+    return QVariant();
+  }
+
+  QString layerProperty = getStringValue( values.at( 2 ), parent );
+  int stat = 0;
+
+  if ( QString::compare( layerProperty, QStringLiteral( "avg" ), Qt::CaseInsensitive ) == 0 )
+    stat = QgsRasterBandStats::Mean;
+  else if ( QString::compare( layerProperty, QStringLiteral( "stdev" ), Qt::CaseInsensitive ) == 0 )
+    stat = QgsRasterBandStats::StdDev;
+  else if ( QString::compare( layerProperty, QStringLiteral( "min" ), Qt::CaseInsensitive ) == 0 )
+    stat = QgsRasterBandStats::Min;
+  else if ( QString::compare( layerProperty, QStringLiteral( "max" ), Qt::CaseInsensitive ) == 0 )
+    stat = QgsRasterBandStats::Max;
+  else if ( QString::compare( layerProperty, QStringLiteral( "range" ), Qt::CaseInsensitive ) == 0 )
+    stat = QgsRasterBandStats::Range;
+  else if ( QString::compare( layerProperty, QStringLiteral( "sum" ), Qt::CaseInsensitive ) == 0 )
+    stat = QgsRasterBandStats::Sum;
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid raster statistic: '%1'" ).arg( layerProperty ) );
+    return QVariant();
+  }
+
+  QgsRasterBandStats stats = rl->dataProvider()->bandStatistics( band, stat );
+  switch ( stat )
+  {
+    case QgsRasterBandStats::Mean:
+      return stats.mean;
+    case QgsRasterBandStats::StdDev:
+      return stats.stdDev;
+    case QgsRasterBandStats::Min:
+      return stats.minimumValue;
+    case QgsRasterBandStats::Max:
+      return stats.maximumValue;
+    case QgsRasterBandStats::Range:
+      return stats.range;
+    case QgsRasterBandStats::Sum:
+      return stats.sum;
+  }
+  return QVariant();
+}
+
 static QVariant fcnArray( const QVariantList& values, const QgsExpressionContext*, QgsExpression* )
 {
   return values;
@@ -4007,6 +4078,9 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     // **General** functions
 
     << new StaticFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
+    << new StaticFunction( QStringLiteral( "raster_statistic" ), ParameterList() << Parameter( QStringLiteral( "layer" ) )
+                           << Parameter( QStringLiteral( "band" ) )
+                           << Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "General" ) )
     << new StaticFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) )
 
     //return all attributes string for referencedColumns - this is caught by
