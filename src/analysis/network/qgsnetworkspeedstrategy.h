@@ -21,7 +21,7 @@
 /** \ingroup analysis
  * \class QgsNetworkSpeedStrategy
  * \note added in QGIS 3.0
- * \brief Strategy for calcucating edge cost based on travel time. Should be
+ * \brief Strategy for calculating edge cost based on travel time. Should be
  * used for finding fastest path between two points.
  */
 class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
