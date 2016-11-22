@@ -40,8 +40,8 @@
 #include "qgssinglesymbolrenderer.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
-    : mView( view )
-    , mCanvas( canvas )
+  : mView( view )
+  , mCanvas( canvas )
 {
 }
 
@@ -95,9 +95,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+      QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( layer );
+      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
 
       menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
       menu->addAction( actions->actionShowInOverview( menu ) );
@@ -133,9 +133,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // style-related actions
       if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
-        QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
+        QMenu* menuStyleManager = new QMenu( tr( "Styles" ), menu );
 
-        QgisApp *app = QgisApp::instance();
+        QgisApp* app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
@@ -166,7 +166,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
             menuStyleManager->addAction( colorAction );
 
             //add recent colors action
-            QList<QgsRecentColorScheme *> recentSchemes;
+            QList<QgsRecentColorScheme*> recentSchemes;
             QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
             if ( !recentSchemes.isEmpty() )
             {
@@ -200,9 +200,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( vlayer )
       {
-        QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
-        QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
-        QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
+        QAction* toggleEditingAction = QgisApp::instance()->actionToggleEditing();
+        QAction* saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
+        QAction* allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
@@ -236,7 +236,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+          QAction* action = menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
           action->setEnabled( !vlayer->isEditable() );
         }
 
@@ -303,7 +303,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( colorAction );
 
         //add recent colors action
-        QList<QgsRecentColorScheme *> recentSchemes;
+        QList<QgsRecentColorScheme*> recentSchemes;
         QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
         if ( !recentSchemes.isEmpty() )
         {
@@ -367,7 +367,7 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* act
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
-  = mLegendLayerActionMap.find( layer->type() );
+    = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
     if (( *it )[i].action == action )
@@ -384,7 +384,7 @@ void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLa
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
-  = mLegendLayerActionMap.find( layer->type() );
+    = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
     ( *it )[i].layers.removeAll( layer );
@@ -585,7 +585,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   }
 }
 
-void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &color )
+void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor& color )
 {
   QAction* action = qobject_cast< QAction*>( sender() );
   if ( !action )

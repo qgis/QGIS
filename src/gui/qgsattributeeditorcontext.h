@@ -52,35 +52,35 @@ class GUI_EXPORT QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext()
-        : mParentContext( nullptr )
-        , mLayer( nullptr )
-        , mVectorLayerTools( nullptr )
-        , mRelationMode( Undefined )
-        , mFormMode( Embed )
-        , mAllowCustomUi( true )
+      : mParentContext( nullptr )
+      , mLayer( nullptr )
+      , mVectorLayerTools( nullptr )
+      , mRelationMode( Undefined )
+      , mFormMode( Embed )
+      , mAllowCustomUi( true )
     {}
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode )
-        : mParentContext( &parentContext )
-        , mLayer( nullptr )
-        , mVectorLayerTools( parentContext.mVectorLayerTools )
-        , mDistanceArea( parentContext.mDistanceArea )
-        , mRelationMode( Undefined )
-        , mFormMode( formMode )
-        , mAllowCustomUi( true )
+      : mParentContext( &parentContext )
+      , mLayer( nullptr )
+      , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mDistanceArea( parentContext.mDistanceArea )
+      , mRelationMode( Undefined )
+      , mFormMode( formMode )
+      , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode widgetMode )
-        : mParentContext( &parentContext )
-        , mLayer( nullptr )
-        , mVectorLayerTools( parentContext.mVectorLayerTools )
-        , mDistanceArea( parentContext.mDistanceArea )
-        , mRelation( relation )
-        , mRelationMode( relationMode )
-        , mFormMode( widgetMode )
-        , mAllowCustomUi( true )
+      : mParentContext( &parentContext )
+      , mLayer( nullptr )
+      , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mDistanceArea( parentContext.mDistanceArea )
+      , mRelation( relation )
+      , mRelationMode( relationMode )
+      , mFormMode( widgetMode )
+      , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
@@ -94,32 +94,60 @@ class GUI_EXPORT QgsAttributeEditorContext
       }
     }
 
-    inline const QgsDistanceArea& distanceArea() const { return mDistanceArea; }
+    inline const QgsDistanceArea& distanceArea() const
+    {
+      return mDistanceArea;
+    }
 
-    inline void setVectorLayerTools( QgsVectorLayerTools* vlTools ) { mVectorLayerTools = vlTools; }
-    inline const QgsVectorLayerTools* vectorLayerTools() const { return mVectorLayerTools; }
+    inline void setVectorLayerTools( QgsVectorLayerTools* vlTools )
+    {
+      mVectorLayerTools = vlTools;
+    }
+    inline const QgsVectorLayerTools* vectorLayerTools() const
+    {
+      return mVectorLayerTools;
+    }
 
-    inline void setRelation( const QgsRelation& relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
-    inline const QgsRelation& relation() const { return mRelation; }
-    inline RelationMode relationMode() const { return mRelationMode; }
+    inline void setRelation( const QgsRelation& relation, RelationMode mode )
+    {
+      mRelation = relation;
+      mRelationMode = mode;
+    }
+    inline const QgsRelation& relation() const
+    {
+      return mRelation;
+    }
+    inline RelationMode relationMode() const
+    {
+      return mRelationMode;
+    }
 
     /** Returns the form mode.
      * @see setFormMode()
      */
-    inline FormMode formMode() const { return mFormMode; }
+    inline FormMode formMode() const
+    {
+      return mFormMode;
+    }
 
     /** Sets the form mode.
      * @param mode form mode
      * @see formMode()
      * @note added in QGIS 2.16
      */
-    inline void setFormMode( FormMode mode ) { mFormMode = mode; }
+    inline void setFormMode( FormMode mode )
+    {
+      mFormMode = mode;
+    }
 
     /** Returns true if the attribute editor should permit use of custom UI forms.
      * @see setAllowCustomUi()
      * @note added in QGIS 2.16
      */
-    bool allowCustomUi() const { return mAllowCustomUi; }
+    bool allowCustomUi() const
+    {
+      return mAllowCustomUi;
+    }
 
     /** Sets whether the attribute editor should permit use of custom UI forms.
      * @param allow set to true to allow custom UI forms, or false to disable them and use default generated
@@ -127,9 +155,15 @@ class GUI_EXPORT QgsAttributeEditorContext
      * @see allowCustomUi()
      * @note added in QGIS 2.16
      */
-    void setAllowCustomUi( bool allow ) { mAllowCustomUi = allow; }
+    void setAllowCustomUi( bool allow )
+    {
+      mAllowCustomUi = allow;
+    }
 
-    inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
+    inline const QgsAttributeEditorContext* parentContext() const
+    {
+      return mParentContext;
+    }
 
   private:
     const QgsAttributeEditorContext* mParentContext;

@@ -34,7 +34,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewSpatialiteLayerDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:
@@ -47,7 +47,10 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
@@ -63,7 +66,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
-    QPushButton *mOkButton;
+    QPushButton* mOkButton;
     QString mCrsId;
 };
 

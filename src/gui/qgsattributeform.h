@@ -59,11 +59,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(),
+                               const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget* parent = nullptr );
     ~QgsAttributeForm();
 
-    const QgsFeature& feature() { return mFeature; }
+    const QgsFeature& feature()
+    {
+      return mFeature;
+    }
 
     /**
      * Hides the button box (Ok/Cancel) and enables auto-commit
@@ -97,7 +100,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * @return  Layer
      */
-    QgsVectorLayer* layer() { return mLayer; }
+    QgsVectorLayer* layer()
+    {
+      return mLayer;
+    }
 
     /**
      * Returns if the form is currently in editable mode.
@@ -110,7 +116,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * @note added in QGIS 2.16
      * @see setMode()
      */
-    Mode mode() const { return mMode; }
+    Mode mode() const
+    {
+      return mMode;
+    }
 
     /** Sets the current mode of the form.
      * @param mode form mode
@@ -124,7 +133,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message ) { mEditCommandMessage = message; }
+    void setEditCommandMessage( const QString& message )
+    {
+      mEditCommandMessage = message;
+    }
 
     /**
      * Intercepts keypress on custom form (escape should not close it)
@@ -236,7 +248,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
     void onConstraintStatusChanged( const QString& constraint,
-                                    const QString &description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result );
+                                    const QString& description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result );
     void preventFeatureRefresh();
     void synchronizeEnabledState();
     void layerSelectionChanged();
@@ -265,10 +277,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     struct WidgetInfo
     {
       WidgetInfo()
-          : widget( nullptr )
-          , labelOnTop( false )
-          , labelAlignRight( false )
-          , showLabel( true )
+        : widget( nullptr )
+        , labelOnTop( false )
+        , labelAlignRight( false )
+        , showLabel( true )
       {}
 
       QWidget* widget;
@@ -330,17 +342,17 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     struct ContainerInformation
     {
       ContainerInformation( QgsTabWidget* tabWidget, QWidget* widget, const QgsExpression& expression )
-          : tabWidget( tabWidget )
-          , widget( widget )
-          , expression( expression )
-          , isVisible( true )
+        : tabWidget( tabWidget )
+        , widget( widget )
+        , expression( expression )
+        , isVisible( true )
       {}
 
       ContainerInformation( QWidget* widget, const QgsExpression& expression )
-          : tabWidget( nullptr )
-          , widget( widget )
-          , expression( expression )
-          , isVisible( true )
+        : tabWidget( nullptr )
+        , widget( widget )
+        , expression( expression )
+        , isVisible( true )
       {}
 
       QgsTabWidget* tabWidget;

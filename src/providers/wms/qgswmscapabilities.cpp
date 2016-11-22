@@ -160,9 +160,9 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
 
 
 QgsWmsCapabilities::QgsWmsCapabilities()
-    : mValid( false )
-    , mLayerCount( -1 )
-    , mCapabilities()
+  : mValid( false )
+  , mLayerCount( -1 )
+  , mCapabilities()
 {
 }
 
@@ -244,7 +244,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, QgsWmsParser
 }
 
 
-bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )
+bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const& xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )
 {
 
 #ifdef QGISDEBUG
@@ -339,7 +339,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
 }
 
 
-void QgsWmsCapabilities::parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty )
+void QgsWmsCapabilities::parseService( QDomElement const& e, QgsWmsServiceProperty& serviceProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -403,7 +403,7 @@ void QgsWmsCapabilities::parseService( QDomElement const & e, QgsWmsServicePrope
 }
 
 
-void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute )
+void QgsWmsCapabilities::parseOnlineResource( QDomElement const& e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute )
 {
 
   onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
@@ -412,7 +412,7 @@ void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlin
 }
 
 
-void QgsWmsCapabilities::parseKeywordList( QDomElement  const & e, QStringList& keywordListProperty )
+void QgsWmsCapabilities::parseKeywordList( QDomElement  const& e, QStringList& keywordListProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -439,7 +439,7 @@ void QgsWmsCapabilities::parseKeywordList( QDomElement  const & e, QStringList& 
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty )
+void QgsWmsCapabilities::parseContactInformation( QDomElement const& e, QgsWmsContactInformationProperty& contactInformationProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -505,7 +505,7 @@ void QgsWmsCapabilities::parseContactInformation( QDomElement const & e, QgsWmsC
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty )
+void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const& e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -534,7 +534,7 @@ void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const & e, QgsWm
 }
 
 
-void QgsWmsCapabilities::parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty )
+void QgsWmsCapabilities::parseContactAddress( QDomElement const& e, QgsWmsContactAddressProperty& contactAddressProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -579,7 +579,7 @@ void QgsWmsCapabilities::parseContactAddress( QDomElement const & e, QgsWmsConta
 }
 
 
-void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty )
+void QgsWmsCapabilities::parseCapability( QDomElement const& e, QgsWmsCapabilityProperty& capabilityProperty )
 {
 
   for ( QDomNode n1 = e.firstChild(); !n1.isNull(); n1 = n1.nextSibling() )
@@ -633,7 +633,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
       QgsWmsDcpTypeProperty dcp;
       dcp.http.get.onlineResource.xlinkHref = href;
 
-      QgsWmsOperationType *ot = nullptr;
+      QgsWmsOperationType* ot = nullptr;
       if ( href.isNull() )
       {
         QgsDebugMsg( QString( "http get missing from ows:Operation '%1'" ).arg( name ) );
@@ -673,7 +673,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
 }
 
 
-void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty )
+void QgsWmsCapabilities::parseRequest( QDomElement const& e, QgsWmsRequestProperty& requestProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -712,7 +712,7 @@ void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestPrope
 
 
 
-void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty )
+void QgsWmsCapabilities::parseLegendUrl( QDomElement const& e, QgsWmsLegendUrlProperty& legendUrlProperty )
 {
 
   legendUrlProperty.width  = e.attribute( QStringLiteral( "width" ) ).toUInt();
@@ -743,8 +743,8 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlP
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
-                                     QgsWmsLayerProperty *parentProperty )
+void QgsWmsCapabilities::parseLayer( QDomElement const& e, QgsWmsLayerProperty& layerProperty,
+                                     QgsWmsLayerProperty* parentProperty )
 {
 
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
@@ -839,7 +839,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
             QgsCoordinateTransform ct( src, dst );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
-          catch ( QgsCsException &cse )
+          catch ( QgsCsException& cse )
           {
             Q_UNUSED( cse );
           }
@@ -998,7 +998,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
 }
 
 
-void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty )
+void QgsWmsCapabilities::parseStyle( QDomElement const& e, QgsWmsStyleProperty& styleProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1044,7 +1044,7 @@ void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty&
 }
 
 
-void QgsWmsCapabilities::parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType )
+void QgsWmsCapabilities::parseOperationType( QDomElement const& e, QgsWmsOperationType& operationType )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1077,7 +1077,7 @@ void QgsWmsCapabilities::parseOperationType( QDomElement const & e, QgsWmsOperat
 }
 
 
-void QgsWmsCapabilities::parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType )
+void QgsWmsCapabilities::parseDcpType( QDomElement const& e, QgsWmsDcpTypeProperty& dcpType )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1098,7 +1098,7 @@ void QgsWmsCapabilities::parseDcpType( QDomElement const & e, QgsWmsDcpTypePrope
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty )
+void QgsWmsCapabilities::parseHttp( QDomElement const& e, QgsWmsHttpProperty& httpProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1128,7 +1128,7 @@ void QgsWmsCapabilities::parseHttp( QDomElement const & e, QgsWmsHttpProperty& h
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty )
+void QgsWmsCapabilities::parseGet( QDomElement const& e, QgsWmsGetProperty& getProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1153,7 +1153,7 @@ void QgsWmsCapabilities::parseGet( QDomElement const & e, QgsWmsGetProperty& get
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty )
+void QgsWmsCapabilities::parsePost( QDomElement const& e, QgsWmsPostProperty& postProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1178,7 +1178,7 @@ void QgsWmsCapabilities::parsePost( QDomElement const & e, QgsWmsPostProperty& p
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
+void QgsWmsCapabilities::parseTileSetProfile( QDomElement const& e )
 {
   QStringList resolutions, layers, styles;
   QgsWmsBoundingBoxProperty boundingBox;
@@ -1297,7 +1297,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   mTileMatrixSets.insert( ms.identifier, ms );
 }
 
-void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
+void QgsWmsCapabilities::parseWMTSContents( QDomElement const& e )
 {
   //
   // tile matrix sets
@@ -1595,7 +1595,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         continue;
       }
 
-      const QgsWmtsTileMatrixSet &tms = mTileMatrixSets[ sl.tileMatrixSet ];
+      const QgsWmtsTileMatrixSet& tms = mTileMatrixSets[ sl.tileMatrixSet ];
 
       for ( QDomElement e2 = e1.firstChildElement( QStringLiteral( "TileMatrixSetLimits" ) ); !e2.isNull(); e2 = e2.nextSiblingElement( QStringLiteral( "TileMatrixSetLimits" ) ) )
       {
@@ -1607,7 +1607,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
           bool isValid = false;
           int matrixWidth = -1, matrixHeight = -1;
-          Q_FOREACH ( const QgsWmtsTileMatrix &m, tms.tileMatrices )
+          Q_FOREACH ( const QgsWmtsTileMatrix& m, tms.tileMatrices )
           {
             isValid = m.identifier == id;
             if ( isValid )
@@ -1752,7 +1752,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 }
 
 
-void QgsWmsCapabilities::parseKeywords( const QDomNode &e, QStringList &keywords )
+void QgsWmsCapabilities::parseKeywords( const QDomNode& e, QStringList& keywords )
 {
   keywords.clear();
 
@@ -1764,7 +1764,7 @@ void QgsWmsCapabilities::parseKeywords( const QDomNode &e, QStringList &keywords
   }
 }
 
-void QgsWmsCapabilities::parseTheme( const QDomElement &e, QgsWmtsTheme &t )
+void QgsWmsCapabilities::parseTheme( const QDomElement& e, QgsWmtsTheme& t )
 {
   t.identifier = e.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
   t.title      = e.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
@@ -1791,7 +1791,7 @@ void QgsWmsCapabilities::parseTheme( const QDomElement &e, QgsWmtsTheme &t )
   }
 }
 
-QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue )
+QString QgsWmsCapabilities::nodeAttribute( const QDomElement& e, const QString& name, const QString& defValue )
 {
   if ( e.hasAttribute( name ) )
     return e.attribute( name );
@@ -1898,21 +1898,21 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 // -----------------
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
-    : QObject( parent )
-    , mCapabilitiesReply( nullptr )
-    , mIsAborted( false )
-    , mForceRefresh( forceRefresh )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject* parent )
+  : QObject( parent )
+  , mCapabilitiesReply( nullptr )
+  , mIsAborted( false )
+  , mForceRefresh( forceRefresh )
 {
 }
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject *parent )
-    : QObject( parent )
-    , mBaseUrl( baseUrl )
-    , mAuth( auth )
-    , mCapabilitiesReply( nullptr )
-    , mIsAborted( false )
-    , mForceRefresh( forceRefresh )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject* parent )
+  : QObject( parent )
+  , mBaseUrl( baseUrl )
+  , mAuth( auth )
+  , mCapabilitiesReply( nullptr )
+  , mIsAborted( false )
+  , mForceRefresh( forceRefresh )
 {
 }
 
@@ -2048,14 +2048,14 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
       }
       else
       {
-        const QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+        const QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
 
         if ( nam->cache() )
         {
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mCapabilitiesReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader& h, cmd.rawHeaders() )
           {
             if ( h.first != "Cache-Control" )
               hl.append( h );
@@ -2124,7 +2124,7 @@ QgsRectangle QgsWmtsTileMatrix::tileBBox( int col, int row ) const
            topLeft.y() -         row * thMap );
 }
 
-void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits* tml, int &col0, int &row0, int &col1, int &row1 ) const
+void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle& viewExtent, const QgsWmtsTileMatrixLimits* tml, int& col0, int& row0, int& col1, int& row1 ) const
 {
   double twMap = tileWidth * tres;
   double thMap = tileHeight * tres;
@@ -2172,7 +2172,7 @@ const QgsWmtsTileMatrix* QgsWmtsTileMatrixSet::findNearestResolution( double vre
   return &it.value();
 }
 
-const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findOtherResolution( double tres, int offset ) const
+const QgsWmtsTileMatrix* QgsWmtsTileMatrixSet::findOtherResolution( double tres, int offset ) const
 {
   QMap<double, QgsWmtsTileMatrix>::const_iterator it = tileMatrices.constFind( tres );
   if ( it == tileMatrices.constEnd() )

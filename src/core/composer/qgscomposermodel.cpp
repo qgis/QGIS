@@ -29,9 +29,9 @@
 #include <QMessageBox>
 #include <QIcon>
 
-QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mComposition( composition )
+QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject* parent )
+  : QAbstractItemModel( parent )
+  , mComposition( composition )
 {
 
 }
@@ -40,7 +40,7 @@ QgsComposerModel::~QgsComposerModel()
 {
 }
 
-QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) const
+QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex& index ) const
 {
   //try to return the QgsComposerItem corresponding to a QModelIndex
   if ( !index.isValid() )
@@ -48,12 +48,12 @@ QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) con
     return nullptr;
   }
 
-  QgsComposerItem * item = static_cast<QgsComposerItem*>( index.internalPointer() );
+  QgsComposerItem* item = static_cast<QgsComposerItem*>( index.internalPointer() );
   return item;
 }
 
 QModelIndex QgsComposerModel::index( int row, int column,
-                                     const QModelIndex &parent ) const
+                                     const QModelIndex& parent ) const
 {
   if ( column < 0 || column >= columnCount() )
   {
@@ -77,7 +77,7 @@ void QgsComposerModel::refreshItemsInScene()
 
   //filter deleted and paper items from list
   //TODO - correctly handle grouped item z order placement
-  QList<QgsComposerItem *>::const_iterator itemIt = mItemZList.constBegin();
+  QList<QgsComposerItem*>::const_iterator itemIt = mItemZList.constBegin();
   for ( ; itemIt != mItemZList.constEnd(); ++itemIt )
   {
     if ((( *itemIt )->type() != QgsComposerItem::ComposerPaper ) && !( *itemIt )->isRemoved() )
@@ -87,7 +87,7 @@ void QgsComposerModel::refreshItemsInScene()
   }
 }
 
-QModelIndex QgsComposerModel::parent( const QModelIndex &index ) const
+QModelIndex QgsComposerModel::parent( const QModelIndex& index ) const
 {
   Q_UNUSED( index );
 
@@ -95,14 +95,14 @@ QModelIndex QgsComposerModel::parent( const QModelIndex &index ) const
   return QModelIndex();
 }
 
-int QgsComposerModel::rowCount( const QModelIndex &parent ) const
+int QgsComposerModel::rowCount( const QModelIndex& parent ) const
 {
   if ( !parent.isValid() )
   {
     return mItemsInScene.size();
   }
 
-  QGraphicsItem * parentItem = itemFromIndex( parent );
+  QGraphicsItem* parentItem = itemFromIndex( parent );
 
   if ( !parentItem )
   {
@@ -115,18 +115,18 @@ int QgsComposerModel::rowCount( const QModelIndex &parent ) const
   }
 }
 
-int QgsComposerModel::columnCount( const QModelIndex &parent ) const
+int QgsComposerModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 3;
 }
 
-QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
+QVariant QgsComposerModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
 
-  QgsComposerItem *item = itemFromIndex( index );
+  QgsComposerItem* item = itemFromIndex( index );
   if ( !item )
   {
     return QVariant();
@@ -159,7 +159,7 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
       return item->uuid();
     case Qt::UserRole+1:
       //user role stores reference in column object
-      return qVariantFromValue( qobject_cast<QObject *>( item ) );
+      return qVariantFromValue( qobject_cast<QObject*>( item ) );
 
     case Qt::TextAlignmentRole:
       return Qt::AlignLeft & Qt::AlignVCenter;
@@ -192,14 +192,14 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole )
+bool QgsComposerModel::setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole )
 {
   Q_UNUSED( role );
 
   if ( !index.isValid() )
     return false;
 
-  QgsComposerItem *item = itemFromIndex( index );
+  QgsComposerItem* item = itemFromIndex( index );
   if ( !item )
   {
     return false;
@@ -281,18 +281,18 @@ QStringList QgsComposerModel::mimeTypes() const
   return types;
 }
 
-QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData* QgsComposerModel::mimeData( const QModelIndexList& indexes ) const
 {
-  QMimeData *mimeData = new QMimeData();
+  QMimeData* mimeData = new QMimeData();
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     if ( index.isValid() && index.column() == ItemId )
     {
-      QgsComposerItem *item = itemFromIndex( index );
+      QgsComposerItem* item = itemFromIndex( index );
       if ( !item )
       {
         continue;
@@ -311,8 +311,8 @@ bool zOrderDescending( QgsComposerItem* item1, QgsComposerItem* item2 )
   return item1->zValue() > item2->zValue();
 }
 
-bool QgsComposerModel::dropMimeData( const QMimeData *data,
-                                     Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsComposerModel::dropMimeData( const QMimeData* data,
+                                     Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
   if ( column != ItemId )
   {
@@ -416,7 +416,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
   return true;
 }
 
-bool QgsComposerModel::removeRows( int row, int count, const QModelIndex &parent )
+bool QgsComposerModel::removeRows( int row, int count, const QModelIndex& parent )
 {
   Q_UNUSED( count );
   if ( parent.isValid() )
@@ -509,7 +509,7 @@ void QgsComposerModel::rebuildSceneItemList()
   }
 }
 
-void QgsComposerModel::addItemAtTop( QgsComposerItem *item )
+void QgsComposerModel::addItemAtTop( QgsComposerItem* item )
 {
   beginInsertRows( QModelIndex(), 0, 0 );
   mItemZList.push_front( item );
@@ -518,7 +518,7 @@ void QgsComposerModel::addItemAtTop( QgsComposerItem *item )
   endInsertRows();
 }
 
-void QgsComposerModel::removeItem( QgsComposerItem * item )
+void QgsComposerModel::removeItem( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -553,7 +553,7 @@ void QgsComposerModel::removeItem( QgsComposerItem * item )
   endRemoveRows();
 }
 
-void QgsComposerModel::setItemRemoved( QgsComposerItem *item )
+void QgsComposerModel::setItemRemoved( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -583,7 +583,7 @@ void QgsComposerModel::setItemRemoved( QgsComposerItem *item )
   endRemoveRows();
 }
 
-void QgsComposerModel::setItemRestored( QgsComposerItem *item )
+void QgsComposerModel::setItemRestored( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -602,7 +602,7 @@ void QgsComposerModel::setItemRestored( QgsComposerItem *item )
   rebuildSceneItemList();
 }
 
-void QgsComposerModel::updateItemDisplayName( QgsComposerItem *item )
+void QgsComposerModel::updateItemDisplayName( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -621,7 +621,7 @@ void QgsComposerModel::updateItemDisplayName( QgsComposerItem *item )
   emit dataChanged( itemIndex, itemIndex );
 }
 
-void QgsComposerModel::updateItemLockStatus( QgsComposerItem *item )
+void QgsComposerModel::updateItemLockStatus( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -640,7 +640,7 @@ void QgsComposerModel::updateItemLockStatus( QgsComposerItem *item )
   emit dataChanged( itemIndex, itemIndex );
 }
 
-void QgsComposerModel::updateItemVisibility( QgsComposerItem *item )
+void QgsComposerModel::updateItemVisibility( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -659,7 +659,7 @@ void QgsComposerModel::updateItemVisibility( QgsComposerItem *item )
   emit dataChanged( itemIndex, itemIndex );
 }
 
-void QgsComposerModel::updateItemSelectStatus( QgsComposerItem *item )
+void QgsComposerModel::updateItemSelectStatus( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -678,7 +678,7 @@ void QgsComposerModel::updateItemSelectStatus( QgsComposerItem *item )
   emit dataChanged( itemIndex, itemIndex );
 }
 
-bool QgsComposerModel::reorderItemUp( QgsComposerItem *item )
+bool QgsComposerModel::reorderItemUp( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -728,7 +728,7 @@ bool QgsComposerModel::reorderItemUp( QgsComposerItem *item )
   return true;
 }
 
-bool QgsComposerModel::reorderItemDown( QgsComposerItem *item )
+bool QgsComposerModel::reorderItemDown( QgsComposerItem* item )
 {
   if ( !item )
   {
@@ -778,7 +778,7 @@ bool QgsComposerModel::reorderItemDown( QgsComposerItem *item )
   return true;
 }
 
-bool QgsComposerModel::reorderItemToTop( QgsComposerItem *item )
+bool QgsComposerModel::reorderItemToTop( QgsComposerItem* item )
 {
   if ( !item || !mItemsInScene.contains( item ) )
   {
@@ -814,7 +814,7 @@ bool QgsComposerModel::reorderItemToTop( QgsComposerItem *item )
   return true;
 }
 
-bool QgsComposerModel::reorderItemToBottom( QgsComposerItem *item )
+bool QgsComposerModel::reorderItemToBottom( QgsComposerItem* item )
 {
   if ( !item || !mItemsInScene.contains( item ) )
   {
@@ -890,13 +890,13 @@ QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item )
   return nullptr;
 }
 
-QList<QgsComposerItem *>* QgsComposerModel::zOrderList()
+QList<QgsComposerItem*>* QgsComposerModel::zOrderList()
 {
   return &mItemZList;
 }
 
 
-Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsComposerModel::flags( const QModelIndex& index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
@@ -917,7 +917,7 @@ Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
   }
 }
 
-QModelIndex QgsComposerModel::indexForItem( QgsComposerItem *item, const int column )
+QModelIndex QgsComposerModel::indexForItem( QgsComposerItem* item, const int column )
 {
   if ( !item )
   {
@@ -934,9 +934,9 @@ QModelIndex QgsComposerModel::indexForItem( QgsComposerItem *item, const int col
   return index( row, column );
 }
 
-void QgsComposerModel::setSelected( const QModelIndex &index )
+void QgsComposerModel::setSelected( const QModelIndex& index )
 {
-  QgsComposerItem *item = itemFromIndex( index );
+  QgsComposerItem* item = itemFromIndex( index );
   if ( !item )
   {
     return;
@@ -950,10 +950,10 @@ void QgsComposerModel::setSelected( const QModelIndex &index )
 // QgsComposerFilteredModel
 //
 
-QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition *composition, QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mComposition( composition )
-    , mItemTypeFilter( QgsComposerItem::ComposerItem )
+QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition* composition, QObject* parent )
+  : QSortFilterProxyModel( parent )
+  , mComposition( composition )
+  , mItemTypeFilter( QgsComposerItem::ComposerItem )
 {
   if ( mComposition )
     setSourceModel( mComposition->itemsModel() );
@@ -964,7 +964,7 @@ QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition *composition, QObje
   sort( QgsComposerModel::ItemId );
 }
 
-bool QgsComposerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+bool QgsComposerProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
   //sort by item id
   const QgsComposerItem* item1 = itemFromSourceIndex( left );
@@ -978,14 +978,14 @@ bool QgsComposerProxyModel::lessThan( const QModelIndex &left, const QModelIndex
   return QString::localeAwareCompare( item1->displayName(), item2->displayName() ) < 0;
 }
 
-QgsComposerItem* QgsComposerProxyModel::itemFromSourceIndex( const QModelIndex &sourceIndex ) const
+QgsComposerItem* QgsComposerProxyModel::itemFromSourceIndex( const QModelIndex& sourceIndex ) const
 {
   if ( !mComposition )
     return nullptr;
 
   //get column corresponding to an index from the source model
   QVariant itemAsVariant = sourceModel()->data( sourceIndex, Qt::UserRole + 1 );
-  return qobject_cast<QgsComposerItem *>( itemAsVariant.value<QObject *>() );
+  return qobject_cast<QgsComposerItem*>( itemAsVariant.value<QObject*>() );
 }
 
 void QgsComposerProxyModel::setFilterType( QgsComposerItem::ItemType itemType )
@@ -1003,7 +1003,7 @@ void QgsComposerProxyModel::setExceptedItemList( const QList< QgsComposerItem*>&
   invalidateFilter();
 }
 
-bool QgsComposerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+bool QgsComposerProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
   //get QgsComposerItem corresponding to row
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );

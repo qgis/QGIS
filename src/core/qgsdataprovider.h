@@ -74,8 +74,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
-    QgsDataProvider( QString const & uri = "" )
-        : mDataSourceURI( uri )
+    QgsDataProvider( QString const& uri = "" )
+      : mDataSourceURI( uri )
     {}
 
     /**
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * connection string
      * @param uri source specification
      */
-    virtual void setDataSourceUri( const QString & uri )
+    virtual void setDataSourceUri( const QString& uri )
     {
       mDataSourceURI = uri;
     }
@@ -164,7 +164,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /** Returns true if the provider supports setting of subset strings.
     */
-    virtual bool supportsSubsetString() const { return false; }
+    virtual bool supportsSubsetString() const
+    {
+      return false;
+    }
 
     /**
      * Returns the subset definition string (typically sql) currently in
@@ -217,7 +220,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * (in order from bottom to top)
      * \note   layers must have been previously added.
      */
-    virtual void setLayerOrder( const QStringList &layers )
+    virtual void setLayerOrder( const QStringList& layers )
     {
       //prevent unused var warnings
       if ( layers.count() < 1 )
@@ -231,7 +234,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( const QString &name, bool vis )
+    virtual void setSubLayerVisibility( const QString& name, bool vis )
     {
       //prevent unused var warnings
       if ( name.isEmpty() || !vis )
@@ -308,21 +311,33 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual void reloadData() {}
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
-    virtual QDateTime timestamp() const { return mTimestamp; }
+    virtual QDateTime timestamp() const
+    {
+      return mTimestamp;
+    }
 
     //! Current time stamp of data source
-    virtual QDateTime dataTimestamp() const { return QDateTime(); }
+    virtual QDateTime dataTimestamp() const
+    {
+      return QDateTime();
+    }
 
     /** Get current status error. This error describes some principal problem
      *  for which provider cannot work and thus is not valid. It is not last error
      *  after accessing data by block(), identify() etc.
      */
-    virtual QgsError error() const { return mError; }
+    virtual QgsError error() const
+    {
+      return mError;
+    }
 
     /** Invalidate connections corresponding to specified name
      * @note added in QGIS 2.16
      */
-    virtual void invalidateConnections( const QString& connection ) { Q_UNUSED( connection ); }
+    virtual void invalidateConnections( const QString& connection )
+    {
+      Q_UNUSED( connection );
+    }
 
     /** Enter update mode.
      *
@@ -345,7 +360,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * @note added in QGIS 2.16
      */
-    virtual bool enterUpdateMode() { return true; }
+    virtual bool enterUpdateMode()
+    {
+      return true;
+    }
 
     /** Leave update mode.
      *
@@ -363,7 +381,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * @note added in QGIS 2.16
      */
-    virtual bool leaveUpdateMode() { return true; }
+    virtual bool leaveUpdateMode()
+    {
+      return true;
+    }
 
     /**
      * Allows setting arbitrary properties on the provider.
@@ -426,10 +447,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QgsError mError;
 
     //! Add error message
-    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+    void appendError( const QgsErrorMessage& theMessage )
+    {
+      mError.append( theMessage );
+    }
 
     //! Set error message
-    void setError( const QgsError & theError ) { mError = theError;}
+    void setError( const QgsError& theError )
+    {
+      mError = theError;
+    }
 
   private:
 

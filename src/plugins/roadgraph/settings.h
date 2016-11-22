@@ -37,12 +37,12 @@ class RgSettings
     /**
      * write settings to the poject file
      */
-    virtual void write( QgsProject * ) = 0;
+    virtual void write( QgsProject* ) = 0;
 
     /**
      * read settings form project file
      */
-    virtual void read( const QgsProject * ) = 0;
+    virtual void read( const QgsProject* ) = 0;
 
     /**
      * This function test settings and return true if setting correct
@@ -58,6 +58,6 @@ class RgSettings
     /**
      * Load settings from widget
      */
-    virtual void setFromGui( QWidget * ) = 0;
+    virtual void setFromGui( QWidget* ) = 0;
 };
 #endif //ROADGRAPH_SETTIGNS

@@ -39,18 +39,18 @@
 #include "qgsauthtrustedcasdialog.h"
 #include "qgslogger.h"
 
-QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
-    : QWidget( parent )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
-    , mRootCaSecItem( nullptr )
-    , mFileCaSecItem( nullptr )
-    , mDbCaSecItem( nullptr )
-    , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-    , mUtilitiesMenu( nullptr )
-    , mDisabled( false )
-    , mActionDefaultTrustPolicy( nullptr )
-    , mActionShowTrustedCAs( nullptr )
+QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget* parent )
+  : QWidget( parent )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
+  , mRootCaSecItem( nullptr )
+  , mFileCaSecItem( nullptr )
+  , mDbCaSecItem( nullptr )
+  , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
+  , mUtilitiesMenu( nullptr )
+  , mDisabled( false )
+  , mActionDefaultTrustPolicy( nullptr )
+  , mActionShowTrustedCAs( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -75,8 +75,8 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
     connect( treeWidgetCAs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
              this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
-    connect( treeWidgetCAs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeWidgetCAs, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
+             this, SLOT( handleDoubleClick( QTreeWidgetItem*, int ) ) );
 
     connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshCaCertsView() ) );
 
@@ -222,7 +222,7 @@ void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem* item, co
 
 void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>& certs,
     QgsAuthAuthoritiesEditor::CaType catype,
-    QTreeWidgetItem *parent )
+    QTreeWidgetItem* parent )
 {
   if ( certs.size() < 1 )
     return;
@@ -239,9 +239,9 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>&
   QMap< QString, QList<QSslCertificate> >::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
   {
-    QTreeWidgetItem * grpitem( new QTreeWidgetItem( parent,
-                               QStringList() << it.key(),
-                               ( int )QgsAuthAuthoritiesEditor::OrgName ) );
+    QTreeWidgetItem* grpitem( new QTreeWidgetItem( parent,
+                              QStringList() << it.key(),
+                              ( int )QgsAuthAuthoritiesEditor::OrgName ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -261,7 +261,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate>&
 
 void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& certs,
     QgsAuthAuthoritiesEditor::CaType catype,
-    QTreeWidgetItem *parent )
+    QTreeWidgetItem* parent )
 {
   if ( certs.size() < 1 )
     return;
@@ -299,7 +299,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate>& 
     }
     coltxts << policy;
 
-    QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
+    QTreeWidgetItem* item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
@@ -353,7 +353,7 @@ void QgsAuthAuthoritiesEditor::populateUtilitiesMenu()
   btnUtilities->setMenu( mUtilitiesMenu );
 }
 
-void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
+void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem* item )
 {
   if ( !item )
     return;
@@ -371,7 +371,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   QSslCertificate cert( cacertscache.value( digest ).second );
 
-  QgsAuthCertInfoDialog * dlg = new QgsAuthCertInfoDialog( cert, true, this );
+  QgsAuthCertInfoDialog* dlg = new QgsAuthCertInfoDialog( cert, true, this );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
@@ -419,7 +419,7 @@ void QgsAuthAuthoritiesEditor::checkSelection()
   btnInfoCa->setEnabled( iscert );
 }
 
-void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
+void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem* item, int col )
 {
   Q_UNUSED( col );
   bool iscert = true;
@@ -444,7 +444,7 @@ void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col
 
 void QgsAuthAuthoritiesEditor::on_btnAddCa_clicked()
 {
-  QgsAuthImportCertDialog *dlg = new QgsAuthImportCertDialog( this, QgsAuthImportCertDialog::CaFilter );
+  QgsAuthImportCertDialog* dlg = new QgsAuthImportCertDialog( this, QgsAuthImportCertDialog::CaFilter );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 400, 450 );
   if ( dlg->exec() )
@@ -575,19 +575,19 @@ void QgsAuthAuthoritiesEditor::on_btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 {
-  QDialog * dlg = new QDialog( this );
+  QDialog* dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Default Trust Policy" ) );
-  QVBoxLayout *layout = new QVBoxLayout( dlg );
+  QVBoxLayout* layout = new QVBoxLayout( dlg );
 
-  QHBoxLayout *hlayout = new QHBoxLayout();
+  QHBoxLayout* hlayout = new QHBoxLayout();
 
-  QLabel * lblwarn = new QLabel( dlg );
-  QStyle *style = QApplication::style();
+  QLabel* lblwarn = new QLabel( dlg );
+  QStyle* style = QApplication::style();
   lblwarn->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
   lblwarn->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
   hlayout->addWidget( lblwarn );
 
-  QLabel *lbltxt = new QLabel( dlg );
+  QLabel* lbltxt = new QLabel( dlg );
   lbltxt->setText( tr( "Changing the default certificate authority trust policy to 'Untrusted' "
                        "can cause unexpected SSL network connection results." ) );
   lbltxt->setWordWrap( true );
@@ -595,18 +595,18 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 
   layout->addLayout( hlayout );
 
-  QHBoxLayout *hlayout2 = new QHBoxLayout();
+  QHBoxLayout* hlayout2 = new QHBoxLayout();
 
-  QLabel *lblpolicy = new QLabel( tr( "Default policy" ), dlg );
+  QLabel* lblpolicy = new QLabel( tr( "Default policy" ), dlg );
   lblpolicy->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   hlayout2->addWidget( lblpolicy );
 
-  QComboBox *cmbpolicy = new QComboBox( dlg );
+  QComboBox* cmbpolicy = new QComboBox( dlg );
   QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
   policies << qMakePair( QgsAuthCertUtils::Trusted,
                          QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-  << qMakePair( QgsAuthCertUtils::Untrusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+           << qMakePair( QgsAuthCertUtils::Untrusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
@@ -619,7 +619,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 
   layout->addLayout( hlayout2 );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Ok,
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Ok,
       Qt::Horizontal, dlg );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
 
@@ -661,7 +661,7 @@ void QgsAuthAuthoritiesEditor::defaultTrustPolicyChanged( QgsAuthCertUtils::Cert
 
 void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
 {
-  QgsAuthImportCertDialog *dlg = new QgsAuthImportCertDialog( this,
+  QgsAuthImportCertDialog* dlg = new QgsAuthImportCertDialog( this,
       QgsAuthImportCertDialog::CaFilter,
       QgsAuthImportCertDialog::FileInput );
   dlg->setWindowModality( Qt::WindowModal );
@@ -762,7 +762,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFileClear_clicked()
 
 void QgsAuthAuthoritiesEditor::showTrustedCertificateAuthorities()
 {
-  QgsAuthTrustedCAsDialog *dlg = new QgsAuthTrustedCAsDialog( this );
+  QgsAuthTrustedCAsDialog* dlg = new QgsAuthTrustedCAsDialog( this );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
@@ -775,7 +775,7 @@ void QgsAuthAuthoritiesEditor::authMessageOut( const QString& message, const QSt
   messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
 }
 
-void QgsAuthAuthoritiesEditor::showEvent( QShowEvent * e )
+void QgsAuthAuthoritiesEditor::showEvent( QShowEvent* e )
 {
   if ( !mDisabled )
   {
@@ -784,7 +784,7 @@ void QgsAuthAuthoritiesEditor::showEvent( QShowEvent * e )
   QWidget::showEvent( e );
 }
 
-QgsMessageBar * QgsAuthAuthoritiesEditor::messageBar()
+QgsMessageBar* QgsAuthAuthoritiesEditor::messageBar()
 {
   return msgBar;
 }

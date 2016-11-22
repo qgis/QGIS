@@ -60,9 +60,15 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
     void readXml( const QDomNode& layer_node );
 
     //! Quick way to test if there is any join at all
-    bool containsJoins() const { return !mVectorJoins.isEmpty(); }
+    bool containsJoins() const
+    {
+      return !mVectorJoins.isEmpty();
+    }
 
-    const QgsVectorJoinList& vectorJoins() const { return mVectorJoins; }
+    const QgsVectorJoinList& vectorJoins() const
+    {
+      return mVectorJoins;
+    }
 
     /** Finds the vector join for a layer field index.
       @param index this layers attribute index

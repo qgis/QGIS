@@ -44,9 +44,9 @@ static QList<QgsFeature> _pointFeatures()
 
   QList<QgsFeature> feats;
   feats << _pointFeature( 1,  1,  1 )
-  << _pointFeature( 2, -1,  1 )
-  << _pointFeature( 3, -1, -1 )
-  << _pointFeature( 4,  1, -1 );
+        << _pointFeature( 2, -1,  1 )
+        << _pointFeature( 3, -1, -1 )
+        << _pointFeature( 4,  1, -1 );
   return feats;
 }
 

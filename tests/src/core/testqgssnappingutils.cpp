@@ -30,7 +30,10 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
   explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match& match )
+  {
+    return match.point() != mPoint;
+  }
 
   QgsPoint mPoint;
 };
@@ -41,7 +44,7 @@ class TestQgsSnappingUtils : public QObject
     Q_OBJECT
   public:
     TestQgsSnappingUtils()
-        : mVL( 0 )
+      : mVL( 0 )
     {}
 
   private:

@@ -21,7 +21,7 @@
 #include "qgscsexception.h"
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
@@ -47,7 +47,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
     {
       mCenter = t.transform( point );
     }
-    catch ( QgsCsException &e ) //silently ignore transformation exceptions
+    catch ( QgsCsException& e ) //silently ignore transformation exceptions
     {
       Q_UNUSED( e );
       return;

@@ -38,7 +38,7 @@ namespace QgsVirtualLayerQueryParser
 
     while ( true )
     {
-      char *errMsg = nullptr;
+      char* errMsg = nullptr;
       int r = sqlite3_exec( db.get(), query.toUtf8().constData(), nullptr, nullptr, &errMsg );
       QString err = QString::fromUtf8( errMsg );
       if ( r && err.startsWith( noSuchError ) )

@@ -44,53 +44,65 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Utility class for gathering information about rasters
     struct ANALYSIS_EXPORT RasterInfo
     {
-    public:
-      //! Construct raster info with a path to a raster file
-      RasterInfo( const QString& layerpath );
-      ~RasterInfo();
+      public:
+        //! Construct raster info with a path to a raster file
+        RasterInfo( const QString& layerpath );
+        ~RasterInfo();
 
-      //! Check whether the given path is a valid raster
-      bool isValid() const { return nullptr != mDataset; }
+        //! Check whether the given path is a valid raster
+        bool isValid() const
+        {
+          return nullptr != mDataset;
+        }
 
-      //! Return CRS in WKT format
-      QString crs() const { return mCrsWkt; }
-      //! Return size of the raster grid in pixels
-      QSize rasterSize() const { return QSize( mXSize, mYSize ); }
-      //! Return number of raster bands in the file
-      int bandCount() const { return mBandCnt; }
-      //! Return cell size in map units
-      QSizeF cellSize() const;
-      //! Return grid offset
-      QPointF gridOffset() const;
-      //! Return extent of the raster
-      QgsRectangle extent() const;
-      //! Return origin of the raster
-      QPointF origin() const;
+        //! Return CRS in WKT format
+        QString crs() const
+        {
+          return mCrsWkt;
+        }
+        //! Return size of the raster grid in pixels
+        QSize rasterSize() const
+        {
+          return QSize( mXSize, mYSize );
+        }
+        //! Return number of raster bands in the file
+        int bandCount() const
+        {
+          return mBandCnt;
+        }
+        //! Return cell size in map units
+        QSizeF cellSize() const;
+        //! Return grid offset
+        QPointF gridOffset() const;
+        //! Return extent of the raster
+        QgsRectangle extent() const;
+        //! Return origin of the raster
+        QPointF origin() const;
 
-      //! write contents of the object to standard error stream - for debugging
-      void dump() const;
+        //! write contents of the object to standard error stream - for debugging
+        void dump() const;
 
-      //! Get raster value at the given coordinates (from the first band)
-      double identify( double mx, double my );
+        //! Get raster value at the given coordinates (from the first band)
+        double identify( double mx, double my );
 
-    protected:
-      //! handle to open GDAL dataset
-      GDALDatasetH mDataset;
-      //! CRS stored in WKT format
-      QString mCrsWkt;
-      //! geotransform coefficients
-      double mGeoTransform[6];
-      //! raster grid size
-      int mXSize, mYSize;
-      //! number of raster's bands
-      int mBandCnt;
+      protected:
+        //! handle to open GDAL dataset
+        GDALDatasetH mDataset;
+        //! CRS stored in WKT format
+        QString mCrsWkt;
+        //! geotransform coefficients
+        double mGeoTransform[6];
+        //! raster grid size
+        int mXSize, mYSize;
+        //! number of raster's bands
+        int mBandCnt;
 
-    private:
+      private:
 
-      RasterInfo( const RasterInfo& rh );
-      RasterInfo& operator=( const RasterInfo& rh );
+        RasterInfo( const RasterInfo& rh );
+        RasterInfo& operator=( const RasterInfo& rh );
 
-      friend class QgsAlignRaster;
+        friend class QgsAlignRaster;
     };
 
 
@@ -116,11 +128,11 @@ class ANALYSIS_EXPORT QgsAlignRaster
     struct Item
     {
       Item( const QString& input, const QString& output )
-          : inputFilename( input )
-          , outputFilename( output )
-          , resampleMethod( RA_NearestNeighbour )
-          , rescaleValues( false )
-          , srcCellSizeInDestCRS( 0.0 )
+        : inputFilename( input )
+        , outputFilename( output )
+        , resampleMethod( RA_NearestNeighbour )
+        , rescaleValues( false )
+        , srcCellSizeInDestCRS( 0.0 )
       {}
 
       //! filename of the source raster
@@ -151,29 +163,64 @@ class ANALYSIS_EXPORT QgsAlignRaster
     };
 
     //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.
-    void setProgressHandler( ProgressHandler* progressHandler ) { mProgressHandler = progressHandler; }
+    void setProgressHandler( ProgressHandler* progressHandler )
+    {
+      mProgressHandler = progressHandler;
+    }
     //! Get associated progress handler. May be nullptr (default)
-    ProgressHandler* progressHandler() const { return mProgressHandler; }
+    ProgressHandler* progressHandler() const
+    {
+      return mProgressHandler;
+    }
 
     //! Set list of rasters that will be aligned
-    void setRasters( const List& list ) { mRasters = list; }
+    void setRasters( const List& list )
+    {
+      mRasters = list;
+    }
     //! Get list of rasters that will be aligned
-    List rasters() const { return mRasters; }
+    List rasters() const
+    {
+      return mRasters;
+    }
 
-    void setGridOffset( QPointF offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
-    QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
+    void setGridOffset( QPointF offset )
+    {
+      mGridOffsetX = offset.x();
+      mGridOffsetY = offset.y();
+    }
+    QPointF gridOffset() const
+    {
+      return QPointF( mGridOffsetX, mGridOffsetY );
+    }
 
     //! Set output cell size
-    void setCellSize( double x, double y ) { return setCellSize( QSizeF( x, y ) ); }
+    void setCellSize( double x, double y )
+    {
+      return setCellSize( QSizeF( x, y ) );
+    }
     //! Set output cell size
-    void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
+    void setCellSize( QSizeF size )
+    {
+      mCellSizeX = size.width();
+      mCellSizeY = size.height();
+    }
     //! Get output cell size
-    QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
+    QSizeF cellSize() const
+    {
+      return QSizeF( mCellSizeX, mCellSizeY );
+    }
 
     //! Set the output CRS in WKT format
-    void setDestinationCrs( const QString& crsWkt ) { mCrsWkt = crsWkt; }
+    void setDestinationCrs( const QString& crsWkt )
+    {
+      mCrsWkt = crsWkt;
+    }
     //! Get the output CRS in WKT format
-    QString destinationCrs() const { return mCrsWkt; }
+    QString destinationCrs() const
+    {
+      return mCrsWkt;
+    }
 
     //! Configure clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null
@@ -216,7 +263,10 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     //! Return error from a previous run() call.
     //! Error message is empty if run() succeeded (returned true)
-    QString errorMessage() const { return mErrorMessage; }
+    QString errorMessage() const
+    {
+      return mErrorMessage;
+    }
 
     //! write contents of the object to standard error stream - for debugging
     void dump() const;

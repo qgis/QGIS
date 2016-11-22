@@ -24,14 +24,14 @@ class QString;
 class HistogramItem: public QwtPlotItem
 {
   public:
-    explicit HistogramItem( const QString &title = QString::null );
-    explicit HistogramItem( const QwtText &title );
+    explicit HistogramItem( const QString& title = QString::null );
+    explicit HistogramItem( const QwtText& title );
     virtual ~HistogramItem();
 
-    void setData( const QwtIntervalData &data );
-    const QwtIntervalData &data() const;
+    void setData( const QwtIntervalData& data );
+    const QwtIntervalData& data() const;
 
-    void setColor( const QColor & );
+    void setColor( const QColor& );
     QColor color() const;
 
     void setFlat( bool flat );
@@ -47,10 +47,10 @@ class HistogramItem: public QwtPlotItem
 
     virtual int rtti() const override;
 
-    virtual void draw( QPainter *, const QwtScaleMap &xMap,
-                       const QwtScaleMap &yMap, const QRect & ) const override;
+    virtual void draw( QPainter*, const QwtScaleMap& xMap,
+                       const QwtScaleMap& yMap, const QRect& ) const override;
 
-    virtual void updateLegend( QwtLegend * ) const override;
+    virtual void updateLegend( QwtLegend* ) const override;
 
     void setBaseline( double reference );
     double baseline() const;
@@ -65,14 +65,14 @@ class HistogramItem: public QwtPlotItem
     bool testHistogramAttribute( HistogramAttribute ) const;
 
   protected:
-    virtual void drawBar( QPainter *,
+    virtual void drawBar( QPainter*,
                           Qt::Orientation o, QRect ) const;
 
   private:
     void init();
 
     class PrivateData;
-    PrivateData *d_data;
+    PrivateData* d_data;
 };
 
 #include <qstring.h>

@@ -51,13 +51,16 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     /**
      * @brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
-    explicit QgsFieldExpressionWidget( QWidget *parent = nullptr );
+    explicit QgsFieldExpressionWidget( QWidget* parent = nullptr );
 
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString& title );
 
     //! return the title used for the expression dialog
-    const QString expressionDialogTitle() { return mExpressionDialogTitle; }
+    const QString expressionDialogTitle()
+    {
+      return mExpressionDialogTitle;
+    }
 
     //! setFilters allows fitering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
@@ -65,22 +68,25 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setLeftHandButtonStyle( bool isLeft );
 
     //! currently used filter on list of fields
-    QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
+    QgsFieldProxyModel::Filters filters() const
+    {
+      return mFieldProxyModel->filters();
+    }
 
     //! set the geometry calculator used in the expression dialog
-    void setGeomCalculator( const QgsDistanceArea &da );
+    void setGeomCalculator( const QgsDistanceArea& da );
 
     /**
      * @brief currentField returns the currently selected field or expression if allowed
      * @param isExpression determines if the string returned is the name of a field or an expression
      * @param isValid determines if the expression (or field) returned is valid
      */
-    QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
+    QString currentField( bool* isExpression = nullptr, bool* isValid = nullptr ) const;
 
     /**
       * Return true if the current expression is valid
       */
-    bool isValidExpression( QString *expressionError = nullptr ) const;
+    bool isValidExpression( QString* expressionError = nullptr ) const;
 
     /**
      * If the content is not just a simple field this method will return true.
@@ -144,10 +150,13 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setLayer( QgsMapLayer* layer );
 
     //! sets the current row in the widget
-    void setRow( int row ) { mCombo->setCurrentIndex( row ); }
+    void setRow( int row )
+    {
+      mCombo->setCurrentIndex( row );
+    }
 
     //! sets the current field or expression in the widget
-    void setField( const QString &fieldName );
+    void setField( const QString& fieldName );
 
     /**
      * Sets the current expression text and if applicable also the field.

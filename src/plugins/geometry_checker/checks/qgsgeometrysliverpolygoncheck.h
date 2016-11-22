@@ -25,14 +25,20 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
 
   public:
     QgsGeometrySliverPolygonCheck( QgsFeaturePool* featurePool, double threshold, double maxArea = 0. )
-        : QgsGeometryAreaCheck( featurePool, threshold ), mMaxArea( maxArea ) {}
-    QString errorDescription() const override { return tr( "Sliver polygon" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
+      : QgsGeometryAreaCheck( featurePool, threshold ), mMaxArea( maxArea ) {}
+    QString errorDescription() const override
+    {
+      return tr( "Sliver polygon" );
+    }
+    QString errorName() const override
+    {
+      return QStringLiteral( "QgsGeometrySliverPolygonCheck" );
+    }
 
   private:
     double mMaxArea;
 
-    bool checkThreshold( const QgsAbstractGeometry *geom, double &value ) const override
+    bool checkThreshold( const QgsAbstractGeometry* geom, double& value ) const override
     {
       QgsRectangle bb = geom->boundingBox();
       double maxDim = qMax( bb.width(), bb.height() );

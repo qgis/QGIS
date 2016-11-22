@@ -21,8 +21,8 @@
 #include <cmath>
 
 QgsPointMarkerItem::QgsPointMarkerItem( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas )
-    , mOpacityEffect( new QgsDrawSourceEffect() )
+  : QgsMapCanvasItem( canvas )
+  , mOpacityEffect( new QgsDrawSourceEffect() )
 {
   setCacheMode( QGraphicsItem::ItemCoordinateCache );
 }
@@ -31,12 +31,12 @@ QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else
   {
@@ -54,7 +54,7 @@ QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
   return rc;
 }
 
-void QgsPointMarkerItem::paint( QPainter * painter )
+void QgsPointMarkerItem::paint( QPainter* painter )
 {
   if ( !painter )
   {
@@ -86,12 +86,12 @@ void QgsPointMarkerItem::setPointLocation( const QgsPoint& p )
   mLocation = toCanvasCoordinates( p );
 }
 
-void QgsPointMarkerItem::setSymbol( QgsMarkerSymbol *symbol )
+void QgsPointMarkerItem::setSymbol( QgsMarkerSymbol* symbol )
 {
   mMarkerSymbol.reset( symbol );
 }
 
-QgsMarkerSymbol*QgsPointMarkerItem::symbol()
+QgsMarkerSymbol* QgsPointMarkerItem::symbol()
 {
   return mMarkerSymbol.data();
 }

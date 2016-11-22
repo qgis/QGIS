@@ -30,8 +30,8 @@
 #include <QDomElement>
 
 QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer* subRenderer )
-    : QgsFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ) )
-    , mPreprocessingEnabled( false )
+  : QgsFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ) )
+  , mPreprocessingEnabled( false )
 {
   if ( subRenderer )
   {
@@ -504,7 +504,7 @@ bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderC
   return mSubRenderer->willRenderFeature( feat, context );
 }
 
-QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer* renderer )
 {
   if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {

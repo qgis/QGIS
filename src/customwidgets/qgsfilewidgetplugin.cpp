@@ -18,9 +18,9 @@
 #include "qgsfilewidget.h"
 
 
-QgsFileWidgetPlugin::QgsFileWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsFileWidgetPlugin::QgsFileWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -49,7 +49,7 @@ bool QgsFileWidgetPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsFileWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsFileWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsFileWidget( parent );
 }
@@ -59,7 +59,7 @@ bool QgsFileWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsFileWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsFileWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

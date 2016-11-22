@@ -29,8 +29,8 @@
 #include <cfloat>
 
 QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent )
-    : QDialog( parent )
-    , mTool( tool )
+  : QDialog( parent )
+  , mTool( tool )
 {
   setupUi( this );
 
@@ -64,12 +64,12 @@ void QgsSimplifyDialog::closeEvent( QCloseEvent* e )
 
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mSelectionRubberBand( nullptr )
-    , mDragging( false )
-    , mOriginalVertexCount( 0 )
-    , mReducedVertexCount( 0 )
-    , mReducedHasErrors( false )
+  : QgsMapToolEdit( canvas )
+  , mSelectionRubberBand( nullptr )
+  , mDragging( false )
+  , mOriginalVertexCount( 0 )
+  , mReducedVertexCount( 0 )
+  , mReducedHasErrors( false )
 {
   QSettings settings;
   mTolerance = settings.value( QStringLiteral( "/digitizing/simplify_tolerance" ), 1 ).toDouble();
@@ -173,7 +173,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry& g ) const
 
 void QgsMapToolSimplify::storeSimplified()
 {
-  QgsVectorLayer * vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
   double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
@@ -291,7 +291,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
-  QgsVectorLayer * vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
   QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
@@ -322,7 +322,7 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 
 void QgsMapToolSimplify::selectFeaturesInRect()
 {
-  QgsVectorLayer * vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
   QgsPoint pt1 = toMapCoordinates( mSelectionRect.topLeft() );
   QgsPoint pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
   QgsRectangle rect = toLayerCoordinates( vlayer, QgsRectangle( pt1, pt2 ) );

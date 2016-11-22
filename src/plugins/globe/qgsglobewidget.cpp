@@ -28,8 +28,8 @@
 #include <QMenu>
 #include <QToolButton>
 
-QgsGlobeWidget::QgsGlobeWidget( QgisInterface* iface, QWidget *parent )
-    : QDockWidget( tr( "Globe" ), parent ), mQgisIface( iface )
+QgsGlobeWidget::QgsGlobeWidget( QgisInterface* iface, QWidget* parent )
+  : QDockWidget( tr( "Globe" ), parent ), mQgisIface( iface )
 {
   setWindowTitle( tr( "Globe" ) );
 
@@ -147,7 +147,7 @@ QStringList QgsGlobeWidget::getSelectedLayers() const
   return selectedLayers;
 }
 
-void QgsGlobeWidget::contextMenuEvent( QContextMenuEvent * e )
+void QgsGlobeWidget::contextMenuEvent( QContextMenuEvent* e )
 {
   e->accept();
 }

@@ -32,11 +32,14 @@ class QgsGCPListWidget : public QTableView
 {
     Q_OBJECT
   public:
-    explicit QgsGCPListWidget( QWidget *parent = nullptr );
+    explicit QgsGCPListWidget( QWidget* parent = nullptr );
 
-    void setGCPList( QgsGCPList *theGCPList );
-    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
-    QgsGCPList *gcpList() { return mGCPList; }
+    void setGCPList( QgsGCPList* theGCPList );
+    void setGeorefTransform( QgsGeorefTransform* theGeorefTransform );
+    QgsGCPList* gcpList()
+    {
+      return mGCPList;
+    }
     void updateGCPList();
     void closeEditors();
 
@@ -48,11 +51,11 @@ class QgsGCPListWidget : public QTableView
   signals:
     void jumpToGCP( uint theGCPIndex );
 //  void replaceDataPoint(QgsGeorefDataPoint *pnt, int row);
-    void pointEnabled( QgsGeorefDataPoint *pnt, int i );
+    void pointEnabled( QgsGeorefDataPoint* pnt, int i );
     void deleteDataPoint( int index );
 
   private slots:
-    void updateItemCoords( QWidget *editor );
+    void updateItemCoords( QWidget* editor );
     void showContextMenu( QPoint );
     void removeRow();
     void editCell();
@@ -63,12 +66,12 @@ class QgsGCPListWidget : public QTableView
     void createItemContextMenu();
     void adjustTableContent();
 
-    QgsGCPList               *mGCPList;
-    QgsGCPListModel          *mGCPListModel;
+    QgsGCPList*               mGCPList;
+    QgsGCPListModel*          mGCPListModel;
 
-    QgsNonEditableDelegate   *mNonEditableDelegate;
-    QgsDmsAndDdDelegate      *mDmsAndDdDelegate;
-    QgsCoordDelegate         *mCoordDelegate;
+    QgsNonEditableDelegate*   mNonEditableDelegate;
+    QgsDmsAndDdDelegate*      mDmsAndDdDelegate;
+    QgsCoordDelegate*         mCoordDelegate;
 
     int mPrevRow;
     int mPrevColumn;

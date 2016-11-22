@@ -36,7 +36,7 @@
 #include <QJsonObject>
 
 
-QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
+QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString& esriFieldType )
 {
   if ( esriFieldType == QLatin1String( "esriFieldTypeInteger" ) )
     return QVariant::LongLong;
@@ -292,7 +292,7 @@ static QgsAbstractGeometry* parseEsriEnvelope( const QVariantMap& geometryData )
   return poly;
 }
 
-QgsAbstractGeometry* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
+QgsAbstractGeometry* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem* crs )
 {
   QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, readZ, readM );
   if ( crs )
@@ -331,7 +331,7 @@ QgsAbstractGeometry* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& ge
   return nullptr;
 }
 
-QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QVariantMap &spatialReferenceMap )
+QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QVariantMap& spatialReferenceMap )
 {
   QString spatialReference = spatialReferenceMap[QStringLiteral( "latestWkid" )].toString();
   if ( spatialReference.isEmpty() )
@@ -374,7 +374,7 @@ QVariantMap QgsArcGisRestUtils::getObjectIds( const QString& layerurl, QString& 
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjects( const QString& layerurl, const QList<quint32>& objectIds, const QString &crs,
+QVariantMap QgsArcGisRestUtils::getObjects( const QString& layerurl, const QList<quint32>& objectIds, const QString& crs,
     bool fetchGeometry, const QStringList& fetchAttributes,
     bool fetchM, bool fetchZ,
     const QgsRectangle& filterRect,
@@ -456,7 +456,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl& url, QString& errorTitl
   return result;
 }
 
-QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl& url, QString& errorTitle, QString& errorText )
 {
   QByteArray reply = queryService( url, errorTitle, errorText );
   if ( !errorTitle.isEmpty() )
@@ -480,9 +480,9 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject* parent )
-    : QObject( parent )
-    , mReply( nullptr )
-    , mResult( nullptr )
+  : QObject( parent )
+  , mReply( nullptr )
+  , mResult( nullptr )
 {
 }
 
@@ -492,7 +492,7 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allowCache )
+void QgsArcGisAsyncQuery::start( const QUrl& url, QByteArray* result, bool allowCache )
 {
   mResult = result;
   QNetworkRequest request( url );
@@ -536,13 +536,13 @@ void QgsArcGisAsyncQuery::handleReply()
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject* parent )
-    : QObject( parent )
-    , mResults( nullptr )
-    , mPendingRequests( 0 )
+  : QObject( parent )
+  , mResults( nullptr )
+  , mPendingRequests( 0 )
 {
 }
 
-void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache )
+void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl>& urls, QVector<QByteArray>* results, bool allowCache )
 {
   Q_ASSERT( results->size() == urls.size() );
   mResults = results;

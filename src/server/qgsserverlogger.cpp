@@ -35,8 +35,8 @@ QgsServerLogger* QgsServerLogger::instance()
 }
 
 QgsServerLogger::QgsServerLogger()
-    : mLogFile( nullptr )
-    , mLogLevel( 3 )
+  : mLogFile( nullptr )
+  , mLogLevel( 3 )
 {
   //logfile
   QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );

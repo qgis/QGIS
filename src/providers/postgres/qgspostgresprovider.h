@@ -57,13 +57,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFields &fields,
+      const QgsFields& fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem &srs,
+      const QgsCoordinateReferenceSystem& srs,
       bool overwrite,
-      QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      QMap<int, int>* oldToNewAttrIdxMap,
+      QString* errorMessage = nullptr,
+      const QMap<QString, QVariant>* options = nullptr
     );
 
     /**
@@ -72,7 +72,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    explicit QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const& uri = "" );
 
     //! Destructor
     virtual ~QgsPostgresProvider();
@@ -154,36 +154,42 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual void uniqueValues( int index, QList<QVariant>& uniqueValues, int limit = -1 ) const override;
     virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
         QgsFeedback* feedback = nullptr ) const override;
     virtual void enumValues( int index, QStringList& enumList ) const override;
     bool isValid() const override;
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDBSupported() const override
+    {
+      return true;
+    }
     QgsAttributeList attributeIndexes() const override;
-    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QgsAttributeList pkAttributeIndexes() const override
+    {
+      return mPrimaryKeyAttrs;
+    }
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const override;
 
     /** Adds a list of features
       @return true in case of success and false in case of failure*/
-    bool addFeatures( QgsFeatureList & flist ) override;
+    bool addFeatures( QgsFeatureList& flist ) override;
 
     /** Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
-    bool deleteFeatures( const QgsFeatureIds & id ) override;
+    bool deleteFeatures( const QgsFeatureIds& id ) override;
 
-    bool addAttributes( const QList<QgsField> &attributes ) override;
-    bool deleteAttributes( const QgsAttributeIds &name ) override;
+    bool addAttributes( const QList<QgsField>& attributes ) override;
+    bool deleteAttributes( const QgsAttributeIds& name ) override;
     virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
 
     /** Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override;
 
     /**
        Changes geometries of existing features
@@ -191,7 +197,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeGeometryValues( const QgsGeometryMap& geometry_map ) override;
 
     /**
      * Changes attribute values and geometries of existing features.
@@ -201,10 +207,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return true in case of success and false in case of failure
      */
-    bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
+    bool changeFeatures( const QgsChangedAttributesMap& attr_map, const QgsGeometryMap& geometry_map ) override;
 
     //! Get the postgres connection
-    PGconn * pgConnection();
+    PGconn* pgConnection();
 
     //! Get the table name associated with this provider instance
     QString getTableName();
@@ -214,7 +220,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -226,7 +235,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the PG provider since
     //     it appears there are problems with some of the projection definitions
-    bool supportsNativeTransform() {return false;}
+    bool supportsNativeTransform()
+    {
+      return false;
+    }
 
 
     /** Return a provider name
@@ -302,16 +314,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
   private:
 
-    bool declareCursor( const QString &cursorName,
-                        const QgsAttributeList &fetchAttributes,
+    bool declareCursor( const QString& cursorName,
+                        const QgsAttributeList& fetchAttributes,
                         bool fetchGeometry,
                         QString whereClause );
 
-    bool getFeature( QgsPostgresResult &queryResult,
+    bool getFeature( QgsPostgresResult& queryResult,
                      int row,
                      bool fetchGeometry,
-                     QgsFeature &feature,
-                     const QgsAttributeList &fetchAttributes );
+                     QgsFeature& feature,
+                     const QgsAttributeList& fetchAttributes );
 
     QString geomParam( int offset ) const;
 
@@ -337,7 +349,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setEditorWidgets();
 
     //! Convert a QgsField to work with PG
-    static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
+    static bool convertField( QgsField& field, const QMap<QString, QVariant>* options = nullptr );
 
     /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
@@ -461,17 +473,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     struct PGException
     {
-      explicit PGException( QgsPostgresResult &r )
+        explicit PGException( QgsPostgresResult& r )
           : mWhat( r.PQresultErrorMessage() )
-      {}
+        {}
 
-      QString errorMessage() const
-      {
-        return mWhat;
-      }
+        QString errorMessage() const
+        {
+          return mWhat;
+        }
 
-    private:
-      QString mWhat;
+      private:
+        QString mWhat;
     };
 
     // A function that determines if the given columns contain unique entries
@@ -479,21 +491,27 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
-    void appendGeomParam( const QgsGeometry& geom, QStringList &param ) const;
-    void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
+    void appendGeomParam( const QgsGeometry& geom, QStringList& param ) const;
+    void appendPkParams( QgsFeatureId fid, QStringList& param ) const;
 
-    QString paramValue( const QString& fieldvalue, const QString &defaultValue ) const;
+    QString paramValue( const QString& fieldvalue, const QString& defaultValue ) const;
 
-    QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
-    QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
+    QgsPostgresConn* mConnectionRO; //! read-only database connection (initially)
+    QgsPostgresConn* mConnectionRW; //! read-write database connection (on update)
 
     QgsPostgresConn* connectionRO() const;
     QgsPostgresConn* connectionRW();
 
     void disconnectDb();
 
-    static QString quotedIdentifier( const QString& ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
-    static QString quotedValue( const QVariant& value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedIdentifier( const QString& ident )
+    {
+      return QgsPostgresConn::quotedIdentifier( ident );
+    }
+    static QString quotedValue( const QVariant& value )
+    {
+      return QgsPostgresConn::quotedValue( value );
+    }
 
     friend class QgsPostgresFeatureSource;
 

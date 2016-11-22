@@ -32,7 +32,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
   public:
 
     //! Constructor
-    explicit QgsAppPluginManagerInterface( QgsPluginManager * pluginManager );
+    explicit QgsAppPluginManagerInterface( QgsPluginManager* pluginManager );
 
     //! Destructor
     ~QgsAppPluginManagerInterface();
@@ -47,7 +47,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     void reloadModel() override;
 
     //! return given plugin metadata
-    const QMap<QString, QString> * pluginMetadata( const QString& key ) const override;
+    const QMap<QString, QString>* pluginMetadata( const QString& key ) const override;
 
     //! clear the repository listWidget
     void clearRepositoryList() override;
@@ -59,12 +59,12 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     void showPluginManager( int tabIndex = -1 ) override;
 
     //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) override;
+    void pushMessage( const QString& text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) override;
 
   private:
 
     //! Pointer to QgsPluginManager object
-    QgsPluginManager *mPluginManager;
+    QgsPluginManager* mPluginManager;
 };
 
 #endif //QGSPLUGINMANAGERAPPIFACE_H

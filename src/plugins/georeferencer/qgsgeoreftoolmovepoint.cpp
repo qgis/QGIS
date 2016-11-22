@@ -17,9 +17,9 @@
 
 #include "qgsgeoreftoolmovepoint.h"
 
-QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
-    : QgsMapTool( canvas )
-    , mRubberBand( nullptr )
+QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas* canvas )
+  : QgsMapTool( canvas )
+  , mRubberBand( nullptr )
 {
 }
 
@@ -32,7 +32,7 @@ void QgsGeorefToolMovePoint::canvasPressEvent( QgsMapMouseEvent* e )
   }
 }
 
-bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
+bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas* canvas )
 {
   return ( mCanvas == canvas );
 }

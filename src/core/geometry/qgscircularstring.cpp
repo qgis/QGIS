@@ -50,7 +50,7 @@ bool QgsCircularString::operator!=( const QgsCurve& other ) const
   return !operator==( other );
 }
 
-QgsCircularString *QgsCircularString::clone() const
+QgsCircularString* QgsCircularString::clone() const
 {
   return new QgsCircularString( *this );
 }
@@ -420,7 +420,7 @@ double QgsCircularString::yAt( int index ) const
     return 0.0;
 }
 
-void QgsCircularString::points( QgsPointSequence &pts ) const
+void QgsCircularString::points( QgsPointSequence& pts ) const
 {
   pts.clear();
   int nPts = numPoints();
@@ -430,7 +430,7 @@ void QgsCircularString::points( QgsPointSequence &pts ) const
   }
 }
 
-void QgsCircularString::setPoints( const QgsPointSequence &points )
+void QgsCircularString::setPoints( const QgsPointSequence& points )
 {
   clearCache();
 
@@ -485,7 +485,7 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
   }
 }
 
-void QgsCircularString::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequence &points, double tolerance, SegmentationToleranceType toleranceType ) const
+void QgsCircularString::segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequence& points, double tolerance, SegmentationToleranceType toleranceType ) const
 {
   //adapted code from postgis
   double radius = 0;

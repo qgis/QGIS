@@ -80,21 +80,21 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Set the color for the rubberband
      *  @param color  The color used to render this rubberband
      */
-    void setColor( const QColor & color );
+    void setColor( const QColor& color );
 
     /**
      * Set the fill color for the rubberband
      *  @param color  The color used to render this rubberband
      *  @note Added in 2.6
      */
-    void setFillColor( const QColor & color );
+    void setFillColor( const QColor& color );
 
     /**
      * Set the border color for the rubberband
      *  @param color  The color used to render this rubberband
      *  @note Added in 2.6
      */
-    void setBorderColor( const QColor & color );
+    void setBorderColor( const QColor& color );
 
     /**
      * Set the width of the line. Outline width for polygon.
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param doUpdate      Should the map canvas be updated immediately?
      *  @param geometryIndex The index of the feature part (in case of multipart geometries)
      */
-    void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPoint& p, bool doUpdate = true, int geometryIndex = 0 );
 
     /** Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( const QgsPoint & p, int geometryIndex = 0 );
+    void movePoint( const QgsPoint& p, int geometryIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
@@ -233,7 +233,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param i   The geometry index
      *  @param j   The vertex index within geometry i
      */
-    const QgsPoint *getPoint( int i, int j = 0 ) const;
+    const QgsPoint* getPoint( int i, int j = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry.
@@ -269,7 +269,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     QgsRubberBand();
 
-    static QgsPolyline getPolyline( const QList<QgsPoint> & points );
+    static QgsPolyline getPolyline( const QList<QgsPoint>& points );
 
 };
 

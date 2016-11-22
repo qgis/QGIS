@@ -65,7 +65,7 @@ class TestQgsComposerPicture : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
@@ -73,9 +73,9 @@ class TestQgsComposerPicture : public QObject
 };
 
 TestQgsComposerPicture::TestQgsComposerPicture()
-    : mComposition( 0 )
-    , mComposerPicture( 0 )
-    , mMapSettings( 0 )
+  : mComposition( 0 )
+  , mComposerPicture( 0 )
+  , mMapSettings( 0 )
 {
 
 }

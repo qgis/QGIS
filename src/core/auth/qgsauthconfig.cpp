@@ -36,16 +36,16 @@ const int QgsAuthMethodConfig::mConfigVersion = 1;
 
 // get uniqueConfigId only on save
 QgsAuthMethodConfig::QgsAuthMethodConfig( const QString& method, int version )
-    : mId( QString() )
-    , mName( QString() )
-    , mUri( QString() )
-    , mMethod( method )
-    , mVersion( version )
-    , mConfigMap( QgsStringMap() )
+  : mId( QString() )
+  , mName( QString() )
+  , mUri( QString() )
+  , mMethod( method )
+  , mVersion( version )
+  , mConfigMap( QgsStringMap() )
 {
 }
 
-bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig &other ) const
+bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig& other ) const
 {
   return ( other.id() == id()
            && other.name() == name()
@@ -55,7 +55,7 @@ bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig &other ) const
            && other.configMap() == configMap() );
 }
 
-bool QgsAuthMethodConfig::operator!=( const QgsAuthMethodConfig &other ) const
+bool QgsAuthMethodConfig::operator!=( const QgsAuthMethodConfig& other ) const
 {
   return  !( *this == other );
 }
@@ -83,7 +83,7 @@ const QString QgsAuthMethodConfig::configString() const
   return confstrs.join( mConfigSep );
 }
 
-void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
+void QgsAuthMethodConfig::loadConfigString( const QString& configstr )
 {
   clearConfigMap();
   if ( configstr.isEmpty() )
@@ -108,37 +108,37 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
   }
 }
 
-void QgsAuthMethodConfig::setConfig( const QString &key, const QString &value )
+void QgsAuthMethodConfig::setConfig( const QString& key, const QString& value )
 {
   mConfigMap.insert( key, value );
 }
 
-void QgsAuthMethodConfig::setConfigList( const QString &key, const QStringList &value )
+void QgsAuthMethodConfig::setConfigList( const QString& key, const QStringList& value )
 {
   setConfig( key, value.join( mConfigListSep ) );
 }
 
-int QgsAuthMethodConfig::removeConfig( const QString &key )
+int QgsAuthMethodConfig::removeConfig( const QString& key )
 {
   return mConfigMap.remove( key );
 }
 
-QString QgsAuthMethodConfig::config( const QString &key, const QString& defaultvalue ) const
+QString QgsAuthMethodConfig::config( const QString& key, const QString& defaultvalue ) const
 {
   return mConfigMap.value( key, defaultvalue );
 }
 
-QStringList QgsAuthMethodConfig::configList( const QString &key ) const
+QStringList QgsAuthMethodConfig::configList( const QString& key ) const
 {
   return config( key ).split( mConfigListSep );
 }
 
-bool QgsAuthMethodConfig::hasConfig( const QString &key ) const
+bool QgsAuthMethodConfig::hasConfig( const QString& key ) const
 {
   return mConfigMap.contains( key );
 }
 
-bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *resource, bool withpath )
+bool QgsAuthMethodConfig::uriToResource( const QString& accessurl, QString* resource, bool withpath )
 {
   QString res = QString();
   if ( !accessurl.isEmpty() )
@@ -161,12 +161,12 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 // QgsPkiBundle
 //////////////////////////////////////////////////////
 
-QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
-                            const QSslKey &clientKey,
-                            const QList<QSslCertificate> &caChain )
-    : mCert( QSslCertificate() )
-    , mCertKey( QSslKey() )
-    , mCaChain( caChain )
+QgsPkiBundle::QgsPkiBundle( const QSslCertificate& clientCert,
+                            const QSslKey& clientKey,
+                            const QList<QSslCertificate>& caChain )
+  : mCert( QSslCertificate() )
+  , mCertKey( QSslKey() )
+  , mCaChain( caChain )
 {
   setClientCert( clientCert );
   setClientKey( clientKey );
@@ -191,10 +191,10 @@ static QByteArray fileData_( const QString& path, bool astext = false )
   return data;
 }
 
-const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
-    const QString &keyPath,
-    const QString &keyPass,
-    const QList<QSslCertificate> &caChain )
+const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString& certPath,
+    const QString& keyPath,
+    const QString& keyPass,
+    const QList<QSslCertificate>& caChain )
 {
   QgsPkiBundle pkibundle;
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
@@ -238,8 +238,8 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
   return pkibundle;
 }
 
-const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
-    const QString &bundlepass )
+const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString& bundlepath,
+    const QString& bundlepass )
 {
   QgsPkiBundle pkibundle;
   if ( QCA::isSupported( "pkcs12" )
@@ -304,7 +304,7 @@ const QString QgsPkiBundle::certId() const
   return QString( mCert.digest( QCryptographicHash::Sha1 ).toHex() );
 }
 
-void QgsPkiBundle::setClientCert( const QSslCertificate &cert )
+void QgsPkiBundle::setClientCert( const QSslCertificate& cert )
 {
   mCert.clear();
   if ( !cert.isNull() )
@@ -313,7 +313,7 @@ void QgsPkiBundle::setClientCert( const QSslCertificate &cert )
   }
 }
 
-void QgsPkiBundle::setClientKey( const QSslKey &certkey )
+void QgsPkiBundle::setClientKey( const QSslKey& certkey )
 {
   mCertKey.clear();
   if ( !certkey.isNull() && certkey.type() == QSsl::PrivateKey )
@@ -330,9 +330,9 @@ void QgsPkiBundle::setClientKey( const QSslKey &certkey )
 QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
                                         const QSslCertificate& cert,
                                         const QSslKey& certkey )
-    : mConfig( config )
-    , mCert( cert )
-    , mCertKey( certkey )
+  : mConfig( config )
+  , mCert( cert )
+  , mCertKey( certkey )
 {
 }
 
@@ -349,12 +349,12 @@ bool QgsPkiConfigBundle::isValid()
 const QString QgsAuthConfigSslServer::mConfSep = QStringLiteral( "|||" );
 
 QgsAuthConfigSslServer::QgsAuthConfigSslServer()
-    : mSslHostPort( QString() )
-    , mSslCert( QSslCertificate() )
-    , mSslIgnoredErrors( QList<QSslError::SslError>() )
-    , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
-    , mSslPeerVerifyDepth( 0 )
-    , mVersion( 1 )
+  : mSslHostPort( QString() )
+  , mSslCert( QSslCertificate() )
+  , mSslIgnoredErrors( QList<QSslError::SslError>() )
+  , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
+  , mSslPeerVerifyDepth( 0 )
+  , mVersion( 1 )
 {
   // TODO: figure out if Qt 5 has changed yet again, e.g. TLS-only
 #if QT_VERSION >= 0x040800
@@ -400,7 +400,7 @@ const QString QgsAuthConfigSslServer::configString() const
   return configlist.join( mConfSep );
 }
 
-void QgsAuthConfigSslServer::loadConfigString( const QString &config )
+void QgsAuthConfigSslServer::loadConfigString( const QString& config )
 {
   if ( config.isEmpty() )
   {

@@ -32,8 +32,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
   public:
     //! Construct text label feature
     QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
-        : QgsLabelFeature( id, geometry, size )
-        , mFontMetrics( nullptr )
+      : QgsLabelFeature( id, geometry, size )
+      , mFontMetrics( nullptr )
     {
       mDefinedFont = QFont();
     }
@@ -123,17 +123,32 @@ class QgsTextLabelFeature : public QgsLabelFeature
     }
 
     //! Get data-defined values
-    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
+    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const
+    {
+      return mDataDefinedValues;
+    }
     //! Set data-defined values
-    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values ) { mDataDefinedValues = values; }
+    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values )
+    {
+      mDataDefinedValues = values;
+    }
 
     //! Set font to be used for rendering
-    void setDefinedFont( const QFont& f ) { mDefinedFont = f; }
+    void setDefinedFont( const QFont& f )
+    {
+      mDefinedFont = f;
+    }
     //! Font to be used for rendering
-    QFont definedFont() { return mDefinedFont; }
+    QFont definedFont()
+    {
+      return mDefinedFont;
+    }
 
     //! Metrics of the font for rendering
-    QFontMetricsF* labelFontMetrics() { return mFontMetrics; }
+    QFontMetricsF* labelFontMetrics()
+    {
+      return mFontMetrics;
+    }
 
   protected:
     //! List of graphemes (used for curved labels)

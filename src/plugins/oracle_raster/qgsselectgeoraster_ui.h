@@ -45,15 +45,21 @@ class QgsOracleSelectGeoraster : public QDialog, private Ui::SelectGeoRasterBase
     void populateConnectionList();
     void connectToServer();
     void setConnectionListPosition();
-    void showSelection( const QString & line );
+    void showSelection( const QString& line );
 
   public slots:
-    void on_btnConnect_clicked() { connectToServer(); }
+    void on_btnConnect_clicked()
+    {
+      connectToServer();
+    }
     void on_btnNew_clicked();
     void on_btnEdit_clicked();
     void on_btnDelete_clicked();
     void on_listWidget_clicked( const QModelIndex& Index );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 };
 
 #endif

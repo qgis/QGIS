@@ -48,11 +48,11 @@ class CORE_EXPORT QgsContextHelp : public QObject
     //! Destructor
     ~QgsContextHelp();
 
-    QProcess *start();
+    QProcess* start();
     void showContext( const QString& context );
 
-    static QgsContextHelp *gContextHelp; // Singleton instance
-    QProcess *mProcess;
+    static QgsContextHelp* gContextHelp; // Singleton instance
+    QProcess* mProcess;
 
     static QHash<QString, QString> gContextHelpTexts;
 

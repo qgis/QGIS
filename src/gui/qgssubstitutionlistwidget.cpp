@@ -25,7 +25,7 @@
 #include <QTextStream>
 
 QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget* parent )
-    : QgsPanelWidget( parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
   connect( mTableSubstitutions, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableChanged() ) );
@@ -205,8 +205,8 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement& sub
 
 
 QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget* parent )
-    : QDialog( parent )
-    , mWidget( nullptr )
+  : QDialog( parent )
+  , mWidget( nullptr )
 {
   setWindowTitle( tr( "Substitutions" ) );
   QVBoxLayout* vLayout = new QVBoxLayout();

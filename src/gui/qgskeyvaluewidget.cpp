@@ -16,8 +16,8 @@
 #include "qgskeyvaluewidget.h"
 
 QgsKeyValueWidget::QgsKeyValueWidget( QWidget* parent )
-    : QgsTableWidgetBase( parent )
-    , mModel( this )
+  : QgsTableWidgetBase( parent )
+  , mModel( this )
 {
   init( &mModel );
 }
@@ -53,8 +53,8 @@ QVariantMap QgsKeyValueModel::map() const
   return ret;
 }
 
-QgsKeyValueModel::QgsKeyValueModel( QObject *parent ) :
-    QAbstractTableModel( parent )
+QgsKeyValueModel::QgsKeyValueModel( QObject* parent ) :
+  QAbstractTableModel( parent )
 {
 }
 
@@ -64,7 +64,7 @@ int QgsKeyValueModel::rowCount( const QModelIndex& parent ) const
   return mLines.count();
 }
 
-int QgsKeyValueModel::columnCount( const QModelIndex & parent ) const
+int QgsKeyValueModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 2;
@@ -94,7 +94,7 @@ QVariant QgsKeyValueModel::data( const QModelIndex& index, int role ) const
   return QVariant();
 }
 
-bool QgsKeyValueModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsKeyValueModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   if ( index.row() < 0 || index.row() >= mLines.count() || role != Qt::EditRole )
   {
@@ -112,12 +112,12 @@ bool QgsKeyValueModel::setData( const QModelIndex & index, const QVariant & valu
   return true;
 }
 
-Qt::ItemFlags QgsKeyValueModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsKeyValueModel::flags( const QModelIndex& index ) const
 {
   return QAbstractTableModel::flags( index ) | Qt::ItemIsEditable;
 }
 
-bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex & parent )
+bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex& parent )
 {
   Q_UNUSED( parent );
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
@@ -129,7 +129,7 @@ bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex & p
   return true;
 }
 
-bool QgsKeyValueModel::removeRows( int position, int rows, const QModelIndex &parent )
+bool QgsKeyValueModel::removeRows( int position, int rows, const QModelIndex& parent )
 {
   Q_UNUSED( parent );
   beginRemoveRows( QModelIndex(), position, position + rows - 1 );

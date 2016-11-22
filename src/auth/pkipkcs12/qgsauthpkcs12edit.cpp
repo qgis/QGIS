@@ -29,9 +29,9 @@
 #include "qgslogger.h"
 
 
-QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget* parent )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
 }
@@ -122,7 +122,7 @@ QgsStringMap QgsAuthPkcs12Edit::configMap() const
   return config;
 }
 
-void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
+void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap& configmap )
 {
   clearConfig();
 
@@ -147,13 +147,13 @@ void QgsAuthPkcs12Edit::clearConfig()
   validateConfig();
 }
 
-void QgsAuthPkcs12Edit::clearPkiMessage( QLineEdit *lineedit )
+void QgsAuthPkcs12Edit::clearPkiMessage( QLineEdit* lineedit )
 {
   lineedit->clear();
   lineedit->setStyleSheet( QLatin1String( "" ) );
 }
 
-void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid )
+void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit* lineedit, const QString& msg, Validity valid )
 {
   QString ss;
   QString txt( msg );
@@ -192,7 +192,7 @@ void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
   chkPkcs12PassShow->setChecked( false );
 }
 
-void QgsAuthPkcs12Edit::on_lePkcs12KeyPass_textChanged( const QString &pass )
+void QgsAuthPkcs12Edit::on_lePkcs12KeyPass_textChanged( const QString& pass )
 {
   Q_UNUSED( pass );
   validateConfig();

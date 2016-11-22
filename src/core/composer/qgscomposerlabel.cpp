@@ -40,18 +40,18 @@
 #include <QTimer>
 #include <QEventLoop>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
-    : QgsComposerItem( composition )
-    , mHtmlState( 0 )
-    , mHtmlUnitsToMM( 1.0 )
-    , mHtmlLoaded( false )
-    , mMarginX( 1.0 )
-    , mMarginY( 1.0 )
-    , mFontColor( QColor( 0, 0, 0 ) )
-    , mHAlignment( Qt::AlignLeft )
-    , mVAlignment( Qt::AlignTop )
-    , mExpressionLayer( nullptr )
-    , mDistanceArea( nullptr )
+QgsComposerLabel::QgsComposerLabel( QgsComposition* composition )
+  : QgsComposerItem( composition )
+  , mHtmlState( 0 )
+  , mHtmlUnitsToMM( 1.0 )
+  , mHtmlLoaded( false )
+  , mMarginX( 1.0 )
+  , mMarginY( 1.0 )
+  , mFontColor( QColor( 0, 0, 0 ) )
+  , mHAlignment( Qt::AlignLeft )
+  , mVAlignment( Qt::AlignTop )
+  , mExpressionLayer( nullptr )
+  , mDistanceArea( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -361,7 +361,7 @@ QFont QgsComposerLabel::font() const
   return mFont;
 }
 
-bool QgsComposerLabel::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerLabel::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {

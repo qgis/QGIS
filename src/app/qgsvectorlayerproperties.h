@@ -53,7 +53,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       DB,
     };
 
-    QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsVectorLayerProperties( QgsVectorLayer* lyr = nullptr, QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
     //! Returns the display name entered in the dialog
     QString displayName();
@@ -62,7 +62,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /** Adds an attribute to the table (but does not commit it yet)
     @param field the field to add
     @return false in case of a name conflict, true in case of success */
-    bool addAttribute( const QgsField &field );
+    bool addAttribute( const QgsField& field );
 
     /** Deletes an attribute (but does not commit it)
       @param name attribute name
@@ -70,7 +70,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     bool deleteAttribute( int attr );
 
     //! Adds a properties page factory to the vector layer properties dialog.
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory* factory );
 
   public slots:
 
@@ -103,12 +103,15 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
     void on_pbnUpdateExtents_clicked();
 
     void on_mButtonAddJoin_clicked();
     void on_mButtonEditJoin_clicked();
-    void on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void on_mButtonRemoveJoin_clicked();
 
     void on_mSimplifyDrawingGroupBox_toggled( bool checked );
@@ -119,17 +122,17 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void refreshLegend( const QString& layerID, bool expandItem );
     void refreshLegend( const QString& layerID );
 
-    void toggleEditing( QgsMapLayer * );
+    void toggleEditing( QgsMapLayer* );
 
   private slots:
     //! Toggle editing of layer
     void toggleEditing();
 
     //! Save the style based on selected format from the menu
-    void saveStyleAsMenuTriggered( QAction * );
+    void saveStyleAsMenuTriggered( QAction* );
 
     //! Called when is possible to choice if load the style from filesystem or from db
-    void loadStyleMenuTriggered( QAction * );
+    void loadStyleMenuTriggered( QAction* );
 
     void aboutToShowStyleMenu();
 
@@ -153,14 +156,14 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void setPbnQueryBuilderEnabled();
 
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer* mLayer;
 
     bool mMetadataFilled;
 
     QString mOriginalSubsetSQL;
 
-    QMenu *mSaveAsMenu;
-    QMenu *mLoadStyleMenu;
+    QMenu* mSaveAsMenu;
+    QMenu* mLoadStyleMenu;
 
     QAction* mActionLoadStyle;
     QAction* mActionSaveStyleAs;

@@ -30,7 +30,10 @@ class QgsSlotToFunction : public QObject
     QgsSlotToFunction() : mCallback( nullptr ), mArg( nullptr ) {}
     QgsSlotToFunction( void ( *callback )( void* ), void* arg ) : mCallback( callback ), mArg( arg ) {}
   private slots:
-    void onSignal() { if ( mCallback ) mCallback( mArg ); }
+    void onSignal()
+    {
+      if ( mCallback ) mCallback( mArg );
+    }
   private:
     void ( *mCallback )( void* );
     void* mArg;

@@ -73,7 +73,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //printing
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml*>& htmlFrameList ) const override;
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
     //todo: fixme
@@ -125,7 +125,10 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
-    bool useLayerIds() const override { return mProjectParser->useLayerIds(); }
+    bool useLayerIds() const override
+    {
+      return mProjectParser->useLayerIds();
+    }
 
     bool allowRequestDefinedDatasources() const override;
 
@@ -147,25 +150,25 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     virtual QStringList identifyDisabledLayers() const override;
 
     //! Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)
-    void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc, const QHash<QString, QString> &idNameMap, const QStringList &layerIDList ) const;
+    void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc, const QHash<QString, QString>& idNameMap, const QStringList& layerIDList ) const;
 
     void addLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version ) const;
 
-    void addLayers( QDomDocument &doc,
-                    QDomElement &parentLayer,
-                    const QDomElement &legendElem,
-                    QgsLayerTreeGroup *layerTreeGroup,
-                    const QMap<QString, QgsMapLayer *> &layerMap,
-                    const QStringList &nonIdentifiableLayers,
-                    const QString &version, //1.1.1 or 1.3.0
+    void addLayers( QDomDocument& doc,
+                    QDomElement& parentLayer,
+                    const QDomElement& legendElem,
+                    QgsLayerTreeGroup* layerTreeGroup,
+                    const QMap<QString, QgsMapLayer*>& layerMap,
+                    const QStringList& nonIdentifiableLayers,
+                    const QString& version, //1.1.1 or 1.3.0
                     bool fullProjectSettings,
-                    QHash<QString, QString> &idNameMap,
-                    QStringList &layerIDList ) const;
+                    QHash<QString, QString>& idNameMap,
+                    QStringList& layerIDList ) const;
 
     void addOWSLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem ) const;
 
-    void addOWSLayers( QDomDocument &doc, QDomElement &parentElem, const QDomElement &legendElem,
-                       const QMap<QString, QgsMapLayer *> &layerMap, const QStringList &nonIdentifiableLayers,
+    void addOWSLayers( QDomDocument& doc, QDomElement& parentElem, const QDomElement& legendElem,
+                       const QMap<QString, QgsMapLayer*>& layerMap, const QStringList& nonIdentifiableLayers,
                        const QString& strHref, QgsRectangle& combinedBBox, const QString& strGroup ) const;
 
     //! Adds layers from a legend group to list (could be embedded or a normal group)

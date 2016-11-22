@@ -52,13 +52,16 @@ class QgsSettingsTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    explicit QgsSettingsTree( QWidget *parent = nullptr );
+    explicit QgsSettingsTree( QWidget* parent = nullptr );
 
-    void setSettingsObject( QSettings *settings );
+    void setSettingsObject( QSettings* settings );
     QSize sizeHint() const override;
 
-    void setSettingsMap( QMap< QString, QStringList > & map ) { settingsMap = map; }
-    QString itemKey( QTreeWidgetItem *item );
+    void setSettingsMap( QMap< QString, QStringList >& map )
+    {
+      settingsMap = map;
+    }
+    QString itemKey( QTreeWidgetItem* item );
 
   public slots:
     void setAutoRefresh( bool autoRefresh );
@@ -67,21 +70,21 @@ class QgsSettingsTree : public QTreeWidget
     void refresh();
 
   protected:
-    bool event( QEvent *event ) override;
+    bool event( QEvent* event ) override;
 
   private slots:
-    void updateSetting( QTreeWidgetItem *item );
+    void updateSetting( QTreeWidgetItem* item );
 
   private:
-    void updateChildItems( QTreeWidgetItem *parent );
-    QTreeWidgetItem *createItem( const QString &text, QTreeWidgetItem *parent,
+    void updateChildItems( QTreeWidgetItem* parent );
+    QTreeWidgetItem* createItem( const QString& text, QTreeWidgetItem* parent,
                                  int index );
-    QTreeWidgetItem *childAt( QTreeWidgetItem *parent, int index );
-    int childCount( QTreeWidgetItem *parent );
-    int findChild( QTreeWidgetItem *parent, const QString &text, int startIndex );
-    void moveItemForward( QTreeWidgetItem *parent, int oldIndex, int newIndex );
+    QTreeWidgetItem* childAt( QTreeWidgetItem* parent, int index );
+    int childCount( QTreeWidgetItem* parent );
+    int findChild( QTreeWidgetItem* parent, const QString& text, int startIndex );
+    void moveItemForward( QTreeWidgetItem* parent, int oldIndex, int newIndex );
 
-    QSettings *settings;
+    QSettings* settings;
     QTimer refreshTimer;
     bool autoRefresh;
     QIcon groupIcon;

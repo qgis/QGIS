@@ -26,11 +26,11 @@
 #include "qgstransformsettingsdialog.h"
 #include "qgscoordinatereferencesystem.h"
 
-QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
-    int countGCPpoints, QWidget *parent )
-    : QDialog( parent )
-    , mSourceRasterFile( raster )
-    , mCountGCPpoints( countGCPpoints )
+QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString& raster, const QString& output,
+    int countGCPpoints, QWidget* parent )
+  : QDialog( parent )
+  , mSourceRasterFile( raster )
+  , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
 
@@ -88,10 +88,10 @@ QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ), saveGeometry() );
 }
 
-void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
-    QgsImageWarper::ResamplingMethod &rm,
-    QString &comprMethod, QString &raster,
-    QgsCoordinateReferenceSystem &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
+void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation& tp,
+    QgsImageWarper::ResamplingMethod& rm,
+    QString& comprMethod, QString& raster,
+    QgsCoordinateReferenceSystem& proj, QString& pdfMapFile, QString& pdfReportFile, bool& zt, bool& loadInQgis,
     double& resX, double& resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -139,7 +139,7 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() );
 }
 
-void QgsTransformSettingsDialog::changeEvent( QEvent *e )
+void QgsTransformSettingsDialog::changeEvent( QEvent* e )
 {
   QDialog::changeEvent( e );
   switch ( e->type() )
@@ -272,7 +272,7 @@ void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
   tbnOutputRaster->setEnabled( enableOutputRaster );
 }
 
-bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
+bool QgsTransformSettingsDialog::checkGCPpoints( int count, int& minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
   georefTransform.selectTransformParametrisation(( QgsGeorefTransform::TransformParametrisation )count );
@@ -280,7 +280,7 @@ bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
   return ( mCountGCPpoints >= minGCPpoints );
 }
 
-QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QString &raster )
+QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QString& raster )
 {
   if ( raster.isEmpty() )
     return QString();
@@ -298,7 +298,7 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didnt want to make plugins on qgsapplication [TS]
-QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &theName )
+QIcon QgsTransformSettingsDialog::getThemeIcon( const QString& theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )
   {

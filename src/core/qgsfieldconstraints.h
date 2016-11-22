@@ -76,7 +76,10 @@ class CORE_EXPORT QgsFieldConstraints
      * @see setConstraints()
      * @see constraintOrigin()
      */
-    Constraints constraints() const { return mConstraints; }
+    Constraints constraints() const
+    {
+      return mConstraints;
+    }
 
     /**
      * Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
@@ -113,7 +116,10 @@ class CORE_EXPORT QgsFieldConstraints
      * @see setConstraint()
      * @see constraints()
      */
-    void removeConstraint( Constraint constraint ) { mConstraints &= ~constraint; }
+    void removeConstraint( Constraint constraint )
+    {
+      mConstraints &= ~constraint;
+    }
 
     /**
      * Returns the constraint expression for the field, if set.
@@ -129,7 +135,10 @@ class CORE_EXPORT QgsFieldConstraints
      * @see constraintExpression()
      * @see setConstraintExpression()
      */
-    QString constraintDescription() const { return mExpressionConstraintDescription; }
+    QString constraintDescription() const
+    {
+      return mExpressionConstraintDescription;
+    }
 
     /**
      * Set the constraint expression for the field. An optional descriptive name for the constraint

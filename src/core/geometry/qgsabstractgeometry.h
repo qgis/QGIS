@@ -87,7 +87,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see geometryType
      * @see wktTypeStr
      */
-    QgsWkbTypes::Type wkbType() const { return mWkbType; }
+    QgsWkbTypes::Type wkbType() const
+    {
+      return mWkbType;
+    }
 
     /** Returns the WKT type string of the geometry.
      * @see geometryType
@@ -278,19 +281,28 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see area()
      * @see perimeter()
      */
-    virtual double length() const { return 0.0; }
+    virtual double length() const
+    {
+      return 0.0;
+    }
 
     /** Returns the perimeter of the geometry.
      * @see area()
      * @see length()
      */
-    virtual double perimeter() const { return 0.0; }
+    virtual double perimeter() const
+    {
+      return 0.0;
+    }
 
     /** Returns the area of the geometry.
      * @see length()
      * @see perimeter()
      */
-    virtual double area() const { return 0.0; }
+    virtual double area() const
+    {
+      return 0.0;
+    }
 
     //! Returns the centroid of the geometry
     virtual QgsPointV2 centroid() const;
@@ -301,7 +313,10 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Returns true if the geometry contains curved segments
      */
-    virtual bool hasCurvedSegments() const { return false; }
+    virtual bool hasCurvedSegments() const
+    {
+      return false;
+    }
 
     /** Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
@@ -314,7 +329,10 @@ class CORE_EXPORT QgsAbstractGeometry
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometry* toCurveType() const { return 0; }
+    virtual QgsAbstractGeometry* toCurveType() const
+    {
+      return 0;
+    }
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
@@ -413,15 +431,18 @@ struct CORE_EXPORT QgsVertexId
   };
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
-      : part( _part )
-      , ring( _ring )
-      , vertex( _vertex )
-      , type( _type )
+    : part( _part )
+    , ring( _ring )
+    , vertex( _vertex )
+    , type( _type )
   {}
 
   /** Returns true if the vertex id is valid
    */
-  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
+  bool isValid() const
+  {
+    return part >= 0 && ring >= 0 && vertex >= 0;
+  }
 
   bool operator==( QgsVertexId other ) const
   {

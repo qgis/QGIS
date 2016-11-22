@@ -18,9 +18,9 @@
 #include "qgsdatadefinedbutton.h"
 
 
-QgsDataDefinedButtonPlugin::QgsDataDefinedButtonPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsDataDefinedButtonPlugin::QgsDataDefinedButtonPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsDataDefinedButtonPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsDataDefinedButtonPlugin::createWidget( QWidget *parent )
+QWidget* QgsDataDefinedButtonPlugin::createWidget( QWidget* parent )
 {
   return new QgsDataDefinedButton( parent );
 }
@@ -60,7 +60,7 @@ bool QgsDataDefinedButtonPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsDataDefinedButtonPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsDataDefinedButtonPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

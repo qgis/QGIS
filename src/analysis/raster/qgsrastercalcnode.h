@@ -76,11 +76,22 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();
 
-    Type type() const { return mType; }
+    Type type() const
+    {
+      return mType;
+    }
 
     //set left node
-    void setLeft( QgsRasterCalcNode* left ) { delete mLeft; mLeft = left; }
-    void setRight( QgsRasterCalcNode* right ) { delete mRight; mRight = right; }
+    void setLeft( QgsRasterCalcNode* left )
+    {
+      delete mLeft;
+      mLeft = left;
+    }
+    void setRight( QgsRasterCalcNode* right )
+    {
+      delete mRight;
+      mRight = right;
+    }
 
     /** Calculates result of raster calculation (might be real matrix or single number).
      * @param rasterData input raster data references, map of raster name to raster data block

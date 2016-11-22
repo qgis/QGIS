@@ -52,12 +52,24 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
     Q_OBJECT
 
   public:
-    explicit QgsPostgresConnPoolGroup( const QString& name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
+    explicit QgsPostgresConnPoolGroup( const QString& name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name )
+    {
+      initTimer( this );
+    }
 
   protected slots:
-    void handleConnectionExpired() { onConnectionExpired(); }
-    void startExpirationTimer() { expirationTimer->start(); }
-    void stopExpirationTimer() { expirationTimer->stop(); }
+    void handleConnectionExpired()
+    {
+      onConnectionExpired();
+    }
+    void startExpirationTimer()
+    {
+      expirationTimer->start();
+    }
+    void stopExpirationTimer()
+    {
+      expirationTimer->stop();
+    }
 
   protected:
     Q_DISABLE_COPY( QgsPostgresConnPoolGroup )

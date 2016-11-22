@@ -33,7 +33,7 @@
 
 
 QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent )
-    : QgsLayerTreeModel( rootNode, parent )
+  : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::ShowLegend, false );
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
@@ -68,7 +68,7 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) con
 
 
 QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

@@ -44,9 +44,9 @@
 #include "qgslogger.h"
 
 QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
-    : QDialog( parent )
-    , mStyle( style )
-    , mModified( false )
+  : QDialog( parent )
+  , mStyle( style )
+  , mModified( false )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -64,24 +64,39 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
-  connect( listItems, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editItem() ) );
+  connect( listItems, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( editItem() ) );
 
-  connect( btnAddItem, &QPushButton::clicked, [=]( bool ) { addItem(); }
+  connect( btnAddItem, &QPushButton::clicked, [=]( bool )
+  {
+    addItem();
+  }
          );
-  connect( btnEditItem, &QPushButton::clicked, [=]( bool ) { editItem(); }
+  connect( btnEditItem, &QPushButton::clicked, [=]( bool )
+  {
+    editItem();
+  }
          );
-  connect( actnEditItem, &QAction::triggered, [=]( bool ) { editItem(); }
+  connect( actnEditItem, &QAction::triggered, [=]( bool )
+  {
+    editItem();
+  }
          );
-  connect( btnRemoveItem, &QPushButton::clicked, [=]( bool ) { removeItem(); }
+  connect( btnRemoveItem, &QPushButton::clicked, [=]( bool )
+  {
+    removeItem();
+  }
          );
-  connect( actnRemoveItem, &QAction::triggered, [=]( bool ) { removeItem(); }
+  connect( actnRemoveItem, &QAction::triggered, [=]( bool )
+  {
+    removeItem();
+  }
          );
 
-  QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
-  QAction *exportAction = new QAction( tr( "Export symbol(s)…" ), this );
+  QMenu* shareMenu = new QMenu( tr( "Share menu" ), this );
+  QAction* exportAction = new QAction( tr( "Export symbol(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import symbol(s)…" ), this );
+  QAction* importAction = new QAction( tr( "Import symbol(s)…" ), this );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
   shareMenu->addAction( importAction );
   shareMenu->addSeparator();
@@ -119,7 +134,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
            this, SLOT( groupRenamed( QStandardItem* ) ) );
 
-  QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
+  QMenu* groupMenu = new QMenu( tr( "Group actions" ), this );
   connect( actnTagSymbols, SIGNAL( triggered() ), this, SLOT( tagSymbolsAction() ) );
   groupMenu->addAction( actnTagSymbols );
   connect( actnFinishTagging, SIGNAL( triggered() ), this, SLOT( tagSymbolsAction() ) );
@@ -175,10 +190,16 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, SIGNAL( triggered( bool ) ), this, SLOT( editSmartgroupAction() ) );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddTag, &QAction::triggered, [=]( bool ) { addTag(); }
+  connect( actnAddTag, &QAction::triggered, [=]( bool )
+  {
+    addTag();
+  }
          );
   mGroupTreeContextMenu->addAction( actnAddTag );
-  connect( actnAddSmartgroup, &QAction::triggered, [=]( bool ) { addSmartgroup(); }
+  connect( actnAddSmartgroup, &QAction::triggered, [=]( bool )
+  {
+    addSmartgroup();
+  }
          );
   mGroupTreeContextMenu->addAction( actnAddSmartgroup );
   connect( actnRemoveGroup, SIGNAL( triggered( bool ) ), this, SLOT( removeGroup() ) );
@@ -861,7 +882,7 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString& dir, const
   {
     QString name = index.data().toString();
     QString path = dir + '/' + name + '.' + format;
-    QgsSymbol *sym = mStyle->symbol( name );
+    QgsSymbol* sym = mStyle->symbol( name );
     sym->exportImage( path, format, size );
   }
 }
@@ -889,29 +910,29 @@ void QgsStyleManagerDialog::setBold( QStandardItem* item )
 
 void QgsStyleManagerDialog::populateGroups()
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   model->clear();
 
-  QStandardItem *favoriteSymbols = new QStandardItem( tr( "Favorites" ) );
+  QStandardItem* favoriteSymbols = new QStandardItem( tr( "Favorites" ) );
   favoriteSymbols->setData( "favorite" );
   favoriteSymbols->setEditable( false );
   setBold( favoriteSymbols );
   model->appendRow( favoriteSymbols );
 
-  QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
+  QStandardItem* allSymbols = new QStandardItem( tr( "All Symbols" ) );
   allSymbols->setData( "all" );
   allSymbols->setEditable( false );
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *taggroup = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
+  QStandardItem* taggroup = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
   taggroup->setData( "tags" );
   taggroup->setEditable( false );
   QStringList tags = mStyle->tags();
   tags.sort();
   Q_FOREACH ( const QString& tag, tags )
   {
-    QStandardItem *item = new QStandardItem( tag );
+    QStandardItem* item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
     taggroup->appendRow( item );
   }
@@ -919,7 +940,7 @@ void QgsStyleManagerDialog::populateGroups()
   setBold( taggroup );
   model->appendRow( taggroup );
 
-  QStandardItem *smart = new QStandardItem( tr( "Smart Groups" ) );
+  QStandardItem* smart = new QStandardItem( tr( "Smart Groups" ) );
   smart->setData( "smartgroups" );
   smart->setEditable( false );
   setBold( smart );
@@ -927,7 +948,7 @@ void QgsStyleManagerDialog::populateGroups()
   QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
   while ( i != sgMap.constEnd() )
   {
-    QStandardItem *item = new QStandardItem( i.value() );
+    QStandardItem* item = new QStandardItem( i.value() );
     item->setData( i.key() );
     smart->appendRow( item );
     ++i;
@@ -1042,7 +1063,7 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
 
 int QgsStyleManagerDialog::addTag()
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   QModelIndex index;
   for ( int i = 0; i < groupTree->model()->rowCount(); i++ )
   {
@@ -1078,8 +1099,8 @@ int QgsStyleManagerDialog::addTag()
     return 0;
   }
 
-  QStandardItem *parentItem = model->itemFromIndex( index );
-  QStandardItem *childItem = new QStandardItem( itemName );
+  QStandardItem* parentItem = model->itemFromIndex( index );
+  QStandardItem* childItem = new QStandardItem( itemName );
   childItem->setData( id );
   parentItem->appendRow( childItem );
 
@@ -1088,7 +1109,7 @@ int QgsStyleManagerDialog::addTag()
 
 int QgsStyleManagerDialog::addSmartgroup()
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   QModelIndex index;
   for ( int i = 0; i < groupTree->model()->rowCount(); i++ )
   {
@@ -1110,8 +1131,8 @@ int QgsStyleManagerDialog::addSmartgroup()
     return 0;
   itemName = dlg.smartgroupName();
 
-  QStandardItem *parentItem = model->itemFromIndex( index );
-  QStandardItem *childItem = new QStandardItem( itemName );
+  QStandardItem* parentItem = model->itemFromIndex( index );
+  QStandardItem* childItem = new QStandardItem( itemName );
   childItem->setData( id );
   parentItem->appendRow( childItem );
 
@@ -1120,7 +1141,7 @@ int QgsStyleManagerDialog::addSmartgroup()
 
 void QgsStyleManagerDialog::removeGroup()
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   QModelIndex index = groupTree->currentIndex();
 
   // do not allow removal of system-defined groupings
@@ -1134,7 +1155,7 @@ void QgsStyleManagerDialog::removeGroup()
       return;
   }
 
-  QStandardItem *parentItem = model->itemFromIndex( index.parent() );
+  QStandardItem* parentItem = model->itemFromIndex( index.parent() );
   if ( parentItem->data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
   {
     mStyle->remove( QgsStyle::SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
@@ -1146,7 +1167,7 @@ void QgsStyleManagerDialog::removeGroup()
   parentItem->removeRow( index.row() );
 }
 
-void QgsStyleManagerDialog::groupRenamed( QStandardItem * item )
+void QgsStyleManagerDialog::groupRenamed( QStandardItem* item )
 {
   QgsDebugMsg( "Symbol group edited: data=" + item->data( Qt::UserRole + 1 ).toString() + " text=" + item->text() );
   int id = item->data( Qt::UserRole + 1 ).toInt();
@@ -1164,8 +1185,8 @@ void QgsStyleManagerDialog::groupRenamed( QStandardItem * item )
 void QgsStyleManagerDialog::tagSymbolsAction()
 {
 
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
+  QStandardItemModel* treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
 
   if ( mGrouppingMode )
   {
@@ -1230,7 +1251,7 @@ void QgsStyleManagerDialog::tagSymbolsAction()
   }
 }
 
-void QgsStyleManagerDialog::regrouped( QStandardItem *item )
+void QgsStyleManagerDialog::regrouped( QStandardItem* item )
 {
   QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
   if ( currentItemType() > 3 )
@@ -1239,7 +1260,7 @@ void QgsStyleManagerDialog::regrouped( QStandardItem *item )
     return;
   }
 
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
   QString tag = treeModel->itemFromIndex( groupTree->currentIndex() )->text();
 
   QString symbolName = item->text();
@@ -1260,7 +1281,7 @@ void QgsStyleManagerDialog::regrouped( QStandardItem *item )
 
 void QgsStyleManagerDialog::setSymbolsChecked( const QStringList& symbols )
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   Q_FOREACH ( const QString& symbol, symbols )
   {
     QList<QStandardItem*> items = model->findItems( symbol );
@@ -1324,7 +1345,7 @@ void QgsStyleManagerDialog::enableGroupInputs( bool enable )
 
 void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
 {
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
   for ( int i = 0; i < treeModel->rowCount(); i++ )
   {
     treeModel->item( i )->setEnabled( enable );
@@ -1342,7 +1363,7 @@ void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
   // NOTE: if you ever change the layout name in the .ui file edit here too
   for ( int i = 0; i < symbolBtnsLayout->count(); i++ )
   {
-    QWidget *w = qobject_cast<QWidget*>( symbolBtnsLayout->itemAt( i )->widget() );
+    QWidget* w = qobject_cast<QWidget*>( symbolBtnsLayout->itemAt( i )->widget() );
     if ( w )
       w->setEnabled( enable );
   }
@@ -1377,7 +1398,10 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   {
     a = new QAction( tag, mGroupListMenu );
     a->setData( tag );
-    connect( a, &QAction::triggered, this, [=]( bool ) { tagSelectedSymbols(); }
+    connect( a, &QAction::triggered, this, [=]( bool )
+    {
+      tagSelectedSymbols();
+    }
            );
     mGroupListMenu->addAction( a );
   }
@@ -1387,7 +1411,10 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
     mGroupListMenu->addSeparator();
   }
   a = new QAction( "Create new tag... ", mGroupListMenu );
-  connect( a, &QAction::triggered, this, [=]( bool ) { tagSelectedSymbols( true ); }
+  connect( a, &QAction::triggered, this, [=]( bool )
+  {
+    tagSelectedSymbols( true );
+  }
          );
   mGroupListMenu->addAction( a );
 
@@ -1492,7 +1519,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
 
 void QgsStyleManagerDialog::editSmartgroupAction()
 {
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel* treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
 
   // determine whether it is a valid group
   QModelIndex present = groupTree->currentIndex();

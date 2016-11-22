@@ -28,9 +28,9 @@
 #include "qgsexpressionbuilderdialog.h"
 
 QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid* mapGrid, QgsComposerMap* composerMap )
-    : QgsComposerItemBaseWidget( nullptr, mapGrid )
-    , mComposerMap( composerMap )
-    , mComposerMapGrid( mapGrid )
+  : QgsComposerItemBaseWidget( nullptr, mapGrid )
+  , mComposerMap( composerMap )
+  , mComposerMapGrid( mapGrid )
 {
   setupUi( this );
   setPanelTitle( tr( "Map grid properties" ) );
@@ -249,7 +249,7 @@ void QgsComposerMapGridWidget::handleChangedFrameDisplay( QgsComposerMapGrid::Bo
   mComposerMap->updateBoundingRect();
 }
 
-void QgsComposerMapGridWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text )
+void QgsComposerMapGridWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text )
 {
   if ( !mComposerMapGrid || !mComposerMap )
   {
@@ -317,7 +317,7 @@ void QgsComposerMapGridWidget::insertAnnotationDirectionEntries( QComboBox* c )
   c->addItem( tr( "Vertical descending" ), QgsComposerMapGrid::VerticalDescending );
 }
 
-void QgsComposerMapGridWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
+void QgsComposerMapGridWidget::initFrameDisplayBox( QComboBox* c, QgsComposerMapGrid::DisplayMode display )
 {
   if ( !c )
   {
@@ -326,7 +326,7 @@ void QgsComposerMapGridWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMap
   c->setCurrentIndex( c->findData( display ) );
 }
 
-void QgsComposerMapGridWidget::initAnnotationDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
+void QgsComposerMapGridWidget::initAnnotationDisplayBox( QComboBox* c, QgsComposerMapGrid::DisplayMode display )
 {
   if ( !c )
   {
@@ -387,14 +387,14 @@ void QgsComposerMapGridWidget::handleChangedAnnotationDirection( QgsComposerMapG
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapGridWidget::insertFrameDisplayEntries( QComboBox *c )
+void QgsComposerMapGridWidget::insertFrameDisplayEntries( QComboBox* c )
 {
   c->addItem( tr( "All" ), QgsComposerMapGrid::ShowAll );
   c->addItem( tr( "Latitude/Y only" ), QgsComposerMapGrid::LatitudeOnly );
   c->addItem( tr( "Longitude/X only" ), QgsComposerMapGrid::LongitudeOnly );
 }
 
-void QgsComposerMapGridWidget::insertAnnotationDisplayEntries( QComboBox *c )
+void QgsComposerMapGridWidget::insertAnnotationDisplayEntries( QComboBox* c )
 {
   c->insertItem( 0, tr( "Show all" ) );
   c->insertItem( 1, tr( "Show latitude only" ) );
@@ -1086,22 +1086,22 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatButton_clicked()
   }
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString &text )
+void QgsComposerMapGridWidget::on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString& text )
 {
   handleChangedAnnotationDisplay( QgsComposerMapGrid::Left, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationDisplayRightComboBox_currentIndexChanged( const QString &text )
+void QgsComposerMapGridWidget::on_mAnnotationDisplayRightComboBox_currentIndexChanged( const QString& text )
 {
   handleChangedAnnotationDisplay( QgsComposerMapGrid::Right, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationDisplayTopComboBox_currentIndexChanged( const QString &text )
+void QgsComposerMapGridWidget::on_mAnnotationDisplayTopComboBox_currentIndexChanged( const QString& text )
 {
   handleChangedAnnotationDisplay( QgsComposerMapGrid::Top, text );
 }
 
-void QgsComposerMapGridWidget::on_mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString &text )
+void QgsComposerMapGridWidget::on_mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString& text )
 {
   handleChangedAnnotationDisplay( QgsComposerMapGrid::Bottom, text );
 }

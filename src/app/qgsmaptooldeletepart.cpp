@@ -28,11 +28,11 @@
 #include <QMouseEvent>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , vlayer( nullptr )
-    , mRubberBand( nullptr )
-    , mPressedFid( 0 )
-    , mPressedPartNum( 0 )
+  : QgsMapToolEdit( canvas )
+  , vlayer( nullptr )
+  , mRubberBand( nullptr )
+  , mPressedFid( 0 )
+  , mPressedPartNum( 0 )
 {
   mToolName = tr( "Delete part" );
 }
@@ -59,7 +59,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
   if ( !currentLayer )
     return;
 
-  vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+  vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
   if ( !vlayer )
   {
     notifyNotVectorLayer();

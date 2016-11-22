@@ -38,34 +38,63 @@ namespace QgsVirtualLayerQueryParser
   {
     public:
       ColumnDef()
-          : mType( QVariant::Invalid )
-          , mWkbType( QgsWkbTypes::Unknown )
-          , mSrid( -1 )
+        : mType( QVariant::Invalid )
+        , mWkbType( QgsWkbTypes::Unknown )
+        , mSrid( -1 )
       {}
       ColumnDef( const QString& name, QgsWkbTypes::Type aWkbType, long aSrid )
-          : mName( name )
-          , mType( QVariant::UserType )
-          , mWkbType( aWkbType )
-          , mSrid( aSrid )
+        : mName( name )
+        , mType( QVariant::UserType )
+        , mWkbType( aWkbType )
+        , mSrid( aSrid )
       {}
       ColumnDef( const QString& name, QVariant::Type aType )
-          : mName( name )
-          , mType( aType )
-          , mWkbType( QgsWkbTypes::NoGeometry )
-          , mSrid( -1 )
+        : mName( name )
+        , mType( aType )
+        , mWkbType( QgsWkbTypes::NoGeometry )
+        , mSrid( -1 )
       {}
 
-      QString name() const { return mName; }
-      void setName( const QString& name ) { mName = name; }
+      QString name() const
+      {
+        return mName;
+      }
+      void setName( const QString& name )
+      {
+        mName = name;
+      }
 
-      bool isGeometry() const { return mType == QVariant::UserType; }
-      void setGeometry( QgsWkbTypes::Type wkbType ) { mType = QVariant::UserType; mWkbType = wkbType; }
-      long srid() const { return mSrid; }
-      void setSrid( long srid ) { mSrid = srid; }
+      bool isGeometry() const
+      {
+        return mType == QVariant::UserType;
+      }
+      void setGeometry( QgsWkbTypes::Type wkbType )
+      {
+        mType = QVariant::UserType;
+        mWkbType = wkbType;
+      }
+      long srid() const
+      {
+        return mSrid;
+      }
+      void setSrid( long srid )
+      {
+        mSrid = srid;
+      }
 
-      void setScalarType( QVariant::Type t ) { mType = t; mWkbType = QgsWkbTypes::NoGeometry; }
-      QVariant::Type scalarType() const { return mType; }
-      QgsWkbTypes::Type wkbType() const { return mWkbType; }
+      void setScalarType( QVariant::Type t )
+      {
+        mType = t;
+        mWkbType = QgsWkbTypes::NoGeometry;
+      }
+      QVariant::Type scalarType() const
+      {
+        return mType;
+      }
+      QgsWkbTypes::Type wkbType() const
+      {
+        return mWkbType;
+      }
 
     private:
       QString mName;

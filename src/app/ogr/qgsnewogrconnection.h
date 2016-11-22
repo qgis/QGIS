@@ -31,7 +31,7 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
 
   public:
     //! Constructor
-    QgsNewOgrConnection( QWidget *parent = nullptr, const QString& connType = QString::null, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewOgrConnection( QWidget* parent = nullptr, const QString& connType = QString::null, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsNewOgrConnection();
     //! Tests the connection using the parameters supplied
@@ -39,7 +39,10 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
   public slots:
     void accept() override;
     void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
   private:
     QString mOriginalConnName;

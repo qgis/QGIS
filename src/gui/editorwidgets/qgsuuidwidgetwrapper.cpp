@@ -18,9 +18,9 @@
 #include <QUuid>
 
 QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLabel( nullptr )
-    , mLineEdit( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mLabel( nullptr )
+  , mLineEdit( nullptr )
 {
 }
 

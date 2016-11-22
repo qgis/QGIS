@@ -29,13 +29,13 @@ class QgsVertexEntry
     int mPenWidth;
     QString mToolTip;
     QgsVertexMarker::IconType mType;
-    QgsVertexMarker *mMarker;
-    QgsMapCanvas *mCanvas;
-    QgsMapLayer *mLayer;
+    QgsVertexMarker* mMarker;
+    QgsMapCanvas* mCanvas;
+    QgsMapLayer* mLayer;
 
   public:
-    QgsVertexEntry( QgsMapCanvas *canvas,
-                    QgsMapLayer *layer,
+    QgsVertexEntry( QgsMapCanvas* canvas,
+                    QgsMapLayer* layer,
                     const QgsPointV2& p,
                     QgsVertexId vertexId,
                     const QString& tooltip = QString::null,
@@ -43,10 +43,22 @@ class QgsVertexEntry
                     int penWidth = 2 );
     ~QgsVertexEntry();
 
-    const QgsPointV2& point() const { return mPoint; }
-    QgsPoint pointV1() const { return QgsPoint( mPoint.x(), mPoint.y() ); }
-    QgsVertexId vertexId() const { return mVertexId; }
-    bool isSelected() const { return mSelected; }
+    const QgsPointV2& point() const
+    {
+      return mPoint;
+    }
+    QgsPoint pointV1() const
+    {
+      return QgsPoint( mPoint.x(), mPoint.y() );
+    }
+    QgsVertexId vertexId() const
+    {
+      return mVertexId;
+    }
+    bool isSelected() const
+    {
+      return mSelected;
+    }
 
     void placeMarker();
 

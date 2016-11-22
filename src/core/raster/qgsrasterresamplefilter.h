@@ -30,10 +30,10 @@ class QDomElement;
 class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 {
   public:
-    QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
+    QgsRasterResampleFilter( QgsRasterInterface* input = nullptr );
     ~QgsRasterResampleFilter();
 
-    QgsRasterResampleFilter * clone() const override;
+    QgsRasterResampleFilter* clone() const override;
 
     int bandCount() const override;
 
@@ -41,18 +41,30 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     //! Set resampler for zoomed in scales. Takes ownership of the object
     void setZoomedInResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedInResampler() const { return mZoomedInResampler; }
+    const QgsRasterResampler* zoomedInResampler() const
+    {
+      return mZoomedInResampler;
+    }
 
     //! Set resampler for zoomed out scales. Takes ownership of the object
     void setZoomedOutResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedOutResampler() const { return mZoomedOutResampler; }
+    const QgsRasterResampler* zoomedOutResampler() const
+    {
+      return mZoomedOutResampler;
+    }
 
-    void setMaxOversampling( double os ) { mMaxOversampling = os; }
-    double maxOversampling() const { return mMaxOversampling; }
+    void setMaxOversampling( double os )
+    {
+      mMaxOversampling = os;
+    }
+    double maxOversampling() const
+    {
+      return mMaxOversampling;
+    }
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 

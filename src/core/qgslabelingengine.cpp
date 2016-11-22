@@ -41,7 +41,7 @@ class QgsLabelSorter
   public:
 
     explicit QgsLabelSorter( const QgsMapSettings& mapSettings )
-        : mMapSettings( mapSettings )
+      : mMapSettings( mapSettings )
     {}
 
     bool operator()( pal::LabelPosition* lp1, pal::LabelPosition* lp2 ) const
@@ -69,12 +69,12 @@ class QgsLabelSorter
 
 
 QgsLabelingEngine::QgsLabelingEngine()
-    : mFlags( RenderOutlineLabels | UsePartialCandidates )
-    , mSearchMethod( QgsPalLabeling::Chain )
-    , mCandPoint( 16 )
-    , mCandLine( 50 )
-    , mCandPolygon( 30 )
-    , mResults( nullptr )
+  : mFlags( RenderOutlineLabels | UsePartialCandidates )
+  , mSearchMethod( QgsPalLabeling::Chain )
+  , mCandPoint( 16 )
+  , mCandLine( 50 )
+  , mCandPolygon( 30 )
+  , mResults( nullptr )
 {
   mResults = new QgsLabelingResults;
 }
@@ -157,7 +157,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
     {
       l->registerFeature( feature );
     }
-    catch ( std::exception &e )
+    catch ( std::exception& e )
     {
       Q_UNUSED( e );
       QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
@@ -237,7 +237,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   QList<pal::LabelPosition*>* labels;
-  pal::Problem *problem;
+  pal::Problem* problem;
   try
   {
     problem = p.extractProblem( bbox );
@@ -372,22 +372,22 @@ void QgsLabelingEngine::writeSettingsToProject()
 
 ////
 
-QgsAbstractLabelProvider*QgsLabelFeature::provider() const
+QgsAbstractLabelProvider* QgsLabelFeature::provider() const
 {
   return mLayer ? mLayer->provider() : nullptr;
 
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId, const QString& providerId )
-    : mEngine( nullptr )
-    , mLayerId( layerId )
-    , mProviderId( providerId )
-    , mFlags( DrawLabels )
-    , mPlacement( QgsPalLayerSettings::AroundPoint )
-    , mLinePlacementFlags( 0 )
-    , mPriority( 0.5 )
-    , mObstacleType( QgsPalLayerSettings::PolygonInterior )
-    , mUpsidedownLabels( QgsPalLayerSettings::Upright )
+  : mEngine( nullptr )
+  , mLayerId( layerId )
+  , mProviderId( providerId )
+  , mFlags( DrawLabels )
+  , mPlacement( QgsPalLayerSettings::AroundPoint )
+  , mLinePlacementFlags( 0 )
+  , mPriority( 0.5 )
+  , mObstacleType( QgsPalLayerSettings::PolygonInterior )
+  , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
 }
 

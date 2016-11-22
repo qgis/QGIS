@@ -63,16 +63,16 @@
 #define G_suppress_masking Rast_suppress_masking
 #endif
 
-int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
+int display( char* name, char* mapset, RASTER_MAP_TYPE data_type, char* format );
 
-int main( int argc, char **argv )
+int main( int argc, char** argv )
 {
-  char *mapset;
-  char *name;
-  struct GModule *module;
-  struct Option *map;
-  struct Option *win;
-  struct Option *format;
+  char* mapset;
+  char* name;
+  struct GModule* module;
+  struct Option* map;
+  struct Option* win;
+  struct Option* format;
   struct Cell_head window;
   RASTER_MAP_TYPE raster_type;
 
@@ -133,12 +133,12 @@ int main( int argc, char **argv )
   exit( EXIT_SUCCESS );
 }
 
-static int cell_draw( char *, char *, struct Colors *, RASTER_MAP_TYPE, char *format );
+static int cell_draw( char*, char*, struct Colors*, RASTER_MAP_TYPE, char* format );
 
-int display( char *name,
-             char *mapset,
+int display( char* name,
+             char* mapset,
              RASTER_MAP_TYPE data_type,
-             char *format )
+             char* format )
 {
   struct Colors colors;
 
@@ -156,22 +156,22 @@ int display( char *name,
   return 0;
 }
 
-static int cell_draw( char *name,
-                      char *mapset,
-                      struct Colors *colors,
+static int cell_draw( char* name,
+                      char* mapset,
+                      struct Colors* colors,
                       RASTER_MAP_TYPE data_type,
-                      char *format )
+                      char* format )
 {
   int cellfile;
-  void *xarray;
+  void* xarray;
   int row;
   int ncols, nrows;
-  static unsigned char *red, *grn, *blu, *set;
+  static unsigned char* red, *grn, *blu, *set;
   int i;
-  void *ptr;
+  void* ptr;
   int big_endian;
   long one = 1;
-  FILE *fo;
+  FILE* fo;
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
@@ -186,7 +186,7 @@ static int cell_draw( char *name,
   assert( dnul != dnul );
   assert( fnul != fnul );
 
-  big_endian = !( *(( char * )( &one ) ) );
+  big_endian = !( *(( char* )( &one ) ) );
 
   ncols = G_window_cols();
   nrows = G_window_rows();

@@ -57,7 +57,7 @@ class TestQgsExpressionContext : public QObject
     {
       public:
         GetTestValueFunction()
-            : QgsScopedExpressionFunction( QStringLiteral( "get_test_value" ), 1, QStringLiteral( "test" ) ) {}
+          : QgsScopedExpressionFunction( QStringLiteral( "get_test_value" ), 1, QStringLiteral( "test" ) ) {}
 
         virtual QVariant func( const QVariantList&, const QgsExpressionContext*, QgsExpression* ) override
         {
@@ -75,7 +75,7 @@ class TestQgsExpressionContext : public QObject
     {
       public:
         GetTestValueFunction2()
-            : QgsScopedExpressionFunction( QStringLiteral( "get_test_value" ), 1, QStringLiteral( "test" ) ) {}
+          : QgsScopedExpressionFunction( QStringLiteral( "get_test_value" ), 1, QStringLiteral( "test" ) ) {}
 
         virtual QVariant func( const QVariantList&, const QgsExpressionContext*, QgsExpression* ) override
         {
@@ -92,8 +92,8 @@ class TestQgsExpressionContext : public QObject
     {
       public:
         explicit ModifiableFunction( int* v )
-            : QgsScopedExpressionFunction( QStringLiteral( "test_function" ), 1, QStringLiteral( "test" ) )
-            , mVal( v )
+          : QgsScopedExpressionFunction( QStringLiteral( "test_function" ), 1, QStringLiteral( "test" ) )
+          , mVal( v )
         {}
 
         virtual QVariant func( const QVariantList&, const QgsExpressionContext*, QgsExpression* ) override

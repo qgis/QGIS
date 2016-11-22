@@ -29,9 +29,9 @@
 #include "qgslogger.h"
 
 
-QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget* parent )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
 }
@@ -115,7 +115,7 @@ QgsStringMap QgsAuthPkiPathsEdit::configMap() const
   return config;
 }
 
-void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
+void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap& configmap )
 {
   clearConfig();
 
@@ -142,13 +142,13 @@ void QgsAuthPkiPathsEdit::clearConfig()
   validateConfig();
 }
 
-void QgsAuthPkiPathsEdit::clearPkiMessage( QLineEdit *lineedit )
+void QgsAuthPkiPathsEdit::clearPkiMessage( QLineEdit* lineedit )
 {
   lineedit->clear();
   lineedit->setStyleSheet( QLatin1String( "" ) );
 }
 
-void QgsAuthPkiPathsEdit::writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid )
+void QgsAuthPkiPathsEdit::writePkiMessage( QLineEdit* lineedit, const QString& msg, Validity valid )
 {
   QString ss;
   QString txt( msg );

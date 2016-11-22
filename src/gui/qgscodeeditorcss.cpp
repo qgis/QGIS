@@ -22,8 +22,8 @@
 #include <Qsci/qscilexercss.h>
 
 
-QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
-    : QgsCodeEditor( parent )
+QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget* parent )
+  : QgsCodeEditor( parent )
 {
   if ( !parent )
   {

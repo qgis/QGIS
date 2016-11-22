@@ -36,23 +36,23 @@
 #include <sqlite3.h>
 
 QgsWFSSharedData::QgsWFSSharedData( const QString& uri )
-    : mURI( uri )
-    , mSourceCRS( 0 )
-    , mCacheDataProvider( nullptr )
-    , mMaxFeatures( 0 )
-    , mMaxFeaturesWasSetFromDefaultForPaging( false )
-    , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
-    , mDistinctSelect( false )
-    , mHasWarnedAboutMissingFeatureId( false )
-    , mGetFeatureEPSGDotHonoursEPSGOrder( false )
-    , mDownloader( nullptr )
-    , mDownloadFinished( false )
-    , mGenCounter( 0 )
-    , mFeatureCount( 0 )
-    , mFeatureCountExact( false )
-    , mGetFeatureHitsIssued( false )
-    , mTotalFeaturesAttemptedToBeCached( 0 )
-    , mTryFetchingOneFeature( false )
+  : mURI( uri )
+  , mSourceCRS( 0 )
+  , mCacheDataProvider( nullptr )
+  , mMaxFeatures( 0 )
+  , mMaxFeaturesWasSetFromDefaultForPaging( false )
+  , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
+  , mDistinctSelect( false )
+  , mHasWarnedAboutMissingFeatureId( false )
+  , mGetFeatureEPSGDotHonoursEPSGOrder( false )
+  , mDownloader( nullptr )
+  , mDownloadFinished( false )
+  , mGenCounter( 0 )
+  , mFeatureCount( 0 )
+  , mFeatureCountExact( false )
+  , mGetFeatureHitsIssued( false )
+  , mTotalFeaturesAttemptedToBeCached( 0 )
+  , mTryFetchingOneFeature( false )
 {
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsWFSFeatureGmlIdPair> >( "QVector<QgsWFSFeatureGmlIdPair>" );
@@ -366,7 +366,7 @@ bool QgsWFSSharedData::createCache()
     }
   }
 
-  sqlite3 *db;
+  sqlite3* db;
   bool ret = true;
   int rc = QgsSLConnect::sqlite3_open( mCacheDbname.toUtf8(), &db );
   if ( rc == SQLITE_OK )
@@ -615,7 +615,7 @@ QSet<QString> QgsWFSSharedData::getExistingCachedGmlIds( const QVector<QgsWFSFea
       QgsFeature gmlidFeature;
       while ( iterGmlIds.nextFeature( gmlidFeature ) )
       {
-        const QVariant &v = gmlidFeature.attributes().value( gmlidIdx );
+        const QVariant& v = gmlidFeature.attributes().value( gmlidIdx );
         setExistingGmlIds.insert( v.toString() );
       }
 
@@ -666,7 +666,7 @@ QSet<QString> QgsWFSSharedData::getExistingCachedMD5( const QVector<QgsWFSFeatur
       QgsFeature gmlidFeature;
       while ( iterMD5s.nextFeature( gmlidFeature ) )
       {
-        const QVariant &v = gmlidFeature.attributes().value( md5Idx );
+        const QVariant& v = gmlidFeature.attributes().value( md5Idx );
         setExistingMD5.insert( v.toString() );
       }
 
@@ -698,7 +698,7 @@ QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
   QSet<QString> setExistingGmlIds;
   while ( iterGmlIds.nextFeature( gmlidFeature ) )
   {
-    const QVariant &v = gmlidFeature.attributes().value( gmlidIdx );
+    const QVariant& v = gmlidFeature.attributes().value( gmlidIdx );
     return v.toString();
   }
   return QString();
@@ -719,7 +719,7 @@ bool QgsWFSSharedData::deleteFeatures( const QgsFeatureIds& fidlist )
 }
 
 // Used by WFS-T
-bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
   if ( !mCacheDataProvider )
     return false;
@@ -758,7 +758,7 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
 }
 
 // Used by WFS-T
-bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   if ( !mCacheDataProvider )
     return false;
@@ -768,7 +768,7 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
     QgsFeatureId fid = iter.key();
-    const QgsAttributeMap &attrs = iter.value();
+    const QgsAttributeMap& attrs = iter.value();
     if ( attrs.isEmpty() )
       continue;
     QgsAttributeMap newAttrMap;
@@ -893,7 +893,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
       int idx = dataProviderFields.indexFromName( mFields.at( i ).name() );
       if ( idx >= 0 )
       {
-        const QVariant &v = gmlFeature.attributes().value( i );
+        const QVariant& v = gmlFeature.attributes().value( i );
         if ( v.type() == QVariant::DateTime && !v.isNull() )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
         else if ( v.type() !=  dataProviderFields.at( idx ).type() )
@@ -1190,7 +1190,7 @@ QgsGmlStreamingParser* QgsWFSSharedData::createParser()
 
 
 QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI& uri )
-    : QgsWfsRequest( uri.uri() )
+  : QgsWfsRequest( uri.uri() )
 {
 }
 
@@ -1256,7 +1256,7 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString& reason 
 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData* shared )
-    : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
+  : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
 {
 }
 
@@ -1294,7 +1294,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
     QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
       parser->getAndStealReadyFeatures();
     QVector<QgsWFSFeatureGmlIdPair> featureList;
-    for ( int i = 0;i < featurePtrList.size();i++ )
+    for ( int i = 0; i < featurePtrList.size(); i++ )
     {
       QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
       QgsFeature f( *( featPair.first ) );

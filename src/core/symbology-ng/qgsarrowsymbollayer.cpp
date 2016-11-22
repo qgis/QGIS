@@ -16,26 +16,26 @@
 #include "qgsarrowsymbollayer.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-    : QgsLineSymbolLayer()
-    , mArrowWidth( 1.0 )
-    , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
-    , mArrowStartWidth( 1.0 )
-    , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
-    , mHeadLength( 1.5 )
-    , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
-    , mHeadThickness( 1.5 )
-    , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
-    , mHeadType( HeadSingle )
-    , mArrowType( ArrowPlain )
-    , mIsCurved( true )
-    , mIsRepeated( true )
-    , mScaledArrowWidth( 1.0 )
-    , mScaledArrowStartWidth( 1.0 )
-    , mScaledHeadLength( 1.5 )
-    , mScaledHeadThickness( 1.5 )
-    , mScaledOffset( 0.0 )
-    , mComputedHeadType( HeadSingle )
-    , mComputedArrowType( ArrowPlain )
+  : QgsLineSymbolLayer()
+  , mArrowWidth( 1.0 )
+  , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
+  , mArrowStartWidth( 1.0 )
+  , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
+  , mHeadLength( 1.5 )
+  , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
+  , mHeadThickness( 1.5 )
+  , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
+  , mHeadType( HeadSingle )
+  , mArrowType( ArrowPlain )
+  , mIsCurved( true )
+  , mIsRepeated( true )
+  , mScaledArrowWidth( 1.0 )
+  , mScaledArrowStartWidth( 1.0 )
+  , mScaledHeadLength( 1.5 )
+  , mScaledHeadThickness( 1.5 )
+  , mScaledOffset( 0.0 )
+  , mComputedHeadType( HeadSingle )
+  , mComputedArrowType( ArrowPlain )
 {
   /* default values */
   setOffset( 0.0 );
@@ -253,24 +253,24 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     polygon << po;
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
     {
-      polygon << po + unitVec * headWidth + perpVec * headHeight;
-      polygon << po + unitVec * headWidth + perpVec * ( width * 0.5 );
+      polygon << po + unitVec* headWidth + perpVec* headHeight;
+      polygon << po + unitVec* headWidth + perpVec * ( width * 0.5 );
 
-      polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
+      polygon << po + unitVec* bodyLength + perpVec * ( width * 0.5 );
 
       // second head
-      polygon << po + unitVec * bodyLength + perpVec * headHeight;
+      polygon << po + unitVec* bodyLength + perpVec* headHeight;
     }
     polygon << pd;
 
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
     {
-      polygon << po + unitVec * bodyLength - perpVec * headHeight;
-      polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
+      polygon << po + unitVec* bodyLength - perpVec* headHeight;
+      polygon << po + unitVec* bodyLength - perpVec * ( width * 0.5 );
 
       // end of the first head
-      polygon << po + unitVec * headWidth - perpVec * ( width * 0.5 );
-      polygon << po + unitVec * headWidth - perpVec * headHeight;
+      polygon << po + unitVec* headWidth - perpVec * ( width * 0.5 );
+      polygon << po + unitVec* headWidth - perpVec* headHeight;
     }
   }
   else if ( headType == QgsArrowSymbolLayer::HeadSingle )
@@ -278,8 +278,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
     {
       polygon << po + perpVec * ( startWidth * 0.5 );
-      polygon << po + unitVec * bodyLength + perpVec * ( width * 0.5 );
-      polygon << po + unitVec * bodyLength + perpVec * headHeight;
+      polygon << po + unitVec* bodyLength + perpVec * ( width * 0.5 );
+      polygon << po + unitVec* bodyLength + perpVec* headHeight;
     }
     else
     {
@@ -288,8 +288,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     polygon << pd;
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowLeftHalf )
     {
-      polygon << po + unitVec * bodyLength - perpVec * headHeight;
-      polygon << po + unitVec * bodyLength - perpVec * ( width * 0.5 );
+      polygon << po + unitVec* bodyLength - perpVec* headHeight;
+      polygon << po + unitVec* bodyLength - perpVec * ( width * 0.5 );
       polygon << po - perpVec * ( startWidth * 0.5 );
     }
     else
@@ -302,8 +302,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     polygon << po;
     if ( arrowType == QgsArrowSymbolLayer::ArrowPlain || arrowType == QgsArrowSymbolLayer::ArrowRightHalf )
     {
-      polygon << po + unitVec * headWidth + perpVec * headHeight;
-      polygon << po + unitVec * headWidth + perpVec * ( width * 0.5 );
+      polygon << po + unitVec* headWidth + perpVec* headHeight;
+      polygon << po + unitVec* headWidth + perpVec * ( width * 0.5 );
 
       polygon << pd + perpVec * ( startWidth * 0.5 );
     }
@@ -315,8 +315,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
     {
       polygon << pd - perpVec * ( startWidth * 0.5 );
 
-      polygon << po + unitVec * headWidth - perpVec * ( width * 0.5 );
-      polygon << po + unitVec * headWidth - perpVec * headHeight;
+      polygon << po + unitVec* headWidth - perpVec * ( width * 0.5 );
+      polygon << po + unitVec* headWidth - perpVec* headHeight;
     }
     else
     {

@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRasterBandStats
     }
 
     //! Compares region, size etc. not collected statistics
-    bool contains( const QgsRasterBandStats &s ) const
+    bool contains( const QgsRasterBandStats& s ) const
     {
       return ( s.bandNumber == bandNumber &&
                s.extent == extent &&

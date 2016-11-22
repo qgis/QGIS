@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
     //! get invisible layers
-    static QStringList invisibleLayerList( QgsLayerTreeNode *node );
+    static QStringList invisibleLayerList( QgsLayerTreeNode* node );
 
     //! Set the expression filter of a legend layer
     static void setLegendFilterByExpression( QgsLayerTreeLayer& layer, const QString& expr, bool enabled = true );

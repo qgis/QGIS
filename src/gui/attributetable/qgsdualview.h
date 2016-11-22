@@ -109,7 +109,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * @return the filter mode
      */
-    QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
+    QgsAttributeTableFilterModel::FilterMode filterMode()
+    {
+      return mFilterModel->filterMode();
+    }
 
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
@@ -145,14 +148,20 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Get a list of currently visible feature ids.
      */
-    QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
+    QgsFeatureIds filteredFeatures()
+    {
+      return mFilterModel->filteredFeatures();
+    }
 
     /**
      * Returns the model which has the information about all features (not only filtered)
      *
      * @return The master model
      */
-    QgsAttributeTableModel* masterModel() const { return mMasterModel; }
+    QgsAttributeTableModel* masterModel() const
+    {
+      return mMasterModel;
+    }
 
     /**
      * Set the request
@@ -173,7 +182,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * @return The table view
      */
-    QgsAttributeTableView* tableView() { return mTableView; }
+    QgsAttributeTableView* tableView()
+    {
+      return mTableView;
+    }
 
     /**
      * Set the attribute table config which should be used to control
@@ -309,7 +321,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param i       The number of features already loaded
      * @param cancel  Set to true to cancel
      */
-    virtual void progress( int i, bool &cancel );
+    virtual void progress( int i, bool& cancel );
 
     /**
      * Will be called, once all the features are loaded.
@@ -323,7 +335,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void panToCurrentFeature();
 
   private:
-    void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
+    void initLayerCache( QgsVectorLayer* layer, bool cacheGeometry );
     void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
 
     QgsAttributeEditorContext mEditorContext;
@@ -360,10 +372,10 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
      * @note Added in QGIS 3.0
      */
     QgsAttributeTableAction( const QString& name, QgsDualView* dualView, const QUuid& action, const QModelIndex& fieldIdx )
-        : QAction( name, dualView )
-        , mDualView( dualView )
-        , mAction( action )
-        , mFieldIdx( fieldIdx )
+      : QAction( name, dualView )
+      , mDualView( dualView )
+      , mAction( action )
+      , mFieldIdx( fieldIdx )
     {}
 
   public slots:
@@ -384,11 +396,11 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx )
-        : QAction( name, dualView )
-        , mDualView( dualView )
-        , mAction( action )
-        , mFieldIdx( fieldIdx )
+    QgsAttributeTableMapLayerAction( const QString& name, QgsDualView* dualView, QgsMapLayerAction* action, const QModelIndex& fieldIdx )
+      : QAction( name, dualView )
+      , mDualView( dualView )
+      , mAction( action )
+      , mFieldIdx( fieldIdx )
     {}
 
   public slots:

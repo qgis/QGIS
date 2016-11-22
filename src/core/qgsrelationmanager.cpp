@@ -23,8 +23,8 @@
 #include "qgsvectorlayer.h"
 
 QgsRelationManager::QgsRelationManager( QgsProject* project )
-    : QObject( project )
-    , mProject( project )
+  : QObject( project )
+  , mProject( project )
 {
   connect( project, SIGNAL( readProject( const QDomDocument& ) ), SLOT( readProject( const QDomDocument& ) ) );
   connect( project, SIGNAL( writeProject( QDomDocument& ) ), SLOT( writeProject( QDomDocument& ) ) );
@@ -151,7 +151,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
   return relations;
 }
 
-void QgsRelationManager::readProject( const QDomDocument & doc )
+void QgsRelationManager::readProject( const QDomDocument& doc )
 {
   mRelations.clear();
 
@@ -175,7 +175,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
   emit changed();
 }
 
-void QgsRelationManager::writeProject( QDomDocument & doc )
+void QgsRelationManager::writeProject( QDomDocument& doc )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )

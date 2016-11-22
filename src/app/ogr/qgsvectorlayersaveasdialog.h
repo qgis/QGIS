@@ -42,7 +42,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     };
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer* layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -111,14 +111,17 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void on_leFilename_textChanged( const QString& text );
     void on_browseFilename_clicked();
     void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
     void on_mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;
     void on_mSelectAllAttributes_clicked();
     void on_mDeselectAllAttributes_clicked();
     void on_mReplaceRawFieldValues_stateChanged( int state );
-    void on_mAttributeTable_itemChanged( QTableWidgetItem * item );
+    void on_mAttributeTable_itemChanged( QTableWidgetItem* item );
 
   private:
     void setup();
@@ -128,7 +131,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer* mLayer;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;

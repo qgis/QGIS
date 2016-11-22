@@ -75,32 +75,32 @@ class CORE_EXPORT QgsLabelPosition
 {
   public:
     QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString& providerId = QString() )
-        : featureId( id )
-        , rotation( r )
-        , cornerPoints( corners )
-        , labelRect( rect )
-        , width( w )
-        , height( h )
-        , layerID( layer )
-        , labelText( labeltext )
-        , labelFont( labelfont )
-        , upsideDown( upside_down )
-        , isDiagram( diagram )
-        , isPinned( pinned )
-        , providerID( providerId )
+      : featureId( id )
+      , rotation( r )
+      , cornerPoints( corners )
+      , labelRect( rect )
+      , width( w )
+      , height( h )
+      , layerID( layer )
+      , labelText( labeltext )
+      , labelFont( labelfont )
+      , upsideDown( upside_down )
+      , isDiagram( diagram )
+      , isPinned( pinned )
+      , providerID( providerId )
     {}
     QgsLabelPosition()
-        : featureId( -1 )
-        , rotation( 0 )
-        , labelRect( QgsRectangle() )
-        , width( 0 )
-        , height( 0 )
-        , layerID( QLatin1String( "" ) )
-        , labelText( QLatin1String( "" ) )
-        , labelFont( QFont() )
-        , upsideDown( false )
-        , isDiagram( false )
-        , isPinned( false )
+      : featureId( -1 )
+      , rotation( 0 )
+      , labelRect( QgsRectangle() )
+      , width( 0 )
+      , height( 0 )
+      , layerID( QLatin1String( "" ) )
+      , labelText( QLatin1String( "" ) )
+      , labelFont( QFont() )
+      , upsideDown( false )
+      , isDiagram( false )
+      , isPinned( false )
     {}
     int featureId;
     double rotation;
@@ -140,14 +140,23 @@ class CORE_EXPORT QgsLabelingEngineInterface
 
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QSet<QString>& attrNames, QgsRenderContext &ctx )
-    { Q_UNUSED( layer ); Q_UNUSED( attrNames ); Q_UNUSED( ctx ); return 0; }
+    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx )
+    {
+      Q_UNUSED( layer );
+      Q_UNUSED( attrNames );
+      Q_UNUSED( ctx );
+      return 0;
+    }
 
     //! called for every feature
-    virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context )
-    { Q_UNUSED( layerID ); Q_UNUSED( feat ); Q_UNUSED( context ); }
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context )
+    {
+      Q_UNUSED( layerID );
+      Q_UNUSED( feat );
+      Q_UNUSED( context );
+    }
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering
@@ -169,7 +178,7 @@ class CORE_EXPORT QgsPalLayerSettings
     ~QgsPalLayerSettings();
 
     //! copy operator - only copies the permanent members
-    QgsPalLayerSettings &operator=( const QgsPalLayerSettings & s );
+    QgsPalLayerSettings& operator=( const QgsPalLayerSettings& s );
 
     //! @note added in 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer* layer );
@@ -625,20 +634,29 @@ class CORE_EXPORT QgsPalLayerSettings
      * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
      * @note not available in python bindings;
      */
-    QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const { return mDataDefinedNames; }
+    QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const
+    {
+      return mDataDefinedNames;
+    }
 
     /** Returns the label text formatting settings, eg font settings, buffer settings, etc.
      * @see setFormat()
      * @note added in QGIS 3.0
      */
-    const QgsTextFormat& format() const { return mFormat; }
+    const QgsTextFormat& format() const
+    {
+      return mFormat;
+    }
 
     /** Sets the label text formatting settings, eg font settings, buffer settings, etc.
      * @param format label text format
      * @see format()
      * @note added in QGIS 3.0
      */
-    void setFormat( const QgsTextFormat& format ) { mFormat = format; }
+    void setFormat( const QgsTextFormat& format )
+    {
+      mFormat = format;
+    }
 
     // temporary stuff: set when layer gets prepared or labeled
     QgsFeature* mCurFeat;
@@ -658,14 +676,14 @@ class CORE_EXPORT QgsPalLayerSettings
 
     void readDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
                                      QMap < QgsPalLayerSettings::DataDefinedProperties,
-                                     QgsDataDefined* > & propertyMap );
+                                     QgsDataDefined* >& propertyMap );
     void writeDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
                                       const QMap < QgsPalLayerSettings::DataDefinedProperties,
-                                      QgsDataDefined* > & propertyMap );
+                                      QgsDataDefined* >& propertyMap );
     void readDataDefinedProperty( QgsVectorLayer* layer,
                                   QgsPalLayerSettings::DataDefinedProperties p,
                                   QMap < QgsPalLayerSettings::DataDefinedProperties,
-                                  QgsDataDefined* > & propertyMap );
+                                  QgsDataDefined* >& propertyMap );
 
     enum DataDefinedValueType
     {
@@ -687,7 +705,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // convenience data defined evaluation function
     bool dataDefinedValEval( DataDefinedValueType valType,
                              QgsPalLayerSettings::DataDefinedProperties p,
-                             QVariant& exprVal, QgsExpressionContext &context, const QVariant& originalValue = QVariant() );
+                             QVariant& exprVal, QgsExpressionContext& context, const QVariant& originalValue = QVariant() );
 
     void parseTextStyle( QFont& labelFont,
                          QgsUnitTypes::RenderUnit fontunits,
@@ -707,7 +725,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry = nullptr );
+    void registerObstacleFeature( QgsFeature& f, QgsRenderContext& context, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry = nullptr );
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
@@ -865,7 +883,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns prepared geometry
      * @note added in QGIS 2.9
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = nullptr );
+    static QgsGeometry prepareGeometry( const QgsGeometry& geometry, QgsRenderContext& context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry = nullptr );
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare
@@ -875,7 +893,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns true if geometry requires preparation
      * @note added in QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry *clipGeometry = nullptr );
+    static bool geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext& context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry = nullptr );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
@@ -928,7 +946,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns true if geometry exceeds minimum size
      * @note added in QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext& context, const QgsGeometry* geom, double minSize );
 
     //! hashtable of label providers, being filled during labeling (key = layer ID)
     QHash<QString, QgsVectorLayerLabelProvider*> mLabelProviders;

@@ -29,7 +29,7 @@
 
 QgsConfigCache* QgsConfigCache::instance()
 {
-  static QgsConfigCache *instance = nullptr;
+  static QgsConfigCache* instance = nullptr;
 
   if ( !instance )
     instance = new QgsConfigCache();
@@ -81,14 +81,14 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   return new QgsServerProjectParser( doc, filePath );
 }
 
-QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
+QgsWCSProjectParser* QgsConfigCache::wcsConfiguration(
   const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
 #endif
 )
 {
-  QgsWCSProjectParser *p = mWCSConfigCache.object( filePath );
+  QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -111,14 +111,14 @@ QgsWCSProjectParser *QgsConfigCache::wcsConfiguration(
   return p;
 }
 
-QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
+QgsWfsProjectParser* QgsConfigCache::wfsConfiguration(
   const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
 #endif
 )
 {
-  QgsWfsProjectParser *p = mWFSConfigCache.object( filePath );
+  QgsWfsProjectParser* p = mWFSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -141,7 +141,7 @@ QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
   return p;
 }
 
-QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
+QgsWmsConfigParser* QgsConfigCache::wmsConfiguration(
   const QString& filePath
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
@@ -149,7 +149,7 @@ QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
   , const QMap<QString, QString>& parameterMap
 )
 {
-  QgsWmsConfigParser *p = mWMSConfigCache.object( filePath );
+  QgsWmsConfigParser* p = mWMSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );

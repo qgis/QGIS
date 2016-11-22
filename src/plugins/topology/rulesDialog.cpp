@@ -30,8 +30,8 @@
 #include "rulesDialog.h"
 #include "topolTest.h"
 
-rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *theQgisIface, QWidget *parent )
-    : QDialog( parent ), Ui::rulesDialog()
+rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* theQgisIface, QWidget* parent )
+  : QDialog( parent ), Ui::rulesDialog()
 {
   setupUi( this );
 
@@ -302,7 +302,7 @@ void rulesDialog::deleteTest()
     mRulesTable->removeRow( row );
 }
 
-void rulesDialog::updateRuleItems( const QString &layerName )
+void rulesDialog::updateRuleItems( const QString& layerName )
 {
   if ( layerName.isEmpty() )
   {

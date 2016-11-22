@@ -35,7 +35,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
                                     const QString& shapefileName,
                                     double tolerance,
                                     bool onlySelectedFeatures,
-                                    QProgressDialog *p )
+                                    QProgressDialog* p )
 {
   if ( !layer )
   {
@@ -262,7 +262,7 @@ void QgsGeometryAnalyzer::centroidFeature( QgsFeature& f, QgsVectorFileWriter* v
 bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
                                   const QString& shapefileName,
                                   bool onlySelectedFeatures,
-                                  QProgressDialog * )
+                                  QProgressDialog* )
 {
   if ( !layer )
   {
@@ -869,7 +869,7 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
   }
 }
 
-bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QgsFeatureIds &unlocatedFeatureIds, const QString& outputLayer,
+bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QgsFeatureIds& unlocatedFeatureIds, const QString& outputLayer,
                                       const QString& outputFormat, int locationField1, int locationField2, int offsetField, double offsetScale,
                                       bool forceSingleGeometry, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
 {

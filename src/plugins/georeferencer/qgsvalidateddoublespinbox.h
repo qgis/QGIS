@@ -24,7 +24,7 @@ class QgsValidatedDoubleSpinBox : public QDoubleSpinBox
     Q_OBJECT
 
   public:
-    QgsValidatedDoubleSpinBox( QWidget *widget ) : QDoubleSpinBox( widget )  { }
+    QgsValidatedDoubleSpinBox( QWidget* widget ) : QDoubleSpinBox( widget )  { }
 
     QValidator::State validate( QString& input, int& pos ) const override
     {

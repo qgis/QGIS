@@ -55,7 +55,7 @@ class CORE_EXPORT QgsDataDefined
      * if it's a simple field reference or an expression.
      * @param expression can be null
      */
-    explicit QgsDataDefined( const QgsExpression * expression );
+    explicit QgsDataDefined( const QgsExpression* expression );
 
     /**
      * Construct a new data defined object, analysing the string to determine
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsDataDefined
      * @returns true if expression was successfully prepared
      * @note added in QGIS 2.12
      */
-    bool prepareExpression( const QgsExpressionContext &context = QgsExpressionContext() );
+    bool prepareExpression( const QgsExpressionContext& context = QgsExpressionContext() );
 
     /** Returns whether the data defined object's expression is prepared
      * @returns true if expression is prepared
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsDataDefined
      * @note added in QGIS 2.7
      * @see setFromXmlElement
      */
-    QDomElement toXmlElement( QDomDocument &document, const QString &elementName ) const;
+    QDomElement toXmlElement( QDomDocument& document, const QString& elementName ) const;
 
     /** Sets the properties of the data defined container from an XML element. Calling
      * this will overwrite all the current properties of the container.
@@ -200,13 +200,13 @@ class CORE_EXPORT QgsDataDefined
      */
     bool setFromXmlElement( const QDomElement& element );
 
-    bool operator==( const QgsDataDefined &other ) const;
-    bool operator!=( const QgsDataDefined &other ) const;
+    bool operator==( const QgsDataDefined& other ) const;
+    bool operator!=( const QgsDataDefined& other ) const;
 
     /** Assignment operator. Note that after assignment the data defined
      * object's expression will not be prepared.
      */
-    QgsDataDefined& operator=( QgsDataDefined const & rhs );
+    QgsDataDefined& operator=( QgsDataDefined const& rhs );
 
   private:
 

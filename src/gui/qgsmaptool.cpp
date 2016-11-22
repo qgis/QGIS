@@ -22,12 +22,12 @@
 #include <QAbstractButton>
 
 QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
-    : QObject( canvas )
-    , mCanvas( canvas )
-    , mCursor( Qt::CrossCursor )
-    , mAction( nullptr )
-    , mButton( nullptr )
-    , mToolName( QString() )
+  : QObject( canvas )
+  , mCanvas( canvas )
+  , mCursor( Qt::CrossCursor )
+  , mAction( nullptr )
+  , mButton( nullptr )
+  , mToolName( QString() )
 {
 }
 
@@ -161,23 +161,23 @@ void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
   Q_UNUSED( e );
 }
 
-void QgsMapTool::wheelEvent( QWheelEvent *e )
+void QgsMapTool::wheelEvent( QWheelEvent* e )
 {
   e->ignore();
 }
 
-void QgsMapTool::keyPressEvent( QKeyEvent *e )
+void QgsMapTool::keyPressEvent( QKeyEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::keyReleaseEvent( QKeyEvent *e )
+void QgsMapTool::keyReleaseEvent( QKeyEvent* e )
 {
   Q_UNUSED( e );
 }
 
 #ifdef HAVE_TOUCH
-bool QgsMapTool::gestureEvent( QGestureEvent *e )
+bool QgsMapTool::gestureEvent( QGestureEvent* e )
 {
   Q_UNUSED( e );
   return true;
@@ -206,7 +206,7 @@ double QgsMapTool::searchRadiusMU( const QgsRenderContext& context )
   return searchRadiusMM() * context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
 }
 
-double QgsMapTool::searchRadiusMU( QgsMapCanvas * canvas )
+double QgsMapTool::searchRadiusMU( QgsMapCanvas* canvas )
 {
   if ( !canvas )
   {

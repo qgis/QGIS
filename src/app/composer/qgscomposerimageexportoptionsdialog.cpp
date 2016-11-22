@@ -22,7 +22,7 @@
 #include <QPushButton>
 
 QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
+  : QDialog( parent, flags )
 {
   setupUi( this );
 

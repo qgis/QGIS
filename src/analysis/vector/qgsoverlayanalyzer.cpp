@@ -39,8 +39,8 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     return false;
   }
 
-  QgsVectorDataProvider *dpA = layerA->dataProvider();
-  QgsVectorDataProvider *dpB = layerB->dataProvider();
+  QgsVectorDataProvider* dpA = layerA->dataProvider();
+  QgsVectorDataProvider* dpB = layerB->dataProvider();
   if ( !dpA || !dpB )
   {
     return false;

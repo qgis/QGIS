@@ -21,7 +21,7 @@
 #include "qgscomposition.h"
 
 QgsComposerTextTableV2::QgsComposerTextTableV2( QgsComposition* c, bool createUndoCommands )
-    : QgsComposerTableV2( c, createUndoCommands )
+  : QgsComposerTableV2( c, createUndoCommands )
 {
 
 }

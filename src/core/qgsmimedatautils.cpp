@@ -75,7 +75,7 @@ bool QgsMimeDataUtils::isUriList( const QMimeData* data )
 
 QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& layers )
 {
-  QMimeData *mimeData = new QMimeData();
+  QMimeData* mimeData = new QMimeData();
 
   mimeData->setData( QGIS_URILIST_MIMETYPE, uriListToByteArray( layers ) );
   return mimeData;
@@ -135,7 +135,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils
   }
 }
 
-QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *>& nodes )
+QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode*>& nodes )
 {
   UriList uris;
   Q_FOREACH ( QgsLayerTreeNode* node, nodes )

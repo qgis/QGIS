@@ -68,7 +68,7 @@ class CORE_EXPORT QgsScaleCalculator
      * @param canvasWidth Width of the map canvas in pixel (physical) units
      * @return scale denominator of current map view
      */
-    double calculate( const QgsRectangle &mapExtent, int canvasWidth );
+    double calculate( const QgsRectangle& mapExtent, int canvasWidth );
 
     /**
      * Calculate the distance between two points in geographic coordinates.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsScaleCalculator
      * data.
      * @param mapExtent QgsRectangle containing the current map extent
      */
-    double calculateGeographicDistance( const QgsRectangle &mapExtent );
+    double calculateGeographicDistance( const QgsRectangle& mapExtent );
 
   private:
 

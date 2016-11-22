@@ -59,15 +59,15 @@ class TestQgsInvertedPolygon : public QObject
     bool setQml( QgsVectorLayer* vlayer, const QString& qmlFile );
     bool imageCheck( const QString& theType, const QgsRectangle* = 0 );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QString mTestDataDir;
     QString mReport;
 };
 
 
 TestQgsInvertedPolygon::TestQgsInvertedPolygon()
-    : mTestHasError( false )
-    , mpPolysLayer( nullptr )
+  : mTestHasError( false )
+  , mpPolysLayer( nullptr )
 {
 
 }
@@ -95,7 +95,7 @@ void TestQgsInvertedPolygon::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mpPolysLayer );
 
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
   mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
@@ -159,7 +159,7 @@ void TestQgsInvertedPolygon::curvedPolygons()
   QgsVectorLayer* curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
       myCurvedPolyFileInfo.completeBaseName(), "ogr" );
   curvedLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << curvedLayer );
 
   mReport += "<h2>Inverted polygon renderer, curved polygons test</h2>\n";
   mMapSettings.setLayers( QStringList() << curvedLayer->id() );

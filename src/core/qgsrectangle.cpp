@@ -30,10 +30,10 @@
 #include "qgslogger.h"
 
 QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, double newymax )
-    : xmin( newxmin )
-    , ymin( newymin )
-    , xmax( newxmax )
-    , ymax( newymax )
+  : xmin( newxmin )
+  , ymin( newymin )
+  , xmax( newxmax )
+  , ymax( newymax )
 {
   normalize();
 }
@@ -43,7 +43,7 @@ QgsRectangle::QgsRectangle( const QgsPoint& p1, const QgsPoint& p2 )
   set( p1, p2 );
 }
 
-QgsRectangle::QgsRectangle( QRectF const & qRectF )
+QgsRectangle::QgsRectangle( QRectF const& qRectF )
 {
   xmin = qRectF.topLeft().x();
   ymin = qRectF.topLeft().y();
@@ -51,7 +51,7 @@ QgsRectangle::QgsRectangle( QRectF const & qRectF )
   ymax = qRectF.bottomRight().y();
 }
 
-QgsRectangle::QgsRectangle( const QgsRectangle &r )
+QgsRectangle::QgsRectangle( const QgsRectangle& r )
 {
   xmin = r.xMinimum();
   ymin = r.yMinimum();
@@ -102,7 +102,7 @@ void QgsRectangle::setMinimal()
   ymax = -std::numeric_limits<double>::max();
 }
 
-void QgsRectangle::scale( double scaleFactor, const QgsPoint * cp )
+void QgsRectangle::scale( double scaleFactor, const QgsPoint* cp )
 {
   // scale from the center
   double centerX, centerY;
@@ -137,7 +137,7 @@ void QgsRectangle::grow( double delta )
   ymax += delta;
 }
 
-void QgsRectangle::include( const QgsPoint &p )
+void QgsRectangle::include( const QgsPoint& p )
 {
   if ( p.x() < xMinimum() )
     setXMinimum( p.x() );
@@ -154,7 +154,7 @@ QgsRectangle QgsRectangle::buffer( double width )
   return QgsRectangle( xmin - width, ymin - width, xmax + width, ymax + width );
 }
 
-QgsRectangle QgsRectangle::intersect( const QgsRectangle * rect ) const
+QgsRectangle QgsRectangle::intersect( const QgsRectangle* rect ) const
 {
   QgsRectangle intersection = QgsRectangle();
   //If they don't actually intersect an empty QgsRectangle should be returned
@@ -188,13 +188,13 @@ bool QgsRectangle::contains( const QgsRectangle& rect ) const
   return ( rect.xmin >= xmin && rect.xmax <= xmax && rect.ymin >= ymin && rect.ymax <= ymax );
 }
 
-bool QgsRectangle::contains( const QgsPoint &p ) const
+bool QgsRectangle::contains( const QgsPoint& p ) const
 {
   return xmin <= p.x() && p.x() <= xmax &&
          ymin <= p.y() && p.y() <= ymax;
 }
 
-void QgsRectangle::combineExtentWith( const QgsRectangle &rect )
+void QgsRectangle::combineExtentWith( const QgsRectangle& rect )
 {
   if ( isNull() )
     *this = rect;
@@ -318,18 +318,18 @@ QString QgsRectangle::asPolygon() const
   // NOTE: a polygon isn't a polygon unless its closed. In the case of
   //       a rectangle, that means 5 points (last == first)
   foo
-  << xmin << ' ' << ymin << ", "
-  << xmin << ' ' << ymax << ", "
-  << xmax << ' ' << ymax << ", "
-  << xmax << ' ' << ymin << ", "
-  << xmin << ' ' << ymin;
+      << xmin << ' ' << ymin << ", "
+      << xmin << ' ' << ymax << ", "
+      << xmax << ' ' << ymax << ", "
+      << xmax << ' ' << ymin << ", "
+      << xmin << ' ' << ymin;
 
   return rep;
 
 } // QgsRectangle::asPolygon() const
 
 
-bool QgsRectangle::operator==( const QgsRectangle & r1 ) const
+bool QgsRectangle::operator==( const QgsRectangle& r1 ) const
 {
   return qgsDoubleNear( r1.xMaximum(), xMaximum() ) &&
          qgsDoubleNear( r1.xMinimum(), xMinimum() ) &&
@@ -338,13 +338,13 @@ bool QgsRectangle::operator==( const QgsRectangle & r1 ) const
 }
 
 
-bool QgsRectangle::operator!=( const QgsRectangle & r1 ) const
+bool QgsRectangle::operator!=( const QgsRectangle& r1 ) const
 {
   return ( ! operator==( r1 ) );
 }
 
 
-QgsRectangle & QgsRectangle::operator=( const QgsRectangle & r )
+QgsRectangle& QgsRectangle::operator=( const QgsRectangle& r )
 {
   if ( &r != this )
   {

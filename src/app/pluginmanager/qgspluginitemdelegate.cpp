@@ -24,10 +24,10 @@
 #include "qgspluginsortfilterproxymodel.h"
 
 
-QgsPluginItemDelegate::QgsPluginItemDelegate( QObject * parent ) : QStyledItemDelegate( parent ) {}
+QgsPluginItemDelegate::QgsPluginItemDelegate( QObject* parent ) : QStyledItemDelegate( parent ) {}
 
 
-QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
@@ -37,11 +37,11 @@ QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem & option, cons
 }
 
 
-void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsPluginItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   painter->save();
   painter->setRenderHint( QPainter::SmoothPixmapTransform );
-  QStyle *style = QApplication::style();
+  QStyle* style = QApplication::style();
   int pixelsHigh = QApplication::fontMetrics().height();
 
   // Draw the background

@@ -28,10 +28,10 @@
 #include "qgsauthmanager.h"
 
 
-QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
-    : QDialog( parent )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget* parent )
+  : QDialog( parent )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -79,13 +79,13 @@ void QgsAuthMethodPlugins::populateTable()
   int i = 0;
   for ( QgsAuthMethodsMap::const_iterator it = authmethods.constBegin(); it != authmethods.constEnd(); ++it, i++ )
   {
-    QgsAuthMethod *authmethod( it.value() );
+    QgsAuthMethod* authmethod( it.value() );
     if ( !authmethod )
     {
       continue;
     }
 
-    QTableWidgetItem *twi = new QTableWidgetItem( authmethod->key() );
+    QTableWidgetItem* twi = new QTableWidgetItem( authmethod->key() );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     tblAuthPlugins->setItem( i, 0, twi );
 
@@ -102,15 +102,15 @@ void QgsAuthMethodPlugins::populateTable()
 
 
 
-QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
-    : QWidget( parent )
-    , mAuthUtilitiesMenu( nullptr )
-    , mActionSetMasterPassword( nullptr )
-    , mActionClearCachedMasterPassword( nullptr )
-    , mActionResetMasterPassword( nullptr )
-    , mActionClearCachedAuthConfigs( nullptr )
-    , mActionRemoveAuthConfigs( nullptr )
-    , mActionEraseAuthDatabase( nullptr )
+QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget* parent )
+  : QWidget( parent )
+  , mAuthUtilitiesMenu( nullptr )
+  , mActionSetMasterPassword( nullptr )
+  , mActionClearCachedMasterPassword( nullptr )
+  , mActionResetMasterPassword( nullptr )
+  , mActionClearCachedAuthConfigs( nullptr )
+  , mActionRemoveAuthConfigs( nullptr )
+  , mActionEraseAuthDatabase( nullptr )
 {
   setupUi( this );
   if ( !QgsAuthManager::instance()->isDisabled() )
@@ -131,7 +131,7 @@ QgsAuthEditorWidgets::~QgsAuthEditorWidgets()
 
 void QgsAuthEditorWidgets::on_btnCertManager_clicked()
 {
-  QgsAuthCertManager *dlg = new QgsAuthCertManager( this );
+  QgsAuthCertManager* dlg = new QgsAuthCertManager( this );
   dlg->setWindowModality( Qt::ApplicationModal );
   dlg->resize( 750, 500 );
   dlg->exec();
@@ -140,7 +140,7 @@ void QgsAuthEditorWidgets::on_btnCertManager_clicked()
 
 void QgsAuthEditorWidgets::on_btnAuthPlugins_clicked()
 {
-  QgsAuthMethodPlugins *dlg = new QgsAuthMethodPlugins( this );
+  QgsAuthMethodPlugins* dlg = new QgsAuthMethodPlugins( this );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
@@ -216,7 +216,7 @@ void QgsAuthEditorWidgets::authMessageOut( const QString& message, const QString
   messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
 }
 
-QgsMessageBar *QgsAuthEditorWidgets::messageBar()
+QgsMessageBar* QgsAuthEditorWidgets::messageBar()
 {
   return mMsgBar;
 }

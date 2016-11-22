@@ -102,7 +102,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * TODO QGIS 3: remove const qualifier
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = nullptr ) const;
+    virtual bool copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx = 0, double dy = 0, QString* errorMsg = nullptr ) const;
 
 };
 

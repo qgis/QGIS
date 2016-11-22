@@ -59,7 +59,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   public:
     static int LAST_TYPE;
 
-    QgsGrassProvider( const QString &uri = QString() );
+    QgsGrassProvider( const QString& uri = QString() );
 
     virtual ~QgsGrassProvider();
 
@@ -118,16 +118,35 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing
-    virtual bool addFeatures( QgsFeatureList & flist ) override { Q_UNUSED( flist ); return true; }
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override { Q_UNUSED( id ); return true; }
-    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override  { Q_UNUSED( attr_map ); return true; }
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override { Q_UNUSED( geometry_map ); return true; }
+    virtual bool addFeatures( QgsFeatureList& flist ) override
+    {
+      Q_UNUSED( flist );
+      return true;
+    }
+    virtual bool deleteFeatures( const QgsFeatureIds& id ) override
+    {
+      Q_UNUSED( id );
+      return true;
+    }
+    virtual bool addAttributes( const QList<QgsField>& attributes ) override;
+    virtual bool deleteAttributes( const QgsAttributeIds& attributes ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override
+    {
+      Q_UNUSED( attr_map );
+      return true;
+    }
+    virtual bool changeGeometryValues( const QgsGeometryMap& geometry_map ) override
+    {
+      Q_UNUSED( geometry_map );
+      return true;
+    }
 
 
     //----------------------------------------------------------------------------
-    QgsGrassObject grassObject() const { return mGrassObject; }
+    QgsGrassObject grassObject() const
+    {
+      return mGrassObject;
+    }
 
 
     // ----------------------------------- Edit ----------------------------------
@@ -153,7 +172,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /* Start standard QGIS editing */
     //void startEditing( QgsVectorLayerEditBuffer* buffer );
-    void startEditing( QgsVectorLayer *vectorLayer );
+    void startEditing( QgsVectorLayer* vectorLayer );
 
     //! Freeze vector.
     void freeze();
@@ -167,7 +186,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @return true success
      *   @return false failed to close vector or vector was not in update mode
      */
-    bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = 0 );
+    bool closeEdit( bool newMap = false, QgsVectorLayer* vectorLayer = 0 );
 
     /** Get current number of lines.
      *   @return number of lines
@@ -186,28 +205,28 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @return line type
      *   @return <0 deadline or error
      */
-    int readLine( struct line_pnts * Points, struct line_cats * Cats, int line );
+    int readLine( struct line_pnts* Points, struct line_cats* Cats, int line );
 
     /** Read node coordinates
      *   @param line line number
      *   @return true node is alive
      *   @return false node is dead
      */
-    bool nodeCoor( int node, double *x, double *y );
+    bool nodeCoor( int node, double* x, double* y );
 
     /** Read line nodes
      *   @param line line number
      *   @return true line is alive
      *   @return false line is dead
      */
-    bool lineNodes( int line, int *node1, int *node2 );
+    bool lineNodes( int line, int* node1, int* node2 );
 
     /** Read boundary areas
      *   @param line line number
      *   @return true line is alive
      *   @return false line is dead
      */
-    bool lineAreas( int line, int *left, int *right );
+    bool lineAreas( int line, int* left, int* right );
 
     /** Get isle area
      *   @param isle number
@@ -252,13 +271,13 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @return line number
      *   @return -1 error
      */
-    int writeLine( int type, struct line_pnts *Points, struct line_cats *Cats );
+    int writeLine( int type, struct line_pnts* Points, struct line_cats* Cats );
 
     /** Rewrite line.
      *   @return line number
      *   @return -1 error
      */
-    int rewriteLine( int lid, int type, struct line_pnts *Points, struct line_cats *Cats );
+    int rewriteLine( int lid, int type, struct line_pnts* Points, struct line_cats* Cats );
 
     /** Delete line
      *   @return 0 OK
@@ -303,7 +322,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param cat
      *   @return vector of attributes
      */
-    QgsAttributeMap *attributes( int field, int cat );
+    QgsAttributeMap* attributes( int field, int cat );
 
     /** Key (cat) column name
      *   @param field
@@ -340,12 +359,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Returns GRASS layer number for given layer name or -1 if cannot
      *  get layer number
      */
-    static int grassLayer( const QString & );
+    static int grassLayer( const QString& );
 
     /** Returns GRASS layer type (GV_POINT, GV_LINES, GV_AREA) for
      *  given layer name or -1 if cannot get layer type
      */
-    static int grassLayerType( const QString & );
+    static int grassLayerType( const QString& );
 
     //! Return a provider name
     QString name() const override;
@@ -370,13 +389,16 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     };
 
     // Set type for next digitized feature (GV_POINT,GV_LINE, GV_BOUNDARY, GV_CENTROID, GV_AREA)
-    void setNewFeatureType( int type ) { mNewFeatureType = type; }
+    void setNewFeatureType( int type )
+    {
+      mNewFeatureType = type;
+    }
 
   public slots:
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
-    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant& value );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onBeforeCommitChanges();
@@ -394,10 +416,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
   protected:
     // used by QgsGrassFeatureSource
-    QgsGrassVectorMapLayer *openLayer() const;
+    QgsGrassVectorMapLayer* openLayer() const;
 
   private:
-    struct Map_info * map() const;
+    struct Map_info* map() const;
     void setMapset();
     bool openLayer();
     // update topo symbol of new features
@@ -415,7 +437,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // WKBPoint, WKBLineString, ...
     QgsWkbTypes::Type mQgisType;
     QString mLayerName;
-    QgsGrassVectorMapLayer *mLayer;
+    QgsGrassVectorMapLayer* mLayer;
     // The version of the map for which the instance was last time updated
     int mMapVersion;
 
@@ -431,7 +453,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *  @param column column number ( < nColumns )
      *  @return pointer to string representation of the value or NULL, this value must not be changed
      */
-    static char *attribute( int layerId, int cat, int column );
+    static char* attribute( int layerId, int cat, int column );
 
     //! Check if provider is outdated and update if necessary
     void ensureUpdated() const;
@@ -443,10 +465,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     void setTopoFields();
 
-    void setPoints( struct line_pnts *points, const QgsAbstractGeometry * geometry );
+    void setPoints( struct line_pnts* points, const QgsAbstractGeometry* geometry );
 
     // Get other edited layer, returns 0 if layer does not exist
-    QgsGrassVectorMapLayer * otherEditLayer( int layerField );
+    QgsGrassVectorMapLayer* otherEditLayer( int layerField );
 
     //! Fields used for topo layers
     QgsFields mTopoFields;
@@ -463,11 +485,11 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsFields mEditLayerFields;
 
     // List of other layers opened for editing
-    QList<QgsGrassVectorMapLayer *> mOtherEditLayers;
+    QList<QgsGrassVectorMapLayer*> mOtherEditLayers;
 
     // points and cats used only for editing
-    struct line_pnts *mPoints;
-    struct line_cats *mCats;
+    struct line_pnts* mPoints;
+    struct line_cats* mCats;
 
     // last geometry GV_* type, used e.g. for splitting features
     int mLastType;

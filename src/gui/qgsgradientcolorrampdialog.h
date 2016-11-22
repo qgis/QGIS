@@ -48,7 +48,10 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
      */
-    QgsGradientColorRamp ramp() const { return mRamp; }
+    QgsGradientColorRamp ramp() const
+    {
+      return mRamp;
+    }
 
     /** Sets the color ramp to show in the dialog.
      * @param ramp color ramp
@@ -103,8 +106,8 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     int mCurrentPlotMarkerIndex;
 
     void updatePlot();
-    void addPlotMarker( double x, double y, const QColor &color, bool isSelected = false );
-    void addMarkersForColor( double x, const QColor &color, bool isSelected = false );
+    void addPlotMarker( double x, double y, const QColor& color, bool isSelected = false );
+    void addMarkersForColor( double x, const QColor& color, bool isSelected = false );
 };
 
 
@@ -119,7 +122,7 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
   public:
 
-    QgsGradientPlotEventFilter( QwtPlot *plot );
+    QgsGradientPlotEventFilter( QwtPlot* plot );
 
     virtual ~QgsGradientPlotEventFilter() {}
 

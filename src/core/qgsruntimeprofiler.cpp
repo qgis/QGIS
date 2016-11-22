@@ -7,7 +7,7 @@ QgsRuntimeProfiler::QgsRuntimeProfiler()
 
 }
 
-void QgsRuntimeProfiler::beginGroup( const QString &name )
+void QgsRuntimeProfiler::beginGroup( const QString& name )
 {
   mGroupStack.push( name );
   if ( !name.isEmpty() )
@@ -31,7 +31,7 @@ void QgsRuntimeProfiler::endGroup()
     mGroupPrefix.truncate( mGroupPrefix.size() - ( len + 1 ) );
 }
 
-void QgsRuntimeProfiler::start( const QString &name )
+void QgsRuntimeProfiler::start( const QString& name )
 {
   mProfileTime.restart();
   mCurrentName = name;

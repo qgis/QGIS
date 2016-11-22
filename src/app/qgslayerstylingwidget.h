@@ -43,9 +43,12 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 {
   public:
     QgsLayerStyleManagerWidgetFactory();
-    bool supportsStyleDock() const override { return true; }
-    QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const override;
-    bool supportsLayer( QgsMapLayer *layer ) const override;
+    bool supportsStyleDock() const override
+    {
+      return true;
+    }
+    QgsMapLayerConfigWidget* createWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, bool dockMode, QWidget* parent ) const override;
+    bool supportsLayer( QgsMapLayer* layer ) const override;
 };
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
@@ -56,7 +59,10 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     /** Return unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
-    virtual int id() const override { return 0xbeef; }
+    virtual int id() const override
+    {
+      return 0xbeef;
+    }
 
     virtual void undo() override;
     virtual void redo() override;
@@ -85,11 +91,14 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       History,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = 0 );
+    QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<QgsMapLayerConfigWidgetFactory*>& pages, QWidget* parent = 0 );
     ~QgsLayerStylingWidget();
-    QgsMapLayer* layer() { return mCurrentLayer; }
+    QgsMapLayer* layer()
+    {
+      return mCurrentLayer;
+    }
 
-    void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );
+    void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory*>& factories );
 
     /** Sets whether updates of the styling widget are blocked. This can be called to prevent
      * the widget being refreshed multiple times when a batch of layer style changes are
@@ -129,7 +138,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     bool mBlockAutoApply;
     QgsUndoWidget* mUndoWidget;
     QgsMapLayer* mCurrentLayer;
-    QgsLabelingWidget *mLabelingWidget;
+    QgsLabelingWidget* mLabelingWidget;
     QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
     QList<QgsMapLayerConfigWidgetFactory*> mPageFactories;
     QMap<int, QgsMapLayerConfigWidgetFactory*> mUserPages;

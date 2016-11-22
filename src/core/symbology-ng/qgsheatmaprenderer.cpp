@@ -32,18 +32,18 @@
 #include <QDomElement>
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
-    , mCalculatedMaxValue( 0 )
-    , mRadius( 10 )
-    , mRadiusPixels( 0 )
-    , mRadiusSquared( 0 )
-    , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
-    , mWeightAttrNum( -1 )
-    , mGradientRamp( nullptr )
-    , mInvertRamp( false )
-    , mExplicitMax( 0.0 )
-    , mRenderQuality( 3 )
-    , mFeaturesRendered( 0 )
+  : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
+  , mCalculatedMaxValue( 0 )
+  , mRadius( 10 )
+  , mRadiusPixels( 0 )
+  , mRadiusSquared( 0 )
+  , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
+  , mWeightAttrNum( -1 )
+  , mGradientRamp( nullptr )
+  , mInvertRamp( false )
+  , mExplicitMax( 0.0 )
+  , mRenderQuality( 3 )
+  , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
 
@@ -298,7 +298,7 @@ QgsHeatmapRenderer* QgsHeatmapRenderer::clone() const
   return newRenderer;
 }
 
-void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext& context )
+void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context )
 {
   //we need to expand out the request extent so that it includes points which are up to the heatmap radius outside of the
   //actual visible extent
@@ -401,7 +401,7 @@ QSet<QString> QgsHeatmapRenderer::usedAttributes() const
   return attributes;
 }
 
-QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer* renderer )
 {
   if ( renderer->type() == QLatin1String( "heatmapRenderer" ) )
   {
@@ -413,7 +413,7 @@ QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   }
 }
 
-void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )
+void QgsHeatmapRenderer::setColorRamp( QgsColorRamp* ramp )
 {
   delete mGradientRamp;
   mGradientRamp = ramp;

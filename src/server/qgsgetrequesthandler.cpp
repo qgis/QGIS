@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 QgsGetRequestHandler::QgsGetRequestHandler( const bool captureOutput )
-    : QgsHttpRequestHandler( captureOutput )
+  : QgsHttpRequestHandler( captureOutput )
 {
 }
 

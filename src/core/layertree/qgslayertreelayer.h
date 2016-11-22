@@ -47,9 +47,15 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
-    QString layerId() const { return mLayerId; }
+    QString layerId() const
+    {
+      return mLayerId;
+    }
 
-    QgsMapLayer* layer() const { return mLayer; }
+    QgsMapLayer* layer() const
+    {
+      return mLayer;
+    }
 
     //! Get layer's name
     //! @note added in 3.0
@@ -58,7 +64,10 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     //! @note added in 3.0
     void setName( const QString& n ) override;
 
-    Qt::CheckState isVisible() const { return mVisible; }
+    Qt::CheckState isVisible() const
+    {
+      return mVisible;
+    }
     void setVisible( Qt::CheckState visible );
 
     static QgsLayerTreeLayer* readXml( QDomElement& element );

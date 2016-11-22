@@ -18,14 +18,14 @@
 #include "qgscharacterselectdialog.h"
 
 
-QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mChar( QChar::Null )
+QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mChar( QChar::Null )
 {
   setupUi( this );
   mCharWidget = new CharacterWidget( this );
   mCharSelectScrollArea->setWidget( mCharWidget );
-  connect( mCharWidget, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
+  connect( mCharWidget, SIGNAL( characterSelected( const QChar& ) ), this, SLOT( setCharacter( const QChar& ) ) );
 }
 
 QgsCharacterSelectorDialog::~QgsCharacterSelectorDialog()

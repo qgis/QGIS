@@ -28,17 +28,17 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 
-QgsFileWidget::QgsFileWidget( QWidget *parent )
-    : QWidget( parent )
-    , mFilePath( QString() )
-    , mButtonVisible( true )
-    , mUseLink( false )
-    , mFullUrl( false )
-    , mDialogTitle( QString() )
-    , mFilter( QString() )
-    , mDefaultRoot( QString() )
-    , mStorageMode( GetFile )
-    , mRelativeStorage( Absolute )
+QgsFileWidget::QgsFileWidget( QWidget* parent )
+  : QWidget( parent )
+  , mFilePath( QString() )
+  , mButtonVisible( true )
+  , mUseLink( false )
+  , mFullUrl( false )
+  , mDialogTitle( QString() )
+  , mFilter( QString() )
+  , mDefaultRoot( QString() )
+  , mStorageMode( GetFile )
+  , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );

@@ -28,7 +28,7 @@
 #include <fcgi_stdio.h>
 
 QgsSOAPRequestHandler::QgsSOAPRequestHandler( const bool captureOutput )
-    : QgsHttpRequestHandler( captureOutput )
+  : QgsHttpRequestHandler( captureOutput )
 {
 }
 

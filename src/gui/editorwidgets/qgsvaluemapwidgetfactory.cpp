@@ -23,7 +23,7 @@
 #include <QSettings>
 
 QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

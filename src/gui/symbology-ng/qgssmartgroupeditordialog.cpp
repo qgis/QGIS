@@ -75,8 +75,8 @@ void QgsSmartGroupCondition::hideRemoveButton( bool hide )
 // Editor Dialog Functions  //
 // ------------------------ //
 QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent )
-    : QDialog( parent )
-    , mStyle( style )
+  : QDialog( parent )
+  , mStyle( style )
 {
   setupUi( this );
 
@@ -105,12 +105,12 @@ void QgsSmartGroupEditorDialog::addCondition()
   // enable the remove buttons when 2nd condition is added
   if ( mConditionMap.count() == 1 )
   {
-    Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
+    Q_FOREACH ( QgsSmartGroupCondition* condition, mConditionMap )
     {
       condition->hideRemoveButton( false );
     }
   }
-  QgsSmartGroupCondition *cond = new QgsSmartGroupCondition( mCondCount, this );
+  QgsSmartGroupCondition* cond = new QgsSmartGroupCondition( mCondCount, this );
   mLayout->addWidget( cond, mCondCount, 0, 1, 1 );
 
   connect( cond, SIGNAL( removed( int ) ), this, SLOT( removeCondition( int ) ) );
@@ -133,7 +133,7 @@ void QgsSmartGroupEditorDialog::removeCondition( int id )
     }
   }
 
-  QgsSmartGroupCondition *cond = mConditionMap.take( id );
+  QgsSmartGroupCondition* cond = mConditionMap.take( id );
   delete cond;
 }
 
@@ -162,17 +162,17 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map
   // clear any defaults
   Q_FOREACH ( int id, mConditionMap.keys() )
   {
-    QgsSmartGroupCondition *cond = mConditionMap.take( id );
+    QgsSmartGroupCondition* cond = mConditionMap.take( id );
     delete cond;
   }
 
   //set the constraints
-  Q_FOREACH ( const QString &constr, constraints )
+  Q_FOREACH ( const QString& constr, constraints )
   {
     QStringList params = map.values( constr );
-    Q_FOREACH ( const QString &param, params )
+    Q_FOREACH ( const QString& param, params )
     {
-      QgsSmartGroupCondition *cond = new QgsSmartGroupCondition( mCondCount, this );
+      QgsSmartGroupCondition* cond = new QgsSmartGroupCondition( mCondCount, this );
       mLayout->addWidget( cond, mCondCount, 0, 1, 1 );
 
       cond->setConstraint( constr );

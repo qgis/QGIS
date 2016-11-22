@@ -66,7 +66,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setRelationEditable( bool editable );
 
     //! this sets the related feature using from the foreign key
-    void setForeignKey( const QVariant &value );
+    void setForeignKey( const QVariant& value );
 
     //! returns the related feature foreign key
     QVariant foreignKey() const;
@@ -74,26 +74,41 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     //! determines if the form of the related feature will be shown
-    bool embedForm() { return mEmbedForm; }
+    bool embedForm()
+    {
+      return mEmbedForm;
+    }
     void setEmbedForm( bool display );
 
     //! determines if the foreign key is shown in a combox box or a read-only line edit
-    bool readOnlySelector() { return mReadOnlySelector; }
+    bool readOnlySelector()
+    {
+      return mReadOnlySelector;
+    }
     void setReadOnlySelector( bool readOnly );
 
     //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
-    bool allowMapIdentification() { return mAllowMapIdentification; }
+    bool allowMapIdentification()
+    {
+      return mAllowMapIdentification;
+    }
     void setAllowMapIdentification( bool allowMapIdentification );
 
     //! If the widget will order the combobox entries by value
-    bool orderByValue() { return mOrderByValue; }
+    bool orderByValue()
+    {
+      return mOrderByValue;
+    }
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
     //! Set the fields for which filter comboboxes will be created
     void setFilterFields( const QStringList& filterFields );
 
     //! determines the open form button is visible in the widget
-    bool openFormButtonVisible() { return mOpenFormButtonVisible; }
+    bool openFormButtonVisible()
+    {
+      return mOpenFormButtonVisible;
+    }
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
     /**
@@ -101,7 +116,10 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      *
      * @return True if filters are chained
      */
-    bool chainFilters() const { return mChainFilters; }
+    bool chainFilters() const
+    {
+      return mChainFilters;
+    }
 
     /**
      * Set if filters are chained.

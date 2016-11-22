@@ -34,10 +34,10 @@ extern "C"
 }
 
 
-QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
-    : QDialog( parent )
-    , QgsGrassSelectBase()
-    , selectedType( 0 )
+QgsGrassSelect::QgsGrassSelect( QWidget* parent, int type )
+  : QDialog( parent )
+  , QgsGrassSelectBase()
+  , selectedType( 0 )
 {
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
@@ -351,7 +351,7 @@ void QgsGrassSelect::setLayers()
                                       elocation->currentText(), emapset->currentText(),
                                       emap->currentText().toUtf8() );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QgsDebugMsg( e.what() );
     return;

@@ -123,7 +123,7 @@ class SERVER_EXPORT QgsWmsConfigParser
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     //! Creates a composition from the project file (probably delegated to the fallback parser)
-    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
+    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml*>& htmlFrameList ) const = 0;
 
     //! Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
@@ -139,7 +139,10 @@ class SERVER_EXPORT QgsWmsConfigParser
 
     virtual bool useLayerIds() const = 0;
 
-    virtual bool allowRequestDefinedDatasources() const { return false; }
+    virtual bool allowRequestDefinedDatasources() const
+    {
+      return false;
+    }
 
     //! Adds highlight layers to the layer registry and to the layer set. Returns the ids of the newly created layers (for later removal)
     static QStringList addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix = QString() );
@@ -153,9 +156,9 @@ class SERVER_EXPORT QgsWmsConfigParser
   private:
 
     //helper methods for 'addHighlightLayers'
-    static void highlightParameters( const QMap<QString, QString>& parameterMap, const QString &parameterPrefix, QStringList& geom, QStringList& symbol, QStringList& label,
+    static void highlightParameters( const QMap<QString, QString>& parameterMap, const QString& parameterPrefix, QStringList& geom, QStringList& symbol, QStringList& label,
                                      QStringList& labelFont, QStringList& labelSize, QStringList& labelWeight, QStringList& labelColor,
-                                     QStringList& labelBufferColor, QStringList &labelBufferSize );
+                                     QStringList& labelBufferColor, QStringList& labelBufferSize );
 
     static QgsVectorLayer* createHighlightLayer( int i, const QString& crsString, QgsGeometry* geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
         const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,

@@ -30,8 +30,8 @@
 #include <QMouseEvent>
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas )
-    : QgsMapToolLabel( canvas )
-    , mDragging( false )
+  : QgsMapToolLabel( canvas )
+  , mDragging( false )
 {
   mToolName = tr( "Show/hide labels" );
   mRubberBand = nullptr;
@@ -104,7 +104,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
   mDragging = false;
 }
 
-void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
+void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent* e )
 {
   QgsMapLayer* layer = mCanvas->currentLayer();
 
@@ -209,7 +209,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
       QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs() );
       selectGeomTrans.transform( ct );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       Q_UNUSED( cse );
       // catch exception for 'invalid' point and leave existing selection unchanged
@@ -241,7 +241,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
 }
 
 bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
-    QList<QgsLabelPosition> &listPos )
+    QList<QgsLabelPosition>& listPos )
 {
   listPos.clear();
 
@@ -277,7 +277,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer* vlayer,
   return true;
 }
 
-bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer *vl, const bool show )
+bool QgsMapToolShowHideLabels::showHide( QgsVectorLayer* vl, const bool show )
 {
   // verify attribute table has proper field setup
   bool showSuccess;

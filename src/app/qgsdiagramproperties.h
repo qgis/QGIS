@@ -30,22 +30,22 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     Q_OBJECT
 
   public:
-    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas );
+    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* canvas );
 
     ~QgsDiagramProperties();
 
     //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.
-    void addAttribute( QTreeWidgetItem * item );
+    void addAttribute( QTreeWidgetItem* item );
 
   public slots:
     void apply();
     void on_mDiagramTypeComboBox_currentIndexChanged( int index );
     void on_mAddCategoryPushButton_clicked();
-    void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void on_mFindMaximumValueButton_clicked();
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();
-    void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void on_mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
     void on_mDiagramStackedWidget_currentChanged( int index );
@@ -78,8 +78,8 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QString mDiagramType;
     QScopedPointer< QgsMarkerSymbol > mSizeLegendSymbol;
 
-    QString guessLegendText( const QString &expression );
-    QgsMapCanvas *mMapCanvas;
+    QString guessLegendText( const QString& expression );
+    QgsMapCanvas* mMapCanvas;
 
     QgsExpressionContext createExpressionContext() const override;
 };
@@ -88,10 +88,10 @@ class EditBlockerDelegate: public QStyledItemDelegate
 {
   public:
     EditBlockerDelegate( QObject* parent = nullptr )
-        : QStyledItemDelegate( parent )
+      : QStyledItemDelegate( parent )
     {}
 
-    virtual QWidget* createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
+    virtual QWidget* createEditor( QWidget*, const QStyleOptionViewItem&, const QModelIndex& ) const override
     {
       return nullptr;
     }

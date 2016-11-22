@@ -33,11 +33,11 @@ class APP_EXPORT QgsSnappingLayerDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsSnappingLayerDelegate( QgsMapCanvas* canvas, QObject *parent = nullptr );
+    explicit QgsSnappingLayerDelegate( QgsMapCanvas* canvas, QObject* parent = nullptr );
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
+    void setEditorData( QWidget* editor, const QModelIndex& index ) const override;
+    void setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const override;
 
   private:
     QgsMapCanvas* mCanvas;
@@ -64,9 +64,9 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     int columnCount( const QModelIndex& parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex& idx ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex& child ) const override;
-    QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
+    QModelIndex sibling( int row, int column, const QModelIndex& idx ) const override;
     QVariant data( const QModelIndex& index, int role ) const override;
     bool setData( const QModelIndex& index, const QVariant& value, int role ) override;
 

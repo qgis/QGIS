@@ -56,7 +56,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
 
   protected:
 
-    bool eventFilter( QObject *obj, QEvent *e ) override;
+    bool eventFilter( QObject* obj, QEvent* e ) override;
 
   private slots:
     void onExpressionChanged( const QString& expression );

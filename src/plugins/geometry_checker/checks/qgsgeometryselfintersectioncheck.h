@@ -27,10 +27,13 @@ class QgsGeometrySelfIntersectionCheckError : public QgsGeometryCheckError
                                            const QgsPointV2& errorLocation,
                                            QgsVertexId vidx,
                                            const QgsGeometryUtils::SelfIntersection& inter )
-        : QgsGeometryCheckError( check, featureId, errorLocation, vidx )
-        , mInter( inter )
+      : QgsGeometryCheckError( check, featureId, errorLocation, vidx )
+      , mInter( inter )
     { }
-    const QgsGeometryUtils::SelfIntersection& intersection() const { return mInter; }
+    const QgsGeometryUtils::SelfIntersection& intersection() const
+    {
+      return mInter;
+    }
     bool isEqual( QgsGeometryCheckError* other ) const override;
     bool handleChanges( const QgsGeometryCheck::Changes& changes ) override;
     void update( const QgsGeometrySelfIntersectionCheckError* other )
@@ -51,12 +54,18 @@ class QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
 
   public:
     explicit QgsGeometrySelfIntersectionCheck( QgsFeaturePool* featurePool )
-        : QgsGeometryCheck( FeatureNodeCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+      : QgsGeometryCheck( FeatureNodeCheck, featurePool ) {}
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Self intersection" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySelfIntersectionCheck" ); }
+    QString errorDescription() const override
+    {
+      return tr( "Self intersection" );
+    }
+    QString errorName() const override
+    {
+      return QStringLiteral( "QgsGeometrySelfIntersectionCheck" );
+    }
   private:
     enum ResolutionMethod { ToMultiObject, ToSingleObjects, NoChange };
 };

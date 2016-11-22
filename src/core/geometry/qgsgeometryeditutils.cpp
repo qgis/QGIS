@@ -127,7 +127,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometr
     QgsCurve* curve = dynamic_cast<QgsCurve*>( part );
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
-      QgsCurvePolygon *poly = nullptr;
+      QgsCurvePolygon* poly = nullptr;
       if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
       {
         poly = new QgsPolygonV2();
@@ -145,7 +145,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometr
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon )
     {
-      QgsGeometryCollection *parts = static_cast<QgsGeometryCollection*>( part );
+      QgsGeometryCollection* parts = static_cast<QgsGeometryCollection*>( part );
 
       int i;
       int n = geomCollection->numGeometries();
@@ -225,7 +225,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry* geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
+QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures )
 {
   QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( geomEngine.isNull() )

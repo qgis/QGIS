@@ -41,12 +41,15 @@
 
 QString QgsCptCityArchive::mDefaultArchiveName;
 QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::mArchiveRegistry;
-QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry() { return mArchiveRegistry; }
+QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry()
+{
+  return mArchiveRegistry;
+}
 QMap< QString, QMap< QString, QString > > QgsCptCityArchive::mCopyingInfoMap;
 
 QgsCptCityArchive::QgsCptCityArchive( const QString& archiveName, const QString& baseDir )
-    : mArchiveName( archiveName )
-    , mBaseDir( baseDir )
+  : mArchiveName( archiveName )
+  , mBaseDir( baseDir )
 {
   QgsDebugMsg( "archiveName = " + archiveName + " baseDir = " + baseDir );
 
@@ -136,7 +139,7 @@ QString QgsCptCityArchive::defaultBaseDir()
 }
 
 
-QString QgsCptCityArchive::findFileName( const QString & target, const QString & startDir, const QString & baseDir )
+QString QgsCptCityArchive::findFileName( const QString& target, const QString& startDir, const QString& baseDir )
 {
   // QgsDebugMsg( "target= " + target +  " startDir= " + startDir +  " baseDir= " + baseDir );
 
@@ -426,7 +429,7 @@ QgsCptCityArchive* QgsCptCityArchive::defaultArchive()
 void QgsCptCityArchive::initArchive( const QString& archiveName, const QString& archiveBaseDir )
 {
   QgsDebugMsg( "archiveName = " + archiveName + " archiveBaseDir = " + archiveBaseDir );
-  QgsCptCityArchive *archive = new QgsCptCityArchive( archiveName, archiveBaseDir );
+  QgsCptCityArchive* archive = new QgsCptCityArchive( archiveName, archiveBaseDir );
   if ( mArchiveRegistry.contains( archiveName ) )
     delete mArchiveRegistry[ archiveName ];
   mArchiveRegistry[ archiveName ] = archive;
@@ -497,9 +500,9 @@ void QgsCptCityArchive::clearArchives()
 QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
                                         const QString& name, const QString& path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
-    : QObject()
-    , mType( type ), mParent( parent ), mPopulated( false )
-    , mName( name ), mPath( path ), mValid( true )
+  : QObject()
+  , mType( type ), mParent( parent ), mPopulated( false )
+  , mName( name ), mPath( path ), mValid( true )
 {
 }
 
@@ -524,7 +527,7 @@ void QgsCptCityDataItem::populate()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QVector<QgsCptCityDataItem*> children = createChildren();
-  Q_FOREACH ( QgsCptCityDataItem *child, children )
+  Q_FOREACH ( QgsCptCityDataItem* child, children )
   {
     // initialization, do not refresh! That would result in infinite loop (beginInsertItems->rowCount->populate)
     addChildItem( child );
@@ -547,7 +550,7 @@ int QgsCptCityDataItem::leafCount() const
     return 0;
 
   int count = 0;
-  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
+  Q_FOREACH ( QgsCptCityDataItem* child, mChildren )
   {
     if ( child )
       count += child->leafCount();
@@ -561,7 +564,7 @@ bool QgsCptCityDataItem::hasChildren()
   return ( mPopulated ? !mChildren.isEmpty() : true );
 }
 
-void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem * child, bool refresh )
+void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem* child, bool refresh )
 {
   QgsDebugMsg( QString( "add child #%1 - %2 - %3" ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
 
@@ -598,7 +601,7 @@ void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem * child, bool refresh 
   if ( refresh )
     emit endInsertItems();
 }
-void QgsCptCityDataItem::deleteChildItem( QgsCptCityDataItem * child )
+void QgsCptCityDataItem::deleteChildItem( QgsCptCityDataItem* child )
 {
   // QgsDebugMsg( "mName = " + child->mName );
   int i = mChildren.indexOf( child );
@@ -609,7 +612,7 @@ void QgsCptCityDataItem::deleteChildItem( QgsCptCityDataItem * child )
   emit endRemoveItems();
 }
 
-QgsCptCityDataItem * QgsCptCityDataItem::removeChildItem( QgsCptCityDataItem * child )
+QgsCptCityDataItem* QgsCptCityDataItem::removeChildItem( QgsCptCityDataItem* child )
 {
   // QgsDebugMsg( "mName = " + child->mName );
   int i = mChildren.indexOf( child );
@@ -625,7 +628,7 @@ QgsCptCityDataItem * QgsCptCityDataItem::removeChildItem( QgsCptCityDataItem * c
   return child;
 }
 
-int QgsCptCityDataItem::findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item )
+int QgsCptCityDataItem::findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem* item )
 {
   for ( int i = 0; i < items.size(); i++ )
   {
@@ -646,19 +649,19 @@ void QgsCptCityDataItem::refresh()
 
   // Remove no more present items
   QVector<QgsCptCityDataItem*> remove;
-  Q_FOREACH ( QgsCptCityDataItem *child, mChildren )
+  Q_FOREACH ( QgsCptCityDataItem* child, mChildren )
   {
     if ( findItem( items, child ) >= 0 )
       continue;
     remove.append( child );
   }
-  Q_FOREACH ( QgsCptCityDataItem *child, remove )
+  Q_FOREACH ( QgsCptCityDataItem* child, remove )
   {
     deleteChildItem( child );
   }
 
   // Add new items
-  Q_FOREACH ( QgsCptCityDataItem *item, items )
+  Q_FOREACH ( QgsCptCityDataItem* item, items )
   {
     // Is it present in childs?
     if ( findItem( mChildren, item ) >= 0 )
@@ -672,7 +675,7 @@ void QgsCptCityDataItem::refresh()
   QApplication::restoreOverrideCursor();
 }
 
-bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
+bool QgsCptCityDataItem::equal( const QgsCptCityDataItem* other )
 {
   if ( metaObject()->className() == other->metaObject()->className() &&
        mPath == other->path() )
@@ -686,9 +689,9 @@ bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path, const QString& variantName, bool initialize )
-    : QgsCptCityDataItem( ColorRamp, parent, name, path )
-    , mInitialised( false )
-    , mRamp( path, variantName, false )
+  : QgsCptCityDataItem( ColorRamp, parent, name, path )
+  , mInitialised( false )
+  , mRamp( path, variantName, false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
@@ -698,9 +701,9 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path, const QStringList& variantList, bool initialize )
-    : QgsCptCityDataItem( ColorRamp, parent, name, path )
-    , mInitialised( false )
-    , mRamp( path, variantList, QString(), false )
+  : QgsCptCityDataItem( ColorRamp, parent, name, path )
+  , mInitialised( false )
+  , mRamp( path, variantList, QString(), false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
@@ -764,7 +767,7 @@ void QgsCptCityColorRampItem::init()
 
 }
 
-bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
+bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem* other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
   if ( type() != other->type() )
@@ -772,7 +775,7 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
     return false;
   }
   //const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *> ( other );
-  const QgsCptCityColorRampItem *o = dynamic_cast<const QgsCptCityColorRampItem *>( other );
+  const QgsCptCityColorRampItem* o = dynamic_cast<const QgsCptCityColorRampItem*>( other );
   return o &&
          mPath == o->mPath &&
          mName == o->mName &&
@@ -815,8 +818,8 @@ QIcon QgsCptCityColorRampItem::icon( QSize size )
 // ---------------------------------------------------------------------
 QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path )
-    : QgsCptCityDataItem( Collection, parent, name, path )
-    , mPopulatedRamps( false )
+  : QgsCptCityDataItem( Collection, parent, name, path )
+  , mPopulatedRamps( false )
 {
 }
 
@@ -878,7 +881,7 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
 //-----------------------------------------------------------------------
 QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path )
-    : QgsCptCityCollectionItem( parent, name, path )
+  : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Directory;
   mValid = QDir( QgsCptCityArchive::defaultBaseDir() + '/' + mPath ).exists();
@@ -1077,7 +1080,7 @@ QStringList QgsCptCityDirectoryItem::dirEntries() const
                '/' + mPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
 }
 
-bool QgsCptCityDirectoryItem::equal( const QgsCptCityDataItem *other )
+bool QgsCptCityDirectoryItem::equal( const QgsCptCityDataItem* other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
   if ( type() != other->type() )
@@ -1140,7 +1143,7 @@ QgsCptCityDataItem* QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem* paren
 //-----------------------------------------------------------------------
 QgsCptCitySelectionItem::QgsCptCitySelectionItem( QgsCptCityDataItem* parent,
     const QString& name, const QString& path )
-    : QgsCptCityCollectionItem( parent, name, path )
+  : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Selection;
   mValid = ! path.isNull();
@@ -1258,7 +1261,7 @@ void QgsCptCitySelectionItem::parseXml()
   }
 }
 
-bool QgsCptCitySelectionItem::equal( const QgsCptCityDataItem *other )
+bool QgsCptCitySelectionItem::equal( const QgsCptCityDataItem* other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
   if ( type() != other->type() )
@@ -1271,8 +1274,8 @@ bool QgsCptCitySelectionItem::equal( const QgsCptCityDataItem *other )
 //-----------------------------------------------------------------------
 QgsCptCityAllRampsItem::QgsCptCityAllRampsItem( QgsCptCityDataItem* parent,
     const QString& name, const QVector<QgsCptCityDataItem*>& items )
-    : QgsCptCityCollectionItem( parent, name, QString() )
-    , mItems( items )
+  : QgsCptCityCollectionItem( parent, name, QString() )
+  , mItems( items )
 {
   mType = AllRamps;
   mValid = true;
@@ -1303,11 +1306,11 @@ QVector<QgsCptCityDataItem*> QgsCptCityAllRampsItem::createChildren()
 
 //-----------------------------------------------------------------------
 
-QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
+QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject* parent,
     QgsCptCityArchive* archive, ViewType viewType )
-    : QAbstractItemModel( parent )
-    , mArchive( archive )
-    , mViewType( viewType )
+  : QAbstractItemModel( parent )
+  , mArchive( archive )
+  , mViewType( viewType )
 {
   Q_ASSERT( mArchive );
   QgsDebugMsg( "archiveName = " + archive->archiveName() + " viewType=" + static_cast< int >( viewType ) );
@@ -1345,7 +1348,7 @@ void QgsCptCityBrowserModel::removeRootItems()
   mRootItems.clear();
 }
 
-Qt::ItemFlags QgsCptCityBrowserModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsCptCityBrowserModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
     return Qt::ItemFlags();
@@ -1355,12 +1358,12 @@ Qt::ItemFlags QgsCptCityBrowserModel::flags( const QModelIndex & index ) const
   return flags;
 }
 
-QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) const
+QVariant QgsCptCityBrowserModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
 
-  QgsCptCityDataItem *item = dataItem( index );
+  QgsCptCityDataItem* item = dataItem( index );
 
   if ( !item )
   {
@@ -1418,7 +1421,7 @@ QVariant QgsCptCityBrowserModel::headerData( int section, Qt::Orientation orient
   return QVariant();
 }
 
-int QgsCptCityBrowserModel::rowCount( const QModelIndex &parent ) const
+int QgsCptCityBrowserModel::rowCount( const QModelIndex& parent ) const
 {
   //qDebug("rowCount: idx: (valid %d) %d %d", parent.isValid(), parent.row(), parent.column());
 
@@ -1430,22 +1433,22 @@ int QgsCptCityBrowserModel::rowCount( const QModelIndex &parent ) const
   else
   {
     // ordinary item: number of its children
-    QgsCptCityDataItem *item = dataItem( parent );
+    QgsCptCityDataItem* item = dataItem( parent );
     return item ? item->rowCount() : 0;
   }
 }
 
-bool QgsCptCityBrowserModel::hasChildren( const QModelIndex &parent ) const
+bool QgsCptCityBrowserModel::hasChildren( const QModelIndex& parent ) const
 {
   if ( !parent.isValid() )
     return true; // root item: its children are top level items
 
-  QgsCptCityDataItem *item = dataItem( parent );
+  QgsCptCityDataItem* item = dataItem( parent );
 
   return item && item->hasChildren();
 }
 
-int QgsCptCityBrowserModel::columnCount( const QModelIndex &parent ) const
+int QgsCptCityBrowserModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 2;
@@ -1465,7 +1468,7 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
     for ( int i = 0; i < rowCount( theIndex ); i++ )
     {
       QModelIndex idx = index( i, 0, theIndex );
-      QgsCptCityDataItem *item = dataItem( idx );
+      QgsCptCityDataItem* item = dataItem( idx );
       if ( !item )
         return QModelIndex(); // an error occurred
 
@@ -1490,7 +1493,7 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
     for ( ; i < rowCount( theIndex ); i++ )
     {
       QModelIndex idx = index( i, 0, theIndex );
-      QgsCptCityDataItem *item = dataItem( idx );
+      QgsCptCityDataItem* item = dataItem( idx );
       if ( !item )
         return QModelIndex(); // an error occurred
 
@@ -1512,7 +1515,7 @@ QModelIndex QgsCptCityBrowserModel::findPath( const QString& path )
       // if we are using a selection collection, search for target in the mapping in this group
       if ( item->type() == QgsCptCityDataItem::Selection )
       {
-        const QgsCptCitySelectionItem* selItem = dynamic_cast<const QgsCptCitySelectionItem *>( item );
+        const QgsCptCitySelectionItem* selItem = dynamic_cast<const QgsCptCitySelectionItem*>( item );
         if ( selItem )
         {
           Q_FOREACH ( QString childPath, selItem->selectionsList() )
@@ -1570,26 +1573,26 @@ void QgsCptCityBrowserModel::refresh( const QString& path )
   }
 }
 
-QModelIndex QgsCptCityBrowserModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsCptCityBrowserModel::index( int row, int column, const QModelIndex& parent ) const
 {
-  QgsCptCityDataItem *p = dataItem( parent );
-  const QVector<QgsCptCityDataItem*> &items = p ? p->children() : mRootItems;
-  QgsCptCityDataItem *item = items.value( row, nullptr );
+  QgsCptCityDataItem* p = dataItem( parent );
+  const QVector<QgsCptCityDataItem*>& items = p ? p->children() : mRootItems;
+  QgsCptCityDataItem* item = items.value( row, nullptr );
   return item ? createIndex( row, column, item ) : QModelIndex();
 }
 
-QModelIndex QgsCptCityBrowserModel::parent( const QModelIndex &index ) const
+QModelIndex QgsCptCityBrowserModel::parent( const QModelIndex& index ) const
 {
-  QgsCptCityDataItem *item = dataItem( index );
+  QgsCptCityDataItem* item = dataItem( index );
   if ( !item )
     return QModelIndex();
 
   return findItem( item->parent() );
 }
 
-QModelIndex QgsCptCityBrowserModel::findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent ) const
+QModelIndex QgsCptCityBrowserModel::findItem( QgsCptCityDataItem* item, QgsCptCityDataItem* parent ) const
 {
-  const QVector<QgsCptCityDataItem*> &items = parent ? parent->children() : mRootItems;
+  const QVector<QgsCptCityDataItem*>& items = parent ? parent->children() : mRootItems;
 
   for ( int i = 0; i < items.size(); i++ )
   {
@@ -1607,7 +1610,7 @@ QModelIndex QgsCptCityBrowserModel::findItem( QgsCptCityDataItem *item, QgsCptCi
 /* Refresh item */
 void QgsCptCityBrowserModel::refresh( const QModelIndex& theIndex )
 {
-  QgsCptCityDataItem *item = dataItem( theIndex );
+  QgsCptCityDataItem* item = dataItem( theIndex );
   if ( !item )
     return;
 
@@ -1615,7 +1618,7 @@ void QgsCptCityBrowserModel::refresh( const QModelIndex& theIndex )
   item->refresh();
 }
 
-void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int first, int last )
+void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem* parent, int first, int last )
 {
   QgsDebugMsg( "parent mPath = " + parent->path() );
   QModelIndex idx = findItem( parent );
@@ -1629,7 +1632,7 @@ void QgsCptCityBrowserModel::endInsertItems()
 {
   endInsertRows();
 }
-void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem *parent, int first, int last )
+void QgsCptCityBrowserModel::beginRemoveItems( QgsCptCityDataItem* parent, int first, int last )
 {
   QgsDebugMsg( "parent mPath = " + parent->path() );
   QModelIndex idx = findItem( parent );
@@ -1649,7 +1652,7 @@ void QgsCptCityBrowserModel::connectItem( QgsCptCityDataItem* item )
   connect( item, &QgsCptCityDataItem::endRemoveItems, this, &QgsCptCityBrowserModel::endRemoveItems );
 }
 
-bool QgsCptCityBrowserModel::canFetchMore( const QModelIndex & parent ) const
+bool QgsCptCityBrowserModel::canFetchMore( const QModelIndex& parent ) const
 {
   QgsCptCityDataItem* item = dataItem( parent );
   // fetch all items initially so we know which items have children
@@ -1667,7 +1670,7 @@ bool QgsCptCityBrowserModel::canFetchMore( const QModelIndex & parent ) const
   return ( ! item->isPopulated() );
 }
 
-void QgsCptCityBrowserModel::fetchMore( const QModelIndex & parent )
+void QgsCptCityBrowserModel::fetchMore( const QModelIndex& parent )
 {
   QgsCptCityDataItem* item = dataItem( parent );
   if ( item )
@@ -1688,23 +1691,23 @@ QStringList QgsCptCityBrowserModel::mimeTypes() const
   return types;
 }
 
-QMimeData * QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData* QgsCptCityBrowserModel::mimeData( const QModelIndexList& indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     if ( index.isValid() )
     {
       QgsCptCityDataItem* ptr = ( QgsCptCityDataItem* ) index.internalPointer();
       if ( ptr->type() != QgsCptCityDataItem::Layer ) continue;
-      QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
+      QgsLayerItem* layer = ( QgsLayerItem* ) ptr;
       lst.append( QgsMimeDataUtils::Uri( ayer ) );
     }
   }
   return QgsMimeDataUtils::encodeUriList( lst );
 }
 
-bool QgsCptCityBrowserModel::dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
+bool QgsCptCityBrowserModel::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
   Q_UNUSED( row );
   Q_UNUSED( column );
@@ -1720,10 +1723,10 @@ bool QgsCptCityBrowserModel::dropMimeData( const QMimeData * data, Qt::DropActio
 }
 #endif
 
-QgsCptCityDataItem *QgsCptCityBrowserModel::dataItem( const QModelIndex &idx ) const
+QgsCptCityDataItem* QgsCptCityBrowserModel::dataItem( const QModelIndex& idx ) const
 {
-  void *v = idx.internalPointer();
-  QgsCptCityDataItem *d = reinterpret_cast<QgsCptCityDataItem*>( v );
+  void* v = idx.internalPointer();
+  QgsCptCityDataItem* d = reinterpret_cast<QgsCptCityDataItem*>( v );
   Q_ASSERT( !v || d );
   return d;
 }

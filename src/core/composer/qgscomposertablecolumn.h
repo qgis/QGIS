@@ -46,7 +46,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.3
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& columnElem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& columnElem, QDomDocument& doc ) const;
 
     /** Reads the column's properties from xml.
      * @param columnElem a QDomElement holding the column's desired properties.
@@ -60,14 +60,20 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.5
      * @see setWidth
      */
-    double width() const { return mWidth; }
+    double width() const
+    {
+      return mWidth;
+    }
 
     /** Sets the width for a column.
      * @param width column width in mm, or 0 if column width is to be automatically calculated.
      * @note added in 2.5
      * @see width
      */
-    void setWidth( const double width ) { mWidth = width; }
+    void setWidth( const double width )
+    {
+      mWidth = width;
+    }
 
     /** Returns the heading for a column, which is the value displayed in the columns
      * header cell.
@@ -75,7 +81,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.3
      * @see setHeading
      */
-    QString heading() const { return mHeading; }
+    QString heading() const
+    {
+      return mHeading;
+    }
 
     /** Sets the heading for a column, which is the value displayed in the columns
      * header cell.
@@ -83,7 +92,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.3
      * @see heading
      */
-    void setHeading( const QString& heading ) { mHeading = heading; }
+    void setHeading( const QString& heading )
+    {
+      mHeading = heading;
+    }
 
     /** Returns the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -92,7 +104,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see setHAlignment
      * @see vAlignment
      */
-    Qt::AlignmentFlag hAlignment() const { return mHAlignment; }
+    Qt::AlignmentFlag hAlignment() const
+    {
+      return mHAlignment;
+    }
 
     /** Sets the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -101,7 +116,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see hAlignment
      * @see setVAlignment
      */
-    void setHAlignment( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; }
+    void setHAlignment( Qt::AlignmentFlag alignment )
+    {
+      mHAlignment = alignment;
+    }
 
     /** Returns the vertical alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -110,7 +128,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see setVAlignment
      * @see hAlignment
      */
-    Qt::AlignmentFlag vAlignment() const { return mVAlignment; }
+    Qt::AlignmentFlag vAlignment() const
+    {
+      return mVAlignment;
+    }
 
     /** Sets the vertical alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -119,7 +140,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see vAlignment
      * @see setHAlignment
      */
-    void setVAlignment( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; }
+    void setVAlignment( Qt::AlignmentFlag alignment )
+    {
+      mVAlignment = alignment;
+    }
 
     /** Returns the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
@@ -128,7 +152,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see setAttribute
      */
-    QString attribute() const { return mAttribute; }
+    QString attribute() const
+    {
+      return mAttribute;
+    }
 
     /** Sets the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
@@ -137,7 +164,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
      */
-    void setAttribute( const QString& attribute ) { mAttribute = attribute; }
+    void setAttribute( const QString& attribute )
+    {
+      mAttribute = attribute;
+    }
 
     /** Returns the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
@@ -147,7 +177,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see setSortOrder
      * @see sortByRank
      */
-    Qt::SortOrder sortOrder() const { return mSortOrder; }
+    Qt::SortOrder sortOrder() const
+    {
+      return mSortOrder;
+    }
 
     /** Sets the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
@@ -157,7 +190,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see sortOrder
      * @see setSortByRank
      */
-    void setSortOrder( Qt::SortOrder sortOrder ) { mSortOrder = sortOrder; }
+    void setSortOrder( Qt::SortOrder sortOrder )
+    {
+      mSortOrder = sortOrder;
+    }
 
     /** Returns the sort rank for the column. If the sort rank is > 0 then the column
      * will be sorted in the table. The sort rank specifies the priority given to the
@@ -171,7 +207,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see setSortByRank
      * @see sortOrder
      */
-    int sortByRank() const { return mSortByRank; }
+    int sortByRank() const
+    {
+      return mSortByRank;
+    }
 
     /** Sets the sort rank for the column. If the sort rank is > 0 then the column
      * will be sorted in the table. The sort rank specifies the priority given to the
@@ -185,7 +224,10 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @see sortByRank
      * @see setSortOrder
      */
-    void setSortByRank( int sortByRank ) { mSortByRank = sortByRank; }
+    void setSortByRank( int sortByRank )
+    {
+      mSortByRank = sortByRank;
+    }
 
     /** Creates a duplicate column which is a deep copy of this column.
      * @returns a new QgsComposerTableColumn with same properties as this column.

@@ -28,11 +28,11 @@ extern "C"
 #include <grass/version.h>
 }
 
-QgsGrassOptions::QgsGrassOptions( QWidget *parent )
-    : QgsOptionsDialogBase( QStringLiteral( "GrassOptions" ), parent )
-    , QgsGrassOptionsBase()
-    , mImportSettingsPath( QStringLiteral( "/GRASS/browser/import" ) )
-    , mModulesSettingsPath( QStringLiteral( "/GRASS/modules/config" ) )
+QgsGrassOptions::QgsGrassOptions( QWidget* parent )
+  : QgsOptionsDialogBase( QStringLiteral( "GrassOptions" ), parent )
+  , QgsGrassOptionsBase()
+  , mImportSettingsPath( QStringLiteral( "/GRASS/browser/import" ) )
+  , mModulesSettingsPath( QStringLiteral( "/GRASS/modules/config" ) )
 {
   setupUi( this );
   initOptionsBase( false );
@@ -55,8 +55,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   mGisbaseLineEdit->setText( customGisbaseDir );
   gisbaseChanged();
   connect( mGisbaseDefaultRadioButton, SIGNAL( toggled( bool ) ), SLOT( gisbaseChanged() ) );
-  connect( mGisbaseLineEdit, SIGNAL( textChanged( const QString & ) ), SLOT( gisbaseChanged() ) );
-  connect( mGisbaseLineEdit, SIGNAL( textEdited( const QString & ) ), SLOT( gisbaseChanged() ) );
+  connect( mGisbaseLineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( gisbaseChanged() ) );
+  connect( mGisbaseLineEdit, SIGNAL( textEdited( const QString& ) ), SLOT( gisbaseChanged() ) );
   connect( mGisbaseGroupBox, SIGNAL( collapsedStateChanged( bool ) ), SLOT( gisbaseChanged() ) );
 
   // Modules

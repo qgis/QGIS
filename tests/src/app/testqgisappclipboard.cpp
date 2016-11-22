@@ -54,12 +54,12 @@ class TestQgisAppClipboard : public QObject
     void clipboardLogic(); //test clipboard logic
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp* mQgisApp;
     QString mTestDataDir;
 };
 
 TestQgisAppClipboard::TestQgisAppClipboard()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -100,7 +100,7 @@ void TestQgisAppClipboard::copyPaste()
     // add vector layer
     QString filePath = mTestDataDir + fileName;
     qDebug() << "add vector layer: " << filePath;
-    QgsVectorLayer *inputLayer = mQgisApp->addVectorLayer( filePath, fileName, QStringLiteral( "ogr" ) );
+    QgsVectorLayer* inputLayer = mQgisApp->addVectorLayer( filePath, fileName, QStringLiteral( "ogr" ) );
     QVERIFY( inputLayer->isValid() );
 
     // copy all features to clipboard
@@ -112,7 +112,7 @@ void TestQgisAppClipboard::copyPaste()
 
     QVERIFY( features.size() == filesCounts.value( fileName ) );
 
-    QgsVectorLayer *pastedLayer = mQgisApp->pasteAsNewMemoryVector( QStringLiteral( "pasted" ) );
+    QgsVectorLayer* pastedLayer = mQgisApp->pasteAsNewMemoryVector( QStringLiteral( "pasted" ) );
     QVERIFY( pastedLayer );
     QVERIFY( pastedLayer->isValid() );
     qDebug() << pastedLayer->featureCount() << " features in pasted layer";

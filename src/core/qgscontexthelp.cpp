@@ -26,7 +26,7 @@
 #include "qgslogger.h"
 
 
-QgsContextHelp *QgsContextHelp::gContextHelp = nullptr;  // Singleton instance
+QgsContextHelp* QgsContextHelp::gContextHelp = nullptr;  // Singleton instance
 
 void QgsContextHelp::run( const QString& context )
 {
@@ -49,13 +49,13 @@ QgsContextHelp::~QgsContextHelp()
   delete mProcess;
 }
 
-QProcess *QgsContextHelp::start()
+QProcess* QgsContextHelp::start()
 {
   // Get the path to the help viewer
   QString helpPath = QgsApplication::helpAppPath();
   QgsDebugMsg( QString( "Help path is %1" ).arg( helpPath ) );
 
-  QProcess *process = new QProcess;
+  QProcess* process = new QProcess;
 
   // Delete this object if the process terminates
   connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( processExited() ) );

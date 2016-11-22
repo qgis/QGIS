@@ -16,9 +16,9 @@
 #include "qgslistwidget.h"
 
 QgsListWidget::QgsListWidget( QVariant::Type subType, QWidget* parent )
-    : QgsTableWidgetBase( parent )
-    , mModel( subType, this )
-    , mSubType( subType )
+  : QgsTableWidgetBase( parent )
+  , mModel( subType, this )
+  , mSubType( subType )
 {
   init( &mModel );
 }
@@ -31,9 +31,9 @@ void QgsListWidget::setList( const QVariantList& list )
 
 
 ///@cond PRIVATE
-QgsListModel::QgsListModel( QVariant::Type subType, QObject *parent ) :
-    QAbstractTableModel( parent ),
-    mSubType( subType )
+QgsListModel::QgsListModel( QVariant::Type subType, QObject* parent ) :
+  QAbstractTableModel( parent ),
+  mSubType( subType )
 {
 }
 
@@ -72,7 +72,7 @@ int QgsListModel::rowCount( const QModelIndex& parent ) const
   return mLines.count();
 }
 
-int QgsListModel::columnCount( const QModelIndex & parent ) const
+int QgsListModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 1;
@@ -99,7 +99,7 @@ QVariant QgsListModel::data( const QModelIndex& index, int role ) const
   return mLines.at( index.row() );
 }
 
-bool QgsListModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsListModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   if ( index.row() < 0 || index.row() >= mLines.count() ||
        index.column() != 0 || role != Qt::EditRole )
@@ -111,12 +111,12 @@ bool QgsListModel::setData( const QModelIndex & index, const QVariant & value, i
   return true;
 }
 
-Qt::ItemFlags QgsListModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsListModel::flags( const QModelIndex& index ) const
 {
   return QAbstractTableModel::flags( index ) | Qt::ItemIsEditable;
 }
 
-bool QgsListModel::insertRows( int position, int rows, const QModelIndex & parent )
+bool QgsListModel::insertRows( int position, int rows, const QModelIndex& parent )
 {
   Q_UNUSED( parent );
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
@@ -128,7 +128,7 @@ bool QgsListModel::insertRows( int position, int rows, const QModelIndex & paren
   return true;
 }
 
-bool QgsListModel::removeRows( int position, int rows, const QModelIndex &parent )
+bool QgsListModel::removeRows( int position, int rows, const QModelIndex& parent )
 {
   Q_UNUSED( parent );
   beginRemoveRows( QModelIndex(), position, position + rows - 1 );

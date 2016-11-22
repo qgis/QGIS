@@ -90,14 +90,22 @@ class CORE_EXPORT QgsLogger
 
     /** Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
      the function returns 1 if QGISDEBUG is defined and 0 if not*/
-    static int debugLevel() { init(); return sDebugLevel; }
+    static int debugLevel()
+    {
+      init();
+      return sDebugLevel;
+    }
 
     //! Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
     static void logMessageToFile( const QString& theMessage );
 
     /** Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
      * otherwise returns a file name for writing log messages to.*/
-    static const QString logFile() { init(); return sLogFile; }
+    static const QString logFile()
+    {
+      init();
+      return sLogFile;
+    }
 
   private:
     static void init();
@@ -116,9 +124,9 @@ class QgsScopeLogger // clazy:exclude=rule-of-three
 {
   public:
     QgsScopeLogger( const char* file, const char* func, int line )
-        : _file( file )
-        , _func( func )
-        , _line( line )
+      : _file( file )
+      , _func( func )
+      , _line( line )
     {
       QgsLogger::debug( QStringLiteral( "Entering." ), 1, _file, _func, _line );
     }
@@ -127,8 +135,8 @@ class QgsScopeLogger // clazy:exclude=rule-of-three
       QgsLogger::debug( QStringLiteral( "Leaving." ), 1, _file, _func, _line );
     }
   private:
-    const char *_file;
-    const char *_func;
+    const char* _file;
+    const char* _func;
     int _line;
 };
 

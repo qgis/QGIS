@@ -46,7 +46,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     //! Show the dialog box
     void run() override;
     //! draw some arbitary text to the screen
-    void render( QPainter * ) override;
+    void render( QPainter* ) override;
 
     //! try to calculate the direction for the north arrow. Sets the
     //! private class rotation variable. If unable to calculate the

@@ -20,7 +20,7 @@
 #include "qgsmaplayer.h"
 
 QgsDatumTransformStore::QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs )
-    : mDestCRS( destCrs )
+  : mDestCRS( destCrs )
 {
 }
 

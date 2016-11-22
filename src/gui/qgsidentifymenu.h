@@ -27,9 +27,12 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     Q_OBJECT
 
   public:
-    explicit CustomActionRegistry( QObject *parent );
+    explicit CustomActionRegistry( QObject* parent );
     // remove all actions
-    void clear() { mMapLayerActionList.clear(); }
+    void clear()
+    {
+      mMapLayerActionList.clear();
+    }
 };
 ///@endcond
 
@@ -54,33 +57,33 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     struct ActionData
     {
       ActionData()
-          : mIsValid( false )
-          , mAllResults( false )
-          , mIsExternalAction( false )
-          , mLayer( nullptr )
-          , mFeatureId( 0 )
-          , mLevel( LayerLevel )
-          , mMapLayerAction( nullptr )
+        : mIsValid( false )
+        , mAllResults( false )
+        , mIsExternalAction( false )
+        , mLayer( nullptr )
+        , mFeatureId( 0 )
+        , mLevel( LayerLevel )
+        , mMapLayerAction( nullptr )
       {}
 
       ActionData( QgsMapLayer* layer, QgsMapLayerAction* mapLayerAction = nullptr )
-          : mIsValid( true )
-          , mAllResults( !layer )
-          , mIsExternalAction( nullptr != mapLayerAction )
-          , mLayer( layer )
-          , mFeatureId( 0 )
-          , mLevel( LayerLevel )
-          , mMapLayerAction( mapLayerAction )
+        : mIsValid( true )
+        , mAllResults( !layer )
+        , mIsExternalAction( nullptr != mapLayerAction )
+        , mLayer( layer )
+        , mFeatureId( 0 )
+        , mLevel( LayerLevel )
+        , mMapLayerAction( mapLayerAction )
       {}
 
       ActionData( QgsMapLayer* layer, QgsFeatureId fid, QgsMapLayerAction* mapLayerAction = nullptr )
-          : mIsValid( true )
-          , mAllResults( false )
-          , mIsExternalAction( nullptr != mapLayerAction )
-          , mLayer( layer )
-          , mFeatureId( fid )
-          , mLevel( FeatureLevel )
-          , mMapLayerAction( mapLayerAction )
+        : mIsValid( true )
+        , mAllResults( false )
+        , mIsExternalAction( nullptr != mapLayerAction )
+        , mLayer( layer )
+        , mFeatureId( fid )
+        , mLevel( FeatureLevel )
+        , mMapLayerAction( mapLayerAction )
       {}
 
       bool mIsValid;
@@ -100,12 +103,24 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     ~QgsIdentifyMenu();
 
     //! define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
-    void setAllowMultipleReturn( bool multipleReturn ) { mAllowMultipleReturn = multipleReturn;}
-    bool allowMultipleReturn() { return mAllowMultipleReturn;}
+    void setAllowMultipleReturn( bool multipleReturn )
+    {
+      mAllowMultipleReturn = multipleReturn;
+    }
+    bool allowMultipleReturn()
+    {
+      return mAllowMultipleReturn;
+    }
 
     //! define if the menu will be shown with a single idetify result
-    void setExecWithSingleResult( bool execWithSingleResult ) { mExecWithSingleResult = execWithSingleResult;}
-    bool execWithSingleResult() { return mExecWithSingleResult;}
+    void setExecWithSingleResult( bool execWithSingleResult )
+    {
+      mExecWithSingleResult = execWithSingleResult;
+    }
+    bool execWithSingleResult()
+    {
+      return mExecWithSingleResult;
+    }
 
     /**
      * @brief define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
@@ -113,28 +128,49 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      * @note (1) attribute actions are defined by the user in the layer properties @see QgsAction
      * @note (2) map layer actions are built-in c++ actions or actions which are defined by a python plugin @see QgsMapLayerActionRegistry
      */
-    void setShowFeatureActions( bool showFeatureActions ) { mShowFeatureActions = showFeatureActions; }
-    bool showFeatureActions() { return mShowFeatureActions;}
+    void setShowFeatureActions( bool showFeatureActions )
+    {
+      mShowFeatureActions = showFeatureActions;
+    }
+    bool showFeatureActions()
+    {
+      return mShowFeatureActions;
+    }
 
     /**
      * @brief setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
      * @note external action can be either custom actions or feature / map layer actions (@see setShowFeatureActions)
      */
-    void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
-    bool resultsIfExternalAction() {return mResultsIfExternalAction;}
+    void setResultsIfExternalAction( bool resultsIfExternalAction )
+    {
+      mResultsIfExternalAction = resultsIfExternalAction;
+    }
+    bool resultsIfExternalAction()
+    {
+      return mResultsIfExternalAction;
+    }
 
     //! Defines the maximimum number of layers displayed in the menu (default is 10).
     //! @note 0 is unlimited.
     void setMaxLayerDisplay( int maxLayerDisplay );
-    int maxLayerDisplay() {return mMaxLayerDisplay;}
+    int maxLayerDisplay()
+    {
+      return mMaxLayerDisplay;
+    }
 
     //! Defines the maximimum number of features displayed in the menu for vector layers (default is 10).
     //! @note 0 is unlimited.
     void setMaxFeatureDisplay( int maxFeatureDisplay );
-    int maxFeatureDisplay() {return mMaxFeatureDisplay;}
+    int maxFeatureDisplay()
+    {
+      return mMaxFeatureDisplay;
+    }
 
     //! adds a new custom action to the menu
-    void addCustomAction( QgsMapLayerAction* action ) {mCustomActionRegistry.addMapLayerAction( action );}
+    void addCustomAction( QgsMapLayerAction* action )
+    {
+      mCustomActionRegistry.addMapLayerAction( action );
+    }
 
     //! remove all custom actions from the menu to be built
     void removeCustomActions();
@@ -147,7 +183,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos );
 
   protected:
-    virtual void closeEvent( QCloseEvent *e ) override;
+    virtual void closeEvent( QCloseEvent* e ) override;
 
   private slots:
     void handleMenuHover();

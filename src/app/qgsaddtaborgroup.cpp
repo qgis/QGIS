@@ -26,10 +26,10 @@
 #include <QRadioButton>
 #include <QSettings>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >& tabList, QWidget * parent )
-    : QDialog( parent )
-    , mLayer( lyr )
-    , mTabs( tabList )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer* lyr, const QList < TabPair >& tabList, QWidget* parent )
+  : QDialog( parent )
+  , mLayer( lyr )
+  , mTabs( tabList )
 {
   setupUi( this );
 

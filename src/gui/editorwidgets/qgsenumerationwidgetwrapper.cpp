@@ -19,8 +19,8 @@
 #include "qgsvectordataprovider.h"
 
 QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
 {
 }
 

@@ -31,7 +31,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsDb2NewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsDb2NewConnection( QWidget* parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsDb2NewConnection();
@@ -48,10 +48,13 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void on_btnListDatabase_clicked();
     void on_btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect * mAuthConfigSelect;
+    QgsAuthConfigSelect* mAuthConfigSelect;
 };
 
 #endif //  QGSDB2NEWCONNECTION_H

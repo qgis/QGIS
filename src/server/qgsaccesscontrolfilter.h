@@ -67,7 +67,10 @@ class SERVER_EXPORT QgsAccessControlFilter
     };
 
     //! Return the QgsServerInterface instance
-    const QgsServerInterface* serverInterface() const { return mServerInterface; }
+    const QgsServerInterface* serverInterface() const
+    {
+      return mServerInterface;
+    }
 
     /** Return an additional expression filter
      * @param layer the layer to control

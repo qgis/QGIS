@@ -26,21 +26,21 @@
 #include <QUrl>
 
 QgsDataSourceUri::QgsDataSourceUri()
-    : mSSLmode( SslPrefer )
-    , mKeyColumn( QLatin1String( "" ) )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : mSSLmode( SslPrefer )
+  , mKeyColumn( QLatin1String( "" ) )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   // do nothing
 }
 
 QgsDataSourceUri::QgsDataSourceUri( QString uri )
-    : mSSLmode( SslPrefer )
-    , mKeyColumn( QLatin1String( "" ) )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : mSSLmode( SslPrefer )
+  , mKeyColumn( QLatin1String( "" ) )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -394,7 +394,7 @@ void QgsDataSourceUri::setSchema( const QString& schema )
   mSchema = schema;
 }
 
-QString QgsDataSourceUri::escape( const QString &theVal, QChar delim = '\'' ) const
+QString QgsDataSourceUri::escape( const QString& theVal, QChar delim = '\'' ) const
 {
   QString val = theVal;
 
@@ -404,14 +404,14 @@ QString QgsDataSourceUri::escape( const QString &theVal, QChar delim = '\'' ) co
   return val;
 }
 
-void QgsDataSourceUri::skipBlanks( const QString &uri, int &i )
+void QgsDataSourceUri::skipBlanks( const QString& uri, int& i )
 {
   // skip space before value
   while ( i < uri.length() && uri[i].isSpace() )
     i++;
 }
 
-QString QgsDataSourceUri::getValue( const QString &uri, int &i )
+QString QgsDataSourceUri::getValue( const QString& uri, int& i )
 {
   skipBlanks( uri, i );
 
@@ -616,7 +616,7 @@ QByteArray QgsDataSourceUri::encodedUri() const
   return url.encodedQuery();
 }
 
-void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
+void QgsDataSourceUri::setEncodedUri( const QByteArray& uri )
 {
   mParams.clear();
   QUrl url;
@@ -628,7 +628,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
   }
 }
 
-void QgsDataSourceUri::setEncodedUri( const QString & uri )
+void QgsDataSourceUri::setEncodedUri( const QString& uri )
 {
   setEncodedUri( uri.toLatin1() );
 }
@@ -644,13 +644,13 @@ QString QgsDataSourceUri::quotedTablename() const
            .arg( escape( mTable, '"' ) );
 }
 
-void QgsDataSourceUri::setConnection( const QString &host,
-                                      const QString &port,
-                                      const QString &database,
-                                      const QString &username,
-                                      const QString &password,
+void QgsDataSourceUri::setConnection( const QString& host,
+                                      const QString& port,
+                                      const QString& database,
+                                      const QString& username,
+                                      const QString& password,
                                       SslMode sslmode,
-                                      const QString &authConfigId )
+                                      const QString& authConfigId )
 {
   mHost = host;
   mDatabase = database;
@@ -661,12 +661,12 @@ void QgsDataSourceUri::setConnection( const QString &host,
   mAuthConfigId = authConfigId;
 }
 
-void QgsDataSourceUri::setConnection( const QString &service,
-                                      const QString &database,
-                                      const QString &username,
-                                      const QString &password,
+void QgsDataSourceUri::setConnection( const QString& service,
+                                      const QString& database,
+                                      const QString& username,
+                                      const QString& password,
                                       SslMode sslmode,
-                                      const QString &authConfigId )
+                                      const QString& authConfigId )
 {
   mService = service;
   mDatabase = database;
@@ -676,11 +676,11 @@ void QgsDataSourceUri::setConnection( const QString &service,
   mAuthConfigId = authConfigId;
 }
 
-void QgsDataSourceUri::setDataSource( const QString &schema,
-                                      const QString &table,
-                                      const QString &geometryColumn,
-                                      const QString &sql,
-                                      const QString &keyColumn )
+void QgsDataSourceUri::setDataSource( const QString& schema,
+                                      const QString& table,
+                                      const QString& geometryColumn,
+                                      const QString& sql,
+                                      const QString& keyColumn )
 {
   mSchema = schema;
   mTable = table;
@@ -689,12 +689,12 @@ void QgsDataSourceUri::setDataSource( const QString &schema,
   mKeyColumn = keyColumn;
 }
 
-void QgsDataSourceUri::setAuthConfigId( const QString &authcfg )
+void QgsDataSourceUri::setAuthConfigId( const QString& authcfg )
 {
   mAuthConfigId = authcfg;
 }
 
-void QgsDataSourceUri::setDatabase( const QString &database )
+void QgsDataSourceUri::setDatabase( const QString& database )
 {
   mDatabase = database;
 }
@@ -719,13 +719,13 @@ void QgsDataSourceUri::setSrid( const QString& srid )
   mSrid = srid;
 }
 
-void QgsDataSourceUri::setParam( const QString &key, const QString &value )
+void QgsDataSourceUri::setParam( const QString& key, const QString& value )
 {
   // may be multiple
   mParams.insertMulti( key, value );
 }
 
-void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
+void QgsDataSourceUri::setParam( const QString& key, const QStringList& value )
 {
   Q_FOREACH ( const QString& val, value )
   {
@@ -733,22 +733,22 @@ void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
   }
 }
 
-int QgsDataSourceUri::removeParam( const QString &key )
+int QgsDataSourceUri::removeParam( const QString& key )
 {
   return mParams.remove( key );
 }
 
-QString QgsDataSourceUri::param( const QString &key ) const
+QString QgsDataSourceUri::param( const QString& key ) const
 {
   return mParams.value( key );
 }
 
-QStringList QgsDataSourceUri::params( const QString &key ) const
+QStringList QgsDataSourceUri::params( const QString& key ) const
 {
   return mParams.values( key );
 }
 
-bool QgsDataSourceUri::hasParam( const QString &key ) const
+bool QgsDataSourceUri::hasParam( const QString& key ) const
 {
   return mParams.contains( key );
 }

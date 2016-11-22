@@ -45,21 +45,21 @@
 #include <QSettings>
 #include <cmath>
 
-QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition )
-    , mGridStack( nullptr )
-    , mOverviewStack( nullptr )
-    , mMapRotation( 0 )
-    , mEvaluatedMapRotation( 0 )
-    , mKeepLayerSet( false )
-    , mKeepLayerStyles( false )
-    , mFollowVisibilityPreset( false )
-    , mUpdatesEnabled( true )
-    , mMapCanvas( nullptr )
-    , mDrawCanvasItems( true )
-    , mAtlasDriven( false )
-    , mAtlasScalingMode( Auto )
-    , mAtlasMargin( 0.10 )
+QgsComposerMap::QgsComposerMap( QgsComposition* composition, int x, int y, int width, int height )
+  : QgsComposerItem( x, y, width, height, composition )
+  , mGridStack( nullptr )
+  , mOverviewStack( nullptr )
+  , mMapRotation( 0 )
+  , mEvaluatedMapRotation( 0 )
+  , mKeepLayerSet( false )
+  , mKeepLayerStyles( false )
+  , mFollowVisibilityPreset( false )
+  , mUpdatesEnabled( true )
+  , mMapCanvas( nullptr )
+  , mDrawCanvasItems( true )
+  , mAtlasDriven( false )
+  , mAtlasScalingMode( Auto )
+  , mAtlasMargin( 0.10 )
 {
   mComposition = composition;
 
@@ -91,21 +91,21 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   setSceneRect( QRectF( x, y, width, height ) );
 }
 
-QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition )
-    , mGridStack( nullptr )
-    , mOverviewStack( nullptr )
-    , mMapRotation( 0 )
-    , mEvaluatedMapRotation( 0 )
-    , mKeepLayerSet( false )
-    , mKeepLayerStyles( false )
-    , mFollowVisibilityPreset( false )
-    , mUpdatesEnabled( true )
-    , mMapCanvas( nullptr )
-    , mDrawCanvasItems( true )
-    , mAtlasDriven( false )
-    , mAtlasScalingMode( Auto )
-    , mAtlasMargin( 0.10 )
+QgsComposerMap::QgsComposerMap( QgsComposition* composition )
+  : QgsComposerItem( 0, 0, 10, 10, composition )
+  , mGridStack( nullptr )
+  , mOverviewStack( nullptr )
+  , mMapRotation( 0 )
+  , mEvaluatedMapRotation( 0 )
+  , mKeepLayerSet( false )
+  , mKeepLayerStyles( false )
+  , mFollowVisibilityPreset( false )
+  , mUpdatesEnabled( true )
+  , mMapCanvas( nullptr )
+  , mDrawCanvasItems( true )
+  , mAtlasDriven( false )
+  , mAtlasScalingMode( Auto )
+  , mAtlasMargin( 0.10 )
 {
   //Offset
   mXOffset = 0.0;
@@ -174,7 +174,7 @@ QgsComposerMap::~QgsComposerMap()
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
-void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale )
+void QgsComposerMap::draw( QPainter* painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale )
 {
   Q_UNUSED( forceWidthScale );
 
@@ -198,7 +198,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF
 
 QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const
 {
-  const QgsMapSettings &ms = mComposition->mapSettings();
+  const QgsMapSettings& ms = mComposition->mapSettings();
 
   QgsExpressionContext expressionContext = createExpressionContext();
 
@@ -270,7 +270,7 @@ void QgsComposerMap::cache()
     horizontalVScaleFactor = mLastValidViewScaleFactor > 0 ? mLastValidViewScaleFactor : 1;
   }
 
-  const QgsRectangle &ext = *currentMapExtent();
+  const QgsRectangle& ext = *currentMapExtent();
   double widthMM = ext.width() * mapUnitsToMM();
   double heightMM = ext.height() * mapUnitsToMM();
 
@@ -765,7 +765,7 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
   updateItem();
 }
 
-void QgsComposerMap::zoomToExtent( const QgsRectangle &extent )
+void QgsComposerMap::zoomToExtent( const QgsRectangle& extent )
 {
   QgsRectangle newExtent = extent;
   //Make sure the width/height ratio is the same as the current composer map extent.
@@ -1129,7 +1129,7 @@ bool QgsComposerMap::containsWmsLayer() const
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *layer_it );
     if ( currentLayer )
     {
-      QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
+      QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
       if ( currentRasterLayer )
       {
         const QgsRasterDataProvider* rasterProvider = nullptr;
@@ -1180,7 +1180,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
         return true;
       }
       // if vector layer, check labels and feature blend mode
-      QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer*>( currentLayer );
       if ( currentVectorLayer )
       {
         if ( currentVectorLayer->layerTransparency() != 0 )
@@ -1217,7 +1217,7 @@ void QgsComposerMap::connectUpdateSlot()
   }
 }
 
-bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {
@@ -1644,7 +1644,7 @@ const QgsComposerMapGrid* QgsComposerMap::constFirstMapGrid() const
   return const_cast<QgsComposerMap*>( this )->grid();
 }
 
-QgsComposerMapOverview *QgsComposerMap::overview()
+QgsComposerMapOverview* QgsComposerMap::overview()
 {
   if ( mOverviewStack->size() < 1 )
   {
@@ -1654,7 +1654,7 @@ QgsComposerMapOverview *QgsComposerMap::overview()
   return mOverviewStack->overview( 0 );
 }
 
-const QgsComposerMapOverview *QgsComposerMap::constFirstMapOverview() const
+const QgsComposerMapOverview* QgsComposerMap::constFirstMapOverview() const
 {
   return const_cast<QgsComposerMap*>( this )->overview();
 }

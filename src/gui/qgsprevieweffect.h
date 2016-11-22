@@ -53,18 +53,21 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
      * @note added in 2.3
      * @see setMode
      */
-    PreviewMode mode() const { return mMode; }
+    PreviewMode mode() const
+    {
+      return mMode;
+    }
 
   protected:
-    virtual void draw( QPainter *painter ) override;
+    virtual void draw( QPainter* painter ) override;
 
   private:
 
     PreviewMode mMode;
 
-    QRgb simulateColorBlindness( QRgb &originalColor, PreviewMode type );
-    void simulateProtanopeLMS( double &L, double &M, double &S );
-    void simulateDeuteranopeLMS( double &L, double &M, double &S );
+    QRgb simulateColorBlindness( QRgb& originalColor, PreviewMode type );
+    void simulateProtanopeLMS( double& L, double& M, double& S );
+    void simulateDeuteranopeLMS( double& L, double& M, double& S );
 };
 
 #endif // QGSPREVIEWEFFECT_H

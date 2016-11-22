@@ -27,9 +27,9 @@
 #include "qgsgeometrycollection.h"
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
-    : mSimplifyFlags( simplifyFlags )
-    , mSimplifyAlgorithm( simplifyAlgorithm )
-    , mTolerance( tolerance )
+  : mSimplifyFlags( simplifyFlags )
+  , mSimplifyAlgorithm( simplifyAlgorithm )
+  , mTolerance( tolerance )
 {
 }
 
@@ -78,7 +78,7 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 static QgsGeometry generalizeWkbGeometryByBoundingBox(
   QgsWkbTypes::Type wkbType,
   const QgsAbstractGeometry& geometry,
-  const QgsRectangle &envelope )
+  const QgsRectangle& envelope )
 {
   unsigned int geometryType = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) );
 
@@ -123,7 +123,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   SimplifyAlgorithm simplifyAlgorithm,
   QgsWkbTypes::Type wkbType,
   const QgsAbstractGeometry& geometry,
-  const QgsRectangle &envelope, double map2pixelTol,
+  const QgsRectangle& envelope, double map2pixelTol,
   bool isaLinearRing )
 {
   bool isGeneralizable = true;

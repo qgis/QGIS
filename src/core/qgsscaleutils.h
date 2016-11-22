@@ -32,7 +32,7 @@ class CORE_EXPORT QgsScaleUtils
      * went wrong
      * @return true on success and false if failed
      */
-    static bool saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage );
+    static bool saveScaleList( const QString& fileName, const QStringList& scales, QString& errorMessage );
 
     /** Load scales from the given file
      * @param fileName the name of the file to process
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsScaleUtils
      * went wrong
      * @return true on success and false if failed
      */
-    static bool loadScaleList( const QString &fileName, QStringList &scales, QString &errorMessage );
+    static bool loadScaleList( const QString& fileName, QStringList& scales, QString& errorMessage );
 };
 
 #endif

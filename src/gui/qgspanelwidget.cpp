@@ -21,14 +21,14 @@
 #include "qgspanelwidget.h"
 #include "qgslogger.h"
 
-QgsPanelWidget::QgsPanelWidget( QWidget *parent )
-    : QWidget( parent )
-    , mAutoDelete( true )
-    , mDockMode( false )
+QgsPanelWidget::QgsPanelWidget( QWidget* parent )
+  : QWidget( parent )
+  , mAutoDelete( true )
+  , mDockMode( false )
 {
 }
 
-void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *>& panels )
+void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget*>& panels )
 {
   Q_FOREACH ( QgsPanelWidget* widget, panels )
   {
@@ -36,7 +36,7 @@ void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *>& panels )
   }
 }
 
-void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
+void QgsPanelWidget::connectChildPanel( QgsPanelWidget* panel )
 {
   connect( panel, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
   connect( panel, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
@@ -47,7 +47,7 @@ void QgsPanelWidget::setDockMode( bool dockMode )
   mDockMode = dockMode;
 }
 
-QgsPanelWidget*QgsPanelWidget::findParentPanel( QWidget* widget )
+QgsPanelWidget* QgsPanelWidget::findParentPanel( QWidget* widget )
 {
   QWidget* p = widget;
   while ( p )
@@ -100,7 +100,7 @@ void QgsPanelWidget::acceptPanel()
   emit panelAccepted( this );
 }
 
-void QgsPanelWidget::keyPressEvent( QKeyEvent *event )
+void QgsPanelWidget::keyPressEvent( QKeyEvent* event )
 {
   if ( event->key() == Qt::Key_Escape )
   {
@@ -108,9 +108,9 @@ void QgsPanelWidget::keyPressEvent( QKeyEvent *event )
   }
 }
 
-QgsPanelWidgetWrapper::QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent )
-    : QgsPanelWidget( parent )
-    , mWidget( widget )
+QgsPanelWidgetWrapper::QgsPanelWidgetWrapper( QWidget* widget, QWidget* parent )
+  : QgsPanelWidget( parent )
+  , mWidget( widget )
 {
   this->setLayout( new QVBoxLayout() );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );

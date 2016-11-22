@@ -116,7 +116,7 @@ void QgsWFSUtils::releaseCacheDirectory()
   }
 }
 
-bool QgsWFSUtils::removeDir( const QString &dirName )
+bool QgsWFSUtils::removeDir( const QString& dirName )
 {
   QDir dir( dirName );
   QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
@@ -144,7 +144,7 @@ bool QgsWFSUtils::removeDir( const QString &dirName )
 // processes can check if the temporary directories of other process correspond
 // to alive or ghost processes.
 QgsWFSUtilsKeepAlive::QgsWFSUtilsKeepAlive()
-    : mSharedMemory( QgsWFSUtils::createAndAttachSHM() )
+  : mSharedMemory( QgsWFSUtils::createAndAttachSHM() )
 {
   updateTimestamp();
 }
@@ -325,10 +325,10 @@ QString QgsWFSUtils::getMD5( const QgsFeature& f )
 {
   const QgsAttributes attrs = f.attributes();
   QCryptographicHash hash( QCryptographicHash::Md5 );
-  for ( int i = 0;i < attrs.size();i++ )
+  for ( int i = 0; i < attrs.size(); i++ )
   {
-    const QVariant &v = attrs[i];
-    hash.addData( QByteArray(( const char * )&i, sizeof( i ) ) );
+    const QVariant& v = attrs[i];
+    hash.addData( QByteArray(( const char* )&i, sizeof( i ) ) );
     if ( v.isNull() )
     {
       // nothing to do
@@ -336,17 +336,17 @@ QString QgsWFSUtils::getMD5( const QgsFeature& f )
     else if ( v.type() == QVariant::DateTime )
     {
       qint64 val = v.toDateTime().toMSecsSinceEpoch();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+      hash.addData( QByteArray(( const char* )&val, sizeof( val ) ) );
     }
     else if ( v.type() == QVariant::Int )
     {
       int val = v.toInt();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+      hash.addData( QByteArray(( const char* )&val, sizeof( val ) ) );
     }
     else if ( v.type() == QVariant::LongLong )
     {
       qint64 val = v.toLongLong();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+      hash.addData( QByteArray(( const char* )&val, sizeof( val ) ) );
     }
     else  if ( v.type() == QVariant::String )
     {
@@ -355,7 +355,7 @@ QString QgsWFSUtils::getMD5( const QgsFeature& f )
   }
 
   const int attrCount = attrs.size();
-  hash.addData( QByteArray(( const char * )&attrCount, sizeof( attrCount ) ) );
+  hash.addData( QByteArray(( const char* )&attrCount, sizeof( attrCount ) ) );
   QgsGeometry geometry = f.geometry();
   if ( !geometry.isEmpty() )
   {

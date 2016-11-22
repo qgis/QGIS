@@ -15,16 +15,16 @@
 
 #include "nodetool/qgsvertexentry.h"
 
-QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const QgsPointV2 &p, QgsVertexId vertexId, const QString& tooltip, QgsVertexMarker::IconType type, int penWidth )
-    : mSelected( false )
-    , mPoint( p )
-    , mVertexId( vertexId )
-    , mPenWidth( penWidth )
-    , mToolTip( tooltip )
-    , mType( type )
-    , mMarker( nullptr )
-    , mCanvas( canvas )
-    , mLayer( layer )
+QgsVertexEntry::QgsVertexEntry( QgsMapCanvas* canvas, QgsMapLayer* layer, const QgsPointV2& p, QgsVertexId vertexId, const QString& tooltip, QgsVertexMarker::IconType type, int penWidth )
+  : mSelected( false )
+  , mPoint( p )
+  , mVertexId( vertexId )
+  , mPenWidth( penWidth )
+  , mToolTip( tooltip )
+  , mType( type )
+  , mMarker( nullptr )
+  , mCanvas( canvas )
+  , mLayer( layer )
 {
   placeMarker();
 }

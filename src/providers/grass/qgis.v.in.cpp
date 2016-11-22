@@ -48,16 +48,16 @@ extern "C"
 #include "qgsgrass.h"
 #include "qgsgrassdatafile.h"
 
-static struct line_pnts *line = Vect_new_line_struct();
+static struct line_pnts* line = Vect_new_line_struct();
 
-void writePoint( struct Map_info* map, int type, const QgsPoint& point, struct line_cats *cats )
+void writePoint( struct Map_info* map, int type, const QgsPoint& point, struct line_cats* cats )
 {
   Vect_reset_line( line );
   Vect_append_point( line, point.x(), point.y(), 0 );
   Vect_write_line( map, type, line, cats );
 }
 
-void writePolyline( struct Map_info* map, int type, const QgsPolyline& polyline, struct line_cats *cats )
+void writePolyline( struct Map_info* map, int type, const QgsPolyline& polyline, struct line_cats* cats )
 {
   Vect_reset_line( line );
   Q_FOREACH ( const QgsPoint& point, polyline )
@@ -67,11 +67,11 @@ void writePolyline( struct Map_info* map, int type, const QgsPolyline& polyline,
   Vect_write_line( map, type, line, cats );
 }
 
-static struct Map_info *finalMap = 0;
-static struct Map_info *tmpMap = 0;
+static struct Map_info* finalMap = 0;
+static struct Map_info* tmpMap = 0;
 static QString finalName;
 static QString tmpName;
-dbDriver *driver = 0;
+dbDriver* driver = 0;
 
 void closeMaps()
 {
@@ -123,9 +123,9 @@ void exitIfCanceled( QDataStream& stdinStream )
 // TODO: use it to interrupt cleaning funct  //stdinFile.open( stdin, QIODevice::ReadOnly | QIODevice::Unbuffered );ions
 //}
 
-int main( int argc, char **argv )
+int main( int argc, char** argv )
 {
-  struct Option *mapOption;
+  struct Option* mapOption;
 
   G_gisinit( argv[0] );
   G_define_module();
@@ -160,7 +160,7 @@ int main( int argc, char **argv )
 
   finalMap = QgsGrass::vectNewMapStruct();
   Vect_open_new( finalMap, mapOption->answer, 0 );
-  struct Map_info * map = finalMap;
+  struct Map_info* map = finalMap;
   // keep tmp name in sync with QgsGrassMapsetItem::createChildren
   if ( isPolygon )
   {
@@ -190,7 +190,7 @@ int main( int argc, char **argv )
   fields.append( QgsField( key, QVariant::Int ) );
   fields.extend( srcFields );
 
-  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, nullptr, GV_1TABLE );
+  struct field_info* fieldInfo = Vect_default_field_info( finalMap, 1, nullptr, GV_1TABLE );
   if ( Vect_map_add_dblink( finalMap, 1, nullptr, fieldInfo->table, key.toLatin1().data(),
                             fieldInfo->database, fieldInfo->driver ) != 0 )
   {
@@ -206,7 +206,7 @@ int main( int argc, char **argv )
   {
     QgsGrass::createTable( driver, QString( fieldInfo->table ), fields );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     G_fatal_error( "Cannot create table: %s", e.what() );
   }
@@ -219,7 +219,7 @@ int main( int argc, char **argv )
   db_begin_transaction( driver );
 
   QgsFeature feature;
-  struct line_cats *cats = Vect_new_cats_struct();
+  struct line_cats* cats = Vect_new_cats_struct();
 
   qint32 fidToCatPlus;
   stdinStream >> fidToCatPlus;
@@ -313,7 +313,7 @@ int main( int argc, char **argv )
         // TODO: inserting row is extremely slow on Windows (at least with SQLite), v.in.ogr is fast
         QgsGrass::insertRow( driver, QString( fieldInfo->table ), attributes );
       }
-      catch ( QgsGrass::Exception &e )
+      catch ( QgsGrass::Exception& e )
       {
         G_fatal_error( "Cannot insert: %s", e.what() );
       }
@@ -356,7 +356,7 @@ int main( int argc, char **argv )
     // TODO: review if necessary and if there is GRASS function
     // remove zero length
     int nlines = Vect_get_num_lines( map );
-    struct line_pnts *line = Vect_new_line_struct();
+    struct line_pnts* line = Vect_new_line_struct();
     for ( int i = 1; i <= nlines; i++ )
     {
       if ( !Vect_line_alive( map, i ) )

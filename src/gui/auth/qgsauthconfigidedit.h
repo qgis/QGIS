@@ -38,14 +38,17 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
      * @param authcfg Authentication configuration ID
      * @param allowEmpty Whether to allow no ID to be set, even when editing, e.g. Add config functions
      */
-    explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
+    explicit QgsAuthConfigIdEdit( QWidget* parent = nullptr, const QString& authcfg = QString(), bool allowEmpty = true );
     ~QgsAuthConfigIdEdit();
 
     //! The authentication configuration ID, if valid, otherwise null QString
     QString const configId();
 
     //! Whether to allow no ID to be set
-    bool allowEmptyId() { return mAllowEmpty;}
+    bool allowEmptyId()
+    {
+      return mAllowEmpty;
+    }
 
     //! Validate the widget state and ID
     bool validate();
@@ -56,7 +59,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
 
   public slots:
     //! Set the authentication configuration ID, storing it, and validating the passed value
-    void setAuthConfigId( const QString &authcfg );
+    void setAuthConfigId( const QString& authcfg );
 
     //! Set whether to allow no ID to be set
     void setAllowEmptyId( bool allowed );
@@ -69,10 +72,10 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
 
     void on_btnLock_toggled( bool checked );
 
-    void on_leAuthCfg_textChanged( const QString &txt );
+    void on_leAuthCfg_textChanged( const QString& txt );
 
   private:
-    bool isAlphaNumeric( const QString &authcfg );
+    bool isAlphaNumeric( const QString& authcfg );
 
     QString mAuthCfgOrig;
     bool mValid;

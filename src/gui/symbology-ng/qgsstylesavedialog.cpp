@@ -24,7 +24,7 @@
 #include <QCheckBox>
 
 QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget* parent, QgsStyle::StyleEntity type )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 

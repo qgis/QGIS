@@ -47,19 +47,19 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param parent optional parent
      */
-    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent = nullptr );
+    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2* composerTable, QObject* parent = nullptr );
     virtual ~QgsComposerAttributeTableColumnModelV2();
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    virtual QVariant data( const QModelIndex& index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
+    virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
+    QModelIndex index( int row, int column, const QModelIndex& parent ) const override;
+    QModelIndex parent( const QModelIndex& child ) const override;
 
     /** Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see indexFromColumn
      */
-    QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
+    QgsComposerTableColumn* columnFromIndex( const QModelIndex& index ) const;
 
     /** Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
      * @returns QModelIndex for specified QgsComposerTableColumn
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see columnFromIndex
      */
-    QModelIndex indexFromColumn( QgsComposerTableColumn *column );
+    QModelIndex indexFromColumn( QgsComposerTableColumn* column );
 
     /** Sets a specified column as a sorted column in the QgsComposerAttributeTable. The column will be
      * added to the end of the sort rank list, ie it will take the next largest available sort rank.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @see removeColumnFromSort
      * @see moveColumnInSortRank
      */
-    void setColumnAsSorted( QgsComposerTableColumn *column, Qt::SortOrder order );
+    void setColumnAsSorted( QgsComposerTableColumn* column, Qt::SortOrder order );
 
     /** Sets a specified column as an unsorted column in the QgsComposerAttributeTable. The column will be
      * removed from the sort rank list.
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see setColumnAsSorted
      */
-    void setColumnAsUnsorted( QgsComposerTableColumn * column );
+    void setColumnAsUnsorted( QgsComposerTableColumn* column );
 
     /** Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
      * @param column a QgsComposerTableColumn
@@ -116,10 +116,10 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see setColumnAsSorted
      */
-    bool moveColumnInSortRank( QgsComposerTableColumn * column, ShiftDirection direction );
+    bool moveColumnInSortRank( QgsComposerTableColumn* column, ShiftDirection direction );
 
   private:
-    QgsComposerAttributeTableV2 * mComposerTable;
+    QgsComposerAttributeTableV2* mComposerTable;
 
 };
 
@@ -148,16 +148,16 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * @param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * @param parent optional parent
      */
-    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent = nullptr );
+    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2* composerTable, ColumnFilterType filterType, QObject* parent = nullptr );
 
     virtual ~QgsComposerTableSortColumnsProxyModelV2();
 
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    virtual QVariant data( const QModelIndex& index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
     /** Returns the QgsComposerTableColumn corresponding to a row in the proxy model.
      * @returns QgsComposerTableColumn for specified row
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * @see columnFromRow
      * @see columnFromSourceIndex
      */
-    QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
+    QgsComposerTableColumn* columnFromIndex( const QModelIndex& index ) const;
 
     /** Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
@@ -192,10 +192,10 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
     void resetFilter();
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
+    bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const override;
 
   private:
-    QgsComposerAttributeTableV2 * mComposerTable;
+    QgsComposerAttributeTableV2* mComposerTable;
     ColumnFilterType mFilterType;
 
     /** Returns a list of QgsComposerTableColumns without a set sort rank

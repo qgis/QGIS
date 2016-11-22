@@ -55,11 +55,11 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  * @param _qI Pointer to the QGIS interface object
  */
 QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mRotationInt( 0 )
-    , mAutomatic( true )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+  : QgsDecorationItem( parent )
+  , mRotationInt( 0 )
+  , mAutomatic( true )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = BottomLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -97,7 +97,7 @@ void QgsDecorationNorthArrow::run()
   dlg.exec();
 }
 
-void QgsDecorationNorthArrow::render( QPainter * theQPainter )
+void QgsDecorationNorthArrow::render( QPainter* theQPainter )
 {
 
   //Large IF statement controlled by enable check box
@@ -247,7 +247,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
         p1 = transform.transform( p1 );
         p2 = transform.transform( p2 );
       }
-      catch ( QgsCsException &e )
+      catch ( QgsCsException& e )
       {
         Q_UNUSED( e );
         // just give up

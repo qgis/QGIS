@@ -43,7 +43,7 @@ class QgsSelectedFeature: public QObject
     Q_OBJECT
 
   public:
-    QgsSelectedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+    QgsSelectedFeature( QgsFeatureId id, QgsVectorLayer* layer, QgsMapCanvas* canvas );
     ~QgsSelectedFeature();
 
     /**
@@ -92,7 +92,7 @@ class QgsSelectedFeature: public QObject
      * Inverts selection of a set of vertices at once.
      * @param vertexIndices list of vertex indices to invert whether or not they are selected
      */
-    void invertVertexSelection( const QVector<int> &vertexIndices );
+    void invertVertexSelection( const QVector<int>& vertexIndices );
 
     /**
      * Tells if vertex is selected
@@ -111,7 +111,7 @@ class QgsSelectedFeature: public QObject
      * Getting vertex map of vertexes
      * @return currently used vertex map
      */
-    QList<QgsVertexEntry*> &vertexMap();
+    QList<QgsVertexEntry*>& vertexMap();
 
     /**
      * Updates whole selection object from the selected object
@@ -122,12 +122,12 @@ class QgsSelectedFeature: public QObject
      * Get the layer of the selected feature
      * @return used vector layer
      */
-    QgsVectorLayer *vlayer();
+    QgsVectorLayer* vlayer();
 
     /**
      * Getter for the current geometry
      */
-    QgsGeometry *geometry();
+    QgsGeometry* geometry();
 
     void beginGeometryChange();
     void endGeometryChange();
@@ -165,7 +165,7 @@ class QgsSelectedFeature: public QObject
     /*
      * the current layer changed - destroy
      */
-    void currentLayerChanged( QgsMapLayer *layer );
+    void currentLayerChanged( QgsMapLayer* layer );
 
     /*
      * the current layer changed - destroy
@@ -198,20 +198,20 @@ class QgsSelectedFeature: public QObject
     /**
      * Validates the geometry
      */
-    void validateGeometry( QgsGeometry *g = nullptr );
+    void validateGeometry( QgsGeometry* g = nullptr );
 
     QgsFeatureId mFeatureId;
-    QgsGeometry *mGeometry;
+    QgsGeometry* mGeometry;
     bool mFeatureSelected;
     bool mChangingGeometry;
     QgsVectorLayer* mVlayer;
     QList<QgsVertexEntry*> mVertexMap;
     QgsMapCanvas* mCanvas;
 
-    QgsGeometryValidator *mValidator;
+    QgsGeometryValidator* mValidator;
     QString mTip;
     QList< QgsGeometry::Error > mGeomErrors;
-    QList< QgsVertexMarker * > mGeomErrorMarkers;
+    QList< QgsVertexMarker* > mGeomErrorMarkers;
 };
 
 #endif

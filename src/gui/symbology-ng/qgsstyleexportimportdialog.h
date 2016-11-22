@@ -46,7 +46,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent = nullptr, Mode mode = Export );
+    QgsStyleExportImportDialog( QgsStyle* style, QWidget* parent = nullptr, Mode mode = Export );
     ~QgsStyleExportImportDialog();
 
     /**
@@ -111,18 +111,18 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void fileReadyRead();
     void updateProgress( qint64, qint64 );
     void downloadCanceled();
-    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
   private:
     void downloadStyleXml( const QUrl& url );
     bool populateStyles( QgsStyle* style );
     void moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst );
 
-    QProgressDialog *mProgressDlg;
-    QgsStyleGroupSelectionDialog *mGroupSelectionDlg;
-    QTemporaryFile *mTempFile;
-    QNetworkAccessManager *mNetManager;
-    QNetworkReply *mNetReply;
+    QProgressDialog* mProgressDlg;
+    QgsStyleGroupSelectionDialog* mGroupSelectionDlg;
+    QTemporaryFile* mTempFile;
+    QNetworkAccessManager* mNetManager;
+    QNetworkReply* mNetReply;
 
     QString mFileName;
     Mode mDialogMode;

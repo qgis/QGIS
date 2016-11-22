@@ -58,31 +58,52 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = nullptr, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
-    QgsRasterRenderer * clone() const override = 0;
+    QgsRasterRenderer* clone() const override = 0;
 
     virtual int bandCount() const override;
 
     virtual Qgis::DataType dataType( int bandNo ) const override;
 
-    virtual QString type() const { return mType; }
+    virtual QString type() const
+    {
+      return mType;
+    }
 
     virtual bool setInput( QgsRasterInterface* input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override = 0;
+    virtual QgsRasterBlock* block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override = 0;
 
     bool usesTransparency() const;
 
-    void setOpacity( double opacity ) { mOpacity = opacity; }
-    double opacity() const { return mOpacity; }
+    void setOpacity( double opacity )
+    {
+      mOpacity = opacity;
+    }
+    double opacity() const
+    {
+      return mOpacity;
+    }
 
     void setRasterTransparency( QgsRasterTransparency* t );
-    const QgsRasterTransparency* rasterTransparency() const { return mRasterTransparency; }
+    const QgsRasterTransparency* rasterTransparency() const
+    {
+      return mRasterTransparency;
+    }
 
-    void setAlphaBand( int band ) { mAlphaBand = band; }
-    int alphaBand() const { return mAlphaBand; }
+    void setAlphaBand( int band )
+    {
+      mAlphaBand = band;
+    }
+    int alphaBand() const
+    {
+      return mAlphaBand;
+    }
 
     //! Get symbology items if provided by renderer
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const
+    {
+      Q_UNUSED( symbolItems );
+    }
 
     //! Sets base class members from xml. Usually called from create() methods of subclasses
     void readXml( const QDomElement& rendererElem ) override;
@@ -93,7 +114,10 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void copyCommonProperties( const QgsRasterRenderer* other );
 
     //! Returns a list of band numbers used by the renderer
-    virtual QList<int> usesBands() const { return QList<int>(); }
+    virtual QList<int> usesBands() const
+    {
+      return QList<int>();
+    }
 
     static QString minMaxOriginName( int theOrigin );
     static QString minMaxOriginLabel( int theOrigin );

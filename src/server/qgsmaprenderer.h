@@ -95,18 +95,36 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! @note added in 2.8
     double rotation() const;
 
-    const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
+    const QgsMapToPixel* coordinateTransform()
+    {
+      return &( mRenderContext.mapToPixel() );
+    }
 
     //! Scale denominator
-    double scale() const { return mScale; }
+    double scale() const
+    {
+      return mScale;
+    }
 
     /** Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
-    void setScale( double scale ) {mScale = scale;}
-    double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
+    void setScale( double scale )
+    {
+      mScale = scale;
+    }
+    double mapUnitsPerPixel() const
+    {
+      return mMapUnitsPerPixel;
+    }
 
-    int width() const { return static_cast< int >( mSize.width() ); }
-    int height() const { return static_cast< int >( mSize.height() ); }
+    int width() const
+    {
+      return static_cast< int >( mSize.width() );
+    }
+    int height() const
+    {
+      return static_cast< int >( mSize.height() );
+    }
 
     //! Recalculate the map scale
     void updateScale();
@@ -122,7 +140,10 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! sets whether map image will be for overview
-    void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
+    void enableOverviewMode( bool isOverview = true )
+    {
+      mOverview = isOverview;
+    }
 
     /** Sets the desired size of the rendered map image.
      * @param size size in pixels
@@ -205,9 +226,15 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! returns CRS of destination coordinate reference system
     const QgsCoordinateReferenceSystem& destinationCrs() const;
 
-    void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
+    void setOutputUnits( OutputUnits u )
+    {
+      mOutputUnits = u;
+    }
 
-    OutputUnits outputUnits() const {return mOutputUnits;}
+    OutputUnits outputUnits() const
+    {
+      return mOutputUnits;
+    }
 
     //! returns current extent of layer set
     QgsRectangle fullExtent();
@@ -222,16 +249,22 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     void updateFullExtent();
 
     //! read settings
-    bool readXml( QDomNode & theNode );
+    bool readXml( QDomNode& theNode );
 
     //! write settings
-    bool writeXml( QDomNode & theNode, QDomDocument & theDoc );
+    bool writeXml( QDomNode& theNode, QDomDocument& theDoc );
 
     //! Accessor for render context
-    QgsRenderContext* rendererContext() {return &mRenderContext;}
+    QgsRenderContext* rendererContext()
+    {
+      return &mRenderContext;
+    }
 
     //! Labeling engine (nullptr if there's no custom engine)
-    QgsLabelingEngineInterface* labelingEngine() { return mLabelingEngine; }
+    QgsLabelingEngineInterface* labelingEngine()
+    {
+      return mLabelingEngine;
+    }
 
     //! Set labeling engine. Previous engine (if any) is deleted.
     //! Takes ownership of the engine.
@@ -243,7 +276,7 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     /** Returns the coordinate transform associated with a renderered layer,
      * or an invalid transform is no transform is required for the layer.
      */
-    QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;
+    QgsCoordinateTransform transformation( const QgsMapLayer* layer ) const;
 
     //! bridge to QgsMapSettings
     //! @note added in 2.4
@@ -332,7 +365,7 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     double mRotation;
 
     //! scale calculator
-    QgsScaleCalculator * mScaleCalculator;
+    QgsScaleCalculator* mScaleCalculator;
 
     //! current extent to be drawn
     QgsRectangle mExtent;

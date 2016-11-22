@@ -105,7 +105,7 @@ void QgsComposerArrowWidget::on_mArrowHeadFillColorButton_colorChanged( const QC
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowHeadOutlineColorButton_colorChanged( const QColor &newColor )
+void QgsComposerArrowWidget::on_mArrowHeadOutlineColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mArrow )
   {
@@ -229,7 +229,7 @@ void QgsComposerArrowWidget::on_mSvgMarkerRadioButton_toggled( bool toggled )
   }
 }
 
-void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString & text )
+void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString& text )
 {
   if ( mArrow )
   {
@@ -248,7 +248,7 @@ void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString 
   }
 }
 
-void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString & text )
+void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString& text )
 {
   if ( mArrow )
   {

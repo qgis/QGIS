@@ -19,10 +19,10 @@
 #include "ui/qgsgeometrycheckerdialog.h"
 
 QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface* iface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mIface( iface )
-    , mDialog( nullptr )
-    , mMenuAction( nullptr )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mIface( iface )
+  , mDialog( nullptr )
+  , mMenuAction( nullptr )
 {
 }
 
@@ -63,7 +63,7 @@ void QgsGeometryCheckerPlugin::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new QgsGeometryCheckerPlugin( theQgisInterfacePointer );
 }
@@ -104,7 +104,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

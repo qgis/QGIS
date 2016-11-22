@@ -27,7 +27,7 @@
 #include "qgsproject.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer* layer )
-    : mCrsId( 0 )
+  : mCrsId( 0 )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
   mProviderFeatureSource = layer->dataProvider()->featureSource();
@@ -93,9 +93,9 @@ QgsFeatureIterator QgsVectorLayerFeatureSource::getFeatures( const QgsFeatureReq
 
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
-    , mFetchedFid( false )
-    , mInterruptionChecker( nullptr )
+  : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
+  , mFetchedFid( false )
+  , mInterruptionChecker( nullptr )
 {
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
@@ -687,7 +687,7 @@ void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )
   }
 }
 
-void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
+void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature& f )
 {
   QList< FetchJoinInfo >::const_iterator joinIt = mOrderedJoinInfoList.constBegin();
   for ( ; joinIt != mOrderedJoinInfoList.constEnd(); ++joinIt )
@@ -910,7 +910,7 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
   return false;
 }
 
-void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
+void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature& f )
 {
   QgsAttributes attrs = f.attributes();
 
@@ -926,14 +926,14 @@ void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
   // update changed attributes
   if ( mSource->mChangedAttributeValues.contains( f.id() ) )
   {
-    const QgsAttributeMap &map = mSource->mChangedAttributeValues[f.id()];
+    const QgsAttributeMap& map = mSource->mChangedAttributeValues[f.id()];
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
   f.setAttributes( attrs );
 }
 
-void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
+void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature& f )
 {
   if ( mSource->mChangedGeometries.contains( f.id() ) )
     f.setGeometry( mSource->mChangedGeometries[f.id()] );

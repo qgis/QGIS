@@ -50,7 +50,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 };
 
 inline LinTriangleInterpolator::LinTriangleInterpolator()
-    : mTIN( nullptr )
+  : mTIN( nullptr )
 {
 
 }

@@ -38,7 +38,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * @param view parent QTreeWidget view
      * @param type item type
      */
-    explicit QgsTreeWidgetItem( QTreeWidget * view, int type = Type );
+    explicit QgsTreeWidgetItem( QTreeWidget* view, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param type item type
@@ -49,41 +49,41 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * @param strings list of strings containing text for each column in the item
      * @param type item type
      */
-    QgsTreeWidgetItem( const QStringList &strings, int type = Type );
+    QgsTreeWidgetItem( const QStringList& strings, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param view parent QTreeWidget view
      * @param strings list of strings containing text for each column in the item
      * @param type item type
      */
-    QgsTreeWidgetItem( QTreeWidget *view, const QStringList &strings, int type = Type );
+    QgsTreeWidgetItem( QTreeWidget* view, const QStringList& strings, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param view parent QTreeWidget view
      * @param after QTreeWidgetItem to place insert item after in the view
      * @param type item type
      */
-    QgsTreeWidgetItem( QTreeWidget *view, QTreeWidgetItem *after, int type = Type );
+    QgsTreeWidgetItem( QTreeWidget* view, QTreeWidgetItem* after, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param parent QTreeWidgetItem item
      * @param type item type
      */
-    explicit QgsTreeWidgetItem( QTreeWidgetItem *parent, int type = Type );
+    explicit QgsTreeWidgetItem( QTreeWidgetItem* parent, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param parent QTreeWidgetItem item
      * @param strings list of strings containing text for each column in the item
      * @param type item type
      */
-    QgsTreeWidgetItem( QTreeWidgetItem *parent, const QStringList &strings, int type = Type );
+    QgsTreeWidgetItem( QTreeWidgetItem* parent, const QStringList& strings, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param parent QTreeWidgetItem item
      * @param after QTreeWidgetItem to place insert item after in the view
      * @param type item type
      */
-    QgsTreeWidgetItem( QTreeWidgetItem *parent, QTreeWidgetItem *after, int type = Type );
+    QgsTreeWidgetItem( QTreeWidgetItem* parent, QTreeWidgetItem* after, int type = Type );
 
     /** Sets the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      */
     int alwaysOnTopPriority() const;
 
-    virtual bool operator<( const QTreeWidgetItem &other ) const override;
+    virtual bool operator<( const QTreeWidgetItem& other ) const override;
 
   private:
 
@@ -145,10 +145,10 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
     explicit QgsTreeWidgetItemObject( int type = Type );
 
     //! Constructs a tree widget item of the specified type and appends it to the items in the given parent.
-    explicit QgsTreeWidgetItemObject( QTreeWidget * parent, int type = Type );
+    explicit QgsTreeWidgetItemObject( QTreeWidget* parent, int type = Type );
 
     //! Sets the value for the item's column and role to the given value.
-    virtual void setData( int column, int role, const QVariant & value );
+    virtual void setData( int column, int role, const QVariant& value );
 
   signals:
     //! This signal is emitted when the contents of the column in the specified item has been edited by the user.

@@ -45,16 +45,16 @@
 #include "qgsruntimeprofiler.h"
 
 
-QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<QgsMapLayerConfigWidgetFactory*>& pages, QWidget *parent )
-    : QWidget( parent )
-    , mNotSupportedPage( 0 )
-    , mLayerPage( 1 )
-    , mMapCanvas( canvas )
-    , mBlockAutoApply( false )
-    , mCurrentLayer( nullptr )
-    , mLabelingWidget( nullptr )
-    , mRasterStyleWidget( nullptr )
-    , mPageFactories( pages )
+QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas* canvas, const QList<QgsMapLayerConfigWidgetFactory*>& pages, QWidget* parent )
+  : QWidget( parent )
+  , mNotSupportedPage( 0 )
+  , mLayerPage( 1 )
+  , mMapCanvas( canvas )
+  , mBlockAutoApply( false )
+  , mCurrentLayer( nullptr )
+  , mLabelingWidget( nullptr )
+  , mRasterStyleWidget( nullptr )
+  , mPageFactories( pages )
 {
   setupUi( this );
 
@@ -94,7 +94,7 @@ QgsLayerStylingWidget::~QgsLayerStylingWidget()
   delete mStyleManagerFactory;
 }
 
-void QgsLayerStylingWidget::setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *>& factories )
+void QgsLayerStylingWidget::setPageFactories( const QList<QgsMapLayerConfigWidgetFactory*>& factories )
 {
   mPageFactories = factories;
   // Always append the style manager factory at the bottom of the list
@@ -116,7 +116,7 @@ void QgsLayerStylingWidget::blockUpdates( bool blocked )
   }
 }
 
-void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
+void QgsLayerStylingWidget::setLayer( QgsMapLayer* layer )
 {
   if ( layer == mCurrentLayer )
     return;
@@ -344,7 +344,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   }
   else if ( mCurrentLayer->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
 
     switch ( row )
     {
@@ -378,7 +378,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   }
   else if ( mCurrentLayer->type() == QgsMapLayer::RasterLayer )
   {
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( mCurrentLayer );
+    QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( mCurrentLayer );
 
     switch ( row )
     {
@@ -459,7 +459,7 @@ void QgsLayerStylingWidget::liveApplyToggled( bool value )
   settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), value );
 }
 
-void QgsLayerStylingWidget::pushUndoItem( const QString &name )
+void QgsLayerStylingWidget::pushUndoItem( const QString& name )
 {
   QString errorMsg;
   QDomDocument doc( QStringLiteral( "style" ) );
@@ -472,12 +472,12 @@ void QgsLayerStylingWidget::pushUndoItem( const QString &name )
 }
 
 
-QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString& text, const QDomNode &current, const QDomNode &last )
-    : QUndoCommand( text )
-    , mLayer( layer )
-    , mXml( current )
-    , mLastState( last )
-    , mTime( QTime::currentTime() )
+QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer* layer, const QString& text, const QDomNode& current, const QDomNode& last )
+  : QUndoCommand( text )
+  , mLayer( layer )
+  , mXml( current )
+  , mLastState( last )
+  , mTime( QTime::currentTime() )
 {
 }
 
@@ -522,14 +522,14 @@ QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
   setTitle( QObject::tr( "Style Manager" ) );
 }
 
-QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
+QgsMapLayerConfigWidget* QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, bool dockMode, QWidget* parent ) const
 {
   Q_UNUSED( dockMode );
   return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
 
 }
 
-bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
+bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer* layer ) const
 {
   return ( layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer );
 }

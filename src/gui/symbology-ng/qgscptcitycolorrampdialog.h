@@ -53,7 +53,10 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
      */
-    QgsCptCityColorRamp ramp() const { return mRamp; }
+    QgsCptCityColorRamp ramp() const
+    {
+      return mRamp;
+    }
 
     /** Sets the color ramp to show in the dialog.
      * @param ramp color ramp
@@ -72,7 +75,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
      */
     bool saveAsGradientRamp() const;
 
-    bool eventFilter( QObject *obj, QEvent *event ) override;
+    bool eventFilter( QObject* obj, QEvent* event ) override;
 
   signals:
 
@@ -82,8 +85,8 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
   private slots:
     void populateVariants();
 
-    void on_mTreeView_clicked( const QModelIndex & );
-    void on_mListWidget_itemClicked( QListWidgetItem * item );
+    void on_mTreeView_clicked( const QModelIndex& );
+    void on_mListWidget_itemClicked( QListWidgetItem* item );
     void on_mListWidget_itemSelectionChanged();
     void on_tabBar_currentChanged( int index );
     void on_pbtnLicenseDetails_pressed();
@@ -98,8 +101,8 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void updatePreview( bool clear = false );
     void clearCopyingInfo();
     void updateCopyingInfo( const QMap< QString, QString >& copyingMap );
-    void updateTreeView( QgsCptCityDataItem *item, bool resetRamp = true );
-    void updateListWidget( QgsCptCityDataItem *item );
+    void updateTreeView( QgsCptCityDataItem* item, bool resetRamp = true );
+    void updateListWidget( QgsCptCityDataItem* item );
 
     QgsCptCityColorRamp mRamp;
     QgsCptCityArchive* mArchive;
@@ -128,10 +131,10 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel* model );
+    TreeFilterProxyModel( QObject* parent, QgsCptCityBrowserModel* model );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const override;
     // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
   private:

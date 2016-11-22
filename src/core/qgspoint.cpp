@@ -29,14 +29,14 @@
 //
 
 QgsVector::QgsVector()
-    : mX( 0.0 )
-    , mY( 0.0 )
+  : mX( 0.0 )
+  , mY( 0.0 )
 {
 }
 
 QgsVector::QgsVector( double x, double y )
-    : mX( x )
-    , mY( y )
+  : mX( x )
+  , mY( y )
 {
 }
 
@@ -380,13 +380,13 @@ QgsPoint QgsPoint::project( double distance, double bearing ) const
   return QgsPoint( m_x + dx, m_y + dy );
 }
 
-bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
+bool QgsPoint::compare( const QgsPoint& other, double epsilon ) const
 {
   return ( qgsDoubleNear( m_x, other.x(), epsilon ) && qgsDoubleNear( m_y, other.y(), epsilon ) );
 }
 
 // operators
-bool QgsPoint::operator==( const QgsPoint & other )
+bool QgsPoint::operator==( const QgsPoint& other )
 {
   if ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) )
     return true;
@@ -394,7 +394,7 @@ bool QgsPoint::operator==( const QgsPoint & other )
     return false;
 }
 
-bool QgsPoint::operator!=( const QgsPoint & other ) const
+bool QgsPoint::operator!=( const QgsPoint& other ) const
 {
   if ( qgsDoubleNear( m_x, other.x() ) && qgsDoubleNear( m_y, other.y() ) )
     return false;
@@ -402,7 +402,7 @@ bool QgsPoint::operator!=( const QgsPoint & other ) const
     return true;
 }
 
-QgsPoint & QgsPoint::operator=( const QgsPoint & other )
+QgsPoint& QgsPoint::operator=( const QgsPoint& other )
 {
   if ( &other != this )
   {

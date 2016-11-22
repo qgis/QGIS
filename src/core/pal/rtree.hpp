@@ -62,7 +62,7 @@ namespace pal
   */
 
   template < class DATATYPE, class ELEMTYPE, int NUMDIMS,
-  class ELEMTYPEREAL = ELEMTYPE, int TMAXNODES = 8, int TMINNODES = TMAXNODES / 2 >
+             class ELEMTYPEREAL = ELEMTYPE, int TMAXNODES = 8, int TMINNODES = TMAXNODES / 2 >
   class RTree
   {
     protected:
@@ -135,8 +135,8 @@ namespace pal
           struct StackElement
           {
             StackElement()
-                : m_node( NULL )
-                , m_branchIndex( 0 )
+              : m_node( NULL )
+              , m_branchIndex( 0 )
             {}
             Node* m_node;
             int m_branchIndex;
@@ -144,15 +144,24 @@ namespace pal
 
         public:
 
-          Iterator()                                    { Init(); }
+          Iterator()
+          {
+            Init();
+          }
 
           ~Iterator()                                   { }
 
           /// Is iterator invalid
-          bool IsNull() const                           { return ( m_tos <= 0 ); }
+          bool IsNull() const
+          {
+            return ( m_tos <= 0 );
+          }
 
           /// Is iterator pointing to valid data
-          bool IsNotNull() const                        { return ( m_tos > 0 ); }
+          bool IsNotNull() const
+          {
+            return ( m_tos > 0 );
+          }
 
           /// Access the current data element. Caller must be sure iterator is not NULL first.
           DATATYPE& operator*()
@@ -171,12 +180,18 @@ namespace pal
           }
 
           /// Find the next data element
-          bool operator++()                             { return FindNextData(); }
+          bool operator++()
+          {
+            return FindNextData();
+          }
 
         private:
 
           /// Reset iterator
-          void Init()                                   { m_tos = 0; }
+          void Init()
+          {
+            m_tos = 0;
+          }
 
           /// Find the next data element in the tree (For internal use only)
           bool FindNextData()
@@ -256,13 +271,22 @@ namespace pal
       }
 
       /// Get Next for iteration
-      void GetNext( Iterator& a_it )                    { ++a_it; }
+      void GetNext( Iterator& a_it )
+      {
+        ++a_it;
+      }
 
       /// Is iterator NULL, or at end?
-      bool IsNull( Iterator& a_it )                     { return a_it.IsNull(); }
+      bool IsNull( Iterator& a_it )
+      {
+        return a_it.IsNull();
+      }
 
       /// Get object at iterator position
-      DATATYPE& GetAt( Iterator& a_it )                 { return *a_it; }
+      DATATYPE& GetAt( Iterator& a_it )
+      {
+        return *a_it;
+      }
 
     protected:
 
@@ -289,8 +313,14 @@ namespace pal
       /// Node for each branch level
       struct Node
       {
-        bool IsInternalNode()                         { return ( m_level > 0 ); } // Not a leaf, but a internal node
-        bool IsLeaf()                                 { return ( m_level == 0 ); } // A leaf, contains data
+        bool IsInternalNode()
+        {
+          return ( m_level > 0 );  // Not a leaf, but a internal node
+        }
+        bool IsLeaf()
+        {
+          return ( m_level == 0 );  // A leaf, contains data
+        }
 
         int m_count;                                  ///< Count
         int m_level;                                  ///< Leaf is zero, others positive

@@ -92,13 +92,19 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     /** Returns the shape for the rendered marker symbol.
      * @see setShape()
      */
-    Shape shape() const { return mShape; }
+    Shape shape() const
+    {
+      return mShape;
+    }
 
     /** Sets the rendered marker shape.
      * @param shape new marker shape
      * @see shape()
      */
-    void setShape( Shape shape ) { mShape = shape; }
+    void setShape( Shape shape )
+    {
+      mShape = shape;
+    }
 
     /** Attempts to decode a string representation of a shape name to the corresponding
      * shape.
@@ -137,7 +143,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * @returns true if shape was successfully stored in polygon
      * @note not available in Python bindings
      */
-    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
+    bool shapeToPolygon( Shape shape, QPolygonF& polygon ) const;
 
     /** Calculates the desired size of the marker, considering data defined size overrides.
      * @param context symbol render context
@@ -215,7 +221,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @param element XML element containing SLD definition of symbol
      * @returns new QgsSimpleMarkerSymbolLayer
      */
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFromSld( QDomElement& element );
 
     // reimplemented from base classes
 
@@ -224,18 +230,30 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
     QgsStringMap properties() const override;
     QgsSimpleMarkerSymbolLayer* clone() const override;
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void writeSldMarker( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
-    bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext& context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) override;
-    QColor outlineColor() const override { return borderColor(); }
-    void setOutlineColor( const QColor& color ) override { setBorderColor( color ); }
-    QColor fillColor() const override { return mColor; }
-    void setFillColor( const QColor& color ) override { mColor = color; }
+    QColor outlineColor() const override
+    {
+      return borderColor();
+    }
+    void setOutlineColor( const QColor& color ) override
+    {
+      setBorderColor( color );
+    }
+    QColor fillColor() const override
+    {
+      return mColor;
+    }
+    void setFillColor( const QColor& color ) override
+    {
+      mColor = color;
+    }
     void setColor( const QColor& color ) override;
     virtual QColor color() const override;
 
@@ -246,7 +264,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see outlineStyle()
      * @see penJoinStyle()
      */
-    QColor borderColor() const { return mBorderColor; }
+    QColor borderColor() const
+    {
+      return mBorderColor;
+    }
 
     /** Sets the marker's border color.
      * @param color border color
@@ -254,7 +275,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see setOutlineStyle()
      * @see setPenJoinStyle()
      */
-    void setBorderColor( const QColor& color ) { mBorderColor = color; }
+    void setBorderColor( const QColor& color )
+    {
+      mBorderColor = color;
+    }
 
     /** Returns the marker's outline style (eg solid, dashed, etc)
      * @note added in 2.4
@@ -262,7 +286,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see borderColor()
      * @see penJoinStyle()
     */
-    Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
+    Qt::PenStyle outlineStyle() const
+    {
+      return mOutlineStyle;
+    }
 
     /** Sets the marker's outline style (eg solid, dashed, etc)
      * @param outlineStyle style
@@ -271,7 +298,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see setBorderColor()
      * @see setPenJoinStyle()
     */
-    void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+    void setOutlineStyle( Qt::PenStyle outlineStyle )
+    {
+      mOutlineStyle = outlineStyle;
+    }
 
     /** Returns the marker's outline join style (eg miter, bevel, etc).
      * @note added in 2.16
@@ -279,7 +309,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see borderColor()
      * @see outlineStyle()
     */
-    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+    Qt::PenJoinStyle penJoinStyle() const
+    {
+      return mPenJoinStyle;
+    }
 
     /** Sets the marker's outline join style (eg miter, bevel, etc).
      * @param style join style
@@ -288,14 +321,20 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see setBorderColor()
      * @see setOutlineStyle()
     */
-    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+    void setPenJoinStyle( Qt::PenJoinStyle style )
+    {
+      mPenJoinStyle = style;
+    }
 
     /** Returns the width of the marker's outline.
      * @see setOutlineWidth()
      * @see outlineWidthUnit()
      * @see outlineWidthMapUnitScale()
      */
-    double outlineWidth() const { return mOutlineWidth; }
+    double outlineWidth() const
+    {
+      return mOutlineWidth;
+    }
 
     /** Sets the width of the marker's outline.
      * @param w outline width. See outlineWidthUnit() for units.
@@ -303,7 +342,10 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see setOutlineWidthUnit()
      * @see setOutlineWidthMapUnitScale()
      */
-    void setOutlineWidth( double w ) { mOutlineWidth = w; }
+    void setOutlineWidth( double w )
+    {
+      mOutlineWidth = w;
+    }
 
     /** Sets the unit for the width of the marker's outline.
      * @param u outline width unit
@@ -311,14 +353,20 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see setOutlineWidth()
      * @see setOutlineWidthMapUnitScale()
      */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit u ) { mOutlineWidthUnit = u; }
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit u )
+    {
+      mOutlineWidthUnit = u;
+    }
 
     /** Returns the unit for the width of the marker's outline.
      * @see setOutlineWidthUnit()
      * @see outlineWidth()
      * @see outlineWidthMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const
+    {
+      return mOutlineWidthUnit;
+    }
 
     /** Sets the map scale for the width of the marker's outline.
      * @param scale outline width map unit scale
@@ -326,14 +374,20 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * @see setOutlineWidth()
      * @see setOutlineWidthUnit()
      */
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mOutlineWidthMapUnitScale = scale;
+    }
 
     /** Returns the map scale for the width of the marker's outline.
      * @see setOutlineWidthMapUnitScale()
      * @see outlineWidth()
      * @see outlineWidthUnit()
      */
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const
+    {
+      return mOutlineWidthMapUnitScale;
+    }
 
   protected:
 
@@ -452,7 +506,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // static stuff
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFromSld( QDomElement& element );
 
     // implemented from base classes
 
@@ -468,33 +522,66 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QgsSvgMarkerSymbolLayer* clone() const override;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void writeSldMarker( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const override;
 
-    QString path() const { return mPath; }
+    QString path() const
+    {
+      return mPath;
+    }
     void setPath( const QString& path );
 
-    QColor fillColor() const override { return color(); }
-    void setFillColor( const QColor& color ) override { setColor( color ); }
+    QColor fillColor() const override
+    {
+      return color();
+    }
+    void setFillColor( const QColor& color ) override
+    {
+      setColor( color );
+    }
 
-    QColor outlineColor() const override { return mOutlineColor; }
-    void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
+    QColor outlineColor() const override
+    {
+      return mOutlineColor;
+    }
+    void setOutlineColor( const QColor& c ) override
+    {
+      mOutlineColor = c;
+    }
 
-    double outlineWidth() const { return mOutlineWidth; }
-    void setOutlineWidth( double w ) { mOutlineWidth = w; }
+    double outlineWidth() const
+    {
+      return mOutlineWidth;
+    }
+    void setOutlineWidth( double w )
+    {
+      mOutlineWidth = w;
+    }
 
     /** Sets the units for the outline width.
      * @param unit width units
      * @see outlineWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit )
+    {
+      mOutlineWidthUnit = unit;
+    }
 
     /** Returns the units for the outline width.
      * @see outlineWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const
+    {
+      return mOutlineWidthUnit;
+    }
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mOutlineWidthMapUnitScale = scale;
+    }
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const
+    {
+      return mOutlineWidthMapUnitScale;
+    }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -502,7 +589,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext& context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) override;
 
@@ -553,7 +640,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // static stuff
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFromSld( QDomElement& element );
 
     // implemented from base classes
 
@@ -569,50 +656,92 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QgsFontMarkerSymbolLayer* clone() const override;
 
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void writeSldMarker( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const override;
 
     // new methods
 
-    QString fontFamily() const { return mFontFamily; }
-    void setFontFamily( const QString& family ) { mFontFamily = family; }
+    QString fontFamily() const
+    {
+      return mFontFamily;
+    }
+    void setFontFamily( const QString& family )
+    {
+      mFontFamily = family;
+    }
 
-    QChar character() const { return mChr; }
-    void setCharacter( QChar ch ) { mChr = ch; }
+    QChar character() const
+    {
+      return mChr;
+    }
+    void setCharacter( QChar ch )
+    {
+      mChr = ch;
+    }
 
-    QColor outlineColor() const override { return mOutlineColor; }
-    void setOutlineColor( const QColor& color ) override { mOutlineColor = color; }
+    QColor outlineColor() const override
+    {
+      return mOutlineColor;
+    }
+    void setOutlineColor( const QColor& color ) override
+    {
+      mOutlineColor = color;
+    }
 
     /** Get outline width.
      * @note added in 2.16 */
-    double outlineWidth() const { return mOutlineWidth; }
+    double outlineWidth() const
+    {
+      return mOutlineWidth;
+    }
 
     /** Set outline width.
      * @note added in 2.16 */
-    void setOutlineWidth( double width ) { mOutlineWidth = width; }
+    void setOutlineWidth( double width )
+    {
+      mOutlineWidth = width;
+    }
 
     /** Get outline width unit.
      * @note added in 2.16 */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const
+    {
+      return mOutlineWidthUnit;
+    }
 
     /** Set outline width unit.
      * @note added in 2.16 */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit )
+    {
+      mOutlineWidthUnit = unit;
+    }
 
     /** Get outline width map unit scale.
      * @note added in 2.16 */
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const
+    {
+      return mOutlineWidthMapUnitScale;
+    }
 
     /** Set outline width map unit scale.
      * @note added in 2.16 */
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mOutlineWidthMapUnitScale = scale;
+    }
 
     /** Get outline join style.
      * @note added in 2.16 */
-    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+    Qt::PenJoinStyle penJoinStyle() const
+    {
+      return mPenJoinStyle;
+    }
 
     /** Set outline join style.
      * @note added in 2.16 */
-    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+    void setPenJoinStyle( Qt::PenJoinStyle style )
+    {
+      mPenJoinStyle = style;
+    }
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) override;
 

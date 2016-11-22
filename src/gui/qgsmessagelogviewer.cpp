@@ -30,8 +30,8 @@
 #include <QScrollBar>
 
 
-QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar* statusBar, QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   Q_UNUSED( statusBar )
   setupUi( this );
@@ -55,10 +55,10 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
     ;
 
-  QPlainTextEdit *w;
+  QPlainTextEdit* w;
   if ( i < tabWidget->count() )
   {
-    w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
+    w = qobject_cast<QPlainTextEdit*>( tabWidget->widget( i ) );
     tabWidget->setCurrentIndex( i );
   }
   else

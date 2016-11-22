@@ -29,11 +29,11 @@
 #include "qgslonglongvalidator.h"
 #include "qgsfields.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
-    : QValidator( parent )
-    , mField( field )
-    , mDefaultValue( defaultValue )
-    , mDateFormat( dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject* parent, const QgsField& field, const QString& defaultValue, const QString& dateFormat )
+  : QValidator( parent )
+  , mField( field )
+  , mDefaultValue( defaultValue )
+  , mDateFormat( dateFormat )
 {
   switch ( mField.type() )
   {
@@ -92,7 +92,7 @@ QgsFieldValidator::~QgsFieldValidator()
   delete mValidator;
 }
 
-QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
+QValidator::State QgsFieldValidator::validate( QString& s, int& i ) const
 {
   // empty values are considered NULL for numbers and dates and are acceptable
   if ( s.isEmpty() &&
@@ -144,7 +144,7 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   return Acceptable;
 }
 
-void QgsFieldValidator::fixup( QString &s ) const
+void QgsFieldValidator::fixup( QString& s ) const
 {
   if ( mValidator )
   {

@@ -77,13 +77,13 @@ QgsExpressionContext QgsSizeScaleWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -101,12 +101,12 @@ QgsExpressionContext QgsSizeScaleWidget::createExpressionContext() const
   return expContext;
 }
 
-QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbol * symbol )
-    : mSymbol( symbol )
+QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer* layer, const QgsSymbol* symbol )
+  : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
     // non const, so we get the layer from the registry instead
-    , mLayer( layer ? dynamic_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) ) : nullptr )
-    , mMapCanvas( nullptr )
+  , mLayer( layer ? dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) ) : nullptr )
+  , mMapCanvas( nullptr )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
@@ -190,7 +190,7 @@ void QgsSizeScaleWidget::showEvent( QShowEvent* )
   setFromSymbol();
 }
 
-QgsScaleExpression *QgsSizeScaleWidget::createExpression() const
+QgsScaleExpression* QgsSizeScaleWidget::createExpression() const
 {
   return new QgsScaleExpression( QgsScaleExpression::Type( scaleMethodComboBox->currentData().toInt() ),
                                  mExpressionWidget->asExpression(),
@@ -270,9 +270,9 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( ! expression.prepare( &context ) )
     return;
@@ -281,8 +281,8 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
 
   QgsFeatureIterator fit = mLayer->getFeatures(
                              QgsFeatureRequest().setFlags( expression.needsGeometry()
-                                                           ? QgsFeatureRequest::NoFlags
-                                                           : QgsFeatureRequest::NoGeometry )
+                                 ? QgsFeatureRequest::NoFlags
+                                 : QgsFeatureRequest::NoGeometry )
                              .setSubsetOfAttributes( lst, mLayer->fields() ) );
 
   // create list of non-null attribute values

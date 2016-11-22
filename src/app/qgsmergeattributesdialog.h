@@ -42,7 +42,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     };
 
 
-    QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsMergeAttributesDialog();
 
     QgsAttributes mergedAttributes() const;
@@ -59,7 +59,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void setAllToSkip();
 
   private slots:
-    void comboValueChanged( const QString & text );
+    void comboValueChanged( const QString& text );
     void selectedRowChanged();
     void on_mFromSelectedPushButton_clicked();
     void on_mRemoveFeatureFromSelectionButton_clicked();

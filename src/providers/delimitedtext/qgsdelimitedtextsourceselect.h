@@ -31,7 +31,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
+    QgsDelimitedTextSourceSelect( QWidget* parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
     ~QgsDelimitedTextSourceSelect();
 
     QStringList splitLine( QString line );
@@ -46,16 +46,16 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void saveSettings( const QString& subkey = QString(), bool saveGeomSettings = true );
     void loadSettingsForFile( const QString& filename );
     void saveSettingsForFile( const QString& filename );
-    bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname );
+    bool trySetXYField( QStringList& fields, QList<bool>& isValidNumber, const QString& xname, const QString& yname );
 
   private:
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile* mFile;
     int mExampleRowCount;
     int mBadRowCount;
     QString mPluginKey;
     QString mLastFileType;
-    QButtonGroup *bgFileFormat;
-    QButtonGroup *bgGeomType;
+    QButtonGroup* bgFileFormat;
+    QButtonGroup* bgGeomType;
 
   private slots:
     void on_buttonBox_accepted();

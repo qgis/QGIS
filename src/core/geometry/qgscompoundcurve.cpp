@@ -58,7 +58,7 @@ QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve& curve ): QgsCurve( c
   }
 }
 
-QgsCompoundCurve& QgsCompoundCurve::operator=( const QgsCompoundCurve & curve )
+QgsCompoundCurve& QgsCompoundCurve::operator=( const QgsCompoundCurve& curve )
 {
   if ( &curve != this )
   {
@@ -72,7 +72,7 @@ QgsCompoundCurve& QgsCompoundCurve::operator=( const QgsCompoundCurve & curve )
   return *this;
 }
 
-QgsCompoundCurve *QgsCompoundCurve::clone() const
+QgsCompoundCurve* QgsCompoundCurve::clone() const
 {
   return new QgsCompoundCurve( *this );
 }
@@ -196,7 +196,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QList<QByteArray> wkbForCurves;
-  Q_FOREACH ( const QgsCurve *curve, mCurves )
+  Q_FOREACH ( const QgsCurve* curve, mCurves )
   {
     QByteArray wkbForCurve = curve->asWkb();
     binarySize += wkbForCurve.length();
@@ -315,7 +315,7 @@ QgsPointV2 QgsCompoundCurve::endPoint() const
   return mCurves.at( mCurves.size() - 1 )->endPoint();
 }
 
-void QgsCompoundCurve::points( QgsPointSequence &pts ) const
+void QgsCompoundCurve::points( QgsPointSequence& pts ) const
 {
   pts.clear();
   if ( mCurves.size() < 1 )

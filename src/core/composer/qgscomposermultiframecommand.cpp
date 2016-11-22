@@ -20,7 +20,7 @@
 #include "qgsproject.h"
 
 QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
+  QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
 {
 }
 
@@ -92,9 +92,9 @@ bool QgsComposerMultiFrameCommand::containsChange() const
 }
 
 
-QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame *multiFrame, const QString &text )
-    : QgsComposerMultiFrameCommand( multiFrame, text )
-    , mContext( c )
+QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame* multiFrame, const QString& text )
+  : QgsComposerMultiFrameCommand( multiFrame, text )
+  , mContext( c )
 {
 
 }
@@ -104,7 +104,7 @@ QgsComposerMultiFrameMergeCommand::~QgsComposerMultiFrameMergeCommand()
 
 }
 
-bool QgsComposerMultiFrameMergeCommand::mergeWith( const QUndoCommand *command )
+bool QgsComposerMultiFrameMergeCommand::mergeWith( const QUndoCommand* command )
 {
   const QgsComposerMultiFrameCommand* c = dynamic_cast<const QgsComposerMultiFrameCommand*>( command );
   if ( !c || mMultiFrame != c->multiFrame() )

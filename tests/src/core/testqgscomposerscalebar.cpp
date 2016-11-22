@@ -37,11 +37,11 @@ class TestQgsComposerScaleBar : public QObject
 
   public:
     TestQgsComposerScaleBar()
-        : mComposition( 0 )
-        , mComposerMap( 0 )
-        , mComposerScaleBar( 0 )
-        , mRasterLayer( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mComposerMap( 0 )
+      , mComposerScaleBar( 0 )
+      , mRasterLayer( 0 )
+      , mMapSettings( 0 )
     {}
 
   private slots:
@@ -60,7 +60,7 @@ class TestQgsComposerScaleBar : public QObject
     QgsComposerMap* mComposerMap;
     QgsComposerScaleBar* mComposerScaleBar;
     QgsRasterLayer* mRasterLayer;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
     QPen mPrevPen;
 };

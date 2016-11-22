@@ -35,7 +35,10 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
-    virtual Flags flags() const override { return QgsMapTool::EditTool; }
+    virtual Flags flags() const override
+    {
+      return QgsMapTool::EditTool;
+    }
 
   protected:
 

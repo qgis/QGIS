@@ -72,9 +72,9 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
-    , mSettings( nullptr )
+QgsOptions::QgsOptions( QWidget* parent, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
+  , mSettings( nullptr )
 {
   setupUi( this );
 
@@ -137,7 +137,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
     mCustomVariablesTable->setEnabled( false );
   }
   QStringList customVarsList = mSettings->value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
-  Q_FOREACH ( const QString &varStr, customVarsList )
+  Q_FOREACH ( const QString& varStr, customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
     if ( pos == -1 )
@@ -171,7 +171,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
   QStringList currentVarsList = QProcess::systemEnvironment();
 
-  Q_FOREACH ( const QString &varStr, currentVarsList )
+  Q_FOREACH ( const QString& varStr, currentVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -533,7 +533,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mFontFamilyComboBox->setEnabled( !isQtDefault );
   if ( !isQtDefault )
   {
-    QFont *tempFont = new QFont( fontFamily );
+    QFont* tempFont = new QFont( fontFamily );
     // is exact family match returned from system?
     if ( tempFont->family() == fontFamily )
     {
@@ -748,7 +748,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeCustomColors, SLOT( showExportColorsDialog() ) );
 
   //find custom color scheme from registry
-  QList<QgsCustomColorScheme *> customSchemes;
+  QList<QgsCustomColorScheme*> customSchemes;
   QgsColorSchemeRegistry::instance()->schemes( customSchemes );
   if ( customSchemes.length() > 0 )
   {
@@ -764,7 +764,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   QString composerFontFamily = mSettings->value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
 
-  QFont *tempComposerFont = new QFont( composerFontFamily );
+  QFont* tempComposerFont = new QFont( composerFontFamily );
   // is exact family match returned from system?
   if ( tempComposerFont->family() == composerFontFamily )
   {
@@ -1015,12 +1015,12 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed()
   leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) );
 }
 
-void QgsOptions::iconSizeChanged( const QString &iconSize )
+void QgsOptions::iconSizeChanged( const QString& iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
-void QgsOptions::uiThemeChanged( const QString &theme )
+void QgsOptions::uiThemeChanged( const QString& theme )
 {
   if ( theme == QgsApplication::themeName() )
     return;
@@ -1549,7 +1549,7 @@ void QgsOptions::on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSys
   mLayerDefaultCrs = crs;
 }
 
-void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
   Q_UNUSED( column );
   // edit driver if driver supports write
@@ -1575,7 +1575,7 @@ void QgsOptions::editGdalDriver( const QString& driverName )
     return;
 
   QgsDialog dlg( this, 0, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  QVBoxLayout *layout = dlg.layout();
+  QVBoxLayout* layout = dlg.layout();
   QString title = tr( "Create Options - %1 Driver" ).arg( driverName );
   if ( driverName == QLatin1String( "_pyramids" ) )
     title = tr( "Create Options - pyramids" );
@@ -1889,7 +1889,7 @@ void QgsOptions::loadGdalDriverList()
     QgsDebugMsg( QString( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
 
     // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
-    const char *pszRWFlag, *pszVirtualIO;
+    const char* pszRWFlag, *pszVirtualIO;
     if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, nullptr ) )
     {
       myGdalWriteDrivers << myGdalDriverDescription;
@@ -1926,7 +1926,7 @@ void QgsOptions::loadGdalDriverList()
 
   Q_FOREACH ( const QString& myName, myDrivers )
   {
-    QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
+    QTreeWidgetItem* mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
     {
       mypItem->setCheckState( 0, Qt::Unchecked );
@@ -1969,7 +1969,7 @@ void QgsOptions::saveGdalDriverList()
 {
   for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
   {
-    QTreeWidgetItem * mypItem = lstGdalDrivers->topLevelItem( i );
+    QTreeWidgetItem* mypItem = lstGdalDrivers->topLevelItem( i );
     if ( mypItem->checkState( 0 ) == Qt::Unchecked )
     {
       QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
@@ -2068,7 +2068,7 @@ void QgsOptions::on_pbnExportScales_clicked()
   }
 }
 
-void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal )
+void QgsOptions::initContrastEnhancement( QComboBox* cbox, const QString& name, const QString& defaultVal )
 {
   QSettings settings;
 
@@ -2082,7 +2082,7 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString& name, 
   cbox->setCurrentIndex( cbox->findData( contrastEnchacement ) );
 }
 
-void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString& name )
+void QgsOptions::saveContrastEnhancement( QComboBox* cbox, const QString& name )
 {
   QSettings settings;
   QString value = cbox->currentData().toString();
@@ -2167,7 +2167,7 @@ void QgsOptions::on_mButtonAddColor_clicked()
   mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
 
-QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )
+QListWidgetItem* QgsOptions::addScaleToScaleList( const QString& newScale )
 {
   QListWidgetItem* newItem = new QListWidgetItem( newScale );
   addScaleToScaleList( newItem );

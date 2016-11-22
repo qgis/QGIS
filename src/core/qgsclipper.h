@@ -271,7 +271,8 @@ inline void QgsClipper::trimPolygonToBoundary( const QPolygonF& inPts, QPolygonF
 
   // and compare to the first point initially.
   for ( int i2 = 0; i2 < inPts.size() ; ++i2 )
-  { // look at each edge of the polygon in turn
+  {
+    // look at each edge of the polygon in turn
     if ( inside( inPts[i2], b, boundaryValue ) ) // end point of edge is inside boundary
     {
       if ( inside( inPts[i1], b, boundaryValue ) )
@@ -379,7 +380,8 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
   QgsPoint p;
 
   if ( qAbs( r_d ) > SMALL_NUM && qAbs( r_n ) > SMALL_NUM )
-  { // they cross
+  {
+    // they cross
     double r = r_n / r_d;
     p.set( x1 + r*( x2 - x1 ), y1 + r*( y2 - y1 ) );
   }

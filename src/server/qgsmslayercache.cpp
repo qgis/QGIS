@@ -25,14 +25,14 @@
 
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {
-  static QgsMSLayerCache *mInstance = 0;
+  static QgsMSLayerCache* mInstance = 0;
   if ( !mInstance )
     mInstance = new QgsMSLayerCache();
   return mInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
-    : mProjectMaxLayers( 0 )
+  : mProjectMaxLayers( 0 )
 {
   mDefaultMaxLayers = 100;
   //max layer from environment variable overrides default

@@ -30,7 +30,7 @@ class QgsGeorefTransformInterface
   public:
     virtual ~QgsGeorefTransformInterface() { }
 
-    virtual bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) = 0;
+    virtual bool updateParametersFromGCPs( const QVector<QgsPoint>& mapCoords, const QVector<QgsPoint>& pixelCoords ) = 0;
 
     /**
      * Returns the minimum number of GCPs required for parameter fitting.
@@ -84,16 +84,25 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     /**
      * Setting the mRasterChangeCoords for change type coordinate(map for pixel).
      */
-    void setRasterChangeCoords( const QString &fileRaster );
+    void setRasterChangeCoords( const QString& fileRaster );
 
     //! \returns Whether has Coordinate Reference Systems in image
-    bool hasCrs() const { return mRasterChangeCoords.hasCrs(); }
+    bool hasCrs() const
+    {
+      return mRasterChangeCoords.hasCrs();
+    }
 
     //! \returns Coordinates of image
-    QgsPoint toColumnLine( const QgsPoint &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    QgsPoint toColumnLine( const QgsPoint& pntMap )
+    {
+      return mRasterChangeCoords.toColumnLine( pntMap );
+    }
 
     //! \returns Bounding box of image(transform to coordinate of Map or Image )
-    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
+    QgsRectangle getBoundingBox( const QgsRectangle& rect, bool toPixel )
+    {
+      return mRasterChangeCoords.getBoundingBox( rect, toPixel );
+    }
 
     //! \brief The transform parametrisation currently in use.
     TransformParametrisation transformParametrisation() const;
@@ -109,7 +118,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \returns true on success, false on failure
      */
-    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
+    bool updateParametersFromGCPs( const QVector<QgsPoint>& mapCoords, const QVector<QgsPoint>& pixelCoords ) override;
 
     //! \brief Returns the minimum number of GCPs required for parameter fitting.
     int getMinimumGCPCount() const override;
@@ -129,14 +138,14 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \note Negative y-axis points down in raster CS.
      */
-    bool transformRasterToWorld( const QgsPoint &raster, QgsPoint &world );
+    bool transformRasterToWorld( const QgsPoint& raster, QgsPoint& world );
 
     /**
      * \brief Transform from referenced coordinates to raster coordinates.
      *
      * \note Negative y-axis points down in raster CS.
      */
-    bool transformWorldToRaster( const QgsPoint &world, QgsPoint &raster );
+    bool transformWorldToRaster( const QgsPoint& world, QgsPoint& raster );
 
     /**
      * \brief Transforms from raster to world if rasterToWorld is true,
@@ -144,25 +153,25 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \note Negative y-axis points down in raster CS.
      */
-    bool transform( const QgsPoint &src, QgsPoint &dst, bool rasterToWorld );
+    bool transform( const QgsPoint& src, QgsPoint& dst, bool rasterToWorld );
 
     //! \brief Returns origin and scale if this is a linear transform, fails otherwise.
-    bool getLinearOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
+    bool getLinearOriginScale( QgsPoint& origin, double& scaleX, double& scaleY ) const;
 
     //! \brief Returns origin, scale and rotation for linear and helmert transform, fails otherwise.
-    bool getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const;
+    bool getOriginScaleRotation( QgsPoint& origin, double& scaleX, double& scaleY, double& rotation ) const;
 
   private:
     // shallow copy constructor
-    QgsGeorefTransform( const QgsGeorefTransform &other );
+    QgsGeorefTransform( const QgsGeorefTransform& other );
 
     //! Factory function which creates an implementation for the given parametrisation.
-    static QgsGeorefTransformInterface *createImplementation( TransformParametrisation parametrisation );
+    static QgsGeorefTransformInterface* createImplementation( TransformParametrisation parametrisation );
 
     // convenience wrapper around GDALTransformerFunc
-    bool gdal_transform( const QgsPoint &src, QgsPoint &dst, int dstToSrc ) const;
+    bool gdal_transform( const QgsPoint& src, QgsPoint& dst, int dstToSrc ) const;
 
-    QgsGeorefTransformInterface *mGeorefTransformImplementation;
+    QgsGeorefTransformInterface* mGeorefTransformImplementation;
     TransformParametrisation     mTransformParametrisation;
     bool                         mParametersInitialized;
     QgsRasterChangeCoords        mRasterChangeCoords;

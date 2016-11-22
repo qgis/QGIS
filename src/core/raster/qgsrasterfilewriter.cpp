@@ -30,34 +30,34 @@
 #include <QMessageBox>
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl )
-    : mMode( Raw )
-    , mOutputUrl( outputUrl )
-    , mOutputProviderKey( QStringLiteral( "gdal" ) )
-    , mOutputFormat( QStringLiteral( "GTiff" ) )
-    , mTiledMode( false )
-    , mMaxTileWidth( 500 )
-    , mMaxTileHeight( 500 )
-    , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
-    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-    , mProgressDialog( nullptr )
-    , mPipe( nullptr )
-    , mInput( nullptr )
+  : mMode( Raw )
+  , mOutputUrl( outputUrl )
+  , mOutputProviderKey( QStringLiteral( "gdal" ) )
+  , mOutputFormat( QStringLiteral( "GTiff" ) )
+  , mTiledMode( false )
+  , mMaxTileWidth( 500 )
+  , mMaxTileHeight( 500 )
+  , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
+  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+  , mProgressDialog( nullptr )
+  , mPipe( nullptr )
+  , mInput( nullptr )
 {
 
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter()
-    : mMode( Raw )
-    , mOutputProviderKey( QStringLiteral( "gdal" ) )
-    , mOutputFormat( QStringLiteral( "GTiff" ) )
-    , mTiledMode( false )
-    , mMaxTileWidth( 500 )
-    , mMaxTileHeight( 500 )
-    , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
-    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-    , mProgressDialog( nullptr )
-    , mPipe( nullptr )
-    , mInput( nullptr )
+  : mMode( Raw )
+  , mOutputProviderKey( QStringLiteral( "gdal" ) )
+  , mOutputFormat( QStringLiteral( "GTiff" ) )
+  , mTiledMode( false )
+  , mMaxTileWidth( 500 )
+  , mMaxTileHeight( 500 )
+  , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
+  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+  , mProgressDialog( nullptr )
+  , mPipe( nullptr )
+  , mInput( nullptr )
 {
 
 }
@@ -98,7 +98,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
     return SourceProviderError;
   }
 #ifdef QGISDEBUG
-  const QgsRasterInterface &srcInput = *iface->sourceInput();
+  const QgsRasterInterface& srcInput = *iface->sourceInput();
   QgsDebugMsgLevel( QString( "srcInput = %1" ).arg( typeid( srcInput ).name() ), 4 );
 #endif
 
@@ -191,7 +191,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
 
   for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
   {
-    QgsRasterNuller *nuller = pipe->nuller();
+    QgsRasterNuller* nuller = pipe->nuller();
 
     bool srcHasNoDataValue = srcProvider->sourceHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
@@ -216,7 +216,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     {
       // Verify if we realy need no data value, i.e.
       QgsRectangle srcExtent = outputExtent;
-      QgsRasterProjector *projector = pipe->projector();
+      QgsRasterProjector* projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
         QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
@@ -333,7 +333,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   QgsDebugMsgLevel( "Entered", 4 );
 
   const QgsRasterInterface* iface = iter->input();
-  const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->sourceInput() );
+  const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->sourceInput() );
   int nBands = iface->bandCount();
   QgsDebugMsgLevel( QString( "nBands = %1" ).arg( nBands ), 4 );
 
@@ -521,7 +521,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
   }
 
-  QgsRasterBlock *inputBlock = nullptr;
+  QgsRasterBlock* inputBlock = nullptr;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, &inputBlock, iterLeft, iterTop ) )
   {
     if ( !inputBlock )
@@ -782,7 +782,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
 }
 
 #if 0
-int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMessage, void* pData )
+int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char* pszMessage, void* pData )
 {
   Q_UNUSED( pszMessage );
   GDALTermProgress( dfComplete, 0, 0 );

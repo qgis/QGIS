@@ -64,16 +64,22 @@ class GUI_EXPORT CharacterWidget : public QWidget
     Q_OBJECT
 
   public:
-    CharacterWidget( QWidget *parent = nullptr );
+    CharacterWidget( QWidget* parent = nullptr );
     QSize sizeHint() const override;
 
-    int getColumns() const { return columns; }
-    int getSquareSize() const { return squareSize; }
+    int getColumns() const
+    {
+      return columns;
+    }
+    int getSquareSize() const
+    {
+      return squareSize;
+    }
 
   public slots:
-    void updateFont( const QFont &font );
+    void updateFont( const QFont& font );
     void updateSize( double fontSize );
-    void updateStyle( const QString &fontStyle );
+    void updateStyle( const QString& fontStyle );
     void updateFontMerging( bool enable );
     void updateColumns( int cols );
     void setCharacter( QChar character );
@@ -82,9 +88,9 @@ class GUI_EXPORT CharacterWidget : public QWidget
     void characterSelected( QChar character );
 
   protected:
-    void mouseMoveEvent( QMouseEvent *event ) override;
-    void mousePressEvent( QMouseEvent *event ) override;
-    void paintEvent( QPaintEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
+    void paintEvent( QPaintEvent* event ) override;
 
   private:
     QFont displayFont;

@@ -23,13 +23,13 @@
 #include "qgsslider.h"
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mIntSpinBox( nullptr )
-    , mDoubleSpinBox( nullptr )
-    , mSlider( nullptr )
-    , mDial( nullptr )
-    , mQgsSlider( nullptr )
-    , mQgsDial( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mIntSpinBox( nullptr )
+  , mDoubleSpinBox( nullptr )
+  , mSlider( nullptr )
+  , mDial( nullptr )
+  , mQgsSlider( nullptr )
+  , mQgsDial( nullptr )
 {
 }
 

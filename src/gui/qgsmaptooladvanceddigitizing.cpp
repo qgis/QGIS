@@ -19,13 +19,13 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
-    : QgsMapToolEdit( canvas )
-    , mCaptureMode( CapturePoint )
-    , mSnapOnPress( false )
-    , mSnapOnRelease( false )
-    , mSnapOnMove( false )
-    , mSnapOnDoubleClick( false )
-    , mCadDockWidget( cadDockWidget )
+  : QgsMapToolEdit( canvas )
+  , mCaptureMode( CapturePoint )
+  , mSnapOnPress( false )
+  , mSnapOnRelease( false )
+  , mSnapOnMove( false )
+  , mSnapOnDoubleClick( false )
+  , mCadDockWidget( cadDockWidget )
 {
 }
 

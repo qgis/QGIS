@@ -21,8 +21,8 @@
 #include <QSettings>
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -46,8 +46,8 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mLayer );
   mExpressionBuilder->setExpressionContext( context );
 
   QSettings settings;
@@ -69,7 +69,7 @@ QString QgsExpressionSelectionDialog::expressionText()
   return mExpressionBuilder->expressionText();
 }
 
-void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea & da )
+void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea& da )
 {
   // Store in child widget only.
   mExpressionBuilder->setGeomCalculator( da );
@@ -103,7 +103,7 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
   saveRecent();
 }
 
-void QgsExpressionSelectionDialog::closeEvent( QCloseEvent *closeEvent )
+void QgsExpressionSelectionDialog::closeEvent( QCloseEvent* closeEvent )
 {
   QDialog::closeEvent( closeEvent );
 

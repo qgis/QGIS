@@ -51,8 +51,8 @@ class QgsRequestHandler
   public:
 
     QgsRequestHandler()
-        : mHeadersSent( false )
-        , mException( nullptr )
+      : mHeadersSent( false )
+      , mException( nullptr )
     {}
     virtual ~QgsRequestHandler() {}
 
@@ -99,25 +99,28 @@ class QgsRequestHandler
     virtual void setDefaultHeaders() {}
 
     //! Set an HTTP header
-    virtual void setHeader( const QString &name, const QString &value ) = 0;
+    virtual void setHeader( const QString& name, const QString& value ) = 0;
 
     //! Remove an HTTP header
-    virtual int removeHeader( const QString &name ) = 0;
+    virtual int removeHeader( const QString& name ) = 0;
 
     //! Delete all HTTP headers
     virtual void clearHeaders() = 0;
 
     //! Append the bytestream to response body
-    virtual void appendBody( const QByteArray &body ) = 0;
+    virtual void appendBody( const QByteArray& body ) = 0;
 
     //! Clears the response body
     virtual void clearBody() = 0;
 
     //! Return the response body
-    virtual QByteArray body() { return mBody; }
+    virtual QByteArray body()
+    {
+      return mBody;
+    }
 
     //! Set the info format string such as "text/xml"
-    virtual void setInfoFormat( const QString &format ) = 0;
+    virtual void setInfoFormat( const QString& format ) = 0;
 
     //! Check whether there is any header set or the body is not empty
     virtual bool responseReady() const = 0;
@@ -132,25 +135,37 @@ class QgsRequestHandler
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
-    QMap<QString, QString> parameterMap() { return mParameterMap; }
+    QMap<QString, QString> parameterMap()
+    {
+      return mParameterMap;
+    }
 
     //! Set a request parameter
-    virtual void setParameter( const QString &key, const QString &value ) = 0;
+    virtual void setParameter( const QString& key, const QString& value ) = 0;
 
     //! Remove a request parameter
-    virtual int removeParameter( const QString &key ) = 0;
+    virtual int removeParameter( const QString& key ) = 0;
 
     //! Return a request parameter
-    virtual QString parameter( const QString &key ) const = 0;
+    virtual QString parameter( const QString& key ) const = 0;
 
     //! Return the requested format string
-    QString format() const { return mFormat; }
+    QString format() const
+    {
+      return mFormat;
+    }
 
     //! Return the mime type for the response
-    QString infoFormat() const { return mInfoFormat; }
+    QString infoFormat() const
+    {
+      return mInfoFormat;
+    }
 
     //! Return true if the HTTP headers were already sent to the client
-    bool headersSent() { return mHeadersSent; }
+    bool headersSent()
+    {
+      return mHeadersSent;
+    }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 

@@ -164,8 +164,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &path,
-                    const QString &baseName = QString::null,
+    QgsRasterLayer( const QString& path,
+                    const QString& baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
     //TODO - QGIS 3.0
@@ -174,9 +174,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //implicitly converted to a bool.
     //for QGIS 3.0, make either constructor explicit or alter the signatures
     //! \brief [ data provider interface ] Constructor in provider mode
-    QgsRasterLayer( const QString &uri,
-                    const QString &baseName,
-                    const QString &providerKey,
+    QgsRasterLayer( const QString& uri,
+                    const QString& baseName,
+                    const QString& providerKey,
                     bool loadDefaultStyleFlag = true );
 
     //! \brief The destructor
@@ -206,30 +206,48 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
      */
-    static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
-    static bool isValidRasterFileName( const QString & theFileNameQString );
+    static bool isValidRasterFileName( const QString& theFileNameQString, QString& retError );
+    static bool isValidRasterFileName( const QString& theFileNameQString );
 
     //! Return time stamp for given file name
-    static QDateTime lastModified( const QString &  name );
+    static QDateTime lastModified( const QString&   name );
 
     //! [ data provider interface ] Set the data provider
-    void setDataProvider( const QString & provider );
+    void setDataProvider( const QString& provider );
 
     //! \brief  Accessor for raster layer type (which is a read only property)
-    LayerType rasterType() { return mRasterType; }
+    LayerType rasterType()
+    {
+      return mRasterType;
+    }
 
     //! Set raster renderer. Takes ownership of the renderer object
     void setRenderer( QgsRasterRenderer* theRenderer );
-    QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
+    QgsRasterRenderer* renderer() const
+    {
+      return mPipe.renderer();
+    }
 
     //! Set raster resample filter. Takes ownership of the resample filter object
-    QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
+    QgsRasterResampleFilter* resampleFilter() const
+    {
+      return mPipe.resampleFilter();
+    }
 
-    QgsBrightnessContrastFilter * brightnessFilter() const { return mPipe.brightnessFilter(); }
-    QgsHueSaturationFilter * hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
+    QgsBrightnessContrastFilter* brightnessFilter() const
+    {
+      return mPipe.brightnessFilter();
+    }
+    QgsHueSaturationFilter* hueSaturationFilter() const
+    {
+      return mPipe.hueSaturationFilter();
+    }
 
     //! Get raster pipe
-    QgsRasterPipe * pipe() { return &mPipe; }
+    QgsRasterPipe* pipe()
+    {
+      return &mPipe;
+    }
 
     //! \brief Accessor that returns the width of the (unclipped) raster
     int width() const;
@@ -260,14 +278,17 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
-    void draw( QPainter * theQPainter,
-               QgsRasterViewPort * myRasterViewPort,
+    void draw( QPainter* theQPainter,
+               QgsRasterViewPort* myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = nullptr );
 
     //! Returns a list with classification items (Text and color)
     QgsLegendColorList legendSymbologyItems() const;
 
-    virtual bool isSpatial() const override { return true; }
+    virtual bool isSpatial() const override
+    {
+      return true;
+    }
 
     //! \brief Obtain GDAL Metadata for this layer
     QString metadata() const override;
@@ -316,7 +337,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    virtual void setLayerOrder( const QStringList &layers ) override;
+    virtual void setLayerOrder( const QStringList& layers ) override;
 
     /**
      * Set the visibility of the given sublayer name
@@ -327,7 +348,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual QDateTime timestamp() const override;
 
   public slots:
-    void showStatusMessage( const QString & theMessage );
+    void showStatusMessage( const QString& theMessage );
 
     //! \brief receive progress signal from provider
     void onProgress( int, double, const QString& );
@@ -341,7 +362,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
 
     //! \brief Read the style information for the current layer from the Dom node supplied
-    bool readStyle( const QDomNode &node, QString &errorMessage ) override;
+    bool readStyle( const QDomNode& node, QString& errorMessage ) override;
 
     //! \brief Reads layer specific state from project file Dom node
     bool readXml( const QDomNode& layer_node ) override;
@@ -350,10 +371,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const override;
 
     //! \brief Write the style for the layer into the docment provided
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const override;
 
     //! \brief Write layer specific state to project file Dom node
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
+    bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const override;
 
   private:
     //! \brief Initialize default values

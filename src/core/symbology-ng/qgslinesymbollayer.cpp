@@ -32,12 +32,12 @@
 #include <cmath>
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor& color, double width, Qt::PenStyle penStyle )
-    : mPenStyle( penStyle )
-    , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
-    , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
-    , mUseCustomDashPattern( false )
-    , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
-    , mDrawInsidePolygon( false )
+  : mPenStyle( penStyle )
+  , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
+  , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
+  , mUseCustomDashPattern( false )
+  , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
+  , mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;
@@ -62,7 +62,7 @@ QgsUnitTypes::RenderUnit  QgsSimpleLineSymbolLayer::outputUnit() const
   return unit;
 }
 
-void QgsSimpleLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsSimpleLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   QgsLineSymbolLayer::setMapUnitScale( scale );
   mWidthMapUnitScale = scale;
@@ -383,7 +383,7 @@ QgsSimpleLineSymbolLayer* QgsSimpleLineSymbolLayer::clone() const
   return l;
 }
 
-void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsSimpleLineSymbolLayer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   if ( mPenStyle == Qt::NoPen )
     return;
@@ -431,7 +431,7 @@ QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
   }
 }
 
-QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement& element )
 {
   QgsDebugMsg( "Entered." );
 
@@ -618,7 +618,7 @@ QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext& context ) con
   return mColor;
 }
 
-double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
+double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const
 {
   Q_UNUSED( e );
   double offset = mOffset;
@@ -639,10 +639,10 @@ class MyLine
 {
   public:
     MyLine( QPointF p1, QPointF p2 )
-        : mVertical( false )
-        , mIncreasing( false )
-        , mT( 0.0 )
-        , mLength( 0.0 )
+      : mVertical( false )
+      , mIncreasing( false )
+      , mT( 0.0 )
+      , mLength( 0.0 )
     {
       if ( p1 == p2 )
         return; // invalid
@@ -689,7 +689,10 @@ class MyLine
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
     }
 
-    double length() { return mLength; }
+    double length()
+    {
+      return mLength;
+    }
 
   protected:
     bool mVertical;
@@ -883,7 +886,7 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
 
     for ( int part = 0; part < mline.count(); ++part )
     {
-      const QPolygonF &points2 = mline[ part ];
+      const QPolygonF& points2 = mline[ part ];
 
       if ( placement == Interval )
         renderPolylineInterval( points2, context );
@@ -1209,7 +1212,7 @@ double QgsMarkerLineSymbolLayer::markerAngle( const QPolygonF& points, bool isRi
   return angle;
 }
 
-void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance, QgsSymbolRenderContext& context )
 {
   if ( points.isEmpty() )
     return;
@@ -1384,7 +1387,7 @@ QgsMarkerLineSymbolLayer* QgsMarkerLineSymbolLayer::clone() const
   return x;
 }
 
-void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsMarkerLineSymbolLayer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   for ( int i = 0; i < mMarker->symbolLayerCount(); i++ )
   {
@@ -1433,8 +1436,8 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     QDomElement graphicStrokeElem = doc.createElement( QStringLiteral( "se:GraphicStroke" ) );
     strokeElem.appendChild( graphicStrokeElem );
 
-    QgsSymbolLayer *layer = mMarker->symbolLayer( i );
-    QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
+    QgsSymbolLayer* layer = mMarker->symbolLayer( i );
+    QgsMarkerSymbolLayer* markerLayer = static_cast<QgsMarkerSymbolLayer*>( layer );
     if ( !markerLayer )
     {
       graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
@@ -1461,7 +1464,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   }
 }
 
-QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement& element )
 {
   QgsDebugMsg( "Entered." );
 
@@ -1493,9 +1496,9 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
     }
   }
 
-  QgsMarkerSymbol *marker = nullptr;
+  QgsMarkerSymbol* marker = nullptr;
 
-  QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
+  QgsSymbolLayer* l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
@@ -1572,7 +1575,7 @@ QgsUnitTypes::RenderUnit QgsMarkerLineSymbolLayer::outputUnit() const
   return unit;
 }
 
-void QgsMarkerLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsMarkerLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   QgsLineSymbolLayer::setMapUnitScale( scale );
   mIntervalMapUnitScale = scale;

@@ -29,7 +29,7 @@ class TestQgsScaleComboBox : public QObject
     Q_OBJECT
   public:
     TestQgsScaleComboBox()
-        : s( nullptr )
+      : s( nullptr )
     {}
 
   private slots:
@@ -43,7 +43,7 @@ class TestQgsScaleComboBox : public QObject
   private:
     void enterScale( const QString& scale );
     void enterScale( double scale );
-    QgsScaleComboBox *s;
+    QgsScaleComboBox* s;
 };
 
 void TestQgsScaleComboBox::initTestCase()
@@ -123,7 +123,7 @@ void TestQgsScaleComboBox::basic()
 
 void TestQgsScaleComboBox::slot_test()
 {
-  QLineEdit *l = s->lineEdit();
+  QLineEdit* l = s->lineEdit();
 
   QSignalSpy spyScaleChanged( s, SIGNAL( scaleChanged( double ) ) );
   QSignalSpy spyFixup( l, SIGNAL( editingFinished() ) );
@@ -152,7 +152,7 @@ void TestQgsScaleComboBox::min_test()
 
 void TestQgsScaleComboBox::enterScale( const QString& scale )
 {
-  QLineEdit *l = s->lineEdit();
+  QLineEdit* l = s->lineEdit();
   l->setText( QLatin1String( "" ) );
   QTest::keyClicks( l, scale );
   QTest::keyClick( l, Qt::Key_Return );

@@ -16,17 +16,17 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 
 QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
-    : mSupportsDock( true )
-    , mSupportsProperties( true )
+  : mSupportsDock( true )
+  , mSupportsProperties( true )
 {
 
 }
 
 QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( const QString& title, const QIcon& icon )
-    : mIcon( icon )
-    , mTitle( title )
-    , mSupportsDock( true )
-    , mSupportsProperties( true )
+  : mIcon( icon )
+  , mTitle( title )
+  , mSupportsDock( true )
+  , mSupportsProperties( true )
 {
 }
 
@@ -34,7 +34,7 @@ QgsMapLayerConfigWidgetFactory::~QgsMapLayerConfigWidgetFactory()
 {
 }
 
-bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
+bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer* layer ) const
 {
   Q_UNUSED( layer );
   return true;

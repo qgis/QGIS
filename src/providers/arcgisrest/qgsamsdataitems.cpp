@@ -22,7 +22,7 @@
 
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconAms.svg" );
@@ -50,9 +50,9 @@ QList<QAction*> QgsAmsRootItem::actions()
 }
 
 
-QWidget * QgsAmsRootItem::paramWidget()
+QWidget* QgsAmsRootItem::paramWidget()
 {
-  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, true );
+  QgsAmsSourceSelect* select = new QgsAmsSourceSelect( 0, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -76,8 +76,8 @@ void QgsAmsRootItem::newConnection()
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem* parent, QString name, QString path, QString url )
-    : QgsDataCollectionItem( parent, name, path )
-    , mUrl( url )
+  : QgsDataCollectionItem( parent, name, path )
+  , mUrl( url )
 {
   mIconName = QStringLiteral( "mIconAms.png" );
 }
@@ -122,9 +122,9 @@ QVector<QgsDataItem*> QgsAmsConnectionItem::createChildren()
   return layers;
 }
 
-bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
+bool QgsAmsConnectionItem::equal( const QgsDataItem* other )
 {
-  const QgsAmsConnectionItem *o = dynamic_cast<const QgsAmsConnectionItem *>( other );
+  const QgsAmsConnectionItem* o = dynamic_cast<const QgsAmsConnectionItem*>( other );
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
@@ -162,8 +162,8 @@ void QgsAmsConnectionItem::deleteConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& id, const QString& title, const QString& authid, const QString& format )
-    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
+QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString& url, const QString& id, const QString& title, const QString& authid, const QString& format )
+  : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, url );
   setState( Populated );

@@ -24,11 +24,11 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-    : QDateTimeEdit( parent )
-    , mAllowNull( true )
-    , mIsNull( true )
-    , mIsEmpty( false )
+QgsDateTimeEdit::QgsDateTimeEdit( QWidget* parent )
+  : QDateTimeEdit( parent )
+  , mAllowNull( true )
+  , mIsNull( true )
+  , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClear.svg" ) ) );
@@ -86,7 +86,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
   QDateTimeEdit::mousePressEvent( event );
 }
 
-void QgsDateTimeEdit::changed( const QDateTime & dateTime )
+void QgsDateTimeEdit::changed( const QDateTime& dateTime )
 {
   mIsEmpty = false;
   mIsNull = dateTime.isNull();
@@ -134,7 +134,7 @@ QDateTime QgsDateTimeEdit::dateTime() const
   }
 }
 
-void QgsDateTimeEdit::resizeEvent( QResizeEvent * event )
+void QgsDateTimeEdit::resizeEvent( QResizeEvent* event )
 {
   QDateTimeEdit::resizeEvent( event );
 

@@ -31,11 +31,11 @@ QgsFields::QgsFields()
 }
 
 QgsFields::QgsFields( const QgsFields& other )
-    : d( other.d )
+  : d( other.d )
 {
 }
 
-QgsFields& QgsFields::operator =( const QgsFields & other )
+QgsFields& QgsFields::operator =( const QgsFields& other )
 {
   d = other.d;
   return *this;
@@ -129,7 +129,7 @@ bool QgsFields::exists( int i ) const
   return i >= 0 && i < d->fields.count();
 }
 
-QgsField &QgsFields::operator[]( int i )
+QgsField& QgsFields::operator[]( int i )
 {
   return d->fields[i].field;
 }
@@ -144,7 +144,7 @@ QgsField QgsFields::field( int fieldIdx ) const
   return d->fields[fieldIdx].field;
 }
 
-QgsField QgsFields::field( const QString &name ) const
+QgsField QgsFields::field( const QString& name ) const
 {
   return d->fields[ indexFromName( name )].field;
 }
@@ -191,7 +191,7 @@ QList<QgsField> QgsFields::toList() const
   return lst;
 }
 
-bool QgsFields::operator==( const QgsFields &other ) const
+bool QgsFields::operator==( const QgsFields& other ) const
 {
   return d->fields == other.d->fields;
 }

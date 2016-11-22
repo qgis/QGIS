@@ -30,11 +30,11 @@
 
 
 QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mToolName = tr( "Select features" );
-  QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
+  QPixmap mySelectQPixmap = QPixmap(( const char** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
   mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );

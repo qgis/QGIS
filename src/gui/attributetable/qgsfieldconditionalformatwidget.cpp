@@ -21,12 +21,12 @@
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 
-QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
-    : QWidget( parent )
-    , mLayer( nullptr )
-    , mEditIndex( 0 )
-    , mEditing( false )
-    , mSymbol( nullptr )
+QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget* parent )
+  : QWidget( parent )
+  , mLayer( nullptr )
+  , mEditIndex( 0 )
+  , mEditing( false )
+  , mSymbol( nullptr )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -76,8 +76,8 @@ void QgsFieldConditionalFormatWidget::setExpression()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mLayer );
   context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 0, true ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "value" ) );
 
@@ -100,7 +100,7 @@ void QgsFieldConditionalFormatWidget::presetSet( int index )
   setFormattingFromStyle( style );
 }
 
-void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *theLayer )
+void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer* theLayer )
 {
   mLayer = theLayer;
   mFieldCombo->setLayer( theLayer );

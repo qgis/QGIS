@@ -27,12 +27,12 @@
 #include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , vlayer( nullptr )
-    , mRubberBand( nullptr )
-    , mPressedFid( 0 )
-    , mPressedPartNum( 0 )
-    , mPressedRingNum( 0 )
+  : QgsMapToolEdit( canvas )
+  , vlayer( nullptr )
+  , mRubberBand( nullptr )
+  , mPressedFid( 0 )
+  , mPressedPartNum( 0 )
+  , mPressedRingNum( 0 )
 {
   mToolName = tr( "Delete ring" );
 }
@@ -60,7 +60,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent* e )
   if ( !currentLayer )
     return;
 
-  vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+  vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
   if ( !vlayer )
   {
     notifyNotVectorLayer();
@@ -147,10 +147,11 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPoint& p, QgsFeatureI
     }
 
     for ( int i = 0; i < pol.size() ; ++i )
-    {//for each part
+    {
+      //for each part
       if ( pol[i].size() > 1 )
       {
-        for ( int j = 1; j < pol[i].size();++j )
+        for ( int j = 1; j < pol[i].size(); ++j )
         {
           tempPol = QgsPolygon() << pol[i][j];
           tempGeom = QgsGeometry::fromPolygon( tempPol );

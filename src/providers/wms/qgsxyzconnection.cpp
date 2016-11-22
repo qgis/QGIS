@@ -34,7 +34,7 @@ QStringList QgsXyzConnectionUtils::connectionList()
   return settings.childGroups();
 }
 
-QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
+QgsXyzConnection QgsXyzConnectionUtils::connection( const QString& name )
 {
   QSettings settings;
   settings.beginGroup( "/Qgis/connections-xyz/" + name );
@@ -51,7 +51,7 @@ void QgsXyzConnectionUtils::deleteConnection( const QString& name )
   settings.remove( "/Qgis/connections-xyz/" + name );
 }
 
-void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
+void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection& conn )
 {
   QSettings settings;
   settings.beginGroup( "/Qgis/connections-xyz/" + conn.name );

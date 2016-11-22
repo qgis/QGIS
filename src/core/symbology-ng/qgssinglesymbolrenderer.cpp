@@ -34,8 +34,8 @@
 #include <QDomElement>
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol* symbol )
-    : QgsFeatureRenderer( QStringLiteral( "singleSymbol" ) )
-    , mSymbol( symbol )
+  : QgsFeatureRenderer( QStringLiteral( "singleSymbol" ) )
+  , mSymbol( symbol )
 {
   Q_ASSERT( symbol );
 }
@@ -44,12 +44,12 @@ QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
 {
 }
 
-QgsSymbol* QgsSingleSymbolRenderer::symbolForFeature( QgsFeature&, QgsRenderContext & )
+QgsSymbol* QgsSingleSymbolRenderer::symbolForFeature( QgsFeature&, QgsRenderContext& )
 {
   return mSymbol.data();
 }
 
-QgsSymbol* QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   Q_UNUSED( context );
   Q_UNUSED( feature );
@@ -104,7 +104,7 @@ QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::clone() const
   return r;
 }
 
-void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   QgsStringMap newProps = props;
 
@@ -120,7 +120,7 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, co
   if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, newProps );
 }
 
-QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext& context )
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -227,7 +227,7 @@ QgsFeatureRenderer* QgsSingleSymbolRenderer::createFromSld( QDomElement& element
     return nullptr;
 
   // now create the symbol
-  QgsSymbol *symbol;
+  QgsSymbol* symbol;
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:
@@ -308,7 +308,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
   QgsLegendSymbolListV2 lst;
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
-    const QgsMarkerSymbol * symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.data() );
+    const QgsMarkerSymbol* symbol = static_cast<const QgsMarkerSymbol*>( mSymbol.data() );
     QgsDataDefined sizeDD = symbol->dataDefinedSize();
     if ( sizeDD.isActive() && sizeDD.useExpression() )
     {
@@ -320,7 +320,7 @@ QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
         Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
         {
           QgsLegendSymbolItem si( mSymbol.data(), QString::number( v ), QString() );
-          QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
+          QgsMarkerSymbol* s = static_cast<QgsMarkerSymbol*>( si.symbol() );
           s->setDataDefinedSize( 0 );
           s->setSize( scaleExp.size( v ) );
           lst << si;
@@ -347,7 +347,7 @@ void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString& key, QgsSymbol
   setSymbol( symbol );
 }
 
-QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer* renderer )
 {
   QgsSingleSymbolRenderer* r = nullptr;
   if ( renderer->type() == QLatin1String( "singleSymbol" ) )
@@ -370,7 +370,7 @@ QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
   if ( !r )
   {
     QgsRenderContext context;
-    QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
+    QgsSymbolList symbols = const_cast<QgsFeatureRenderer*>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
       r = new QgsSingleSymbolRenderer( symbols.at( 0 )->clone() );

@@ -44,17 +44,17 @@
 
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
-    : QgsMapLayerRenderer( layer->id() )
-    , mContext( context )
-    , mInterruptionChecker( context )
-    , mLayer( layer )
-    , mFields( layer->fields() )
-    , mRenderer( nullptr )
-    , mCache( nullptr )
-    , mLabeling( false )
-    , mDiagrams( false )
-    , mLabelProvider( nullptr )
-    , mDiagramProvider( nullptr )
+  : QgsMapLayerRenderer( layer->id() )
+  , mContext( context )
+  , mInterruptionChecker( context )
+  , mLayer( layer )
+  , mFields( layer->fields() )
+  , mRenderer( nullptr )
+  , mCache( nullptr )
+  , mLabeling( false )
+  , mDiagrams( false )
+  , mLabelProvider( nullptr )
+  , mDiagramProvider( nullptr )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -211,7 +211,7 @@ bool QgsVectorLayerRenderer::render()
             map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
         }
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         QgsMessageLog::logMessage( QObject::tr( "Simplify transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
         validTransform = false;
@@ -352,7 +352,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
         }
       }
     }
-    catch ( const QgsCsException &cse )
+    catch ( const QgsCsException& cse )
     {
       Q_UNUSED( cse );
       QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
@@ -507,7 +507,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
         {
           mRenderer->renderFeature( *fit, mContext, layer, sel, drawMarker );
         }
-        catch ( const QgsCsException &cse )
+        catch ( const QgsCsException& cse )
         {
           Q_UNUSED( cse );
           QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
@@ -627,7 +627,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QSet<QStrin
 
 QgsVectorLayerRendererInterruptionChecker::QgsVectorLayerRendererInterruptionChecker
 ( const QgsRenderContext& context )
-    : mContext( context )
+  : mContext( context )
 {
 }
 

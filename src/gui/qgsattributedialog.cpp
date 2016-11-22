@@ -24,10 +24,10 @@
 
 #include <QSettings>
 
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
-    : QDialog( parent )
-    , mHighlight( nullptr )
-    , mOwnedFeature( featureOwner ? thepFeature : nullptr )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext& context )
+  : QDialog( parent )
+  , mHighlight( nullptr )
+  , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   init( vl, thepFeature, context, showDialogButtons );
 }

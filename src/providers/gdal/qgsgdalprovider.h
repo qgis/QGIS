@@ -39,8 +39,8 @@ class QgsRasterPyramid;
  * A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
-                                  const char *pszMessage,
-                                  void * pProgressArg );
+                                  const char* pszMessage,
+                                  void* pProgressArg );
 
 
 class QgsCoordinateTransform;
@@ -66,19 +66,19 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      *
      */
-    QgsGdalProvider( QString const & uri = QString(), bool update = false );
+    QgsGdalProvider( QString const& uri = QString(), bool update = false );
 
     //! Create invalid provider with error
-    QgsGdalProvider( QString const & uri, QgsError error );
+    QgsGdalProvider( QString const& uri, QgsError error );
 
     //! Destructor
     ~QgsGdalProvider();
 
-    QgsGdalProvider * clone() const override;
+    QgsGdalProvider* clone() const override;
 
     /** \brief   Renders the layer as an image
      */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
+    QImage* draw( QgsRectangle  const& viewExtent, int pixelWidth, int pixelHeight ) override;
 
     /** Return a provider name
      *
@@ -116,7 +116,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool isValid() const override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint& thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle& theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -162,10 +162,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString generateBandName( int theBandNumber ) const override;
 
     //! Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
-    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int theBandNo, const QgsRectangle& theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    void readBlock( int bandNo, int xBlock, int yBlock, void* data ) override;
+    void readBlock( int bandNo, QgsRectangle  const& viewExtent, int width, int height, void* data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     /** Read band scale for raster value
      * @@note added in 2.3 */
@@ -189,19 +189,19 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool hasStatistics( int theBandNo,
                         int theStats = QgsRasterBandStats::All,
-                        const QgsRectangle & theExtent = QgsRectangle(),
+                        const QgsRectangle& theExtent = QgsRectangle(),
                         int theSampleSize = 0 ) override;
 
     QgsRasterBandStats bandStatistics( int theBandNo,
                                        int theStats = QgsRasterBandStats::All,
-                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       const QgsRectangle& theExtent = QgsRectangle(),
                                        int theSampleSize = 0 ) override;
 
     bool hasHistogram( int theBandNo,
                        int theBinCount = 0,
                        double theMinimum = std::numeric_limits<double>::quiet_NaN(),
                        double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-                       const QgsRectangle & theExtent = QgsRectangle(),
+                       const QgsRectangle& theExtent = QgsRectangle(),
                        int theSampleSize = 0,
                        bool theIncludeOutOfRange = false ) override;
 
@@ -209,21 +209,21 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   int theBinCount = 0,
                                   double theMinimum = std::numeric_limits<double>::quiet_NaN(),
                                   double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-                                  const QgsRectangle & theExtent = QgsRectangle(),
+                                  const QgsRectangle& theExtent = QgsRectangle(),
                                   int theSampleSize = 0,
                                   bool theIncludeOutOfRange = false ) override;
 
-    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
-                           const QString & theResamplingMethod = "NEAREST",
+    QString buildPyramids( const QList<QgsRasterPyramid>& theRasterPyramidList,
+                           const QString& theResamplingMethod = "NEAREST",
                            QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
-                           const QStringList & theCreateOptions = QStringList() ) override;
+                           const QStringList& theCreateOptions = QStringList() ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
     //! \brief Close data set and release related data
     void closeDataset();
 
     //! Emit a signal to notify of the progress event.
-    void emitProgress( int theType, double theProgress, const QString &theMessage );
+    void emitProgress( int theType, double theProgress, const QString& theMessage );
     void emitProgressUpdate( int theProgress );
 
     static QMap<QString, QString> supportedMimes();
@@ -238,14 +238,14 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-                                           const QStringList & theConfigOptions, const QString & fileFormat ) override;
+                                           const QStringList& theConfigOptions, const QString& fileFormat ) override;
 
   private:
     // update mode
     bool mUpdate;
 
     // initialize CRS from wkt
-    bool crsFromWkt( const char *wkt );
+    bool crsFromWkt( const char* wkt );
 
     //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();

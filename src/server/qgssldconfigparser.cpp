@@ -56,12 +56,12 @@
 #endif
 
 QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
-    : QgsWmsConfigParser()
-    , mXMLDoc( doc )
-    , mParameterMap( parameters )
-    , mSLDNamespace( QStringLiteral( "http://www.opengis.net/sld" ) )
-    , mOutputUnits( QgsMapRenderer::Pixels )
-    , mFallbackParser( nullptr )
+  : QgsWmsConfigParser()
+  , mXMLDoc( doc )
+  , mParameterMap( parameters )
+  , mSLDNamespace( QStringLiteral( "http://www.opengis.net/sld" ) )
+  , mOutputUnits( QgsMapRenderer::Pixels )
+  , mFallbackParser( nullptr )
 {
 
   //set output units
@@ -564,7 +564,7 @@ void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int heig
   }
 }
 
-void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface * lbl ) const
+void QgsSLDConfigParser::loadLabelSettings( QgsLabelingEngineInterface* lbl ) const
 {
   if ( mFallbackParser )
   {
@@ -733,7 +733,7 @@ QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& compo
   return nullptr;
 }
 
-QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
+QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml*>& htmlFrameList ) const
 {
   if ( mFallbackParser )
   {
@@ -763,7 +763,7 @@ void QgsSLDConfigParser::setScaleDenominator( double )
   //soon...
 }
 
-void QgsSLDConfigParser::addExternalGMLData( const QString &, QDomDocument * )
+void QgsSLDConfigParser::addExternalGMLData( const QString&, QDomDocument* )
 {
   //soon...
 }
@@ -1057,7 +1057,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
     }
   }
 
-  double *adfFixedLevels = new double[numberOfLevels];
+  double* adfFixedLevels = new double[numberOfLevels];
   int    nFixedLevelCount = numberOfLevels;
   currentLevel = ( int )(( minValue - offset ) / equidistance + 0.5 ) * equidistance + offset;
   for ( int i = 0; i < numberOfLevels; ++i )
@@ -1093,7 +1093,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   /* -------------------------------------------------------------------- */
   OGRSpatialReferenceH hSRS = nullptr;
 
-  const char *pszWKT = GDALGetProjectionRef( hBand );
+  const char* pszWKT = GDALGetProjectionRef( hBand );
 
   if ( pszWKT && strlen( pszWKT ) != 0 )
     hSRS = OSRNewSpatialReference( pszWKT );

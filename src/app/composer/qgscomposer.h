@@ -76,7 +76,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
       Atlas
     };
 
-    QgsComposer( QgisApp *qgis, const QString& title );
+    QgsComposer( QgisApp* qgis, const QString& title );
     ~QgsComposer();
 
     //! Set the pixmap / icons on the toolbar buttons
@@ -97,14 +97,23 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposerView* view();
 
     //! Return current composition
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition* composition()
+    {
+      return mComposition;
+    }
 
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    QAction* windowAction() {return mWindowAction;}
+    QAction* windowAction()
+    {
+      return mWindowAction;
+    }
 
-    const QString& title() const {return mTitle;}
+    const QString& title() const
+    {
+      return mTitle;
+    }
     void setTitle( const QString& title );
 
     /** Loads the contents of a template document into the composer's composition.
@@ -116,18 +125,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   protected:
     //! Move event
-    virtual void moveEvent( QMoveEvent * ) override;
+    virtual void moveEvent( QMoveEvent* ) override;
 
-    virtual void closeEvent( QCloseEvent * ) override;
+    virtual void closeEvent( QCloseEvent* ) override;
 
     //! Resize event
-    virtual void resizeEvent( QResizeEvent * ) override;
+    virtual void resizeEvent( QResizeEvent* ) override;
 
 #ifdef Q_OS_MAC
     virtual void showEvent( QShowEvent* event ) override;
 #endif
 
-    virtual void changeEvent( QEvent *ev ) override;
+    virtual void changeEvent( QEvent* ev ) override;
 
   signals:
     //! Is emitted every time the view zoom has changed
@@ -548,37 +557,37 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QLabel* mStatusAtlasLabel;
 
     //! Pointer to composer view
-    QgsComposerView *mView;
+    QgsComposerView* mView;
     QGridLayout* mViewLayout;
     QgsComposerRuler* mHorizontalRuler;
     QgsComposerRuler* mVerticalRuler;
     QWidget* mRulerLayoutFix;
 
     //! Current composition
-    QgsComposition *mComposition;
+    QgsComposition* mComposition;
 
     //! Pointer to QGIS application
-    QgisApp *mQgis;
+    QgisApp* mQgis;
 
     //! The composer was opened first time (-> set defaults)
     bool mFirstTime;
 
     //! Layout
-    QGridLayout *mItemOptionsLayout;
+    QGridLayout* mItemOptionsLayout;
 
     //! Size grip
-    QSizeGrip *mSizeGrip;
+    QSizeGrip* mSizeGrip;
 
     //! To know which item to show if selection changes
     QMap<QgsComposerItem*, QgsPanelWidget*> mItemWidgetMap;
 
     //! Window menu action to select this window
-    QAction *mWindowAction;
+    QAction* mWindowAction;
 
     //! Copy/cut/paste actions
-    QAction *mActionCut;
-    QAction *mActionCopy;
-    QAction *mActionPaste;
+    QAction* mActionCut;
+    QAction* mActionCopy;
+    QAction* mActionPaste;
 
     //! Page & Printer Setup
     QPrinter* mPrinter;
@@ -587,11 +596,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QUndoView* mUndoView;
 
     //! Preview mode actions
-    QAction *mActionPreviewModeOff;
-    QAction *mActionPreviewModeGrayscale;
-    QAction *mActionPreviewModeMono;
-    QAction *mActionPreviewProtanope;
-    QAction *mActionPreviewDeuteranope;
+    QAction* mActionPreviewModeOff;
+    QAction* mActionPreviewModeGrayscale;
+    QAction* mActionPreviewModeMono;
+    QAction* mActionPreviewProtanope;
+    QAction* mActionPreviewDeuteranope;
 
     QComboBox* mAtlasPageComboBox;
 
@@ -625,8 +634,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     struct PanelStatus
     {
       PanelStatus( bool visible = true, bool active = false )
-          : isVisible( visible )
-          , isActive( active )
+        : isVisible( visible )
+        , isActive( active )
       {}
       bool isVisible;
       bool isActive;
@@ -660,7 +669,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets the specified feature as the current atlas feature
     //! @note added in 2.1
-    void setAtlasFeature( QgsMapLayer* layer, const QgsFeature &feat );
+    void setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat );
 
     //! Updates the "set as atlas feature" map layer action when atlas coverage layer changes
     void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );

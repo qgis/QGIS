@@ -34,7 +34,7 @@ email                : jpalmer at linz dot govt dot nz
 
 QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
 {
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( canvas->currentLayer() );
   if ( !vlayer )
   {
     QgisApp::instance()->messageBar()->pushMessage(
@@ -187,11 +187,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
         QgsPolygon poly( selectGeomTrans.asPolygon() );
         if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
         {
-          const QgsPolyline &ringIn = poly.at( 0 );
+          const QgsPolyline& ringIn = poly.at( 0 );
 
           QgsPolygon newpoly( 1 );
           newpoly[0].resize( 41 );
-          QgsPolyline &ringOut = newpoly[0];
+          QgsPolyline& ringOut = newpoly[0];
 
           ringOut[ 0 ] = ringIn.at( 0 );
 
@@ -212,7 +212,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
 
       selectGeomTrans.transform( ct );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       Q_UNUSED( cse );
       // catch exception for 'invalid' point and leave existing selection unchanged

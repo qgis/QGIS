@@ -29,11 +29,14 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
     //! Returns properties changed by the user
-    const QgsAttributeMap& changedProperties() const { return mChangedProperties; }
+    const QgsAttributeMap& changedProperties() const
+    {
+      return mChangedProperties;
+    }
 
   signals:
 
@@ -43,7 +46,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void applied();
 
   private slots:
-    void on_buttonBox_clicked( QAbstractButton * button );
+    void on_buttonBox_clicked( QAbstractButton* button );
     void on_mShowLabelChkbx_toggled( bool chkd );
     void on_mAlwaysShowChkbx_toggled( bool chkd );
     void on_mMinScaleSpinBox_valueChanged( int i );
@@ -52,7 +55,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void on_mXCoordSpinBox_valueChanged( double d );
     void on_mYCoordSpinBox_valueChanged( double d );
     void on_mFontFamilyCmbBx_currentFontChanged( const QFont& f );
-    void on_mFontStyleCmbBx_currentIndexChanged( const QString & text );
+    void on_mFontStyleCmbBx_currentIndexChanged( const QString& text );
     void on_mFontUnderlineBtn_toggled( bool ckd );
     void on_mFontStrikethroughBtn_toggled( bool ckd );
     void on_mFontBoldBtn_toggled( bool ckd );
@@ -60,8 +63,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mBufferSizeSpinBox_valueChanged( double d );
     void on_mRotationSpinBox_valueChanged( double d );
-    void on_mFontColorButton_colorChanged( const QColor &color );
-    void on_mBufferColorButton_colorChanged( const QColor &color );
+    void on_mFontColorButton_colorChanged( const QColor& color );
+    void on_mBufferColorButton_colorChanged( const QColor& color );
     void on_mHaliComboBox_currentIndexChanged( const int index );
     void on_mValiComboBox_currentIndexChanged( const int index );
     void on_mLabelTextLineEdit_textChanged( const QString& text );
@@ -73,7 +76,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     //! Block / unblock all input element signals
     void blockElementSignals( bool block );
 
-    void setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer );
+    void setDataDefinedValues( const QgsPalLayerSettings& layerSettings, QgsVectorLayer* vlayer );
     void enableDataDefinedWidgets( QgsVectorLayer* vlayer );
 
     //! Updates font when family or style is updated

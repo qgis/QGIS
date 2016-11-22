@@ -53,18 +53,18 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
   public:
     //! Construct a new tree model with given layer tree (root node must not be null pointer).
     //! The root node is not transferred by the model.
-    explicit QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    explicit QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent = nullptr );
     ~QgsLayerTreeModel();
 
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex& child ) const override;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
     QMimeData* mimeData( const QModelIndexList& indexes ) const override;
@@ -163,15 +163,24 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QFont layerTreeNodeFont( int nodeType ) const;
 
     //! Set at what number of legend nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
-    void setAutoCollapseLegendNodes( int nodeCount ) { mAutoCollapseLegendNodesCount = nodeCount; }
+    void setAutoCollapseLegendNodes( int nodeCount )
+    {
+      mAutoCollapseLegendNodesCount = nodeCount;
+    }
     //! Return at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
-    int autoCollapseLegendNodes() const { return mAutoCollapseLegendNodesCount; }
+    int autoCollapseLegendNodes() const
+    {
+      return mAutoCollapseLegendNodesCount;
+    }
 
     //! Force only display of legend nodes which are valid for given scale denominator.
     //! Setting value <= 0 will disable the functionality
     //! @note added in 2.6
     void setLegendFilterByScale( double scaleDenominator );
-    double legendFilterByScale() const { return mLegendFilterByScale; }
+    double legendFilterByScale() const
+    {
+      return mLegendFilterByScale;
+    }
 
     //! Force only display of legend nodes which are valid for given map settings.
     //! Setting null pointer or invalid map settings will disable the functionality.
@@ -189,7 +198,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! Returns the current map settings used for the current legend filter (or null if none is enabled)
     //! @note added in 2.14
-    const QgsMapSettings* legendFilterMapSettings() const { return mLegendFilterMapSettings.data(); }
+    const QgsMapSettings* legendFilterMapSettings() const
+    {
+      return mLegendFilterMapSettings.data();
+    }
 
     //! Give the layer tree model hints about the currently associated map view
     //! so that legend nodes that use map units can be scaled currectly
@@ -198,7 +210,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
     //! If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
     //! @note added in 2.6
-    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const;
+    void legendMapViewData( double* mapUnitsPerPixel, int* dpi, double* scale ) const;
 
     //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! @note added in 2.10
@@ -301,8 +313,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     struct LayerLegendData
     {
       LayerLegendData()
-          : embeddedNodeInParent( nullptr )
-          , tree( nullptr )
+        : embeddedNodeInParent( nullptr )
+        , tree( nullptr )
       {
       }
 

@@ -35,7 +35,7 @@ template <class Key, class T> void mapToReversedLists( const QMap< Key, T >& map
 
 
 QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer( QgsVectorLayer* layer )
-    : L( layer )
+  : L( layer )
 {
   connect( L->undoStack(), &QUndoStack::indexChanged, this, &QgsVectorLayerEditBuffer::undoIndexChanged ); // TODO[MD]: queued?
 }
@@ -80,14 +80,14 @@ void QgsVectorLayerEditBuffer::updateFields( QgsFields& fields )
 }
 
 
-void QgsVectorLayerEditBuffer::updateFeatureGeometry( QgsFeature &f )
+void QgsVectorLayerEditBuffer::updateFeatureGeometry( QgsFeature& f )
 {
   if ( mChangedGeometries.contains( f.id() ) )
     f.setGeometry( mChangedGeometries[f.id()] );
 }
 
 
-void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
+void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature& f )
 {
   QgsAttributes attrs = f.attributes();
 
@@ -103,7 +103,7 @@ void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
   // update changed attributes
   if ( mChangedAttributeValues.contains( f.id() ) )
   {
-    const QgsAttributeMap &map = mChangedAttributeValues[f.id()];
+    const QgsAttributeMap& map = mChangedAttributeValues[f.id()];
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
@@ -214,7 +214,7 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, const QgsGeomet
 }
 
 
-bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
+bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant& newValue, const QVariant& oldValue )
 {
   if ( FID_IS_NEW( fid ) )
   {
@@ -236,7 +236,7 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
 }
 
 
-bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
+bool QgsVectorLayerEditBuffer::addAttribute( const QgsField& field )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
     return false;
@@ -436,23 +436,23 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       if ( attributeChangesOk && oldField != newField )
       {
         commitErrors
-        << tr( "ERROR: field with index %1 is not the same!" ).arg( i )
-        << tr( "Provider: %1" ).arg( L->providerType() )
-        << tr( "Storage: %1" ).arg( L->storageType() )
-        << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
-        .arg( tr( "expected field" ),
-              oldField.name(),
-              QVariant::typeToName( oldField.type() ),
-              oldField.typeName() )
-        .arg( oldField.length() )
-        .arg( oldField.precision() )
-        << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
-        .arg( tr( "retrieved field" ),
-              newField.name(),
-              QVariant::typeToName( newField.type() ),
-              newField.typeName() )
-        .arg( newField.length() )
-        .arg( newField.precision() );
+            << tr( "ERROR: field with index %1 is not the same!" ).arg( i )
+            << tr( "Provider: %1" ).arg( L->providerType() )
+            << tr( "Storage: %1" ).arg( L->storageType() )
+            << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+            .arg( tr( "expected field" ),
+                  oldField.name(),
+                  QVariant::typeToName( oldField.type() ),
+                  oldField.typeName() )
+            .arg( oldField.length() )
+            .arg( oldField.precision() )
+            << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+            .arg( tr( "retrieved field" ),
+                  newField.name(),
+                  QVariant::typeToName( newField.type() ),
+                  newField.typeName() )
+            .arg( newField.length() )
+            .arg( newField.precision() );
         attributeChangesOk = false;   // don't try attribute updates - they'll fail.
       }
     }

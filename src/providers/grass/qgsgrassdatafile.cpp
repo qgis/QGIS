@@ -19,13 +19,13 @@
 #include <sys/select.h>
 #endif
 
-QgsGrassDataFile::QgsGrassDataFile( QObject *parent )
-    : QFile( parent )
-    , mFh( 0 )
+QgsGrassDataFile::QgsGrassDataFile( QObject* parent )
+  : QFile( parent )
+  , mFh( 0 )
 {
 }
 
-bool QgsGrassDataFile::open( FILE * fh )
+bool QgsGrassDataFile::open( FILE* fh )
 {
   bool ret = QFile::open( fh, QIODevice::ReadOnly | QIODevice::Unbuffered );
   if ( ret )
@@ -35,7 +35,7 @@ bool QgsGrassDataFile::open( FILE * fh )
   return ret;
 }
 
-qint64 QgsGrassDataFile::readData( char * data, qint64 len )
+qint64 QgsGrassDataFile::readData( char* data, qint64 len )
 {
   qint64 readSoFar = 0;
   forever

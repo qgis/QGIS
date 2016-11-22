@@ -31,11 +31,11 @@ class TestQgsComposerModel : public QObject
 
   public:
     TestQgsComposerModel()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
-        , mItem1( 0 )
-        , mItem2( 0 )
-        , mItem3( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
+      , mItem1( 0 )
+      , mItem2( 0 )
+      , mItem3( 0 )
     {}
 
   private slots:
@@ -64,11 +64,11 @@ class TestQgsComposerModel : public QObject
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
 
   private:
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
-    QgsComposerLabel *mItem1;
-    QgsComposerLabel *mItem2;
-    QgsComposerLabel *mItem3;
+    QgsComposition* mComposition;
+    QgsMapSettings* mMapSettings;
+    QgsComposerLabel* mItem1;
+    QgsComposerLabel* mItem2;
+    QgsComposerLabel* mItem3;
 };
 
 void TestQgsComposerModel::initTestCase()

@@ -50,17 +50,41 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     QgsOSMDownload();
     ~QgsOSMDownload();
 
-    void setServiceUrl( const QString& serviceUrl ) { mServiceUrl = serviceUrl; }
-    QString serviceUrl() const { return mServiceUrl; }
+    void setServiceUrl( const QString& serviceUrl )
+    {
+      mServiceUrl = serviceUrl;
+    }
+    QString serviceUrl() const
+    {
+      return mServiceUrl;
+    }
 
-    void setQuery( const QString& query ) { mQuery = query; }
-    QString query() const { return mQuery; }
+    void setQuery( const QString& query )
+    {
+      mQuery = query;
+    }
+    QString query() const
+    {
+      return mQuery;
+    }
 
-    void setOutputFileName( const QString& outputFileName ) { mFile.setFileName( outputFileName ); }
-    QString outputFileName() const { return mFile.fileName(); }
+    void setOutputFileName( const QString& outputFileName )
+    {
+      mFile.setFileName( outputFileName );
+    }
+    QString outputFileName() const
+    {
+      return mFile.fileName();
+    }
 
-    bool hasError() const { return !mError.isNull(); }
-    QString errorString() const { return mError; }
+    bool hasError() const
+    {
+      return !mError.isNull();
+    }
+    QString errorString() const
+    {
+      return mError;
+    }
 
     /**
      * @brief Starts network request for data. The prerequisite is that the query string and output

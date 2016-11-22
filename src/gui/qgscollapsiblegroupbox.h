@@ -35,22 +35,34 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     Q_OBJECT
 
   public:
-    QgsGroupBoxCollapseButton( QWidget *parent = nullptr )
-        : QToolButton( parent )
-        , mAltDown( false )
-        , mShiftDown( false )
+    QgsGroupBoxCollapseButton( QWidget* parent = nullptr )
+      : QToolButton( parent )
+      , mAltDown( false )
+      , mShiftDown( false )
     {}
 
     ~QgsGroupBoxCollapseButton() {}
 
-    bool altDown() const { return mAltDown; }
-    void setAltDown( bool updown ) { mAltDown = updown; }
+    bool altDown() const
+    {
+      return mAltDown;
+    }
+    void setAltDown( bool updown )
+    {
+      mAltDown = updown;
+    }
 
-    bool shiftDown() const { return mShiftDown; }
-    void setShiftDown( bool shiftdown ) { mShiftDown = shiftdown; }
+    bool shiftDown() const
+    {
+      return mShiftDown;
+    }
+    void setShiftDown( bool shiftdown )
+    {
+      mShiftDown = shiftdown;
+    }
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event ) override
+    void mouseReleaseEvent( QMouseEvent* event ) override
     {
       mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
       mShiftDown = ( event->modifiers() & Qt::ShiftModifier );
@@ -95,14 +107,17 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     Q_PROPERTY( bool scrollOnExpand READ scrollOnExpand WRITE setScrollOnExpand )
 
   public:
-    QgsCollapsibleGroupBoxBasic( QWidget *parent = nullptr );
-    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = nullptr );
+    QgsCollapsibleGroupBoxBasic( QWidget* parent = nullptr );
+    QgsCollapsibleGroupBoxBasic( const QString& title, QWidget* parent = nullptr );
     ~QgsCollapsibleGroupBoxBasic();
 
     /**
      * Returns the current collapsed state of this group box
      */
-    bool isCollapsed() const { return mCollapsed; }
+    bool isCollapsed() const
+    {
+      return mCollapsed;
+    }
 
     /**
      * Collapse or uncollapse this groupbox
@@ -114,7 +129,10 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /**
      * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
      */
-    QString syncGroup() const { return mSyncGroup; }
+    QString syncGroup() const
+    {
+      return mSyncGroup;
+    }
 
     /**
      * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
@@ -122,10 +140,16 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setSyncGroup( const QString& grp );
 
     //! Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
-    void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
+    void setScrollOnExpand( bool scroll )
+    {
+      mScrollOnExpand = scroll;
+    }
 
     //! If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
-    bool scrollOnExpand() {return mScrollOnExpand;}
+    bool scrollOnExpand()
+    {
+      return mScrollOnExpand;
+    }
 
   signals:
     //! Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
@@ -142,10 +166,10 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     //! Visual fixes for when group box is collapsed/expanded
     void collapseExpandFixes();
 
-    void showEvent( QShowEvent *event ) override;
-    void mousePressEvent( QMouseEvent *event ) override;
-    void mouseReleaseEvent( QMouseEvent *event ) override;
-    void changeEvent( QEvent *event ) override;
+    void showEvent( QShowEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
+    void changeEvent( QEvent* event ) override;
 
     void updateStyle();
     QRect titleRect() const;
@@ -194,27 +218,45 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState )
 
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = nullptr, QSettings* settings = nullptr );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = nullptr, QSettings* settings = nullptr );
+    QgsCollapsibleGroupBox( QWidget* parent = nullptr, QSettings* settings = nullptr );
+    QgsCollapsibleGroupBox( const QString& title, QWidget* parent = nullptr, QSettings* settings = nullptr );
     ~QgsCollapsibleGroupBox();
 
     // set custom QSettings pointer if group box was already created from QtDesigner promotion
     void setSettings( QSettings* settings );
 
     //! set this to false to not save/restore collapsed state
-    void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
+    void setSaveCollapsedState( bool save )
+    {
+      mSaveCollapsedState = save;
+    }
 
     /** Set this to true to save/restore checked state
      * @note only turn on mSaveCheckedState for groupboxes NOT used
      * in multiple places or used as options for different parent objects */
-    void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
-    bool saveCollapsedState() { return mSaveCollapsedState; }
-    bool saveCheckedState() { return mSaveCheckedState; }
+    void setSaveCheckedState( bool save )
+    {
+      mSaveCheckedState = save;
+    }
+    bool saveCollapsedState()
+    {
+      return mSaveCollapsedState;
+    }
+    bool saveCheckedState()
+    {
+      return mSaveCheckedState;
+    }
 
     //! Set this to a defined string to share save/restore states across different parent dialogs
-    void setSettingGroup( const QString &group ) { mSettingGroup = group; }
+    void setSettingGroup( const QString& group )
+    {
+      mSettingGroup = group;
+    }
     //! Returns the name of the setting group in which the collapsed state will be saved
-    QString settingGroup() const { return mSettingGroup; }
+    QString settingGroup() const
+    {
+      return mSettingGroup;
+    }
 
   protected slots:
 
@@ -238,7 +280,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
 
   protected:
     void init();
-    void showEvent( QShowEvent *event ) override;
+    void showEvent( QShowEvent* event ) override;
     QString saveKey() const;
 
     // pointer to app or custom, external QSettings

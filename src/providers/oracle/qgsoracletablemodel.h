@@ -34,13 +34,16 @@ class QgsOracleTableModel : public QStandardItemModel
     ~QgsOracleTableModel();
 
     //! Adds entry for one database table to the model
-    void addTableEntry( const QgsOracleLayerProperty &property );
+    void addTableEntry( const QgsOracleLayerProperty& property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex& index, const QString& sql );
 
     //! Returns the number of tables in the model
-    int tableCount() const { return mTableCount; }
+    int tableCount() const
+    {
+      return mTableCount;
+    }
 
     enum columns
     {
@@ -55,9 +58,9 @@ class QgsOracleTableModel : public QStandardItemModel
       dbtmColumns
     };
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
-    QString layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo );
+    QString layerURI( const QModelIndex& index, const QgsDataSourceUri& connInfo );
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 

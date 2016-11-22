@@ -26,8 +26,8 @@
 #include "qgsdiagramrenderer.h"
 
 
-QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
-    : QObject( parent )
+QgsMapLayerLegend::QgsMapLayerLegend( QObject* parent )
+  : QObject( parent )
 {
 }
 
@@ -178,7 +178,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 
 
 QgsDefaultVectorLayerLegend::QgsDefaultVectorLayerLegend( QgsVectorLayer* vl )
-    : mLayer( vl )
+  : mLayer( vl )
 {
   connect( mLayer, SIGNAL( rendererChanged() ), this, SIGNAL( itemsChanged() ) );
 }
@@ -202,7 +202,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   Q_FOREACH ( const QgsLegendSymbolItem& i, r->legendSymbolItemsV2() )
   {
-    QgsSymbolLegendNode * n = new QgsSymbolLegendNode( nodeLayer, i );
+    QgsSymbolLegendNode* n = new QgsSymbolLegendNode( nodeLayer, i );
     nodes.append( n );
   }
 
@@ -212,7 +212,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   if ( mLayer->diagramsEnabled() )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
     {
       nodes.append( i );
     }
@@ -228,7 +228,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
 
 QgsDefaultRasterLayerLegend::QgsDefaultRasterLayerLegend( QgsRasterLayer* rl )
-    : mLayer( rl )
+  : mLayer( rl )
 {
   connect( mLayer, SIGNAL( rendererChanged() ), this, SIGNAL( itemsChanged() ) );
 }
@@ -273,7 +273,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
 
 
 QgsDefaultPluginLayerLegend::QgsDefaultPluginLayerLegend( QgsPluginLayer* pl )
-    : mLayer( pl )
+  : mLayer( pl )
 {
 }
 

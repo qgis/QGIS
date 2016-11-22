@@ -49,13 +49,13 @@ extern "C"
 /******************* QgsGrassModuleOptions *******************/
 
 QgsGrassModuleOptions::QgsGrassModuleOptions(
-  QgsGrassTools *tools, QgsGrassModule *module,
-  QgisInterface *iface, bool direct )
-    : mIface( iface )
-    , mTools( tools )
-    , mModule( module )
-    , mRegionModeComboBox( 0 )
-    , mDirect( direct )
+  QgsGrassTools* tools, QgsGrassModule* module,
+  QgisInterface* iface, bool direct )
+  : mIface( iface )
+  , mTools( tools )
+  , mModule( module )
+  , mRegionModeComboBox( 0 )
+  , mDirect( direct )
 {
   QgsDebugMsg( "called." );
 
@@ -74,13 +74,13 @@ QStringList QgsGrassModuleOptions::arguments()
 /*************** QgsGrassModuleStandardOptions ***********************/
 
 QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
-  QgsGrassTools *tools, QgsGrassModule *module,
-  QgisInterface *iface,
+  QgsGrassTools* tools, QgsGrassModule* module,
+  QgisInterface* iface,
   QString xname, QDomElement confDocElem,
-  bool direct, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , QgsGrassModuleOptions( tools, module, iface, direct )
-    , mXName( xname )
+  bool direct, QWidget* parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , QgsGrassModuleOptions( tools, module, iface, direct )
+  , mXName( xname )
 {
   //QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
@@ -88,22 +88,22 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   //
   //Set up dynamic inside a scroll box
   //
-  QVBoxLayout * mypOuterLayout = new QVBoxLayout( this );
+  QVBoxLayout* mypOuterLayout = new QVBoxLayout( this );
   mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
-  QScrollArea * mypScrollArea = new QScrollArea();
+  QScrollArea* mypScrollArea = new QScrollArea();
   //transfers scroll area ownership so no need to call delete
   mypOuterLayout->addWidget( mypScrollArea );
-  QFrame * mypInnerFrame = new QFrame();
+  QFrame* mypInnerFrame = new QFrame();
   mypInnerFrame->setFrameShape( QFrame::NoFrame );
   mypInnerFrame->setFrameShadow( QFrame::Plain );
   //transfers frame ownership so no need to call delete
   mypScrollArea->setWidget( mypInnerFrame );
   mypScrollArea->setWidgetResizable( true );
-  QVBoxLayout *mypInnerFrameLayout = new QVBoxLayout( mypInnerFrame );
+  QVBoxLayout* mypInnerFrameLayout = new QVBoxLayout( mypInnerFrame );
 
-  QFrame * mypRegionModeFrame = new QFrame();
-  QHBoxLayout * mypRegionModeFrameLayout = new QHBoxLayout( mypRegionModeFrame );
-  QLabel * mypRegionModeLabel = new QLabel( tr( "Region" ) );
+  QFrame* mypRegionModeFrame = new QFrame();
+  QHBoxLayout* mypRegionModeFrameLayout = new QHBoxLayout( mypRegionModeFrame );
+  QLabel* mypRegionModeLabel = new QLabel( tr( "Region" ) );
   mRegionModeComboBox = new QComboBox();
   mRegionModeComboBox->addItem( tr( "Input layers" ), RegionInput );
   mRegionModeComboBox->addItem( tr( "Current map canvas" ), RegionCurrent );
@@ -112,15 +112,15 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   mypRegionModeFrameLayout->addWidget( mRegionModeComboBox );
 
   // Add frames for simple/advanced options
-  QFrame * mypSimpleFrame = new QFrame();
+  QFrame* mypSimpleFrame = new QFrame();
   mypSimpleFrame->setFrameShape( QFrame::NoFrame );
   mypSimpleFrame->setFrameShadow( QFrame::Plain );
   mAdvancedFrame.setFrameShape( QFrame::NoFrame );
   mXName = xname;
   mAdvancedFrame.setFrameShadow( QFrame::Plain );
 
-  QFrame * mypAdvancedPushButtonFrame = new QFrame();
-  QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
+  QFrame* mypAdvancedPushButtonFrame = new QFrame();
+  QHBoxLayout* mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
   connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
   mypAdvancedPushButtonFrameLayout->addStretch( 1 );
@@ -138,9 +138,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   // Hide advanced and set button next
   switchAdvanced();
 
-  QVBoxLayout *mypSimpleLayout = new QVBoxLayout( mypSimpleFrame );
-  QVBoxLayout *mypAdvancedLayout = new QVBoxLayout( &mAdvancedFrame );
-  QVBoxLayout *layout = 0;
+  QVBoxLayout* mypSimpleLayout = new QVBoxLayout( mypSimpleFrame );
+  QVBoxLayout* mypAdvancedLayout = new QVBoxLayout( &mAdvancedFrame );
+  QVBoxLayout* layout = 0;
 
   QDomDocument gDomDocument = readInterfaceDescription( mXName, mErrors );
   if ( !mErrors.isEmpty() )
@@ -207,7 +207,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
                                                   element == QLatin1String( "str3ds" ) || element == QLatin1String( "stds" ) )
                &&  confDomElement.attribute( QStringLiteral( "widget" ) ) != QLatin1String( "text" ) )
           {
-            QgsGrassModuleInput *mi = new QgsGrassModuleInput(
+            QgsGrassModuleInput* mi = new QgsGrassModuleInput(
               mModule, this, key, confDomElement, descDocElem, gnode, mDirect, this );
 
             layout->addWidget( mi );
@@ -218,7 +218,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
         if ( !created )
         {
-          QgsGrassModuleOption *so = new QgsGrassModuleOption(
+          QgsGrassModuleOption* so = new QgsGrassModuleOption(
             mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
 
           layout->addWidget( so );
@@ -243,7 +243,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       }
       else if ( optionType == QLatin1String( "ogr" ) )
       {
-        QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
+        QgsGrassModuleGdalInput* mi = new QgsGrassModuleGdalInput(
           mModule, QgsGrassModuleGdalInput::Ogr, key, confDomElement,
           descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
@@ -251,7 +251,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       }
       else if ( optionType == QLatin1String( "gdal" ) )
       {
-        QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
+        QgsGrassModuleGdalInput* mi = new QgsGrassModuleGdalInput(
           mModule, QgsGrassModuleGdalInput::Gdal, key, confDomElement,
           descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
@@ -261,7 +261,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       {
         if ( confDomElement.hasAttribute( QStringLiteral( "layer" ) ) )
         {
-          QgsGrassModuleVectorField *mi = new QgsGrassModuleVectorField(
+          QgsGrassModuleVectorField* mi = new QgsGrassModuleVectorField(
             mModule, this, key, confDomElement,
             descDocElem, gnode, mDirect, this );
           layout->addWidget( mi );
@@ -269,7 +269,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         }
         else
         {
-          QgsGrassModuleField *mi = new QgsGrassModuleField(
+          QgsGrassModuleField* mi = new QgsGrassModuleField(
             mModule, key, confDomElement,
             descDocElem, gnode, mDirect, this );
           layout->addWidget( mi );
@@ -278,7 +278,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       }
       else if ( optionType == QLatin1String( "selection" ) )
       {
-        QgsGrassModuleSelection *mi = new QgsGrassModuleSelection(
+        QgsGrassModuleSelection* mi = new QgsGrassModuleSelection(
           mModule, this, key, confDomElement,
           descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
@@ -286,14 +286,14 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       }
       else if ( optionType == QLatin1String( "file" ) )
       {
-        QgsGrassModuleFile *mi = new QgsGrassModuleFile(
+        QgsGrassModuleFile* mi = new QgsGrassModuleFile(
           mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
         layout->addWidget( mi );
         mParams.append( mi );
       }
       else if ( optionType == QLatin1String( "flag" ) )
       {
-        QgsGrassModuleFlag *flag = new QgsGrassModuleFlag(
+        QgsGrassModuleFlag* flag = new QgsGrassModuleFlag(
           mModule, key, confDomElement, descDocElem, gnode, mDirect, this );
 
         layout->addWidget( flag );
@@ -305,7 +305,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   if ( mParams.size() == 0 )
   {
-    QLabel *label = new QLabel( this );
+    QLabel* label = new QLabel( this );
     label->setText( tr( "This module has no options" ) );
     mypSimpleLayout->addWidget( label );
   }
@@ -341,10 +341,10 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   // and we are sure it is set for modules with more inputs, where auto connection cannot be used
   // (guidependency missing in GRASS 6)
   // Add default inter param relations
-  QList<QgsGrassModuleInput *>vectorInputs;
-  Q_FOREACH ( QgsGrassModuleParam *param, mParams )
+  QList<QgsGrassModuleInput*>vectorInputs;
+  Q_FOREACH ( QgsGrassModuleParam* param, mParams )
   {
-    QgsGrassModuleInput *vectorInput = dynamic_cast<QgsGrassModuleInput *>( param );
+    QgsGrassModuleInput* vectorInput = dynamic_cast<QgsGrassModuleInput*>( param );
     if ( vectorInput )
     {
       vectorInputs << vectorInput;
@@ -353,10 +353,10 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   if ( vectorInputs.size() == 1 )
   {
     QgsDebugMsg( "One input found, try to connect with column options" );
-    QgsGrassModuleInput *vectorInput = vectorInputs[0];
-    Q_FOREACH ( QgsGrassModuleParam *param, mParams )
+    QgsGrassModuleInput* vectorInput = vectorInputs[0];
+    Q_FOREACH ( QgsGrassModuleParam* param, mParams )
     {
-      QgsGrassModuleField *moduleField = dynamic_cast<QgsGrassModuleField *>( param );
+      QgsGrassModuleField* moduleField = dynamic_cast<QgsGrassModuleField*>( param );
       if ( moduleField )
       {
         if ( !moduleField->layerInput() )
@@ -418,7 +418,7 @@ QStringList QgsGrassModuleStandardOptions::arguments()
 }
 
 // id is not used in fact, was intended for field, but key is used instead
-QgsGrassModuleParam *QgsGrassModuleStandardOptions::itemByKey( QString key )
+QgsGrassModuleParam* QgsGrassModuleStandardOptions::itemByKey( QString key )
 {
   QgsDebugMsg( "key = " + key );
 
@@ -434,7 +434,7 @@ QgsGrassModuleParam *QgsGrassModuleStandardOptions::itemByKey( QString key )
   return 0;
 }
 
-QgsGrassModuleParam *QgsGrassModuleStandardOptions::item( QString id )
+QgsGrassModuleParam* QgsGrassModuleStandardOptions::item( QString id )
 {
   QgsDebugMsg( "id = " + id );
 
@@ -457,7 +457,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    QgsGrassModuleOption* opt = dynamic_cast<QgsGrassModuleOption*>( mParams[i] );
     if ( !opt )
       continue;
 
@@ -476,17 +476,17 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
   return list;
 }
 
-QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
+QList<QgsGrassProvider*> QgsGrassModuleStandardOptions::grassProviders()
 {
-  QList<QgsGrassProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  QList<QgsGrassProvider*> providers;
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer*>( layer );
+      QgsVectorLayer* vector = qobject_cast<QgsVectorLayer*>( layer );
       if ( vector  && vector->providerType() == QLatin1String( "grass" ) )
       {
-        QgsGrassProvider *provider = qobject_cast<QgsGrassProvider *>( vector->dataProvider() );
+        QgsGrassProvider* provider = qobject_cast<QgsGrassProvider*>( vector->dataProvider() );
         if ( provider )
         {
           providers << provider;
@@ -497,17 +497,17 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
   return providers;
 }
 
-QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProviders()
+QList<QgsGrassRasterProvider*> QgsGrassModuleStandardOptions::grassRasterProviders()
 {
-  QList<QgsGrassRasterProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  QList<QgsGrassRasterProvider*> providers;
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer )
     {
-      QgsRasterLayer *raster = qobject_cast<QgsRasterLayer*>( layer );
+      QgsRasterLayer* raster = qobject_cast<QgsRasterLayer*>( layer );
       if ( raster  && raster->providerType() == QLatin1String( "grassraster" ) )
       {
-        QgsGrassRasterProvider *provider = qobject_cast<QgsGrassRasterProvider *>( raster->dataProvider() );
+        QgsGrassRasterProvider* provider = qobject_cast<QgsGrassRasterProvider*>( raster->dataProvider() );
         if ( provider )
         {
           providers << provider;
@@ -526,7 +526,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    QgsGrassModuleOption* opt = dynamic_cast<QgsGrassModuleOption*>( mParams[i] );
     if ( !opt || !opt->isOutput() )
     {
       continue;
@@ -542,7 +542,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
       outputObject.setType( QgsGrassObject::Vector );
       QgsDebugMsg( "outputObject = " + outputObject.toString() );
 
-      Q_FOREACH ( QgsGrassProvider *provider, grassProviders() )
+      Q_FOREACH ( QgsGrassProvider* provider, grassProviders() )
       {
         QgsGrassObject layerObject;
         layerObject.setFromUri( provider->dataSourceUri() );
@@ -570,7 +570,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
       outputObject.setType( QgsGrassObject::Raster );
       QgsDebugMsg( "outputObject = " + outputObject.toString() );
 
-      Q_FOREACH ( QgsGrassRasterProvider *provider, grassRasterProviders() )
+      Q_FOREACH ( QgsGrassRasterProvider* provider, grassRasterProviders() )
       {
         QgsGrassObject layerObject;
         layerObject.setFromUri( provider->dataSourceUri() );
@@ -599,7 +599,7 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    QgsGrassModuleOption* opt = dynamic_cast<QgsGrassModuleOption*>( mParams[i] );
     if ( !opt )
       continue;
 
@@ -628,7 +628,7 @@ bool QgsGrassModuleStandardOptions::hasOutput( int type )
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    QgsGrassModuleOption* opt = dynamic_cast<QgsGrassModuleOption*>( mParams[i] );
     if ( !opt )
       continue;
 
@@ -670,7 +670,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
   {
     QgsGrass::region( &currentWindow );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QgsGrass::warning( e );
     return list;
@@ -680,7 +680,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
   {
     struct Cell_head window;
 
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+    QgsGrassModuleInput* item = dynamic_cast<QgsGrassModuleInput*>( mParams[i] );
     if ( !item )
       continue;
 
@@ -706,7 +706,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
   return list;
 }
 
-bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
+bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head* window, QgsCoordinateReferenceSystem& crs, bool all )
 {
   QgsDebugMsg( "called." );
 
@@ -736,7 +736,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     {
       QgsGrass::adjustCellHead( window, 1, 1 );
     }
-    catch ( QgsGrass::Exception &e )
+    catch ( QgsGrass::Exception& e )
     {
       QgsGrass::warning( e );
       return false;
@@ -755,7 +755,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
       {
         QgsGrass::region( window );
       }
-      catch ( QgsGrass::Exception &e )
+      catch ( QgsGrass::Exception& e )
       {
         QgsGrass::warning( e );
         return false;
@@ -768,7 +768,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     {
       struct Cell_head mapWindow;
 
-      QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+      QgsGrassModuleInput* item = dynamic_cast<QgsGrassModuleInput*>( mParams[i] );
       if ( !item )
         continue;
 
@@ -823,7 +823,7 @@ bool QgsGrassModuleStandardOptions::requestsRegion()
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+    QgsGrassModuleInput* item = dynamic_cast<QgsGrassModuleInput*>( mParams[i] );
     if ( !item )
       continue;
 
@@ -839,11 +839,11 @@ bool QgsGrassModuleStandardOptions::usesRegion()
 
   for ( int i = 0; i < mParams.size(); i++ )
   {
-    QgsGrassModuleInput *input = dynamic_cast<QgsGrassModuleInput *>( mParams[i] );
+    QgsGrassModuleInput* input = dynamic_cast<QgsGrassModuleInput*>( mParams[i] );
     if ( input && input->usesRegion() )
       return true;
 
-    QgsGrassModuleOption *option = dynamic_cast<QgsGrassModuleOption *>( mParams[i] );
+    QgsGrassModuleOption* option = dynamic_cast<QgsGrassModuleOption*>( mParams[i] );
     if ( option && option->usesRegion() )
       return true;
   }
@@ -852,7 +852,7 @@ bool QgsGrassModuleStandardOptions::usesRegion()
   return false;
 }
 
-bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* input, struct Cell_head * window )
+bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput* input, struct Cell_head* window )
 {
   if ( !input )
   {
@@ -889,7 +889,7 @@ QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
 {
 }
 
-QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString & xname, QStringList & errors )
+QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString& xname, QStringList& errors )
 {
   QDomDocument gDoc( QStringLiteral( "task" ) );
 
@@ -945,7 +945,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
   // GRASS commands usually output text in system default encoding.
   // Let's use the System codec whether Qt doesn't recognize the encoding
   // of the interface description (see http://hub.qgis.org/issues/4547)
-  QTextCodec *codec = 0;
+  QTextCodec* codec = 0;
 
   QgsDebugMsg( "trying to get encoding name from XML interface description..." );
 

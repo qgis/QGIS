@@ -31,19 +31,25 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * @brief Base class for any widget that can be shown as a inline panel
      * @param parent Parent widget.
      */
-    QgsPanelWidget( QWidget *parent = 0 );
+    QgsPanelWidget( QWidget* parent = 0 );
 
     /**
      * Set the title of the panel when shown in the interface.
      * @param panelTitle The panel title.
      */
-    void setPanelTitle( const QString& panelTitle ) { mPanelTitle = panelTitle; }
+    void setPanelTitle( const QString& panelTitle )
+    {
+      mPanelTitle = panelTitle;
+    }
 
     /**
      * The title of the panel.
      * @return The title pf the panel.
      */
-    QString panelTitle() { return mPanelTitle; }
+    QString panelTitle()
+    {
+      return mPanelTitle;
+    }
 
     /**
     * Connect the given sub panel widgets showPanel signals to this current panels
@@ -52,7 +58,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     * Use this method if you have children widgets that need to show a panel to the user.
     * @param panels A list of panel widgets to connect.
     */
-    void connectChildPanels( const QList<QgsPanelWidget *> &panels );
+    void connectChildPanels( const QList<QgsPanelWidget*>& panels );
 
     /**
      * Connect the given sub panel widgets showPanel signals to this current panels
@@ -76,7 +82,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * will emit the showPanel signal to handle panel opening
      * If false it will open dialogs when openPanel is called.
      */
-    bool dockMode() { return mDockMode; }
+    bool dockMode()
+    {
+      return mDockMode;
+    }
 
     /**
      * The the auto delete property on the widget. True by default.
@@ -84,7 +93,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * it will be deleted.
      * @param autoDelete Enable or disable auto delete on the panel.
      */
-    void setAutoDelete( bool autoDelete ) { mAutoDelete = autoDelete; }
+    void setAutoDelete( bool autoDelete )
+    {
+      mAutoDelete = autoDelete;
+    }
 
     /**
      * The the auto delete property on the widget. True by default.
@@ -92,7 +104,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * it will be deleted.
      * @returns The auto delete value for the widget.
      */
-    bool autoDelete() { return mAutoDelete; }
+    bool autoDelete()
+    {
+      return mAutoDelete;
+    }
 
     /** Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
@@ -191,7 +206,10 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
      * Returns the internal widget that is wrapped in this panel.
      * @return The internal widget. Can be nullptr.
      */
-    QWidget* widget() { return mWidget; }
+    QWidget* widget()
+    {
+      return mWidget;
+    }
 
   private:
     QWidget* mWidget;

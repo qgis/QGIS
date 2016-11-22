@@ -49,11 +49,11 @@ class TestQgsSymbol : public QObject
     QString mReport;
     QString mTestDataDir;
 
-    QgsVectorLayer * mpPointsLayer;
-    QgsVectorLayer * mpLinesLayer;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPointsLayer;
+    QgsVectorLayer* mpLinesLayer;
+    QgsVectorLayer* mpPolysLayer;
 
-    bool imageCheck( QgsMapSettings &ms, const QString &testName );
+    bool imageCheck( QgsMapSettings& ms, const QString& testName );
 
   private slots:
 
@@ -71,9 +71,9 @@ class TestQgsSymbol : public QObject
 };
 
 TestQgsSymbol::TestQgsSymbol()
-    : mpPointsLayer( 0 )
-    , mpLinesLayer( 0 )
-    , mpPolysLayer( 0 )
+  : mpPointsLayer( 0 )
+  , mpLinesLayer( 0 )
+  , mpPolysLayer( 0 )
 {
 
 }
@@ -114,7 +114,7 @@ void TestQgsSymbol::initTestCase()
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -125,7 +125,7 @@ void TestQgsSymbol::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
 
   //
@@ -137,7 +137,7 @@ void TestQgsSymbol::initTestCase()
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer );
+    QList<QgsMapLayer*>() << mpLinesLayer );
 
   mReport += QLatin1String( "<h1>StyleV2 Tests</h1>\n" );
 }

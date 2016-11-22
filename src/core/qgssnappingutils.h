@@ -67,12 +67,18 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! Assign current map settings to the utils - used for conversion between screen coords to map coords
     void setMapSettings( const QgsMapSettings& settings );
-    QgsMapSettings mapSettings() const { return mMapSettings; }
+    QgsMapSettings mapSettings() const
+    {
+      return mMapSettings;
+    }
 
     //! Set current layer so that if mode is SnapCurrentLayer we know which layer to use
     void setCurrentLayer( QgsVectorLayer* layer );
     //! The current layer used if mode is SnapCurrentLayer
-    QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
+    QgsVectorLayer* currentLayer() const
+    {
+      return mCurrentLayer;
+    }
 
 
     // configuration
@@ -93,9 +99,15 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     //! Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
-    void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
+    void setIndexingStrategy( IndexingStrategy strategy )
+    {
+      mStrategy = strategy;
+    }
     //! Find out which strategy is used for indexing - by default hybrid indexing is used
-    IndexingStrategy indexingStrategy() const { return mStrategy; }
+    IndexingStrategy indexingStrategy() const
+    {
+      return mStrategy;
+    }
 
     /**
      * Configures how a certain layer should be handled in a snapping operation
@@ -122,10 +134,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
        * @param u   The unit in which the tolerance is specified
        */
       LayerConfig( QgsVectorLayer* l, QgsPointLocator::Types t, double tol, QgsTolerance::UnitType u )
-          : layer( l )
-          , type( t )
-          , tolerance( tol )
-          , unit( u )
+        : layer( l )
+        , type( t )
+        , tolerance( tol )
+        , unit( u )
       {}
 
       bool operator==( const LayerConfig& other ) const
@@ -148,7 +160,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     //! Query layers used for snapping
-    QList<LayerConfig> layers() const { return mLayers; }
+    QList<LayerConfig> layers() const
+    {
+      return mLayers;
+    }
 
     /** Get extra information about the instance
      * @note added in QGIS 2.14
@@ -174,12 +189,18 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
-    virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
+    virtual void prepareIndexStarting( int count )
+    {
+      Q_UNUSED( count );
+    }
     //! Called when finished indexing a layer. When index == count the indexing is complete
-    virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
+    virtual void prepareIndexProgress( int index )
+    {
+      Q_UNUSED( index );
+    }
 
   private:
-    void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
+    void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings>& layerSettings );
     //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 

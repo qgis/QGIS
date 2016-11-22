@@ -88,7 +88,10 @@ class QgsWfsServer: public QgsOWSServer
     QDomDocument transaction( const QString& requestBody );
 
     //! Sets configuration parser for administration settings. Does not take ownership
-    void setAdminConfigParser( QgsWfsProjectParser* parser ) { mConfigParser = parser; }
+    void setAdminConfigParser( QgsWfsProjectParser* parser )
+    {
+      mConfigParser = parser;
+    }
 
   private:
     //! Don't use the default constructor

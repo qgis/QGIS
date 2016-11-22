@@ -60,7 +60,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     /**
      *Sets geometry calculator used in distance/area calculations.
      */
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea& da );
 
   public slots:
     void on_mActionSelect_triggered();
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * Saves the window geometry
      * @param closeEvent Event object. Unused.
      */
-    virtual void closeEvent( QCloseEvent *closeEvent ) override;
+    virtual void closeEvent( QCloseEvent* closeEvent ) override;
 
     /**
      * Implementation for done (default behavior when pressing esc)

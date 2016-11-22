@@ -53,11 +53,11 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
 
   private:
     // Release return with delete []
-    unsigned char *
-    hex2bytes( const char *hex, int *size )
+    unsigned char*
+    hex2bytes( const char* hex, int* size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
-      unsigned char *out = new unsigned char[ba.size()];
+      unsigned char* out = new unsigned char[ba.size()];
       memcpy( out, ba.data(), ba.size() );
       *size = ba.size();
       return out;
@@ -171,9 +171,9 @@ void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
   // See http://hub.qgis.org/issues/12416
   // NOTE: the first line needs to be 5 vertices or more, or
   // simplification won't even be attempted
-  const char *hexwkb = "010500000002000000010200008005000000000000000000000000000000000000000000000000000000000000000000F03F000000000000F03F00000000000000000000000000000040000000000000000000000000000000000000000000000840000000000000F03F0000000000000000000000000000244000000000000000008DEDB5A0F7C6B0BE010200008002000000000000000000000000000000000000000000000000000000000000000000000000000000000000008DEDB5A0F7C6B03E";
+  const char* hexwkb = "010500000002000000010200008005000000000000000000000000000000000000000000000000000000000000000000F03F000000000000F03F00000000000000000000000000000040000000000000000000000000000000000000000000000840000000000000F03F0000000000000000000000000000244000000000000000008DEDB5A0F7C6B0BE010200008002000000000000000000000000000000000000000000000000000000000000000000000000000000000000008DEDB5A0F7C6B03E";
   int size;
-  unsigned char *wkb = hex2bytes( hexwkb, &size );
+  unsigned char* wkb = hex2bytes( hexwkb, &size );
   QgsGeometry g12416;
   // NOTE: wkb onwership transferred to QgsGeometry
   g12416.fromWkb( wkb, size );

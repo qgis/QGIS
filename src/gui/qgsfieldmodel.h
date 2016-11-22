@@ -56,12 +56,12 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     /**
      * Constructor for QgsFieldModel - creates a model to display the fields of a given layer.
      */
-    explicit QgsFieldModel( QObject *parent = nullptr );
+    explicit QgsFieldModel( QObject* parent = nullptr );
 
     /**
      * Returns the index corresponding to a given fieldName.
      */
-    QModelIndex indexFromName( const QString &fieldName );
+    QModelIndex indexFromName( const QString& fieldName );
 
     /**
      * Sets whether custom expressions are accepted and displayed in the model.
@@ -74,7 +74,10 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns true if the model allows custom expressions to be created and displayed.
      * @see setAllowExpression()
      */
-    bool allowExpression() { return mAllowExpression; }
+    bool allowExpression()
+    {
+      return mAllowExpression;
+    }
 
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.
@@ -88,7 +91,10 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * @see setAllowEmptyFieldName()
      * @note added in QGIS 3.0
      */
-    bool allowEmptyFieldName() const { return mAllowEmpty; }
+    bool allowEmptyFieldName() const
+    {
+      return mAllowEmpty;
+    }
 
     /**
      * Returns true if a string represents a field reference, or false if it is an
@@ -102,7 +108,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * @see allowExpression()
      * @see removeExpression()
      */
-    void setExpression( const QString &expression );
+    void setExpression( const QString& expression );
 
     /**
      * Removes any custom expression from the model.
@@ -115,14 +121,17 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns the layer associated with the model.
      * @see setLayer()
      */
-    QgsVectorLayer* layer() { return mLayer; }
+    QgsVectorLayer* layer()
+    {
+      return mLayer;
+    }
 
     // QAbstractItemModel interface
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex& child ) const override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& parent ) const override;
+    QVariant data( const QModelIndex& index, int role ) const override;
 
   public slots:
 
@@ -130,7 +139,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * Set the layer from which fields are displayed.
      * @see layer()
      */
-    void setLayer( QgsVectorLayer *layer );
+    void setLayer( QgsVectorLayer* layer );
 
   protected slots:
 

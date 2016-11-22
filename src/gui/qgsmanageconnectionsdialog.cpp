@@ -24,16 +24,16 @@
 
 #include "qgsmanageconnectionsdialog.h"
 
-QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString& fileName )
-    : QDialog( parent )
-    , mFileName( fileName )
-    , mDialogMode( mode )
-    , mConnectionType( type )
+QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget* parent, Mode mode, Type type, const QString& fileName )
+  : QDialog( parent )
+  , mFileName( fileName )
+  , mDialogMode( mode )
+  , mConnectionType( type )
 {
   setupUi( this );
 
   // additional buttons
-  QPushButton *pb;
+  QPushButton* pb;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
@@ -74,7 +74,7 @@ void QgsManageConnectionsDialog::selectionChanged()
 
 void QgsManageConnectionsDialog::doExportImport()
 {
-  QList<QListWidgetItem *> selection = listConnections->selectedItems();
+  QList<QListWidgetItem*> selection = listConnections->selectedItems();
   if ( selection.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Export/import error" ),
@@ -238,7 +238,7 @@ bool QgsManageConnectionsDialog::populateConnections()
     QStringList::Iterator it = keys.begin();
     while ( it != keys.end() )
     {
-      QListWidgetItem *item = new QListWidgetItem();
+      QListWidgetItem* item = new QListWidgetItem();
       item->setText( *it );
       listConnections->addItem( item );
       ++it;
@@ -341,7 +341,7 @@ bool QgsManageConnectionsDialog::populateConnections()
     QDomElement child = root.firstChildElement();
     while ( !child.isNull() )
     {
-      QListWidgetItem *item = new QListWidgetItem();
+      QListWidgetItem* item = new QListWidgetItem();
       item->setText( child.attribute( QStringLiteral( "name" ) ) );
       listConnections->addItem( item );
       child = child.nextSiblingElement();
@@ -350,7 +350,7 @@ bool QgsManageConnectionsDialog::populateConnections()
   return true;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString & service )
+QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList& connections, const QString& service )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( "qgs" + service.toUpper() + "Connections" );
@@ -386,7 +386,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList& connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsWFSConnections" ) );
@@ -413,7 +413,7 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList& connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsPgConnections" ) );
@@ -454,7 +454,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList& connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsMssqlConnections" ) );
@@ -495,7 +495,7 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringList& connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsOracleConnections" ) );
@@ -539,7 +539,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList& connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsDb2Connections" ) );
@@ -580,7 +580,7 @@ QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &
   return doc;
 }
 
-void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service )
+void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument& doc, const QStringList& items, const QString& service )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
@@ -667,7 +667,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
   }
 }
 
-void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument& doc, const QStringList& items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
@@ -748,7 +748,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 }
 
 
-void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument& doc, const QStringList& items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
@@ -838,7 +838,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   }
 }
 
-void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument& doc, const QStringList& items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
@@ -928,7 +928,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   }
 }
 
-void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument& doc, const QStringList& items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsOracleConnections" ) )
@@ -1014,7 +1014,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   }
 }
 
-void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument& doc, const QStringList& items )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsDb2Connections" ) )

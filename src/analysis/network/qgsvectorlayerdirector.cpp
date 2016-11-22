@@ -39,7 +39,7 @@ class QgsPointCompare
 {
   public:
     explicit QgsPointCompare( double tolerance )
-        : mTolerance( tolerance )
+      : mTolerance( tolerance )
     {  }
 
     bool operator()( const QgsPoint& p1, const QgsPoint& p2 ) const
@@ -102,7 +102,7 @@ bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
   return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
 }
 
-QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
+QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer* myLayer,
     int directionFieldId,
     const QString& directDirectionValue,
     const QString& reverseDirectionValue,
@@ -128,10 +128,10 @@ QString QgsVectorLayerDirector::name() const
   return QStringLiteral( "Vector line" );
 }
 
-void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
+void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface* builder, const QVector< QgsPoint >& additionalPoints,
                                         QVector< QgsPoint >& snappedPoints ) const
 {
-  QgsVectorLayer *vl = mVectorLayer;
+  QgsVectorLayer* vl = mVectorLayer;
 
   if ( !vl )
     return;
@@ -237,7 +237,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() );
   points.resize( tmp - points.begin() );
 
-  for ( i = 0;i < points.size();++i )
+  for ( i = 0; i < points.size(); ++i )
     builder->addVertex( i, points[ i ] );
 
   for ( i = 0; i < snappedPoints.size() ; ++i )

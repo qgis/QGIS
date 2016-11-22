@@ -45,7 +45,7 @@ void QgsTextAnnotationItem::setDocument( const QTextDocument* doc )
   mDocument = doc->clone();
 }
 
-void QgsTextAnnotationItem::paint( QPainter * painter )
+void QgsTextAnnotationItem::paint( QPainter* painter )
 {
   if ( !painter || !mDocument )
   {

@@ -45,8 +45,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     ~QgsConfigureShortcutsDialog();
 
   protected:
-    void keyPressEvent( QKeyEvent * event ) override;
-    void keyReleaseEvent( QKeyEvent * event ) override;
+    void keyPressEvent( QKeyEvent* event ) override;
+    void keyReleaseEvent( QKeyEvent* event ) override;
 
   private slots:
     void changeShortcut();

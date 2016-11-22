@@ -43,7 +43,7 @@
 //class QgisInterface;
 
 checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
-    : QgsDockWidget( parent ), Ui::checkDock()
+  : QgsDockWidget( parent ), Ui::checkDock()
 {
   mTest = new topolTest( qIface );
 
@@ -87,7 +87,7 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   connect( mToggleRubberband, SIGNAL( clicked() ), this, SLOT( toggleErrorMarker() ) );
 
   connect( mFixButton, SIGNAL( clicked() ), this, SLOT( fix() ) );
-  connect( mErrorTableView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( errorListClicked( const QModelIndex & ) ) );
+  connect( mErrorTableView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( errorListClicked( const QModelIndex& ) ) );
 
   connect( mLayerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( parseErrorListByLayer( QString ) ) );
 
@@ -151,7 +151,7 @@ void checkDock::deleteErrors()
 
 void checkDock::parseErrorListByLayer( const QString& layerId )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayer( layerId ) );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayer( layerId ) );
   QList<TopolError*>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )

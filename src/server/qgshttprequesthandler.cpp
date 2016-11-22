@@ -37,7 +37,7 @@
 
 
 QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput )
-    : QgsRequestHandler()
+  : QgsRequestHandler()
 {
   mException = nullptr;
   mHeadersSent = false;
@@ -49,7 +49,7 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
   delete mException;
 }
 
-void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
+void QgsHttpRequestHandler::setHttpResponse( QByteArray* ba, const QString& format )
 {
   QgsMessageLog::logMessage( QStringLiteral( "Checking byte array is ok to set..." ) );
   if ( !ba )
@@ -94,7 +94,7 @@ void QgsHttpRequestHandler::setDefaultHeaders()
   }
 }
 
-void QgsHttpRequestHandler::setHeader( const QString &name, const QString &value )
+void QgsHttpRequestHandler::setHeader( const QString& name, const QString& value )
 {
   mHeaders.insert( name, value );
 }
@@ -105,12 +105,12 @@ void QgsHttpRequestHandler::clearHeaders()
   mHeaders.clear();
 }
 
-int QgsHttpRequestHandler::removeHeader( const QString &name )
+int QgsHttpRequestHandler::removeHeader( const QString& name )
 {
   return mHeaders.remove( name );
 }
 
-void QgsHttpRequestHandler::appendBody( const QByteArray &body )
+void QgsHttpRequestHandler::appendBody( const QByteArray& body )
 {
   mBody.append( body );
 }
@@ -121,12 +121,12 @@ void QgsHttpRequestHandler::clearBody()
 }
 
 
-void QgsHttpRequestHandler::setInfoFormat( const QString &format )
+void QgsHttpRequestHandler::setInfoFormat( const QString& format )
 {
   mInfoFormat = format;
 }
 
-void QgsHttpRequestHandler::addToResponseHeader( const char * response )
+void QgsHttpRequestHandler::addToResponseHeader( const char* response )
 {
   if ( mCaptureOutput )
   {
@@ -138,7 +138,7 @@ void QgsHttpRequestHandler::addToResponseHeader( const char * response )
   }
 }
 
-void QgsHttpRequestHandler::addToResponseBody( const char * response )
+void QgsHttpRequestHandler::addToResponseBody( const char* response )
 {
   if ( mCaptureOutput )
   {
@@ -700,7 +700,7 @@ QString QgsHttpRequestHandler::readPostBody() const
   return inputString;
 }
 
-void QgsHttpRequestHandler::setParameter( const QString &key, const QString &value )
+void QgsHttpRequestHandler::setParameter( const QString& key, const QString& value )
 {
   if ( !( key.isEmpty() || value.isEmpty() ) )
   {
@@ -709,12 +709,12 @@ void QgsHttpRequestHandler::setParameter( const QString &key, const QString &val
 }
 
 
-QString QgsHttpRequestHandler::parameter( const QString &key ) const
+QString QgsHttpRequestHandler::parameter( const QString& key ) const
 {
   return mParameterMap.value( key );
 }
 
-int QgsHttpRequestHandler::removeParameter( const QString &key )
+int QgsHttpRequestHandler::removeParameter( const QString& key )
 {
   return mParameterMap.remove( key );
 }

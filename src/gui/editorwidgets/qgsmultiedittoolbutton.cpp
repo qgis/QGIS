@@ -17,11 +17,11 @@
 #include "qgsapplication.h"
 #include <QMenu>
 QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget* parent )
-    : QToolButton( parent )
-    , mIsMixedValues( false )
-    , mIsChanged( false )
-    , mState( Default )
-    , mMenu( nullptr )
+  : QToolButton( parent )
+  , mIsMixedValues( false )
+  , mIsChanged( false )
+  , mState( Default )
+  , mMenu( nullptr )
 {
   setFocusPolicy( Qt::StrongFocus );
 

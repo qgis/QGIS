@@ -79,7 +79,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
      */
-    explicit CoordinateCapture( QgisInterface * theInterface );
+    explicit CoordinateCapture( QgisInterface* theInterface );
     //! Destructor
     virtual ~CoordinateCapture();
 
@@ -122,17 +122,17 @@ class CoordinateCapture: public QObject, public QgisPlugin
     QPointer<QLineEdit> mpCanvasEdit;
 
     //!Our custom map tool to capture clicks
-    CoordinateCaptureMapTool * mpMapTool;
+    CoordinateCaptureMapTool* mpMapTool;
 
     //!A two buttons to track and capture coordinates
-    QToolButton * mpTrackMouseButton;
-    QPushButton * mpCaptureButton;
+    QToolButton* mpTrackMouseButton;
+    QPushButton* mpCaptureButton;
 
     //! A toolbutton to select crs to display the coordinates
-    QToolButton * mypUserCrsToolButton;
+    QToolButton* mypUserCrsToolButton;
 
     //! A label for coordinates in the project crs
-    QLabel * mypCRSLabel;
+    QLabel* mypCRSLabel;
 
     //! transform object
     QgsCoordinateTransform mTransform;
@@ -156,9 +156,9 @@ class CoordinateCapture: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface* mQGisIface;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
+    QAction* mQActionPointer;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....

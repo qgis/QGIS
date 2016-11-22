@@ -64,18 +64,18 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     void run();
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( const QString& theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    QIcon getThemeIcon( const QString& theThemeName );
 
   private:
 
-    QgsSpatialQueryDialog  *mDialog;
+    QgsSpatialQueryDialog*  mDialog;
     //! Pointer to the QgisInterface object
     QgisInterface* mIface;
     //! Pointer to the QAction used in the menu and on the toolbar
     QAction* mSpatialQueryAction;
 
 
-    void MsgDEBUG( const QString &sMSg );
+    void MsgDEBUG( const QString& sMSg );
 
 };
 #endif

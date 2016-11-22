@@ -19,8 +19,8 @@
 #include "qgsgeorefconfigdialog.h"
 #include "qgis.h"
 
-QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
-    : QDialog( parent )
+QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget* parent )
+  : QDialog( parent )
 {
   setupUi( this );
 
@@ -62,7 +62,7 @@ QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ), saveGeometry() );
 }
 
-void QgsGeorefConfigDialog::changeEvent( QEvent *e )
+void QgsGeorefConfigDialog::changeEvent( QEvent* e )
 {
   QDialog::changeEvent( e );
   switch ( e->type() )

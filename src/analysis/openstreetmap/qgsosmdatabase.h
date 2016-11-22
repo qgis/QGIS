@@ -49,14 +49,23 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     explicit QgsOSMDatabase( const QString& dbFileName = QString() );
     ~QgsOSMDatabase();
 
-    void setFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
-    QString filename() const { return mDbFileName; }
+    void setFileName( const QString& dbFileName )
+    {
+      mDbFileName = dbFileName;
+    }
+    QString filename() const
+    {
+      return mDbFileName;
+    }
     bool isOpen() const;
 
     bool open();
     bool close();
 
-    QString errorString() const { return mError; }
+    QString errorString() const
+    {
+      return mError;
+    }
 
     // data access
 

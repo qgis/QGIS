@@ -57,12 +57,15 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! called when the dialog is going to be closed
     void onFinished();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     void itemChanged( QStandardItem* item );
 
     void groupChanged( const QModelIndex& );
-    void groupRenamed( QStandardItem * );
+    void groupRenamed( QStandardItem* );
     //! add a tag
     int addTag();
     //! add a smartgroup
@@ -158,10 +161,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QStringList mTagList;
 
     //! Context menu for the symbols/colorramps
-    QMenu *mGroupMenu;
+    QMenu* mGroupMenu;
 
     //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
-    QMenu *mGroupListMenu;
+    QMenu* mGroupListMenu;
 
     //! Context menu for the group tree
     QMenu* mGroupTreeContextMenu;

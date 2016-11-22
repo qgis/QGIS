@@ -24,17 +24,17 @@ class QgsGrassShell : public QFrame
     Q_OBJECT
 
   public:
-    QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = 0, const char *name = 0 );
+    QgsGrassShell( QgsGrassTools* tools, QTabWidget* parent = 0, const char* name = 0 );
     virtual ~QgsGrassShell();
 
   private slots:
     void closeShell();
 
   private:
-    void initTerminal( QTermWidget *terminal );
+    void initTerminal( QTermWidget* terminal );
 
-    QTermWidget *mTerminal;
-    QgsGrassTools *mTools;
-    QTabWidget *mTabWidget;
+    QTermWidget* mTerminal;
+    QgsGrassTools* mTools;
+    QTabWidget* mTabWidget;
     QString mLockFilename;
 };

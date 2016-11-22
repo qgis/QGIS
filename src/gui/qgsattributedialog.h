@@ -48,7 +48,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 
@@ -66,32 +66,47 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @brief setHighlight
      * @param h The highlight. Ownership is taken.
      */
-    void setHighlight( QgsHighlight *h );
+    void setHighlight( QgsHighlight* h );
 
-    QgsAttributeForm *attributeForm() { return mAttributeForm; }
+    QgsAttributeForm* attributeForm()
+    {
+      return mAttributeForm;
+    }
 
-    const QgsFeature *feature() { return &mAttributeForm->feature(); }
+    const QgsFeature* feature()
+    {
+      return &mAttributeForm->feature();
+    }
 
     /**
      * Is this dialog editable?
      *
      * @return returns true, if this dialog was created in an editable manner.
      */
-    bool editable() { return mAttributeForm->editable(); }
+    bool editable()
+    {
+      return mAttributeForm->editable();
+    }
 
     /**
      * Toggles the form mode.
      * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
-    void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }
+    void setMode( QgsAttributeForm::Mode mode )
+    {
+      mAttributeForm->setMode( mode );
+    }
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
+    void setEditCommandMessage( const QString& message )
+    {
+      mAttributeForm->setEditCommandMessage( message );
+    }
 
     /**
      * Intercept window activate/deactive events to show/hide the highlighted feature.
@@ -100,7 +115,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * @return The same as the parent QDialog
      */
-    virtual bool event( QEvent *e ) override;
+    virtual bool event( QEvent* e ) override;
 
   public slots:
     void accept() override;
@@ -114,12 +129,12 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
-    QgsHighlight *mHighlight;
+    QgsHighlight* mHighlight;
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
     QgsAttributeForm* mAttributeForm;
-    QgsFeature *mOwnedFeature;
+    QgsFeature* mOwnedFeature;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
 

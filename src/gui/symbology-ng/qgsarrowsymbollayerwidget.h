@@ -38,7 +38,10 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     /** Static creation method
      * @param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer )
+    {
+      return new QgsArrowSymbolLayerWidget( layer );
+    }
 
     //! Set the symbol layer
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;

@@ -48,7 +48,7 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
     QComboBox* mEncodingComboBox;
 
     /* The button to click */
-    QPushButton *mCancelAllButton;
+    QPushButton* mCancelAllButton;
 
     /* Set if user clicked 'Cancel All' */
     bool mCancelAll;

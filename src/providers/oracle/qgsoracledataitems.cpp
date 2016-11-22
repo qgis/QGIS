@@ -30,8 +30,8 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
-    , mColumnTypeThread( nullptr )
+  : QgsDataCollectionItem( parent, name, path )
+  , mColumnTypeThread( nullptr )
 {
   mIconName = "mIconConnect.png";
 }
@@ -56,12 +56,12 @@ void QgsOracleConnectionItem::refresh()
 {
   stop();
 
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  Q_FOREACH ( QgsDataItem* child, mChildren )
   {
     deleteChildItem( child );
   }
 
-  Q_FOREACH ( QgsDataItem *item, createChildren() )
+  Q_FOREACH ( QgsDataItem* item, createChildren() )
   {
     addChildItem( item, true );
   }
@@ -69,7 +69,7 @@ void QgsOracleConnectionItem::refresh()
 
 void QgsOracleConnectionItem::setAllAsPopulated()
 {
-  Q_FOREACH ( QgsDataItem *child, mChildren )
+  Q_FOREACH ( QgsDataItem* child, mChildren )
   {
     child->setState( Populated );
   }
@@ -133,7 +133,7 @@ void QgsOracleConnectionItem::threadFinished()
 void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty )
 {
   QgsDebugMsgLevel( layerProperty.toString(), 3 );
-  QgsOracleOwnerItem *ownerItem = mOwnerMap.value( layerProperty.ownerName, 0 );
+  QgsOracleOwnerItem* ownerItem = mOwnerMap.value( layerProperty.ownerName, 0 );
 
   for ( int i = 0 ; i < layerProperty.size(); i++ )
   {
@@ -158,14 +158,14 @@ void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty
   }
 }
 
-bool QgsOracleConnectionItem::equal( const QgsDataItem *other )
+bool QgsOracleConnectionItem::equal( const QgsDataItem* other )
 {
   if ( type() != other->type() )
   {
     return false;
   }
 
-  const QgsOracleConnectionItem *o = qobject_cast<const QgsOracleConnectionItem *>( other );
+  const QgsOracleConnectionItem* o = qobject_cast<const QgsOracleConnectionItem*>( other );
   return ( mPath == o->mPath && mName == o->mName && o->parent() == parent() );
 }
 
@@ -222,7 +222,7 @@ void QgsOracleConnectionItem::refreshConnection()
   refresh();
 }
 
-bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
+bool QgsOracleConnectionItem::handleDrop( const QMimeData* data, Qt::DropAction )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
@@ -232,7 +232,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
+  QProgressDialog* progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
   progress->setWindowTitle( tr( "Import layer" ) );
   progress->setWindowModality( Qt::WindowModal );
   progress->show();
@@ -297,7 +297,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
   }
   else if ( hasError )
   {
-    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to Oracle database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
     output->showMessage();
@@ -318,8 +318,8 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
 
 // ---------------------------------------------------------------------------
 QgsOracleLayerItem::QgsOracleLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsOracleLayerProperty layerProperty )
-    : QgsLayerItem( parent, name, path, QString(), layerType, "oracle" )
-    , mLayerProperty( layerProperty )
+  : QgsLayerItem( parent, name, path, QString(), layerType, "oracle" )
+  , mLayerProperty( layerProperty )
 {
   mUri = createUri();
   setState( Populated );
@@ -363,7 +363,7 @@ void QgsOracleLayerItem::deleteLayer()
 QString QgsOracleLayerItem::createUri()
 {
   Q_ASSERT( mLayerProperty.size() == 1 );
-  QgsOracleConnectionItem *connItem = qobject_cast<QgsOracleConnectionItem *>( parent() ? parent()->parent() : 0 );
+  QgsOracleConnectionItem* connItem = qobject_cast<QgsOracleConnectionItem*>( parent() ? parent()->parent() : 0 );
 
   if ( !connItem )
   {
@@ -383,7 +383,7 @@ QString QgsOracleLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsOracleOwnerItem::QgsOracleOwnerItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconDbOwner.png";
   //not fertile, since children are created by QgsOracleConnectionItem
@@ -441,14 +441,14 @@ void QgsOracleOwnerItem::addLayer( QgsOracleLayerProperty layerProperty )
       }
   }
 
-  QgsOracleLayerItem *layerItem = new QgsOracleLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, layerType, layerProperty );
+  QgsOracleLayerItem* layerItem = new QgsOracleLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, layerType, layerProperty );
   layerItem->setToolTip( tip );
   addChildItem( layerItem, true );
 }
 
 // ---------------------------------------------------------------------------
 QgsOracleRootItem::QgsOracleRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconOracle.svg";
   populate();
@@ -479,9 +479,9 @@ QList<QAction*> QgsOracleRootItem::actions()
   return lst;
 }
 
-QWidget *QgsOracleRootItem::paramWidget()
+QWidget* QgsOracleRootItem::paramWidget()
 {
-  QgsOracleSourceSelect *select = new QgsOracleSourceSelect( 0, 0, true, true );
+  QgsOracleSourceSelect* select = new QgsOracleSourceSelect( 0, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -500,9 +500,9 @@ void QgsOracleRootItem::newConnection()
   }
 }
 
-QMainWindow *QgsOracleRootItem::sMainWindow = 0;
+QMainWindow* QgsOracleRootItem::sMainWindow = 0;
 
-QGISEXTERN void registerGui( QMainWindow *mainWindow )
+QGISEXTERN void registerGui( QMainWindow* mainWindow )
 {
   QgsOracleRootItem::sMainWindow = mainWindow;
 }

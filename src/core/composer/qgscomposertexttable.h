@@ -48,7 +48,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
      */
     void setContents( const QList< QStringList >& contents );
 
-    bool getTableContents( QgsComposerTableContents &contents ) override;
+    bool getTableContents( QgsComposerTableContents& contents ) override;
 
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
 

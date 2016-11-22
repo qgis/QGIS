@@ -35,7 +35,7 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
   return name;
 }
 
-void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
+void QgsGrassUtils::addVectorLayers( QgisInterface* iface,
                                      QString gisbase, QString location, QString mapset, QString map )
 {
   QStringList layers;
@@ -43,7 +43,7 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
   {
     layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QgsDebugMsg( e.what() );
     return;
@@ -81,15 +81,15 @@ QString QgsGrassUtils::htmlBrowserPath()
   return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser"  + QString::number( QgsGrass::versionMajor() );
 }
 
-QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
-    : QObject()
-    , mDialog( 0 )
-    , mLineEdit( 0 )
-    , mLabel( 0 )
-    , mErrorLabel( 0 )
-    , mOkButton( 0 )
-    , mCancelButton( 0 )
-    , mParent( parent )
+QgsGrassElementDialog::QgsGrassElementDialog( QWidget* parent )
+  : QObject()
+  , mDialog( 0 )
+  , mLineEdit( 0 )
+  , mLabel( 0 )
+  , mErrorLabel( 0 )
+  , mOkButton( 0 )
+  , mCancelButton( 0 )
+  , mParent( parent )
 {
 }
 
@@ -97,7 +97,7 @@ QgsGrassElementDialog::~QgsGrassElementDialog() {}
 
 QString QgsGrassElementDialog::getItem( QString element,
                                         QString title, QString label,
-                                        QString text, QString source, bool * ok )
+                                        QString text, QString source, bool* ok )
 {
   if ( ok )
     *ok = false;
@@ -105,8 +105,8 @@ QString QgsGrassElementDialog::getItem( QString element,
   mSource = source;
   mDialog = new QDialog( mParent );
   mDialog->setWindowTitle( title );
-  QVBoxLayout *layout = new QVBoxLayout( mDialog );
-  QHBoxLayout *buttonLayout = new QHBoxLayout();
+  QVBoxLayout* layout = new QVBoxLayout( mDialog );
+  QHBoxLayout* buttonLayout = new QHBoxLayout();
 
   mLabel = new QLabel( label );
   layout->addWidget( mLabel );
@@ -121,7 +121,7 @@ QString QgsGrassElementDialog::getItem( QString element,
   {
     rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
   }
-  QRegExpValidator *val = new QRegExpValidator( rx, this );
+  QRegExpValidator* val = new QRegExpValidator( rx, this );
   mLineEdit->setValidator( val );
 
   layout->addWidget( mLineEdit );

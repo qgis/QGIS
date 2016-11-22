@@ -74,7 +74,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void hasAxisInverted();
     void createFromProj4Invalid();
   private:
-    void debugPrint( QgsCoordinateReferenceSystem &theCrs );
+    void debugPrint( QgsCoordinateReferenceSystem& theCrs );
     // these used by createFromESRIWkt()
     QStringList myWktStrings;
     QList<int> myGdalVersionOK;
@@ -82,7 +82,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     QStringList myProj4Strings;
     QStringList myTOWGS84Strings;
     QStringList myAuthIdStrings;
-    QString testESRIWkt( int i, QgsCoordinateReferenceSystem &theCrs );
+    QString testESRIWkt( int i, QgsCoordinateReferenceSystem& theCrs );
 };
 
 
@@ -106,7 +106,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
   {
     qDebug() << "Warning! GDAL_FIX_ESRI_WKT =" << CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" )
-    << "this might generate errors!";
+             << "this might generate errors!";
   }
 #endif
 
@@ -313,7 +313,7 @@ void TestQgsCoordinateReferenceSystem::wktCache()
   QVERIFY( !QgsCoordinateReferenceSystem::mWktCache.contains( GEOWKT ) );
 }
 
-QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateReferenceSystem &myCrs )
+QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateReferenceSystem& myCrs )
 {
   debugPrint( myCrs );
 
@@ -398,7 +398,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       QString fileStr = QStringLiteral( TEST_DATA_DIR ) + '/' + myFiles[i];
       QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
 
-      QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, QLatin1String( "" ), QStringLiteral( "ogr" ) );
+      QgsVectorLayer* myLayer = new QgsVectorLayer( fileStr, QLatin1String( "" ), QStringLiteral( "ogr" ) );
       if ( !myLayer || ! myLayer->isValid() )
       {
         qWarning() << QStringLiteral( "test %1 did not get valid vector layer from %2" ).arg( i ).arg( fileStr );
@@ -708,7 +708,7 @@ void TestQgsCoordinateReferenceSystem::hasAxisInverted()
 
 
 void TestQgsCoordinateReferenceSystem::debugPrint(
-  QgsCoordinateReferenceSystem &theCrs )
+  QgsCoordinateReferenceSystem& theCrs )
 {
   QgsDebugMsg( "***SpatialRefSystem***" );
   QgsDebugMsg( "* Valid : " + ( theCrs.isValid() ? QString( "true" ) :

@@ -36,8 +36,8 @@
 #include "qgsspinboxplugin.h"
 
 
-QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
-    : QObject( parent )
+QgisCustomWidgets::QgisCustomWidgets( QObject* parent )
+  : QObject( parent )
 {
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );

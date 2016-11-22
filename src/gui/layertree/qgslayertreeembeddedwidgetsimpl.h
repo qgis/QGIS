@@ -45,7 +45,7 @@ class QgsLayerTreeTransparencyWidget : public QWidget
         virtual QString id() const override;
         virtual QString name() const override;
         virtual QgsLayerTreeTransparencyWidget* createWidget( QgsMapLayer* layer, int widgetIndex ) override;
-        virtual bool supportsLayer( QgsMapLayer *layer ) override;
+        virtual bool supportsLayer( QgsMapLayer* layer ) override;
     };
 
   public slots:

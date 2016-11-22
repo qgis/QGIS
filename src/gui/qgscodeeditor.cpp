@@ -22,11 +22,11 @@
 #include <QDebug>
 #include <QFocusEvent>
 
-QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool folding, bool margin )
-    : QsciScintilla( parent )
-    , mWidgetTitle( title )
-    , mFolding( folding )
-    , mMargin( margin )
+QgsCodeEditor::QgsCodeEditor( QWidget* parent, const QString& title, bool folding, bool margin )
+  : QsciScintilla( parent )
+  , mWidgetTitle( title )
+  , mFolding( folding )
+  , mMargin( margin )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
@@ -45,7 +45,7 @@ QgsCodeEditor::~QgsCodeEditor()
 }
 
 // Workaround a bug in QScintilla 2.8.X
-void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
+void QgsCodeEditor::focusOutEvent( QFocusEvent* event )
 {
 #if QSCINTILLA_VERSION >= 0x020800 && QSCINTILLA_VERSION < 0x020900
   if ( event->reason() != Qt::ActiveWindowFocusReason )
@@ -75,7 +75,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 // This workaround a likely bug in QScintilla. The ESC key should not be consumned
 // by the main entry, so that the default behaviour (Dialog closing) can trigger,
 // but only is the auto-completion suggestion list isn't displayed
-void QgsCodeEditor::keyPressEvent( QKeyEvent * event )
+void QgsCodeEditor::keyPressEvent( QKeyEvent* event )
 {
   if ( event->key() == Qt::Key_Escape && !isListActive() )
   {

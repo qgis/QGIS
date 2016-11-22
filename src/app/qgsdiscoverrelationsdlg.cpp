@@ -18,9 +18,9 @@
 
 #include <QPushButton>
 
-QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers, QWidget *parent )
-    : QDialog( parent )
-    , mLayers( layers )
+QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers, QWidget* parent )
+  : QDialog( parent )
+  , mLayers( layers )
 {
   setupUi( this );
 
@@ -34,7 +34,7 @@ QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation>& exis
 
 }
 
-void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
+void QgsDiscoverRelationsDlg::addRelation( const QgsRelation& rel )
 {
   const int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );

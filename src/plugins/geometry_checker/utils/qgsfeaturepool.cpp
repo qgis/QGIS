@@ -26,10 +26,10 @@
 #include <qmath.h>
 #include <limits>
 
-QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
-    : mFeatureCache( sCacheSize )
-    , mLayer( layer )
-    , mSelectedOnly( selectedOnly )
+QgsFeaturePool::QgsFeaturePool( QgsVectorLayer* layer, bool selectedOnly )
+  : mFeatureCache( sCacheSize )
+  , mLayer( layer )
+  , mSelectedOnly( selectedOnly )
 {
   if ( selectedOnly )
   {
@@ -124,7 +124,7 @@ void QgsFeaturePool::deleteFeature( QgsFeature& feature )
   mLayerMutex.unlock();
 }
 
-QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect )
+QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle& rect )
 {
   QMutexLocker lock( &mIndexMutex );
   return QgsFeatureIds::fromList( mIndex.intersects( rect ) );

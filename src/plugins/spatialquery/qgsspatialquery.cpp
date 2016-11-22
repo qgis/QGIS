@@ -24,11 +24,11 @@
 #include "qgsgeometryengine.h"
 #include "qgsspatialquery.h"
 
-QgsSpatialQuery::QgsSpatialQuery( MngProgressBar *pb )
-    : mPb( pb )
-    , mReaderFeaturesTarget( nullptr )
-    , mLayerTarget( nullptr )
-    , mLayerReference( nullptr )
+QgsSpatialQuery::QgsSpatialQuery( MngProgressBar* pb )
+  : mPb( pb )
+  , mReaderFeaturesTarget( nullptr )
+  , mLayerTarget( nullptr )
+  , mLayerReference( nullptr )
 {
   mUseTargetSelection = mUseReferenceSelection = false;
 } // QgsSpatialQuery::QgsSpatialQuery(MngProgressBar *pb)
@@ -51,9 +51,9 @@ void QgsSpatialQuery::setSelectedFeaturesReference( bool useSelected )
 
 } // void QgsSpatialQuery::setSelectedFeaturesReference(bool useSelected)
 
-void QgsSpatialQuery::runQuery( QgsFeatureIds &qsetIndexResult,
-                                QgsFeatureIds &qsetIndexInvalidTarget,
-                                QgsFeatureIds &qsetIndexInvalidReference,
+void QgsSpatialQuery::runQuery( QgsFeatureIds& qsetIndexResult,
+                                QgsFeatureIds& qsetIndexInvalidTarget,
+                                QgsFeatureIds& qsetIndexInvalidReference,
                                 int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference )
 {
   setQuery( lyrTarget, lyrReference );
@@ -101,7 +101,7 @@ QMap<QString, int>* QgsSpatialQuery::getTypesOperations( QgsVectorLayer* lyrTarg
          dimReference  <  dimTarget OR dimReference = dimTarget if dimReference = 2
   */
 
-  QMap<QString, int> * operations = new QMap<QString, int>;
+  QMap<QString, int>* operations = new QMap<QString, int>;
   operations->insert( QObject::tr( "Intersects" ), Intersects );
   operations->insert( QObject::tr( "Is disjoint" ), Disjoint );
 
@@ -163,7 +163,7 @@ short int QgsSpatialQuery::dimensionGeometry( QgsWkbTypes::GeometryType geomType
 
 } // int QgsSpatialQuery::dimensionGeometry(QgsWkbTypes::GeometryType geomType)
 
-void QgsSpatialQuery::setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *layerReference )
+void QgsSpatialQuery::setQuery( QgsVectorLayer* layerTarget, QgsVectorLayer* layerReference )
 {
   mLayerTarget = layerTarget;
   mReaderFeaturesTarget = new QgsReaderFeatures( mLayerTarget, mUseTargetSelection );
@@ -171,7 +171,7 @@ void QgsSpatialQuery::setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *lay
 
 } // void QgsSpatialQuery::setQuery (QgsVectorLayer *layerTarget, QgsVectorLayer *layerReference)
 
-bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
+bool QgsSpatialQuery::hasValidGeometry( QgsFeature& feature )
 {
   if ( !feature.isValid() )
     return false;
@@ -185,9 +185,9 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
 
 } // bool QgsSpatialQuery::hasValidGeometry(QgsFeature &feature)
 
-void QgsSpatialQuery::setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidReference )
+void QgsSpatialQuery::setSpatialIndexReference( QgsFeatureIds& qsetIndexInvalidReference )
 {
-  QgsReaderFeatures * readerFeaturesReference = new QgsReaderFeatures( mLayerReference, mUseReferenceSelection );
+  QgsReaderFeatures* readerFeaturesReference = new QgsReaderFeatures( mLayerReference, mUseReferenceSelection );
   QgsFeature feature;
   int step = 1;
   while ( readerFeaturesReference->nextFeature( feature ) )
@@ -206,7 +206,7 @@ void QgsSpatialQuery::setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidR
 
 } // void QgsSpatialQuery::setSpatialIndexReference()
 
-void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &qsetIndexInvalidTarget, int relation )
+void QgsSpatialQuery::execQuery( QgsFeatureIds& qsetIndexResult, QgsFeatureIds& qsetIndexInvalidTarget, int relation )
 {
   bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry&, QString* ) const;
   switch ( relation )
@@ -241,7 +241,7 @@ void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &
   }
 
   // Transform referencer Target = Reference
-  QgsGeometryCoordinateTransform *coordinateTransform = new QgsGeometryCoordinateTransform();
+  QgsGeometryCoordinateTransform* coordinateTransform = new QgsGeometryCoordinateTransform();
   coordinateTransform->setCoordinateTransform( mLayerTarget, mLayerReference );
 
   // Set function for populate result
@@ -272,7 +272,7 @@ void QgsSpatialQuery::execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &
 } // QSet<int> QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation)
 
 void QgsSpatialQuery::populateIndexResult(
-  QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+  QgsFeatureIds& qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
   bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometry&, QString* ) const )
 {
   QgsFeatureIds listIdReference = mIndexReference.intersects( geomTarget.boundingBox() ).toSet();
@@ -304,7 +304,7 @@ void QgsSpatialQuery::populateIndexResult(
 } // void QgsSpatialQuery::populateIndexResult(...
 
 void QgsSpatialQuery::populateIndexResultDisjoint(
-  QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+  QgsFeatureIds& qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
   bool ( QgsGeometryEngine::* op )( const QgsAbstractGeometry&, QString* ) const )
 {
   QgsFeatureIds listIdReference = mIndexReference.intersects( geomTarget.boundingBox() ).toSet();

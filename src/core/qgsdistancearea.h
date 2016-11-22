@@ -45,10 +45,10 @@ class CORE_EXPORT QgsDistanceArea
     ~QgsDistanceArea();
 
     //! Copy constructor
-    QgsDistanceArea( const QgsDistanceArea &origDA );
+    QgsDistanceArea( const QgsDistanceArea& origDA );
 
     //! Assignment operator
-    QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
+    QgsDistanceArea& operator=( const QgsDistanceArea& origDA );
 
     /** Sets whether coordinates must be projected to ellipsoid before measuring
      * @note for calculations to use the ellipsoid, both the ellipsoid mode must be true
@@ -62,7 +62,10 @@ class CORE_EXPORT QgsDistanceArea
      * @see willUseEllipsoid()
      * @see setEllipsoidalMode()
      */
-    bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
+    bool ellipsoidalEnabled() const
+    {
+      return mEllipsoidalMode;
+    }
 
     /** Returns whether calculations will use the ellipsoid. Calculations will only use the
      * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
@@ -88,16 +91,25 @@ class CORE_EXPORT QgsDistanceArea
     /** Returns the source spatial reference system.
      * @see setSourceCrs()
      */
-    QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
+    QgsCoordinateReferenceSystem sourceCrs() const
+    {
+      return mCoordTransform.sourceCrs();
+    }
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
      * @see setSourceCrs()
      * @note added in QGIS 2.14
      */
-    long sourceCrsId() const { return mCoordTransform.sourceCrs().srsid(); }
+    long sourceCrsId() const
+    {
+      return mCoordTransform.sourceCrs().srsid();
+    }
 
     //! What sort of coordinate system is being used?
-    bool geographic() const { return mCoordTransform.sourceCrs().isGeographic(); }
+    bool geographic() const
+    {
+      return mCoordTransform.sourceCrs().isGeographic();
+    }
 
     /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
@@ -124,14 +136,26 @@ class CORE_EXPORT QgsDistanceArea
      * @see ellipsoidalEnabled()
      * @see willUseEllipsoid()
      */
-    QString ellipsoid() const { return mEllipsoid; }
+    QString ellipsoid() const
+    {
+      return mEllipsoid;
+    }
 
     //! returns ellipsoid's semi major axis
-    double ellipsoidSemiMajor() const { return mSemiMajor; }
+    double ellipsoidSemiMajor() const
+    {
+      return mSemiMajor;
+    }
     //! returns ellipsoid's semi minor axis
-    double ellipsoidSemiMinor() const { return mSemiMinor; }
+    double ellipsoidSemiMinor() const
+    {
+      return mSemiMinor;
+    }
     //! returns ellipsoid's inverse flattening
-    double ellipsoidInverseFlattening() const { return mInvFlattening; }
+    double ellipsoidInverseFlattening() const
+    {
+      return mInvFlattening;
+    }
 
     /** Measures the area of a geometry.
      * @param geometry geometry to measure
@@ -186,7 +210,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see measureArea()
      * @see measurePerimeter()
      */
-    double measurePerimeter( const QgsGeometry *geometry ) const;
+    double measurePerimeter( const QgsGeometry* geometry ) const;
 
     /** Measures the perimeter of a polygon geometry.
      * @param geometry geometry to measure
@@ -335,7 +359,7 @@ class CORE_EXPORT QgsDistanceArea
     };
 
     //! Copy helper
-    void _copy( const QgsDistanceArea & origDA );
+    void _copy( const QgsDistanceArea& origDA );
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform mCoordTransform;

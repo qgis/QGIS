@@ -18,8 +18,8 @@
 #include "qgsvectorlayer.h"
 
 QgsVectorLayerSelectionManager::QgsVectorLayerSelectionManager( QgsVectorLayer* layer, QObject* parent )
-    : QgsIFeatureSelectionManager( parent )
-    , mLayer( layer )
+  : QgsIFeatureSelectionManager( parent )
+  , mLayer( layer )
 {
   connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayerSelectionManager::selectionChanged );
 }

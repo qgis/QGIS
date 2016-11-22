@@ -27,7 +27,7 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::mAuthConfigCache = QMap<Q
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
-    : QgsAuthMethod()
+  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -59,8 +59,8 @@ QString QgsAuthBasicMethod::displayDescription() const
   return tr( "Basic authentication" );
 }
 
-bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+    const QString& dataprovider )
 {
   Q_UNUSED( dataprovider )
 
@@ -81,8 +81,8 @@ bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const Q
   return true;
 }
 
-bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+    const QString& dataprovider )
 {
   Q_UNUSED( dataprovider )
   QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
@@ -126,7 +126,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   return true;
 }
 
-void QgsAuthBasicMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
+void QgsAuthBasicMethod::updateMethodConfig( QgsAuthMethodConfig& mconfig )
 {
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
@@ -142,12 +142,12 @@ void QgsAuthBasicMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
   // TODO: add updates as method version() increases due to config storage changes
 }
 
-void QgsAuthBasicMethod::clearCachedConfig( const QString &authcfg )
+void QgsAuthBasicMethod::clearCachedConfig( const QString& authcfg )
 {
   removeMethodConfig( authcfg );
 }
 
-QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg, bool fullconfig )
+QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString& authcfg, bool fullconfig )
 {
   QgsAuthMethodConfig mconfig;
 
@@ -172,13 +172,13 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   return mconfig;
 }
 
-void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig )
+void QgsAuthBasicMethod::putMethodConfig( const QString& authcfg, const QgsAuthMethodConfig& mconfig )
 {
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
   mAuthConfigCache.insert( authcfg, mconfig );
 }
 
-void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
+void QgsAuthBasicMethod::removeMethodConfig( const QString& authcfg )
 {
   if ( mAuthConfigCache.contains( authcfg ) )
   {
@@ -187,7 +187,7 @@ void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
   }
 }
 
-QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim ) const
+QString QgsAuthBasicMethod::escapeUserPass( const QString& theVal, QChar delim ) const
 {
   QString val = theVal;
 
@@ -204,7 +204,7 @@ QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim )
 /**
  * Required class factory to return a pointer to a newly created object
  */
-QGISEXTERN QgsAuthBasicMethod *classFactory()
+QGISEXTERN QgsAuthBasicMethod* classFactory()
 {
   return new QgsAuthBasicMethod();
 }
@@ -236,7 +236,7 @@ QGISEXTERN bool isAuthMethod()
 /**
  * Optional class factory to return a pointer to a newly created edit widget
  */
-QGISEXTERN QgsAuthBasicEdit *editWidget( QWidget *parent )
+QGISEXTERN QgsAuthBasicEdit* editWidget( QWidget* parent )
 {
   return new QgsAuthBasicEdit( parent );
 }

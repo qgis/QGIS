@@ -129,7 +129,7 @@ void QgsLeastSquares::affine( QVector<QgsPoint> mapCoords,
   }
 
   double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0,
-                                         G = 0, H = 0, I = 0, J = 0, K = 0;
+         G = 0, H = 0, I = 0, J = 0, K = 0;
   for ( int i = 0; i < n; ++i )
   {
     A += pixelCoords[i].x();
@@ -178,7 +178,7 @@ void QgsLeastSquares::affine( QVector<QgsPoint> mapCoords,
  *
  * Also returns 3x3 homogenous matrices which can be used to normalize and de-normalize coordinates.
  */
-void normalizeCoordinates( const QVector<QgsPoint> &coords, QVector<QgsPoint> &normalizedCoords,
+void normalizeCoordinates( const QVector<QgsPoint>& coords, QVector<QgsPoint>& normalizedCoords,
                            double normalizeMatrix[9], double denormalizeMatrix[9] )
 {
   // Calculate center of gravity
@@ -257,7 +257,7 @@ void QgsLeastSquares::projective( QVector<QgsPoint> mapCoords,
   // to the matrix in case the system is underconstrained.
   uint m = qMax( 9u, ( uint )mapCoords.size() * 2u );
   uint n = 9;
-  gsl_matrix *S = gsl_matrix_alloc( m, n );
+  gsl_matrix* S = gsl_matrix_alloc( m, n );
 
   for ( int i = 0; i < mapCoords.size(); i++ )
   {
@@ -304,9 +304,9 @@ void QgsLeastSquares::projective( QVector<QgsPoint> mapCoords,
   // with Sh = min and |h|=1. The solution "h" is given by the
   // right singular eigenvector of S corresponding, to the smallest
   // singular value (via SVD).
-  gsl_matrix *V = gsl_matrix_alloc( n, n );
-  gsl_vector *singular_values = gsl_vector_alloc( n );
-  gsl_vector *work = gsl_vector_alloc( n );
+  gsl_matrix* V = gsl_matrix_alloc( n, n );
+  gsl_vector* singular_values = gsl_vector_alloc( n );
+  gsl_vector* work = gsl_vector_alloc( n );
 
   // V = n x n
   // U = m x n (thin SVD)  U D V^T
@@ -318,7 +318,7 @@ void QgsLeastSquares::projective( QVector<QgsPoint> mapCoords,
     H[i] = gsl_matrix_get( V, i, n - 1 );
   }
 
-  gsl_matrix *prodMatrix = gsl_matrix_alloc( 3, 3 );
+  gsl_matrix* prodMatrix = gsl_matrix_alloc( 3, 3 );
 
   gsl_matrix_view Hmatrix = gsl_matrix_view_array( H, 3, 3 );
   gsl_matrix_view normPixelMatrix = gsl_matrix_view_array( normPixel, 3, 3 );

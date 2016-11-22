@@ -18,8 +18,8 @@
 #include <QColorDialog>
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
-    , mLayer( nullptr )
+  : QgsSymbolLayerWidget( parent, vl )
+  , mLayer( nullptr )
 {
   setupUi( this );
 

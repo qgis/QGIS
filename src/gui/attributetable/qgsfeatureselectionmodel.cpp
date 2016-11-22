@@ -20,10 +20,10 @@
 #include "qgslogger.h"
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionManager, QObject* parent )
-    : QItemSelectionModel( model, parent )
-    , mFeatureModel( featureModel )
-    , mSyncEnabled( true )
-    , mClearAndSelectBuffer( false )
+  : QItemSelectionModel( model, parent )
+  , mFeatureModel( featureModel )
+  , mSyncEnabled( true )
+  , mClearAndSelectBuffer( false )
 {
   setFeatureSelectionManager( featureSelectionManager );
 }
@@ -64,12 +64,12 @@ bool QgsFeatureSelectionModel::isSelected( QgsFeatureId fid )
   return false;
 }
 
-bool QgsFeatureSelectionModel::isSelected( const QModelIndex &index )
+bool QgsFeatureSelectionModel::isSelected( const QModelIndex& index )
 {
   return isSelected( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
 }
 
-void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command )
+void QgsFeatureSelectionModel::selectFeatures( const QItemSelection& selection, QItemSelectionModel::SelectionFlags command )
 {
   QgsFeatureIds ids;
 

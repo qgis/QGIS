@@ -50,14 +50,14 @@ email                : sbr00pwb@users.sourceforge.net
 
 
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+  : QgsDecorationItem( parent )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
-  << tr( "Bar" ) << tr( "Box" );
+               << tr( "Bar" ) << tr( "Box" );
 
   setName( "Scale Bar" );
   projectRead();
@@ -103,7 +103,7 @@ void QgsDecorationScaleBar::run()
 }
 
 
-void QgsDecorationScaleBar::render( QPainter * theQPainter )
+void QgsDecorationScaleBar::render( QPainter* theQPainter )
 {
   QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
 

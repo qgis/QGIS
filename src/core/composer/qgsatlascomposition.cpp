@@ -33,16 +33,16 @@
 #include "qgsmapsettings.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
-    : mComposition( composition )
-    , mEnabled( false )
-    , mHideCoverage( false )
-    , mFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
-    , mCoverageLayer( nullptr )
-    , mSingleFile( false )
-    , mSortFeatures( false )
-    , mSortAscending( true )
-    , mCurrentFeatureNo( 0 )
-    , mFilterFeatures( false )
+  : mComposition( composition )
+  , mEnabled( false )
+  , mHideCoverage( false )
+  , mFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
+  , mCoverageLayer( nullptr )
+  , mSingleFile( false )
+  , mSortFeatures( false )
+  , mSortAscending( true )
+  , mCurrentFeatureNo( 0 )
+  , mFilterFeatures( false )
 {
 
   //listen out for layer removal
@@ -109,11 +109,11 @@ class FieldSorter
 {
   public:
     FieldSorter( QgsAtlasComposition::SorterKeys& keys, bool ascending = true )
-        : mKeys( keys )
-        , mAscending( ascending )
+      : mKeys( keys )
+      , mAscending( ascending )
     {}
 
-    bool operator()( const QPair< QgsFeatureId, QString > & id1, const QPair< QgsFeatureId, QString >& id2 )
+    bool operator()( const QPair< QgsFeatureId, QString >& id1, const QPair< QgsFeatureId, QString >& id2 )
     {
       return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) )
              : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
@@ -314,7 +314,7 @@ void QgsAtlasComposition::lastFeature()
   prepareForFeature( mFeatureIds.size() - 1 );
 }
 
-bool QgsAtlasComposition::prepareForFeature( const QgsFeature * feat )
+bool QgsAtlasComposition::prepareForFeature( const QgsFeature* feat )
 {
   int featureI = -1;
   QVector< QPair<QgsFeatureId, QString> >::const_iterator it = mFeatureIds.constBegin();
@@ -674,12 +674,12 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
   emit parameterChanged();
 }
 
-void QgsAtlasComposition::readXmlMapSettings( const QDomElement &elem, const QDomDocument &doc )
+void QgsAtlasComposition::readXmlMapSettings( const QDomElement& elem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   //look for stored composer map, to upgrade pre 2.1 projects
   int composerMapNo = elem.attribute( QStringLiteral( "composerMap" ), QStringLiteral( "-1" ) ).toInt();
-  QgsComposerMap * composerMap = nullptr;
+  QgsComposerMap* composerMap = nullptr;
   if ( composerMapNo != -1 )
   {
     QList<QgsComposerMap*> maps;
@@ -731,7 +731,7 @@ QgsExpressionContext QgsAtlasComposition::createExpressionContext()
 {
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                    << QgsExpressionContextUtils::projectScope();
   if ( mComposition )
     expressionContext << QgsExpressionContextUtils::compositionScope( mComposition );
 
@@ -776,7 +776,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
   return true;
 }
 
-bool QgsAtlasComposition::evalFeatureFilename( const QgsExpressionContext &context )
+bool QgsAtlasComposition::evalFeatureFilename( const QgsExpressionContext& context )
 {
   //generate filename for current atlas feature
   if ( !mFilenamePattern.isEmpty() && !mFilenameExpr.isNull() )

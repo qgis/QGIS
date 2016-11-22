@@ -37,9 +37,9 @@
 
 
 QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
-    , mRamp( ramp )
-    , mArchiveViewType( QgsCptCityBrowserModel::Selections )
+  : QDialog( parent )
+  , mRamp( ramp )
+  , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
 
@@ -61,7 +61,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
   {
     // QgsDialog dlg( this );
     // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
-    QTextEdit *edit = new QTextEdit( nullptr );
+    QTextEdit* edit = new QTextEdit( nullptr );
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
     QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
@@ -204,10 +204,10 @@ void QgsCptCityColorRampDialog::populateVariants()
 
 }
 
-void QgsCptCityColorRampDialog::on_mTreeView_clicked( const QModelIndex &index )
+void QgsCptCityColorRampDialog::on_mTreeView_clicked( const QModelIndex& index )
 {
-  const QModelIndex &sourceIndex = mTreeFilter->mapToSource( index );
-  QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
+  const QModelIndex& sourceIndex = mTreeFilter->mapToSource( index );
+  QgsCptCityDataItem* item = mModel->dataItem( sourceIndex );
   if ( ! item )
     return;
   QgsDebugMsg( QString( "item %1 clicked" ).arg( item->name() ) );
@@ -215,7 +215,7 @@ void QgsCptCityColorRampDialog::on_mTreeView_clicked( const QModelIndex &index )
   updateTreeView( item );
 }
 
-void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool resetRamp )
+void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem* item, bool resetRamp )
 {
   if ( ! item )
   {
@@ -256,9 +256,9 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   }
 }
 
-void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem * item )
+void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem* item )
 {
-  QgsCptCityColorRampItem *rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
+  QgsCptCityColorRampItem* rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
   if ( rampItem )
   {
     buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
@@ -311,7 +311,7 @@ void QgsCptCityColorRampDialog::on_pbtnLicenseDetails_pressed()
   QString path, title, copyFile, descFile;
 
   // get basic information, depending on if is color ramp or directory
-  QgsCptCityDataItem *item = mModel->dataItem( mTreeFilter->mapToSource( mTreeView->currentIndex() ) );
+  QgsCptCityDataItem* item = mModel->dataItem( mTreeFilter->mapToSource( mTreeView->currentIndex() ) );
   if ( ! item )
     return;
 
@@ -333,9 +333,9 @@ void QgsCptCityColorRampDialog::on_pbtnLicenseDetails_pressed()
 
   // prepare dialog
   QgsDialog dlg( this, 0, QDialogButtonBox::Close );
-  QVBoxLayout *layout = dlg.layout();
+  QVBoxLayout* layout = dlg.layout();
   dlg.setWindowTitle( title );
-  QTextEdit *textEdit = new QTextEdit( &dlg );
+  QTextEdit* textEdit = new QTextEdit( &dlg );
   textEdit->setReadOnly( true );
   layout->addWidget( textEdit );
 
@@ -500,7 +500,7 @@ bool QgsCptCityColorRampDialog::saveAsGradientRamp() const
   return ( result() == Accepted && cboConvertStandard->isChecked() );
 }
 
-void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
+void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem* item )
 {
   mListWidget->blockSignals( true );
   mListWidget->clear();
@@ -538,7 +538,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
 // this function is for a svg preview, available if the svg files have been processed with svgx
 // e.g. for f in `ls */*/*/*/*.svg`; do echo $f ; svgx -p -t svg $f > tmp1.svg; mv tmp1.svg $f; done
 // perhaps a future version of the cpt-city svg gradients will have them by default
-bool QgsCptCityColorRampDialog::eventFilter( QObject *obj, QEvent *event )
+bool QgsCptCityColorRampDialog::eventFilter( QObject* obj, QEvent* event )
 {
   QSize size = lblPreview->size();
 
@@ -667,7 +667,7 @@ void QgsCptCityColorRampDialog::refreshModel( const QModelIndex& index )
 {
   if ( index.isValid() )
   {
-    QgsCptCityDataItem *item = mModel->dataItem( index );
+    QgsCptCityDataItem* item = mModel->dataItem( index );
     if ( item )
     {
       QgsDebugMsg( "path = " + item->path() );
@@ -694,8 +694,8 @@ void QgsCptCityColorRampDialog::refreshModel( const QModelIndex& index )
 /// @cond PRIVATE
 
 TreeFilterProxyModel::TreeFilterProxyModel( QObject* parent, QgsCptCityBrowserModel* model )
-    : QSortFilterProxyModel( parent )
-    , mModel( model )
+  : QSortFilterProxyModel( parent )
+  , mModel( model )
 {
   setSourceModel( mModel );
 }

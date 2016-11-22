@@ -38,17 +38,17 @@
 #include <QInputDialog>
 
 QgsDualView::QgsDualView( QWidget* parent )
-    : QStackedWidget( parent )
-    , mEditorContext()
-    , mMasterModel( nullptr )
-    , mFilterModel( nullptr )
-    , mFeatureListModel( nullptr )
-    , mAttributeForm( nullptr )
-    , mHorizontalHeaderMenu( nullptr )
-    , mLayerCache( nullptr )
-    , mProgressDlg( nullptr )
-    , mFeatureSelectionManager( nullptr )
-    , mAttributeEditorScrollArea( nullptr )
+  : QStackedWidget( parent )
+  , mEditorContext()
+  , mMasterModel( nullptr )
+  , mFilterModel( nullptr )
+  , mFeatureListModel( nullptr )
+  , mAttributeForm( nullptr )
+  , mHorizontalHeaderMenu( nullptr )
+  , mLayerCache( nullptr )
+  , mProgressDlg( nullptr )
+  , mFeatureSelectionManager( nullptr )
+  , mAttributeEditorScrollArea( nullptr )
 {
   setupUi( this );
 
@@ -68,7 +68,7 @@ QgsDualView::QgsDualView( QWidget* parent )
   connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
 }
 
-void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context )
+void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request, const QgsAttributeEditorContext& context )
 {
   if ( !layer )
     return;
@@ -207,7 +207,7 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer, bool cacheGeometry )
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayerCache->layer()->dataProvider()->capabilities() ) )
   {
-    connect( mLayerCache, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
+    connect( mLayerCache, SIGNAL( progress( int, bool& ) ), this, SLOT( progress( int, bool& ) ) );
     connect( mLayerCache, SIGNAL( finished() ), this, SLOT( finished() ) );
 
     mLayerCache->setFullCache( true );
@@ -225,7 +225,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& 
   mMasterModel->setEditorContext( mEditorContext );
   mMasterModel->setExtraColumns( 1 ); // Add one extra column which we can "abuse" as an action column
 
-  connect( mMasterModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
+  connect( mMasterModel, SIGNAL( progress( int, bool& ) ), this, SLOT( progress( int, bool& ) ) );
   connect( mMasterModel, SIGNAL( finished() ), this, SLOT( finished() ) );
 
   connect( mConditionalFormatWidget, SIGNAL( rulesUpdated( QString ) ), mMasterModel, SLOT( fieldConditionalStyleChanged( QString ) ) );
@@ -245,7 +245,7 @@ void QgsDualView::on_mFeatureList_aboutToChangeEditSelection( bool& ok )
     ok = false;
 }
 
-void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
+void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature& feat )
 {
   if ( !mLayerCache->layer()->isEditable() || mAttributeForm->save() )
   {
@@ -301,8 +301,8 @@ void QgsDualView::previewExpressionBuilder()
   // Show expression builder
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayerCache->layer() );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mLayerCache->layer() );
 
   QgsExpressionBuilderDialog dlg( mLayerCache->layer(), mFeatureList->displayExpression(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based preview" ) );
@@ -376,7 +376,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
 
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
-  QAction *copyContentAction = new QAction( tr( "Copy cell content" ), this );
+  QAction* copyContentAction = new QAction( tr( "Copy cell content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
   menu->addAction( copyContentAction );
   connect( copyContentAction, SIGNAL( triggered() ), this, SLOT( copyCellContent() ) );
@@ -407,7 +407,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
   }
 
   //add actions from QgsMapLayerActionRegistry to context menu
-  QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayerCache->layer() );
+  QList<QgsMapLayerAction*> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayerCache->layer() );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
@@ -416,7 +416,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, const QModelIndex& atInd
     QList<QgsMapLayerAction*>::iterator actionIt;
     for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction(( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
+      QgsAttributeTableMapLayerAction* a = new QgsAttributeTableMapLayerAction(( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
       menu->addAction(( *actionIt )->text(), a, SLOT( execute() ) );
     }
   }
@@ -552,8 +552,8 @@ void QgsDualView::modifySort()
   QgsExpressionBuilderWidget* expressionBuilder = new QgsExpressionBuilderWidget();
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( layer );
   expressionBuilder->setExpressionContext( context );
   expressionBuilder->setLayer( layer );
   expressionBuilder->loadFieldNames();

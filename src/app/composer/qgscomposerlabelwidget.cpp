@@ -118,7 +118,7 @@ void QgsComposerLabelWidget::on_mMarginYDoubleSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &newLabelColor )
+void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor& newLabelColor )
 {
   if ( !mComposerLabel )
   {

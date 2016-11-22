@@ -21,10 +21,10 @@
 
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& settings )
-    : QgsMapRendererQImageJob( settings )
-    , mInternalJob( nullptr )
-    , mPainter( nullptr )
-    , mLabelingResults( nullptr )
+  : QgsMapRendererQImageJob( settings )
+  , mInternalJob( nullptr )
+  , mPainter( nullptr )
+  , mLabelingResults( nullptr )
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 

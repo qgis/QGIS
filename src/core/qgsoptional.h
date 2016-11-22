@@ -37,7 +37,7 @@ class CORE_EXPORT QgsOptional
      * A QgsOptional is disabled by default if default constructed.
      */
     QgsOptional()
-        : mEnabled( false )
+      : mEnabled( false )
     {
     }
 
@@ -45,8 +45,8 @@ class CORE_EXPORT QgsOptional
      * A QgsOptional is enabled by default if constructed with payload.
      */
     QgsOptional( const T& data )
-        : mEnabled( true )
-        , mData( data )
+      : mEnabled( true )
+      , mData( data )
     {
     }
 
@@ -54,8 +54,8 @@ class CORE_EXPORT QgsOptional
      * A QgsOptional constructed with enabled status and data
      */
     QgsOptional( const T& data, bool enabled )
-        : mEnabled( enabled )
-        , mData( data )
+      : mEnabled( enabled )
+      , mData( data )
     {
     }
 

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 {
   public:
     QgsAttributes()
-        : QVector<QVariant>()
+      : QVector<QVariant>()
     {}
 
     /**
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * @param size Number of attributes
      */
     QgsAttributes( int size )
-        : QVector<QVariant>( size )
+      : QVector<QVariant>( size )
     {}
 
     /**
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * @param v    Initial value
      */
     QgsAttributes( int size, const QVariant& v )
-        : QVector<QVariant>( size, v )
+      : QVector<QVariant>( size, v )
     {}
 
     /**
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * @param v Attributes to copy
      */
     QgsAttributes( const QVector<QVariant>& v )
-        : QVector<QVariant>( v )
+      : QVector<QVariant>( v )
     {}
 
     /**
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * @param v The attributes to compare
      * @return True if v is equal
      */
-    bool operator==( const QgsAttributes &v ) const
+    bool operator==( const QgsAttributes& v ) const
     {
       if ( size() != v.size() )
         return false;
@@ -115,7 +115,10 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      */
     QgsAttributeMap toMap() const;
 
-    inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
+    inline bool operator!=( const QgsAttributes& v ) const
+    {
+      return !( *this == v );
+    }
 };
 
 class QgsField;

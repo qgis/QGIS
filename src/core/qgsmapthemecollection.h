@@ -153,7 +153,10 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Returns the recorded state of a map theme.
      * @note Added in QGIS 3.0
      */
-    MapThemeRecord mapThemeState( const QString& name ) const { return mMapThemes[name]; }
+    MapThemeRecord mapThemeState( const QString& name ) const
+    {
+      return mMapThemes[name];
+    }
 
     /**
      * Returns the list of layer IDs that are visible for the specified map theme.

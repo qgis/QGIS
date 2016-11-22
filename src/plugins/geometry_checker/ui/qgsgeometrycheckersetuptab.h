@@ -31,7 +31,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerSetupTab( QgisInterface * iface, QWidget* parent = nullptr );
+    QgsGeometryCheckerSetupTab( QgisInterface* iface, QWidget* parent = nullptr );
     ~QgsGeometryCheckerSetupTab();
 
   signals:
@@ -46,7 +46,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     QMutex m_errorListMutex;
     QString mOutputDriverName;
 
-    QgsVectorLayer *getSelectedLayer();
+    QgsVectorLayer* getSelectedLayer();
 
   private slots:
     void runChecks();

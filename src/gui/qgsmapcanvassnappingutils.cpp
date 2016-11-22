@@ -21,9 +21,9 @@
 #include <QProgressDialog>
 
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
-    : QgsSnappingUtils( parent )
-    , mCanvas( canvas )
-    , mProgress( nullptr )
+  : QgsSnappingUtils( parent )
+  , mCanvas( canvas )
+  , mProgress( nullptr )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );

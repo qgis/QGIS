@@ -44,7 +44,10 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      *
      * @return Symbol type
      */
-    QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
+    QgsSymbol::SymbolType symbolType() const
+    {
+      return mSymbolType;
+    }
 
     void startRender( QgsSymbolRenderContext& context ) override;
 
@@ -64,9 +67,15 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     /**
      * Get the expression to generate this geometry.
      */
-    QString geometryExpression() const { return mExpression->expression(); }
+    QString geometryExpression() const
+    {
+      return mExpression->expression();
+    }
 
-    virtual QgsSymbol* subSymbol() override { return mSymbol; }
+    virtual QgsSymbol* subSymbol() override
+    {
+      return mSymbol;
+    }
 
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
 

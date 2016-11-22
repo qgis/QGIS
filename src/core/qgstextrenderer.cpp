@@ -59,12 +59,12 @@ QgsTextBufferSettings::QgsTextBufferSettings()
   d = new QgsTextBufferSettingsPrivate();
 }
 
-QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other )
-    : d( other.d )
+QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings& other )
+  : d( other.d )
 {
 }
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings & other )
+QgsTextBufferSettings& QgsTextBufferSettings::operator=( const QgsTextBufferSettings& other )
 {
   d = other.d;
   return *this;
@@ -110,7 +110,7 @@ QgsMapUnitScale QgsTextBufferSettings::sizeMapUnitScale() const
   return d->sizeMapUnitScale;
 }
 
-void QgsTextBufferSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextBufferSettings::setSizeMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->sizeMapUnitScale = scale;
 }
@@ -120,7 +120,7 @@ QColor QgsTextBufferSettings::color() const
   return d->color;
 }
 
-void QgsTextBufferSettings::setColor( const QColor &color )
+void QgsTextBufferSettings::setColor( const QColor& color )
 {
   d->color = color;
 }
@@ -323,13 +323,13 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings()
   d = new QgsTextBackgroundSettingsPrivate();
 }
 
-QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other )
-    : d( other.d )
+QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings& other )
+  : d( other.d )
 {
 
 }
 
-QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings & other )
+QgsTextBackgroundSettings& QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings& other )
 {
   d = other.d;
   return *this;
@@ -365,7 +365,7 @@ QString QgsTextBackgroundSettings::svgFile() const
   return d->svgFile;
 }
 
-void QgsTextBackgroundSettings::setSvgFile( const QString &file )
+void QgsTextBackgroundSettings::setSvgFile( const QString& file )
 {
   d->svgFile = file;
 }
@@ -385,7 +385,7 @@ QSizeF QgsTextBackgroundSettings::size() const
   return d->size;
 }
 
-void QgsTextBackgroundSettings::setSize( const QSizeF &size )
+void QgsTextBackgroundSettings::setSize( const QSizeF& size )
 {
   d->size = size;
 }
@@ -405,7 +405,7 @@ QgsMapUnitScale QgsTextBackgroundSettings::sizeMapUnitScale() const
   return d->sizeMapUnitScale;
 }
 
-void QgsTextBackgroundSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextBackgroundSettings::setSizeMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->sizeMapUnitScale = scale;
 }
@@ -435,7 +435,7 @@ QPointF QgsTextBackgroundSettings::offset() const
   return d->offset;
 }
 
-void QgsTextBackgroundSettings::setOffset( const QPointF &offset )
+void QgsTextBackgroundSettings::setOffset( const QPointF& offset )
 {
   d->offset = offset;
 }
@@ -455,7 +455,7 @@ QgsMapUnitScale QgsTextBackgroundSettings::offsetMapUnitScale() const
   return d->offsetMapUnitScale;
 }
 
-void QgsTextBackgroundSettings::setOffsetMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextBackgroundSettings::setOffsetMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->offsetMapUnitScale = scale;
 }
@@ -465,7 +465,7 @@ QSizeF QgsTextBackgroundSettings::radii() const
   return d->radii;
 }
 
-void QgsTextBackgroundSettings::setRadii( const QSizeF &radii )
+void QgsTextBackgroundSettings::setRadii( const QSizeF& radii )
 {
   d->radii = radii;
 }
@@ -485,7 +485,7 @@ QgsMapUnitScale QgsTextBackgroundSettings::radiiMapUnitScale() const
   return d->radiiMapUnitScale;
 }
 
-void QgsTextBackgroundSettings::setRadiiMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextBackgroundSettings::setRadiiMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->radiiMapUnitScale = scale;
 }
@@ -515,7 +515,7 @@ QColor QgsTextBackgroundSettings::fillColor() const
   return d->fillColor;
 }
 
-void QgsTextBackgroundSettings::setFillColor( const QColor &color )
+void QgsTextBackgroundSettings::setFillColor( const QColor& color )
 {
   d->fillColor = color;
 }
@@ -525,7 +525,7 @@ QColor QgsTextBackgroundSettings::borderColor() const
   return d->borderColor;
 }
 
-void QgsTextBackgroundSettings::setBorderColor( const QColor &color )
+void QgsTextBackgroundSettings::setBorderColor( const QColor& color )
 {
   d->borderColor = color;
 }
@@ -555,7 +555,7 @@ QgsMapUnitScale QgsTextBackgroundSettings::borderWidthMapUnitScale() const
   return d->borderWidthMapUnitScale;
 }
 
-void QgsTextBackgroundSettings::setBorderWidthMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextBackgroundSettings::setBorderWidthMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->borderWidthMapUnitScale = scale;
 }
@@ -872,13 +872,13 @@ QgsTextShadowSettings::QgsTextShadowSettings()
   d = new QgsTextShadowSettingsPrivate();
 }
 
-QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings &other )
-    : d( other.d )
+QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings& other )
+  : d( other.d )
 {
 
 }
 
-QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings & other )
+QgsTextShadowSettings& QgsTextShadowSettings::operator=( const QgsTextShadowSettings& other )
 {
   d = other.d;
   return *this;
@@ -944,7 +944,7 @@ QgsMapUnitScale QgsTextShadowSettings::offsetMapUnitScale() const
   return d->offsetMapUnitScale;
 }
 
-void QgsTextShadowSettings::setOffsetMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextShadowSettings::setOffsetMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->offsetMapUnitScale = scale;
 }
@@ -984,7 +984,7 @@ QgsMapUnitScale QgsTextShadowSettings::blurRadiusMapUnitScale() const
   return d->radiusMapUnitScale;
 }
 
-void QgsTextShadowSettings::setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextShadowSettings::setBlurRadiusMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->radiusMapUnitScale = scale;
 }
@@ -1024,7 +1024,7 @@ QColor QgsTextShadowSettings::color() const
   return d->color;
 }
 
-void QgsTextShadowSettings::setColor( const QColor &color )
+void QgsTextShadowSettings::setColor( const QColor& color )
 {
   d->color = color;
 }
@@ -1214,23 +1214,23 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument& doc ) const
 //
 
 QgsTextFormat::QgsTextFormat()
-    : mTextFontFound( true )
+  : mTextFontFound( true )
 {
   d = new QgsTextSettingsPrivate();
 }
 
-QgsTextFormat::QgsTextFormat( const QgsTextFormat &other )
-    : mBufferSettings( other.mBufferSettings )
-    , mBackgroundSettings( other.mBackgroundSettings )
-    , mShadowSettings( other.mShadowSettings )
-    , mTextFontFamily( other.mTextFontFamily )
-    , mTextFontFound( other.mTextFontFound )
-    , d( other.d )
+QgsTextFormat::QgsTextFormat( const QgsTextFormat& other )
+  : mBufferSettings( other.mBufferSettings )
+  , mBackgroundSettings( other.mBackgroundSettings )
+  , mShadowSettings( other.mShadowSettings )
+  , mTextFontFamily( other.mTextFontFamily )
+  , mTextFontFound( other.mTextFontFound )
+  , d( other.d )
 {
 
 }
 
-QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat & other )
+QgsTextFormat& QgsTextFormat::operator=( const QgsTextFormat& other )
 {
   d = other.d;
   mBufferSettings = other.mBufferSettings;
@@ -1260,7 +1260,7 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext& context ) const
   return font;
 }
 
-void QgsTextFormat::setFont( const QFont &font )
+void QgsTextFormat::setFont( const QFont& font )
 {
   d->textFont = font;
 }
@@ -1274,7 +1274,7 @@ QString QgsTextFormat::namedStyle() const
   return db.styleString( d->textFont );
 }
 
-void QgsTextFormat::setNamedStyle( const QString &style )
+void QgsTextFormat::setNamedStyle( const QString& style )
 {
   QgsFontUtils::updateFontViaStyle( d->textFont, style );
   d->textNamedStyle = style;
@@ -1295,7 +1295,7 @@ QgsMapUnitScale QgsTextFormat::sizeMapUnitScale() const
   return d->fontSizeMapUnitScale;
 }
 
-void QgsTextFormat::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+void QgsTextFormat::setSizeMapUnitScale( const QgsMapUnitScale& scale )
 {
   d->fontSizeMapUnitScale = scale;
 }
@@ -1315,7 +1315,7 @@ QColor QgsTextFormat::color() const
   return d->textColor;
 }
 
-void QgsTextFormat::setColor( const QColor &color )
+void QgsTextFormat::setColor( const QColor& color )
 {
   d->textColor = color;
 }
@@ -1881,7 +1881,7 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRender
   p->restore();
 }
 
-double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList &textLines, QFontMetricsF* fm )
+double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, QFontMetricsF* fm )
 {
   //calculate max width of text lines
   QScopedPointer< QFontMetricsF > newFm;
@@ -2433,7 +2433,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
                                         const QgsTextFormat& format,
                                         const Component& component,
                                         const QStringList& textLines,
-                                        const QFontMetricsF *fontMetrics,
+                                        const QFontMetricsF* fontMetrics,
                                         HAlignment alignment,
                                         bool drawAsOutlines
                                         , DrawMode mode )

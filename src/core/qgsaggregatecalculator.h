@@ -103,23 +103,35 @@ class CORE_EXPORT QgsAggregateCalculator
      * @param filterExpression expression for filtering features, or empty string to remove filter
      * @see filter()
      */
-    void setFilter( const QString& filterExpression ) { mFilterExpression = filterExpression; }
+    void setFilter( const QString& filterExpression )
+    {
+      mFilterExpression = filterExpression;
+    }
 
     /** Returns the filter which limits the features used during the aggregate calculation.
      * @see setFilter()
      */
-    QString filter() const { return mFilterExpression; }
+    QString filter() const
+    {
+      return mFilterExpression;
+    }
 
     /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
      * @param delimiter string delimiter
      * @see delimiter()
      */
-    void setDelimiter( const QString& delimiter ) { mDelimiter = delimiter; }
+    void setDelimiter( const QString& delimiter )
+    {
+      mDelimiter = delimiter;
+    }
 
     /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
      * @see setDelimiter()
      */
-    QString delimiter() const { return mDelimiter; }
+    QString delimiter() const
+    {
+      return mDelimiter;
+    }
 
     /** Calculates the value of an aggregate.
      * @param aggregate aggregate to calculate

@@ -18,8 +18,8 @@
 #include <QStringList>
 
 QgsAttributeTableConfig::QgsAttributeTableConfig()
-    : mActionWidgetStyle( DropDown )
-    , mSortOrder( Qt::AscendingOrder )
+  : mActionWidgetStyle( DropDown )
+  , mSortOrder( Qt::AscendingOrder )
 {
 
 }

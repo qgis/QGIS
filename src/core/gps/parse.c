@@ -79,7 +79,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int _nmea_parse_time( const char *buff, int buff_sz, nmeaTIME *res )
+int _nmea_parse_time( const char* buff, int buff_sz, nmeaTIME* res )
 {
   int success = 0;
 
@@ -124,9 +124,9 @@ int _nmea_parse_time( const char *buff, int buff_sz, nmeaTIME *res )
  * @return The defined packet type
  * @see nmeaPACKTYPE
  */
-int nmea_pack_type( const char *buff, int buff_sz )
+int nmea_pack_type( const char* buff, int buff_sz )
 {
-  static const char *pheads[] =
+  static const char* pheads[] =
   {
     "GPGGA",
     "GPGSA",
@@ -163,11 +163,11 @@ int nmea_pack_type( const char *buff, int buff_sz )
  * @param res_crc a integer pointer for return CRC of packet (must be defined).
  * @return Number of bytes to packet tail.
  */
-int nmea_find_tail( const char *buff, int buff_sz, int *res_crc )
+int nmea_find_tail( const char* buff, int buff_sz, int* res_crc )
 {
   static const int tail_sz = 3 /* *[CRC] */ + 2 /* \r\n */;
 
-  const char *end_buff = buff + buff_sz;
+  const char* end_buff = buff + buff_sz;
   int nread = 0;
   int crc = 0;
 
@@ -214,7 +214,7 @@ int nmea_find_tail( const char *buff, int buff_sz, int *res_crc )
  * @param pack a pointer of packet which will filled by function.
  * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
  */
-int nmea_parse_GPGGA( const char *buff, int buff_sz, nmeaGPGGA *pack )
+int nmea_parse_GPGGA( const char* buff, int buff_sz, nmeaGPGGA* pack )
 {
   char time_buff[NMEA_TIMEPARSE_BUF];
 
@@ -251,7 +251,7 @@ int nmea_parse_GPGGA( const char *buff, int buff_sz, nmeaGPGGA *pack )
  * @param pack a pointer of packet which will filled by function.
  * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
  */
-int nmea_parse_GPGSA( const char *buff, int buff_sz, nmeaGPGSA *pack )
+int nmea_parse_GPGSA( const char* buff, int buff_sz, nmeaGPGSA* pack )
 {
   NMEA_ASSERT( buff && pack );
 
@@ -280,7 +280,7 @@ int nmea_parse_GPGSA( const char *buff, int buff_sz, nmeaGPGSA *pack )
  * @param pack a pointer of packet which will filled by function.
  * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
  */
-int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
+int nmea_parse_GPGSV( const char* buff, int buff_sz, nmeaGPGSV* pack )
 {
   int nsen, nsat;
 
@@ -322,7 +322,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
  * @param pack a pointer of packet which will filled by function.
  * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
  */
-int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
+int nmea_parse_GPRMC( const char* buff, int buff_sz, nmeaGPRMC* pack )
 {
   int nsen;
   char type;
@@ -374,7 +374,7 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
  * @param pack a pointer of packet which will filled by function.
  * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
  */
-int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
+int nmea_parse_GPVTG( const char* buff, int buff_sz, nmeaGPVTG* pack )
 {
   NMEA_ASSERT( buff && pack );
 
@@ -410,7 +410,7 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
  */
-void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info )
+void nmea_GPGGA2info( nmeaGPGGA* pack, nmeaINFO* info )
 {
   NMEA_ASSERT( pack && info );
 
@@ -431,7 +431,7 @@ void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info )
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
  */
-void nmea_GPGSA2info( nmeaGPGSA *pack, nmeaINFO *info )
+void nmea_GPGSA2info( nmeaGPGSA* pack, nmeaINFO* info )
 {
   int i, j, nuse = 0;
 
@@ -463,7 +463,7 @@ void nmea_GPGSA2info( nmeaGPGSA *pack, nmeaINFO *info )
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
  */
-void nmea_GPGSV2info( nmeaGPGSV *pack, nmeaINFO *info )
+void nmea_GPGSV2info( nmeaGPGSV* pack, nmeaINFO* info )
 {
   int isat, isi, nsat;
 
@@ -498,7 +498,7 @@ void nmea_GPGSV2info( nmeaGPGSV *pack, nmeaINFO *info )
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
  */
-void nmea_GPRMC2info( nmeaGPRMC *pack, nmeaINFO *info )
+void nmea_GPRMC2info( nmeaGPRMC* pack, nmeaINFO* info )
 {
   NMEA_ASSERT( pack && info );
 
@@ -528,7 +528,7 @@ void nmea_GPRMC2info( nmeaGPRMC *pack, nmeaINFO *info )
  * @param pack a pointer of packet structure.
  * @param info a pointer of summary information structure.
  */
-void nmea_GPVTG2info( nmeaGPVTG *pack, nmeaINFO *info )
+void nmea_GPVTG2info( nmeaGPVTG* pack, nmeaINFO* info )
 {
   NMEA_ASSERT( pack && info );
 

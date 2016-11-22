@@ -25,8 +25,8 @@ class QgsComposerItem;
   * Input widget for QgsAtlasComposition
   */
 class QgsAtlasCompositionWidget:
-      public QWidget,
-      private Ui::QgsAtlasCompositionWidgetBase
+  public QWidget,
+  private Ui::QgsAtlasCompositionWidgetBase
 {
     Q_OBJECT
   public:
@@ -58,5 +58,5 @@ class QgsAtlasCompositionWidget:
     QgsComposition* mComposition;
 
     void blockAllSignals( bool b );
-    void checkLayerType( QgsVectorLayer *layer );
+    void checkLayerType( QgsVectorLayer* layer );
 };

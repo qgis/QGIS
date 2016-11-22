@@ -39,13 +39,13 @@
 
 QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
     const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
-    : mFormulaString( formulaString )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mOutputRectangle( outputExtent )
-    , mNumOutputColumns( nOutputColumns )
-    , mNumOutputRows( nOutputRows )
-    , mRasterEntries( rasterEntries )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
 {
   //default to first layer's crs
   mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
@@ -53,14 +53,14 @@ QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QS
 
 QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
     const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
-    : mFormulaString( formulaString )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mOutputRectangle( outputExtent )
-    , mOutputCrs( outputCrs )
-    , mNumOutputColumns( nOutputColumns )
-    , mNumOutputRows( nOutputRows )
-    , mRasterEntries( rasterEntries )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mOutputCrs( outputCrs )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
 {
 }
 
@@ -189,14 +189,14 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 }
 
 QgsRasterCalculator::QgsRasterCalculator()
-    : mNumOutputColumns( 0 )
-    , mNumOutputRows( 0 )
+  : mNumOutputColumns( 0 )
+  , mNumOutputRows( 0 )
 {
 }
 
 GDALDriverH QgsRasterCalculator::openOutputDriver()
 {
-  char **driverMetadata;
+  char** driverMetadata;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
@@ -218,7 +218,7 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
 GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
-  char **papszOptions = nullptr;
+  char** papszOptions = nullptr;
   GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
   if ( !outputDataset )
   {

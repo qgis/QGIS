@@ -27,22 +27,22 @@
 
 /// @cond PRIVATE
 CustomActionRegistry::CustomActionRegistry( QObject* parent )
-    : QgsMapLayerActionRegistry( parent )
+  : QgsMapLayerActionRegistry( parent )
 {
 }
 ///@endcond
 
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas* canvas )
-    : QMenu( canvas )
-    , mCanvas( canvas )
-    , mAllowMultipleReturn( true )
-    , mExecWithSingleResult( false )
-    , mShowFeatureActions( false )
-    , mResultsIfExternalAction( false )
-    , mMaxLayerDisplay( 10 )
-    , mMaxFeatureDisplay( 10 )
-    , mDefaultActionName( tr( "Identify" ) )
-    , mCustomActionRegistry( CustomActionRegistry::instance() )
+  : QMenu( canvas )
+  , mCanvas( canvas )
+  , mAllowMultipleReturn( true )
+  , mExecWithSingleResult( false )
+  , mShowFeatureActions( false )
+  , mResultsIfExternalAction( false )
+  , mMaxLayerDisplay( 10 )
+  , mMaxFeatureDisplay( 10 )
+  , mDefaultActionName( tr( "Identify" ) )
+  , mCustomActionRegistry( CustomActionRegistry::instance() )
 {
 }
 
@@ -92,7 +92,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   // sort results by layer
   Q_FOREACH ( const QgsMapToolIdentify::IdentifyResult& result, idResults )
   {
-    QgsMapLayer *layer = result.mLayer;
+    QgsMapLayer* layer = result.mLayer;
     if ( mLayerIdResults.contains( layer ) )
     {
       mLayerIdResults[layer].append( result );
@@ -494,7 +494,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
 }
 
 
-QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction* action, bool &externalAction )
+QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction* action, bool& externalAction )
 {
   QList<QgsMapToolIdentify::IdentifyResult> idResults = QList<QgsMapToolIdentify::IdentifyResult>();
 
@@ -600,7 +600,7 @@ void QgsIdentifyMenu::handleMenuHover()
     if ( !vl )
       continue;
 
-    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
+    QgsHighlight* hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
     QSettings settings;
     QColor color = QColor( settings.value( QStringLiteral( "/Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     int alpha = settings.value( QStringLiteral( "/Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();

@@ -32,8 +32,8 @@
 #include <QDialogButtonBox>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget* parent, Qt::WindowFlags f ):
+  QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
   fillHaliComboBox();
@@ -53,7 +53,7 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
   qDeleteAll( mDataDefinedProperties );
 }
 
-void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
+void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton* button )
 {
   if ( buttonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
@@ -215,7 +215,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mRotationSpinBox->blockSignals( block );
 }
 
-void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer )
+void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings& layerSettings, QgsVectorLayer* vlayer )
 {
   //loop through data defined properties and set all the GUI widget values. We can do this
   //even if the data defined property is set to an expression, as it's useful to show
@@ -223,10 +223,10 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( vlayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+          << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
   QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator propIt = mDataDefinedProperties.constBegin();
@@ -425,7 +425,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
       case QgsPalLayerSettings::Rotation:
         mRotationSpinBox->setEnabled( true );
         break;
-        //font related properties
+      //font related properties
       case QgsPalLayerSettings::Family:
         mFontFamilyCmbBx->setEnabled( true );
         break;
@@ -477,7 +477,7 @@ void QgsLabelPropertyDialog::updateFont( const QFont& font, bool block )
 void QgsLabelPropertyDialog::populateFontStyleComboBox()
 {
   mFontStyleCmbBx->clear();
-  Q_FOREACH ( const QString &style, mFontDB.styles( mLabelFont.family() ) )
+  Q_FOREACH ( const QString& style, mFontDB.styles( mLabelFont.family() ) )
   {
     mFontStyleCmbBx->addItem( style );
   }
@@ -568,7 +568,7 @@ void QgsLabelPropertyDialog::on_mFontFamilyCmbBx_currentFontChanged( const QFont
   insertChangedValue( QgsPalLayerSettings::Family, f.family() );
 }
 
-void QgsLabelPropertyDialog::on_mFontStyleCmbBx_currentIndexChanged( const QString & text )
+void QgsLabelPropertyDialog::on_mFontStyleCmbBx_currentIndexChanged( const QString& text )
 {
   QgsFontUtils::updateFontViaStyle( mLabelFont, text );
   updateFont( mLabelFont );
@@ -636,12 +636,12 @@ void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::Rotation, rotation );
 }
 
-void QgsLabelPropertyDialog::on_mFontColorButton_colorChanged( const QColor &color )
+void QgsLabelPropertyDialog::on_mFontColorButton_colorChanged( const QColor& color )
 {
   insertChangedValue( QgsPalLayerSettings::Color, color.name() );
 }
 
-void QgsLabelPropertyDialog::on_mBufferColorButton_colorChanged( const QColor &color )
+void QgsLabelPropertyDialog::on_mBufferColorButton_colorChanged( const QColor& color )
 {
   insertChangedValue( QgsPalLayerSettings::BufferColor, color.name() );
 }

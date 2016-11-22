@@ -63,7 +63,7 @@ typedef SInt32 SRefCon;
 
 /** Print usage text
  */
-void usage( std::string const & appName )
+void usage( std::string const& appName )
 {
   std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
@@ -110,7 +110,7 @@ static QString myProjectFileName = QLatin1String( "" );
 // This is the 'leftover' arguments collection
 static QStringList myFileList;
 
-int main( int argc, char *argv[] )
+int main( int argc, char* argv[] )
 {
 #ifdef Q_OS_WIN  // Windows
 #ifdef _MSC_VER
@@ -375,7 +375,7 @@ int main( int argc, char *argv[] )
   // so that this program may be run with old libraries
   //QgsApplication myApp( argc, argv, false, configpath );
 
-  QCoreApplication *myApp;
+  QCoreApplication* myApp;
 
 #if VERSION_INT >= 10900
   myApp = new QgsApplication( argc, argv, false );
@@ -413,8 +413,8 @@ int main( int argc, char *argv[] )
     QStringList gdalShares;
     QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-    << appResources.append( "/share/gdal" )
-    << appResources.append( "/gdal" );
+               << appResources.append( "/share/gdal" )
+               << appResources.append( "/gdal" );
     Q_FOREACH ( const QString& gdalShare, gdalShares )
     {
       if ( QFile::exists( gdalShare ) )
@@ -440,7 +440,7 @@ int main( int argc, char *argv[] )
   //qDebug("Adding qt image plugins to plugin search path...");
   CFURLRef myBundleRef = CFBundleCopyBundleURL( CFBundleGetMainBundle() );
   CFStringRef myMacPath = CFURLCopyFileSystemPath( myBundleRef, kCFURLPOSIXPathStyle );
-  const char *mypPathPtr = CFStringGetCStringPtr( myMacPath, CFStringGetSystemEncoding() );
+  const char* mypPathPtr = CFStringGetCStringPtr( myMacPath, CFStringGetSystemEncoding() );
   CFRelease( myBundleRef );
   CFRelease( myMacPath );
   QString myPath( mypPathPtr );
@@ -461,7 +461,7 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-  QgsBench *qbench = new QgsBench( mySnapshotWidth, mySnapshotHeight, myIterations );
+  QgsBench* qbench = new QgsBench( mySnapshotWidth, mySnapshotHeight, myIterations );
 
   /////////////////////////////////////////////////////////////////////
   // If no --project was specified, parse the args to look for a     //

@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
      * @param showUtilities Whether to show the widget's utilities button
      * @param relayMessages Whether to relay auth manager messages to internal message bar
      */
-    explicit QgsAuthConfigEditor( QWidget *parent = nullptr, bool showUtilities = true, bool relayMessages = true );
+    explicit QgsAuthConfigEditor( QWidget* parent = nullptr, bool showUtilities = true, bool relayMessages = true );
     ~QgsAuthConfigEditor();
 
     //! Hide the widget's title, e.g. when embedding
@@ -92,23 +92,23 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
 
   private:
     bool mRelayMessages;
-    QgsMessageBar * messageBar();
+    QgsMessageBar* messageBar();
     int messageTimeout();
     QString selectedConfigId();
 
-    QSqlTableModel *mConfigModel;
+    QSqlTableModel* mConfigModel;
 
-    QMenu *mAuthUtilitiesMenu;
-    QAction *mActionSetMasterPassword;
-    QAction *mActionClearCachedMasterPassword;
-    QAction *mActionResetMasterPassword;
-    QAction *mActionClearCachedAuthConfigs;
-    QAction *mActionRemoveAuthConfigs;
-    QAction *mActionEraseAuthDatabase;
+    QMenu* mAuthUtilitiesMenu;
+    QAction* mActionSetMasterPassword;
+    QAction* mActionClearCachedMasterPassword;
+    QAction* mActionResetMasterPassword;
+    QAction* mActionClearCachedAuthConfigs;
+    QAction* mActionRemoveAuthConfigs;
+    QAction* mActionEraseAuthDatabase;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 #endif // QGSAUTHCONFIGEDITOR_H

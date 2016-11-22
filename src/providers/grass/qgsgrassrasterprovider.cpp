@@ -43,14 +43,14 @@
 
 // Do not use warning dialogs, providers are also created on threads (rendering) where dialogs connot be used (constructing QPixmap icon)
 
-QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
-    : QgsRasterDataProvider( uri )
-    , mValid( false )
-    , mGrassDataType( 0 )
-    , mCols( 0 )
-    , mRows( 0 )
-    , mYBlockSize( 0 )
-    , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
+QgsGrassRasterProvider::QgsGrassRasterProvider( QString const& uri )
+  : QgsRasterDataProvider( uri )
+  , mValid( false )
+  , mGrassDataType( 0 )
+  , mCols( 0 )
+  , mRows( 0 )
+  , mYBlockSize( 0 )
+  , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
 
@@ -171,21 +171,21 @@ QgsGrassRasterProvider::~QgsGrassRasterProvider()
   QgsDebugMsg( "QgsGrassRasterProvider: deconstructing." );
 }
 
-QgsRasterInterface * QgsGrassRasterProvider::clone() const
+QgsRasterInterface* QgsGrassRasterProvider::clone() const
 {
-  QgsGrassRasterProvider * provider = new QgsGrassRasterProvider( dataSourceUri() );
+  QgsGrassRasterProvider* provider = new QgsGrassRasterProvider( dataSourceUri() );
   provider->copyBaseSettings( *this );
   return provider;
 }
 
-QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
+QImage* QgsGrassRasterProvider::draw( QgsRectangle  const& viewExtent, int pixelWidth, int pixelHeight )
 {
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
   clearLastError();
 
-  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
+  QImage* image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   image->fill( QColor( Qt::gray ).rgb() );
 
   QStringList arguments;
@@ -203,7 +203,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   {
     data = QgsGrass::runModule( mGisdbase, mLocation, mMapset, cmd, arguments );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QString error = tr( "Cannot draw raster" ) + " : " + e.what();
     QgsDebugMsg( error );
@@ -212,7 +212,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
     return image;
   }
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
-  uchar * ptr = image->bits();
+  uchar* ptr = image->bits();
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
   int size = pixelWidth * pixelHeight * 4 < data.size() ? pixelWidth * pixelHeight * 4 : data.size();
@@ -222,7 +222,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
 }
 
 
-void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
+void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void* block )
 {
   Q_UNUSED( xBlock );
   clearLastError();
@@ -256,7 +256,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   {
     data = QgsGrass::runModule( mGisdbase, mLocation, mMapset, cmd, arguments );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QString error = tr( "Cannot read raster" ) + " : " + e.what();
     QgsDebugMsg( error );
@@ -278,7 +278,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   memcpy( block, data.data(), size );
 }
 
-void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback* feedback )
+void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const& viewExtent, int pixelWidth, int pixelHeight, void* block, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( feedback );
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
@@ -305,7 +305,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   {
     data = QgsGrass::runModule( mGisdbase, mLocation, mMapset, cmd, arguments );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QString error = tr( "Cannot read raster" ) + " : " + e.what();
     QgsDebugMsg( error );
@@ -328,7 +328,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   memcpy( block, data.data(), size );
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle& theExtent, int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
   QgsRasterBandStats myRasterBandStats;
@@ -445,7 +445,10 @@ QgsRectangle QgsGrassRasterProvider::extent() const
 }
 
 // this is only called once when statistics are calculated
-int QgsGrassRasterProvider::xBlockSize() const { return mCols; }
+int QgsGrassRasterProvider::xBlockSize() const
+{
+  return mCols;
+}
 int QgsGrassRasterProvider::yBlockSize() const
 {
   return mYBlockSize;
@@ -453,10 +456,16 @@ int QgsGrassRasterProvider::yBlockSize() const
 
 // TODO this should be always refreshed if raster has changed ?
 // maybe also only for stats
-int QgsGrassRasterProvider::xSize() const { return mCols; }
-int QgsGrassRasterProvider::ySize() const { return mRows; }
+int QgsGrassRasterProvider::xSize() const
+{
+  return mCols;
+}
+int QgsGrassRasterProvider::ySize() const
+{
+  return mRows;
+}
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight, int /*theDpi*/ )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint& thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle& theExtent, int theWidth, int theHeight, int /*theDpi*/ )
 {
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
@@ -650,7 +659,7 @@ void QgsGrassRasterProvider::thaw()
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
 
 QgsGrassRasterValue::QgsGrassRasterValue()
-    : mProcess( 0 )
+  : mProcess( 0 )
 {
 }
 
@@ -659,7 +668,7 @@ QgsGrassRasterValue::~QgsGrassRasterValue()
   stop();
 }
 
-void QgsGrassRasterValue::set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map )
+void QgsGrassRasterValue::set( const QString& gisdbase, const QString& location, const QString& mapset, const QString& map )
 {
   mGisdbase = gisdbase;
   mLocation = location;
@@ -683,7 +692,7 @@ void QgsGrassRasterValue::start()
   {
     mProcess = QgsGrass::startModule( mGisdbase, mLocation, mMapset, module, arguments, mGisrcFile );
   }
-  catch ( QgsGrass::Exception &e )
+  catch ( QgsGrass::Exception& e )
   {
     QString error = e.what();
     Q_UNUSED( error )
@@ -704,7 +713,7 @@ void QgsGrassRasterValue::stop()
   }
 }
 
-double QgsGrassRasterValue::value( double x, double y, bool *ok )
+double QgsGrassRasterValue::value( double x, double y, bool* ok )
 {
   *ok = false;
   double value = std::numeric_limits<double>::quiet_NaN();

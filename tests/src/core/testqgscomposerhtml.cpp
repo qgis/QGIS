@@ -51,15 +51,15 @@ class TestQgsComposerHtml : public QObject
     void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
 
   private:
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
+    QgsComposition* mComposition;
+    QgsMapSettings* mMapSettings;
     QString mReport;
     QFont mTestFont;
 };
 
 TestQgsComposerHtml::TestQgsComposerHtml()
-    : mComposition( 0 )
-    , mMapSettings( 0 )
+  : mComposition( 0 )
+  , mMapSettings( 0 )
 {
 
 }
@@ -281,7 +281,7 @@ void TestQgsComposerHtml::javascriptSetFeature()
   f3.setAttributes( QgsAttributes() << "foobar" << 124 <<  554 );
   QVERIFY( pr->addFeatures( QgsFeatureList() << f1 <<  f2 <<  f3 ) );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << childLayer << parentLayer );
 
   //atlas
   mComposition->atlasComposition().setCoverageLayer( parentLayer );
@@ -321,7 +321,7 @@ void TestQgsComposerHtml::javascriptSetFeature()
   delete htmlItem;
   QVERIFY( result );
 
-  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
+  QgsMapLayerRegistry::instance()->removeMapLayers( QList<QgsMapLayer*>() << childLayer << parentLayer );
 }
 
 

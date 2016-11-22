@@ -19,7 +19,7 @@
 
 
 QgsVertexMarker::QgsVertexMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mIconSize = 10;
   mIconType = ICON_X;

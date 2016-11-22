@@ -71,7 +71,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     double mSymbolRotation;
 
     //! Create item with the point symbol for a specific feature. This will be used to show the offset to the user.
-    void createPreviewItem( QgsMarkerSymbol *markerSymbol );
+    void createPreviewItem( QgsMarkerSymbol* markerSymbol );
 
     //! Calculates the new values for offset attributes, respecting the symbol's offset units
     //! @note start and end point are in map units

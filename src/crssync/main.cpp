@@ -26,7 +26,7 @@
 
 #include <cpl_error.h>
 
-void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
+void CPL_STDCALL showError( CPLErr errClass, int errNo, const char* msg )
 {
   Q_UNUSED( errClass );
   QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
@@ -36,7 +36,7 @@ void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
   }
 }
 
-int main( int argc, char ** argv )
+int main( int argc, char** argv )
 {
   QCoreApplication app( argc, argv );
 

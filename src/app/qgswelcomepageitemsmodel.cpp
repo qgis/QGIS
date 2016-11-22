@@ -25,13 +25,13 @@
 #include <QPainter>
 #include <QTextDocument>
 
-QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject * parent )
-    : QStyledItemDelegate( parent )
+QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject* parent )
+  : QStyledItemDelegate( parent )
 {
 
 }
 
-void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex &index ) const
+void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   painter->save();
 
@@ -47,7 +47,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
     color = QColor( 255, 255, 255, 60 );
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
 
-    QStyle *style = QApplication::style();
+    QStyle* style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else if ( option.state & QStyle::State_Enabled )
@@ -55,7 +55,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
     color = QColor( 100, 100, 100, 30 );
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
 
-    QStyle *style = QApplication::style();
+    QStyle* style = QApplication::style();
     style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, nullptr );
   }
   else
@@ -90,7 +90,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   painter->restore();
 }
 
-QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   QTextDocument doc;
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -118,7 +118,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
 }
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
-    : QAbstractListModel( parent )
+  : QAbstractListModel( parent )
 {
 
 }

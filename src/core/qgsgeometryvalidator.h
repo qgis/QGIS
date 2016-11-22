@@ -28,14 +28,14 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
 
   public:
     //! Constructor
-    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = nullptr );
+    QgsGeometryValidator( const QgsGeometry* g, QList<QgsGeometry::Error>* errors = nullptr );
     ~QgsGeometryValidator();
 
     void run() override;
     void stop();
 
     //! Validate geometry and produce a list of geometry errors
-    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
+    static void validateGeometry( const QgsGeometry* g, QList<QgsGeometry::Error>& errors );
 
   signals:
     void errorFound( const QgsGeometry::Error& );
@@ -45,15 +45,15 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
 
   private:
     void validatePolyline( int i, QgsPolyline polyline, bool ring = false );
-    void validatePolygon( int i, const QgsPolygon &polygon );
-    void checkRingIntersections( int p0, int i0, const QgsPolyline &ring0, int p1, int i1, const QgsPolyline &ring1 );
+    void validatePolygon( int i, const QgsPolygon& polygon );
+    void checkRingIntersections( int p0, int i0, const QgsPolyline& ring0, int p1, int i1, const QgsPolyline& ring1 );
     double distLine2Point( const QgsPoint& p, QgsVector v, const QgsPoint& q );
-    bool intersectLines( const QgsPoint& p, QgsVector v, const QgsPoint& q, QgsVector w, QgsPoint &s );
-    bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside );
-    bool pointInRing( const QgsPolyline &ring, const QgsPoint &p );
+    bool intersectLines( const QgsPoint& p, QgsVector v, const QgsPoint& q, QgsVector w, QgsPoint& s );
+    bool ringInRing( const QgsPolyline& inside, const QgsPolyline& outside );
+    bool pointInRing( const QgsPolyline& ring, const QgsPoint& p );
 
     QgsGeometry mG;
-    QList<QgsGeometry::Error> *mErrors;
+    QList<QgsGeometry::Error>* mErrors;
     bool mStop;
     int mErrorCount;
 }; // class QgsGeometryValidator

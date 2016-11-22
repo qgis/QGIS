@@ -20,13 +20,13 @@
 #include "qgsexpressionsorter.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
-    : mRequest( request )
-    , mClosed( false )
-    , mZombie( false )
-    , refs( 0 )
-    , mFetchedCount( 0 )
-    , mCompileStatus( NoCompilation )
-    , mUseCachedFeatures( false )
+  : mRequest( request )
+  , mClosed( false )
+  , mZombie( false )
+  , refs( 0 )
+  , mFetchedCount( 0 )
+  , mCompileStatus( NoCompilation )
+  , mUseCachedFeatures( false )
 {
 }
 
@@ -196,7 +196,7 @@ void QgsAbstractFeatureIterator::setInterruptionChecker( QgsInterruptionChecker*
 
 ///////
 
-QgsFeatureIterator& QgsFeatureIterator::operator=( const QgsFeatureIterator & other )
+QgsFeatureIterator& QgsFeatureIterator::operator=( const QgsFeatureIterator& other )
 {
   if ( this != &other )
   {

@@ -33,9 +33,9 @@
 #include <ogr_srs_api.h>
 
 #ifdef DEBUG
-typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
+typedef struct OGRSpatialReferenceHS* OGRSpatialReferenceH;
 #else
-typedef void *OGRSpatialReferenceH;
+typedef void* OGRSpatialReferenceH;
 #endif
 
 class QgsCoordinateReferenceSystemPrivate : public QSharedData
@@ -43,34 +43,34 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateReferenceSystemPrivate()
-        : mSrsId( 0 )
-        , mIsGeographic( false )
-        , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
-        , mSRID( 0 )
-        , mIsValid( 0 )
-        , mCRS( OSRNewSpatialReference( nullptr ) )
-        , mAxisInvertedDirty( false )
-        , mAxisInverted( false )
+      : mSrsId( 0 )
+      , mIsGeographic( false )
+      , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
+      , mSRID( 0 )
+      , mIsValid( 0 )
+      , mCRS( OSRNewSpatialReference( nullptr ) )
+      , mAxisInvertedDirty( false )
+      , mAxisInverted( false )
     {
     }
 
     QgsCoordinateReferenceSystemPrivate( const QgsCoordinateReferenceSystemPrivate& other )
-        : QSharedData( other )
-        , mSrsId( other.mSrsId )
-        , mDescription( other.mDescription )
-        , mProjectionAcronym( other.mProjectionAcronym )
-        , mEllipsoidAcronym( other.mEllipsoidAcronym )
-        , mIsGeographic( other.mIsGeographic )
-        , mMapUnits( other.mMapUnits )
-        , mSRID( other.mSRID )
-        , mAuthId( other.mAuthId )
-        , mIsValid( other.mIsValid )
-        , mCRS( OSRNewSpatialReference( nullptr ) )
-        , mValidationHint( other.mValidationHint )
-        , mWkt( other.mWkt )
-        , mProj4( other.mProj4 )
-        , mAxisInvertedDirty( other.mAxisInvertedDirty )
-        , mAxisInverted( other.mAxisInverted )
+      : QSharedData( other )
+      , mSrsId( other.mSrsId )
+      , mDescription( other.mDescription )
+      , mProjectionAcronym( other.mProjectionAcronym )
+      , mEllipsoidAcronym( other.mEllipsoidAcronym )
+      , mIsGeographic( other.mIsGeographic )
+      , mMapUnits( other.mMapUnits )
+      , mSRID( other.mSRID )
+      , mAuthId( other.mAuthId )
+      , mIsValid( other.mIsValid )
+      , mCRS( OSRNewSpatialReference( nullptr ) )
+      , mValidationHint( other.mValidationHint )
+      , mWkt( other.mWkt )
+      , mProj4( other.mProj4 )
+      , mAxisInvertedDirty( other.mAxisInvertedDirty )
+      , mAxisInverted( other.mAxisInverted )
     {
       if ( mIsValid )
       {

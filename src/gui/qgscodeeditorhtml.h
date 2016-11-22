@@ -30,7 +30,7 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorHTML( QWidget *parent = nullptr );
+    QgsCodeEditorHTML( QWidget* parent = nullptr );
     ~QgsCodeEditorHTML();
 
   private:

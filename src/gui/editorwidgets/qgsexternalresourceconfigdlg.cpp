@@ -23,7 +23,7 @@
 class QgsExternalResourceWidgetWrapper;
 
 QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -40,7 +40,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   connect( mRootPathButton, SIGNAL( clicked() ), this, SLOT( chooseDefaultPath() ) );
 
   // Activate Relative Default Path option only if Default Path is set
-  connect( mRootPath, SIGNAL( textChanged( const QString & ) ), this, SLOT( enableRelativeDefault() ) );
+  connect( mRootPath, SIGNAL( textChanged( const QString& ) ), this, SLOT( enableRelativeDefault() ) );
 
   // Dynamic GroupBox for relative paths option
   connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( enableRelative( bool ) ) );

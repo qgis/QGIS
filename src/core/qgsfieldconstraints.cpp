@@ -18,7 +18,7 @@
 
 
 QgsFieldConstraints::QgsFieldConstraints()
-    : mConstraints( 0 )
+  : mConstraints( 0 )
 {}
 
 QgsFieldConstraints::ConstraintOrigin QgsFieldConstraints::constraintOrigin( QgsFieldConstraints::Constraint constraint ) const

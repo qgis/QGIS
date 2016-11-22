@@ -38,25 +38,25 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                               const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+                               const QString& dataprovider = QString() ) override;
 
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-                                   const QString &dataprovider = QString() ) override;
+    bool updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+                                   const QString& dataprovider = QString() ) override;
 
-    void clearCachedConfig( const QString &authcfg ) override;
+    void clearCachedConfig( const QString& authcfg ) override;
 
-    void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
+    void updateMethodConfig( QgsAuthMethodConfig& mconfig ) override;
 
   private:
 
-    QgsPkiConfigBundle * getPkiConfigBundle( const QString &authcfg );
+    QgsPkiConfigBundle* getPkiConfigBundle( const QString& authcfg );
 
-    void putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle * pkibundle );
+    void putPkiConfigBundle( const QString& authcfg, QgsPkiConfigBundle* pkibundle );
 
-    void removePkiConfigBundle( const QString &authcfg );
+    void removePkiConfigBundle( const QString& authcfg );
 
-    static QMap<QString, QgsPkiConfigBundle *> mPkiConfigBundleCache;
+    static QMap<QString, QgsPkiConfigBundle*> mPkiConfigBundleCache;
 };
 
 #endif // QGSAUTHPKIPATHSMETHOD_H

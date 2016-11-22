@@ -42,7 +42,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * @param parent parent widget
      * @param flags window flags
      */
-    explicit QgsDockWidget( const QString &title, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( const QString& title, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
 
   public slots:
 
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   protected:
 
-    virtual void closeEvent( QCloseEvent * ) override;
+    virtual void closeEvent( QCloseEvent* ) override;
     virtual void showEvent( QShowEvent* event ) override;
 
   signals:

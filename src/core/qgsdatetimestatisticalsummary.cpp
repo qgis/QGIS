@@ -29,7 +29,7 @@
  ****************************************************************************/
 
 QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats )
-    : mStatistics( stats )
+  : mStatistics( stats )
 {
   reset();
 }

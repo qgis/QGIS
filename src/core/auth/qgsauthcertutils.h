@@ -98,22 +98,22 @@ class CORE_EXPORT QgsAuthCertUtils
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer>& configs );
 
     //! Return list of concatenated certs from a PEM or DER formatted file
-    static QList<QSslCertificate> certsFromFile( const QString &certspath );
+    static QList<QSslCertificate> certsFromFile( const QString& certspath );
 
     //! Return first cert from a PEM or DER formatted file
-    static QSslCertificate certFromFile( const QString &certpath );
+    static QSslCertificate certFromFile( const QString& certpath );
 
     /** Return non-encrypted key from a PEM or DER formatted file
      * @param keypath File path to private key
      * @param keypass Passphrase for private key
      * @param algtype QString to set with resolved algorithm type
      */
-    static QSslKey keyFromFile( const QString &keypath,
-                                const QString &keypass = QString(),
-                                QString *algtype = nullptr );
+    static QSslKey keyFromFile( const QString& keypath,
+                                const QString& keypass = QString(),
+                                QString* algtype = nullptr );
 
     //! Return list of concatenated certs from a PEM Base64 text block
-    static QList<QSslCertificate> certsFromString( const QString &pemtext );
+    static QList<QSslCertificate> certsFromString( const QString& pemtext );
 
     /** Return list of certificate, private key and algorithm (as PEM text) from file path components
      * @param certpath File path to certificate
@@ -122,9 +122,9 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
-    static QStringList certKeyBundleToPem( const QString &certpath,
-                                           const QString &keypath,
-                                           const QString &keypass = QString(),
+    static QStringList certKeyBundleToPem( const QString& certpath,
+                                           const QString& keypath,
+                                           const QString& keypass = QString(),
                                            bool reencrypt = true );
 
     /** Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
@@ -133,8 +133,8 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param reencrypt Whether to re-encrypt the private key with the passphrase
      * @return certificate, private key, key's algorithm type
      */
-    static QStringList pkcs12BundleToPem( const QString &bundlepath,
-                                          const QString &bundlepass = QString(),
+    static QStringList pkcs12BundleToPem( const QString& bundlepath,
+                                          const QString& bundlepass = QString(),
                                           bool reencrypt = true );
 
     /** Write a temporary file for a PEM text of cert/key/CAs bundle component
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param name Name of file
      * @return File path to temporary file
      */
-    static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
+    static QString pemTextToTempFile( const QString& name, const QByteArray& pemtext );
 
     /** Get the general name for CA source enum type
      * @param source The enum source type for the CA
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * @param cert Qt SSL certificate to generate hash from
      * @param formatted Whether to colon-delimit the hash
      */
-    static QString shaHexForCert( const QSslCertificate &cert , bool formatted = false );
+    static QString shaHexForCert( const QSslCertificate& cert , bool formatted = false );
 
     /** Convert a QSslCertificate to a QCA::Certificate.
      * @note not available in Python bindings
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /** PKI key/cert bundle from file path, e.g. from .p12 or pfx files.
      * @note not available in Python bindings
      */
-    static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass );
+    static QCA::KeyBundle qcaKeyBundle( const QString& path, const QString& pass );
 
     /** Certificate validity check messages per enum.
      * @note not available in Python bindings
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings();
 
   private:
-    static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
+    static void appendDirSegment_( QStringList& dirname, const QString& segment, QString value );
 };
 
 #endif // QGSAUTHCERTUTILS_H

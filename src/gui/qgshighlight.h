@@ -41,14 +41,14 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      * @param geom initial geometry of highlight
      * @param layer associated map layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, QgsMapLayer* layer );
 
     /** Constructor for QgsHighlight
      * @param mapCanvas associated map canvas
      * @param geom initial geometry of highlight
      * @param layer associated vector layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry& geom, QgsVectorLayer* layer );
 
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
@@ -56,29 +56,38 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      * @param feature
      * @param layer vector layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas* mapCanvas, const QgsFeature& feature, QgsVectorLayer* layer );
     ~QgsHighlight();
 
     /** Set line/outline to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
-    void setColor( const QColor & color );
+    void setColor( const QColor& color );
 
     /** Set polygons fill color.
      * @note: added in version 2.3 */
-    void setFillColor( const QColor & fillColor );
+    void setFillColor( const QColor& fillColor );
 
     //! Set width. Ignored in feature mode.
     void setWidth( int width );
 
     /** Set line / outline buffer in millimeters.
      *  @note: added in version 2.3 */
-    void setBuffer( double buffer ) { mBuffer = buffer; }
+    void setBuffer( double buffer )
+    {
+      mBuffer = buffer;
+    }
 
     /** Set minimum line / outline width in millimeters.
      *  @note: added in version 2.3 */
-    void setMinWidth( double width ) { mMinWidth = width; }
+    void setMinWidth( double width )
+    {
+      mMinWidth = width;
+    }
 
-    const QgsMapLayer *layer() const { return mLayer; }
+    const QgsMapLayer* layer() const
+    {
+      return mLayer;
+    }
 
     virtual void updatePosition() override;
 
@@ -90,18 +99,18 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
   private:
     void init();
-    void setSymbol( QgsSymbol* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
-    double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
+    void setSymbol( QgsSymbol* symbol, const QgsRenderContext& context, const QColor& color, const QColor& fillColor );
+    double getSymbolWidth( const QgsRenderContext& context, double width, QgsUnitTypes::RenderUnit unit );
     //! Get renderer for current color mode and colors. The renderer should be freed by caller.
-    QgsFeatureRenderer * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );
-    void paintPoint( QPainter *p, const QgsPoint& point );
-    void paintLine( QPainter *p, QgsPolyline line );
-    void paintPolygon( QPainter *p, QgsPolygon polygon );
+    QgsFeatureRenderer* getRenderer( QgsRenderContext& context, const QColor& color, const QColor& fillColor );
+    void paintPoint( QPainter* p, const QgsPoint& point );
+    void paintLine( QPainter* p, QgsPolyline line );
+    void paintPolygon( QPainter* p, QgsPolygon polygon );
 
     QBrush mBrush;
     QPen mPen;
-    QgsGeometry *mGeometry;
-    QgsMapLayer *mLayer;
+    QgsGeometry* mGeometry;
+    QgsMapLayer* mLayer;
     QgsFeature mFeature;
     double mBuffer; // line / outline buffer in pixels
     double mMinWidth; // line / outline minimum width in pixels

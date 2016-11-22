@@ -94,7 +94,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      * @param reply
      * @param errors
      */
-    void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
+    void onSslErrors( QNetworkReply* reply, const QList<QSslError>& errors );
 #endif
   private:
     ~QgsFileDownloader();

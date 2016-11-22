@@ -26,9 +26,9 @@
 #include <QTextStream>
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
-    , mNextId( 0 )
-    , mTestGeometryExact( false )
+  : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
+  , mNextId( 0 )
+  , mTestGeometryExact( false )
 {
 
   // Determine mode to use based on request...
@@ -242,7 +242,7 @@ bool QgsDelimitedTextFeatureIterator::close()
 /**
  * Check to see if the point is within the selection rectangle
  */
-bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPoint &pt ) const
+bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPoint& pt ) const
 {
   if ( ! mTestGeometry ) return true;
   return mRequest.filterRect().contains( pt );
@@ -270,7 +270,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 {
   QStringList tokens;
 
-  QgsDelimitedTextFile *file = mSource->mFile;
+  QgsDelimitedTextFile* file = mSource->mFile;
 
   // If the iterator is not scanning the file, then it will have requested a specific
   // record, so only need to load that one.
@@ -377,7 +377,7 @@ bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 
 
 
-QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
+QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool& isNull )
 {
   QgsGeometry geom;
   QString sWkt = tokens[mSource->mWktFieldIndex];
@@ -401,7 +401,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList&
   return geom;
 }
 
-QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
+QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool& isNull )
 {
   QString sX = tokens[mSource->mXFieldIndex];
   QString sY = tokens[mSource->mYFieldIndex];
@@ -428,7 +428,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
   if ( fieldIdx < 0 || fieldIdx >= mSource->attributeColumns.count() ) return;
   int column = mSource->attributeColumns.at( fieldIdx );
   if ( column < 0 || column >= tokens.count() ) return;
-  const QString &value = tokens[column];
+  const QString& value = tokens[column];
   QVariant val;
   switch ( mSource->mFields.at( fieldIdx ).type() )
   {
@@ -478,24 +478,24 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 // ------------
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
-    : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( *p->mSubsetExpression ) : nullptr )
-    , mExtent( p->mExtent )
-    , mUseSpatialIndex( p->mUseSpatialIndex )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )
-    , mUseSubsetIndex( p->mUseSubsetIndex )
-    , mSubsetIndex( p->mSubsetIndex )
-    , mFile( nullptr )
-    , mFields( p->attributeFields )
-    , mFieldCount( p->mFieldCount )
-    , mXFieldIndex( p->mXFieldIndex )
-    , mYFieldIndex( p->mYFieldIndex )
-    , mWktFieldIndex( p->mWktFieldIndex )
-    , mWktHasPrefix( p->mWktHasPrefix )
-    , mGeometryType( p->mGeometryType )
-    , mDecimalPoint( p->mDecimalPoint )
-    , mXyDms( p->mXyDms )
-    , attributeColumns( p->attributeColumns )
+  : mGeomRep( p->mGeomRep )
+  , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( *p->mSubsetExpression ) : nullptr )
+  , mExtent( p->mExtent )
+  , mUseSpatialIndex( p->mUseSpatialIndex )
+  , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )
+  , mUseSubsetIndex( p->mUseSubsetIndex )
+  , mSubsetIndex( p->mSubsetIndex )
+  , mFile( nullptr )
+  , mFields( p->attributeFields )
+  , mFieldCount( p->mFieldCount )
+  , mXFieldIndex( p->mXFieldIndex )
+  , mYFieldIndex( p->mYFieldIndex )
+  , mWktFieldIndex( p->mWktFieldIndex )
+  , mWktHasPrefix( p->mWktHasPrefix )
+  , mGeometryType( p->mGeometryType )
+  , mDecimalPoint( p->mDecimalPoint )
+  , mXyDms( p->mXyDms )
+  , attributeColumns( p->attributeColumns )
 {
   QUrl url = p->mFile->url();
 
@@ -509,7 +509,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                     << QgsExpressionContextUtils::projectScope();
   mExpressionContext.setFields( mFields );
 }
 

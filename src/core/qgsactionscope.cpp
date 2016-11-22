@@ -17,15 +17,15 @@
 #include "qgsexpressioncontext.h"
 
 QgsActionScope::QgsActionScope()
-    : mExpressionContextScope( nullptr )
+  : mExpressionContextScope( nullptr )
 {
 }
 
 QgsActionScope::QgsActionScope( const QString& id, const QString& title, const QString& description, const QgsExpressionContextScope& expressionContextScope )
-    : mId( id )
-    , mTitle( title )
-    , mDescription( description )
-    , mExpressionContextScope( expressionContextScope )
+  : mId( id )
+  , mTitle( title )
+  , mDescription( description )
+  , mExpressionContextScope( expressionContextScope )
 {
 }
 

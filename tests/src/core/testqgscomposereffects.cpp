@@ -30,10 +30,10 @@ class TestQgsComposerEffects : public QObject
 
   public:
     TestQgsComposerEffects()
-        : mComposition( 0 )
-        , mComposerRect1( 0 )
-        , mComposerRect2( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mComposerRect1( 0 )
+      , mComposerRect2( 0 )
+      , mMapSettings( 0 )
     {}
 
   private slots:
@@ -46,9 +46,9 @@ class TestQgsComposerEffects : public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsComposerShape *mComposerRect1;
-    QgsComposerShape *mComposerRect2;
-    QgsMapSettings *mMapSettings;
+    QgsComposerShape* mComposerRect1;
+    QgsComposerShape* mComposerRect2;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 };
 

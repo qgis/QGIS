@@ -21,7 +21,7 @@
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
-    : QObject( nullptr )
+  : QObject( nullptr )
 {}
 
 

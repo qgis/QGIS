@@ -30,7 +30,10 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsFieldCalculator();
 
-    int changedAttributeId() const { return mAttributeId; }
+    int changedAttributeId() const
+    {
+      return mAttributeId;
+    }
 
   public slots:
     void accept() override;
@@ -41,7 +44,10 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
     void on_mOutputFieldTypeComboBox_activated( int index );
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mButtonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
   private slots:
     //! Sets the ok button enabled / disabled

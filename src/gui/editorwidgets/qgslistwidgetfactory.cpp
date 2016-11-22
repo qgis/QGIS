@@ -24,16 +24,16 @@
 #include <QSettings>
 
 QgsListWidgetFactory::QgsListWidgetFactory( const QString& name ):
-    QgsEditorWidgetFactory( name )
+  QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsListWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
+QgsEditorWidgetWrapper* QgsListWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsListWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+QgsEditorConfigWidget* QgsListWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   Q_UNUSED( vl );
   Q_UNUSED( fieldIdx );
@@ -41,7 +41,7 @@ QgsEditorConfigWidget* QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "List field" ) );
 }
 
-QgsEditorWidgetConfig QgsListWidgetFactory::readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx )
+QgsEditorWidgetConfig QgsListWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( configElement );
   Q_UNUSED( layer );
@@ -81,7 +81,7 @@ QString QgsListWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, 
   return result;
 }
 
-Qt::AlignmentFlag QgsListWidgetFactory::alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config ) const
+Qt::AlignmentFlag QgsListWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
 {
   Q_UNUSED( vl );
   Q_UNUSED( fieldIdx );

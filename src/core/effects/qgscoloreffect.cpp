@@ -19,7 +19,7 @@
 #include "qgsimageoperation.h"
 #include "qgssymbollayerutils.h"
 
-QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
+QgsPaintEffect* QgsColorEffect::create( const QgsStringMap& map )
 {
   QgsColorEffect* newEffect = new QgsColorEffect();
   newEffect->readProperties( map );
@@ -27,16 +27,16 @@ QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
 }
 
 QgsColorEffect::QgsColorEffect()
-    : QgsPaintEffect()
-    , mTransparency( 0.0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mBrightness( 0 )
-    , mContrast( 0 )
-    , mSaturation( 1.0 )
-    , mGrayscaleMode( QgsImageOperation::GrayscaleOff )
-    , mColorizeOn( false )
-    , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-    , mColorizeStrength( 100 )
+  : QgsPaintEffect()
+  , mTransparency( 0.0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mBrightness( 0 )
+  , mContrast( 0 )
+  , mSaturation( 1.0 )
+  , mGrayscaleMode( QgsImageOperation::GrayscaleOff )
+  , mColorizeOn( false )
+  , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
+  , mColorizeStrength( 100 )
 {
 
 }
@@ -46,7 +46,7 @@ QgsColorEffect::~QgsColorEffect()
 
 }
 
-void QgsColorEffect::draw( QgsRenderContext &context )
+void QgsColorEffect::draw( QgsRenderContext& context )
 {
   if ( !source() || !enabled() || !context.painter() )
     return;
@@ -89,7 +89,7 @@ QgsStringMap QgsColorEffect::properties() const
   return props;
 }
 
-void QgsColorEffect::readProperties( const QgsStringMap &props )
+void QgsColorEffect::readProperties( const QgsStringMap& props )
 {
   bool ok;
   QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );

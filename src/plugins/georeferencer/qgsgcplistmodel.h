@@ -28,21 +28,21 @@ class QgsGCPListModel : public QStandardItemModel
     Q_OBJECT
 
   public:
-    explicit QgsGCPListModel( QObject *parent = nullptr );
+    explicit QgsGCPListModel( QObject* parent = nullptr );
 
-    void setGCPList( QgsGCPList *theGCPList );
-    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
+    void setGCPList( QgsGCPList* theGCPList );
+    void setGeorefTransform( QgsGeorefTransform* theGeorefTransform );
     void updateModel();
 
   public slots:
-    void replaceDataPoint( QgsGeorefDataPoint *newDataPoint, int i );
+    void replaceDataPoint( QgsGeorefDataPoint* newDataPoint, int i );
 
     void onGCPListModified();
     void onTransformationModified();
 
   private:
-    QgsGCPList         *mGCPList;
-    QgsGeorefTransform *mGeorefTransform;
+    QgsGCPList*         mGCPList;
+    QgsGeorefTransform* mGeorefTransform;
 };
 
 #endif

@@ -41,8 +41,8 @@
 
 #include <spatialite.h>
 
-QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -194,7 +194,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 {
   // first get list of supported SRID from the selected Spatialite database
   // to build filter for projection selector
-  sqlite3 *db = nullptr;
+  sqlite3* db = nullptr;
   bool status = true;
   int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( rc != SQLITE_OK )
@@ -204,8 +204,8 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   }
 
   // load up the srid table
-  const char *pzTail;
-  sqlite3_stmt *ppStmt;
+  const char* pzTail;
+  sqlite3_stmt* ppStmt;
   QString sql = QStringLiteral( "select auth_name || ':' || auth_srid from spatial_ref_sys order by srid asc" );
 
   QSet<QString> myCRSs;
@@ -217,7 +217,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
     // get the first row of the result set
     while ( sqlite3_step( ppStmt ) == SQLITE_ROW )
     {
-      myCRSs.insert( QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
+      myCRSs.insert( QString::fromUtf8(( const char* )sqlite3_column_text( ppStmt, 0 ) ) );
     }
   }
   else
@@ -236,7 +236,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   }
 
   // prepare projection selector
-  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  QgsGenericProjectionSelector* mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( myCRSs );
   mySelector->setSelectedAuthId( mCrsId );
@@ -376,7 +376,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
                                  quotedValue( leGeometryColumn->text() ) );
   QgsDebugMsg( sqlCreateIndex ); // OK
 
-  sqlite3 *db;
+  sqlite3* db;
   int rc = QgsSLConnect::sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
   if ( rc != SQLITE_OK )
   {
@@ -386,7 +386,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   }
   else
   {
-    char * errmsg;
+    char* errmsg;
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
     {
@@ -418,14 +418,14 @@ bool QgsNewSpatialiteLayerDialog::apply()
           sqlite3_free( errmsg );
         }
 
-        QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "dbname='%1' table='%2'(%3) sql=" )
+        QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "dbname='%1' table='%2'(%3) sql=" )
             .arg( mDatabaseComboBox->currentText(),
                   leLayerName->text(),
                   leGeometryColumn->text() ), leLayerName->text(), QStringLiteral( "spatialite" ) );
         if ( layer->isValid() )
         {
           // register this layer with the central layers registry
-          QList<QgsMapLayer *> myList;
+          QList<QgsMapLayer*> myList;
           myList << layer;
           //addMapLayers returns a list of all successfully added layers
           //so we compare that to our original list.

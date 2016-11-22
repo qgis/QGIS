@@ -27,9 +27,9 @@
 #include <QMenu>
 #include <QGraphicsView>
 
-QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas * mapCanvas, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , mMapCanvas( mapCanvas )
+QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas* mapCanvas, QWidget* parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
@@ -42,11 +42,11 @@ QgsTileScaleWidget::~QgsTileScaleWidget()
 {
 }
 
-void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
+void QgsTileScaleWidget::layerChanged( QgsMapLayer* layer )
 {
   mSlider->setDisabled( true );
 
-  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+  QgsRasterLayer* rl = qobject_cast<QgsRasterLayer*>( layer );
   if ( !rl || rl->providerType() != QLatin1String( "wms" ) || !rl->dataProvider() )
     return;
 
@@ -108,16 +108,16 @@ void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
   mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
 }
 
-void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
+void QgsTileScaleWidget::showTileScale( QMainWindow* mainWindow )
 {
-  QgsDockWidget *dock = mainWindow->findChild<QgsDockWidget *>( QStringLiteral( "theTileScaleDock" ) );
+  QgsDockWidget* dock = mainWindow->findChild<QgsDockWidget*>( QStringLiteral( "theTileScaleDock" ) );
   if ( dock )
   {
     dock->setVisible( dock->isHidden() );
     return;
   }
 
-  QgsMapCanvas *canvas = mainWindow->findChild<QgsMapCanvas *>( QStringLiteral( "theMapCanvas" ) );
+  QgsMapCanvas* canvas = mainWindow->findChild<QgsMapCanvas*>( QStringLiteral( "theMapCanvas" ) );
   QgsDebugMsg( QString( "canvas:%1 [%2]" ).arg(( ulong ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
   if ( !canvas )
   {
@@ -125,10 +125,10 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
     return;
   }
 
-  QgsTileScaleWidget *tws = new QgsTileScaleWidget( canvas );
+  QgsTileScaleWidget* tws = new QgsTileScaleWidget( canvas );
   tws->setObjectName( QStringLiteral( "theTileScaleWidget" ) );
 
-  QObject *legend = mainWindow->findChild<QObject*>( QStringLiteral( "theLayerTreeView" ) );
+  QObject* legend = mainWindow->findChild<QObject*>( QStringLiteral( "theLayerTreeView" ) );
   if ( legend )
   {
     connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
@@ -146,7 +146,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );
 
   // add to the Panel submenu
-  QMenu *panelMenu = mainWindow->findChild<QMenu *>( QStringLiteral( "mPanelMenu" ) );
+  QMenu* panelMenu = mainWindow->findChild<QMenu*>( QStringLiteral( "mPanelMenu" ) );
   if ( panelMenu )
   {
     // add to the Panel submenu

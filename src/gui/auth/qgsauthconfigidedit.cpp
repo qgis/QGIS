@@ -21,11 +21,11 @@
 #include "qgsauthmanager.h"
 
 
-QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg , bool allowEmpty )
-    : QWidget( parent )
-    , mAuthCfgOrig( authcfg )
-    , mValid( false )
-    , mAllowEmpty( allowEmpty )
+QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget* parent, const QString& authcfg , bool allowEmpty )
+  : QWidget( parent )
+  , mAuthCfgOrig( authcfg )
+  , mValid( false )
+  , mAllowEmpty( allowEmpty )
 {
   setupUi( this );
 
@@ -70,7 +70,7 @@ bool QgsAuthConfigIdEdit::validate()
   return curvalid;
 }
 
-void QgsAuthConfigIdEdit::setAuthConfigId( const QString &authcfg )
+void QgsAuthConfigIdEdit::setAuthConfigId( const QString& authcfg )
 {
   if ( mAuthCfgOrig.isEmpty() )
   {
@@ -111,13 +111,13 @@ void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
   updateValidityStyle( validate() );
 }
 
-void QgsAuthConfigIdEdit::on_leAuthCfg_textChanged( const QString &txt )
+void QgsAuthConfigIdEdit::on_leAuthCfg_textChanged( const QString& txt )
 {
   Q_UNUSED( txt );
   validate();
 }
 
-bool QgsAuthConfigIdEdit::isAlphaNumeric( const QString &authcfg )
+bool QgsAuthConfigIdEdit::isAlphaNumeric( const QString& authcfg )
 {
   QRegExp rx( "([a-z]|[A-Z]|[0-9]){7}" );
   return rx.indexIn( authcfg ) != -1;

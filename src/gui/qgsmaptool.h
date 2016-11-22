@@ -69,7 +69,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     /** Returns the flags for the map tool.
      * @note added in QGIS 2.16
      */
-    virtual Flags flags() const { return Flags(); }
+    virtual Flags flags() const
+    {
+      return Flags();
+    }
 
     //! virtual destructor
     virtual ~QgsMapTool();
@@ -130,7 +133,10 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Emit map tool changed with the old tool
     //! @note added in 2.3
-    QString toolName() { return mToolName; }
+    QString toolName()
+    {
+      return mToolName;
+    }
 
     /** Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
@@ -146,7 +152,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     /** Get search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  @note added in 2.3 */
-    static double searchRadiusMU( QgsMapCanvas * canvas );
+    static double searchRadiusMU( QgsMapCanvas* canvas );
 
   signals:
     //! emit a message
@@ -184,7 +190,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     //! @note available in python bindings as toMapCoordinatesV2
-    QgsPointV2 toMapCoordinates( QgsMapLayer* layer, const QgsPointV2 &point );
+    QgsPointV2 toMapCoordinates( QgsMapLayer* layer, const QgsPointV2& point );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect );

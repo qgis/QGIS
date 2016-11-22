@@ -40,13 +40,25 @@ class CORE_EXPORT QgsRasterShader
      *
      */
     //! \brief Return the maximum value for the raster shader
-    double maximumValue() { return mMaximumValue; }
+    double maximumValue()
+    {
+      return mMaximumValue;
+    }
 
     //! \brief Return the minimum value for the raster shader
-    double minimumValue() { return mMinimumValue; }
+    double minimumValue()
+    {
+      return mMinimumValue;
+    }
 
-    QgsRasterShaderFunction* rasterShaderFunction() { return mRasterShaderFunction; }
-    const QgsRasterShaderFunction* rasterShaderFunction() const { return mRasterShaderFunction; }
+    QgsRasterShaderFunction* rasterShaderFunction()
+    {
+      return mRasterShaderFunction;
+    }
+    const QgsRasterShaderFunction* rasterShaderFunction() const
+    {
+      return mRasterShaderFunction;
+    }
 
     /*
      *

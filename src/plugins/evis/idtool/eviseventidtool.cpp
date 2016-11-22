@@ -42,11 +42,11 @@
 * @param theCanvas - Pointer to the QGIS map canvas
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
-    : QgsMapTool( theCanvas )
-    , mBrowser( nullptr )
+  : QgsMapTool( theCanvas )
+  , mBrowser( nullptr )
 {
   //set cursor
-  QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
+  QPixmap myIdentifyQPixmap = QPixmap(( const char** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   //set the current tool to this object

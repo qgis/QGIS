@@ -82,7 +82,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     int splitGeometry( const QgsLineString& splitLine,
                        QList<QgsAbstractGeometry*>& newGeometries,
                        bool topological,
-                       QgsPointSequence &topologyTestPoints,
+                       QgsPointSequence& topologyTestPoints,
                        QString* errorMsg = nullptr ) const override;
 
     QgsAbstractGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSCoordSequence* createCoordinateSequence( const QgsCurve* curve , double precision, bool forceClose = false );
     static QgsLineString* sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry* g );
-    static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
+    static GEOSGeometry* nodeGeometries( const GEOSGeometry* splitLine, const GEOSGeometry* geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const;
 
     /** Ownership of geoms is transferred
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSGeometry* createGeosPolygon( const QgsAbstractGeometry* poly, double precision );
 
     //utils for geometry split
-    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg = nullptr ) const;
+    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence& testPoints, QString* errorMsg = nullptr ) const;
     GEOSGeometry* linePointDifference( GEOSGeometry* GEOSsplitPoint ) const;
     int splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
     int splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
@@ -225,7 +225,7 @@ class GEOSException // clazy:exclude=rule-of-three
     }
 
     // copy constructor
-    GEOSException( const GEOSException &rhs )
+    GEOSException( const GEOSException& rhs )
     {
       *this = rhs;
     }
@@ -243,7 +243,11 @@ class GEOSException // clazy:exclude=rule-of-three
 
   private:
     QString msg;
-    static QString& lastMsg() { static QString _lastMsg; return _lastMsg; }
+    static QString& lastMsg()
+    {
+      static QString _lastMsg;
+      return _lastMsg;
+    }
 };
 
 /// @endcond

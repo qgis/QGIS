@@ -36,7 +36,7 @@ class CORE_EXPORT QWebFrame : public QObject
 
   public:
     QWebFrame( QObject* parent = 0 )
-        : QObject( parent )
+      : QObject( parent )
     {
 
     }
@@ -73,7 +73,7 @@ class CORE_EXPORT QWebFrame : public QObject
 
     }
 
-    QVariant evaluateJavaScript( const QString & )
+    QVariant evaluateJavaScript( const QString& )
     {
       return QVariant();
     }

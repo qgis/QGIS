@@ -46,7 +46,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * @param color initial color for dialog
      * @param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor& color = QColor(), Layout layout = LayoutDefault );
+    QgsCompoundColorWidget( QWidget* parent = nullptr, const QColor& color = QColor(), Layout layout = LayoutDefault );
 
     ~QgsCompoundColorWidget();
 
@@ -66,21 +66,24 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * @param discarded set to true to avoid adding color to recent color list on widget destruction.
      * @note added in QGIS 3.0
      */
-    void setDiscarded( bool discarded ) { mDiscarded = discarded; }
+    void setDiscarded( bool discarded )
+    {
+      mDiscarded = discarded;
+    }
 
   signals:
 
     /** Emitted when the dialog's color changes
      * @param color current color
      */
-    void currentColorChanged( const QColor &color );
+    void currentColorChanged( const QColor& color );
 
   public slots:
 
     /** Sets the current color for the dialog
      * @param color desired color
      */
-    void setColor( const QColor &color );
+    void setColor( const QColor& color );
 
     /** Sets the color to show in an optional "previous color" section
      * @param color previous color
@@ -91,11 +94,11 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     void mousePressEvent( QMouseEvent* e ) override;
 
-    void mouseMoveEvent( QMouseEvent *e ) override;
+    void mouseMoveEvent( QMouseEvent* e ) override;
 
-    void mouseReleaseEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent* e ) override;
 
-    void keyPressEvent( QKeyEvent *e ) override;
+    void keyPressEvent( QKeyEvent* e ) override;
 
   private slots:
 
@@ -113,7 +116,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void newPalette();
 
     void schemeIndexChanged( int index );
-    void listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    void listSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
     void on_mAddCustomColorButton_clicked();
 
@@ -149,7 +152,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * @param image image to sample
      * @returns average color from image
      */
-    QColor averageColor( const QImage &image ) const;
+    QColor averageColor( const QImage& image ) const;
 
     /** Samples a color from the desktop
      * @param point position of color to sample

@@ -23,14 +23,14 @@
 #include "qgswkbptr.h"
 
 QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData )
-    : mDataIsCached( false )
-    , mLayerData( layerData )
+  : mDataIsCached( false )
+  , mLayerData( layerData )
 {
 
 }
 
 QgsInterpolator::QgsInterpolator()
-    : mDataIsCached( false )
+  : mDataIsCached( false )
 {
 
 }
@@ -161,7 +161,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
 #if 0
     case QgsWkbTypes::Polygon25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::Polygon:
     {
       int nRings;
@@ -206,7 +206,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     }
     case QgsWkbTypes::MultiPoint25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::MultiPoint:
     {
       int nPoints;
@@ -231,7 +231,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     }
     case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::MultiLineString:
     {
       int nLines;
@@ -277,7 +277,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     }
     case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::MultiPolygon:
     {
       int nPolys;

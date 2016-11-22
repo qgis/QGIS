@@ -80,15 +80,15 @@
 #include "qgslogger.h"
 
 
-QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
-    : QDialog( parent )
-    , mSocket( nullptr )
-    , mExecErrorsDialog( false )
-    , mTimer( nullptr )
-    , mSslErrors( QList<QSslError>() )
-    , mTrustedCAs( QList<QSslCertificate>() )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget* parent )
+  : QDialog( parent )
+  , mSocket( nullptr )
+  , mExecErrorsDialog( false )
+  , mTimer( nullptr )
+  , mSslErrors( QList<QSslError>() )
+  , mTrustedCAs( QList<QSslCertificate>() )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -100,7 +100,7 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   else
   {
     setupUi( this );
-    QStyle *style = QApplication::style();
+    QStyle* style = QApplication::style();
     lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
     lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
@@ -305,7 +305,7 @@ void QgsAuthSslImportDialog::destroySocket()
   mSocket = nullptr;
 }
 
-void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
+void QgsAuthSslImportDialog::sslErrors( const QList<QSslError>& errors )
 {
   if ( !mTimer->isActive() )
   {
@@ -319,7 +319,7 @@ void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
   connect( ui.certificateChainButton, SIGNAL( clicked() ),
            this, SLOT( showCertificateInfo() ) );
 
-  Q_FOREACH ( const QSslError &error, errors )
+  Q_FOREACH ( const QSslError& error, errors )
   {
     ui.sslErrorList->addItem( error.errorString() );
   }
@@ -348,7 +348,7 @@ void QgsAuthSslImportDialog::showCertificateInfo()
     QSslCertificate cert = peerchain.takeFirst();
     if ( !cert.isNull() )
     {
-      QgsAuthCertInfoDialog *info = new QgsAuthCertInfoDialog( cert, false, this, peerchain );
+      QgsAuthCertInfoDialog* info = new QgsAuthCertInfoDialog( cert, false, this, peerchain );
       info->exec();
       info->deleteLater();
     }
@@ -438,7 +438,7 @@ void QgsAuthSslImportDialog::loadCertFromFile()
 //  checkCanSave();
 }
 
-void QgsAuthSslImportDialog::appendString( const QString &line )
+void QgsAuthSslImportDialog::appendString( const QString& line )
 {
   QTextCursor cursor( pteSessionStatus->textCursor() );
   cursor.movePosition( QTextCursor::End );
@@ -446,17 +446,17 @@ void QgsAuthSslImportDialog::appendString( const QString &line )
 //  pteSessionStatus->verticalScrollBar()->setValue( pteSessionStatus->verticalScrollBar()->maximum() );
 }
 
-QPushButton *QgsAuthSslImportDialog::saveButton()
+QPushButton* QgsAuthSslImportDialog::saveButton()
 {
   return buttonBox->button( QDialogButtonBox::Save );
 }
 
-QPushButton *QgsAuthSslImportDialog::closeButton()
+QPushButton* QgsAuthSslImportDialog::closeButton()
 {
   return buttonBox->button( QDialogButtonBox::Close );
 }
 
-QString QgsAuthSslImportDialog::getOpenFileName( const QString &title, const QString &extfilter )
+QString QgsAuthSslImportDialog::getOpenFileName( const QString& title, const QString& extfilter )
 {
   QSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportSslOpenFileDir" ), QDir::homePath() ).toString();

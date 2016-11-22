@@ -30,7 +30,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsPgNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgNewConnection( QWidget* parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsPgNewConnection();
     //! Tests the connection using the parameters supplied
@@ -39,10 +39,13 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void accept() override;
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect * mAuthConfigSelect;
+    QgsAuthConfigSelect* mAuthConfigSelect;
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

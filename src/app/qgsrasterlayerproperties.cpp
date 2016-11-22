@@ -70,20 +70,20 @@
 #include <QMouseEvent>
 #include <QVector>
 
-QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
+QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget* parent, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
     // Constant that signals property not used.
-    , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDefaultStandardDeviation( 0 )
-    , mDefaultRedBand( 0 )
-    , mDefaultGreenBand( 0 )
-    , mDefaultBlueBand( 0 )
-    , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
-    , mRendererWidget( nullptr )
-    , mGradientHeight( 0.0 )
-    , mGradientWidth( 0.0 )
-    , mMapCanvas( theCanvas )
-    , mHistogramWidget( nullptr )
+  , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mDefaultStandardDeviation( 0 )
+  , mDefaultRedBand( 0 )
+  , mDefaultGreenBand( 0 )
+  , mDefaultBlueBand( 0 )
+  , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
+  , mRendererWidget( nullptr )
+  , mGradientHeight( 0.0 )
+  , mGradientWidth( 0.0 )
+  , mMapCanvas( theCanvas )
+  , mHistogramWidget( nullptr )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -767,7 +767,7 @@ void QgsRasterLayerProperties::sync()
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator* shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
@@ -922,7 +922,7 @@ void QgsRasterLayerProperties::apply()
   QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
   if ( resampleFilter )
   {
-    QgsRasterResampler *zoomedInResampler = nullptr;
+    QgsRasterResampler* zoomedInResampler = nullptr;
     QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
     if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
     {
@@ -936,7 +936,7 @@ void QgsRasterLayerProperties::apply()
     resampleFilter->setZoomedInResampler( zoomedInResampler );
 
     //raster resampling
-    QgsRasterResampler *zoomedOutResampler = nullptr;
+    QgsRasterResampler* zoomedOutResampler = nullptr;
     QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
     if ( zoomedOutResamplingMethod == tr( "Average" ) )
     {
@@ -949,7 +949,7 @@ void QgsRasterLayerProperties::apply()
   }
 
   // Hue and saturation controls
-  QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   if ( hueSaturationFilter )
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );
@@ -1008,7 +1008,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QList< QgsRasterPyramid> myPyramidList = provider->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
-    QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
+    QListWidgetItem* myItem = lbxPyramidResolutions->item( myCounterInt );
     //mark to be pyramided
     myPyramidList[myCounterInt].build = myItem->isSelected() || myPyramidList[myCounterInt].exists;
   }
@@ -1191,7 +1191,7 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
   if ( !renderer ) return;
   int nBands = renderer->usesBands().size();
 
-  QLineEdit *lineEdit = new QLineEdit();
+  QLineEdit* lineEdit = new QLineEdit();
   lineEdit->setFrame( false ); // frame looks bad in table
   // Without margins row selection is not displayed (important for delete row)
   lineEdit->setContentsMargins( 1, 1, 1, 1 );
@@ -1232,14 +1232,14 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
 
   if ( nBands == 1 && ( column == 0 || column == 1 ) )
   {
-    connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( transparencyCellTextEdited( const QString & ) ) );
+    connect( lineEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( transparencyCellTextEdited( const QString& ) ) );
   }
   tableTransparency->resizeColumnsToContents();
 }
 
 void QgsRasterLayerProperties::setTransparencyCellValue( int row, int column, double value )
 {
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
+  QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
   lineEdit->setText( QgsRasterBlock::printValue( value ) );
   lineEdit->adjustSize();
@@ -1249,7 +1249,7 @@ void QgsRasterLayerProperties::setTransparencyCellValue( int row, int column, do
 
 double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
 {
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
+  QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit || lineEdit->text().isEmpty() )
   {
     std::numeric_limits<double>::quiet_NaN();
@@ -1259,7 +1259,7 @@ double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
 
 void QgsRasterLayerProperties::adjustTransparencyCellWidth( int row, int column )
 {
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
+  QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
   int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
@@ -1291,9 +1291,9 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
           myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
-          << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
-          << QString::number( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
-          << QString::number( transparencyCellValue( myTableRunner, 3 ) );
+                         << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
+                         << QString::number( transparencyCellValue( myTableRunner, 2 ) ) << "\t"
+                         << QString::number( transparencyCellValue( myTableRunner, 3 ) );
         }
       }
       else
@@ -1303,8 +1303,8 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
           myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, 0 ) ) << "\t"
-          << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
-          << QString::number( transparencyCellValue( myTableRunner, 2 ) );
+                         << QString::number( transparencyCellValue( myTableRunner, 1 ) ) << "\t"
+                         << QString::number( transparencyCellValue( myTableRunner, 2 ) );
         }
       }
     }
@@ -1315,7 +1315,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
   }
 }
 
-void QgsRasterLayerProperties::transparencyCellTextEdited( const QString & text )
+void QgsRasterLayerProperties::transparencyCellTextEdited( const QString& text )
 {
   Q_UNUSED( text );
   QgsDebugMsg( QString( "text = %1" ).arg( text ) );
@@ -1327,7 +1327,7 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString & text 
   int nBands = renderer->usesBands().size();
   if ( nBands == 1 )
   {
-    QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+    QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( sender() );
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;
@@ -1348,7 +1348,7 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString & text 
 
     if ( column == 0 )
     {
-      QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, 1 ) );
+      QLineEdit* toLineEdit = dynamic_cast<QLineEdit*>( tableTransparency->cellWidget( row, 1 ) );
       if ( !toLineEdit ) return;
       bool toChanged = mTransparencyToEdited.value( row );
       QgsDebugMsg( QString( "toChanged = %1" ).arg( toChanged ) );

@@ -21,8 +21,8 @@
 #include "qgsapplication.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
+  : QStandardItemModel()
+  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Owner" );
@@ -40,7 +40,7 @@ QgsOracleTableModel::~QgsOracleTableModel()
 {
 }
 
-void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
+void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty& layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
 
@@ -51,7 +51,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
   }
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *ownerItem = 0;
+  QStandardItem* ownerItem = 0;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
@@ -74,16 +74,16 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
       tip = tr( "Select a primary key" );
     }
 
-    QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
+    QStandardItem* ownerNameItem = new QStandardItem( layerProperty.ownerName );
+    QStandardItem* typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
-    QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
-    QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
+    QStandardItem* tableItem = new QStandardItem( layerProperty.tableName );
+    QStandardItem* geomItem  = new QStandardItem( layerProperty.geometryColName );
+    QStandardItem* sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
     sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == 0 );
     if ( sridItem->isEditable() )
     {
@@ -91,7 +91,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
-    QStandardItem *pkItem = new QStandardItem( "" );
+    QStandardItem* pkItem = new QStandardItem( "" );
     if ( layerProperty.isView )
     {
       pkItem->setText( tr( "Select..." ) );
@@ -103,7 +103,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     pkItem->setData( layerProperty.isView, Qt::UserRole + 1 );
     pkItem->setData( false, Qt::UserRole + 2 ); // not selected
 
-    QStandardItem *selItem = new QStandardItem( "" );
+    QStandardItem* selItem = new QStandardItem( "" );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -120,7 +120,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     childItemList << selItem;
     childItemList << sqlItem;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    Q_FOREACH ( QStandardItem* item, childItemList )
     {
       if ( tip.isEmpty() )
       {
@@ -163,7 +163,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
   }
 }
 
-void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
+void QgsOracleTableModel::setSql( const QModelIndex& index, const QString& sql )
 {
   if ( !index.isValid() || !index.parent().isValid() )
   {
@@ -248,7 +248,7 @@ QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
   return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
 }
 
-bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+bool QgsOracleTableModel::setData( const QModelIndex& idx, const QVariant& value, int role )
 {
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
@@ -279,7 +279,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
 
     for ( int i = 0; i < dbtmColumns; i++ )
     {
-      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
+      QStandardItem* item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
       {
         item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
@@ -300,7 +300,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   return true;
 }
 
-QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo )
+QString QgsOracleTableModel::layerURI( const QModelIndex& index, const QgsDataSourceUri& connInfo )
 {
   if ( !index.isValid() )
   {
@@ -316,7 +316,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     return QString::null;
   }
 
-  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QStandardItem* pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::DisplayRole ).toString();
   bool isView = pkItem->data( Qt::UserRole + 1 ).toBool();
   bool isSet  = pkItem->data( Qt::UserRole + 2 ).toBool();

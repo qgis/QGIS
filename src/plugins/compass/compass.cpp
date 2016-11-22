@@ -37,7 +37,7 @@ Compass::~Compass()
 {
 }
 
-bool Compass::filter( QCompassReading *reading )
+bool Compass::filter( QCompassReading* reading )
 {
 //    int diff = ( reading->timestamp() - stamp );
 //    stamp = reading->timestamp();

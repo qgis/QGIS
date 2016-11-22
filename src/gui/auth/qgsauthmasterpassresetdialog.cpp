@@ -24,12 +24,12 @@
 #include "qgslogger.h"
 
 
-QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
-    : QDialog( parent )
-    , mPassCurOk( false )
-    , mPassNewOk( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget* parent )
+  : QDialog( parent )
+  , mPassCurOk( false )
+  , mPassNewOk( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -48,7 +48,7 @@ QgsMasterPasswordResetDialog::~QgsMasterPasswordResetDialog()
 {
 }
 
-bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup )
+bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString* newpass, QString* oldpass, bool* keepbackup )
 {
   if ( !QgsAuthManager::instance()->isDisabled() )
   {

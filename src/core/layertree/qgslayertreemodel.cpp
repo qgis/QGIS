@@ -42,7 +42,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
 {
   public:
     EmbeddedWidgetLegendNode( QgsLayerTreeLayer* nodeL )
-        : QgsLayerTreeModelLegendNode( nodeL )
+      : QgsLayerTreeModelLegendNode( nodeL )
     {
       // we need a valid rule key to allow the model to build a tree out of legend nodes
       // if that's possible (if there is a node without a rule key, building of tree is cancelled)
@@ -62,16 +62,16 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
 
 ///@endcond
 
-QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mRootNode( rootNode )
-    , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
-    , mAutoCollapseLegendNodesCount( -1 )
-    , mLegendFilterByScale( 0 )
-    , mLegendFilterUsesExtent( false )
-    , mLegendMapViewMupp( 0 )
-    , mLegendMapViewDpi( 0 )
-    , mLegendMapViewScale( 0 )
+QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent )
+  : QAbstractItemModel( parent )
+  , mRootNode( rootNode )
+  , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
+  , mAutoCollapseLegendNodesCount( -1 )
+  , mLegendFilterByScale( 0 )
+  , mLegendFilterUsesExtent( false )
+  , mLegendMapViewMupp( 0 )
+  , mLegendMapViewDpi( 0 )
+  , mLegendMapViewScale( 0 )
 {
   connectToRootNode();
 
@@ -96,7 +96,7 @@ QgsLayerTreeNode* QgsLayerTreeModel::index2node( const QModelIndex& index ) cons
 }
 
 
-int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
+int QgsLayerTreeModel::rowCount( const QModelIndex& parent ) const
 {
   if ( QgsLayerTreeModelLegendNode* nodeLegend = index2legendNode( parent ) )
     return legendNodeRowCount( nodeLegend );
@@ -116,13 +116,13 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
   return n->children().count();
 }
 
-int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
+int QgsLayerTreeModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 1;
 }
 
-QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex& parent ) const
 {
   if ( column < 0 || column >= columnCount( parent ) ||
        row < 0 || row >= rowCount( parent ) )
@@ -131,7 +131,7 @@ QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &pa
   if ( QgsLayerTreeModelLegendNode* nodeLegend = index2legendNode( parent ) )
     return legendNodeIndex( row, column, nodeLegend );
 
-  QgsLayerTreeNode *n = index2node( parent );
+  QgsLayerTreeNode* n = index2node( parent );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -144,12 +144,12 @@ QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &pa
 }
 
 
-QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
+QModelIndex QgsLayerTreeModel::parent( const QModelIndex& child ) const
 {
   if ( !child.isValid() )
     return QModelIndex();
 
-  if ( QgsLayerTreeNode *n = index2node( child ) )
+  if ( QgsLayerTreeNode* n = index2node( child ) )
   {
     return indexOfParentLayerTreeNode( n->parent() ); // must not be null
   }
@@ -181,7 +181,7 @@ QModelIndex QgsLayerTreeModel::indexOfParentLayerTreeNode( QgsLayerTreeNode* par
 }
 
 
-QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
+QVariant QgsLayerTreeModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() || index.column() > 1 )
     return QVariant();
@@ -215,9 +215,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
     if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
 
-      QgsMapLayer *layer = nodeLayer->layer();
+      QgsMapLayer* layer = nodeLayer->layer();
       if ( !layer )
         return QVariant();
 
@@ -226,7 +226,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       {
         if ( testFlag( ShowRasterPreviewIcon ) )
         {
-          QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
+          QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( layer );
           return QIcon( QPixmap::fromImage( rlayer->previewAsImage( QSize( 32, 32 ) ) ) );
         }
         else
@@ -235,7 +235,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         }
       }
 
-      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
       QIcon icon;
 
       // if there's just on legend entry that should be embedded in layer - do that!
@@ -373,7 +373,7 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
 bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-  QgsLayerTreeModelLegendNode *sym = index2legendNode( index );
+  QgsLayerTreeModelLegendNode* sym = index2legendNode( index );
   if ( sym )
   {
     if ( role == Qt::CheckStateRole && !testFlag( AllowLegendChangeState ) )
@@ -492,7 +492,7 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
   return nodesFinal;
 }
 
-QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup() const
+QgsLayerTreeGroup* QgsLayerTreeModel::rootGroup() const
 {
   return mRootNode;
 }
@@ -1006,7 +1006,7 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
   if ( nodesFinal.isEmpty() )
     return nullptr;
 
-  QMimeData *mimeData = new QMimeData();
+  QMimeData* mimeData = new QMimeData();
 
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );

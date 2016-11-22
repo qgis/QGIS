@@ -19,8 +19,8 @@
 #include "qgsvectorlayer.h"
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+  :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
 {
 }
 
@@ -34,7 +34,7 @@ void QgsClassificationWidgetWrapper::showIndeterminateState()
   whileBlocking( mComboBox )->setCurrentIndex( -1 );
 }
 
-QWidget*QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
+QWidget* QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QComboBox( parent );
 }
@@ -45,7 +45,7 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    const QgsCategorizedSymbolRenderer *csr = dynamic_cast<const QgsCategorizedSymbolRenderer *>( layer()->renderer() );
+    const QgsCategorizedSymbolRenderer* csr = dynamic_cast<const QgsCategorizedSymbolRenderer*>( layer()->renderer() );
     if ( csr )
     {
       const QgsCategoryList categories = csr->categories();

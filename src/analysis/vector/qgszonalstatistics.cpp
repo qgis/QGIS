@@ -35,21 +35,21 @@
 #endif
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, Statistics stats )
-    : mRasterFilePath( rasterFile )
-    , mRasterBand( rasterBand )
-    , mPolygonLayer( polygonLayer )
-    , mAttributePrefix( attributePrefix )
-    , mInputNodataValue( -1 )
-    , mStatistics( stats )
+  : mRasterFilePath( rasterFile )
+  , mRasterBand( rasterBand )
+  , mPolygonLayer( polygonLayer )
+  , mAttributePrefix( attributePrefix )
+  , mInputNodataValue( -1 )
+  , mStatistics( stats )
 {
 
 }
 
 QgsZonalStatistics::QgsZonalStatistics()
-    : mRasterBand( 0 )
-    , mPolygonLayer( nullptr )
-    , mInputNodataValue( -1 )
-    , mStatistics( QgsZonalStatistics::All )
+  : mRasterBand( 0 )
+  , mPolygonLayer( nullptr )
+  , mInputNodataValue( -1 )
+  , mStatistics( QgsZonalStatistics::All )
 {
 
 }
@@ -411,11 +411,11 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
 }
 
 void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeometry& poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
+    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats )
 {
   double cellCenterX, cellCenterY;
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
+  float* scanLine = ( float* ) CPLMalloc( sizeof( float ) * nCellsX );
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
@@ -469,12 +469,12 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeo
 }
 
 void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry& poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
+    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats )
 {
   stats.reset();
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
-  float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
+  float* pixelData = ( float* ) CPLMalloc( sizeof( float ) );
   QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;

@@ -75,10 +75,10 @@ void checkStream( QDataStream& stream )
   }
 }
 
-int main( int argc, char **argv )
+int main( int argc, char** argv )
 {
-  char *name;
-  struct Option *map;
+  char* name;
+  struct Option* map;
   struct Cell_head window;
 
   G_gisinit( argv[0] );
@@ -156,7 +156,7 @@ int main( int argc, char **argv )
     return 1;
   }
 
-  void *buf = G_allocate_raster_buf( grass_type );
+  void* buf = G_allocate_raster_buf( grass_type );
 
   int expectedSize = cols * QgsRasterBlock::typeSize( qgis_type );
   bool isCanceled = false;
@@ -180,9 +180,9 @@ int main( int argc, char **argv )
       return 1;
     }
 
-    qint32 *cell = 0;
-    float *fcell = 0;
-    double *dcell = 0;
+    qint32* cell = 0;
+    float* fcell = 0;
+    double* dcell = 0;
     if ( grass_type == CELL_TYPE )
       cell = ( qint32* ) byteArray.data();
     else if ( grass_type == FCELL_TYPE )
@@ -190,7 +190,7 @@ int main( int argc, char **argv )
     else if ( grass_type == DCELL_TYPE )
       dcell = ( double* ) byteArray.data();
 
-    void *ptr = buf;
+    void* ptr = buf;
     for ( int col = 0; col < cols; col++ )
     {
       if ( grass_type == CELL_TYPE )

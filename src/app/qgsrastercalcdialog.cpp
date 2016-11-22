@@ -26,7 +26,7 @@
 #include <QFileDialog>
 #include <QSettings>
 
-QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
@@ -282,7 +282,7 @@ void QgsRasterCalcDialog::on_mExpressionTextEdit_textChanged()
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
-void QgsRasterCalcDialog::on_mOutputLayerLineEdit_textChanged( const QString &text )
+void QgsRasterCalcDialog::on_mOutputLayerLineEdit_textChanged( const QString& text )
 {
   Q_UNUSED( text );
   setAcceptButtonState();

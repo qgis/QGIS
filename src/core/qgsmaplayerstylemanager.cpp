@@ -22,8 +22,8 @@
 #include <QTextStream>
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
-    : mLayer( layer )
-    , mOverriddenOriginalStyle( nullptr )
+  : mLayer( layer )
+  , mOverriddenOriginalStyle( nullptr )
 {
   reset();
 }
@@ -211,7 +211,7 @@ QgsMapLayerStyle::QgsMapLayerStyle()
 }
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString& xmlData )
-    : mXmlData( xmlData )
+  : mXmlData( xmlData )
 {
 }
 

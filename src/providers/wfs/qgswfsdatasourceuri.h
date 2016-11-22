@@ -27,13 +27,13 @@
 struct QgsWFSAuthorization
 {
   QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mAuthCfg( authcfg )
+    : mUserName( userName )
+    , mPassword( password )
+    , mAuthCfg( authcfg )
   {}
 
   //! update authorization for request
-  bool setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest& request ) const
   {
     if ( !mAuthCfg.isEmpty() ) // must be non-empty value
     {
@@ -47,7 +47,7 @@ struct QgsWFSAuthorization
   }
 
   //! update authorization for reply
-  bool setAuthorizationReply( QNetworkReply *reply ) const
+  bool setAuthorizationReply( QNetworkReply* reply ) const
   {
     if ( !mAuthCfg.isEmpty() )
     {
@@ -133,7 +133,10 @@ class QgsWFSDataSourceURI
     bool hideDownloadProgressDialog() const;
 
     //! Return authorization parameters
-    QgsWFSAuthorization& auth() { return mAuth; }
+    QgsWFSAuthorization& auth()
+    {
+      return mAuth;
+    }
 
     //! Builds a derived uri from a base uri
     static QString build( const QString& uri,

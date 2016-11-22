@@ -29,7 +29,7 @@ class QgsRasterMinMaxWidget;
  * \class QgsSingleBandPseudoColorRendererWidget
  */
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
-      private Ui::QgsSingleBandPseudoColorRendererWidgetBase
+  private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
     Q_OBJECT
   public:
@@ -40,10 +40,13 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
       Quantile = 3
     };
 
-    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent = QgsRectangle() );
     ~QgsSingleBandPseudoColorRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle& theExtent )
+    {
+      return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent );
+    }
     QgsRasterRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
 
@@ -72,24 +75,46 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
-    void on_mUnitLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); autoLabel(); }
+    void on_mUnitLineEdit_textEdited( const QString& text )
+    {
+      Q_UNUSED( text );
+      autoLabel();
+    }
     void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column );
     void on_mBandComboBox_currentIndexChanged( int index );
     void on_mColorInterpolationComboBox_currentIndexChanged( int index );
-    void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
-    void on_mMaxLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
-    void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
-    void on_mMaxLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
+    void on_mMinLineEdit_textChanged( const QString& text )
+    {
+      Q_UNUSED( text );
+      resetClassifyButton();
+    }
+    void on_mMaxLineEdit_textChanged( const QString& text )
+    {
+      Q_UNUSED( text );
+      resetClassifyButton();
+    }
+    void on_mMinLineEdit_textEdited( const QString& text )
+    {
+      Q_UNUSED( text );
+      mMinMaxOrigin = QgsRasterRenderer::MinMaxUser;
+      showMinMaxOrigin();
+    }
+    void on_mMaxLineEdit_textEdited( const QString& text )
+    {
+      Q_UNUSED( text );
+      mMinMaxOrigin = QgsRasterRenderer::MinMaxUser;
+      showMinMaxOrigin();
+    }
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
     void on_mColorRampComboBox_currentIndexChanged( int index );
 
   private:
-    void setLineEditValue( QLineEdit *theLineEdit, double theValue );
-    double lineEditValue( const QLineEdit *theLineEdit ) const;
+    void setLineEditValue( QLineEdit* theLineEdit, double theValue );
+    double lineEditValue( const QLineEdit* theLineEdit ) const;
     void resetClassifyButton();
     void showMinMaxOrigin();
-    QgsRasterMinMaxWidget * mMinMaxWidget;
+    QgsRasterMinMaxWidget* mMinMaxWidget;
     int mMinMaxOrigin;
 };
 

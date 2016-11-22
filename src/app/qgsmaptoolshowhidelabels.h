@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolShowHideLabels( QgsMapCanvas *canvas );
+    QgsMapToolShowHideLabels( QgsMapCanvas* canvas );
     ~QgsMapToolShowHideLabels();
 
     //! Overridden mouse move event
@@ -53,7 +53,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
   private:
     //! Select valid labels to pin or unpin
-    void showHideLabels( QMouseEvent * e );
+    void showHideLabels( QMouseEvent* e );
 
     //! Return features intersecting rubberband
     bool selectedFeatures( QgsVectorLayer* vlayer,
@@ -61,10 +61,10 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
     //! Return label features intersecting rubberband
     bool selectedLabelFeatures( QgsVectorLayer* vlayer,
-                                QList<QgsLabelPosition> &listPos );
+                                QList<QgsLabelPosition>& listPos );
 
     //! Show label or diagram with feature ID
-    bool showHide( QgsVectorLayer *vl, const bool show );
+    bool showHide( QgsVectorLayer* vl, const bool show );
 };
 
 #endif // QGSMAPTOOLSHOWHIDELABELS_H

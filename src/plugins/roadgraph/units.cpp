@@ -24,8 +24,8 @@ Unit::Unit()
 }
 
 Unit::Unit( const QString& name, double multipler )
-    : mName( name )
-    , mMultipler( multipler )
+  : mName( name )
+  , mMultipler( multipler )
 {
 }
 
@@ -52,15 +52,15 @@ Unit Unit::byName( const QString& name )
 }
 
 SpeedUnit::SpeedUnit()
-    : mTimeUnit( QLatin1String( "" ), 1 )
-    , mDistanceUnit( QLatin1String( "" ), 1 )
+  : mTimeUnit( QLatin1String( "" ), 1 )
+  , mDistanceUnit( QLatin1String( "" ), 1 )
 {
 
 }
 
 SpeedUnit::SpeedUnit( const Unit& distanceUnit, const Unit& timeUnit )
-    : mTimeUnit( timeUnit )
-    , mDistanceUnit( distanceUnit )
+  : mTimeUnit( timeUnit )
+  , mDistanceUnit( distanceUnit )
 {
 }
 

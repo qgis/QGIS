@@ -26,10 +26,10 @@
 #include <QContextMenuEvent>
 
 
-QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
-    : QTreeView( parent )
-    , mDefaultActions( nullptr )
-    , mMenuProvider( nullptr )
+QgsLayerTreeView::QgsLayerTreeView( QWidget* parent )
+  : QTreeView( parent )
+  , mDefaultActions( nullptr )
+  , mMenuProvider( nullptr )
 {
   setHeaderHidden( true );
 
@@ -70,7 +70,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel* model )
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
 }
 
-QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel() const
+QgsLayerTreeModel* QgsLayerTreeView::layerTreeModel() const
 {
   return qobject_cast<QgsLayerTreeModel*>( model() );
 }
@@ -109,7 +109,7 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer* layer )
 }
 
 
-void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
+void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
   if ( !mMenuProvider )
     return;

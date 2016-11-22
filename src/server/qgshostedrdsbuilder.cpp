@@ -35,9 +35,9 @@ QgsHostedRDSBuilder::~QgsHostedRDSBuilder()
 }
 
 QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
-    const QString &layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+    const QString& layerName,
+    QList<QTemporaryFile*>& filesToRemove,
+    QList<QgsMapLayer*>& layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( filesToRemove );

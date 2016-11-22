@@ -23,7 +23,7 @@
 #include <QTextStream>
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -44,8 +44,8 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
   {
-    QTableWidgetItem *ki = tableWidget->item( i, 0 );
-    QTableWidgetItem *vi = tableWidget->item( i, 1 );
+    QTableWidgetItem* ki = tableWidget->item( i, 0 );
+    QTableWidgetItem* vi = tableWidget->item( i, 1 );
 
     if ( !ki )
       continue;
@@ -98,7 +98,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
 
 void QgsValueMapConfigDlg::removeSelectedButtonPushed()
 {
-  QList<QTableWidgetItem *> list = tableWidget->selectedItems();
+  QList<QTableWidgetItem*> list = tableWidget->selectedItems();
   QSet<int> rowsToRemove;
   int removed = 0;
   int i;
@@ -121,7 +121,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
   emit changed();
 }
 
-void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
+void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant>& map, bool insertNull )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )

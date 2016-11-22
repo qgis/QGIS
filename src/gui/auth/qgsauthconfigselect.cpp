@@ -28,14 +28,14 @@
 #include "qgslogger.h"
 
 
-QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
-    : QWidget( parent )
-    , mAuthCfg( QString() )
-    , mDataProvider( dataprovider )
-    , mConfigs( QgsAuthMethodConfigsMap() )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget* parent, const QString& dataprovider )
+  : QWidget( parent )
+  , mAuthCfg( QString() )
+  , mDataProvider( dataprovider )
+  , mConfigs( QgsAuthMethodConfigsMap() )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -80,7 +80,7 @@ void QgsAuthConfigSelect::setConfigId( const QString& authcfg )
   }
 }
 
-void QgsAuthConfigSelect::setDataProviderKey( const QString &key )
+void QgsAuthConfigSelect::setDataProviderKey( const QString& key )
 {
   if ( mDisabled )
   {
@@ -97,7 +97,7 @@ void QgsAuthConfigSelect::loadConfig()
   if ( !mAuthCfg.isEmpty() && mConfigs.contains( mAuthCfg ) )
   {
     QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
-    QgsAuthMethod * authmethod = QgsAuthManager::instance()->configAuthMethod( mAuthCfg );
+    QgsAuthMethod* authmethod = QgsAuthManager::instance()->configAuthMethod( mAuthCfg );
     QString methoddesc = tr( "Missing authentication method description" );
     if ( authmethod )
     {
@@ -161,7 +161,7 @@ void QgsAuthConfigSelect::populateConfigSelector()
   cmbConfigSelect->setCurrentIndex( indx > 0 ? indx : 0 );
 }
 
-void QgsAuthConfigSelect::showMessage( const QString &msg )
+void QgsAuthConfigSelect::showMessage( const QString& msg )
 {
   if ( mDisabled )
   {
@@ -199,7 +199,7 @@ void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this, QString(), mDataProvider );
+  QgsAuthConfigEdit* ace = new QgsAuthConfigEdit( this, QString(), mDataProvider );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -213,7 +213,7 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this, mAuthCfg, mDataProvider );
+  QgsAuthConfigEdit* ace = new QgsAuthConfigEdit( this, mAuthCfg, mDataProvider );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -251,14 +251,14 @@ void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
 
 #include <QPushButton>
 
-QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &datauri, const QString &dataprovider )
-    : QDialog( parent )
-    , mAuthCfg( QString() )
-    , mDataUri( QString() )
-    , mDataUriOrig( QString() )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget* parent, const QString& datauri, const QString& dataprovider )
+  : QDialog( parent )
+  , mAuthCfg( QString() )
+  , mDataUri( QString() )
+  , mDataUriOrig( QString() )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -292,7 +292,7 @@ QgsAuthConfigUriEdit::~QgsAuthConfigUriEdit()
 {
 }
 
-void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )
+void QgsAuthConfigUriEdit::setDataSourceUri( const QString& datauri )
 {
   if ( mDisabled )
   {
@@ -331,7 +331,7 @@ QString QgsAuthConfigUriEdit::dataSourceUri()
   return mDataUri;
 }
 
-bool QgsAuthConfigUriEdit::hasConfigId( const QString &txt )
+bool QgsAuthConfigUriEdit::hasConfigId( const QString& txt )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -351,7 +351,7 @@ void QgsAuthConfigUriEdit::resetChanges()
   setDataSourceUri( mDataUriOrig );
 }
 
-void QgsAuthConfigUriEdit::authCfgUpdated( const QString &authcfg )
+void QgsAuthConfigUriEdit::authCfgUpdated( const QString& authcfg )
 {
   mAuthCfg = authcfg;
 
@@ -369,7 +369,7 @@ void QgsAuthConfigUriEdit::authCfgUpdated( const QString &authcfg )
   selectAuthCfgInUri();
 }
 
-void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
+void QgsAuthConfigUriEdit::authCfgRemoved( const QString& authcfg )
 {
   if ( authCfgFromUri() == authcfg )
   {

@@ -108,14 +108,14 @@ static bool cmpByText_( QAction* a, QAction* b )
   return QString::localeAwareCompare( a->text(), b->text() ) < 0;
 }
 
-QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
-    : QMainWindow()
-    , mTitle( title )
-    , mQgis( qgis )
-    , mPrinter( nullptr )
-    , mSetPageOrientation( false )
-    , mUndoView( nullptr )
-    , mAtlasFeatureAction( nullptr )
+QgsComposer::QgsComposer( QgisApp* qgis, const QString& title )
+  : QMainWindow()
+  , mTitle( title )
+  , mQgis( qgis )
+  , mPrinter( nullptr )
+  , mSetPageOrientation( false )
+  , mUndoView( nullptr )
+  , mAtlasFeatureAction( nullptr )
 {
   setupUi( this );
   setWindowTitle( mTitle );
@@ -223,12 +223,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 #ifdef Q_OS_MAC
   mActionQuit->setText( tr( "Close" ) );
   mActionQuit->setShortcut( QKeySequence::Close );
-  QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
+  QMenu* appMenu = menuBar()->addMenu( tr( "QGIS" ) );
   appMenu->addAction( mQgis->actionAbout() );
   appMenu->addAction( mQgis->actionOptions() );
 #endif
 
-  QMenu *composerMenu = menuBar()->addMenu( tr( "&Composer" ) );
+  QMenu* composerMenu = menuBar()->addMenu( tr( "&Composer" ) );
   composerMenu->addAction( mActionSaveProject );
   composerMenu->addSeparator();
   composerMenu->addAction( mActionNewComposer );
@@ -274,7 +274,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionPaste->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
   connect( mActionPaste, SIGNAL( triggered() ), this, SLOT( actionPasteTriggered() ) );
 
-  QMenu *editMenu = menuBar()->addMenu( tr( "&Edit" ) );
+  QMenu* editMenu = menuBar()->addMenu( tr( "&Edit" ) );
   editMenu->addAction( mActionUndo );
   editMenu->addAction( mActionRedo );
   editMenu->addSeparator();
@@ -327,7 +327,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionPreviewProtanope->setActionGroup( mPreviewGroup );
   mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
 
-  QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
+  QMenu* viewMenu = menuBar()->addMenu( tr( "&View" ) );
   //Ctrl+= should also trigger zoom in
   QShortcut* ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
@@ -335,7 +335,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 #ifndef Q_OS_MAC
   //disabled for OSX - see #10761
   //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
-  QMenu *previewMenu = viewMenu->addMenu( QStringLiteral( "&Preview" ) );
+  QMenu* previewMenu = viewMenu->addMenu( QStringLiteral( "&Preview" ) );
   previewMenu->addAction( mActionPreviewModeOff );
   previewMenu->addAction( mActionPreviewModeGrayscale );
   previewMenu->addAction( mActionPreviewModeMono );
@@ -379,19 +379,19 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu->addAction( mItemActionToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mItemToolbar->toggleViewAction() );
 
-  QMenu *layoutMenu = menuBar()->addMenu( tr( "&Layout" ) );
+  QMenu* layoutMenu = menuBar()->addMenu( tr( "&Layout" ) );
   layoutMenu->addAction( mActionAddNewMap );
   layoutMenu->addAction( mActionAddNewLabel );
   layoutMenu->addAction( mActionAddNewScalebar );
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
-  QMenu *shapeMenu = layoutMenu->addMenu( QStringLiteral( "Add Shape" ) );
+  QMenu* shapeMenu = layoutMenu->addMenu( QStringLiteral( "Add Shape" ) );
   shapeMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) );
   shapeMenu->addAction( mActionAddRectangle );
   shapeMenu->addAction( mActionAddTriangle );
   shapeMenu->addAction( mActionAddEllipse );
 
-  QMenu *nodesItemMenu = layoutMenu->addMenu( QStringLiteral( "Add Nodes Item" ) );
+  QMenu* nodesItemMenu = layoutMenu->addMenu( QStringLiteral( "Add Nodes Item" ) );
   nodesItemMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddNodesItem.svg" ) ) );
   nodesItemMenu->addAction( mActionAddPolygon );
   nodesItemMenu->addAction( mActionAddPolyline );
@@ -415,7 +415,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionLockItems );
   layoutMenu->addAction( mActionUnlockAll );
 
-  QMenu *atlasMenu = menuBar()->addMenu( tr( "&Atlas" ) );
+  QMenu* atlasMenu = menuBar()->addMenu( tr( "&Atlas" ) );
   atlasMenu->addAction( mActionAtlasPreview );
   atlasMenu->addAction( mActionAtlasFirst );
   atlasMenu->addAction( mActionAtlasPrev );
@@ -451,7 +451,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mAtlasPageComboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( atlasPageComboEditingFinished() ) );
   mAtlasToolbar->insertWidget( mActionAtlasNext, mAtlasPageComboBox );
 
-  QMenu *settingsMenu = menuBar()->addMenu( tr( "&Settings" ) );
+  QMenu* settingsMenu = menuBar()->addMenu( tr( "&Settings" ) );
   settingsMenu->addAction( mActionOptions );
 
 #ifdef Q_OS_MAC
@@ -485,7 +485,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusZoomCombo->setMinimumWidth( 100 );
   //zoom combo box accepts decimals in the range 1-9999, with an optional decimal point and "%" sign
   QRegExp zoomRx( "\\s*\\d{1,4}(\\.\\d?)?\\s*%?" );
-  QValidator *zoomValidator = new QRegExpValidator( zoomRx, mStatusZoomCombo );
+  QValidator* zoomValidator = new QRegExpValidator( zoomRx, mStatusZoomCombo );
   mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
 
   //add some nice zoom levels to the zoom combobox
@@ -594,7 +594,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemsDock->setObjectName( QStringLiteral( "ItemsDock" ) );
   mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
-  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  QList<QDockWidget*> docks = findChildren<QDockWidget*>();
   Q_FOREACH ( QDockWidget* dock, docks )
   {
     dock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
@@ -666,7 +666,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionExportAtlasAsPDF->setEnabled( false );
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
-  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer* ) ) );
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
@@ -762,8 +762,8 @@ void QgsComposer::setIconSizes( int size )
   setIconSize( QSize( size, size ) );
 
   //Change all current icon sizes.
-  QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  Q_FOREACH ( QToolBar * toolbar, toolbars )
+  QList<QToolBar*> toolbars = findChildren<QToolBar*>();
+  Q_FOREACH ( QToolBar* toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
@@ -927,7 +927,7 @@ bool QgsComposer::loadFromTemplate( const QDomDocument& templateDoc, bool clearE
   if ( result )
   {
     // update composition widget
-    QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+    QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget*>( mGeneralPropertiesStack->takeMainPanel() );
     delete oldCompositionWidget;
     createCompositionWidget();
   }
@@ -1068,7 +1068,7 @@ void QgsComposer::updateAtlasPageComboBox( int pageCount )
   mAtlasPageComboBox->blockSignals( false );
 }
 
-void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
+void QgsComposer::atlasFeatureChanged( QgsFeature* feature )
 {
   Q_UNUSED( feature );
 
@@ -1438,8 +1438,8 @@ void QgsComposer::on_mActionHidePanels_triggered()
   */
 
   bool showPanels = !mActionHidePanels->isChecked();
-  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
-  QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+  QList<QDockWidget*> docks = findChildren<QDockWidget*>();
+  QList<QTabBar*> tabBars = findChildren<QTabBar*>();
 
   if ( !showPanels )
   {
@@ -1550,7 +1550,7 @@ void QgsComposer::setComposition( QgsComposition* composition )
   }
 
   //delete composition widget
-  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget*>( mGeneralPropertiesStack->takeMainPanel() );
   delete oldCompositionWidget;
 
   deleteItemWidgets();
@@ -1566,7 +1566,7 @@ void QgsComposer::setComposition( QgsComposition* composition )
   mActionShowPage->setChecked( mComposition->pagesVisible() );
 
   //setup atlas composition widget
-  QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
+  QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget*>( mAtlasDock->widget() );
   delete oldAtlasWidget;
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
@@ -1574,7 +1574,7 @@ void QgsComposer::setComposition( QgsComposition* composition )
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   toggleAtlasControls( atlasMap->enabled() );
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
-  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer* ) ) );
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
@@ -2209,7 +2209,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     //
     // Build an augmented FileDialog with a combo box to select the output format
-    QComboBox *box = new QComboBox();
+    QComboBox* box = new QComboBox();
     QHBoxLayout* hlayout = new QHBoxLayout();
     QWidget* widget = new QWidget();
 
@@ -2435,32 +2435,32 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 // utility class that will hide all items until it's destroyed
 struct QgsItemTempHider
 {
-  explicit QgsItemTempHider( const QList<QGraphicsItem *> & items )
-  {
-    QList<QGraphicsItem *>::const_iterator it = items.begin();
-    for ( ; it != items.end(); ++it )
+    explicit QgsItemTempHider( const QList<QGraphicsItem*>& items )
     {
-      mItemVisibility[*it] = ( *it )->isVisible();
-      ( *it )->hide();
+      QList<QGraphicsItem*>::const_iterator it = items.begin();
+      for ( ; it != items.end(); ++it )
+      {
+        mItemVisibility[*it] = ( *it )->isVisible();
+        ( *it )->hide();
+      }
     }
-  }
-  void hideAll()
-  {
-    QgsItemVisibilityHash::const_iterator it = mItemVisibility.constBegin();
-    for ( ; it != mItemVisibility.constEnd(); ++it ) it.key()->hide();
-  }
-  ~QgsItemTempHider()
-  {
-    QgsItemVisibilityHash::const_iterator it = mItemVisibility.constBegin();
-    for ( ; it != mItemVisibility.constEnd(); ++it )
+    void hideAll()
     {
-      it.key()->setVisible( it.value() );
+      QgsItemVisibilityHash::const_iterator it = mItemVisibility.constBegin();
+      for ( ; it != mItemVisibility.constEnd(); ++it ) it.key()->hide();
     }
-  }
-private:
-  Q_DISABLE_COPY( QgsItemTempHider )
-  typedef QHash<QGraphicsItem*, bool> QgsItemVisibilityHash;
-  QgsItemVisibilityHash mItemVisibility;
+    ~QgsItemTempHider()
+    {
+      QgsItemVisibilityHash::const_iterator it = mItemVisibility.constBegin();
+      for ( ; it != mItemVisibility.constEnd(); ++it )
+      {
+        it.key()->setVisible( it.value() );
+      }
+    }
+  private:
+    Q_DISABLE_COPY( QgsItemTempHider )
+    typedef QHash<QGraphicsItem*, bool> QgsItemVisibilityHash;
+    QgsItemVisibilityHash mItemVisibility;
 };
 
 void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
@@ -2782,25 +2782,25 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
 
         QDomDocument svg;
         QDomNode svgDocRoot;
-        QgsPaperItem * paperItem = paperItems[i];
+        QgsPaperItem* paperItem = paperItems[i];
         const QRectF paperRect = QRectF( paperItem->pos().x(),
                                          paperItem->pos().y(),
                                          paperItem->rect().width(),
                                          paperItem->rect().height() );
 
-        QList<QGraphicsItem *> items = mComposition->items( paperRect,
-                                       Qt::IntersectsItemBoundingRect,
-                                       Qt::AscendingOrder );
+        QList<QGraphicsItem*> items = mComposition->items( paperRect,
+                                      Qt::IntersectsItemBoundingRect,
+                                      Qt::AscendingOrder );
         if ( ! items.isEmpty()
              && dynamic_cast<QgsPaperGrid*>( items.last() )
              && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
         int composerItemLayerIdx = 0;
-        QList<QGraphicsItem *>::const_iterator it = items.begin();
+        QList<QGraphicsItem*>::const_iterator it = items.begin();
         for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
         {
           itemsHider.hideAll();
-          QgsComposerItem * composerItem = dynamic_cast<QgsComposerItem*>( *it );
+          QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *it );
           QString layerName( "Layer " + QString::number( svgLayerId ) );
           if ( composerItem && composerItem->numberExportLayers() )
           {
@@ -3389,19 +3389,19 @@ void QgsComposer::on_mActionRedo_triggered()
   }
 }
 
-void QgsComposer::closeEvent( QCloseEvent *e )
+void QgsComposer::closeEvent( QCloseEvent* e )
 {
   Q_UNUSED( e );
   saveWindowState();
 }
 
-void QgsComposer::moveEvent( QMoveEvent *e )
+void QgsComposer::moveEvent( QMoveEvent* e )
 {
   Q_UNUSED( e );
   saveWindowState();
 }
 
-void QgsComposer::resizeEvent( QResizeEvent *e )
+void QgsComposer::resizeEvent( QResizeEvent* e )
 {
   Q_UNUSED( e );
 
@@ -3439,12 +3439,12 @@ void QgsComposer::restoreWindowState()
   // restore the toolbar and dock widgets postions using Qt4 settings API
   QSettings settings;
 
-  if ( !restoreState( settings.value( QStringLiteral( "/ComposerUI/state" ), QByteArray::fromRawData(( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
+  if ( !restoreState( settings.value( QStringLiteral( "/ComposerUI/state" ), QByteArray::fromRawData(( char* )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of composer UI state failed" );
   }
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "/Composer/geometry" ), QByteArray::fromRawData(( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "/Composer/geometry" ), QByteArray::fromRawData(( char* )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of composer UI geometry failed" );
   }
@@ -3535,7 +3535,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   }
 
   //delete composition widget
-  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget*>( mGeneralPropertiesStack->takeMainPanel() );
   delete oldCompositionWidget;
 
   deleteItemWidgets();
@@ -3585,7 +3585,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   setupUndoView();
 
   //delete old atlas composition widget
-  QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
+  QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget*>( mAtlasDock->widget() );
   delete oldAtlasWidget;
   mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
@@ -3597,7 +3597,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   toggleAtlasControls( atlasMap->enabled() );
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
-  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer* ) ) );
   connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
   connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
@@ -3756,7 +3756,7 @@ void QgsComposer::addComposerShape( QgsComposerShape* shape )
   mItemWidgetMap.insert( shape, sWidget );
 }
 
-void QgsComposer::addComposerTableV2( QgsComposerAttributeTableV2 *table, QgsComposerFrame* frame )
+void QgsComposer::addComposerTableV2( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
 {
   if ( !table )
   {
@@ -3812,7 +3812,7 @@ bool QgsComposer::containsWmsLayer() const
   for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
   {
     currentItem = item_it.key();
-    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
+    currentMap = dynamic_cast<QgsComposerMap*>( currentItem );
     if ( currentMap )
     {
       if ( currentMap->containsWmsLayer() )
@@ -3840,7 +3840,7 @@ bool QgsComposer::containsAdvancedEffects() const
       return true;
     }
     // If item is a composer map, check if it contains any advanced effects
-    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
+    currentMap = dynamic_cast<QgsComposerMap*>( currentItem );
     if ( currentMap && currentMap->containsAdvancedEffects() )
     {
       return true;
@@ -3902,7 +3902,7 @@ void QgsComposer::cleanupAfterTemplateRead()
   for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
   {
     //update all legends completely
-    QgsComposerLegend* legendItem = dynamic_cast<QgsComposerLegend *>( itemIt.key() );
+    QgsComposerLegend* legendItem = dynamic_cast<QgsComposerLegend*>( itemIt.key() );
     if ( legendItem )
     {
       legendItem->updateLegend();
@@ -3910,7 +3910,7 @@ void QgsComposer::cleanupAfterTemplateRead()
     }
 
     //update composer map extent if it does not intersect the full extent of all layers
-    QgsComposerMap* mapItem = dynamic_cast<QgsComposerMap *>( itemIt.key() );
+    QgsComposerMap* mapItem = dynamic_cast<QgsComposerMap*>( itemIt.key() );
     if ( mapItem )
     {
       //test if composer map extent intersects extent of all layers
@@ -4108,7 +4108,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
   emit atlasPreviewFeatureChanged();
 }
 
-void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
+void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer )
 {
   if ( mAtlasFeatureAction )
   {
@@ -4201,7 +4201,7 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
   atlasMap.setPredefinedScales( pScales );
 }
 
-QPrinter *QgsComposer::printer()
+QPrinter* QgsComposer::printer()
 {
   //only create the printer on demand - creating a printer object can be very slow
   //due to QTBUG-3033

@@ -33,10 +33,10 @@
 #include <QPainter>
 
 QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
-    , mZoomedInResampler( nullptr )
-    , mZoomedOutResampler( nullptr )
-    , mMaxOversampling( 2.0 )
+  : QgsRasterInterface( input )
+  , mZoomedInResampler( nullptr )
+  , mZoomedOutResampler( nullptr )
+  , mMaxOversampling( 2.0 )
 {
 }
 
@@ -49,7 +49,7 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
 QgsRasterResampleFilter* QgsRasterResampleFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( nullptr );
+  QgsRasterResampleFilter* resampler = new QgsRasterResampleFilter( nullptr );
   if ( mZoomedInResampler )
   {
     resampler->setZoomedInResampler( mZoomedInResampler->clone() );
@@ -129,18 +129,18 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
   mZoomedOutResampler = r;
 }
 
-QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput ) return outputBlock;
 
   double oversampling = 1.0; // approximate global oversampling factor
 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->sourceInput() );
+    QgsRasterDataProvider* provider = dynamic_cast<QgsRasterDataProvider*>( mInput->sourceInput() );
     if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       double xRes = extent.width() / width;
@@ -181,7 +181,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   int resWidth = width * oversamplingX;
   int resHeight = height * oversamplingY;
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );

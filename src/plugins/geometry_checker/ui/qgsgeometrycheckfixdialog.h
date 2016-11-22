@@ -32,14 +32,14 @@ class QgsGeometryCheckerFixDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerFixDialog( QgsGeometryChecker* checker, const QList<QgsGeometryCheckError *>& errors, QgisInterface *iface, QWidget* parent = nullptr );
+    QgsGeometryCheckerFixDialog( QgsGeometryChecker* checker, const QList<QgsGeometryCheckError*>& errors, QgisInterface* iface, QWidget* parent = nullptr );
 
   signals:
     void currentErrorChanged( QgsGeometryCheckError* error );
 
   private:
     QgsGeometryChecker* mChecker;
-    QList<QgsGeometryCheckError *> mErrors;
+    QList<QgsGeometryCheckError*> mErrors;
     QgisInterface* mIface;
     QGroupBox* mResolutionsBox;
     QDialogButtonBox* mButtonBox;
@@ -50,7 +50,7 @@ class QgsGeometryCheckerFixDialog : public QDialog
     QPushButton* mFixBtn;
     QPushButton* mSkipBtn;
 
-    void showEvent( QShowEvent * ) override;
+    void showEvent( QShowEvent* ) override;
 
   private slots:
     void setupNextError();

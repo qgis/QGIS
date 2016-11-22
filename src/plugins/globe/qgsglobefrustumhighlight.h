@@ -19,7 +19,10 @@
 #include <osg/NodeCallback>
 
 class QgsRubberBand;
-namespace osg { class View; }
+namespace osg
+{
+  class View;
+}
 namespace osgEarth
 {
   class Terrain;

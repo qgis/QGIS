@@ -50,7 +50,10 @@ class EffectItem : public QStandardItem
       emitDataChanged();
     }
 
-    int type() const override { return EffectItemType; }
+    int type() const override
+    {
+      return EffectItemType;
+    }
 
     QgsPaintEffect* effect()
     {
@@ -70,7 +73,7 @@ class EffectItem : public QStandardItem
       return QStandardItem::data( role );
     }
 
-    void setData( const QVariant & value, int role ) override
+    void setData( const QVariant& value, int role ) override
     {
       if ( role == Qt::CheckStateRole )
       {
@@ -93,10 +96,10 @@ class EffectItem : public QStandardItem
 // QgsEffectStackPropertiesWidget
 //
 
-QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
-    : QgsPanelWidget( parent )
-    , mStack( stack )
-    , mPreviewPicture( nullptr )
+QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent )
+  : QgsPanelWidget( parent )
+  , mStack( stack )
+  , mPreviewPicture( nullptr )
 {
 
 // TODO
@@ -152,7 +155,7 @@ QgsEffectStackPropertiesWidget::~QgsEffectStackPropertiesWidget()
   delete mPreviewPicture;
 }
 
-void QgsEffectStackPropertiesWidget::setPreviewPicture( const QPicture &picture )
+void QgsEffectStackPropertiesWidget::setPreviewPicture( const QPicture& picture )
 {
   if ( mPreviewPicture )
   {
@@ -194,7 +197,7 @@ void QgsEffectStackPropertiesWidget::updateUi()
   if ( !currentIdx.isValid() )
     return;
 
-  EffectItem *item = static_cast<EffectItem*>( mModel->itemFromIndex( currentIdx ) );
+  EffectItem* item = static_cast<EffectItem*>( mModel->itemFromIndex( currentIdx ) );
 
   QStandardItem* root = mModel->invisibleRootItem();
   int rowCount = root->rowCount();
@@ -241,7 +244,7 @@ EffectItem* QgsEffectStackPropertiesWidget::currentEffectItem()
   if ( !idx.isValid() )
     return nullptr;
 
-  EffectItem *item = static_cast<EffectItem*>( mModel->itemFromIndex( idx ) );
+  EffectItem* item = static_cast<EffectItem*>( mModel->itemFromIndex( idx ) );
   return item;
 }
 
@@ -253,7 +256,7 @@ void QgsEffectStackPropertiesWidget::effectChanged()
   if ( !currentItem )
     return;
 
-  QWidget *effectPropertiesWidget = new QgsPaintEffectPropertiesWidget( currentItem->effect() );
+  QWidget* effectPropertiesWidget = new QgsPaintEffectPropertiesWidget( currentItem->effect() );
   setWidget( effectPropertiesWidget );
 
   connect( effectPropertiesWidget, SIGNAL( changeEffect( QgsPaintEffect* ) ), this, SLOT( changeEffect( QgsPaintEffect* ) ) );
@@ -268,7 +271,7 @@ void QgsEffectStackPropertiesWidget::setWidget( QWidget* widget )
   if ( mPresentWidget )
   {
     stackedWidget->removeWidget( mPresentWidget );
-    QWidget *dummy = mPresentWidget;
+    QWidget* dummy = mPresentWidget;
     mPresentWidget = widget;
     delete dummy; // auto disconnects all signals
   }
@@ -279,7 +282,7 @@ void QgsEffectStackPropertiesWidget::addEffect()
   QgsPaintEffect* newEffect = new QgsDrawSourceEffect();
   mStack->insertEffect( 0, newEffect );
 
-  EffectItem *newEffectItem = new EffectItem( newEffect, this );
+  EffectItem* newEffectItem = new EffectItem( newEffect, this );
   mModel->invisibleRootItem()->insertRow( mStack->count() - 1, newEffectItem );
 
   mEffectsList->setCurrentIndex( mModel->indexFromItem( newEffectItem ) );
@@ -289,12 +292,12 @@ void QgsEffectStackPropertiesWidget::addEffect()
 
 void QgsEffectStackPropertiesWidget::removeEffect()
 {
-  EffectItem *item = currentEffectItem();
+  EffectItem* item = currentEffectItem();
   int row = item->row();
   QStandardItem* root = mModel->invisibleRootItem();
 
   int layerIdx = root->rowCount() - row - 1;
-  QgsPaintEffect *tmpEffect = mStack->takeEffect( layerIdx );
+  QgsPaintEffect* tmpEffect = mStack->takeEffect( layerIdx );
 
   mModel->invisibleRootItem()->removeRow( row );
 
@@ -320,7 +323,7 @@ void QgsEffectStackPropertiesWidget::moveEffectUp()
 
 void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
 {
-  EffectItem *item = currentEffectItem();
+  EffectItem* item = currentEffectItem();
   if ( !item )
     return;
 
@@ -333,7 +336,7 @@ void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
   QgsPaintEffect* tmpEffect = mStack->takeEffect( layerIdx );
   mStack->insertEffect( layerIdx - offset, tmpEffect );
 
-  QList<QStandardItem *> toMove = root->takeRow( row );
+  QList<QStandardItem*> toMove = root->takeRow( row );
   root->insertRows( row + offset, toMove );
 
   QModelIndex newIdx = toMove[ 0 ]->index();
@@ -345,7 +348,7 @@ void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
 
 void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect* newEffect )
 {
-  EffectItem *item = currentEffectItem();
+  EffectItem* item = currentEffectItem();
   item->setEffect( newEffect );
 
   QStandardItem* root = mModel->invisibleRootItem();
@@ -362,9 +365,9 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect* newEffect )
 // QgsEffectStackPropertiesDialog
 //
 
-QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
-    : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
-    , mPropertiesWidget( nullptr )
+QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent, Qt::WindowFlags f )
+  : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
+  , mPropertiesWidget( nullptr )
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
@@ -381,7 +384,7 @@ QgsEffectStack* QgsEffectStackPropertiesDialog::stack()
   return mPropertiesWidget->stack();
 }
 
-void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture )
+void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture& picture )
 {
   mPropertiesWidget->setPreviewPicture( picture );
 }
@@ -390,11 +393,11 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 // QgsEffectStackCompactWidget
 //
 
-QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsPaintEffect *effect )
-    : QgsPanelWidget( parent )
-    , mEnabledCheckBox( nullptr )
-    , mButton( nullptr )
-    , mPreviewPicture( nullptr )
+QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget* parent , QgsPaintEffect* effect )
+  : QgsPanelWidget( parent )
+  , mEnabledCheckBox( nullptr )
+  , mButton( nullptr )
+  , mPreviewPicture( nullptr )
 {
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -424,7 +427,7 @@ QgsEffectStackCompactWidget::~QgsEffectStackCompactWidget()
   delete mPreviewPicture;
 }
 
-void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect )
   {
@@ -454,7 +457,7 @@ QgsPaintEffect* QgsEffectStackCompactWidget::paintEffect() const
   return mStack;
 }
 
-void QgsEffectStackCompactWidget::setPreviewPicture( const QPicture &picture )
+void QgsEffectStackCompactWidget::setPreviewPicture( const QPicture& picture )
 {
   delete mPreviewPicture;
   mPreviewPicture = new QPicture( picture );
@@ -488,7 +491,7 @@ void QgsEffectStackCompactWidget::enableToggled( bool checked )
   emit changed();
 }
 
-void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget *panel )
+void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget* panel )
 {
   QgsEffectStackPropertiesWidget* widget = qobject_cast<QgsEffectStackPropertiesWidget*>( panel );
   *mStack = *widget->stack();

@@ -17,26 +17,26 @@
 #include "qgsgeometry.h"
 
 QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
-    : mLayer( nullptr )
-    , mId( id )
-    , mGeometry( geometry )
-    , mObstacleGeometry( nullptr )
-    , mSize( size )
-    , mPriority( -1 )
-    , mZIndex( 0 )
-    , mHasFixedPosition( false )
-    , mHasFixedAngle( false )
-    , mFixedAngle( 0 )
-    , mHasFixedQuadrant( false )
-    , mDistLabel( 0 )
-    , mOffsetType( QgsPalLayerSettings::FromPoint )
-    , mRepeatDistance( 0 )
-    , mAlwaysShow( false )
-    , mIsObstacle( false )
-    , mObstacleFactor( 1 )
-    , mInfo( nullptr )
-    , mPermissibleZoneGeos( nullptr )
-    , mPermissibleZoneGeosPrepared( nullptr )
+  : mLayer( nullptr )
+  , mId( id )
+  , mGeometry( geometry )
+  , mObstacleGeometry( nullptr )
+  , mSize( size )
+  , mPriority( -1 )
+  , mZIndex( 0 )
+  , mHasFixedPosition( false )
+  , mHasFixedAngle( false )
+  , mFixedAngle( 0 )
+  , mHasFixedQuadrant( false )
+  , mDistLabel( 0 )
+  , mOffsetType( QgsPalLayerSettings::FromPoint )
+  , mRepeatDistance( 0 )
+  , mAlwaysShow( false )
+  , mIsObstacle( false )
+  , mObstacleFactor( 1 )
+  , mInfo( nullptr )
+  , mPermissibleZoneGeos( nullptr )
+  , mPermissibleZoneGeosPrepared( nullptr )
 {
 }
 
@@ -65,7 +65,7 @@ void QgsLabelFeature::setObstacleGeometry( GEOSGeometry* obstacleGeom )
   mObstacleGeometry = obstacleGeom;
 }
 
-void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
+void QgsLabelFeature::setPermissibleZone( const QgsGeometry& geometry )
 {
   mPermissibleZone = geometry;
 

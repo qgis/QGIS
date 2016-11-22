@@ -28,7 +28,7 @@
 
 //! Constructor
 QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface* serverInterface ):
-    mServerInterface( serverInterface )
+  mServerInterface( serverInterface )
 {
 }
 

@@ -17,7 +17,7 @@
 #include "qgsgeometryoverlapcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter , const QgsFeatureIds& ids ) const
 {
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
@@ -74,7 +74,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError*>& erro
   }
 }
 
-void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes& changes ) const
 {
   QString errMsg;
   QgsGeometryOverlapCheckError* overlapError = static_cast<QgsGeometryOverlapCheckError*>( error );

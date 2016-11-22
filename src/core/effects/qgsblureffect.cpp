@@ -19,7 +19,7 @@
 #include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
 
-QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
+QgsPaintEffect* QgsBlurEffect::create( const QgsStringMap& map )
 {
   QgsBlurEffect* newEffect = new QgsBlurEffect();
   newEffect->readProperties( map );
@@ -27,11 +27,11 @@ QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
 }
 
 QgsBlurEffect::QgsBlurEffect()
-    : QgsPaintEffect()
-    , mBlurLevel( 10 )
-    , mBlurMethod( StackBlur )
-    , mTransparency( 0.0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
+  : QgsPaintEffect()
+  , mBlurLevel( 10 )
+  , mBlurMethod( StackBlur )
+  , mTransparency( 0.0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
 {
 
 }
@@ -41,7 +41,7 @@ QgsBlurEffect::~QgsBlurEffect()
 
 }
 
-void QgsBlurEffect::draw( QgsRenderContext &context )
+void QgsBlurEffect::draw( QgsRenderContext& context )
 {
   if ( !source() || !enabled() || !context.painter() )
     return;
@@ -64,7 +64,7 @@ void QgsBlurEffect::drawStackBlur( QgsRenderContext& context )
   drawBlurredImage( context, im );
 }
 
-void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
+void QgsBlurEffect::drawGaussianBlur( QgsRenderContext& context )
 {
   QImage* im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), mBlurLevel );
   drawBlurredImage( context, *im );
@@ -95,7 +95,7 @@ QgsStringMap QgsBlurEffect::properties() const
   return props;
 }
 
-void QgsBlurEffect::readProperties( const QgsStringMap &props )
+void QgsBlurEffect::readProperties( const QgsStringMap& props )
 {
   bool ok;
   QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
@@ -128,7 +128,7 @@ QgsBlurEffect* QgsBlurEffect::clone() const
   return newEffect;
 }
 
-QRectF QgsBlurEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsBlurEffect::boundingRect( const QRectF& rect, const QgsRenderContext& context ) const
 {
   Q_UNUSED( context );
 

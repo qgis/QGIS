@@ -24,7 +24,7 @@
 #include <QSettings>
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl )
-    : QDialog()
+  : QDialog()
 {
   setupUi( this );
   if ( vl )
@@ -73,8 +73,8 @@ QgsDelAttrDialog::~QgsDelAttrDialog()
 QList<int> QgsDelAttrDialog::selectedAttributes()
 {
   QList<int> selectionList;
-  QList<QListWidgetItem *> selection = listBox2->selectedItems();
-  QList<QListWidgetItem *>::const_iterator itemIter = selection.constBegin();
+  QList<QListWidgetItem*> selection = listBox2->selectedItems();
+  QList<QListWidgetItem*>::const_iterator itemIter = selection.constBegin();
   for ( ; itemIter != selection.constEnd(); ++itemIter )
   {
     selectionList.push_back(( *itemIter )->data( Qt::UserRole ).toInt() );

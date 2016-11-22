@@ -29,7 +29,10 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
-    const QgsVirtualLayerProvider* provider() const { return mProvider; }
+    const QgsVirtualLayerProvider* provider() const
+    {
+      return mProvider;
+    }
   private:
     const QgsVirtualLayerProvider* mProvider;
 };

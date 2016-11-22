@@ -19,8 +19,8 @@
 #include <qgslogger.h>
 
 
-QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager * pluginManager )
-    : mPluginManager( pluginManager )
+QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager* pluginManager )
+  : mPluginManager( pluginManager )
 {
 }
 
@@ -73,7 +73,7 @@ void QgsAppPluginManagerInterface::reloadModel()
 
 
 //! return given plugin metadata
-const QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( const QString& key ) const
+const QMap<QString, QString>* QgsAppPluginManagerInterface::pluginMetadata( const QString& key ) const
 {
   return mPluginManager->pluginMetadata( key );
 }
@@ -94,7 +94,7 @@ void QgsAppPluginManagerInterface::addToRepositoryList( const QMap<QString, QStr
 
 
 //! show the given message in the Plugin Manager internal message bar
-void QgsAppPluginManagerInterface::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsAppPluginManagerInterface::pushMessage( const QString& text, QgsMessageBar::MessageLevel level, int duration )
 {
   mPluginManager->pushMessage( text, level, duration );
 }

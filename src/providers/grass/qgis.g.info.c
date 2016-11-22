@@ -60,10 +60,10 @@
 #define G_suppress_masking Rast_suppress_masking
 #endif
 
-int main( int argc, char **argv )
+int main( int argc, char** argv )
 {
-  struct GModule *module;
-  struct Option *info_opt, *rast_opt, *vect_opt, *coor_opt, *north_opt, *south_opt, *east_opt, *west_opt, *rows_opt, *cols_opt;
+  struct GModule* module;
+  struct Option* info_opt, *rast_opt, *vect_opt, *coor_opt, *north_opt, *south_opt, *east_opt, *west_opt, *rows_opt, *cols_opt;
   struct Cell_head window;
 
   /* Initialize the GIS calls */
@@ -124,8 +124,8 @@ int main( int argc, char **argv )
     /* code from g.proj */
     if ( window.proj != PROJECTION_XY )
     {
-      struct Key_Value *projinfo, *projunits;
-      char *wkt;
+      struct Key_Value* projinfo, *projunits;
+      char* wkt;
       projinfo = G_get_projinfo();
       projunits = G_get_projunits();
       wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
@@ -209,8 +209,8 @@ int main( int argc, char **argv )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
-      DCELL *dcell;
-      CELL *cell;
+      DCELL* dcell;
+      CELL* cell;
       char buff[101];
       G_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
@@ -239,7 +239,7 @@ int main( int argc, char **argv )
           }
           else
           {
-            void *ptr;
+            void* ptr;
             double val;
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
@@ -304,11 +304,11 @@ int main( int argc, char **argv )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
-      DCELL *dcell;
-      CELL *cell;
+      DCELL* dcell;
+      CELL* cell;
       int ncols, nrows;
       int row, col;
-      void *ptr;
+      void* ptr;
       double val;
       double min = DBL_MAX;
       double max = -DBL_MAX;

@@ -32,15 +32,15 @@
 #include <QStandardItemModel>
 
 
-QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent, Mode mode )
-    : QDialog( parent )
-    , mDialogMode( mode )
-    , mStyle( style )
+QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget* parent, Mode mode )
+  : QDialog( parent )
+  , mDialogMode( mode )
+  , mStyle( style )
 {
   setupUi( this );
 
   // additional buttons
-  QPushButton *pb;
+  QPushButton* pb;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
@@ -231,7 +231,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
   QgsSymbol* symbol;
   QStringList symbolTags;
   bool symbolFavorite;
-  QgsColorRamp *ramp = nullptr;
+  QgsColorRamp* ramp = nullptr;
   QModelIndex index;
   bool isSymbol = true;
   bool prompt = true;
@@ -383,10 +383,10 @@ void QgsStyleExportImportDialog::clearSelection()
 
 void QgsStyleExportImportDialog::selectSymbols( const QStringList& symbolNames )
 {
-  Q_FOREACH ( const QString &symbolName, symbolNames )
+  Q_FOREACH ( const QString& symbolName, symbolNames )
   {
     QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
-    Q_FOREACH ( const QModelIndex &index, indexes )
+    Q_FOREACH ( const QModelIndex& index, indexes )
     {
       listItems->selectionModel()->select( index, QItemSelectionModel::Select );
     }
@@ -395,10 +395,10 @@ void QgsStyleExportImportDialog::selectSymbols( const QStringList& symbolNames )
 
 void QgsStyleExportImportDialog::deselectSymbols( const QStringList& symbolNames )
 {
-  Q_FOREACH ( const QString &symbolName, symbolNames )
+  Q_FOREACH ( const QString& symbolName, symbolNames )
   {
     QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
-    Q_FOREACH ( const QModelIndex &index, indexes )
+    Q_FOREACH ( const QModelIndex& index, indexes )
     {
       QItemSelection deselection( index, index );
       listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
@@ -516,7 +516,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl& url )
 
     if ( mProgressDlg )
     {
-      QProgressDialog *dummy = mProgressDlg;
+      QProgressDialog* dummy = mProgressDlg;
       mProgressDlg = nullptr;
       delete dummy;
     }
@@ -529,7 +529,7 @@ void QgsStyleExportImportDialog::downloadStyleXml( const QUrl& url )
     // open the network connection and connect the respective slots
     if ( mNetReply )
     {
-      QNetworkReply *dummyReply = mNetReply;
+      QNetworkReply* dummyReply = mNetReply;
       mNetReply = nullptr;
       delete dummyReply;
     }
@@ -578,7 +578,7 @@ void QgsStyleExportImportDialog::downloadCanceled()
   mFileName = QLatin1String( "" );
 }
 
-void QgsStyleExportImportDialog::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
+void QgsStyleExportImportDialog::selectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );

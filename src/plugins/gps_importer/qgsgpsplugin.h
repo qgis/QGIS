@@ -39,7 +39,7 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
      *  is passed by QGIS when it attempts to instantiate the plugin.
      *  @param qI Pointer to the QgisInterface object.
      */
-    explicit QgsGPSPlugin( QgisInterface * );
+    explicit QgsGPSPlugin( QgisInterface* );
 
     //! Destructor
     virtual ~QgsGPSPlugin();
@@ -88,11 +88,11 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     void setupBabel();
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisInterface;
+    QgisInterface* mQGisInterface;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *mQActionPointer;
+    QAction* mQActionPointer;
     //! Pointer to the QAction used for creating a new GPX layer
-    QAction *mCreateGPXAction;
+    QAction* mCreateGPXAction;
     //! The path to the GPSBabel program
     QString mBabelPath;
     //! Importers for external GPS data file formats

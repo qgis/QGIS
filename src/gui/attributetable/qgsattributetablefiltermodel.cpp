@@ -30,10 +30,10 @@
 //////////////////
 
 QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent )
-    : QSortFilterProxyModel( parent )
-    , mCanvas( canvas )
-    , mFilterMode( ShowAll )
-    , mSelectedOnTop( false )
+  : QSortFilterProxyModel( parent )
+  , mCanvas( canvas )
+  , mFilterMode( ShowAll )
+  , mSelectedOnTop( false )
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
@@ -41,7 +41,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas
   connect( layer(), &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableFilterModel::selectionChanged );
 }
 
-bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+bool QgsAttributeTableFilterModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
   if ( mSelectedOnTop )
   {
@@ -209,7 +209,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   sort( config.sortExpression(), config.sortOrder() );
 }
 
-void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrder order )
+void QgsAttributeTableFilterModel::sort( const QString& expression, Qt::SortOrder order )
 {
   QSortFilterProxyModel::sort( -1 );
   masterModel()->prefetchSortData( expression );
@@ -299,7 +299,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
   }
 }
 
-bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
 {
   Q_UNUSED( sourceParent );
   switch ( mFilterMode )
@@ -387,8 +387,8 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
   renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layer() );
+                                    << QgsExpressionContextUtils::projectScope()
+                                    << QgsExpressionContextUtils::layerScope( layer() );
   QgsFeatureRenderer* renderer = layer()->renderer();
 
   mFilteredFeatures.clear();

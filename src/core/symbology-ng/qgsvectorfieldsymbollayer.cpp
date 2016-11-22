@@ -20,16 +20,16 @@
 #include "qgsunittypes.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
-    : mXAttribute( QLatin1String( "" ) )
-    , mYAttribute( QLatin1String( "" ) )
-    , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
-    , mScale( 1.0 )
-    , mVectorFieldType( Cartesian )
-    , mAngleOrientation( ClockwiseFromNorth )
-    , mAngleUnits( Degrees )
-    , mLineSymbol( nullptr )
-    , mXIndex( -1 )
-    , mYIndex( -1 )
+  : mXAttribute( QLatin1String( "" ) )
+  , mYAttribute( QLatin1String( "" ) )
+  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
+  , mScale( 1.0 )
+  , mVectorFieldType( Cartesian )
+  , mAngleOrientation( ClockwiseFromNorth )
+  , mAngleUnits( Degrees )
+  , mLineSymbol( nullptr )
+  , mXIndex( -1 )
+  , mYIndex( -1 )
 {
   setSubSymbol( new QgsLineSymbol() );
 }
@@ -54,7 +54,7 @@ QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const
   return QgsUnitTypes::RenderUnknownUnit;
 }
 
-void QgsVectorFieldSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsVectorFieldSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   QgsMarkerSymbolLayer::setMapUnitScale( scale );
   mDistanceMapUnitScale = scale;
@@ -261,13 +261,13 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
   return properties;
 }
 
-void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   element.appendChild( doc.createComment( QStringLiteral( "VectorField not implemented yet..." ) ) );
   mLineSymbol->toSld( doc, element, props );
 }
 
-QgsSymbolLayer* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer* QgsVectorFieldSymbolLayer::createFromSld( QDomElement& element )
 {
   Q_UNUSED( element );
   return nullptr;

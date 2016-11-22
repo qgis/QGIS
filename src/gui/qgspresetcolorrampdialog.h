@@ -92,13 +92,19 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
      */
-    QgsPresetSchemeColorRamp ramp() const { return mWidget->ramp(); }
+    QgsPresetSchemeColorRamp ramp() const
+    {
+      return mWidget->ramp();
+    }
 
     /** Sets the color ramp to show in the dialog.
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsPresetSchemeColorRamp& ramp ) { mWidget->setRamp( ramp ); }
+    void setRamp( const QgsPresetSchemeColorRamp& ramp )
+    {
+      mWidget->setRamp( ramp );
+    }
 
   signals:
 

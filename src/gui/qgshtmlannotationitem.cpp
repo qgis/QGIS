@@ -39,12 +39,12 @@
 
 
 QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas )
-    , mWidgetContainer( nullptr )
-    , mWebView( nullptr )
-    , mVectorLayer( vlayer )
-    , mHasAssociatedFeature( hasFeature )
-    , mFeatureId( feature )
+  : QgsAnnotationItem( canvas )
+  , mWidgetContainer( nullptr )
+  , mWebView( nullptr )
+  , mVectorLayer( vlayer )
+  , mHasAssociatedFeature( hasFeature )
+  , mFeatureId( feature )
 {
   mWebView = new QgsWebView();
   mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
@@ -94,12 +94,12 @@ void QgsHtmlAnnotationItem::setMapPosition( const QgsPoint& pos )
   setFeatureForMapPosition();
 }
 
-void QgsHtmlAnnotationItem::paint( QPainter * painter )
+void QgsHtmlAnnotationItem::paint( QPainter* painter )
 {
   Q_UNUSED( painter );
 }
 
-void QgsHtmlAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+void QgsHtmlAnnotationItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );
@@ -219,8 +219,8 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
 
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mVectorLayer );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::layerScope( mVectorLayer );
     if ( mMapCanvas )
       context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
     context.setFeature( mFeature );
@@ -245,7 +245,7 @@ void QgsHtmlAnnotationItem::updateVisibility()
 
 void QgsHtmlAnnotationItem::javascript()
 {
-  QWebFrame *frame = mWebView->page()->mainFrame();
+  QWebFrame* frame = mWebView->page()->mainFrame();
   frame->addToJavaScriptWindowObject( QStringLiteral( "canvas" ), mMapCanvas );
   frame->addToJavaScriptWindowObject( QStringLiteral( "layer" ), mVectorLayer );
 }

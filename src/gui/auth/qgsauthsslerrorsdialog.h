@@ -41,11 +41,11 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
      * @param digest SHA digest of server certificate
      * @param hostport Unique host:port to associate with the server certificate
      */
-    QgsAuthSslErrorsDialog( QNetworkReply *reply,
+    QgsAuthSslErrorsDialog( QNetworkReply* reply,
                             const QList<QSslError>& sslErrors,
-                            QWidget *parent = nullptr ,
-                            const QString &digest = QString(),
-                            const QString &hostport = QString() );
+                            QWidget* parent = nullptr ,
+                            const QString& digest = QString(),
+                            const QString& hostport = QString() );
     ~QgsAuthSslErrorsDialog();
 
 
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 
     void clearCertificateConfig();
 
-    void on_buttonBox_clicked( QAbstractButton *button );
+    void on_buttonBox_clicked( QAbstractButton* button );
 
     void on_btnChainInfo_clicked();
 

@@ -26,31 +26,52 @@ class QgsGeorefDataPoint : public QObject
 
   public:
     //! constructor
-    QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
+    QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas* dstCanvas,
                         const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
                         bool enable );
-    QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
+    QgsGeorefDataPoint( const QgsGeorefDataPoint& p );
     ~QgsGeorefDataPoint();
 
     //! returns coordinates of the point
-    QgsPoint pixelCoords() const { return mPixelCoords; }
-    void setPixelCoords( const QgsPoint &p );
+    QgsPoint pixelCoords() const
+    {
+      return mPixelCoords;
+    }
+    void setPixelCoords( const QgsPoint& p );
 
-    QgsPoint mapCoords() const { return mMapCoords; }
-    void setMapCoords( const QgsPoint &p );
+    QgsPoint mapCoords() const
+    {
+      return mMapCoords;
+    }
+    void setMapCoords( const QgsPoint& p );
 
-    bool isEnabled() const { return mEnabled; }
+    bool isEnabled() const
+    {
+      return mEnabled;
+    }
     void setEnabled( bool enabled );
 
-    int id() const { return mId; }
+    int id() const
+    {
+      return mId;
+    }
     void setId( int id );
 
     bool contains( QPoint p, bool isMapPlugin );
 
-    QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
-    QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
+    QgsMapCanvas* srcCanvas() const
+    {
+      return mSrcCanvas;
+    }
+    QgsMapCanvas* dstCanvas() const
+    {
+      return mDstCanvas;
+    }
 
-    QPointF residual() const { return mResidual; }
+    QPointF residual() const
+    {
+      return mResidual;
+    }
     void setResidual( QPointF r );
 
   public slots:
@@ -58,10 +79,10 @@ class QgsGeorefDataPoint : public QObject
     void updateCoords();
 
   private:
-    QgsMapCanvas *mSrcCanvas;
-    QgsMapCanvas *mDstCanvas;
-    QgsGCPCanvasItem *mGCPSourceItem;
-    QgsGCPCanvasItem *mGCPDestinationItem;
+    QgsMapCanvas* mSrcCanvas;
+    QgsMapCanvas* mDstCanvas;
+    QgsGCPCanvasItem* mGCPSourceItem;
+    QgsGCPCanvasItem* mGCPDestinationItem;
     QgsPoint mPixelCoords;
     QgsPoint mMapCoords;
 

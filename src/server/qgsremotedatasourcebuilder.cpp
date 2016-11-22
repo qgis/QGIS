@@ -56,8 +56,8 @@ QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem
 
 QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDomElement& remoteRDSElem,
     const QString& layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+    QList<QTemporaryFile*>& filesToRemove,
+    QList<QgsMapLayer*>& layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( layerName );

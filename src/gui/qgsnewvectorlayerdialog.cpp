@@ -31,8 +31,8 @@
 #include <QFileDialog>
 
 
-QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -194,7 +194,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at )
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
-    QTreeWidgetItem *item = *it;
+    QTreeWidgetItem* item = *it;
     QString type = QStringLiteral( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
     QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ), type ) );
@@ -259,7 +259,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   settings.setValue( QStringLiteral( "/UI/encoding" ), enc );
 
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+  QgsProviderRegistry* pReg = QgsProviderRegistry::instance();
   QString ogrlib = pReg->library( QStringLiteral( "ogr" ) );
   // load the data provider
   QLibrary* myLib = new QLibrary( ogrlib );
@@ -269,7 +269,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     QgsDebugMsg( "ogr provider loaded" );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QgsWkbTypes::Type,
-        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem & );
+        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem& );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {

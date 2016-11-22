@@ -45,8 +45,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     struct RelationEditorConfiguration
     {
       RelationEditorConfiguration()
-          : showLinkButton( true )
-          , showUnlinkButton( true )
+        : showLinkButton( true )
+        , showUnlinkButton( true )
       {}
       bool showLinkButton;
       bool showUnlinkButton;
@@ -63,30 +63,51 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         };
 
         DesignerTreeItemData()
-            : mType( Field )
-            , mColumnCount( 1 )
-            , mShowAsGroupBox( false )
-            , mShowLabel( true )
+          : mType( Field )
+          , mColumnCount( 1 )
+          , mShowAsGroupBox( false )
+          , mShowLabel( true )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
-            : mType( type )
-            , mName( name )
-            , mColumnCount( 1 )
-            , mShowAsGroupBox( false )
-            , mShowLabel( true )
+          : mType( type )
+          , mName( name )
+          , mColumnCount( 1 )
+          , mShowAsGroupBox( false )
+          , mShowLabel( true )
         {}
 
-        QString name() const { return mName; }
-        void setName( const QString& name ) { mName = name; }
+        QString name() const
+        {
+          return mName;
+        }
+        void setName( const QString& name )
+        {
+          mName = name;
+        }
 
-        Type type() const { return mType; }
-        void setType( Type type ) { mType = type; }
+        Type type() const
+        {
+          return mType;
+        }
+        void setType( Type type )
+        {
+          mType = type;
+        }
 
-        QVariant asQVariant() { return QVariant::fromValue<DesignerTreeItemData>( *this ); }
+        QVariant asQVariant()
+        {
+          return QVariant::fromValue<DesignerTreeItemData>( *this );
+        }
 
-        int columnCount() const { return mColumnCount; }
-        void setColumnCount( int count ) { mColumnCount = count; }
+        int columnCount() const
+        {
+          return mColumnCount;
+        }
+        void setColumnCount( int count )
+        {
+          mColumnCount = count;
+        }
 
         bool showAsGroupBox() const;
         void setShowAsGroupBox( bool showAsGroupBox );
@@ -132,14 +153,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     };
 
   public:
-    QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = nullptr );
+    QgsFieldsProperties( QgsVectorLayer* layer, QWidget* parent = nullptr );
 
     ~QgsFieldsProperties();
 
     /** Adds an attribute to the table (but does not commit it yet)
     @param field the field to add
     @return false in case of a name conflict, true in case of success */
-    bool addAttribute( const QgsField &field );
+    bool addAttribute( const QgsField& field );
 
     /** Creates the a proper item to save from the tree
      * @return A widget definition. Containing another container or the final field
@@ -150,12 +171,12 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void apply();
 
     void loadRows();
-    void setRow( int row, int idx, const QgsField &field );
+    void setRow( int row, int idx, const QgsField& field );
 
     void loadRelations();
 
     void loadAttributeEditorTree();
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
+    QTreeWidgetItem* loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
     /**
      * @brief setEditFormInit set the private ui fields
@@ -165,10 +186,10 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
      * @param initFilePath
      * @param codeSource
      */
-    void setEditFormInit( const QString &editForm,
-                          const QString &initFunction,
-                          const QString &initCode,
-                          const QString &initFilePath,
+    void setEditFormInit( const QString& editForm,
+                          const QString& initFunction,
+                          const QString& initCode,
+                          const QString& initFilePath,
                           QgsEditFormConfig::PythonInitCodeSource codeSource );
 
   signals:
@@ -266,14 +287,14 @@ class DragList : public QTableWidget
 
   public:
     explicit DragList( QWidget* parent = nullptr )
-        : QTableWidget( parent )
+      : QTableWidget( parent )
     {}
 
     // QTreeWidget interface
   protected:
     virtual QStringList mimeTypes() const override;
 
-    virtual QMimeData* mimeData( const QList<QTableWidgetItem *> items ) const override;
+    virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
 };
 
 /**
@@ -289,9 +310,9 @@ class DesignerTree : public QTreeWidget
     QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title , int columnCount );
 
   protected:
-    virtual void dragMoveEvent( QDragMoveEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
-    virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
+    virtual void dragMoveEvent( QDragMoveEvent* event ) override;
+    virtual void dropEvent( QDropEvent* event ) override;
+    virtual bool dropMimeData( QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action ) override;
     /* Qt::DropActions supportedDropActions() const;*/
 
     // QTreeWidget interface

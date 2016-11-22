@@ -30,15 +30,15 @@
 #define LABEL_SIZE 20 //label rect height
 #define LABEL_MARGIN 4 //spacing between label box and text
 
-QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context, QWidget *parent )
-    : QWidget( parent )
-    , mScheme( scheme )
-    , mContext( context )
-    , mDrawBoxDepressed( false )
-    , mCurrentHoverBox( -1 )
-    , mFocused( false )
-    , mCurrentFocusBox( 0 )
-    , mPressedOnWidget( false )
+QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context, QWidget* parent )
+  : QWidget( parent )
+  , mScheme( scheme )
+  , mContext( context )
+  , mDrawBoxDepressed( false )
+  , mCurrentHoverBox( -1 )
+  , mFocused( false )
+  , mCurrentFocusBox( 0 )
+  , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -67,13 +67,13 @@ QSize QgsColorSwatchGrid::sizeHint() const
   return QSize( mWidth, calculateHeight() );
 }
 
-void QgsColorSwatchGrid::setContext( const QString &context )
+void QgsColorSwatchGrid::setContext( const QString& context )
 {
   mContext = context;
   refreshColors();
 }
 
-void QgsColorSwatchGrid::setBaseColor( const QColor &baseColor )
+void QgsColorSwatchGrid::setBaseColor( const QColor& baseColor )
 {
   mBaseColor = baseColor;
   refreshColors();
@@ -89,7 +89,7 @@ void QgsColorSwatchGrid::refreshColors()
   repaint();
 }
 
-void QgsColorSwatchGrid::paintEvent( QPaintEvent *event )
+void QgsColorSwatchGrid::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
   QPainter painter( this );
@@ -97,7 +97,7 @@ void QgsColorSwatchGrid::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
-void QgsColorSwatchGrid::mouseMoveEvent( QMouseEvent *event )
+void QgsColorSwatchGrid::mouseMoveEvent( QMouseEvent* event )
 {
   //calculate box mouse cursor is over
   int newBox = swatchForPosition( event->pos() );
@@ -136,7 +136,7 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
   }
 }
 
-void QgsColorSwatchGrid::mousePressEvent( QMouseEvent *event )
+void QgsColorSwatchGrid::mousePressEvent( QMouseEvent* event )
 {
   if ( !mDrawBoxDepressed && event->buttons() & Qt::LeftButton )
   {
@@ -147,7 +147,7 @@ void QgsColorSwatchGrid::mousePressEvent( QMouseEvent *event )
   mPressedOnWidget = true;
 }
 
-void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
+void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent* event )
 {
   if ( ! mPressedOnWidget )
   {
@@ -169,7 +169,7 @@ void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
   }
 }
 
-void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
+void QgsColorSwatchGrid::keyPressEvent( QKeyEvent* event )
 {
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
@@ -228,14 +228,14 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   repaint();
 }
 
-void QgsColorSwatchGrid::focusInEvent( QFocusEvent *event )
+void QgsColorSwatchGrid::focusInEvent( QFocusEvent* event )
 {
   Q_UNUSED( event );
   mFocused = true;
   repaint();
 }
 
-void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
+void QgsColorSwatchGrid::focusOutEvent( QFocusEvent* event )
 {
   Q_UNUSED( event );
   mFocused = false;
@@ -248,7 +248,7 @@ int QgsColorSwatchGrid::calculateHeight() const
   return numberRows * ( SWATCH_SIZE ) + ( numberRows - 1 ) * SWATCH_SPACING + TOP_MARGIN + LABEL_SIZE + BOTTOM_MARGIN;
 }
 
-void QgsColorSwatchGrid::draw( QPainter &painter )
+void QgsColorSwatchGrid::draw( QPainter& painter )
 {
   QPalette pal = QPalette( qApp->palette() );
   QColor headerBgColor = pal.color( QPalette::Mid );
@@ -358,11 +358,11 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 //
 
 
-QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu *menu, const QString& context, QWidget *parent )
-    : QWidgetAction( parent )
-    , mMenu( menu )
-    , mSuppressRecurse( false )
-    , mDismissOnColorSelection( true )
+QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu, const QString& context, QWidget* parent )
+  : QWidgetAction( parent )
+  , mMenu( menu )
+  , mSuppressRecurse( false )
+  , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 
@@ -381,7 +381,7 @@ QgsColorSwatchGridAction::~QgsColorSwatchGridAction()
 
 }
 
-void QgsColorSwatchGridAction::setBaseColor( const QColor &baseColor )
+void QgsColorSwatchGridAction::setBaseColor( const QColor& baseColor )
 {
   mColorSwatchGrid->setBaseColor( baseColor );
 }
@@ -396,7 +396,7 @@ QString QgsColorSwatchGridAction::context() const
   return mColorSwatchGrid->context();
 }
 
-void QgsColorSwatchGridAction::setContext( const QString &context )
+void QgsColorSwatchGridAction::setContext( const QString& context )
 {
   mColorSwatchGrid->setContext( context );
 }
@@ -408,7 +408,7 @@ void QgsColorSwatchGridAction::refreshColors()
   setVisible( !mColorSwatchGrid->colors()->isEmpty() );
 }
 
-void QgsColorSwatchGridAction::setColor( const QColor &color )
+void QgsColorSwatchGridAction::setColor( const QColor& color )
 {
   emit colorChanged( color );
   QAction::trigger();

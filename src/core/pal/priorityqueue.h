@@ -81,15 +81,15 @@ namespace pal
 
       int getId( int key );
     private:
-      PriorityQueue( const PriorityQueue & );
-      PriorityQueue &operator=( const PriorityQueue & );
+      PriorityQueue( const PriorityQueue& );
+      PriorityQueue& operator=( const PriorityQueue& );
 
       int size;
       int maxsize;
       int maxId;
-      int *heap;
-      double *p;
-      int *pos;
+      int* heap;
+      double* p;
+      int* pos;
 
       bool ( *greater )( double l, double r );
   };

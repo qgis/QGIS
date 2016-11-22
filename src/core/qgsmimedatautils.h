@@ -37,7 +37,10 @@ class CORE_EXPORT QgsMimeDataUtils
 
       //! Returns whether the object contains valid data
       //! @note added in 3.0
-      bool isValid() const { return !layerType.isEmpty(); }
+      bool isValid() const
+      {
+        return !layerType.isEmpty();
+      }
 
       //! Returns encoded representation of the object
       QString data() const;

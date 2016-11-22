@@ -26,12 +26,12 @@
 
 #define CLEAR_ICON_SIZE 16
 
-QgsSpinBox::QgsSpinBox( QWidget *parent )
-    : QSpinBox( parent )
-    , mShowClearButton( true )
-    , mClearValueMode( MinimumValue )
-    , mCustomClearValue( 0 )
-    , mExpressionsEnabled( true )
+QgsSpinBox::QgsSpinBox( QWidget* parent )
+  : QSpinBox( parent )
+  , mShowClearButton( true )
+  , mClearValueMode( MinimumValue )
+  , mCustomClearValue( 0 )
+  , mExpressionsEnabled( true )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
@@ -56,13 +56,13 @@ void QgsSpinBox::setExpressionsEnabled( const bool enabled )
   mExpressionsEnabled = enabled;
 }
 
-void QgsSpinBox::changeEvent( QEvent *event )
+void QgsSpinBox::changeEvent( QEvent* event )
 {
   QSpinBox::changeEvent( event );
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 
-void QgsSpinBox::paintEvent( QPaintEvent *event )
+void QgsSpinBox::paintEvent( QPaintEvent* event )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
   QSpinBox::paintEvent( event );
@@ -116,7 +116,7 @@ int QgsSpinBox::clearValue() const
     return mCustomClearValue;
 }
 
-int QgsSpinBox::valueFromText( const QString &text ) const
+int QgsSpinBox::valueFromText( const QString& text ) const
 {
   if ( !mExpressionsEnabled )
   {
@@ -132,7 +132,7 @@ int QgsSpinBox::valueFromText( const QString &text ) const
   return qRound( QgsExpression::evaluateToDouble( trimmedText, value() ) );
 }
 
-QValidator::State QgsSpinBox::validate( QString &input, int &pos ) const
+QValidator::State QgsSpinBox::validate( QString& input, int& pos ) const
 {
   if ( !mExpressionsEnabled )
   {
@@ -157,7 +157,7 @@ bool QgsSpinBox::shouldShowClearForValue( const int value ) const
   return value != clearValue();
 }
 
-QString QgsSpinBox::stripped( const QString &originalText ) const
+QString QgsSpinBox::stripped( const QString& originalText ) const
 {
   //adapted from QAbstractSpinBoxPrivate::stripped
   //trims whitespace, prefix and suffix from spin box text

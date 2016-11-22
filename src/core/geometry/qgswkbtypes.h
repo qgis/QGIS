@@ -875,14 +875,14 @@ class CORE_EXPORT QgsWkbTypes
     {
       wkbEntry( const QString& name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
                 bool hasZ, bool hasM )
-          : mName( name )
-          , mIsMultiType( isMultiType )
-          , mMultiType( multiType )
-          , mSingleType( singleType )
-          , mFlatType( flatType )
-          , mGeometryType( geometryType )
-          , mHasZ( hasZ )
-          , mHasM( hasM )
+        : mName( name )
+        , mIsMultiType( isMultiType )
+        , mMultiType( multiType )
+        , mSingleType( singleType )
+        , mFlatType( flatType )
+        , mGeometryType( geometryType )
+        , mHasZ( hasZ )
+        , mHasM( hasM )
       {}
       QString mName;
       bool mIsMultiType;

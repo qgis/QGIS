@@ -56,13 +56,13 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer* destRenderer ) co
 }
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString& type )
-    : mType( type )
-    , mUsingSymbolLevels( false )
-    , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
-    , mCurrentVertexMarkerSize( 3 )
-    , mPaintEffect( nullptr )
-    , mForceRaster( false )
-    , mOrderByEnabled( false )
+  : mType( type )
+  , mUsingSymbolLevels( false )
+  , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
+  , mCurrentVertexMarkerSize( 3 )
+  , mPaintEffect( nullptr )
+  , mForceRaster( false )
+  , mOrderByEnabled( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -169,7 +169,7 @@ QDomElement QgsFeatureRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )
+QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode& node, QgsWkbTypes::GeometryType geomType, QString& errorMessage )
 {
   QDomElement element = node.toElement();
   if ( element.isNull() )
@@ -328,7 +328,7 @@ void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )
   mCurrentVertexMarkerSize = size;
 }
 
-bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsFeatureRenderer::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   return nullptr != symbolForFeature( feat, context );
 }
@@ -361,7 +361,7 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolyg
   }
 }
 
-QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   QgsSymbolList lst;
   QgsSymbol* s = symbolForFeature( feat, context );
@@ -369,7 +369,7 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRender
   return lst;
 }
 
-QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   QgsSymbolList lst;
   QgsSymbol* s = originalSymbolForFeature( feat, context );
@@ -377,12 +377,12 @@ QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, Q
   return lst;
 }
 
-QgsPaintEffect *QgsFeatureRenderer::paintEffect() const
+QgsPaintEffect* QgsFeatureRenderer::paintEffect() const
 {
   return mPaintEffect;
 }
 
-void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect *effect )
+void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect* effect )
 {
   delete mPaintEffect;
   mPaintEffect = effect;
@@ -408,11 +408,11 @@ void QgsFeatureRenderer::setOrderByEnabled( bool enabled )
   mOrderByEnabled = enabled;
 }
 
-void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field )
+void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol* symbol, QgsSymbol::ScaleMethod method, const QString& field )
 {
   if ( symbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
+    QgsMarkerSymbol* s = static_cast<QgsMarkerSymbol*>( symbol );
     if ( QgsSymbol::ScaleArea == QgsSymbol::ScaleMethod( method ) )
     {
       const QgsDataDefined dd( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" );
@@ -427,17 +427,17 @@ void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::
   }
   else if ( symbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbol * s = static_cast<QgsLineSymbol *>( symbol );
+    QgsLineSymbol* s = static_cast<QgsLineSymbol*>( symbol );
     const QgsDataDefined dd( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" );
     s->setDataDefinedWidth( dd );
   }
 }
 
-void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol * symbol, const QString & field )
+void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol* symbol, const QString& field )
 {
   if ( symbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
+    QgsMarkerSymbol* s = static_cast<QgsMarkerSymbol*>( symbol );
     const QgsDataDefined dd(( s->angle()
                               ? QString::number( s->angle() ) + " + "
                               : QString() ) + field );

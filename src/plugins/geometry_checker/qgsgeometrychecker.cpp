@@ -24,10 +24,10 @@
 #include <QTimer>
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool *featurePool )
-    : mChecks( checks )
-    , mFeaturePool( featurePool )
-    , mMergeAttributeIndex( -1 )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool* featurePool )
+  : mChecks( checks )
+  , mFeaturePool( featurePool )
+  , mMergeAttributeIndex( -1 )
 {
 }
 
@@ -37,7 +37,7 @@ QgsGeometryChecker::~QgsGeometryChecker()
   qDeleteAll( mChecks );
 }
 
-QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
+QFuture<void> QgsGeometryChecker::execute( int* totalSteps )
 {
   if ( totalSteps )
   {

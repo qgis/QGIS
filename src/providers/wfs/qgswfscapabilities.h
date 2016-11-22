@@ -107,7 +107,10 @@ class QgsWfsCapabilities : public QgsWfsRequest
     };
 
     //! return parsed capabilities - requestCapabilities() must be called before
-    const Capabilities& capabilities() const { return mCaps; }
+    const Capabilities& capabilities() const
+    {
+      return mCaps;
+    }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */

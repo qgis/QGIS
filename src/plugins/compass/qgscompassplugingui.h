@@ -40,14 +40,14 @@ class QgsCompassPluginGui : public QWidget, private Ui::QgsCompassPluginGuiBase
     ~QgsCompassPluginGui();
 
   private:
-    QgisInterface * qI;
-    Compass *compass;
+    QgisInterface* qI;
+    Compass* compass;
 
   private slots:
 //    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void handleVisibilityChanged( bool visible );
-    void handleAzimuth( const QVariant &azimuth, const QVariant &calibrationLevel );
-    void rotatePixmap( QLabel *pixmapLabel, QString myFileNameQString, int theRotationInt );
+    void handleAzimuth( const QVariant& azimuth, const QVariant& calibrationLevel );
+    void rotatePixmap( QLabel* pixmapLabel, QString myFileNameQString, int theRotationInt );
 };
 
 #endif

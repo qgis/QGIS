@@ -25,23 +25,23 @@
 
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString& name, Qt::CheckState checked )
-    : QgsLayerTreeNode( NodeGroup )
-    , mName( name )
-    , mChecked( checked )
-    , mChangingChildVisibility( false )
-    , mMutuallyExclusive( false )
-    , mMutuallyExclusiveChildIndex( -1 )
+  : QgsLayerTreeNode( NodeGroup )
+  , mName( name )
+  , mChecked( checked )
+  , mChangingChildVisibility( false )
+  , mMutuallyExclusive( false )
+  , mMutuallyExclusiveChildIndex( -1 )
 {
   connect( this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 }
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup& other )
-    : QgsLayerTreeNode( other )
-    , mName( other.mName )
-    , mChecked( other.mChecked )
-    , mChangingChildVisibility( other.mChangingChildVisibility )
-    , mMutuallyExclusive( other.mMutuallyExclusive )
-    , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
+  : QgsLayerTreeNode( other )
+  , mName( other.mName )
+  , mChecked( other.mChecked )
+  , mChangingChildVisibility( other.mChangingChildVisibility )
+  , mMutuallyExclusive( other.mMutuallyExclusive )
+  , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
 {
   connect( this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 }
@@ -68,14 +68,14 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::insertGroup( int index, const QString& nam
   return grp;
 }
 
-QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString &name )
+QgsLayerTreeGroup* QgsLayerTreeGroup::addGroup( const QString& name )
 {
   QgsLayerTreeGroup* grp = new QgsLayerTreeGroup( name );
   addChildNode( grp );
   return grp;
 }
 
-QgsLayerTreeLayer*QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer )
+QgsLayerTreeLayer* QgsLayerTreeGroup::insertLayer( int index, QgsMapLayer* layer )
 {
   if ( !layer || QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) != layer )
     return nullptr;
@@ -137,7 +137,7 @@ void QgsLayerTreeGroup::addChildNode( QgsLayerTreeNode* node )
   insertChildNode( -1, node );
 }
 
-void QgsLayerTreeGroup::removeChildNode( QgsLayerTreeNode *node )
+void QgsLayerTreeGroup::removeChildNode( QgsLayerTreeNode* node )
 {
   int i = mChildren.indexOf( node );
   if ( i >= 0 )
@@ -201,7 +201,7 @@ void QgsLayerTreeGroup::removeAllChildren()
   removeChildren( 0, mChildren.count() );
 }
 
-QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( const QString& layerId ) const
+QgsLayerTreeLayer* QgsLayerTreeGroup::findLayer( const QString& layerId ) const
 {
   Q_FOREACH ( QgsLayerTreeNode* child, mChildren )
   {

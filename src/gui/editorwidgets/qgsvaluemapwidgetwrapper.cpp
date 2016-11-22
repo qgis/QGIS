@@ -19,8 +19,8 @@
 #include <QSettings>
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
 {
 }
 

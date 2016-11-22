@@ -22,8 +22,8 @@
 
 
 QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase& db )
-    : mDatabase( db )
-    , mEnvironment( ENV_LUW )
+  : mDatabase( db )
+  , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "constructing" );
 }
@@ -38,7 +38,7 @@ int QgsDb2GeometryColumns::open()
   return open( QString(), QString() );
 }
 
-int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &tableName )
+int QgsDb2GeometryColumns::open( const QString& schemaName, const QString& tableName )
 {
   QString queryExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, "
                         "SRS_ID, SRS_NAME, MIN_X, MIN_Y, MAX_X, MAX_Y "
@@ -98,7 +98,7 @@ int QgsDb2GeometryColumns::db2Environment()
   return mEnvironment;
 }
 
-bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
+bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty& layer )
 {
   if ( !mQuery.isActive() || !mQuery.next() )
   {

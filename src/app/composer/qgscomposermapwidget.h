@@ -91,7 +91,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
   protected:
 
-    void addPageToToolbox( QWidget * widget, const QString& name );
+    void addPageToToolbox( QWidget* widget, const QString& name );
 
     //! Sets the current composer map values to the GUI elements
     virtual void updateGuiElements();

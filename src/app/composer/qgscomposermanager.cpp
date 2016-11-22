@@ -32,7 +32,7 @@
 #include <QUrl>
 #include <QSettings>
 
-QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsComposerManager::QgsComposerManager( QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
@@ -91,7 +91,7 @@ QgsComposerManager::~QgsComposerManager()
 void QgsComposerManager::refreshComposers()
 {
   // Backup selection
-  QSet<QgsComposer *> selectedComposers;
+  QSet<QgsComposer*> selectedComposers;
   Q_FOREACH ( QListWidgetItem* item, mComposerListWidget->selectedItems() )
   {
     QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
@@ -377,8 +377,8 @@ void QgsComposerManager::changeEvent( QEvent* event )
 
 void QgsComposerManager::remove_clicked()
 {
-  QList<QgsComposer *> composerList;
-  QList<QListWidgetItem *> composerItems = mComposerListWidget->selectedItems();
+  QList<QgsComposer*> composerList;
+  QList<QListWidgetItem*> composerItems = mComposerListWidget->selectedItems();
   QString title = tr( "Remove composers" );
   QString message = tr( "Do you really want to remove all selected map composers?" );
 
@@ -530,7 +530,7 @@ void QgsComposerManager::rename_clicked()
   mComposerListWidget->sortItems();
 }
 
-void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * item )
+void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem* item )
 {
   QMap<QListWidgetItem*, QgsComposer*>::const_iterator it = mItemComposerMap.constFind( item );
   if ( it != mItemComposerMap.constEnd() )
@@ -545,32 +545,32 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * i
 // QgsComposerNameDelegate
 //
 
-QgsComposerNameDelegate::QgsComposerNameDelegate( QObject *parent )
-    : QItemDelegate( parent )
+QgsComposerNameDelegate::QgsComposerNameDelegate( QObject* parent )
+  : QItemDelegate( parent )
 {
 
 }
 
-QWidget *QgsComposerNameDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget* QgsComposerNameDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
 
   //create a line edit
-  QLineEdit *lineEdit = new QLineEdit( parent );
+  QLineEdit* lineEdit = new QLineEdit( parent );
   return lineEdit;
 }
 
-void QgsComposerNameDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsComposerNameDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
   QString text = index.model()->data( index, Qt::EditRole ).toString();
-  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  QLineEdit* lineEdit = static_cast<QLineEdit*>( editor );
   lineEdit->setText( text );
 }
 
-void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsComposerNameDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QLineEdit *lineEdit = static_cast<QLineEdit*>( editor );
+  QLineEdit* lineEdit = static_cast<QLineEdit*>( editor );
   QString value = lineEdit->text();
 
   //has name changed?
@@ -592,7 +592,7 @@ void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel 
   model->setData( index, QVariant( value ), Qt::EditRole );
 }
 
-void QgsComposerNameDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsComposerNameDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( index );
   editor->setGeometry( option.rect );

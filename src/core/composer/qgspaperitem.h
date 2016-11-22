@@ -49,7 +49,10 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     ~QgsPaperItem();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerPaper; }
+    virtual int type() const override
+    {
+      return ComposerPaper;
+    }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
@@ -58,7 +61,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag

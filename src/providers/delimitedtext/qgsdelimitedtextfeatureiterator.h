@@ -32,14 +32,14 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    QgsExpression *mSubsetExpression;
+    QgsExpression* mSubsetExpression;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
-    QgsSpatialIndex *mSpatialIndex;
+    QgsSpatialIndex* mSpatialIndex;
     bool mUseSubsetIndex;
     QList<quintptr> mSubsetIndex;
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile* mFile;
     QgsFields mFields;
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -75,7 +75,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
-    bool wantGeometry( const QgsPoint & point ) const;
+    bool wantGeometry( const QgsPoint& point ) const;
     bool wantGeometry( const QgsGeometry& geom ) const;
 
   protected:
@@ -85,8 +85,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature& feature );
-    QgsGeometry loadGeometryWkt( const QStringList& tokens, bool &isNull );
-    QgsGeometry loadGeometryXY( const QStringList& tokens, bool &isNull );
+    QgsGeometry loadGeometryWkt( const QStringList& tokens, bool& isNull );
+    QgsGeometry loadGeometryXY( const QStringList& tokens, bool& isNull );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
 
     QList<QgsFeatureId> mFeatureIds;

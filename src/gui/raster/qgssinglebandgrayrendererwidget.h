@@ -30,21 +30,44 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 {
     Q_OBJECT
   public:
-    QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent = QgsRectangle() );
     ~QgsSingleBandGrayRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle& theExtent )
+    {
+      return new QgsSingleBandGrayRendererWidget( layer, theExtent );
+    }
 
     QgsRasterRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
-    QString min( int index = 0 ) override { Q_UNUSED( index ); return mMinLineEdit->text(); }
-    QString max( int index = 0 ) override { Q_UNUSED( index ); return mMaxLineEdit->text(); }
-    void setMin( const QString& value, int index = 0 ) override { Q_UNUSED( index ); mMinLineEdit->setText( value ); }
-    void setMax( const QString& value, int index = 0 ) override { Q_UNUSED( index ); mMaxLineEdit->setText( value ); }
-    int selectedBand( int index = 0 ) override { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
+    QString min( int index = 0 ) override
+    {
+      Q_UNUSED( index );
+      return mMinLineEdit->text();
+    }
+    QString max( int index = 0 ) override
+    {
+      Q_UNUSED( index );
+      return mMaxLineEdit->text();
+    }
+    void setMin( const QString& value, int index = 0 ) override
+    {
+      Q_UNUSED( index );
+      mMinLineEdit->setText( value );
+    }
+    void setMax( const QString& value, int index = 0 ) override
+    {
+      Q_UNUSED( index );
+      mMaxLineEdit->setText( value );
+    }
+    int selectedBand( int index = 0 ) override
+    {
+      Q_UNUSED( index );
+      return mGrayBandComboBox->currentIndex() + 1;
+    }
 
   public slots:
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
@@ -53,7 +76,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     void on_mGrayBandComboBox_currentIndexChanged( int index );
 
   private:
-    QgsRasterMinMaxWidget * mMinMaxWidget;
+    QgsRasterMinMaxWidget* mMinMaxWidget;
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H

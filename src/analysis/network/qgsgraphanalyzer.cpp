@@ -24,7 +24,7 @@
 
 void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int criterionNum, QVector<int>* resultTree, QVector<double>* resultCost )
 {
-  QVector< double > * result = nullptr;
+  QVector< double >* result = nullptr;
   if ( resultCost )
   {
     result = resultCost;
@@ -85,7 +85,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
 
 QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum )
 {
-  QgsGraph *treeResult = new QgsGraph();
+  QgsGraph* treeResult = new QgsGraph();
   QVector<int> tree;
 
   QgsGraphAnalyzer::dijkstra( source, startVertexIdx, criterionNum, &tree );

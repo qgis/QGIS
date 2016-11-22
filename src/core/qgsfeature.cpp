@@ -51,7 +51,7 @@ QgsFeature::QgsFeature( QgsFeatureId id )
   d = new QgsFeaturePrivate( id );
 }
 
-QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
+QgsFeature::QgsFeature( const QgsFields& fields, QgsFeatureId id )
 {
   d = new QgsFeaturePrivate( id );
   d->fields = fields;
@@ -59,11 +59,11 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
 }
 
 QgsFeature::QgsFeature( const QgsFeature& rhs )
-    : d( rhs.d )
+  : d( rhs.d )
 {
 }
 
-QgsFeature & QgsFeature::operator=( const QgsFeature & rhs )
+QgsFeature& QgsFeature::operator=( const QgsFeature& rhs )
 {
   d = rhs.d;
   return *this;
@@ -150,7 +150,7 @@ QgsAttributes QgsFeature::attributes() const
   return d->attributes;
 }
 
-void QgsFeature::setAttributes( const QgsAttributes &attrs )
+void QgsFeature::setAttributes( const QgsAttributes& attrs )
 {
   if ( attrs == d->attributes )
     return;
@@ -176,7 +176,7 @@ void QgsFeature::clearGeometry()
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsFeature::setFields( const QgsFields &fields, bool init )
+void QgsFeature::setFields( const QgsFields& fields, bool init )
 {
   d.detach();
   d->fields = fields;
@@ -225,7 +225,7 @@ void QgsFeature::initAttributes( int fieldCount )
     ptr->clear();
 }
 
-bool QgsFeature::setAttribute( int idx, const QVariant &value )
+bool QgsFeature::setAttribute( int idx, const QVariant& value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {

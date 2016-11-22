@@ -37,8 +37,8 @@ QgsSpatiaLiteTableModel::~QgsSpatiaLiteTableModel()
 void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql )
 {
   //is there already a root item ?
-  QStandardItem *dbItem;
-  QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
+  QStandardItem* dbItem;
+  QList < QStandardItem* >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   //there is already an item
   if ( !dbItems.isEmpty() )
@@ -56,12 +56,12 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString&
   QgsWkbTypes::Type wkbType = qgisTypeFromDbType( type );
   QIcon iconFile = iconForType( wkbType );
 
-  QList < QStandardItem * >childItemList;
-  QStandardItem *typeItem = new QStandardItem( QIcon( iconFile ), type );
+  QList < QStandardItem* >childItemList;
+  QStandardItem* typeItem = new QStandardItem( QIcon( iconFile ), type );
   typeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  QStandardItem *tableItem = new QStandardItem( tableName );
+  QStandardItem* tableItem = new QStandardItem( tableName );
   tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  QStandardItem *geomItem = new QStandardItem( geometryColName );
+  QStandardItem* geomItem = new QStandardItem( geometryColName );
   geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   QStandardItem* sqlItem = new QStandardItem( sql );
   sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
@@ -76,7 +76,7 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString&
   ++mTableCount;
 }
 
-void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &sql )
+void QgsSpatiaLiteTableModel::setSql( const QModelIndex& index, const QString& sql )
 {
   if ( !index.isValid() || !index.parent().isValid() )
   {
@@ -99,14 +99,14 @@ void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &s
   }
 }
 
-void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type )
+void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString& table, const QString& attribute, const QString& type )
 {
   bool typeIsEmpty = type.isEmpty();  //true means the table has no valid geometry entry and the item for this table should be removed
   QStringList typeList = type.split( ',' );
 
   //find schema item and table item
-  QStandardItem *dbItem;
-  QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
+  QStandardItem* dbItem;
+  QList < QStandardItem* >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   if ( dbItems.size() < 1 )
   {
@@ -213,7 +213,7 @@ QString QgsSpatiaLiteTableModel::displayStringForType( QgsWkbTypes::Type type ) 
   return QStringLiteral( "Unknown" );
 }
 
-QgsWkbTypes::Type QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString & dbType ) const
+QgsWkbTypes::Type QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString& dbType ) const
 {
   if ( dbType == QLatin1String( "POINT" ) )
   {

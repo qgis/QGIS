@@ -36,10 +36,10 @@
 //
 
 QgsColorWidget::QgsColorWidget( QWidget* parent, const ColorComponent component )
-    : QWidget( parent )
-    , mCurrentColor( Qt::red )
-    , mComponent( component )
-    , mExplicitHue( 0 )
+  : QWidget( parent )
+  , mCurrentColor( Qt::red )
+  , mComponent( component )
+  , mExplicitHue( 0 )
 {
   setAcceptDrops( true );
 }
@@ -54,7 +54,7 @@ int QgsColorWidget::componentValue() const
   return componentValue( mComponent );
 }
 
-QPixmap QgsColorWidget::createDragIcon( const QColor &color )
+QPixmap QgsColorWidget::createDragIcon( const QColor& color )
 {
   //craft a pixmap for the drag icon
   QPixmap pixmap( 50, 50 );
@@ -175,7 +175,7 @@ void QgsColorWidget::alterColor( QColor& color, const QgsColorWidget::ColorCompo
   }
 }
 
-const QPixmap &QgsColorWidget::transparentBackground()
+const QPixmap& QgsColorWidget::transparentBackground()
 {
   static QPixmap transpBkgrd;
 
@@ -185,7 +185,7 @@ const QPixmap &QgsColorWidget::transparentBackground()
   return transpBkgrd;
 }
 
-void QgsColorWidget::dragEnterEvent( QDragEnterEvent *e )
+void QgsColorWidget::dragEnterEvent( QDragEnterEvent* e )
 {
   //is dragged data valid color data?
   bool hasAlpha;
@@ -198,7 +198,7 @@ void QgsColorWidget::dragEnterEvent( QDragEnterEvent *e )
   }
 }
 
-void QgsColorWidget::dropEvent( QDropEvent *e )
+void QgsColorWidget::dropEvent( QDropEvent* e )
 {
   //is dropped data valid color data?
   bool hasAlpha = false;
@@ -222,20 +222,20 @@ void QgsColorWidget::dropEvent( QDropEvent *e )
   //could not get color from mime data
 }
 
-void QgsColorWidget::mouseMoveEvent( QMouseEvent *e )
+void QgsColorWidget::mouseMoveEvent( QMouseEvent* e )
 {
   emit hovered();
   e->accept();
   //don't pass to QWidget::mouseMoveEvent, causes issues with widget used in QWidgetAction
 }
 
-void QgsColorWidget::mousePressEvent( QMouseEvent *e )
+void QgsColorWidget::mousePressEvent( QMouseEvent* e )
 {
   e->accept();
   //don't pass to QWidget::mousePressEvent, causes issues with widget used in QWidgetAction
 }
 
-void QgsColorWidget::mouseReleaseEvent( QMouseEvent *e )
+void QgsColorWidget::mouseReleaseEvent( QMouseEvent* e )
 {
   e->accept();
   //don't pass to QWidget::mouseReleaseEvent, causes issues with widget used in QWidgetAction
@@ -339,7 +339,7 @@ void QgsColorWidget::setComponentValue( const int value )
   update();
 }
 
-void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
+void QgsColorWidget::setColor( const QColor& color, const bool emitSignals )
 {
   if ( color == mCurrentColor )
   {
@@ -367,16 +367,16 @@ void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
 // QgsColorWheel
 //
 
-QgsColorWheel::QgsColorWheel( QWidget *parent )
-    : QgsColorWidget( parent )
-    , mMargin( 4 )
-    , mWheelThickness( 18 )
-    , mClickedPart( QgsColorWheel::None )
-    , mWheelImage( nullptr )
-    , mTriangleImage( nullptr )
-    , mWidgetImage( nullptr )
-    , mWheelDirty( true )
-    , mTriangleDirty( true )
+QgsColorWheel::QgsColorWheel( QWidget* parent )
+  : QgsColorWidget( parent )
+  , mMargin( 4 )
+  , mWheelThickness( 18 )
+  , mClickedPart( QgsColorWheel::None )
+  , mWheelImage( nullptr )
+  , mTriangleImage( nullptr )
+  , mWidgetImage( nullptr )
+  , mWheelDirty( true )
+  , mTriangleDirty( true )
 {
   //create wheel hue brush - only do this once
   QConicalGradient wheelGradient = QConicalGradient( 0, 0, 0 );
@@ -403,7 +403,7 @@ QSize QgsColorWheel::sizeHint() const
   return QSize( 200, 200 );
 }
 
-void QgsColorWheel::paintEvent( QPaintEvent *event )
+void QgsColorWheel::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
   QPainter painter( this );
@@ -488,7 +488,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
-void QgsColorWheel::setColor( const QColor &color, const bool emitSignals )
+void QgsColorWheel::setColor( const QColor& color, const bool emitSignals )
 {
   if ( color.hue() >= 0 && color.hue() != hue() )
   {
@@ -517,7 +517,7 @@ void QgsColorWheel::createImages( const QSizeF size )
   mTriangleDirty = true;
 }
 
-void QgsColorWheel::resizeEvent( QResizeEvent *event )
+void QgsColorWheel::resizeEvent( QResizeEvent* event )
 {
   //recreate images for new size
   createImages( event->size() );
@@ -607,13 +607,13 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
   }
 }
 
-void QgsColorWheel::mouseMoveEvent( QMouseEvent *event )
+void QgsColorWheel::mouseMoveEvent( QMouseEvent* event )
 {
   setColorFromPos( event->posF() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
-void QgsColorWheel::mousePressEvent( QMouseEvent *event )
+void QgsColorWheel::mousePressEvent( QMouseEvent* event )
 {
   //calculate where the event occurred -- on the wheel or inside the triangle?
 
@@ -632,7 +632,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
   setColorFromPos( event->posF() );
 }
 
-void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
+void QgsColorWheel::mouseReleaseEvent( QMouseEvent* event )
 {
   Q_UNUSED( event );
   mClickedPart = QgsColorWheel::None;
@@ -747,11 +747,11 @@ void QgsColorWheel::createTriangle()
 // QgsColorBox
 //
 
-QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
-    : QgsColorWidget( parent, component )
-    , mMargin( 2 )
-    , mBoxImage( nullptr )
-    , mDirty( true )
+QgsColorBox::QgsColorBox( QWidget* parent, const ColorComponent component )
+  : QgsColorWidget( parent, component )
+  , mMargin( 2 )
+  , mBoxImage( nullptr )
+  , mDirty( true )
 {
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
@@ -769,7 +769,7 @@ QSize QgsColorBox::sizeHint() const
   return QSize( 200, 200 );
 }
 
-void QgsColorBox::paintEvent( QPaintEvent *event )
+void QgsColorBox::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
   QPainter painter( this );
@@ -813,7 +813,7 @@ void QgsColorBox::setComponent( const QgsColorWidget::ColorComponent component )
   QgsColorWidget::setComponent( component );
 }
 
-void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
+void QgsColorBox::setColor( const QColor& color, const bool emitSignals )
 {
   //check if we need to redraw the box image
   if ( mComponent == QgsColorWidget::Red && mCurrentColor.red() != color.red() )
@@ -843,7 +843,7 @@ void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
   QgsColorWidget::setColor( color, emitSignals );
 }
 
-void QgsColorBox::resizeEvent( QResizeEvent *event )
+void QgsColorBox::resizeEvent( QResizeEvent* event )
 {
   mDirty = true;
   delete mBoxImage;
@@ -851,13 +851,13 @@ void QgsColorBox::resizeEvent( QResizeEvent *event )
   QgsColorWidget::resizeEvent( event );
 }
 
-void QgsColorBox::mouseMoveEvent( QMouseEvent *event )
+void QgsColorBox::mouseMoveEvent( QMouseEvent* event )
 {
   setColorFromPoint( event->pos() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
-void QgsColorBox::mousePressEvent( QMouseEvent *event )
+void QgsColorBox::mousePressEvent( QMouseEvent* event )
 {
   setColorFromPoint( event->pos() );
 }
@@ -979,12 +979,12 @@ void QgsColorBox::setColorFromPoint( QPoint point )
 // QgsColorRampWidget
 //
 
-QgsColorRampWidget::QgsColorRampWidget( QWidget *parent,
+QgsColorRampWidget::QgsColorRampWidget( QWidget* parent,
                                         const QgsColorWidget::ColorComponent component,
                                         const Orientation orientation )
-    : QgsColorWidget( parent, component )
-    , mMargin( 4 )
-    , mShowFrame( false )
+  : QgsColorWidget( parent, component )
+  , mMargin( 4 )
+  , mShowFrame( false )
 {
   setFocusPolicy( Qt::StrongFocus );
   setOrientation( orientation );
@@ -1012,7 +1012,7 @@ QSize QgsColorRampWidget::sizeHint() const
   }
 }
 
-void QgsColorRampWidget::paintEvent( QPaintEvent *event )
+void QgsColorRampWidget::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
   QPainter painter( this );
@@ -1172,13 +1172,13 @@ void QgsColorRampWidget::setMarkerSize( const int markerSize )
   update();
 }
 
-void QgsColorRampWidget::mouseMoveEvent( QMouseEvent *event )
+void QgsColorRampWidget::mouseMoveEvent( QMouseEvent* event )
 {
   setColorFromPoint( event->posF() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
-void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
+void QgsColorRampWidget::wheelEvent( QWheelEvent* event )
 {
   int oldValue = componentValue();
 
@@ -1199,12 +1199,12 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
   }
 }
 
-void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
+void QgsColorRampWidget::mousePressEvent( QMouseEvent* event )
 {
   setColorFromPoint( event->posF() );
 }
 
-void QgsColorRampWidget::keyPressEvent( QKeyEvent *event )
+void QgsColorRampWidget::keyPressEvent( QKeyEvent* event )
 {
   int oldValue = componentValue();
   if (( mOrientation == QgsColorRampWidget::Horizontal && ( event->key() == Qt::Key_Right || event->key() == Qt::Key_Up ) )
@@ -1279,10 +1279,10 @@ void QgsColorRampWidget::setColorFromPoint( QPointF point )
 // QgsColorSliderWidget
 //
 
-QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponent component )
-    : QgsColorWidget( parent, component )
-    , mRampWidget( nullptr )
-    , mSpinBox( nullptr )
+QgsColorSliderWidget::QgsColorSliderWidget( QWidget* parent, const ColorComponent component )
+  : QgsColorWidget( parent, component )
+  , mRampWidget( nullptr )
+  , mSpinBox( nullptr )
 {
   QHBoxLayout* hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
@@ -1353,7 +1353,7 @@ void QgsColorSliderWidget::setComponentValue( const int value )
   mSpinBox->blockSignals( false );
 }
 
-void QgsColorSliderWidget::setColor( const QColor &color, bool emitSignals )
+void QgsColorSliderWidget::setColor( const QColor& color, bool emitSignals )
 {
   QgsColorWidget::setColor( color, emitSignals );
   mRampWidget->setColor( color );
@@ -1362,7 +1362,7 @@ void QgsColorSliderWidget::setColor( const QColor &color, bool emitSignals )
   mSpinBox->blockSignals( false );
 }
 
-void QgsColorSliderWidget::rampColorChanged( const QColor &color )
+void QgsColorSliderWidget::rampColorChanged( const QColor& color )
 {
   emit colorChanged( color );
 }
@@ -1412,11 +1412,11 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
 // QgsColorTextWidget
 //
 
-QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
-    : QgsColorWidget( parent )
-    , mLineEdit( nullptr )
-    , mMenuButton( nullptr )
-    , mFormat( QgsColorTextWidget::HexRgb )
+QgsColorTextWidget::QgsColorTextWidget( QWidget* parent )
+  : QgsColorWidget( parent )
+  , mLineEdit( nullptr )
+  , mMenuButton( nullptr )
+  , mFormat( QgsColorTextWidget::HexRgb )
 {
   QHBoxLayout* hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
@@ -1452,13 +1452,13 @@ QgsColorTextWidget::~QgsColorTextWidget()
 
 }
 
-void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
+void QgsColorTextWidget::setColor( const QColor& color, const bool emitSignals )
 {
   QgsColorWidget::setColor( color, emitSignals );
   updateText();
 }
 
-void QgsColorTextWidget::resizeEvent( QResizeEvent * event )
+void QgsColorTextWidget::resizeEvent( QResizeEvent* event )
 {
   Q_UNUSED( event );
   QSize sz = mMenuButton->sizeHint();
@@ -1556,9 +1556,9 @@ void QgsColorTextWidget::showMenu()
 // QgsColorPreviewWidget
 //
 
-QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget *parent )
-    : QgsColorWidget( parent )
-    , mColor2( QColor() )
+QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget* parent )
+  : QgsColorWidget( parent )
+  , mColor2( QColor() )
 {
 
 }
@@ -1568,7 +1568,7 @@ QgsColorPreviewWidget::~QgsColorPreviewWidget()
 
 }
 
-void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter& painter )
+void QgsColorPreviewWidget::drawColor( const QColor& color, QRect rect, QPainter& painter )
 {
   painter.setPen( Qt::NoPen );
   //if color has an alpha, start with a checkboard pattern
@@ -1600,7 +1600,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
   }
 }
 
-void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
+void QgsColorPreviewWidget::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
   QPainter painter( this );
@@ -1625,7 +1625,7 @@ QSize QgsColorPreviewWidget::sizeHint() const
   return QSize( 200, 150 );
 }
 
-void QgsColorPreviewWidget::setColor2( const QColor &color )
+void QgsColorPreviewWidget::setColor2( const QColor& color )
 {
   if ( color == mColor2 )
   {
@@ -1635,7 +1635,7 @@ void QgsColorPreviewWidget::setColor2( const QColor &color )
   update();
 }
 
-void QgsColorPreviewWidget::mousePressEvent( QMouseEvent *e )
+void QgsColorPreviewWidget::mousePressEvent( QMouseEvent* e )
 {
   if ( e->button() == Qt::LeftButton )
   {
@@ -1644,7 +1644,7 @@ void QgsColorPreviewWidget::mousePressEvent( QMouseEvent *e )
   QgsColorWidget::mousePressEvent( e );
 }
 
-void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
+void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent* e )
 {
   if (( e->pos() - mDragStartPosition ).manhattanLength() >= QApplication::startDragDistance() )
   {
@@ -1668,7 +1668,7 @@ void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
 
 }
 
-void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
+void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent* e )
 {
   //handle dragging colors from button
 
@@ -1700,7 +1700,7 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
     }
   }
 
-  QDrag *drag = new QDrag( this );
+  QDrag* drag = new QDrag( this );
   drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( dragColor ) );
   drag->setPixmap( createDragIcon( dragColor ) );
   drag->exec( Qt::CopyAction );
@@ -1712,11 +1712,11 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 //
 
 QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu, QWidget* parent )
-    : QWidgetAction( parent )
-    , mMenu( menu )
-    , mColorWidget( colorWidget )
-    , mSuppressRecurse( false )
-    , mDismissOnColorSelection( true )
+  : QWidgetAction( parent )
+  , mMenu( menu )
+  , mColorWidget( colorWidget )
+  , mSuppressRecurse( false )
+  , mDismissOnColorSelection( true )
 {
   setDefaultWidget( mColorWidget );
   connect( mColorWidget, SIGNAL( colorChanged( QColor ) ), this, SLOT( setColor( QColor ) ) );

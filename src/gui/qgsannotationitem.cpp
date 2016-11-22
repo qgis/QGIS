@@ -24,11 +24,11 @@
 #include <QPen>
 
 QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
-    , mMapPositionFixed( true )
-    , mMapPositionCrs( QgsCoordinateReferenceSystem() )
-    , mOffsetFromReferencePoint( QPointF( 50, -50 ) )
-    , mBalloonSegment( -1 )
+  : QgsMapCanvasItem( mapCanvas )
+  , mMapPositionFixed( true )
+  , mMapPositionCrs( QgsCoordinateReferenceSystem() )
+  , mOffsetFromReferencePoint( QPointF( 50, -50 ) )
+  , mBalloonSegment( -1 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   mMarkerSymbol = new QgsMarkerSymbol();

@@ -49,13 +49,22 @@ class DummyPaintEffect : public QgsPaintEffect
 {
   public:
     DummyPaintEffect( const QString& prop1, const QString& prop2 )
-        : mProp1( prop1 )
-        , mProp2( prop2 )
+      : mProp1( prop1 )
+      , mProp2( prop2 )
     {}
     virtual ~DummyPaintEffect() {}
-    virtual QString type() const override { return QStringLiteral( "Dummy" ); }
-    virtual QgsPaintEffect* clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
-    static QgsPaintEffect* create( const QgsStringMap& props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )], props[QStringLiteral( "testProp2" )] ); }
+    virtual QString type() const override
+    {
+      return QStringLiteral( "Dummy" );
+    }
+    virtual QgsPaintEffect* clone() const override
+    {
+      return new DummyPaintEffect( mProp1, mProp2 );
+    }
+    static QgsPaintEffect* create( const QgsStringMap& props )
+    {
+      return new DummyPaintEffect( props[QStringLiteral( "testProp" )], props[QStringLiteral( "testProp2" )] );
+    }
     virtual QgsStringMap properties() const override
     {
       QgsStringMap props;
@@ -69,12 +78,21 @@ class DummyPaintEffect : public QgsPaintEffect
       mProp2 = props[QStringLiteral( "testProp2" )];
     }
 
-    QString prop1() { return mProp1; }
-    QString prop2() { return mProp2; }
+    QString prop1()
+    {
+      return mProp1;
+    }
+    QString prop2()
+    {
+      return mProp2;
+    }
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override { Q_UNUSED( context ); }
+    virtual void draw( QgsRenderContext& context ) override
+    {
+      Q_UNUSED( context );
+    }
 
   private:
     QString mProp1;
@@ -118,8 +136,8 @@ class TestQgsPaintEffect: public QObject
     void composer();
 
   private:
-    bool imageCheck( const QString& testName , QImage &image, int mismatchCount = 0 );
-    bool mapRenderCheck( const QString& testName, QgsMapSettings &mapSettings, int mismatchCount = 0 );
+    bool imageCheck( const QString& testName , QImage& image, int mismatchCount = 0 );
+    bool mapRenderCheck( const QString& testName, QgsMapSettings& mapSettings, int mismatchCount = 0 );
 
     QString mReport;
     QString mTestDataDir;
@@ -129,7 +147,7 @@ class TestQgsPaintEffect: public QObject
 
 
 TestQgsPaintEffect::TestQgsPaintEffect()
-    : mPicture( 0 )
+  : mPicture( 0 )
 {
 
 }
@@ -702,7 +720,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -733,7 +751,7 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -762,7 +780,7 @@ void TestQgsPaintEffect::layerEffectMarker()
   QFileInfo pointFileInfo( pointFileName );
   QgsVectorLayer* pointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << pointLayer );
 
   QgsMapSettings ms;
   QgsSimpleMarkerSymbolLayer* marker = new QgsSimpleMarkerSymbolLayer;
@@ -793,7 +811,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -828,7 +846,7 @@ void TestQgsPaintEffect::mapUnits()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -864,7 +882,7 @@ void TestQgsPaintEffect::composer()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -909,7 +927,7 @@ void TestQgsPaintEffect::composer()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsPaintEffect::imageCheck( const QString& testName, QImage &image, int mismatchCount )
+bool TestQgsPaintEffect::imageCheck( const QString& testName, QImage& image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );

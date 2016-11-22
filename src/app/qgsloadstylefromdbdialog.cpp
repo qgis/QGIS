@@ -20,9 +20,9 @@
 #include <QMessageBox>
 #include <QVector>
 
-QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
-    : QDialog( parent )
-    , mSectionLimit( 0 )
+QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget* parent )
+  : QDialog( parent )
+  , mSectionLimit( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Load style from database" ) );
@@ -82,7 +82,7 @@ void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QS
 
   for ( int i = 0; i < sectionLimit; i++ )
   {
-    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QLatin1String( "" ) ) );
+    QTableWidgetItem* item = new QTableWidgetItem( names.value( i, QLatin1String( "" ) ) );
     item->setData( Qt::UserRole, ids[i] );
     mRelatedTable->setItem( i, 0, item );
     mRelatedTable->setItem( i, 1, new QTableWidgetItem( descriptions.value( i, QLatin1String( "" ) ) ) );
@@ -90,7 +90,7 @@ void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QS
   for ( int i = sectionLimit; i < ids.count(); i++ )
   {
     int j = i - sectionLimit;
-    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QLatin1String( "" ) ) );
+    QTableWidgetItem* item = new QTableWidgetItem( names.value( i, QLatin1String( "" ) ) );
     item->setData( Qt::UserRole, ids[i] );
     mOthersTable->setItem( j, 0, item );
     mOthersTable->setItem( j, 1, new QTableWidgetItem( descriptions.value( i, QLatin1String( "" ) ) ) );

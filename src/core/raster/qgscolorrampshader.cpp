@@ -29,13 +29,13 @@ originally part of the larger QgsRasterLayer class
 #include <cmath>
 
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue )
-    : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
-    , mColorRampType( INTERPOLATED )
-    , mLUTOffset( 0.0 )
-    , mLUTFactor( 1.0 )
-    , mLUTInitialized( false )
-    , mColorRampName( QString() )
-    , mClip( false )
+  : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
+  , mColorRampType( INTERPOLATED )
+  , mLUTOffset( 0.0 )
+  , mLUTFactor( 1.0 )
+  , mLUTInitialized( false )
+  , mColorRampName( QString() )
+  , mClip( false )
 {
   QgsDebugMsgLevel( "called.", 4 );
 }
@@ -89,7 +89,7 @@ void QgsColorRampShader::setColorRampName( const QString& theName )
 }
 
 
-bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlphaValue )
+bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
 {
   if ( mColorRampItemList.isEmpty() )
   {
@@ -171,7 +171,8 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
   const QgsColorRampShader::ColorRampItem& currentColorRampItem = mColorRampItemList.at( idx );
 
   if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
-  { // Interpolate the color between two class breaks linearly.
+  {
+    // Interpolate the color between two class breaks linearly.
     if ( idx < 1 || overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= theValue )
     {
       if ( mClip && ( overflow
@@ -199,7 +200,8 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
     return true;
   }
   else if ( QgsColorRampShader::DISCRETE == mColorRampType )
-  { // Assign the color of the higher class for every pixel between two class breaks.
+  {
+    // Assign the color of the higher class for every pixel between two class breaks.
     // NOTE: The implementation has always been different than the documentation,
     //       which said lower class before, see http://hub.qgis.org/issues/13995
     if ( overflow )
@@ -213,7 +215,8 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
     return true;
   }
   else // EXACT
-  { // Assign the color of the exact matching value in the color ramp item list
+  {
+    // Assign the color of the exact matching value in the color ramp item list
     if ( !overflow && currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= theValue )
     {
       *theReturnRedValue   = currentColorRampItem.color.red();

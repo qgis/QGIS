@@ -151,7 +151,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void updateFont( const QFont& font );
-    void connectValueChanged( const QList<QWidget *> &widgets, const char* slot );
+    void connectValueChanged( const QList<QWidget*>& widgets, const char* slot );
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );
@@ -163,7 +163,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );
     void on_mFontFamilyCmbBx_currentFontChanged( const QFont& f );
-    void on_mFontStyleComboBox_currentIndexChanged( const QString & text );
+    void on_mFontStyleComboBox_currentIndexChanged( const QString& text );
     void on_mFontUnderlineBtn_toggled( bool ckd );
     void on_mFontStrikethroughBtn_toggled( bool ckd );
     void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
@@ -178,17 +178,17 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void on_mShapeRotationCmbBx_currentIndexChanged( int index );
     void on_mShapeSVGParamsBtn_clicked();
     void on_mShapeSVGSelectorBtn_clicked();
-    void on_mPreviewTextEdit_textChanged( const QString & text );
+    void on_mPreviewTextEdit_textChanged( const QString& text );
     void on_mPreviewTextBtn_clicked();
-    void on_mPreviewBackgroundBtn_colorChanged( const QColor &color );
+    void on_mPreviewBackgroundBtn_colorChanged( const QColor& color );
     void on_mDirectSymbLeftToolBtn_clicked();
     void on_mDirectSymbRightToolBtn_clicked();
     void on_mChkNoObstacle_toggled( bool active );
     void on_chkLineOrientationDependent_toggled( bool active );
     void on_mToolButtonConfigureSubstitutes_clicked();
     void collapseSample( bool collapse );
-    void changeTextColor( const QColor &color );
-    void changeBufferColor( const QColor &color );
+    void changeTextColor( const QColor& color );
+    void changeBufferColor( const QColor& color );
     void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString& svgPath );

@@ -38,18 +38,18 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * @param filenames The list of apis files to load for the python lexer
      * @note added in 2.6
      */
-    QgsCodeEditorPython( QWidget *parent = nullptr, const QList<QString> &filenames = QList<QString>() );
+    QgsCodeEditorPython( QWidget* parent = nullptr, const QList<QString>& filenames = QList<QString>() );
     ~QgsCodeEditorPython();
 
     /** Load APIs from one or more files
      * @param filenames The list of apis files to load for the python lexer
      */
-    void loadAPIs( QList<QString> const &filenames );
+    void loadAPIs( QList<QString> const& filenames );
 
     /** Load a script file
      * @param script The script file to load
      */
-    bool loadScript( const QString &script );
+    bool loadScript( const QString& script );
 
   private:
     //QgsCodeEditor *mSciWidget;

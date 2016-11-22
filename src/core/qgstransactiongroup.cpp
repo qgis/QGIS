@@ -22,10 +22,10 @@
 
 #include <QTimer>
 
-QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
-    : QObject( parent )
-    , mEditingStarting( false )
-    , mEditingStopping( false )
+QgsTransactionGroup::QgsTransactionGroup( QObject* parent )
+  : QObject( parent )
+  , mEditingStarting( false )
+  , mEditingStopping( false )
 {
 
 }

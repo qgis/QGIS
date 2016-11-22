@@ -350,7 +350,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
   return errorList;
 }
 
-ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( layer2 );
@@ -449,7 +449,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
   return errorList;
 }
 
-ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( layer2 );
@@ -464,7 +464,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     return errorList;
   }
 
-  QList<QgsFeatureId> *duplicateIds = new QList<QgsFeatureId>();
+  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
 
   QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
   if ( !index )
@@ -576,7 +576,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
   return errorList;
 }
 
-ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( layer2 );
@@ -725,7 +725,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   return errorList;
 }
 
-ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( layer2 );
@@ -1208,7 +1208,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
 
 
 
-ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
 
@@ -1284,7 +1284,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
   return errorList;
 }
 
-ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
 
@@ -1384,7 +1384,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
   return errorList;
 }
 
-ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
 
@@ -1459,7 +1459,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
 }
 
 
-ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( isExtent );
@@ -1520,7 +1520,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
   return errorList;
 }
 
-ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
+ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( layer2 );

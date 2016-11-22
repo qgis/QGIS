@@ -97,7 +97,7 @@ class CORE_EXPORT QgsSpatialIndex
     //! @note not available in python bindings
     static SpatialIndex::Region rectToRegion( const QgsRectangle& rect );
     //! @note not available in python bindings
-    static bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+    static bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId& id );
 
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 

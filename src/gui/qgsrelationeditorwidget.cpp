@@ -33,10 +33,10 @@
 #include <QLabel>
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
-    : QgsCollapsibleGroupBox( parent )
-    , mViewMode( QgsDualView::AttributeEditor )
-    , mShowLabel( true )
-    , mVisible( false )
+  : QgsCollapsibleGroupBox( parent )
+  , mViewMode( QgsDualView::AttributeEditor )
+  , mShowLabel( true )
+  , mVisible( false )
 {
   QVBoxLayout* topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -244,7 +244,7 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
   updateUi();
 }
 
-void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext & context )
+void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext& context )
 {
   mEditorContext = context;
 }

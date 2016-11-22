@@ -31,13 +31,13 @@
 #include "qgsactionmanager.h"
 
 
-QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
+QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel* model )
 {
-  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  const QgsAttributeTableModel* tm = qobject_cast<const QgsAttributeTableModel*>( model );
   if ( tm )
     return tm->layer();
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel* fm = dynamic_cast<const QgsAttributeTableFilterModel*>( model );
   if ( fm )
     return fm->layer();
 
@@ -46,21 +46,21 @@ QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
 
 const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbstractItemModel* model )
 {
-  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  const QgsAttributeTableModel* tm = qobject_cast<const QgsAttributeTableModel*>( model );
   if ( tm )
     return tm;
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel* fm = dynamic_cast<const QgsAttributeTableFilterModel*>( model );
   if ( fm )
     return fm->masterModel();
 
   return nullptr;
 }
 
-QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget* QgsAttributeTableDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
-  QgsVectorLayer *vl = layer( index.model() );
+  QgsVectorLayer* vl = layer( index.model() );
   if ( !vl )
     return nullptr;
 
@@ -78,9 +78,9 @@ QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   return w;
 }
 
-void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsAttributeTableDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QgsVectorLayer *vl = layer( model );
+  QgsVectorLayer* vl = layer( model );
   if ( !vl )
     return;
 
@@ -103,7 +103,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
-void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsAttributeTableDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
   QgsEditorWidgetWrapper* eww =  QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
@@ -112,7 +112,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   eww->setValue( index.model()->data( index, Qt::EditRole ) );
 }
 
-void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
+void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel )
 {
   mFeatureSelectionModel = featureSelectionModel;
 }

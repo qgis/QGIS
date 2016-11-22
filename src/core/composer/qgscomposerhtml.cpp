@@ -37,19 +37,19 @@
 #include <QNetworkReply>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
-    : QgsComposerMultiFrame( c, createUndoCommands )
-    , mContentMode( QgsComposerHtml::Url )
-    , mWebPage( nullptr )
-    , mLoaded( false )
-    , mHtmlUnitsToMM( 1.0 )
-    , mRenderedPage( nullptr )
-    , mEvaluateExpressions( true )
-    , mUseSmartBreaks( true )
-    , mMaxBreakDistance( 10 )
-    , mExpressionLayer( nullptr )
-    , mDistanceArea( nullptr )
-    , mEnableUserStylesheet( false )
-    , mFetcher( nullptr )
+  : QgsComposerMultiFrame( c, createUndoCommands )
+  , mContentMode( QgsComposerHtml::Url )
+  , mWebPage( nullptr )
+  , mLoaded( false )
+  , mHtmlUnitsToMM( 1.0 )
+  , mRenderedPage( nullptr )
+  , mEvaluateExpressions( true )
+  , mUseSmartBreaks( true )
+  , mMaxBreakDistance( 10 )
+  , mExpressionLayer( nullptr )
+  , mDistanceArea( nullptr )
+  , mEnableUserStylesheet( false )
+  , mFetcher( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -125,7 +125,7 @@ void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
   emit changed();
 }
 
-void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext *context )
+void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext* context )
 {
   if ( !mWebPage )
   {
@@ -473,7 +473,7 @@ QString QgsComposerHtml::displayName() const
   return tr( "<HTML frame>" );
 }
 
-bool QgsComposerHtml::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerHtml::writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( QStringLiteral( "ComposerHtml" ) );
   htmlElem.setAttribute( QStringLiteral( "contentMode" ), QString::number( static_cast< int >( mContentMode ) ) );
@@ -529,7 +529,7 @@ bool QgsComposerHtml::readXml( const QDomElement& itemElem, const QDomDocument& 
   return true;
 }
 
-void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVectorLayer* layer )
+void QgsComposerHtml::setExpressionContext( const QgsFeature& feature, QgsVectorLayer* layer )
 {
   mExpressionFeature = feature;
   mExpressionLayer = layer;
@@ -558,7 +558,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
 
 void QgsComposerHtml::refreshExpressionContext()
 {
-  QgsVectorLayer * vl = nullptr;
+  QgsVectorLayer* vl = nullptr;
   QgsFeature feature;
 
   if ( mComposition->atlasComposition().enabled() )

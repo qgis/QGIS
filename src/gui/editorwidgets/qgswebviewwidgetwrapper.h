@@ -49,7 +49,7 @@ class GUI_EXPORT QgsWebViewWidgetWrapper : public QgsEditorWidgetWrapper
     void setEnabled( bool enabled ) override;
 
   private slots:
-    void loadUrl( const QString &url );
+    void loadUrl( const QString& url );
     void selectFileName();
 
   private:

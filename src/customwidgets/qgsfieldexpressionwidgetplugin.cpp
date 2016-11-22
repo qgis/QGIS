@@ -18,9 +18,9 @@
 #include "qgsfieldexpressionwidget.h"
 
 
-QgsFieldExpressionWidgetPlugin::QgsFieldExpressionWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsFieldExpressionWidgetPlugin::QgsFieldExpressionWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsFieldExpressionWidgetPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsFieldExpressionWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsFieldExpressionWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsFieldExpressionWidget( parent );
 }
@@ -60,7 +60,7 @@ bool QgsFieldExpressionWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsFieldExpressionWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsFieldExpressionWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

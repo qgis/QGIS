@@ -28,8 +28,8 @@ class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
-typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
-typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer*, const QgsRectangle &extent );
+typedef QgsRasterRenderer* ( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
+typedef QgsRasterRendererWidget* ( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer*, const QgsRectangle& extent );
 
 /** \ingroup core
   * Registry for raster renderer entries.

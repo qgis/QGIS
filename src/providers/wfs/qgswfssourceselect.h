@@ -35,9 +35,9 @@ class QgsWFSItemDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
+    explicit QgsWFSItemDelegate( QObject* parent = nullptr ) : QItemDelegate( parent ) { }
 
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 
 };
 
@@ -67,8 +67,8 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QgsWFSItemDelegate* mItemDelegate;
     QStandardItemModel* mModel;
     QSortFilterProxyModel* mModelProxy;
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton* mBuildQueryButton;
+    QPushButton* mAddButton;
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog* mSQLComposerDialog;
@@ -93,15 +93,18 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void capabilitiesReplyFinished();
     void on_btnSave_clicked();
     void on_btnLoad_clicked();
-    void treeWidgetItemDoubleClicked( const QModelIndex & index );
-    void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
+    void treeWidgetItemDoubleClicked( const QModelIndex& index );
+    void treeWidgetCurrentRowChanged( const QModelIndex& current, const QModelIndex& previous );
     void buildQueryButtonClicked();
     void filterChanged( const QString& text );
     void updateSql();
 
     void populateConnectionList();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
 };
 

@@ -19,11 +19,11 @@
 #include "qgsrasterlayer.h"
 
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource )
-    : QgsMapCanvasItem( mapCanvas )
-    , mDataPoint( dataPoint )
-    , mPointBrush( Qt::red )
-    , mLabelBrush( Qt::yellow )
-    , mIsGCPSource( isGCPSource )
+  : QgsMapCanvasItem( mapCanvas )
+  , mDataPoint( dataPoint )
+  , mPointBrush( Qt::red )
+  , mLabelBrush( Qt::yellow )
+  , mIsGCPSource( isGCPSource )
 {
   setFlags( QGraphicsItem::ItemIsMovable );
   mResidualPen.setColor( QColor( 255, 0, 0 ) );

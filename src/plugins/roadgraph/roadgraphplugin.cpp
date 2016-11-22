@@ -73,11 +73,11 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQgisInterface - Pointer to the QGIS interface object
  */
-RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mQSettingsAction( nullptr )
-    , mQShortestPathDock( nullptr )
+RoadGraphPlugin::RoadGraphPlugin( QgisInterface* theQgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( theQgisInterface )
+  , mQSettingsAction( nullptr )
+  , mQShortestPathDock( nullptr )
 {
   mSettings = new RgLineVectorLayerSettings();
   mTimeUnitName = QStringLiteral( "h" );
@@ -201,7 +201,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   if ( mapLayers.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer *layer = dynamic_cast< QgsVectorLayer* >( mapLayers.at( 0 ) );
+  QgsVectorLayer* layer = dynamic_cast< QgsVectorLayer* >( mapLayers.at( 0 ) );
   if ( !layer )
     return nullptr;
 
@@ -210,7 +210,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   {
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
 
-    QgsVectorLayerDirector * director =
+    QgsVectorLayerDirector* director =
       new QgsVectorLayerDirector( layer,
                                   layer->fields().lookupField( mSettings->mDirection ),
                                   mSettings->mFirstPointToLastPointDirectionVal,
@@ -257,7 +257,7 @@ double RoadGraphPlugin::topologyToleranceFactor()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new RoadGraphPlugin( theQgisInterfacePointer );
 
@@ -299,7 +299,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

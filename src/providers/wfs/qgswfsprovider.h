@@ -62,7 +62,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     Q_OBJECT
   public:
 
-    explicit QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
+    explicit QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities& caps = QgsWfsCapabilities::Capabilities() );
     ~QgsWFSProvider();
 
     /* Inherited from QgsVectorDataProvider */
@@ -83,7 +83,10 @@ class QgsWFSProvider : public QgsVectorDataProvider
     //! Mutator for sql where clause used to limit dataset size
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     /* Inherited from QgsDataProvider */
 
@@ -98,9 +101,15 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QString geometryAttribute() const;
 
-    const QString processSQLErrorMsg() const { return mProcessSQLErrorMsg; }
+    const QString processSQLErrorMsg() const
+    {
+      return mProcessSQLErrorMsg;
+    }
 
-    const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
+    const QString processSQLWarningMsg() const
+    {
+      return mProcessSQLWarningMsg;
+    }
 
     //Editing operations
 
@@ -108,14 +117,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList& flist ) override;
 
     /**
      * Deletes one or more features
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds& id ) override;
 
     /**
      * Changes geometries of existing features
@@ -124,14 +133,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap& geometry_map ) override;
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override;
 
     /**
      * Get some metadata description of the provider.

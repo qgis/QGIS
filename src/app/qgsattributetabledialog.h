@@ -49,7 +49,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * @param parent parent object
      * @param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsAttributeTableDialog( QgsVectorLayer* theLayer, QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
 
     QgsExpressionContext createExpressionContext() const override;
@@ -188,7 +188,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Informs that edits should be saved
      * @param layer layer whose edits are to be saved
      */
-    void saveEdits( QgsMapLayer *layer );
+    void saveEdits( QgsMapLayer* layer );
 
   protected:
 
@@ -244,9 +244,9 @@ class QgsAttributeTableDock : public QgsDockWidget
     Q_OBJECT
 
   public:
-    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsAttributeTableDock( const QString& title, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
 
-    virtual void closeEvent( QCloseEvent * ev ) override;
+    virtual void closeEvent( QCloseEvent* ev ) override;
 };
 
 

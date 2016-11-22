@@ -29,15 +29,15 @@
 #include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mRubberBand( nullptr )
-    , mOriginalGeometry( nullptr )
-    , mModifiedFeature( -1 )
-    , mGeometryModified( false )
-    , mDistanceWidget( nullptr )
-    , mSnapVertexMarker( nullptr )
-    , mForceCopy( false )
-    , mMultiPartGeometry( false )
+  : QgsMapToolEdit( canvas )
+  , mRubberBand( nullptr )
+  , mOriginalGeometry( nullptr )
+  , mModifiedFeature( -1 )
+  , mGeometryModified( false )
+  , mDistanceWidget( nullptr )
+  , mSnapVertexMarker( nullptr )
+  , mForceCopy( false )
+  , mMultiPartGeometry( false )
 {
 }
 

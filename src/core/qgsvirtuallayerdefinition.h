@@ -39,34 +39,52 @@ class CORE_EXPORT QgsVirtualLayerDefinition
       public:
         //! Constructor variant to build a live layer reference
         SourceLayer( const QString& name, const QString& ref )
-            : mName( name )
-            , mRef( ref )
+          : mName( name )
+          , mRef( ref )
         {}
         //! Constructor variant to build a layer with a provider and a source
         SourceLayer( const QString& name, const QString& source, const QString& provider, const QString& encoding )
-            : mName( name )
-            , mSource( source )
-            , mProvider( provider )
-            , mEncoding( encoding )
+          : mName( name )
+          , mSource( source )
+          , mProvider( provider )
+          , mEncoding( encoding )
         {}
 
         //! Is it a live layer or not ?
-        bool isReferenced() const { return !mRef.isEmpty(); }
+        bool isReferenced() const
+        {
+          return !mRef.isEmpty();
+        }
 
         //! The reference (id) of the live layer
-        QString reference() const { return mRef; }
+        QString reference() const
+        {
+          return mRef;
+        }
 
         //! Name of the layer
-        QString name() const { return mName; }
+        QString name() const
+        {
+          return mName;
+        }
 
         //! Provider key
-        QString provider() const { return mProvider; }
+        QString provider() const
+        {
+          return mProvider;
+        }
 
         //! The source url used by the provider to build the layer
-        QString source() const { return mSource; }
+        QString source() const
+        {
+          return mSource;
+        }
 
         //! Optional encoding for the provider
-        QString encoding() const { return mEncoding; }
+        QString encoding() const
+        {
+          return mEncoding;
+        }
 
       private:
         QString mName;
@@ -109,44 +127,89 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     typedef QList<SourceLayer> SourceLayers;
 
     //! Get access to the source layers
-    const SourceLayers& sourceLayers() const { return mSourceLayers; }
+    const SourceLayers& sourceLayers() const
+    {
+      return mSourceLayers;
+    }
 
     //! Get the SQL query
-    QString query() const { return mQuery; }
+    QString query() const
+    {
+      return mQuery;
+    }
     //! Set the SQL query
-    void setQuery( const QString& query ) { mQuery = query; }
+    void setQuery( const QString& query )
+    {
+      mQuery = query;
+    }
 
     //! Get the file path. May be empty
-    QString filePath() const { return mFilePath; }
+    QString filePath() const
+    {
+      return mFilePath;
+    }
     //! Set the file path
-    void setFilePath( const QString& filePath ) { mFilePath = filePath; }
+    void setFilePath( const QString& filePath )
+    {
+      mFilePath = filePath;
+    }
 
     //! Get the name of the field with unique identifiers
-    QString uid() const { return mUid; }
+    QString uid() const
+    {
+      return mUid;
+    }
     //! Set the name of the field with unique identifiers
-    void setUid( const QString& uid ) { mUid = uid; }
+    void setUid( const QString& uid )
+    {
+      mUid = uid;
+    }
 
     //! Get the name of the geometry field. Empty if no geometry field
-    QString geometryField() const { return mGeometryField; }
+    QString geometryField() const
+    {
+      return mGeometryField;
+    }
     //! Set the name of the geometry field
-    void setGeometryField( const QString& geometryField ) { mGeometryField = geometryField; }
+    void setGeometryField( const QString& geometryField )
+    {
+      mGeometryField = geometryField;
+    }
 
     //! Get the type of the geometry
     //! QgsWkbTypes::NoGeometry to hide any geometry
     //! QgsWkbTypes::Unknown for unknown types
-    QgsWkbTypes::Type geometryWkbType() const { return mGeometryWkbType; }
+    QgsWkbTypes::Type geometryWkbType() const
+    {
+      return mGeometryWkbType;
+    }
     //! Set the type of the geometry
-    void setGeometryWkbType( QgsWkbTypes::Type t ) { mGeometryWkbType = t; }
+    void setGeometryWkbType( QgsWkbTypes::Type t )
+    {
+      mGeometryWkbType = t;
+    }
 
     //! Get the SRID of the geometry
-    long geometrySrid() const { return mGeometrySrid; }
+    long geometrySrid() const
+    {
+      return mGeometrySrid;
+    }
     //! Set the SRID of the geometry
-    void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
+    void setGeometrySrid( long srid )
+    {
+      mGeometrySrid = srid;
+    }
 
     //! Get field definitions
-    QgsFields fields() const { return mFields; }
+    QgsFields fields() const
+    {
+      return mFields;
+    }
     //! Set field definitions
-    void setFields( const QgsFields& fields ) { mFields = fields; }
+    void setFields( const QgsFields& fields )
+    {
+      mFields = fields;
+    }
 
     //! Convenience method to test if a given source layer is part of the definition
     bool hasSourceLayer( const QString& name ) const;

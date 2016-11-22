@@ -35,14 +35,14 @@ class QgsReaderFeatures
      * \param layer Pointer to the layer.
      * \param useSelection Use or not use the features selected
      */
-    QgsReaderFeatures( QgsVectorLayer *layer, bool useSelection );
+    QgsReaderFeatures( QgsVectorLayer* layer, bool useSelection );
 
     /**
      * \brief Next feature
      * \param feature reference to next Feature.
      * \returns True if has next feature.
      */
-    bool nextFeature( QgsFeature & feature );
+    bool nextFeature( QgsFeature& feature );
 
   private:
 
@@ -52,7 +52,7 @@ class QgsReaderFeatures
      */
     void initReader( bool useSelection );
 
-    QgsVectorLayer * mLayer;
+    QgsVectorLayer* mLayer;
     QgsFeatureIterator mFit;
 };
 

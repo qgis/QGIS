@@ -40,10 +40,10 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-        : QObject( 0 )
-        , rendererChanged( false )
-        , featureBlendMode( QPainter::CompositionMode( 0 ) )
-        , transparency( 0 )
+      : QObject( 0 )
+      , rendererChanged( false )
+      , featureBlendMode( QPainter::CompositionMode( 0 ) )
+      , transparency( 0 )
     {}
     bool rendererChanged;
     QPainter::CompositionMode featureBlendMode;
@@ -71,19 +71,19 @@ class TestQgsVectorLayer : public QObject
     Q_OBJECT
   public:
     TestQgsVectorLayer()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
-        , mpNonSpatialLayer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mpPolysLayer( 0 )
+      , mpNonSpatialLayer( 0 )
     {}
 
   private:
     bool mTestHasError;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
-    QgsVectorLayer * mpNonSpatialLayer;
+    QgsMapLayer* mpPointsLayer;
+    QgsMapLayer* mpLinesLayer;
+    QgsMapLayer* mpPolysLayer;
+    QgsVectorLayer* mpNonSpatialLayer;
     QString mTestDataDir;
     QString mReport;
 
@@ -125,7 +125,7 @@ void TestQgsVectorLayer::initTestCase()
                                           myDbfFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpNonSpatialLayer );
+    QList<QgsMapLayer*>() << mpNonSpatialLayer );
   //
   //create a point layer that will be used in all tests...
   //
@@ -135,7 +135,7 @@ void TestQgsVectorLayer::initTestCase()
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -146,7 +146,7 @@ void TestQgsVectorLayer::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
 
   //
@@ -158,7 +158,7 @@ void TestQgsVectorLayer::initTestCase()
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer );
+    QList<QgsMapLayer*>() << mpLinesLayer );
 
   mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
@@ -265,7 +265,7 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
 
 void TestQgsVectorLayer::QgsVectorLayersetRenderer()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer* >( mpPointsLayer );
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
@@ -279,7 +279,7 @@ void TestQgsVectorLayer::QgsVectorLayersetRenderer()
 
 void TestQgsVectorLayer::QgsVectorLayersetFeatureBlendMode()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer* >( mpPointsLayer );
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( featureBlendModeChanged( const QPainter::CompositionMode ) ),
                     &receiver, SLOT( onFeatureBlendModeChanged( const QPainter::CompositionMode ) ) );
@@ -292,7 +292,7 @@ void TestQgsVectorLayer::QgsVectorLayersetFeatureBlendMode()
 
 void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer* >( mpPointsLayer );
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( layerTransparencyChanged( int ) ),
                     &receiver, SLOT( onLayerTransparencyChanged( int ) ) );
@@ -305,7 +305,7 @@ void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
 
 void TestQgsVectorLayer::uniqueValues()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer* >( mpPointsLayer );
 
   //test with invalid field
   QList<QVariant> values;
@@ -315,7 +315,7 @@ void TestQgsVectorLayer::uniqueValues()
 
 void TestQgsVectorLayer::minimumValue()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer* >( mpPointsLayer );
 
   //test with invalid field
   QCOMPARE( vLayer->minimumValue( 1000 ), QVariant() );
@@ -323,7 +323,7 @@ void TestQgsVectorLayer::minimumValue()
 
 void TestQgsVectorLayer::maximumValue()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer* >( mpPointsLayer );
 
   //test with invalid field
   QCOMPARE( vLayer->maximumValue( 1000 ), QVariant() );

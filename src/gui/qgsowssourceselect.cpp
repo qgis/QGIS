@@ -54,12 +54,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mService( service )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mCurrentTileset( nullptr )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget* parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mService( service )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
@@ -239,7 +239,7 @@ void QgsOWSSourceSelect::populateConnectionList()
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection* nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -252,7 +252,7 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection* nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -298,20 +298,20 @@ void QgsOWSSourceSelect::on_mLoadButton_clicked()
   emit connectionsChanged();
 }
 
-QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
+QgsTreeWidgetItem* QgsOWSSourceSelect::createItem(
   int id,
-  const QStringList &names,
-  QMap<int, QgsTreeWidgetItem *> &items,
-  int &layerAndStyleCount,
-  const QMap<int, int> &layerParents,
-  const QMap<int, QStringList> &layerParentNames )
+  const QStringList& names,
+  QMap<int, QgsTreeWidgetItem*>& items,
+  int& layerAndStyleCount,
+  const QMap<int, int>& layerParents,
+  const QMap<int, QStringList>& layerParentNames )
 {
   QgsDebugMsg( QString( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
   if ( items.contains( id ) )
     return items[id];
 
 
-  QgsTreeWidgetItem *item;
+  QgsTreeWidgetItem* item;
   if ( layerParents.contains( id ) )
   {
     // it has parent -> create first its parent
@@ -361,21 +361,21 @@ void QgsOWSSourceSelect::addClicked()
 {
 }
 
-void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
+void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem* )
 {
 }
 
 void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
 {
   QStringList layers;
-  Q_FOREACH ( QTreeWidgetItem *item, mLayersTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem* item, mLayersTreeWidget->selectedItems() )
   {
     QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
     if ( !layer.isEmpty() )
       layers << layer;
   }
 
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+  QgsGenericProjectionSelector* mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
@@ -452,11 +452,11 @@ void QgsOWSSourceSelect::clearCrs()
   mChangeCRSButton->setEnabled( false );
 }
 
-void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
+void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem* item )
 {
   Q_UNUSED( item );
 
-  QTableWidgetItem *rowItem = mTilesetsTableWidget->item( mTilesetsTableWidget->currentRow(), 0 );
+  QTableWidgetItem* rowItem = mTilesetsTableWidget->item( mTilesetsTableWidget->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;
 
   mTilesetsTableWidget->blockSignals( true );
@@ -543,7 +543,7 @@ void QgsOWSSourceSelect::setConnectionListPosition()
   QgsOwsConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
-void QgsOWSSourceSelect::showStatusMessage( QString const &theMessage )
+void QgsOWSSourceSelect::showStatusMessage( QString const& theMessage )
 {
   mStatusLabel->setText( theMessage );
 
@@ -552,9 +552,9 @@ void QgsOWSSourceSelect::showStatusMessage( QString const &theMessage )
 }
 
 
-void QgsOWSSourceSelect::showError( QString const &theTitle, QString const &theFormat, QString const &theError )
+void QgsOWSSourceSelect::showError( QString const& theTitle, QString const& theFormat, QString const& theError )
 {
-  QgsMessageViewer * mv = new QgsMessageViewer( this );
+  QgsMessageViewer* mv = new QgsMessageViewer( this );
   mv->setWindowTitle( theTitle );
 
   if ( theFormat == QLatin1String( "text/html" ) )
@@ -657,7 +657,7 @@ void QgsOWSSourceSelect::on_mSearchButton_clicked()
   QUrl url( mySearchUrl.arg( mSearchTermLineEdit->text() ) );
   QgsDebugMsg( url.toString() );
 
-  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
+  QNetworkReply* r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
   connect( r, SIGNAL( finished() ), SLOT( searchFinished() ) );
 }
 
@@ -665,7 +665,7 @@ void QgsOWSSourceSelect::searchFinished()
 {
   QApplication::restoreOverrideCursor();
 
-  QNetworkReply *r = qobject_cast<QNetworkReply *>( sender() );
+  QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
   if ( !r )
     return;
 
@@ -712,7 +712,7 @@ void QgsOWSSourceSelect::on_mSearchTableWidget_itemSelectionChanged()
 
 void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 {
-  QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*> selectionList = mLayerOrderTreeWidget->selectedItems();
   if ( selectionList.size() < 1 )
   {
     return;
@@ -731,7 +731,7 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 
 void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
 {
-  QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*> selectionList = mLayerOrderTreeWidget->selectedItems();
   if ( selectionList.size() < 1 )
   {
     return;

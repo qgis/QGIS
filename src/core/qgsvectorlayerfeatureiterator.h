@@ -98,7 +98,10 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     //! Overrides default method as we only need to filter features in the edit buffer
     //! while for others filtering is left to the provider implementation.
-    virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
+    virtual bool nextFeatureFilterExpression( QgsFeature& f ) override
+    {
+      return fetchFeature( f );
+    }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
@@ -131,7 +134,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! @note not available in Python bindings
     bool nextFeatureFid( QgsFeature& f );
     //! @note not available in Python bindings
-    void addJoinedAttributes( QgsFeature &f );
+    void addJoinedAttributes( QgsFeature& f );
 
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
@@ -142,7 +145,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * @param f The feature will be modified
      * @note not available in Python bindings
      */
-    void addVirtualAttributes( QgsFeature &f );
+    void addVirtualAttributes( QgsFeature& f );
 
     /** Adds an expression based attribute to a feature
      * @param f feature
@@ -213,7 +216,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * Will always return true. We assume that ordering has been done on provider level already.
      *
      */
-    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys ) override;
 
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;

@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     };
 
     //! constructor
-    explicit QgsSQLComposerDialog( QWidget * parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    explicit QgsSQLComposerDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     virtual ~QgsSQLComposerDialog();
 
     //! initialize the SQL statement
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! add a list of table names
     void addTableNames( const QStringList& list );
     //! add a list of table names
-    void addTableNames( const QList<PairNameTitle> & listNameTitle );
+    void addTableNames( const QList<PairNameTitle>& listNameTitle );
     //! add a list of column names
     void addColumnNames( const QStringList& list, const QString& tableName );
     //! add a list of column names
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void addApis( const QStringList& list );
 
     //! set if multiple tables/joins are supported. Default is false
-    void setSupportMultipleTables( bool bMultipleTables, const QString &mainTypename = QString() );
+    void setSupportMultipleTables( bool bMultipleTables, const QString& mainTypename = QString() );
 
     /** Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void setSQLValidatorCallback( SQLValidatorCallback* sqlValidatorCallback );
 
   protected:
-    bool eventFilter( QObject *obj, QEvent *event ) override;
+    bool eventFilter( QObject* obj, QEvent* event ) override;
 
   private slots:
     void accept() override;
@@ -160,7 +160,10 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void on_mRemoveJoinButton_clicked();
     void on_mTableJoins_itemSelectionChanged();
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mButtonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     void reset();
     void buildSQLFromFields();

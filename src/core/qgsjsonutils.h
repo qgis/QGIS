@@ -47,34 +47,52 @@ class CORE_EXPORT QgsJSONExporter
      * @param precision number of decimal places
      * @see precision()
      */
-    void setPrecision( int precision ) { mPrecision = precision; }
+    void setPrecision( int precision )
+    {
+      mPrecision = precision;
+    }
 
     /** Returns the maximum number of decimal places to use in geometry coordinates.
      * @see setPrecision()
      */
-    int precision() const { return mPrecision; }
+    int precision() const
+    {
+      return mPrecision;
+    }
 
     /** Sets whether to include geometry in the JSON exports.
      * @param includeGeometry set to false to prevent geometry inclusion
      * @see includeGeometry()
      */
-    void setIncludeGeometry( bool includeGeometry ) { mIncludeGeometry = includeGeometry; }
+    void setIncludeGeometry( bool includeGeometry )
+    {
+      mIncludeGeometry = includeGeometry;
+    }
 
     /** Returns whether geometry will be included in the JSON exports.
      * @see setIncludeGeometry()
      */
-    bool includeGeometry() const { return mIncludeGeometry; }
+    bool includeGeometry() const
+    {
+      return mIncludeGeometry;
+    }
 
     /** Sets whether to include attributes in the JSON exports.
      * @param includeAttributes set to false to prevent attribute inclusion
      * @see includeAttributes()
      */
-    void setIncludeAttributes( bool includeAttributes ) { mIncludeAttributes = includeAttributes; }
+    void setIncludeAttributes( bool includeAttributes )
+    {
+      mIncludeAttributes = includeAttributes;
+    }
 
     /** Returns whether attributes will be included in the JSON exports.
      * @see setIncludeAttributes()
      */
-    bool includeAttributes() const { return mIncludeAttributes; }
+    bool includeAttributes() const
+    {
+      return mIncludeAttributes;
+    }
 
     /** Sets whether to include attributes of features linked via references in the JSON exports.
      * @param includeRelated set to true to include attributes for any related child features
@@ -82,12 +100,18 @@ class CORE_EXPORT QgsJSONExporter
      * @note associated vector layer must be set with setVectorLayer()
      * @see includeRelated()
      */
-    void setIncludeRelated( bool includeRelated ) { mIncludeRelatedAttributes = includeRelated; }
+    void setIncludeRelated( bool includeRelated )
+    {
+      mIncludeRelatedAttributes = includeRelated;
+    }
 
     /** Returns whether attributes of related (child) features will be included in the JSON exports.
      * @see setIncludeRelated()
      */
-    bool includeRelated() const { return mIncludeRelatedAttributes; }
+    bool includeRelated() const
+    {
+      return mIncludeRelatedAttributes;
+    }
 
     /** Sets the associated vector layer (required for related attribute export). This will automatically
      * update the sourceCrs() to match.
@@ -123,7 +147,10 @@ class CORE_EXPORT QgsJSONExporter
      * @note Attributes excluded via setExcludedAttributes() take precedence over
      * attributes specified by this method.
      */
-    void setAttributes( const QgsAttributeList& attributes ) { mAttributeIndexes = attributes; }
+    void setAttributes( const QgsAttributeList& attributes )
+    {
+      mAttributeIndexes = attributes;
+    }
 
     /** Returns the list of attributes which will be included in the JSON exports, or
      * an empty list if all attributes will be included.
@@ -132,7 +159,10 @@ class CORE_EXPORT QgsJSONExporter
      * @note Attributes excluded via excludedAttributes() take precedence over
      * attributes returned by this method.
      */
-    QgsAttributeList attributes() const { return mAttributeIndexes; }
+    QgsAttributeList attributes() const
+    {
+      return mAttributeIndexes;
+    }
 
     /** Sets a list of attributes to specifically exclude from the JSON exports. Excluded attributes
      * take precedence over attributes included via setAttributes().
@@ -140,14 +170,20 @@ class CORE_EXPORT QgsJSONExporter
      * @see excludedAttributes()
      * @see setAttributes()
      */
-    void setExcludedAttributes( const QgsAttributeList& attributes ) { mExcludedAttributeIndexes = attributes; }
+    void setExcludedAttributes( const QgsAttributeList& attributes )
+    {
+      mExcludedAttributeIndexes = attributes;
+    }
 
     /** Returns a list of attributes which will be specifically excluded from the JSON exports. Excluded attributes
      * take precedence over attributes included via attributes().
      * @see setExcludedAttributes()
      * @see attributes()
      */
-    QgsAttributeList excludedAttributes() const { return mExcludedAttributeIndexes; }
+    QgsAttributeList excludedAttributes() const
+    {
+      return mExcludedAttributeIndexes;
+    }
 
     /** Returns a GeoJSON string representation of a feature.
      * @param feature feature to convert

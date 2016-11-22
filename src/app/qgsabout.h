@@ -24,7 +24,7 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
 {
     Q_OBJECT
   public:
-    QgsAbout( QWidget *parent );
+    QgsAbout( QWidget* parent );
     ~QgsAbout();
     void setVersion( const QString& v );
     static QString fileSystemSafe( const QString& string );
@@ -39,7 +39,7 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
   private slots:
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
-    void openUrl( const QUrl &url );
+    void openUrl( const QUrl& url );
 };
 
 #endif

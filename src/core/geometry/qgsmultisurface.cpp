@@ -24,12 +24,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiSurface::QgsMultiSurface()
-    : QgsGeometryCollection()
+  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
-QgsMultiSurface *QgsMultiSurface::clone() const
+QgsMultiSurface* QgsMultiSurface::clone() const
 {
   return new QgsMultiSurface( *this );
 }
@@ -45,7 +45,7 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument& doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsSurface*>( geom ) )
     {
@@ -65,7 +65,7 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument& doc, int precision, const QSt
 QDomElement QgsMultiSurface::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsSurface*>( geom ) )
     {
@@ -82,7 +82,7 @@ QString QgsMultiSurface::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsSurface*>( geom ) )
     {

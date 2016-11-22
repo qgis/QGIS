@@ -60,13 +60,13 @@ QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
   mFeatureInvalidReference.clear();
 } // QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
 
-bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
+bool QgsSpatialQueryDialog::hasPossibleQuery( QString& msg )
 {
   // Count the number of vector layer
   QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   QMapIterator <QString, QgsMapLayer*> item( layers );
-  QgsMapLayer * mapLayer = nullptr;
-  QgsVectorLayer * lyr = nullptr;
+  QgsMapLayer* mapLayer = nullptr;
+  QgsVectorLayer* lyr = nullptr;
   unsigned int totalVector = 0;
   while ( item.hasNext() )
   {
@@ -76,7 +76,7 @@ bool QgsSpatialQueryDialog::hasPossibleQuery( QString &msg )
     {
       continue;
     }
-    lyr = qobject_cast<QgsVectorLayer *>( mapLayer );
+    lyr = qobject_cast<QgsVectorLayer*>( mapLayer );
     if ( !lyr )
     {
       continue;
@@ -196,7 +196,7 @@ void QgsSpatialQueryDialog::runQuery()
   bbMain->setEnabled( true );
 } // void QgsSpatialQueryDialog::runQuery()
 
-void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd )
+void QgsSpatialQueryDialog::showResultQuery( QDateTime* datetimeStart, QDateTime* datetimeEnd )
 {
   static int countQuery = 0;
   // Report processing
@@ -252,7 +252,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   }
 } // void QgsSpatialQueryDialog::showResultQuery(QDateTime *datetimeStart, QDateTime *datetimeEnd)
 
-QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID )
+QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds* fids, const QString& fieldFID )
 {
   if ( fids->isEmpty() )
   {
@@ -270,7 +270,7 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const Q
   return qReturn;
 } // QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
 
-QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset( QString &msg, QString &fieldFID )
+QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset( QString& msg, QString& fieldFID )
 {
   QString providerType = mLayerTarget->providerType().toUpper();
   // OGR
@@ -292,21 +292,21 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
 
 bool QgsSpatialQueryDialog::addLayerSubset( const QString& name, const QString& subset )
 {
-  QgsVectorLayer *addLyr = new QgsVectorLayer( mLayerTarget->source(), name, mLayerTarget->providerType() );
+  QgsVectorLayer* addLyr = new QgsVectorLayer( mLayerTarget->source(), name, mLayerTarget->providerType() );
   if ( ! addLyr->setSubsetString( subset ) )
   {
     delete addLyr;
     return false;
   }
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << addLyr );
+    QList<QgsMapLayer*>() << addLyr );
   return true;
 } // bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
 
 QString QgsSpatialQueryDialog::getDescriptionLayerShow( bool isTarget )
 {
   QgsVectorLayer* lyr = nullptr;
-  QCheckBox * checkBox = nullptr;
+  QCheckBox* checkBox = nullptr;
   if ( isTarget )
   {
     lyr = mLayerTarget;
@@ -394,12 +394,12 @@ void QgsSpatialQueryDialog::reject()
   QDialog::reject();
 } // QgsSpatialQueryDialog::reject()
 
-QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox( bool isTarget, int index )
+QgsVectorLayer* QgsSpatialQueryDialog::getLayerFromCombobox( bool isTarget, int index )
 {
   QVariant data = isTarget
                   ? cbTargetLayer->itemData( index )
                   : cbReferenceLayer->itemData( index );
-  QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( data.value<void *>() );
+  QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( data.value<void*>() );
   return lyr;
 } // QgsVectorLayer * QgsSpatialQueryDialog::getLayerFromCombobox(bool isTarget, int index)
 
@@ -439,8 +439,8 @@ QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QgsWkbTypes::GeometryType geom
 
 void QgsSpatialQueryDialog::addCbLayer( bool isTarget, QgsVectorLayer* lyr )
 {
-  QVariant item = QVariant::fromValue(( void * )lyr );
-  QComboBox * cmb = isTarget ? cbTargetLayer : cbReferenceLayer;
+  QVariant item = QVariant::fromValue(( void* )lyr );
+  QComboBox* cmb = isTarget ? cbTargetLayer : cbReferenceLayer;
   int idNew = cmb->count();
   QIcon icon = getIconTypeGeometry( lyr->geometryType() );
   cmb->addItem( icon, lyr->name(), item );
@@ -449,14 +449,14 @@ void QgsSpatialQueryDialog::addCbLayer( bool isTarget, QgsVectorLayer* lyr )
 
 int QgsSpatialQueryDialog::getCbIndexLayer( bool isTarget, QgsVectorLayer* lyr )
 {
-  QVariant item = QVariant::fromValue(( void * )lyr );
-  QComboBox * cmb = isTarget ? cbTargetLayer : cbReferenceLayer;
+  QVariant item = QVariant::fromValue(( void* )lyr );
+  QComboBox* cmb = isTarget ? cbTargetLayer : cbReferenceLayer;
   return cmb->findData( item );
 }
 
 void QgsSpatialQueryDialog::removeLayer( bool isTarget, QgsVectorLayer* lyr )
 {
-  QComboBox * cmb = isTarget ? cbTargetLayer : cbReferenceLayer;
+  QComboBox* cmb = isTarget ? cbTargetLayer : cbReferenceLayer;
   cmb->blockSignals( true );
   // Remove Combobox
   int index = getCbIndexLayer( isTarget, lyr );
@@ -534,8 +534,8 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
 
   QMap <QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   QMapIterator <QString, QgsMapLayer*> item( layers );
-  QgsMapLayer * mapLayer = nullptr;
-  QgsVectorLayer * lyr = nullptr;
+  QgsMapLayer* mapLayer = nullptr;
+  QgsVectorLayer* lyr = nullptr;
   while ( item.hasNext() )
   {
     item.next();
@@ -544,7 +544,7 @@ void QgsSpatialQueryDialog::populateCbTargetLayer()
     {
       continue;
     }
-    lyr = qobject_cast<QgsVectorLayer *>( mapLayer );
+    lyr = qobject_cast<QgsVectorLayer*>( mapLayer );
     if ( !lyr )
     {
       continue;
@@ -566,14 +566,14 @@ void QgsSpatialQueryDialog::populateCbReferenceLayer()
   QString itemText;
   QVariant itemData;
   QIcon itemIcon;
-  QgsVectorLayer * lyr = nullptr;
+  QgsVectorLayer* lyr = nullptr;
   int idNew = 0;
   for ( int id = 0; id < cbTargetLayer->count(); id++ )
   {
     itemText = cbTargetLayer->itemText( id );
     itemData = cbTargetLayer->itemData( id );
     itemIcon = cbTargetLayer->itemIcon( id );
-    lyr = static_cast<QgsVectorLayer *>( itemData.value<void *>() );
+    lyr = static_cast<QgsVectorLayer*>( itemData.value<void*>() );
     if ( lyr == mLayerTarget )
     {
       continue;
@@ -605,7 +605,7 @@ void QgsSpatialQueryDialog::populateCbOperation()
   }
 
   // Populate new values
-  QMap<QString, int> * map = QgsSpatialQuery::getTypesOperations( mLayerTarget, mLayerReference );
+  QMap<QString, int>* map = QgsSpatialQuery::getTypesOperations( mLayerTarget, mLayerReference );
   QMapIterator <QString, int> item( *map );
   cbOperation->blockSignals( true );
   cbOperation->clear();
@@ -774,7 +774,7 @@ void QgsSpatialQueryDialog::visibleResult( bool show )
 } // void QgsSpatialQueryDialog::visibleResult( bool show )
 
 //! Slots for signs of Dialog
-void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button )
+void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton* button )
 {
   switch ( bbMain->buttonRole( button ) )
   {
@@ -793,7 +793,7 @@ void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button )
 void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 {
   TypeItems typeItem = ( TypeItems ) cbTypeItems->currentData().toInt();
-  QgsFeatureIds *fids = nullptr;
+  QgsFeatureIds* fids = nullptr;
   switch ( typeItem )
   {
     case itemsResult:
@@ -833,7 +833,7 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 
 void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
 {
-  const QgsFeatureIds *fids = & ( mLayerTarget->selectedFeaturesIds() );
+  const QgsFeatureIds* fids = & ( mLayerTarget->selectedFeaturesIds() );
   QString title = tr( "Create new layer from selected" );
   QString msg;
   QString fieldFID;
@@ -897,7 +897,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
   QVariant qtypItem = cbTypeItems->itemData( index );
   TypeItems typeItem = ( TypeItems ) qtypItem.toInt();
 
-  QgsFeatureIds *setItems = nullptr;
+  QgsFeatureIds* setItems = nullptr;
   int totalFeat = mLayerTarget->featureCount();
   switch ( typeItem )
   {
@@ -922,7 +922,7 @@ void QgsSpatialQueryDialog::on_cbTypeItems_currentIndexChanged( int index )
   {
     // Populate lwFeatures
     QSetIterator <QgsFeatureId> item( *setItems );
-    QListWidgetItem *lwItem = nullptr;
+    QListWidgetItem* lwItem = nullptr;
     while ( item.hasNext() )
     {
       lwItem = new QListWidgetItem( lwFeatures );
@@ -963,10 +963,10 @@ void QgsSpatialQueryDialog::on_cbOperation_currentIndexChanged()
   }
 } // void QgsSpatialQueryDialog::on_cbOperation_currentIndexChanged()
 
-void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
+void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem* item )
 {
   TypeItems typeItem = ( TypeItems )( cbTypeItems->currentData().toInt() );
-  QgsVectorLayer *lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
+  QgsVectorLayer* lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
   changeLwFeature( lyr, STRING_TO_FID( item->data( Qt::UserRole ).toString() ) );
 } // void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
 
@@ -989,7 +989,7 @@ void QgsSpatialQueryDialog::on_ckbZoomItem_clicked( bool checked )
     {
       QgsFeatureId fid = STRING_TO_FID( lwFeatures->currentItem()->data( Qt::UserRole ).toString() );
       TypeItems typeItem = ( TypeItems )( cbTypeItems->currentData().toInt() );
-      QgsVectorLayer *lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
+      QgsVectorLayer* lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
       zoomFeature( lyr, fid );
     }
   }
@@ -1002,7 +1002,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
   {
     return;
   }
-  QgsVectorLayer * lyr = qobject_cast<QgsVectorLayer *>( mapLayer );
+  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( mapLayer );
   if ( !lyr )
   {
     return;
@@ -1027,13 +1027,13 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( const QString& idLay
   }
   // idLayer = QgsMapLayer::getLayerID()
   // Get Pointer layer removed
-  QMap<QString, QgsVectorLayer *>::const_iterator i = mMapIdVectorLayers.constFind( idLayer );
+  QMap<QString, QgsVectorLayer*>::const_iterator i = mMapIdVectorLayers.constFind( idLayer );
   if ( i == mMapIdVectorLayers.constEnd() )
   {
     return;
   }
   mMapIdVectorLayers.remove( idLayer );
-  QgsVectorLayer *lyr = i.value();
+  QgsVectorLayer* lyr = i.value();
   removeLayer( true, lyr ); // set new target if need
   removeLayer( false, lyr ); // set new reference if need
   if ( mLayerTarget && getCbIndexLayer( cbReferenceLayer, mLayerTarget ) > -1 )

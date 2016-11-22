@@ -25,9 +25,9 @@
 #include <QSettings>
 
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mDateTimeEdit( nullptr )
-    , mLayer( nullptr )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mDateTimeEdit( nullptr )
+  , mLayer( nullptr )
 {
 }
 

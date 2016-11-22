@@ -19,9 +19,9 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsErrorDialog::QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mError( theError )
+QgsErrorDialog::QgsErrorDialog( const QgsError& theError, const QString& theTitle, QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mError( theError )
 {
   setupUi( this );
   QString title = theTitle;
@@ -56,7 +56,7 @@ QgsErrorDialog::~QgsErrorDialog()
 {
 }
 
-void QgsErrorDialog::show( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WindowFlags fl )
+void QgsErrorDialog::show( const QgsError& theError, const QString& theTitle, QWidget* parent, Qt::WindowFlags fl )
 {
   QgsErrorDialog d( theError, theTitle, parent, fl );
   d.exec();

@@ -32,7 +32,7 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    explicit QgsKeyValueModel( QObject *parent = 0 );
+    explicit QgsKeyValueModel( QObject* parent = 0 );
     void setMap( const QVariantMap& map );
     QVariantMap map() const;
 
@@ -40,10 +40,10 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
     int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool insertRows( int position, int rows, const QModelIndex & parent =  QModelIndex() ) override;
-    bool removeRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    bool insertRows( int position, int rows, const QModelIndex& parent =  QModelIndex() ) override;
+    bool removeRows( int position, int rows, const QModelIndex& parent =  QModelIndex() ) override;
 
     typedef QPair<QString, QVariant> Line;
 
@@ -77,7 +77,10 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
      * Get the edit value.
      * @return the QVariantMap
      */
-    QVariantMap map() const { return mModel.map(); }
+    QVariantMap map() const
+    {
+      return mModel.map();
+    }
 
   private:
     QgsKeyValueModel mModel;

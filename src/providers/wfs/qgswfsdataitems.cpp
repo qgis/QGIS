@@ -28,7 +28,7 @@
 
 
 QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceUri& uri, QString featureType, QString title, QString crsString )
-    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
+  : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
 {
   QSettings settings;
   bool useCurrentViewExtent = settings.value( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
@@ -44,9 +44,9 @@ QgsWfsLayerItem::~QgsWfsLayerItem()
 ////
 
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
-    : QgsDataCollectionItem( parent, name, path )
-    , mUri( uri )
-    , mCapabilities( nullptr )
+  : QgsDataCollectionItem( parent, name, path )
+  , mUri( uri )
+  , mCapabilities( nullptr )
 {
   mIconName = QStringLiteral( "mIconWfs.svg" );
 }
@@ -126,7 +126,7 @@ void QgsWfsConnectionItem::deleteConnection()
 
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );
@@ -145,7 +145,7 @@ QVector<QgsDataItem*> QgsWfsRootItem::createChildren()
   {
     QgsWfsConnection connection( connName );
     QString path = "wfs:/" + connName;
-    QgsDataItem * conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri() );
+    QgsDataItem* conn = new QgsWfsConnectionItem( this, connName, path, connection.uri().uri() );
     connections.append( conn );
   }
   return connections;
@@ -162,9 +162,9 @@ QList<QAction*> QgsWfsRootItem::actions()
   return lst;
 }
 
-QWidget * QgsWfsRootItem::paramWidget()
+QWidget* QgsWfsRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, true );
+  QgsWFSSourceSelect* select = new QgsWFSSourceSelect( nullptr, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -187,7 +187,7 @@ void QgsWfsRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsWFSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWFSSourceSelect* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsWFSSourceSelect( parent, fl );
 }
@@ -197,7 +197,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )

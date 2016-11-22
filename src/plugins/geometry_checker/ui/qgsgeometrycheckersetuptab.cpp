@@ -39,9 +39,9 @@
 #include <QtConcurrentMap>
 
 
-QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , QWidget *parent )
-    : QWidget( parent )
-    , mIface( iface )
+QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , QWidget* parent )
+  : QWidget( parent )
+  , mIface( iface )
 
 {
   ui.setupUi( this );
@@ -109,7 +109,7 @@ QgsVectorLayer* QgsGeometryCheckerSetupTab::getSelectedLayer()
   if ( inputIdx < 0 )
     return nullptr;
 
-  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer*>( ui.comboBoxInputLayer->currentLayer() );
+  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( ui.comboBoxInputLayer->currentLayer() );
   return layer;
 }
 

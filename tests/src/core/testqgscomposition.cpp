@@ -56,15 +56,15 @@ class TestQgsComposition : public QObject
     void variablesEdited();
 
   private:
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
+    QgsComposition* mComposition;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 
 };
 
 TestQgsComposition::TestQgsComposition()
-    : mComposition( 0 )
-    , mMapSettings( 0 )
+  : mComposition( 0 )
+  , mMapSettings( 0 )
 {
 }
 

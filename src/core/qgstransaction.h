@@ -112,7 +112,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     bool mTransactionActive;
     QSet<QgsVectorLayer*> mLayers;
 
-    void setLayerTransactionIds( QgsTransaction *transaction );
+    void setLayerTransactionIds( QgsTransaction* transaction );
 
     virtual bool beginTransaction( QString& error, int statementTimeout ) = 0;
     virtual bool commitTransaction( QString& error ) = 0;

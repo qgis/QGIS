@@ -43,14 +43,31 @@ between other elements. All of the above can have one of more associated tags.
 class ANALYSIS_EXPORT QgsOSMElement
 {
   public:
-    QgsOSMElement() { mElemID.type = QgsOSMElementID::Invalid; mElemID.id = 0; }
-    QgsOSMElement( QgsOSMElementID::Type t, QgsOSMId id ) { mElemID.type = t; mElemID.id = id; }
+    QgsOSMElement()
+    {
+      mElemID.type = QgsOSMElementID::Invalid;
+      mElemID.id = 0;
+    }
+    QgsOSMElement( QgsOSMElementID::Type t, QgsOSMId id )
+    {
+      mElemID.type = t;
+      mElemID.id = id;
+    }
 
-    bool isValid() const { return mElemID.type != QgsOSMElementID::Invalid; }
+    bool isValid() const
+    {
+      return mElemID.type != QgsOSMElementID::Invalid;
+    }
 
     // fetched automatically from DB
-    QgsOSMElementID elemId() const { return mElemID; }
-    QgsOSMId id() const { return mElemID.id; }
+    QgsOSMElementID elemId() const
+    {
+      return mElemID;
+    }
+    QgsOSMId id() const
+    {
+      return mElemID.id;
+    }
     //QString username() const;
     //QDateTime timestamp() const;
     //int version() const;
@@ -72,11 +89,14 @@ class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
   public:
     QgsOSMNode() : mPoint() {}
     QgsOSMNode( QgsOSMId id, const QgsPoint& point )
-        : QgsOSMElement( QgsOSMElementID::Node, id )
-        , mPoint( point )
+      : QgsOSMElement( QgsOSMElementID::Node, id )
+      , mPoint( point )
     {}
 
-    QgsPoint point() const { return mPoint; }
+    QgsPoint point() const
+    {
+      return mPoint;
+    }
 
   private:
     QgsPoint mPoint;
@@ -95,11 +115,14 @@ class ANALYSIS_EXPORT QgsOSMWay : public QgsOSMElement
   public:
     QgsOSMWay() {}
     QgsOSMWay( QgsOSMId id, const QList<QgsOSMId>& nodes )
-        : QgsOSMElement( QgsOSMElementID::Way, id )
-        , mNodes( nodes )
+      : QgsOSMElement( QgsOSMElementID::Way, id )
+      , mNodes( nodes )
     {}
 
-    QList<QgsOSMId> nodes() const { return mNodes; }
+    QList<QgsOSMId> nodes() const
+    {
+      return mNodes;
+    }
 
     // fetched on-demand
     //QList<OSMElementID> relations() const;
@@ -134,11 +157,26 @@ class ANALYSIS_EXPORT QgsOSMTags
   public:
     QgsOSMTags() {}
 
-    int count() const { return mMap.count(); }
-    QList<QString> keys() const { return mMap.keys(); }
-    bool contains( const QString& k ) const { return mMap.contains( k ); }
-    void insert( const QString& k, const QString& v ) { mMap.insert( k, v ); }
-    QString value( const QString& k ) const { return mMap.value( k ); }
+    int count() const
+    {
+      return mMap.count();
+    }
+    QList<QString> keys() const
+    {
+      return mMap.keys();
+    }
+    bool contains( const QString& k ) const
+    {
+      return mMap.contains( k );
+    }
+    void insert( const QString& k, const QString& v )
+    {
+      mMap.insert( k, v );
+    }
+    QString value( const QString& k ) const
+    {
+      return mMap.value( k );
+    }
 
   private:
     QMap<QString, QString> mMap;

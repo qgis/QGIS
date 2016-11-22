@@ -27,16 +27,16 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
-    : QWidget( parent, fl )
-    , mUserProjList( nullptr )
-    , mGeoList( nullptr )
-    , mProjList( nullptr )
-    , mProjListDone( false )
-    , mUserProjListDone( false )
-    , mRecentProjListDone( false )
-    , mSearchColumn( NONE )
-    , mPushProjectionToFront( false )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char* name, Qt::WindowFlags fl )
+  : QWidget( parent, fl )
+  , mUserProjList( nullptr )
+  , mGeoList( nullptr )
+  , mProjList( nullptr )
+  , mProjListDone( false )
+  , mUserProjListDone( false )
+  , mRecentProjListDone( false )
+  , mSearchColumn( NONE )
+  , mPushProjectionToFront( false )
 {
   Q_UNUSED( name );
   setupUi( this );
@@ -112,7 +112,7 @@ QgsProjectionSelector::~QgsProjectionSelector()
   settings.setValue( QStringLiteral( "/UI/recentProjectionsAuthId" ), projectionsAuthId );
 }
 
-void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
+void QgsProjectionSelector::resizeEvent( QResizeEvent* theEvent )
 {
   lstCoordinateSystems->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
   lstCoordinateSystems->header()->resizeSection( AUTHID_COLUMN, 240 );
@@ -123,7 +123,7 @@ void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
   lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
 }
 
-void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
+void QgsProjectionSelector::showEvent( QShowEvent* theEvent )
 {
   // ensure the projection list view is actually populated
   // before we show this widget
@@ -146,7 +146,7 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
   QWidget::showEvent( theEvent );
 }
 
-QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter )
+QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString>* crsFilter )
 {
   QString sqlExpression = QStringLiteral( "1" );           // it's "SQL" for "true"
   QMap<QString, QStringList> authParts;
@@ -278,7 +278,7 @@ void QgsProjectionSelector::insertRecent( long theCrsId )
 QString QgsProjectionSelector::selectedName()
 {
   // return the selected wkt name from the list view
-  QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
+  QTreeWidgetItem* lvi = lstCoordinateSystems->currentItem();
   return lvi ? lvi->text( NAME_COLUMN ) : QString::null;
 }
 
@@ -291,7 +291,7 @@ QString QgsProjectionSelector::selectedProj4String()
   // system
   //
   // Get the selected node
-  QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
+  QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
   if ( !item || item->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
     return QLatin1String( "" );
 
@@ -318,7 +318,7 @@ QString QgsProjectionSelector::selectedProj4String()
 
   QgsDebugMsg( "db = " + databaseFileName );
 
-  sqlite3 *database;
+  sqlite3* database;
   int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
@@ -327,8 +327,8 @@ QString QgsProjectionSelector::selectedProj4String()
   }
 
   // prepare the sql statement
-  const char *tail;
-  sqlite3_stmt *stmt;
+  const char* tail;
+  sqlite3_stmt* stmt;
   QString sql = QStringLiteral( "select parameters from tbl_srs where srs_id=%1" ).arg( srsId );
 
   QgsDebugMsg( "Selection sql: " + sql );
@@ -338,7 +338,7 @@ QString QgsProjectionSelector::selectedProj4String()
   QString projString;
   if ( rc == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
   {
-    projString = QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) );
+    projString = QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) );
   }
 
   // close the statement
@@ -360,7 +360,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   //
   // Get the selected node and make sure it is a srs andx
   // not a top-level projection node
-  QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
+  QTreeWidgetItem* lvi = lstCoordinateSystems->currentItem();
   if ( !lvi || lvi->text( QGIS_CRS_ID_COLUMN ).isEmpty() )
     return QString();
 
@@ -387,7 +387,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   // XXX We could probabaly hold the database open for the life of this object,
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
-  sqlite3 *database;
+  sqlite3* database;
   int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
@@ -396,8 +396,8 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   }
 
   // prepare the sql statement
-  const char *tail;
-  sqlite3_stmt *stmt;
+  const char* tail;
+  sqlite3_stmt* stmt;
   QString sql = QStringLiteral( "select %1 from tbl_srs where srs_id=%2" )
                 .arg( expression,
                       lvi->text( QGIS_CRS_ID_COLUMN ) );
@@ -409,7 +409,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   if ( rc == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
   {
     // get the first row of the result set
-    attributeValue = QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) );
+    attributeValue = QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) );
   }
 
   // close the statement
@@ -456,7 +456,7 @@ void QgsProjectionSelector::setOgcWmsCrsFilter( const QSet<QString>& crsFilter )
   lstCoordinateSystems->clear();
 }
 
-void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
+void QgsProjectionSelector::loadUserCrsList( QSet<QString>* crsFilter )
 {
   if ( mUserProjListDone )
     return;
@@ -490,9 +490,9 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
     return;
   }
 
-  sqlite3      *database;
-  const char   *tail;
-  sqlite3_stmt *stmt;
+  sqlite3*      database;
+  const char*   tail;
+  sqlite3_stmt* stmt;
   //check the db is available
   int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
@@ -512,17 +512,17 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   // XXX Need to free memory from the error msg if one is set
   if ( result == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem;
+    QTreeWidgetItem* newItem;
     while ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
-      newItem = new QTreeWidgetItem( mUserProjList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) ) ) );
+      newItem = new QTreeWidgetItem( mUserProjList, QStringList( QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) ) ) );
       // EpsgCrsId for user projections is not always defined in some dbases.
       // It's also not written from customprojections dialog.
       // display the epsg (field 2) in the second column of the list view
       // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
       // display the qgis srs_id (field 1) in the third column of the list view
-      newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
-      newItem->setText( AUTHID_COLUMN, QStringLiteral( "USER:%1" ).arg( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
+      newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char* )sqlite3_column_text( stmt, 1 ) ) );
+      newItem->setText( AUTHID_COLUMN, QStringLiteral( "USER:%1" ).arg( QString::fromUtf8(( char* )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
     }
   }
   // close the sqlite3 statement
@@ -532,7 +532,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   mUserProjListDone = true;
 }
 
-void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
+void QgsProjectionSelector::loadCrsList( QSet<QString>* crsFilter )
 {
   if ( mProjListDone )
     return;
@@ -573,7 +573,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   }
 
   // open the database containing the spatial reference data
-  sqlite3 *database;
+  sqlite3* database;
   int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
@@ -583,8 +583,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
     return;
   }
 
-  const char *tail;
-  sqlite3_stmt *stmt;
+  const char* tail;
+  sqlite3_stmt* stmt;
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
@@ -595,7 +595,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   // XXX Need to free memory from the error msg if one is set
   if ( rc == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem;
+    QTreeWidgetItem* newItem;
     // Cache some stuff to speed up creating of the list of projected
     // spatial reference systems
     QString previousSrsType( QLatin1String( "" ) );
@@ -609,18 +609,18 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
       {
         // this is a geographic coordinate system
         // Add it to the tree (field 0)
-        newItem = new QTreeWidgetItem( mGeoList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) ) ) );
+        newItem = new QTreeWidgetItem( mGeoList, QStringList( QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) ) ) );
 
         // display the authority name (field 2) in the second column of the list view
-        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
+        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char* )sqlite3_column_text( stmt, 2 ) ) );
 
         // display the qgis srs_id (field 1) in the third column of the list view
-        newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+        newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char* )sqlite3_column_text( stmt, 1 ) ) );
       }
       else
       {
         // This is a projected srs
-        QTreeWidgetItem *node;
+        QTreeWidgetItem* node;
         QString srsType = QString::fromUtf8(( char* )sqlite3_column_text( stmt, 4 ) );
         // Find the node for this type and add the projection to it
         // If the node doesn't exist, create it
@@ -629,7 +629,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
           node = previousSrsTypeNode;
         }
         else
-        { // Different from last one, need to search
+        {
+          // Different from last one, need to search
           QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( srsType, Qt::MatchExactly | Qt::MatchRecursive, NAME_COLUMN );
           if ( nodes.isEmpty() )
           {
@@ -649,17 +650,17 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
           previousSrsTypeNode = node;
         }
         // add the item, setting the projection name in the first column of the list view
-        newItem = new QTreeWidgetItem( node, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) ) ) );
+        newItem = new QTreeWidgetItem( node, QStringList( QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) ) ) );
         // display the authority id (field 2) in the second column of the list view
-        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
+        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char* )sqlite3_column_text( stmt, 2 ) ) );
         // display the qgis srs_id (field 1) in the third column of the list view
-        newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+        newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char* )sqlite3_column_text( stmt, 1 ) ) );
         // expand also parent node
         newItem->parent()->setExpanded( true );
       }
 
       // display the qgis deprecated in the user data of the item
-      newItem->setData( 0, Qt::UserRole, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 6 ) ) );
+      newItem->setData( 0, Qt::UserRole, QString::fromUtf8(( char* )sqlite3_column_text( stmt, 6 ) ) );
       newItem->setHidden( cbxHideDeprecated->isChecked() );
     }
     mProjList->setExpanded( true );
@@ -674,7 +675,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 }
 
 // New coordinate system selected from the list
-void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* )
 {
   QgsDebugMsg( "Entered." );
 
@@ -719,7 +720,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
   }
 }
 
-void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem* current, int column )
 {
   Q_UNUSED( column );
 
@@ -737,7 +738,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidg
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* )
 {
   QgsDebugMsg( "Entered." );
 
@@ -754,7 +755,7 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
     lstCoordinateSystems->setCurrentItem( nodes.first() );
 }
 
-void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem* current, int column )
 {
   Q_UNUSED( column );
 
@@ -771,7 +772,7 @@ void QgsProjectionSelector::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *cur
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
+void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem* item )
 {
   if ( item->data( 0, Qt::UserRole ).toBool() )
   {
@@ -794,7 +795,7 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
+void QgsProjectionSelector::on_leSearch_textChanged( const QString& theFilterTxt )
 {
   QString filterTxt = theFilterTxt;
   filterTxt.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
@@ -811,7 +812,7 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
          )
       {
         ( *itr )->setHidden( false );
-        QTreeWidgetItem * parent = ( *itr )->parent();
+        QTreeWidgetItem* parent = ( *itr )->parent();
         while ( parent )
         {
           parent->setExpanded( true );
@@ -842,7 +843,7 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
          )
       {
         ( *it )->setHidden( false );
-        QTreeWidgetItem * parent = ( *it )->parent();
+        QTreeWidgetItem* parent = ( *it )->parent();
         while ( parent )
         {
           parent->setExpanded( true );
@@ -879,9 +880,9 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
   // Now perform the actual search
   //
 
-  sqlite3      *database;
-  const char   *tail;
-  sqlite3_stmt *stmt;
+  sqlite3*      database;
+  const char*   tail;
+  sqlite3_stmt* stmt;
   int           result;
 
   // first we search the users db as any srsid there will be definition be greater than in sys db
@@ -905,7 +906,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
     // XXX Need to free memory from the error msg if one is set
     if ( result == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
     {
-      QString srsIdString = QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) );
+      QString srsIdString = QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) );
       srsId = srsIdString.toLong();
       // close the sqlite3 statement
       sqlite3_finalize( stmt );
@@ -929,7 +930,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
   // XXX Need to free memory from the error msg if one is set
   if ( result == SQLITE_OK && sqlite3_step( stmt ) == SQLITE_ROW )
   {
-    QString srsIdString = QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) );
+    QString srsIdString = QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) );
     srsId = srsIdString.toLong();
   }
 
@@ -942,9 +943,9 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
 
 QStringList QgsProjectionSelector::authorities()
 {
-  sqlite3      *database;
-  const char   *tail;
-  sqlite3_stmt *stmt;
+  sqlite3*      database;
+  const char*   tail;
+  sqlite3_stmt* stmt;
 
   int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
@@ -962,7 +963,7 @@ QStringList QgsProjectionSelector::authorities()
   {
     while ( sqlite3_step( stmt ) == SQLITE_ROW )
     {
-      authorities << QString::fromUtf8(( char * )sqlite3_column_text( stmt, 0 ) );
+      authorities << QString::fromUtf8(( char* )sqlite3_column_text( stmt, 0 ) );
     }
 
   }

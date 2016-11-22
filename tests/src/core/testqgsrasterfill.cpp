@@ -43,11 +43,11 @@ class TestQgsRasterFill : public QObject
 
   public:
     TestQgsRasterFill()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mRasterFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mRasterFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -67,7 +67,7 @@ class TestQgsRasterFill : public QObject
     bool setQml( const QString& theType );
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QgsRasterFillSymbolLayer* mRasterFill;
     QgsFillSymbol* mFillSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -102,7 +102,7 @@ void TestQgsRasterFill::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   //setup raster fill
   mRasterFill = new QgsRasterFillSymbolLayer();

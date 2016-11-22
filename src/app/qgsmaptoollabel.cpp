@@ -28,10 +28,10 @@
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mLabelRubberBand( nullptr )
-    , mFeatureRubberBand( nullptr )
-    , mFixPointRubberBand( nullptr )
+  : QgsMapTool( canvas )
+  , mLabelRubberBand( nullptr )
+  , mFeatureRubberBand( nullptr )
+  , mFixPointRubberBand( nullptr )
 {
 }
 
@@ -569,7 +569,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
 {
   if ( vlayer && vlayer->diagramsEnabled() )
   {
-    const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
+    const QgsDiagramLayerSettings* dls = vlayer->diagramLayerSettings();
     if ( dls && dls->xPosColumn >= 0 && dls->yPosColumn >= 0 )
     {
       xCol = dls->xPosColumn;
@@ -580,7 +580,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer* vlayer, int& xCol, int& y
   return false;
 }
 
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::labelMoveable( QgsVectorLayer* vlayer, int& xCol, int& yCol ) const
 {
   if ( !vlayer || !vlayer->isEditable() )
   {
@@ -661,7 +661,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol )
 
   if ( vlayer && vlayer->isEditable() && vlayer->diagramsEnabled() )
   {
-    const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
+    const QgsDiagramLayerSettings* dls = vlayer->diagramLayerSettings();
 
     if ( dls && dls->showColumn >= 0 )
     {
@@ -676,8 +676,8 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer* vlayer, int& showCol )
 //
 
 QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition& p )
-    : valid( false )
-    , pos( p )
+  : valid( false )
+  , pos( p )
 {
   layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( pos.layerID ) );
   if ( layer && layer->labeling() )

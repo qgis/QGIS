@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 
 QgsReaderThread::QgsReaderThread()
-    : QThread()
+  : QThread()
 {
 }
 
@@ -50,8 +50,8 @@ void QgsReaderThread::run()
   }
 }
 
-QgsHelpViewer::QgsHelpViewer( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsHelpViewer::QgsHelpViewer( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
   restorePosition();
@@ -97,13 +97,13 @@ void QgsHelpViewer::fileExit()
  * OS specific code must be written. To avoid OS specific code, the window
  * geometry is saved as it changes.
  */
-void QgsHelpViewer::moveEvent( QMoveEvent *event )
+void QgsHelpViewer::moveEvent( QMoveEvent* event )
 {
   Q_UNUSED( event );
   saveWindowLocation();
 }
 
-void QgsHelpViewer::resizeEvent( QResizeEvent *event )
+void QgsHelpViewer::resizeEvent( QResizeEvent* event )
 {
   Q_UNUSED( event );
   saveWindowLocation();

@@ -30,8 +30,8 @@ class FeatureLayer
 {
   public:
     FeatureLayer()
-        : layer( nullptr )
-        , feature( QgsFeature() )
+      : layer( nullptr )
+      , feature( QgsFeature() )
     {}
 
     /**
@@ -40,8 +40,8 @@ class FeatureLayer
      * @param theFeature QgsFeature
      */
     FeatureLayer( QgsVectorLayer* theLayer, const QgsFeature& theFeature )
-        : layer( theLayer )
-        , feature( theFeature )
+      : layer( theLayer )
+      , feature( theFeature )
     {}
 
     QgsVectorLayer* layer;
@@ -60,7 +60,10 @@ class TopolError
     /**
      * A dummy fix - does nothing
      */
-    bool fixDummy() { return false; }
+    bool fixDummy()
+    {
+      return false;
+    }
 
     /**
      * Snaps to a feature
@@ -104,14 +107,14 @@ class TopolError
      * @param fl1 first FeatureLayer pair
      * @param fl2 second FeatureLayer pair
      */
-    bool fixMove( const FeatureLayer &fl1, const FeatureLayer &fl2 );
+    bool fixMove( const FeatureLayer& fl1, const FeatureLayer& fl2 );
 
     /**
      * Unions features to the first one
      * @param fl1 first FeatureLayer pair
      * @param fl2 second FeatureLayer pair
      */
-    bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
+    bool fixUnion( const FeatureLayer& fl1, const FeatureLayer& fl2 );
 
   public:
 
@@ -137,27 +140,42 @@ class TopolError
     /**
      * Returns error's name
      */
-    virtual QString name() { return mName; }
+    virtual QString name()
+    {
+      return mName;
+    }
 
     /**
      * Returns topology conflict
      */
-    virtual QgsGeometry conflict() const { return mConflict; }
+    virtual QgsGeometry conflict() const
+    {
+      return mConflict;
+    }
 
     /**
      * Returns bounding box of the error
      */
-    virtual QgsRectangle boundingBox() { return mBoundingBox; }
+    virtual QgsRectangle boundingBox()
+    {
+      return mBoundingBox;
+    }
 
     /**
      * Returns FeatureLayer pairs from the error
      */
-    virtual QList<FeatureLayer> featurePairs() { return mFeaturePairs; }
+    virtual QList<FeatureLayer> featurePairs()
+    {
+      return mFeaturePairs;
+    }
 
     /**
      * Returns the names of possible fixes
      */
-    virtual QStringList fixNames() { return mFixMap.keys(); }
+    virtual QStringList fixNames()
+    {
+      return mFixMap.keys();
+    }
 };
 
 class TopolErrorIntersection : public TopolError

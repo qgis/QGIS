@@ -40,7 +40,10 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     //! Updates the legend layers and groups
     void updateLegend();
 
-    QgsComposerLegend* legend() { return mLegend; }
+    QgsComposerLegend* legend()
+    {
+      return mLegend;
+    }
 
   public slots:
 
@@ -89,7 +92,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
 
     void on_mFilterLegendByAtlasCheckBox_toggled( bool checked );
 
-    void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
+    void selectedChanged( const QModelIndex& current, const QModelIndex& previous );
 
     void setCurrentNodeStyleFromAction();
 
@@ -100,7 +103,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     //! Update the enabling state of the filter by atlas button
     void updateFilterLegendByAtlasButton();
 
-    void on_mItemTreeView_doubleClicked( const QModelIndex &index );
+    void on_mItemTreeView_doubleClicked( const QModelIndex& index );
 
   private:
     QgsComposerLegendWidget();

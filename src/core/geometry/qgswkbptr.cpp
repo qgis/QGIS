@@ -14,14 +14,14 @@
  ***************************************************************************/
 #include "qgswkbptr.h"
 
-QgsWkbPtr::QgsWkbPtr( QByteArray &wkb )
+QgsWkbPtr::QgsWkbPtr( QByteArray& wkb )
 {
   mP = reinterpret_cast<unsigned char*>( wkb.data() );
   mStart = mP;
   mEnd = mP + wkb.length();
 }
 
-QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
+QgsWkbPtr::QgsWkbPtr( unsigned char* p, int size )
 {
   mP = p;
   mStart = mP;
@@ -34,17 +34,17 @@ void QgsWkbPtr::verifyBound( int size ) const
     throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
 }
 
-QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
+QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray& wkb )
 {
-  mP = reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) );
+  mP = reinterpret_cast< unsigned char* >( const_cast<char*>( wkb.constData() ) );
   mEnd = mP + wkb.length();
   mEndianSwap = false;
   mWkbType = QgsWkbTypes::Unknown;
 }
 
-QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
+QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char* p, int size )
 {
-  mP = const_cast< unsigned char * >( p );
+  mP = const_cast< unsigned char* >( p );
   mEnd = mP + size;
   mEndianSwap = false;
   mWkbType = QgsWkbTypes::Unknown;
@@ -72,14 +72,14 @@ void QgsConstWkbPtr::verifyBound( int size ) const
     throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
 }
 
-const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPointF &point ) const
+const QgsConstWkbPtr& QgsConstWkbPtr::operator>>( QPointF& point ) const
 {
   read( point.rx() );
   read( point.ry() );
   return *this;
 }
 
-const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPolygonF &points ) const
+const QgsConstWkbPtr& QgsConstWkbPtr::operator>>( QPolygonF& points ) const
 {
   int skipZM = ( QgsWkbTypes::coordDimensions( mWkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );

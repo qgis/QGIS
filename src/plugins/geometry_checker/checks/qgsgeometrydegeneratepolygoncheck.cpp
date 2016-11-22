@@ -16,7 +16,7 @@
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& /*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds& ids ) const
 {
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
@@ -42,7 +42,7 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckErr
   }
 }
 
-void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes& changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )

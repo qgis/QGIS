@@ -60,7 +60,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      * @param parent Parent widget
      */
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent = nullptr );
+                                          QWidget* parent = nullptr );
     ~QgsAuthImportIdentityDialog();
 
     //! Get identity type
@@ -72,7 +72,10 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     const QPair<QSslCertificate, QSslKey> certBundleToImport();
 
     //! Get certificate/key bundle to be imported as a PKI bundle object
-    const QgsPkiBundle pkiBundleToImport() { return mPkiBundle; }
+    const QgsPkiBundle pkiBundleToImport()
+    {
+      return mPkiBundle;
+    }
 
   private slots:
     void populateIdentityType();
@@ -82,19 +85,19 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
 
     void clearValidation();
-    void writeValidation( const QString &msg,
+    void writeValidation( const QString& msg,
                           QgsAuthImportIdentityDialog::Validity valid,
                           bool append = false );
 
     // Cert Identity - PkiPaths
-    void on_lePkiPathsKeyPass_textChanged( const QString &pass );
+    void on_lePkiPathsKeyPass_textChanged( const QString& pass );
     void on_chkPkiPathsPassShow_stateChanged( int state );
 
     void on_btnPkiPathsCert_clicked();
     void on_btnPkiPathsKey_clicked();
 
     // Cert Identity - PkiPkcs#12
-    void on_lePkiPkcs12KeyPass_textChanged( const QString &pass );
+    void on_lePkiPkcs12KeyPass_textChanged( const QString& pass );
     void on_chkPkiPkcs12PassShow_stateChanged( int state );
 
     void on_btnPkiPkcs12Bundle_clicked();
@@ -104,7 +107,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     bool validatePkiPaths();
     bool validatePkiPkcs12();
 
-    void fileFound( bool found, QWidget *widget );
+    void fileFound( bool found, QWidget* widget );
     QString getOpenFileName( const QString& title, const QString& extfilter );
 
     QPushButton* okButton();
@@ -114,8 +117,8 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     QgsPkiBundle mPkiBundle;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 #endif // QGSAUTHIMPORTIDENTITYDIALOG_H

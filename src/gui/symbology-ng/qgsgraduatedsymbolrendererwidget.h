@@ -29,23 +29,23 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererModel( QObject * parent = nullptr );
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    QgsGraduatedSymbolRendererModel( QObject* parent = nullptr );
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
     Qt::DropActions supportedDropActions() const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    QVariant data( const QModelIndex& index, int role ) const override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex& index ) const override;
     QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
 
     void setRenderer( QgsGraduatedSymbolRenderer* renderer );
 
-    QgsRendererRange rendererRange( const QModelIndex &index );
+    QgsRendererRange rendererRange( const QModelIndex& index );
     void addClass( QgsSymbol* symbol );
     void addClass( const QgsRendererRange& range );
     void deleteRows( QList<int> rows );
@@ -70,7 +70,7 @@ class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
   public:
     explicit QgsGraduatedSymbolRendererViewStyle( QStyle* style = nullptr );
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
+    void drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = nullptr ) const override;
 };
 
 ///@endcond
@@ -96,9 +96,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
-    void rangesDoubleClicked( const QModelIndex & idx );
-    void rangesClicked( const QModelIndex & idx );
-    void changeCurrentValue( QStandardItem * item );
+    void rangesDoubleClicked( const QModelIndex& idx );
+    void rangesClicked( const QModelIndex& idx );
+    void changeCurrentValue( QStandardItem* item );
 
     //! Adds a class manually to the classification
     void addClass();

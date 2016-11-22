@@ -27,9 +27,9 @@
 #include <cmath>
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mRubberBand( nullptr )
-    , mResultDisplay( nullptr )
+  : QgsMapTool( canvas )
+  , mRubberBand( nullptr )
+  , mResultDisplay( nullptr )
 {
   mToolName = tr( "Measure angle" );
 

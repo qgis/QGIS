@@ -36,16 +36,16 @@
 
 
 QgsRuleBasedRenderer::Rule::Rule( QgsSymbol* symbol, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& label, const QString& description, bool elseRule )
-    : mParent( nullptr )
-    , mSymbol( symbol )
-    , mScaleMinDenom( scaleMinDenom )
-    , mScaleMaxDenom( scaleMaxDenom )
-    , mFilterExp( filterExp )
-    , mLabel( label )
-    , mDescription( description )
-    , mElseRule( elseRule )
-    , mIsActive( true )
-    , mFilter( nullptr )
+  : mParent( nullptr )
+  , mSymbol( symbol )
+  , mScaleMinDenom( scaleMinDenom )
+  , mScaleMaxDenom( scaleMaxDenom )
+  , mFilterExp( filterExp )
+  , mLabel( label )
+  , mDescription( description )
+  , mElseRule( elseRule )
+  , mIsActive( true )
+  , mFilter( nullptr )
 {
   if ( mElseRule )
     mFilterExp = QStringLiteral( "ELSE" );
@@ -334,7 +334,7 @@ QDomElement QgsRuleBasedRenderer::Rule::save( QDomDocument& doc, QgsSymbolMap& s
   return ruleElem;
 }
 
-void QgsRuleBasedRenderer::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsRuleBasedRenderer::Rule::toSld( QDomDocument& doc, QDomElement& element, QgsStringMap props ) const
 {
   // do not convert this rule if there are no symbols
   QgsRenderContext context;
@@ -560,7 +560,7 @@ QgsRuleBasedRenderer::Rule::RenderResult QgsRuleBasedRenderer::Rule::renderFeatu
     return Filtered;
 }
 
-bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature& feat, QgsRenderContext *context )
+bool QgsRuleBasedRenderer::Rule::willRenderFeature( QgsFeature& feat, QgsRenderContext* context )
 {
   if ( !isFilterOK( feat, context ) )
     return false;
@@ -731,7 +731,7 @@ QgsRuleBasedRenderer::Rule* QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
     }
     else if ( childElem.localName() == QLatin1String( "Filter" ) )
     {
-      QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
+      QgsExpression* filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
       if ( filter )
       {
         if ( filter->hasParserError() )
@@ -769,7 +769,7 @@ QgsRuleBasedRenderer::Rule* QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
   }
 
   // now create the symbol
-  QgsSymbol *symbol = nullptr;
+  QgsSymbol* symbol = nullptr;
   if ( !layers.isEmpty() )
   {
     switch ( geomType )
@@ -800,13 +800,13 @@ QgsRuleBasedRenderer::Rule* QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
 /////////////////////
 
 QgsRuleBasedRenderer::QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule* root )
-    : QgsFeatureRenderer( QStringLiteral( "RuleRenderer" ) )
-    , mRootRule( root )
+  : QgsFeatureRenderer( QStringLiteral( "RuleRenderer" ) )
+  , mRootRule( root )
 {
 }
 
 QgsRuleBasedRenderer::QgsRuleBasedRenderer( QgsSymbol* defaultSymbol )
-    : QgsFeatureRenderer( QStringLiteral( "RuleRenderer" ) )
+  : QgsFeatureRenderer( QStringLiteral( "RuleRenderer" ) )
 {
   mRootRule = new Rule( nullptr ); // root has no symbol, no filter etc - just a container
   mRootRule->appendChild( new Rule( defaultSymbol ) );
@@ -818,7 +818,7 @@ QgsRuleBasedRenderer::~QgsRuleBasedRenderer()
 }
 
 
-QgsSymbol* QgsRuleBasedRenderer::symbolForFeature( QgsFeature& , QgsRenderContext& )
+QgsSymbol* QgsRuleBasedRenderer::symbolForFeature( QgsFeature&, QgsRenderContext& )
 {
   // not used at all
   return nullptr;
@@ -940,7 +940,7 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::clone() const
   return r;
 }
 
-void QgsRuleBasedRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsRuleBasedRenderer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   mRootRule->toSld( doc, element, props );
 }
@@ -1063,7 +1063,7 @@ QgsFeatureRenderer* QgsRuleBasedRenderer::createFromSld( QDomElement& element, Q
   QDomElement ruleElem = element.firstChildElement( QStringLiteral( "Rule" ) );
   while ( !ruleElem.isNull() )
   {
-    Rule *child = Rule::createFromSld( ruleElem, geomType );
+    Rule* child = Rule::createFromSld( ruleElem, geomType );
     if ( child )
     {
       // create the root rule if not done before
@@ -1299,7 +1299,7 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
     QString expression;
     QgsRendererRange range;
-    for ( int i = 0; i < graduatedRenderer->ranges().size();++i )
+    for ( int i = 0; i < graduatedRenderer->ranges().size(); ++i )
     {
       range = graduatedRenderer->ranges().value( i );
       QgsRuleBasedRenderer::Rule* rule = new QgsRuleBasedRenderer::Rule( nullptr );
@@ -1356,7 +1356,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
   switch ( symbol->type() )
   {
     case QgsSymbol::Marker:
-      for ( int j = 0; j < symbol->symbolLayerCount();++j )
+      for ( int j = 0; j < symbol->symbolLayerCount(); ++j )
       {
         QgsMarkerSymbolLayer* msl = static_cast<QgsMarkerSymbolLayer*>( symbol->symbolLayer( j ) );
         if ( ! sizeScaleField.isEmpty() )
@@ -1373,7 +1373,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
     case QgsSymbol::Line:
       if ( ! sizeScaleField.isEmpty() )
       {
-        for ( int j = 0; j < symbol->symbolLayerCount();++j )
+        for ( int j = 0; j < symbol->symbolLayerCount(); ++j )
         {
           if ( symbol->symbolLayer( j )->layerType() == QLatin1String( "SimpleLine" ) )
           {
@@ -1384,7 +1384,7 @@ void QgsRuleBasedRenderer::convertToDataDefinedSymbology( QgsSymbol* symbol, con
           if ( symbol->symbolLayer( j )->layerType() == QLatin1String( "MarkerLine" ) )
           {
             QgsSymbol* marker = symbol->symbolLayer( j )->subSymbol();
-            for ( int k = 0; k < marker->symbolLayerCount();++k )
+            for ( int k = 0; k < marker->symbolLayerCount(); ++k )
             {
               QgsMarkerSymbolLayer* msl = static_cast<QgsMarkerSymbolLayer*>( marker->symbolLayer( k ) );
               sizeExpression = QStringLiteral( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );

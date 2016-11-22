@@ -36,13 +36,13 @@ class TestQgsComposerMap : public QObject
 
   public:
     TestQgsComposerMap()
-        : mComposition( 0 )
-        , mComposerMap( 0 )
-        , mMapSettings( 0 )
-        , mRasterLayer( 0 )
-        , mPointsLayer( 0 )
-        , mPolysLayer( 0 )
-        , mLinesLayer( 0 )
+      : mComposition( 0 )
+      , mComposerMap( 0 )
+      , mMapSettings( 0 )
+      , mRasterLayer( 0 )
+      , mPointsLayer( 0 )
+      , mPolysLayer( 0 )
+      , mLinesLayer( 0 )
     {}
 
   private slots:
@@ -58,9 +58,9 @@ class TestQgsComposerMap : public QObject
     void dataDefinedStyles(); //test data defined styles
 
   private:
-    QgsComposition *mComposition;
-    QgsComposerMap *mComposerMap;
-    QgsMapSettings *mMapSettings;
+    QgsComposition* mComposition;
+    QgsComposerMap* mComposerMap;
+    QgsMapSettings* mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QgsVectorLayer* mPointsLayer;
     QgsVectorLayer* mPolysLayer;
@@ -84,17 +84,17 @@ void TestQgsComposerMap::initTestCase()
   QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
   QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
                                     polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mPolysLayer );
 
   QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
   mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
                                     lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mLinesLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mLinesLayer );
 }
 
 void TestQgsComposerMap::cleanupTestCase()

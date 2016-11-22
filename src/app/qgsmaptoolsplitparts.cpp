@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 
 QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
   mToolName = tr( "Split parts" );
 }
@@ -34,10 +34,10 @@ QgsMapToolSplitParts::~QgsMapToolSplitParts()
 
 }
 
-void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {

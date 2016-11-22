@@ -44,7 +44,7 @@ class CORE_EXPORT QgsDataSourceUri
     QgsDataSourceUri( QString uri );
 
     //! constructor which parses input encoded URI (generic mode)
-    QgsDataSourceUri( const QByteArray & uri );
+    QgsDataSourceUri( const QByteArray& uri );
 
     //! return connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
@@ -57,32 +57,32 @@ class CORE_EXPORT QgsDataSourceUri
 
     //! set complete encoded uri (generic mode)
     // \note not available in python bindings
-    void setEncodedUri( const QByteArray & uri );
+    void setEncodedUri( const QByteArray& uri );
 
     //! set complete encoded uri (generic mode)
-    void setEncodedUri( const QString & uri );
+    void setEncodedUri( const QString& uri );
 
     //! quoted table name
     QString quotedTablename() const;
 
     //! Set generic param (generic mode)
     // \note if key exists, another is inserted
-    void setParam( const QString &key, const QString &value );
+    void setParam( const QString& key, const QString& value );
     //! @note available in python as setParamList
-    void setParam( const QString &key, const QStringList &value );
+    void setParam( const QString& key, const QStringList& value );
 
     //! Remove generic param (generic mode)
     // \note remove all occurrences of key, returns number of params removed
-    int removeParam( const QString &key );
+    int removeParam( const QString& key );
 
     //! Get generic param (generic mode)
-    QString param( const QString &key ) const;
+    QString param( const QString& key ) const;
 
     //! Get multiple generic param (generic mode)
-    QStringList params( const QString &key ) const;
+    QStringList params( const QString& key ) const;
 
     //! Test if param exists (generic mode)
-    bool hasParam( const QString &key ) const;
+    bool hasParam( const QString& key ) const;
 
     //! Set all connection related members at once
     void setConnection( const QString& aHost,
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsDataSourceUri
                         const QString& authConfigId = QString() );
 
     //! Set database
-    void setDatabase( const QString &database );
+    void setDatabase( const QString& database );
 
     //! Set all data source related members at once
     void setDataSource( const QString& aSchema,
@@ -200,9 +200,9 @@ class CORE_EXPORT QgsDataSourceUri
     void setSrid( const QString& srid );
 
   private:
-    void skipBlanks( const QString &uri, int &i );
-    QString getValue( const QString &uri, int &i );
-    QString escape( const QString &uri, QChar delim ) const;
+    void skipBlanks( const QString& uri, int& i );
+    QString getValue( const QString& uri, int& i );
+    QString escape( const QString& uri, QChar delim ) const;
 
     /* data */
 

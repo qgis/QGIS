@@ -19,8 +19,8 @@
 #include <QColorDialog>
 
 QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
-    , mLayer( nullptr )
+  : QgsSymbolLayerWidget( parent, vl )
+  , mLayer( nullptr )
 {
   setupUi( this );
 
@@ -84,7 +84,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   btnChangeColorBorder->setColor( mLayer->outlineColor() );
   btnChangeColorFill->setColor( mLayer->fillColor() );
 
-  QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
+  QList<QListWidgetItem*> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
   if ( !symbolItemList.isEmpty() )
   {
     mShapeListWidget->setCurrentItem( symbolItemList.at( 0 ) );

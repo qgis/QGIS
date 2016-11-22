@@ -39,7 +39,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) override;
     virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) override;
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) override;
-    virtual void setServiceException( const QgsMapServiceException &ex ) override;
+    virtual void setServiceException( const QgsMapServiceException& ex ) override;
     virtual void setXmlResponse( const QDomDocument& doc ) override;
     virtual void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) override;
     virtual void setGetPrintResponse( QByteArray* ba ) override;
@@ -50,19 +50,19 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     //! Send out HTTP headers and flush output buffer
     virtual void sendResponse() override;
     virtual void setDefaultHeaders() override;
-    virtual void setHeader( const QString &name, const QString &value ) override;
-    virtual int removeHeader( const QString &name ) override;
+    virtual void setHeader( const QString& name, const QString& value ) override;
+    virtual int removeHeader( const QString& name ) override;
     virtual void clearHeaders() override;
-    virtual void appendBody( const QByteArray &body ) override;
+    virtual void appendBody( const QByteArray& body ) override;
     virtual void clearBody() override;
-    virtual void setInfoFormat( const QString &format ) override;
+    virtual void setInfoFormat( const QString& format ) override;
     virtual bool responseReady() const override;
     virtual bool exceptionRaised() const override;
-    virtual void setParameter( const QString &key, const QString &value ) override;
-    virtual QString parameter( const QString &key ) const override;
-    virtual int removeParameter( const QString &key ) override;
+    virtual void setParameter( const QString& key, const QString& value ) override;
+    virtual QString parameter( const QString& key ) const override;
+    virtual int removeParameter( const QString& key ) override;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    virtual void setPluginFilters( const QgsServerFiltersMap &pluginFilters ) override;
+    virtual void setPluginFilters( const QgsServerFiltersMap& pluginFilters ) override;
 #endif
     //! Return the response if capture output is activated
     QPair<QByteArray, QByteArray> getResponse() override;
@@ -70,7 +70,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
   protected:
     virtual void sendHeaders() override;
     virtual void sendBody() override;
-    void setHttpResponse( QByteArray *ba, const QString &format );
+    void setHttpResponse( QByteArray* ba, const QString& format );
 
     /** Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
@@ -96,8 +96,8 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     QByteArray mResponseHeader;
     QByteArray mResponseBody;
     bool mCaptureOutput;
-    void addToResponseHeader( const char * response );
-    void addToResponseBody( const char * response );
+    void addToResponseHeader( const char* response );
+    void addToResponseBody( const char* response );
 };
 
 #endif

@@ -27,12 +27,12 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
 {
     Q_OBJECT
   public:
-    QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsTextAnnotationDialog();
 
   protected:
 
-    virtual void showEvent( QShowEvent * event ) override;
+    virtual void showEvent( QShowEvent* event ) override;
 
   private:
     QgsTextAnnotationItem* mItem;

@@ -25,13 +25,13 @@
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
 QgsWfsRequest::QgsWfsRequest( const QString& theUri )
-    : mUri( theUri )
-    , mReply( nullptr )
-    , mErrorCode( QgsWfsRequest::NoError )
-    , mIsAborted( false )
-    , mForceRefresh( false )
-    , mTimedout( false )
-    , mGotNonEmptyResponse( false )
+  : mUri( theUri )
+  , mReply( nullptr )
+  , mErrorCode( QgsWfsRequest::NoError )
+  , mIsAborted( false )
+  , mForceRefresh( false )
+  , mTimedout( false )
+  , mGotNonEmptyResponse( false )
 {
   QgsDebugMsg( "theUri = " + theUri );
   connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( requestTimedOut( QNetworkReply* ) ) );
@@ -273,14 +273,14 @@ void QgsWfsRequest::replyFinished()
       }
       else
       {
-        const QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+        const QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
 
         if ( nam->cache() )
         {
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader& h, cmd.rawHeaders() )
           {
             if ( h.first != "Cache-Control" )
               hl.append( h );

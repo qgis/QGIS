@@ -25,7 +25,7 @@ You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2
 */
 
 // extracted ColorBrewer data
-const char *QgsColorBrewerPalette::brewerString =
+const char* QgsColorBrewerPalette::brewerString =
   "Spectral-3-252,141,89 255,255,191 153,213,148\n"
   "Spectral-4-215,25,28 253,174,97 171,221,164 43,131,186\n"
   "Spectral-5-215,25,28 253,174,97 255,255,191 171,221,164 43,131,186\n"

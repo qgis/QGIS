@@ -28,7 +28,10 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "MultiSurface" );
+    }
     QgsMultiSurface* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;

@@ -42,12 +42,12 @@ class TestQgsBlendModes : public QObject
 
   public:
     TestQgsBlendModes()
-        : mMapSettings( 0 )
-        , mpPointsLayer( 0 )
-        , mpPolysLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mRasterLayer1( 0 )
-        , mRasterLayer2( 0 )
+      : mMapSettings( 0 )
+      , mpPointsLayer( 0 )
+      , mpPolysLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mRasterLayer1( 0 )
+      , mRasterLayer2( 0 )
     {}
     ~TestQgsBlendModes()
     {
@@ -66,10 +66,10 @@ class TestQgsBlendModes : public QObject
     void rasterBlending();
   private:
     bool imageCheck( const QString& theType ); //as above
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPointsLayer;
-    QgsVectorLayer * mpPolysLayer;
-    QgsVectorLayer * mpLinesLayer;
+    QgsMapSettings* mMapSettings;
+    QgsMapLayer* mpPointsLayer;
+    QgsVectorLayer* mpPolysLayer;
+    QgsVectorLayer* mpLinesLayer;
     QgsRasterLayer* mRasterLayer1;
     QgsRasterLayer* mRasterLayer2;
     QString mTestDataDir;
@@ -98,7 +98,7 @@ void TestQgsBlendModes::initTestCase()
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //create a poly layer that will be used in tests
   QString myPolysFileName = mTestDataDir + "polys.shp";
@@ -111,7 +111,7 @@ void TestQgsBlendModes::initTestCase()
 
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   //create a line layer that will be used in tests
   QString myLinesFileName = mTestDataDir + "lines.shp";
@@ -120,7 +120,7 @@ void TestQgsBlendModes::initTestCase()
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mpLinesLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer );
+    QList<QgsMapLayer*>() << mpLinesLayer );
 
   //create two raster layers
   QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
@@ -132,9 +132,9 @@ void TestQgsBlendModes::initTestCase()
   mRasterLayer1->setRenderer( rasterRenderer );
   mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRasterLayer1 );
+    QList<QgsMapLayer*>() << mRasterLayer1 );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRasterLayer2 );
+    QList<QgsMapLayer*>() << mRasterLayer2 );
 
   // points extent was not always reliable
   mExtent = QgsRectangle( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );

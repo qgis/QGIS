@@ -37,8 +37,8 @@
 //standard includes
 
 HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVariant>* temporarySettings )
-    : QDialog( parent, fl )
-    , mRows( 500 )
+  : QDialog( parent, fl )
+  , mRows( 500 )
 {
   setupUi( this );
 
@@ -84,7 +84,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WindowFlags fl, QMap<QString, QVari
   for ( int i = 0; i < nDrivers; i += 1 )
   {
     GDALDriverH nthDriver = GDALGetDriver( i );
-    char **driverMetadata = GDALGetMetadata( nthDriver, nullptr );
+    char** driverMetadata = GDALGetMetadata( nthDriver, nullptr );
     // Only formats which allow creation of Float32 data types are valid
     if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
          QString( GDALGetMetadataItem( nthDriver, GDAL_DMD_CREATIONDATATYPES, nullptr ) ).contains( QLatin1String( "Float32" ) ) )
@@ -201,7 +201,7 @@ void HeatmapGui::restoreSettings( bool usingLastInputLayer )
                                 ( Heatmap::KernelShape )( mKernelShapeCombo->currentData().toInt() ) == Heatmap::Triangular );
   }
   mOutputValuesComboBox->setCurrentIndex( mOutputValuesComboBox->findData(
-                                            ( Heatmap::OutputValues )( mHeatmapSessionSettings->value( QStringLiteral( "lastOutputValues" ), "0" ).toInt() ) ) );
+      ( Heatmap::OutputValues )( mHeatmapSessionSettings->value( QStringLiteral( "lastOutputValues" ), "0" ).toInt() ) ) );
 
 }
 
@@ -343,7 +343,7 @@ void HeatmapGui::on_mBufferUnitCombo_currentIndexChanged( int index )
 double HeatmapGui::estimateRadius()
 {
 
-  QgsVectorLayer *inputLayer = inputVectorLayer();
+  QgsVectorLayer* inputLayer = inputVectorLayer();
 
   // No input layer? Default to radius of 100
   if ( !inputLayer )
@@ -434,7 +434,7 @@ void HeatmapGui::updateSize()
 void HeatmapGui::updateBBox()
 {
   // Set the row/cols and cell sizes here
-  QgsVectorLayer *inputLayer = inputVectorLayer();
+  QgsVectorLayer* inputLayer = inputVectorLayer();
   if ( !inputLayer )
     return;
 
@@ -548,7 +548,7 @@ double HeatmapGui::decayRatio() const
 
 int HeatmapGui::radiusField() const
 {
-  QgsVectorLayer *inputLayer = inputVectorLayer();
+  QgsVectorLayer* inputLayer = inputVectorLayer();
   if ( !inputLayer )
     return 0;
 
@@ -557,7 +557,7 @@ int HeatmapGui::radiusField() const
 
 int HeatmapGui::weightField() const
 {
-  QgsVectorLayer *inputLayer = inputVectorLayer();
+  QgsVectorLayer* inputLayer = inputVectorLayer();
   if ( !inputLayer )
     return 0;
 

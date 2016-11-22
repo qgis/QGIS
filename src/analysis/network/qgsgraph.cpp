@@ -80,8 +80,8 @@ int QgsGraph::findVertex( const QgsPoint& pt ) const
 }
 
 QgsGraphEdge::QgsGraphEdge()
-    : mOut( 0 )
-    , mIn( 0 )
+  : mOut( 0 )
+  , mIn( 0 )
 {
 
 }
@@ -107,7 +107,7 @@ int QgsGraphEdge::outVertex() const
 }
 
 QgsGraphVertex::QgsGraphVertex( const QgsPoint& point )
-    : mCoordinate( point )
+  : mCoordinate( point )
 {
 
 }

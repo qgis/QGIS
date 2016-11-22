@@ -68,24 +68,24 @@ class GUI_EXPORT QgsMapTip : public QWidget
      *        in pixel coordinates.
      * @param mpMapCanvas a map canvas on which the tip is drawn
      */
-    void showMapTip( QgsMapLayer * thepLayer,
-                     QgsPoint & theMapPosition,
-                     QPoint & thePixelPosition,
-                     QgsMapCanvas *mpMapCanvas );
+    void showMapTip( QgsMapLayer* thepLayer,
+                     QgsPoint& theMapPosition,
+                     QPoint& thePixelPosition,
+                     QgsMapCanvas* mpMapCanvas );
 
     /** Clear the current maptip if it exists
      * @param mpMapCanvas the canvas from which the tip should be cleared.
      */
-    void clear( QgsMapCanvas *mpMapCanvas = nullptr );
+    void clear( QgsMapCanvas* mpMapCanvas = nullptr );
   private:
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
-    QString fetchFeature( QgsMapLayer * thepLayer,
-                          QgsPoint & theMapPosition,
-                          QgsMapCanvas *mapCanvas );
+    QString fetchFeature( QgsMapLayer* thepLayer,
+                          QgsPoint& theMapPosition,
+                          QgsMapCanvas* mapCanvas );
 
     QString replaceText(
-      QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
+      QString displayText, QgsVectorLayer* layer, QgsFeature& feat );
 
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;

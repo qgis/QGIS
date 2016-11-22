@@ -54,24 +54,24 @@ class CORE_EXPORT QgsProviderRegistry
     virtual ~QgsProviderRegistry();
 
     //! Return path for the library of the provider
-    QString library( const QString & providerKey ) const;
+    QString library( const QString& providerKey ) const;
 
     //! Return list of provider plugins found
     QString pluginList( bool asHtml = false ) const;
 
     //! Return library directory where plugins are found
-    const QDir & libraryDirectory() const;
+    const QDir& libraryDirectory() const;
 
     //! Set library directory where to search for plugins
-    void setLibraryDirectory( const QDir & path );
+    void setLibraryDirectory( const QDir& path );
 
     /** Create an instance of the provider
         @param providerKey identificator of the provider
         @param dataSource  string containing data source for the provider
         @return instance of provider or NULL on error
      */
-    QgsDataProvider *provider( const QString & providerKey,
-                               const QString & dataSource );
+    QgsDataProvider* provider( const QString& providerKey,
+                               const QString& dataSource );
 
     /** Return the provider capabilities
         @param providerKey identificator of the provider
@@ -81,18 +81,18 @@ class CORE_EXPORT QgsProviderRegistry
 
     /** Returns a widget for selecting layers from a provider.
      */
-    QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QWidget* selectWidget( const QString& providerKey,
+                           QWidget* parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /** Get pointer to provider function
         @param providerKey identificator of the provider
         @param functionName name of function
         @return pointer to function or NULL on error
      */
-    QFunctionPointer function( const QString & providerKey,
-                               const QString & functionName );
+    QFunctionPointer function( const QString& providerKey,
+                               const QString& functionName );
 
-    QLibrary *providerLibrary( const QString & providerKey ) const;
+    QLibrary* providerLibrary( const QString& providerKey ) const;
 
     //! Return list of available providers by their keys
     QStringList providerList() const;
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsProviderRegistry
     //! Return a string containing the available protocol drivers
     virtual QString protocolDrivers() const;
 
-    void registerGuis( QWidget *widget );
+    void registerGuis( QWidget* widget );
 
     /** Open the given vector data source
      *

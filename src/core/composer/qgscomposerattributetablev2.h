@@ -35,12 +35,18 @@ class CORE_EXPORT QgsComposerAttributeTableCompareV2
     /** Sets column number to sort by
      * @param col column number for sorting
      */
-    void setSortColumn( int col ) { mCurrentSortColumn = col; }
+    void setSortColumn( int col )
+    {
+      mCurrentSortColumn = col;
+    }
 
     /** Sets sort order for column sorting
      * @param asc set to true to sort in ascending order, false to sort in descending order
      */
-    void setAscending( bool asc ) { mAscending = asc; }
+    void setAscending( bool asc )
+    {
+      mAscending = asc;
+    }
 
   private:
     int mCurrentSortColumn;
@@ -77,7 +83,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const override;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
@@ -99,7 +105,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns content source
      * @see setSource
      */
-    ContentSource source() const { return mSource; }
+    ContentSource source() const
+    {
+      return mSource;
+    }
 
     /** Returns the source layer for the table, considering the table source mode. Eg,
      * if the table is set to atlas feature mode, then the source layer will be the
@@ -119,7 +128,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns attribute table's current vector layer
      * @see setVectorLayer
      */
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer* vectorLayer() const
+    {
+      return mVectorLayer;
+    }
 
     /** Sets the relation id from which to display child features
      * @param relationId id for relation to display child features from
@@ -135,7 +147,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see source
      * @note only used if table source is set to RelationChildren
      */
-    QString relationId() const { return mRelationId; }
+    QString relationId() const
+    {
+      return mRelationId;
+    }
 
     /** Resets the attribute table's columns to match the vector layer's fields
      * @see setVectorLayer
@@ -159,7 +174,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setComposerMap
      * @see displayOnlyVisibleFeatures
      */
-    const QgsComposerMap* composerMap() const { return mComposerMap; }
+    const QgsComposerMap* composerMap() const
+    {
+      return mComposerMap;
+    }
 
     /** Sets the maximum number of features shown by the table. Changing this setting may result
      * in the attribute table changing its size to accommodate the new number of rows, and requires
@@ -173,7 +191,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns maximum number of features
      * @see setMaximumNumberOfFeatures
      */
-    int maximumNumberOfFeatures() const { return mMaximumNumberOfFeatures; }
+    int maximumNumberOfFeatures() const
+    {
+      return mMaximumNumberOfFeatures;
+    }
 
     /** Sets attribute table to only show unique rows.
      * @param uniqueOnly set to true to show only unique rows. Duplicate rows
@@ -187,7 +208,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * duplicate rows.
      * @see setUniqueRowsOnly
      */
-    bool uniqueRowsOnly() const { return mShowUniqueRowsOnly; }
+    bool uniqueRowsOnly() const
+    {
+      return mShowUniqueRowsOnly;
+    }
 
     /** Sets attribute table to only show features which are visible in a composer map item. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
@@ -204,7 +228,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
      */
-    bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
+    bool displayOnlyVisibleFeatures() const
+    {
+      return mShowOnlyVisibleFeatures;
+    }
 
     /** Sets attribute table to only show features which intersect the current atlas
      * feature.
@@ -219,14 +246,20 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns true if table only shows features which intersect the atlas feature
      * @see setFilterToAtlasFeature
      */
-    bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
+    bool filterToAtlasFeature() const
+    {
+      return mFilterToAtlasIntersection;
+    }
 
     /** Returns true if a feature filter is active on the attribute table
      * @returns bool state of the feature filter
      * @see setFilterFeatures
      * @see featureFilter
      */
-    bool filterFeatures() const { return mFilterFeatures; }
+    bool filterFeatures() const
+    {
+      return mFilterFeatures;
+    }
 
     /** Sets whether the feature filter is active for the attribute table. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
@@ -243,7 +276,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setFeatureFilter
      * @see filterFeatures
      */
-    QString featureFilter() const { return mFeatureFilter; }
+    QString featureFilter() const
+    {
+      return mFeatureFilter;
+    }
 
     /** Sets the expression used for filtering features in the table. The filter is only
      * active if filterFeatures() is set to true. Changing this setting forces the table
@@ -287,14 +323,17 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @note added in QGIS 2.12
      * @see setWrapString
      */
-    QString wrapString() const { return mWrapString; }
+    QString wrapString() const
+    {
+      return mWrapString;
+    }
 
     /** Queries the attribute table's vector layer for attributes to show in the table.
      * @param contents table content
      * @returns true if attributes were successfully fetched
      * @note not available in python bindings
      */
-    bool getTableContents( QgsComposerTableContents &contents ) override;
+    bool getTableContents( QgsComposerTableContents& contents ) override;
 
     virtual QgsExpressionContext createExpressionContext() const override;
 
@@ -345,7 +384,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Replaces occurrences of the wrap character with line breaks.
      * @param variant input cell contents
      */
-    QVariant replaceWrapChar( const QVariant &variant ) const;
+    QVariant replaceWrapChar( const QVariant& variant ) const;
 
   private slots:
     //! Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes)

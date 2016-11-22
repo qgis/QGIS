@@ -29,7 +29,10 @@ class QgsPostgresTransaction : public QgsTransaction
   public:
     explicit QgsPostgresTransaction( const QString& connString );
     bool executeSql( const QString& sql, QString& error ) override;
-    QgsPostgresConn* connection() const { return mConn; }
+    QgsPostgresConn* connection() const
+    {
+      return mConn;
+    }
 
   private:
     QgsPostgresConn* mConn;

@@ -45,13 +45,13 @@ QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
                                         QNetworkProxy::ProxyType proxyType,
                                         const QString& userName,
                                         const QString& password )
-    : http( nullptr )
-    , httpid( 0 )
-    , httpactive( false )
-    , httpurl( uri )
-    , httphost( proxyHost )
-    , httpredirections( 0 )
-    , mWatchdogTimer( nullptr )
+  : http( nullptr )
+  , httpid( 0 )
+  , httpactive( false )
+  , httpurl( uri )
+  , httphost( proxyHost )
+  , httpredirections( 0 )
+  , mWatchdogTimer( nullptr )
 {
   Q_UNUSED( proxyPort );
   Q_UNUSED( proxyUser );
@@ -64,11 +64,11 @@ QgsHttpTransaction::QgsHttpTransaction( const QString& uri,
 }
 
 QgsHttpTransaction::QgsHttpTransaction()
-    : http( nullptr )
-    , httpid( 0 )
-    , httpactive( false )
-    , httpredirections( 0 )
-    , mWatchdogTimer( nullptr )
+  : http( nullptr )
+  , httpid( 0 )
+  , httpactive( false )
+  , httpredirections( 0 )
+  , mWatchdogTimer( nullptr )
 {
   QSettings s;
   mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
@@ -92,7 +92,7 @@ void QgsHttpTransaction::getAsynchronously()
 
 }
 
-bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int redirections, const QByteArray* postData )
+bool QgsHttpTransaction::getSynchronously( QByteArray& respondedContent, int redirections, const QByteArray* postData )
 {
 
   httpredirections = redirections;

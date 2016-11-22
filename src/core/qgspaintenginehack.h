@@ -23,5 +23,5 @@ class CORE_EXPORT QgsPaintEngineHack : public QPaintEngine
 {
   public:
     void fixFlags();
-    static void fixEngineFlags( QPaintEngine *engine );
+    static void fixEngineFlags( QPaintEngine* engine );
 };

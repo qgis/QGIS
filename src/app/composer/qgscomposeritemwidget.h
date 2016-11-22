@@ -57,7 +57,7 @@ class QgsComposerConfigObject: public QObject
     ~QgsComposerConfigObject();
 
     //! Sets a data defined property for the item from its current data defined button settings
-    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
+    void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty p );
 
     /** Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
@@ -72,7 +72,7 @@ class QgsComposerConfigObject: public QObject
     QgsVectorLayer* atlasCoverageLayer() const;
 
     //! Returns the atlas for the composition
-    QgsAtlasComposition *atlasComposition() const;
+    QgsAtlasComposition* atlasComposition() const;
 
   private slots:
     //! Must be called when a data defined button changes
@@ -112,7 +112,7 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     QgsVectorLayer* atlasCoverageLayer() const;
 
     //! Returns the atlas for the composition
-    QgsAtlasComposition *atlasComposition() const;
+    QgsAtlasComposition* atlasComposition() const;
 
   private:
 

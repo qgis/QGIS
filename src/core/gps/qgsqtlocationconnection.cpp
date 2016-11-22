@@ -52,7 +52,7 @@ void QgsQtLocationConnection::broadcastConnectionAvailable()
 }
 
 //TODO: Temporarely needed to workaround https://sourceforge.net/p/necessitas/tickets/147/
-void QgsQtLocationConnection::positionUpdated( const QGeoPositionInfo &info )
+void QgsQtLocationConnection::positionUpdated( const QGeoPositionInfo& info )
 {
   mInfo = info;
   parseData();

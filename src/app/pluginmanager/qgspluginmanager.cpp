@@ -57,8 +57,8 @@
 #endif
 
 
-QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
-    : QgsOptionsDialogBase( QStringLiteral( "PluginManager" ), parent, fl )
+QgsPluginManager::QgsPluginManager( QWidget* parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( QStringLiteral( "PluginManager" ), parent, fl )
 {
   // initialize pointer
   mPythonUtils = nullptr;
@@ -104,8 +104,8 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt
 
   // Connect other signals
   connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentTab( int ) ) );
-  connect( vwPlugins->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( currentPluginChanged( const QModelIndex & ) ) );
-  connect( mModelPlugins, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( pluginItemChanged( QStandardItem * ) ) );
+  connect( vwPlugins->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( currentPluginChanged( const QModelIndex& ) ) );
+  connect( mModelPlugins, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( pluginItemChanged( QStandardItem* ) ) );
   // Force setting the status filter (if the active tab was 0, the setCurrentRow( 0 ) above doesn't take any action)
   setCurrentTab( 0 );
 
@@ -166,7 +166,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   actionSortByDownloads->setCheckable( true );
   actionSortByVote->setCheckable( true );
   actionSortByStatus->setCheckable( true );
-  QActionGroup * group = new QActionGroup( vwPlugins );
+  QActionGroup* group = new QActionGroup( vwPlugins );
   actionSortByName->setActionGroup( group );
   actionSortByDownloads->setActionGroup( group );
   actionSortByVote->setActionGroup( group );
@@ -225,7 +225,7 @@ void QgsPluginManager::loadPlugin( const QString& id )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+  QgsPluginRegistry* pRegistry = QgsPluginRegistry::instance();
   QString library = plugin->value( QStringLiteral( "library" ) );
   if ( plugin->value( QStringLiteral( "pythonic" ) ) == QLatin1String( "true" ) )
   {
@@ -254,7 +254,7 @@ void QgsPluginManager::unloadPlugin( const QString& id )
     return;
   }
 
-  QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+  QgsPluginRegistry* pRegistry = QgsPluginRegistry::instance();
   QString library = plugin->value( QStringLiteral( "library" ) );
 
   if ( plugin->value( QStringLiteral( "pythonic" ) ) == QLatin1String( "true" ) )
@@ -308,7 +308,7 @@ void QgsPluginManager::getCppPluginsMetadata()
 
   // check all libs in the current ans user plugins directories, and get name and descriptions
   // First, the qgis install directory/lib (this info is available from the provider registry so we use it here)
-  QgsProviderRegistry *pr = QgsProviderRegistry::instance();
+  QgsProviderRegistry* pr = QgsProviderRegistry::instance();
   QStringList myPathList( pr->libraryDirectory().path() );
 
   QSettings settings;
@@ -344,7 +344,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       // renders plugins unloadable)
 
       //void *handle = dlopen( (const char *) lib, RTLD_LAZY);
-      void *handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
+      void* handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
       if ( !handle )
       {
         QgsDebugMsg( "Error in dlopen: " );
@@ -359,7 +359,7 @@ void QgsPluginManager::getCppPluginsMetadata()
 #endif //#ifdef TESTLIB
 
       QgsDebugMsg( "Examining: " + lib );
-      QLibrary *myLib = new QLibrary( lib );
+      QLibrary* myLib = new QLibrary( lib );
       bool loaded = myLib->load();
       if ( !loaded )
       {
@@ -382,12 +382,12 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
 
       // resolve the metadata from plugin
-      name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
-      description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
-      category_t *pCat = ( category_t * ) cast_to_fptr( myLib->resolve( "category" ) );
-      version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
-      icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
-      experimental_t *pExperimental = ( experimental_t * ) cast_to_fptr( myLib->resolve( "experimental" ) );
+      name_t* pName = ( name_t* ) cast_to_fptr( myLib->resolve( "name" ) );
+      description_t* pDesc = ( description_t* ) cast_to_fptr( myLib->resolve( "description" ) );
+      category_t* pCat = ( category_t* ) cast_to_fptr( myLib->resolve( "category" ) );
+      version_t* pVersion = ( version_t* ) cast_to_fptr( myLib->resolve( "version" ) );
+      icon_t* pIcon = ( icon_t* ) cast_to_fptr( myLib->resolve( "icon" ) );
+      experimental_t* pExperimental = ( experimental_t* ) cast_to_fptr( myLib->resolve( "experimental" ) );
 
       // show the values (or lack of) for each function
       if ( pName )
@@ -459,9 +459,9 @@ void QgsPluginManager::getCppPluginsMetadata()
 
 
 
-QStandardItem * QgsPluginManager::createSpacerItem( const QString& text, const QString& value )
+QStandardItem* QgsPluginManager::createSpacerItem( const QString& text, const QString& value )
 {
-  QStandardItem * mySpacerltem = new QStandardItem( text );
+  QStandardItem* mySpacerltem = new QStandardItem( text );
   mySpacerltem->setData( value, PLUGIN_STATUS_ROLE );
   mySpacerltem->setData( "status", SPACER_ROLE );
   mySpacerltem->setEnabled( false );
@@ -500,7 +500,7 @@ void QgsPluginManager::reloadModelData()
       QString status = it->value( QStringLiteral( "status" ) );
       QString error = it->value( QStringLiteral( "error" ) );
 
-      QStandardItem * mypDetailItem = new QStandardItem( pluginName.left( 32 ) );
+      QStandardItem* mypDetailItem = new QStandardItem( pluginName.left( 32 ) );
 
       mypDetailItem->setData( baseName, PLUGIN_BASE_NAME_ROLE );
       mypDetailItem->setData( status, PLUGIN_STATUS_ROLE );
@@ -576,7 +576,7 @@ void QgsPluginManager::reloadModelData()
 
 
 
-void QgsPluginManager::pluginItemChanged( QStandardItem * item )
+void QgsPluginManager::pluginItemChanged( QStandardItem* item )
 {
   QString id = item->data( PLUGIN_BASE_NAME_ROLE ).toString();
 
@@ -603,9 +603,9 @@ void QgsPluginManager::pluginItemChanged( QStandardItem * item )
 
 
 
-void QgsPluginManager::showPluginDetails( QStandardItem * item )
+void QgsPluginManager::showPluginDetails( QStandardItem* item )
 {
-  const QMap<QString, QString> * metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
+  const QMap<QString, QString>* metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
 
   if ( !metadata )
   {
@@ -965,7 +965,7 @@ void QgsPluginManager::addPluginMetadata( const QString& key, const QMap<QString
 
 
 
-const QMap<QString, QString> * QgsPluginManager::pluginMetadata( const QString& key ) const
+const QMap<QString, QString>* QgsPluginManager::pluginMetadata( const QString& key ) const
 {
   QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
@@ -984,7 +984,7 @@ void QgsPluginManager::clearRepositoryList()
   buttonRefreshRepos->setEnabled( false );
   buttonEditRep->setEnabled( false );
   buttonDeleteRep->setEnabled( false );
-  Q_FOREACH ( QAction * action, treeRepositories->actions() )
+  Q_FOREACH ( QAction* action, treeRepositories->actions() )
   {
     treeRepositories->removeAction( action );
   }
@@ -1012,7 +1012,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString>& reposi
   QString key = repository.value( QStringLiteral( "name" ) );
   if ( ! key.isEmpty() )
   {
-    QTreeWidgetItem * a = new QTreeWidgetItem( treeRepositories );
+    QTreeWidgetItem* a = new QTreeWidgetItem( treeRepositories );
     a->setText( 1, key );
     a->setText( 2, repository.value( QStringLiteral( "url" ) ) );
     if ( repository.value( QStringLiteral( "enabled" ) ) == QLatin1String( "true" ) && repository.value( QStringLiteral( "valid" ) ) == QLatin1String( "true" ) )
@@ -1155,7 +1155,7 @@ void QgsPluginManager::setCurrentTab( int idx )
 
 
 
-void QgsPluginManager::currentPluginChanged( const QModelIndex & theIndex )
+void QgsPluginManager::currentPluginChanged( const QModelIndex& theIndex )
 {
   if ( theIndex.column() == 0 )
   {
@@ -1166,7 +1166,7 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex & theIndex )
 
 
 
-void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
+void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex& theIndex )
 {
   if ( theIndex.column() == 0 )
   {
@@ -1187,7 +1187,7 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
 
 
 
-void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex )
+void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex& theIndex )
 {
   if ( theIndex.column() == 0 )
   {
@@ -1233,7 +1233,7 @@ void QgsPluginManager::sendVote( int pluginId, int vote )
   }
 }
 
-void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
+void QgsPluginManager::on_wvDetails_linkClicked( const QUrl& url )
 {
   if ( url.scheme() == QLatin1String( "rpc2" ) )
   {
@@ -1310,7 +1310,7 @@ void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex& )
 
 void QgsPluginManager::setRepositoryFilter()
 {
-  QTreeWidgetItem * current = treeRepositories->currentItem();
+  QTreeWidgetItem* current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
@@ -1348,7 +1348,7 @@ void QgsPluginManager::on_buttonAddRep_clicked()
 
 void QgsPluginManager::on_buttonEditRep_clicked()
 {
-  QTreeWidgetItem * current = treeRepositories->currentItem();
+  QTreeWidgetItem* current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
@@ -1362,7 +1362,7 @@ void QgsPluginManager::on_buttonEditRep_clicked()
 
 void QgsPluginManager::on_buttonDeleteRep_clicked()
 {
-  QTreeWidgetItem * current = treeRepositories->currentItem();
+  QTreeWidgetItem* current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
@@ -1527,7 +1527,7 @@ bool QgsPluginManager::hasInvalidPlugins()
 
 void QgsPluginManager::updateWindowTitle()
 {
-  QListWidgetItem *curitem = mOptListWidget->currentItem();
+  QListWidgetItem* curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
     QString title = QStringLiteral( "%1 | %2" ).arg( tr( "Plugins" ), curitem->text() );
@@ -1562,7 +1562,7 @@ void QgsPluginManager::showEvent( QShowEvent* e )
 
 
 
-void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsPluginManager::pushMessage( const QString& text, QgsMessageBar::MessageLevel level, int duration )
 {
   if ( duration == -1 )
   {

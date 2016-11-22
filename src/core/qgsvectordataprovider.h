@@ -136,7 +136,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @note added in 2.4
      * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
-    virtual QgsAbstractFeatureSource *featureSource() const = 0;
+    virtual QgsAbstractFeatureSource* featureSource() const = 0;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *
      * Default implementation simply iterates the features
      */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
+    virtual void uniqueValues( int index, QList<QVariant>& uniqueValues, int limit = -1 ) const;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -236,34 +236,38 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
      */
-    virtual void enumValues( int index, QStringList& enumList ) const { Q_UNUSED( index ); enumList.clear(); }
+    virtual void enumValues( int index, QStringList& enumList ) const
+    {
+      Q_UNUSED( index );
+      enumList.clear();
+    }
 
     /**
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &flist );
+    virtual bool addFeatures( QgsFeatureList& flist );
 
     /**
      * Deletes one or more features
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteFeatures( const QgsFeatureIds &id );
+    virtual bool deleteFeatures( const QgsFeatureIds& id );
 
     /**
      * Adds new attributes
      * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool addAttributes( const QList<QgsField> &attributes );
+    virtual bool addAttributes( const QList<QgsField>& attributes );
 
     /**
      * Deletes existing attributes
      * @param attributes a set containing indices of attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
+    virtual bool deleteAttributes( const QgsAttributeIds& attributes );
 
     /**
      * Renames existing attributes.
@@ -278,7 +282,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap& attr_map );
 
     /**
      * Changes attribute values and geometries of existing features.
@@ -288,8 +292,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
-                                 const QgsGeometryMap &geometry_map );
+    virtual bool changeFeatures( const QgsChangedAttributesMap& attr_map,
+                                 const QgsGeometryMap& geometry_map );
 
     /**
      * Returns any literal default values which are present at the provider for a specified
@@ -337,7 +341,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map );
+    virtual bool changeGeometryValues( const QgsGeometryMap& geometry_map );
 
     /**
      * Creates a spatial index on the datasource (if supported by the provider type).
@@ -398,19 +402,19 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * check if provider supports type of field
      */
-    bool supportedType( const QgsField &field ) const;
+    bool supportedType( const QgsField& field ) const;
 
     struct NativeType
     {
       NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid )
-          : mTypeDesc( typeDesc )
-          , mTypeName( typeName )
-          , mType( type )
-          , mMinLen( minLen )
-          , mMaxLen( maxLen )
-          , mMinPrec( minPrec )
-          , mMaxPrec( maxPrec )
-          , mSubType( subType )
+        : mTypeDesc( typeDesc )
+        , mTypeName( typeName )
+        , mType( type )
+        , mMinLen( minLen )
+        , mMaxLen( maxLen )
+        , mMinPrec( minPrec )
+        , mMaxPrec( maxPrec )
+        , mSubType( subType )
       {}
 
       QString mTypeDesc;
@@ -426,13 +430,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns the names of the supported types
      */
-    const QList< NativeType > &nativeTypes() const;
+    const QList< NativeType >& nativeTypes() const;
 
     /**
      * Returns true if the provider is strict about the type of inserted features
      * (e.g. no multipolygon in a polygon layer)
      */
-    virtual bool doesStrictFeatureTypeCheck() const { return true; }
+    virtual bool doesStrictFeatureTypeCheck() const
+    {
+      return true;
+    }
 
     //! Returns a list of available encodings
     static QStringList availableEncodings();
@@ -492,14 +499,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Get metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
      * @return The provider metadata
      */
-    virtual QVariantMap metadata() const { return QVariantMap(); };
+    virtual QVariantMap metadata() const
+    {
+      return QVariantMap();
+    };
 
     /**
      * Get the translated metadata key.
      * @param mdKey The metadata key
      * @return The translated metadata value
      */
-    virtual QString translateMetadataKey( const QString& mdKey ) const { return mdKey; };
+    virtual QString translateMetadataKey( const QString& mdKey ) const
+    {
+      return mdKey;
+    };
 
     /**
      * Get the translated metadata value.
@@ -507,7 +520,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param value The metadata value
      * @return The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const { Q_UNUSED( mdKey ); return value.toString(); };
+    virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const
+    {
+      Q_UNUSED( mdKey );
+      return value.toString();
+    };
 
   signals:
 

@@ -18,8 +18,8 @@
 #include "qgsmaplayerrenderer.h"
 
 QgsPluginLayer::QgsPluginLayer( const QString& layerType, const QString& layerName )
-    : QgsMapLayer( PluginLayer, layerName )
-    , mPluginLayerType( layerType )
+  : QgsMapLayer( PluginLayer, layerName )
+  , mPluginLayerType( layerType )
 {
   setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
 }
@@ -29,7 +29,7 @@ QString QgsPluginLayer::pluginLayerType()
   return mPluginLayerType;
 }
 
-void QgsPluginLayer::setExtent( const QgsRectangle &extent )
+void QgsPluginLayer::setExtent( const QgsRectangle& extent )
 {
   mExtent = extent;
 }

@@ -21,27 +21,27 @@
 #include <qmath.h>
 
 CloughTocherInterpolator::CloughTocherInterpolator()
-    : mTIN( nullptr )
-    , mEdgeTolerance( 0.00001 )
-    , der1X( 0.0 )
-    , der1Y( 0.0 )
-    , der2X( 0.0 )
-    , der2Y( 0.0 )
-    , der3X( 0.0 )
-    , der3Y( 0.0 )
+  : mTIN( nullptr )
+  , mEdgeTolerance( 0.00001 )
+  , der1X( 0.0 )
+  , der1Y( 0.0 )
+  , der2X( 0.0 )
+  , der2Y( 0.0 )
+  , der3X( 0.0 )
+  , der3Y( 0.0 )
 {
 
 }
 
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator* tin )
-    : mTIN( tin )
-    , mEdgeTolerance( 0.00001 )
-    , der1X( 0.0 )
-    , der1Y( 0.0 )
-    , der2X( 0.0 )
-    , der2Y( 0.0 )
-    , der3X( 0.0 )
-    , der3Y( 0.0 )
+  : mTIN( tin )
+  , mEdgeTolerance( 0.00001 )
+  , der1X( 0.0 )
+  , der1Y( 0.0 )
+  , der2X( 0.0 )
+  , der2Y( 0.0 )
+  , der3X( 0.0 )
+  , der3Y( 0.0 )
 {
 
 }

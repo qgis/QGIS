@@ -29,9 +29,9 @@
 #include <QSettings>
 
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
-    : QDialog( parent )
-    , mVectorLayer( vl )
-    , mAttributeId( -1 )
+  : QDialog( parent )
+  , mVectorLayer( vl )
+  , mAttributeId( -1 )
 {
   setupUi( this );
 
@@ -41,8 +41,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::layerScope( mVectorLayer );
 
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
   expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
@@ -170,8 +170,8 @@ void QgsFieldCalculator::accept()
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::layerScope( mVectorLayer );
 
   if ( !exp.prepare( &expContext ) )
   {
@@ -336,7 +336,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   }
 
   mOutputFieldTypeComboBox->blockSignals( true );
-  const QList< QgsVectorDataProvider::NativeType > &typelist = provider->nativeTypes();
+  const QList< QgsVectorDataProvider::NativeType >& typelist = provider->nativeTypes();
   for ( int i = 0; i < typelist.size(); i++ )
   {
     mOutputFieldTypeComboBox->addItem( typelist[i].mTypeDesc );
@@ -409,7 +409,7 @@ void QgsFieldCalculator::on_mCreateVirtualFieldCheckbox_stateChanged( int state 
 }
 
 
-void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString &text )
+void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString& text )
 {
   Q_UNUSED( text );
   setOkButtonState();

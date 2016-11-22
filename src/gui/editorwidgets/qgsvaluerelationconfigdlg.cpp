@@ -19,7 +19,7 @@
 #include "qgsexpressionbuilderdialog.h"
 
 QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
@@ -68,14 +68,14 @@ void QgsValueRelationConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 
 void QgsValueRelationConfigDlg::editExpression()
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( mLayerName->currentLayer() );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mLayerName->currentLayer() );
   if ( !vl )
     return;
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( vl );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( vl );
 
   QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Edit filter expression" ) );

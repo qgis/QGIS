@@ -32,7 +32,10 @@ class QgsServerLogger: public QObject
   public:
     static QgsServerLogger* instance();
 
-    int logLevel() const { return mLogLevel; }
+    int logLevel() const
+    {
+      return mLogLevel;
+    }
     //QString logFile() const { return mLogFile; }
 
   public slots:

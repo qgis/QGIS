@@ -121,7 +121,10 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
     //! @returns true if the geometries are to be preprocessed (merged with an union) before rendering.
-    bool preprocessingEnabled() const { return mPreprocessingEnabled; }
+    bool preprocessingEnabled() const
+    {
+      return mPreprocessingEnabled;
+    }
 
     /**
      * @param enabled enables or disables the preprocessing.
@@ -129,7 +132,10 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
      * This will involve some CPU-demanding computations and is thus disabled by default.
      */
-    void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
+    void setPreprocessingEnabled( bool enabled )
+    {
+      mPreprocessingEnabled = enabled;
+    }
 
     /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
      * @note added in 2.5
@@ -178,10 +184,10 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
       bool drawMarkers;
       int layer;
       FeatureDecoration( QgsFeature& a_feature, bool a_selected, bool a_drawMarkers, int a_layer )
-          : feature( a_feature )
-          , selected( a_selected )
-          , drawMarkers( a_drawMarkers )
-          , layer( a_layer )
+        : feature( a_feature )
+        , selected( a_selected )
+        , drawMarkers( a_drawMarkers )
+        , layer( a_layer )
       {}
     };
     QList<FeatureDecoration> mFeatureDecorations;

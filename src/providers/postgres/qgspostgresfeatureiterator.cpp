@@ -30,14 +30,14 @@ const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
-    , mFeatureQueueSize( sFeatureQueueSize )
-    , mFetched( 0 )
-    , mFetchGeometry( false )
-    , mExpressionCompiled( false )
-    , mOrderByCompiled( false )
-    , mLastFetch( false )
-    , mFilterRequiresGeometry( false )
+  : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
+  , mFeatureQueueSize( sFeatureQueueSize )
+  , mFetched( 0 )
+  , mFetchGeometry( false )
+  , mExpressionCompiled( false )
+  , mOrderByCompiled( false )
+  , mLastFetch( false )
+  , mFilterRequiresGeometry( false )
 {
   if ( !source->mTransactionConnection )
   {
@@ -633,7 +633,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause, long
 }
 
 
-bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature )
+bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult& queryResult, int row, QgsFeature& feature )
 {
   feature.initAttributes( mSource->mFields.count() );
 
@@ -644,7 +644,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     int returnedLength = ::PQgetlength( queryResult.result(), row, col );
     if ( returnedLength > 0 )
     {
-      unsigned char *featureGeom = new unsigned char[returnedLength + 1];
+      unsigned char* featureGeom = new unsigned char[returnedLength + 1];
       memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
       memset( featureGeom + returnedLength, 0, 1 );
 
@@ -666,7 +666,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       {
         unsigned int numGeoms;
         memcpy( &numGeoms, featureGeom + 5, sizeof( unsigned int ) );
-        unsigned char *wkb = featureGeom + 9;
+        unsigned char* wkb = featureGeom + 9;
         for ( unsigned int i = 0; i < numGeoms; ++i )
         {
           const unsigned int localType = QgsWkbTypes::singleType( newType ); // polygon(Z|M)
@@ -789,19 +789,19 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 //  ------------------
 
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
-    : mConnInfo( p->mUri.connectionInfo( false ) )
-    , mGeometryColumn( p->mGeometryColumn )
-    , mFields( p->mAttributeFields )
-    , mSpatialColType( p->mSpatialColType )
-    , mRequestedSrid( p->mRequestedSrid )
-    , mDetectedSrid( p->mDetectedSrid )
-    , mForce2d( p->mForce2d )
-    , mRequestedGeomType( p->mRequestedGeomType )
-    , mDetectedGeomType( p->mDetectedGeomType )
-    , mPrimaryKeyType( p->mPrimaryKeyType )
-    , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
-    , mQuery( p->mQuery )
-    , mShared( p->mShared )
+  : mConnInfo( p->mUri.connectionInfo( false ) )
+  , mGeometryColumn( p->mGeometryColumn )
+  , mFields( p->mAttributeFields )
+  , mSpatialColType( p->mSpatialColType )
+  , mRequestedSrid( p->mRequestedSrid )
+  , mDetectedSrid( p->mDetectedSrid )
+  , mForce2d( p->mForce2d )
+  , mRequestedGeomType( p->mRequestedGeomType )
+  , mDetectedGeomType( p->mDetectedGeomType )
+  , mPrimaryKeyType( p->mPrimaryKeyType )
+  , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
+  , mQuery( p->mQuery )
+  , mShared( p->mShared )
 {
   mSqlWhereClause = p->filterWhereClause();
 

@@ -85,10 +85,16 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     void setSource( QIODevice* source );
 
     //! Returns the status. Possible state are not connected, connected, data received
-    Status status() const { return mStatus; }
+    Status status() const
+    {
+      return mStatus;
+    }
 
     //! Returns the current gps information (lat, lon, etc.)
-    QgsGPSInformation currentGPSInformation() const { return mLastGPSInformation; }
+    QgsGPSInformation currentGPSInformation() const
+    {
+      return mLastGPSInformation;
+    }
 
   signals:
     void stateChanged( const QgsGPSInformation& info );

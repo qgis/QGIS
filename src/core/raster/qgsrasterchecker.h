@@ -34,7 +34,10 @@ class CORE_EXPORT QgsRasterChecker
     //! Destructor
     ~QgsRasterChecker() {}
 
-    QString report() { return mReport; }
+    QString report()
+    {
+      return mReport;
+    }
 
     /**
      * Test using renderer to generate the image to be compared.
@@ -56,13 +59,13 @@ class CORE_EXPORT QgsRasterChecker
     QString mErrMsgStyle;
 
     // Log error in html
-    void error( const QString& theMessage, QString &theReport );
+    void error( const QString& theMessage, QString& theReport );
     // compare values and add table row in html report, set ok to false if not equal
     QString compareHead();
     bool compare( double verifiedVal, double expectedVal, double theTolerance );
-    void compare( const QString& theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk );
-    void compare( const QString& theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance = 0 );
-    void compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString &theReport, bool theOk, const QString& theDifference = "", const QString& theTolerance = "" );
+    void compare( const QString& theParamName, int verifiedVal, int expectedVal, QString& theReport, bool& theOk );
+    void compare( const QString& theParamName, double verifiedVal, double expectedVal, QString& theReport, bool& theOk, double theTolerance = 0 );
+    void compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString& theReport, bool theOk, const QString& theDifference = "", const QString& theTolerance = "" );
     double tolerance( double val, int places = 6 );
 }; // class QgsRasterChecker
 

@@ -53,7 +53,7 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
      * @param filter Certificate type filter to apply to dialog
      * @param input Type of input(s) for certificates
      */
-    explicit QgsAuthImportCertDialog( QWidget *parent = nullptr,
+    explicit QgsAuthImportCertDialog( QWidget* parent = nullptr,
                                       QgsAuthImportCertDialog::CertFilter filter = NoFilter,
                                       QgsAuthImportCertDialog::CertInput input = AllInputs );
     ~QgsAuthImportCertDialog();
@@ -92,8 +92,8 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     QgsAuthImportCertDialog::CertInput mInput;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 #endif // QGSAUTHIMPORTCERTDIALOG_H

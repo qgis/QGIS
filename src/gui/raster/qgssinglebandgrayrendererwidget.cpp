@@ -21,9 +21,9 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxwidget.h"
 
-QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
-    : QgsRasterRendererWidget( layer, extent )
-    , mMinMaxWidget( nullptr )
+QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent )
+  : QgsRasterRendererWidget( layer, extent )
+  , mMinMaxWidget( nullptr )
 {
   setupUi( this );
 
@@ -45,7 +45,7 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mMinMaxWidget->setExtent( extent );
     mMinMaxWidget->setMapCanvas( mCanvas );
 
-    QHBoxLayout *layout = new QHBoxLayout();
+    QHBoxLayout* layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0 );
     mMinMaxContainerWidget->setLayout( layout );
     layout->addWidget( mMinMaxWidget );

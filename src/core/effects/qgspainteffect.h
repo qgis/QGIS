@@ -136,7 +136,10 @@ class CORE_EXPORT QgsPaintEffect
      * @returns true if effect is enabled
      * @see setEnabled
      */
-    bool enabled() const { return mEnabled; }
+    bool enabled() const
+    {
+      return mEnabled;
+    }
 
     /** Sets whether the effect is enabled
      * @param enabled set to false to disable the effect
@@ -149,7 +152,10 @@ class CORE_EXPORT QgsPaintEffect
      * @returns draw mode for effect
      * @see setDrawMode
      */
-    DrawMode drawMode() const { return mDrawMode; }
+    DrawMode drawMode() const
+    {
+      return mDrawMode;
+    }
 
     /** Sets the draw mode for the effect. This property only has an
      * effect if the paint effect is used in a @link QgsEffectStack @endlink
@@ -186,7 +192,10 @@ class CORE_EXPORT QgsPaintEffect
      * @see drawSource
      * @see sourceAsImage
      */
-    const QPicture* source() const { return mPicture; }
+    const QPicture* source() const
+    {
+      return mPicture;
+    }
 
     /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
      * utilise this when drawing the effect. The image will be padded or cropped from the original
@@ -198,7 +207,7 @@ class CORE_EXPORT QgsPaintEffect
      * @see imageOffset
      * @see boundingRect
      */
-    QImage* sourceAsImage( QgsRenderContext &context );
+    QImage* sourceAsImage( QgsRenderContext& context );
 
     /** Returns the offset which should be used when drawing the source image on to a destination
      * render context.
@@ -266,7 +275,10 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
      */
     static QgsPaintEffect* create( const QgsStringMap& map );
 
-    virtual QString type() const override { return QStringLiteral( "drawSource" ); }
+    virtual QString type() const override
+    {
+      return QStringLiteral( "drawSource" );
+    }
     virtual QgsDrawSourceEffect* clone() const override;
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
@@ -276,28 +288,40 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
      * and 1 is fully transparent
      * @see transparency
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setTransparency( const double transparency )
+    {
+      mTransparency = transparency;
+    }
 
     /** Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
-    double transparency() const { return mTransparency; }
+    double transparency() const
+    {
+      return mTransparency;
+    }
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the source on to a destination
      * paint device
      * @see blendMode
      */
-    void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
+    void setBlendMode( const QPainter::CompositionMode mode )
+    {
+      mBlendMode = mode;
+    }
 
     /** Returns the blend mode for the effect
      * @returns blend mode used for drawing the source on to a destination
      * paint device
      * @see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    QPainter::CompositionMode blendMode() const
+    {
+      return mBlendMode;
+    }
 
   protected:
 
@@ -351,7 +375,10 @@ class CORE_EXPORT QgsEffectPainter
      *
      * @note Added in QGIS 3.0
      */
-    QPainter* operator->() { return mPainter; }
+    QPainter* operator->()
+    {
+      return mPainter;
+    }
     ///@endcond
 
   private:

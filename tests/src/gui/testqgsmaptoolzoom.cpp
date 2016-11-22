@@ -29,7 +29,7 @@ class TestQgsMapToolZoom : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolZoom()
-        : canvas( 0 )
+      : canvas( 0 )
     {}
 
   private slots:

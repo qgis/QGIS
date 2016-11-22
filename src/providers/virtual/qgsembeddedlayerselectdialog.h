@@ -31,7 +31,7 @@ class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLaye
     Q_OBJECT
 
   public:
-    QgsEmbeddedLayerSelectDialog( QWidget * parent, QgsLayerTreeView* tv );
+    QgsEmbeddedLayerSelectDialog( QWidget* parent, QgsLayerTreeView* tv );
 
     //! Returns the list of layer ids selected
     QStringList layers() const;

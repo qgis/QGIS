@@ -33,7 +33,10 @@
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
+  bool acceptMatch( const QgsPointLocator::Match& m ) override
+  {
+    return m.hasEdge();
+  }
 };
 
 bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& center, const double radius, const QList<QgsPoint>& segment, QgsPoint& intersection )
@@ -87,17 +90,17 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 }
 
 
-QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
-    : QgsDockWidget( parent )
-    , mMapCanvas( canvas )
-    , mCurrentMapToolSupportsCad( false )
-    , mCadEnabled( false )
-    , mConstructionMode( false )
-    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
-    , mCommonAngleConstraint( QSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
-    , mSnappedToVertex( false )
-    , mSessionActive( false )
-    , mErrorMessage( nullptr )
+QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget* parent )
+  : QgsDockWidget( parent )
+  , mMapCanvas( canvas )
+  , mCurrentMapToolSupportsCad( false )
+  , mCadEnabled( false )
+  , mConstructionMode( false )
+  , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
+  , mCommonAngleConstraint( QSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
+  , mSnappedToVertex( false )
+  , mSessionActive( false )
+  , mErrorMessage( nullptr )
 {
   setupUi( this );
 
@@ -158,7 +161,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( yWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
 
   // config menu
-  QMenu *menu = new QMenu( this );
+  QMenu* menu = new QMenu( this );
   // common angles
   QActionGroup* angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
   mCommonAngleActions = QMap<QAction*, int>();
@@ -1000,7 +1003,7 @@ void QgsAdvancedDigitizingDockWidget::clear()
   releaseLocks();
 }
 
-void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
+void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent* e )
 {
   // event on dock (this)
 

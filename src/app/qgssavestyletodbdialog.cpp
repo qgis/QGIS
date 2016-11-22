@@ -21,8 +21,8 @@
 #include <QMessageBox>
 #include <QDateTime>
 
-QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
-    : QDialog( parent )
+QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget* parent )
+  : QDialog( parent )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Save style in database" ) );

@@ -20,15 +20,15 @@
 
 
 QgsDockWidget::QgsDockWidget( QWidget* parent , Qt::WindowFlags flags )
-    : QDockWidget( parent, flags )
-    , mVisibleAndActive( false )
+  : QDockWidget( parent, flags )
+  , mVisibleAndActive( false )
 {
   connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( handleVisibilityChanged( bool ) ) );
 }
 
 QgsDockWidget::QgsDockWidget( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
-    , mVisibleAndActive( false )
+  : QDockWidget( title, parent, flags )
+  , mVisibleAndActive( false )
 {
   connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( handleVisibilityChanged( bool ) ) );
 }

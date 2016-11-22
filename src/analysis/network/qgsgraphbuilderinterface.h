@@ -41,9 +41,9 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * @param ellipsoidID ellipsoid for edge measurement
      */
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" )
-        : mCrs( crs )
-        , mCtfEnabled( ctfEnabled )
-        , mTopologyTolerance( topologyTolerance )
+      : mCrs( crs )
+      , mCtfEnabled( ctfEnabled )
+      , mTopologyTolerance( topologyTolerance )
     {
       mDa.setSourceCrs( mCrs.srsid() );
       mDa.setEllipsoid( ellipsoidID );
@@ -84,7 +84,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * @param pt vertex coordinates
      * @note id and pt are redundant. You can use pt or id to identify the vertex
      */
-    virtual void addVertex( int id, const QgsPoint &pt )
+    virtual void addVertex( int id, const QgsPoint& pt )
     {
       Q_UNUSED( id );
       Q_UNUSED( pt );

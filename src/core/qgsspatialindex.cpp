@@ -35,11 +35,13 @@ using namespace SpatialIndex;
 class QgisVisitor : public SpatialIndex::IVisitor
 {
   public:
-    explicit QgisVisitor( QList<QgsFeatureId> & list )
-        : mList( list ) {}
+    explicit QgisVisitor( QList<QgsFeatureId>& list )
+      : mList( list ) {}
 
     void visitNode( const INode& n ) override
-      { Q_UNUSED( n ); }
+    {
+      Q_UNUSED( n );
+    }
 
     void visitData( const IData& d ) override
     {
@@ -47,7 +49,9 @@ class QgisVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData*>& v ) override
-      { Q_UNUSED( v ); }
+    {
+      Q_UNUSED( v );
+    }
 
   private:
     QList<QgsFeatureId>& mList;
@@ -61,10 +65,12 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 {
   public:
     explicit QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
-        : mNewIndex( newIndex ) {}
+      : mNewIndex( newIndex ) {}
 
     void visitNode( const INode& n ) override
-      { Q_UNUSED( n ); }
+    {
+      Q_UNUSED( n );
+    }
 
     void visitData( const IData& d ) override
     {
@@ -75,7 +81,9 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData*>& v ) override
-      { Q_UNUSED( v ); }
+    {
+      Q_UNUSED( v );
+    }
 
   private:
     SpatialIndex::ISpatialIndex* mNewIndex;
@@ -92,8 +100,8 @@ class QgsFeatureIteratorDataStream : public IDataStream
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi )
-        : mFi( fi )
-        , mNextData( nullptr )
+      : mFi( fi )
+      , mNextData( nullptr )
     {
       readNextEntry();
     }
@@ -113,13 +121,23 @@ class QgsFeatureIteratorDataStream : public IDataStream
     }
 
     //! returns true if there are more items in the stream.
-    virtual bool hasNext() override { return nullptr != mNextData; }
+    virtual bool hasNext() override
+    {
+      return nullptr != mNextData;
+    }
 
     //! returns the total number of entries available in the stream.
-    virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }
+    virtual uint32_t size() override
+    {
+      Q_ASSERT( 0 && "not available" );
+      return 0;
+    }
 
     //! sets the stream pointer to the first entry, if possible.
-    virtual void rewind() override { Q_ASSERT( 0 && "not available" ); }
+    virtual void rewind() override
+    {
+      Q_ASSERT( 0 && "not available" );
+    }
 
   protected:
     void readNextEntry()
@@ -163,7 +181,7 @@ class QgsSpatialIndexData : public QSharedData
     }
 
     QgsSpatialIndexData( const QgsSpatialIndexData& other )
-        : QSharedData( other )
+      : QSharedData( other )
     {
       initTree();
 
@@ -229,7 +247,7 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator& fi )
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex& other )
-    : d( other.d )
+  : d( other.d )
 {
 }
 
@@ -237,7 +255,7 @@ QgsSpatialIndex:: ~QgsSpatialIndex()
 {
 }
 
-QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex & other )
+QgsSpatialIndex& QgsSpatialIndex::operator=( const QgsSpatialIndex& other )
 {
   if ( this != &other )
     d = other.d;
@@ -251,7 +269,7 @@ SpatialIndex::Region QgsSpatialIndex::rectToRegion( const QgsRectangle& rect )
   return SpatialIndex::Region( pt1, pt2, 2 );
 }
 
-bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id )
+bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId& id )
 {
   if ( !f.hasGeometry() )
     return false;
@@ -277,12 +295,12 @@ bool QgsSpatialIndex::insertFeature( const QgsFeature& f )
     d->mRTree->insertData( 0, nullptr, r, FID_TO_NUMBER( id ) );
     return true;
   }
-  catch ( Tools::Exception &e )
+  catch ( Tools::Exception& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
   }
-  catch ( const std::exception &e )
+  catch ( const std::exception& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "std::exception caught: " ).arg( e.what() ) );

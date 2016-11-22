@@ -35,14 +35,14 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
 
     /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is dectected later by thread*/
-    void setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type );
+    void setGeometryTypesForTable( const QString& table, const QString& attribute, const QString& type );
     //! Returns the number of tables in the model
     int tableCount() const
     {
       return mTableCount;
     }
     //! Sets the SQLite DB full path
-    void setSqliteDb( const QString & dbName )
+    void setSqliteDb( const QString& dbName )
     {
       mSqliteDb = dbName;
     }
@@ -55,5 +55,5 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     QIcon iconForType( QgsWkbTypes::Type type ) const;
     QString displayStringForType( QgsWkbTypes::Type type ) const;
     //! Returns qgis wkbtype from database typename
-    QgsWkbTypes::Type qgisTypeFromDbType( const QString & dbType ) const;
+    QgsWkbTypes::Type qgisTypeFromDbType( const QString& dbType ) const;
 };

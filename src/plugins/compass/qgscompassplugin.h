@@ -38,7 +38,7 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object
      */
-    explicit QgsCompassPlugin( QgisInterface * );
+    explicit QgsCompassPlugin( QgisInterface* );
 
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
@@ -78,7 +78,7 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     void help();
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    QIcon getThemeIcon( const QString& theThemeName );
     void about();
   private:
 
@@ -92,13 +92,13 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! Category of the plugin
     QString pluginCategoryQString;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface* mQGisIface;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *mActionRunCompass;
-    QAction *mActionAboutCompass;
+    QAction* mActionRunCompass;
+    QAction* mActionAboutCompass;
 
-    QDockWidget *mDock;
-    QgsCompassPluginGui *mQgsCompassPluginGui;
+    QDockWidget* mDock;
+    QgsCompassPluginGui* mQgsCompassPluginGui;
 };
 
 #endif

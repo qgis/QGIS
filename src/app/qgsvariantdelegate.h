@@ -54,10 +54,10 @@ class QgsVariantDelegate : public QItemDelegate
     void paint( QPainter* painter, const QStyleOptionViewItem& option,
                 const QModelIndex& index ) const override;
     QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option,
-                           const QModelIndex &index ) const override;
+                           const QModelIndex& index ) const override;
     void setEditorData( QWidget* editor, const QModelIndex& index ) const override;
     void setModelData( QWidget* editor, QAbstractItemModel* model,
-                       const QModelIndex &index ) const override;
+                       const QModelIndex& index ) const override;
 
     static bool isSupportedType( QVariant::Type type );
     static QString displayText( const QVariant& value );

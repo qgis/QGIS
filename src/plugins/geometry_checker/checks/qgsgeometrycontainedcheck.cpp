@@ -17,7 +17,7 @@
 #include "qgsgeometrycontainedcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter , const QgsFeatureIds& ids ) const
 {
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
@@ -59,7 +59,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& er
   }
 }
 
-void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes& changes ) const
 {
   QgsGeometryContainedCheckError* coverError = static_cast<QgsGeometryContainedCheckError*>( error );
 

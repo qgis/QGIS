@@ -25,20 +25,20 @@
 #include "qgsproject.h"
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings()
-    : mValid( false )
-    , mEnabled( false )
-    , mType( Vertex )
-    , mTolerance( 0 )
-    , mUnits( QgsTolerance::Pixels )
+  : mValid( false )
+  , mEnabled( false )
+  , mType( Vertex )
+  , mTolerance( 0 )
+  , mUnits( QgsTolerance::Pixels )
 {}
 
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
-    : mValid( true )
-    , mEnabled( enabled )
-    , mType( type )
-    , mTolerance( tolerance )
-    , mUnits( units )
+  : mValid( true )
+  , mEnabled( enabled )
+  , mType( type )
+  , mTolerance( tolerance )
+  , mUnits( units )
 {}
 
 bool QgsSnappingConfig::IndividualLayerSettings::valid() const
@@ -157,8 +157,8 @@ void QgsSnappingConfig::reset()
   mIntersectionSnapping = false;
 
   // set advanced config
-  mIndividualLayerSettings = QHash<QgsVectorLayer *, IndividualLayerSettings>();
-  Q_FOREACH ( QgsMapLayer *ml, QgsMapLayerRegistry::instance()->mapLayers() )
+  mIndividualLayerSettings = QHash<QgsVectorLayer*, IndividualLayerSettings>();
+  Q_FOREACH ( QgsMapLayer* ml, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
     if ( vl )
@@ -462,7 +462,7 @@ void QgsSnappingConfig::readLegacySettings()
   QStringList::const_iterator enabledIt( enabledList.constBegin() );
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
     if ( !vlayer || !vlayer->hasGeometryType() )
       continue;
 

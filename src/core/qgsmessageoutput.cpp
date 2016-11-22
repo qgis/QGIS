@@ -45,7 +45,7 @@ QgsMessageOutput::~QgsMessageOutput()
 
 void QgsMessageOutput::showMessage( const QString& title, const QString& message, MessageType msgType )
 {
-  QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+  QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
   output->setTitle( title );
   output->setMessage( message, msgType );
   output->showMessage();
@@ -55,8 +55,8 @@ void QgsMessageOutput::showMessage( const QString& title, const QString& message
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
-    : mMessage( QLatin1String( "" ) )
-    , mMsgType( MessageText )
+  : mMessage( QLatin1String( "" ) )
+  , mMsgType( MessageText )
 {
 }
 

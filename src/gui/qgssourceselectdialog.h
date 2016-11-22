@@ -57,8 +57,8 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     QMap<QString, QStringList> mAvailableCRS;
     QStandardItemModel* mModel;
     QSortFilterProxyModel* mModelProxy;
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton* mBuildQueryButton;
+    QPushButton* mAddButton;
     QButtonGroup* mImageEncodingGroup;
     QgsRectangle mCanvasExtent;
     QgsCoordinateReferenceSystem mCanvasCrs;
@@ -98,11 +98,11 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     void changeCrs();
     void changeCrsFilter();
     void connectToServer();
-    void filterChanged( const QString &text );
+    void filterChanged( const QString& text );
     void on_cmbConnections_activated( int index );
     void on_buttonBox_helpRequested() const;
-    void treeWidgetItemDoubleClicked( const QModelIndex & index );
-    void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
+    void treeWidgetItemDoubleClicked( const QModelIndex& index );
+    void treeWidgetCurrentRowChanged( const QModelIndex& current, const QModelIndex& previous );
 };
 
 

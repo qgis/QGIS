@@ -55,7 +55,10 @@ email                : morb at ozemail dot com dot au
 struct QgsGeometryPrivate
 {
   QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
-  ~QgsGeometryPrivate() { delete geometry; }
+  ~QgsGeometryPrivate()
+  {
+    delete geometry;
+  }
   QAtomicInt ref;
   QgsAbstractGeometry* geometry;
 };
@@ -82,7 +85,7 @@ QgsGeometry::QgsGeometry( const QgsGeometry& other )
   d->ref.ref();
 }
 
-QgsGeometry& QgsGeometry::operator=( QgsGeometry const & other )
+QgsGeometry& QgsGeometry::operator=( QgsGeometry const& other )
 {
   if ( !d->ref.deref() )
   {
@@ -243,7 +246,7 @@ QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry >& geometries
   return collected;
 }
 
-void QgsGeometry::fromWkb( unsigned char *wkb, int length )
+void QgsGeometry::fromWkb( unsigned char* wkb, int length )
 {
   detach( false );
 
@@ -256,7 +259,7 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
   delete [] wkb;
 }
 
-void QgsGeometry::fromWkb( const QByteArray &wkb )
+void QgsGeometry::fromWkb( const QByteArray& wkb )
 {
   detach( false );
 
@@ -310,7 +313,7 @@ bool QgsGeometry::isMultipart() const
   return QgsWkbTypes::isMultiType( d->geometry->wkbType() );
 }
 
-void QgsGeometry::fromGeos( GEOSGeometry *geos )
+void QgsGeometry::fromGeos( GEOSGeometry* geos )
 {
   detach( false );
   delete d->geometry;
@@ -571,7 +574,7 @@ double QgsGeometry::closestSegmentWithContext(
   const QgsPoint& point,
   QgsPoint& minDistPoint,
   int& afterVertex,
-  double *leftOf,
+  double* leftOf,
   double epsilon ) const
 {
   if ( !d->geometry )
@@ -597,7 +600,7 @@ double QgsGeometry::closestSegmentWithContext(
   return sqrDist;
 }
 
-int QgsGeometry::addRing( const QList<QgsPoint> &ring )
+int QgsGeometry::addRing( const QList<QgsPoint>& ring )
 {
   detach( true );
 
@@ -621,14 +624,14 @@ int QgsGeometry::addRing( QgsCurve* ring )
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType )
+int QgsGeometry::addPart( const QList<QgsPoint>& points, QgsWkbTypes::GeometryType geomType )
 {
   QgsPointSequence l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
+int QgsGeometry::addPart( const QgsPointSequence& points, QgsWkbTypes::GeometryType geomType )
 {
   QgsAbstractGeometry* partGeom = nullptr;
   if ( points.size() == 1 )
@@ -683,7 +686,7 @@ int QgsGeometry::addPart( const QgsGeometry& newPart )
   return addPart( newPart.d->geometry->clone() );
 }
 
-int QgsGeometry::addPart( GEOSGeometry *newPart )
+int QgsGeometry::addPart( GEOSGeometry* newPart )
 {
   if ( !d->geometry || !newPart )
   {
@@ -725,7 +728,7 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   return 0;
 }
 
-int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
+int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry>& newGeometries, bool topological, QList<QgsPoint>& topologyTestPoints )
 {
   if ( !d->geometry )
   {
@@ -1778,7 +1781,7 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+int QgsGeometry::avoidIntersections( const QHash<QgsVectorLayer*, QSet<QgsFeatureId> >& ignoreFeatures )
 {
   if ( !d->geometry )
   {
@@ -1794,7 +1797,7 @@ int QgsGeometry::avoidIntersections( const QHash<QgsVectorLayer *, QSet<QgsFeatu
   return 0;
 }
 
-void QgsGeometry::validateGeometry( QList<Error> &errors )
+void QgsGeometry::validateGeometry( QList<Error>& errors )
 {
   QgsGeometryValidator::validateGeometry( this, errors );
 }
@@ -1938,10 +1941,10 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId& id ) const
   int vertexCount = 0;
   for ( int part = 0; part < coords.size(); ++part )
   {
-    const QgsRingSequence &featureCoords = coords.at( part );
+    const QgsRingSequence& featureCoords = coords.at( part );
     for ( int ring = 0; ring < featureCoords.size(); ++ring )
     {
-      const QgsPointSequence &ringCoords = featureCoords.at( ring );
+      const QgsPointSequence& ringCoords = featureCoords.at( ring );
       for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
       {
         if ( vertexCount == nr )
@@ -1970,10 +1973,10 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   int vertexCount = 0;
   for ( int part = 0; part < coords.size(); ++part )
   {
-    const QgsRingSequence &featureCoords = coords.at( part );
+    const QgsRingSequence& featureCoords = coords.at( part );
     for ( int ring = 0; ring < featureCoords.size(); ++ring )
     {
-      const QgsPointSequence &ringCoords = featureCoords.at( ring );
+      const QgsPointSequence& ringCoords = featureCoords.at( ring );
       for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
       {
         if ( vertex == id.vertex && ring == id.ring && part == id.part )
@@ -1987,7 +1990,7 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   return -1;
 }
 
-void QgsGeometry::convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output )
+void QgsGeometry::convertPointList( const QList<QgsPoint>& input, QgsPointSequence& output )
 {
   output.clear();
   QList<QgsPoint>::const_iterator it = input.constBegin();
@@ -1997,7 +2000,7 @@ void QgsGeometry::convertPointList( const QList<QgsPoint> &input, QgsPointSequen
   }
 }
 
-void QgsGeometry::convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output )
+void QgsGeometry::convertPointList( const QgsPointSequence& input, QList<QgsPoint>& output )
 {
   output.clear();
   QgsPointSequence::const_iterator it = input.constBegin();
@@ -2012,7 +2015,7 @@ QgsGeometry::operator bool() const
   return d->geometry;
 }
 
-void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolyline& output )
+void QgsGeometry::convertToPolyline( const QgsPointSequence& input, QgsPolyline& output )
 {
   output.clear();
   output.resize( input.size() );
@@ -2033,7 +2036,7 @@ void QgsGeometry::convertPolygon( const QgsPolygonV2& input, QgsPolygon& output 
   {
     return;
   }
-  const QgsRingSequence &rings = coords[0];
+  const QgsRingSequence& rings = coords[0];
   output.resize( rings.size() );
   for ( int i = 0; i < rings.size(); ++i )
   {
@@ -2051,7 +2054,7 @@ QgsGeometry QgsGeometry::fromQPointF( QPointF point )
   return QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
 }
 
-QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
+QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF& polygon )
 {
   if ( polygon.isClosed() )
   {
@@ -2063,14 +2066,14 @@ QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
   }
 }
 
-QgsPolygon QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
+QgsPolygon QgsGeometry::createPolygonFromQPolygonF( const QPolygonF& polygon )
 {
   QgsPolygon result;
   result << createPolylineFromQPolygonF( polygon );
   return result;
 }
 
-QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
+QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF& polygon )
 {
   QgsPolyline result;
   QPolygonF::const_iterator it = polygon.constBegin();
@@ -2081,7 +2084,7 @@ QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
   return result;
 }
 
-bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon )
+bool QgsGeometry::compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;
@@ -2094,7 +2097,7 @@ bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double 
   return true;
 }
 
-bool QgsGeometry::compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon )
+bool QgsGeometry::compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;
@@ -2108,7 +2111,7 @@ bool QgsGeometry::compare( const QgsPolygon &p1, const QgsPolygon &p2, double ep
 }
 
 
-bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2, double epsilon )
+bool QgsGeometry::compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;

@@ -41,7 +41,7 @@ QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode>& layers )
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
-  QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
+  QgsHandleBadLayers* dialog = new QgsHandleBadLayers( layers );
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
@@ -60,8 +60,8 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode>& layers )
 
 
 QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
-    : QDialog( QgisApp::instance() )
-    , mLayers( layers )
+  : QDialog( QgisApp::instance() )
+  , mLayers( layers )
 {
   setupUi( this );
 
@@ -93,7 +93,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
   int j = 0;
   for ( int i = 0; i < mLayers.size(); i++ )
   {
-    const QDomNode &node = mLayers[i];
+    const QDomNode& node = mLayers[i];
 
     QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
     QString type = node.toElement().attribute( QStringLiteral( "type" ) );
@@ -110,7 +110,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
 
     mLayerList->setRowCount( j + 1 );
 
-    QTableWidgetItem *item;
+    QTableWidgetItem* item;
 
     item = new QTableWidgetItem( name );
     item->setData( Qt::UserRole + 0, i );
@@ -128,7 +128,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
 
     if ( QgsAuthConfigUriEdit::hasConfigId( datasource ) )
     {
-      QToolButton *btn = new QToolButton( this );
+      QToolButton* btn = new QToolButton( this );
       btn->setMaximumWidth( 75 );
       btn->setMinimumHeight( 24 );
       btn->setText( tr( "Edit" ) );
@@ -160,7 +160,7 @@ void QgsHandleBadLayers::selectionChanged()
 
   mRows.clear();
 
-  Q_FOREACH ( QTableWidgetItem *item, mLayerList->selectedItems() )
+  Q_FOREACH ( QTableWidgetItem* item, mLayerList->selectedItems() )
   {
     if ( item->column() != 0 )
       continue;
@@ -213,7 +213,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString& filename )
 
   QString type = mLayerList->item( row, 1 )->text();
   QString provider = mLayerList->item( row, 2 )->text();
-  QTableWidgetItem *item = mLayerList->item( row, 4 );
+  QTableWidgetItem* item = mLayerList->item( row, 4 );
 
   QString datasource = item->text();
 
@@ -324,7 +324,7 @@ void QgsHandleBadLayers::browseClicked()
 
 void QgsHandleBadLayers::editAuthCfg()
 {
-  QToolButton *btn = qobject_cast<QToolButton*>( sender() );
+  QToolButton* btn = qobject_cast<QToolButton*>( sender() );
   int row = -1;
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
@@ -344,7 +344,7 @@ void QgsHandleBadLayers::editAuthCfg()
 
   QString prevuri = mLayerList->item( row, 4 )->text();
 
-  QgsAuthConfigUriEdit *dlg = new QgsAuthConfigUriEdit( this, prevuri, provider );
+  QgsAuthConfigUriEdit* dlg = new QgsAuthConfigUriEdit( this, prevuri, provider );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 500, 500 );
   if ( dlg->exec() )
@@ -363,9 +363,9 @@ void QgsHandleBadLayers::apply()
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
-    QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
+    QDomNode& node = const_cast<QDomNode&>( mLayers[ idx ] );
 
-    QTableWidgetItem *item = mLayerList->item( i, 4 );
+    QTableWidgetItem* item = mLayerList->item( i, 4 );
     QString datasource = item->text();
 
     node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );

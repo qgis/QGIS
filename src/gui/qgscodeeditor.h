@@ -44,7 +44,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * @param margin false: Enable margin for code editor
      * @note added in 2.6
      */
-    QgsCodeEditor( QWidget *parent = nullptr, const QString& title = "", bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget* parent = nullptr, const QString& title = "", bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
     /** Set the widget title
@@ -56,13 +56,19 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *  @param margin Set margin in the editor
      */
     void setMarginVisible( bool margin );
-    bool marginVisible() { return mMargin; }
+    bool marginVisible()
+    {
+      return mMargin;
+    }
 
     /** Set folding visible state
      *  @param folding Set folding in the editor
      */
     void setFoldingVisible( bool folding );
-    bool foldingVisible() { return mFolding; }
+    bool foldingVisible()
+    {
+      return mFolding;
+    }
 
     /** Insert text at cursor position, or replace any selected text if user has
      * made a selection.
@@ -74,8 +80,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     bool isFixedPitch( const QFont& font );
 
-    void focusOutEvent( QFocusEvent *event ) override;
-    void keyPressEvent( QKeyEvent * event ) override;
+    void focusOutEvent( QFocusEvent* event ) override;
+    void keyPressEvent( QKeyEvent* event ) override;
 
     QFont getMonospaceFont();
 

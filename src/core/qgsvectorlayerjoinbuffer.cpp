@@ -25,7 +25,7 @@
 #include <QDomElement>
 
 QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer* layer )
-    : mLayer( layer )
+  : mLayer( layer )
 {
 }
 

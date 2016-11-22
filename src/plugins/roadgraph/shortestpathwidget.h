@@ -48,7 +48,7 @@ class RgShortestPathWidget : public QgsDockWidget
     /**
      * Standard constructor
      */
-    RgShortestPathWidget( QWidget *, RoadGraphPlugin * );
+    RgShortestPathWidget( QWidget*, RoadGraphPlugin* );
 
     /**
      * destructor
@@ -112,52 +112,52 @@ class RgShortestPathWidget : public QgsDockWidget
     /**
      * This line edit show front points coordinates
      */
-    QLineEdit *mFrontPointLineEdit;
+    QLineEdit* mFrontPointLineEdit;
 
     /**
      * This line edit show back points coordinates
      */
-    QLineEdit *mBackPointLineEdit;
+    QLineEdit* mBackPointLineEdit;
 
     /**
      * This combobox conteined criterion name
      */
-    QComboBox *mCriterionName;
+    QComboBox* mCriterionName;
 
     /**
      * This line edit show length calculated path
      */
-    QLineEdit *mPathCostLineEdit;
+    QLineEdit* mPathCostLineEdit;
 
     /**
      * This line edit show time calculated path
      */
-    QLineEdit *mPathTimeLineEdit;
+    QLineEdit* mPathTimeLineEdit;
 
     /**
      * this button called to find shortest path
      */
-    QPushButton *mCalculate;
+    QPushButton* mCalculate;
 
     /**
      * this button called to clear line edits and clar current path
      */
-    QPushButton *mClear;
+    QPushButton* mClear;
 
     /**
      * this map tool use for select coordinates
      */
-    QgsMapToolEmitPoint *mFrontPointMapTool;
+    QgsMapToolEmitPoint* mFrontPointMapTool;
 
     /**
      * this map tool use for select coordinates
      */
-    QgsMapToolEmitPoint *mBackPointMapTool;
+    QgsMapToolEmitPoint* mBackPointMapTool;
 
     /**
      * pointer to Plugin
      */
-    RoadGraphPlugin *mPlugin;
+    RoadGraphPlugin* mPlugin;
 
     /**
      * Front point
@@ -172,16 +172,16 @@ class RgShortestPathWidget : public QgsDockWidget
     /**
      * show front point
      */
-    QgsRubberBand *mrbFrontPoint;
+    QgsRubberBand* mrbFrontPoint;
 
     /**
      * show back point
      */
-    QgsRubberBand *mrbBackPoint;
+    QgsRubberBand* mrbBackPoint;
 
     /**
      * show shortest path
      */
-    QgsRubberBand *mrbPath;
+    QgsRubberBand* mrbPath;
 };
 #endif

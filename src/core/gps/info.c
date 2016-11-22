@@ -28,7 +28,7 @@
 
 #include "info.h"
 
-void nmea_zero_INFO( nmeaINFO *info )
+void nmea_zero_INFO( nmeaINFO* info )
 {
   memset( info, 0, sizeof( nmeaINFO ) );
   nmea_time_now( &info->utc );

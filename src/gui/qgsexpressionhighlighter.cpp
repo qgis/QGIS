@@ -15,8 +15,8 @@
 
 #include "qgsexpressionhighlighter.h"
 
-QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
-    : QSyntaxHighlighter( parent )
+QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument* parent )
+  : QSyntaxHighlighter( parent )
 {
   HighlightingRule rule;
 
@@ -24,9 +24,9 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   keywordFormat.setFontWeight( QFont::Bold );
   QStringList keywordPatterns;
   keywordPatterns << QStringLiteral( "\\bCASE\\b" ) << QStringLiteral( "\\bWHEN\\b" ) << QStringLiteral( "\\bTHEN\\b" )
-  << QStringLiteral( "\\bELSE\\b" ) << QStringLiteral( "\\bEND\\b" );
+                  << QStringLiteral( "\\bELSE\\b" ) << QStringLiteral( "\\bEND\\b" );
 
-  Q_FOREACH ( const QString &pattern, keywordPatterns )
+  Q_FOREACH ( const QString& pattern, keywordPatterns )
   {
     rule.pattern = QRegExp( pattern, Qt::CaseInsensitive );
     rule.format = keywordFormat;
@@ -58,9 +58,9 @@ void QgsExpressionHighlighter::addFields( const QStringList& fieldList )
   }
 }
 
-void QgsExpressionHighlighter::highlightBlock( const QString &text )
+void QgsExpressionHighlighter::highlightBlock( const QString& text )
 {
-  Q_FOREACH ( const HighlightingRule &rule, highlightingRules )
+  Q_FOREACH ( const HighlightingRule& rule, highlightingRules )
   {
     QRegExp expression( rule.pattern );
     int index = expression.indexIn( text );

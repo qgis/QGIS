@@ -48,11 +48,11 @@
 #include <QDir>
 #endif
 
-QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &theUri )
-    : mUri( theUri )
-    , mCapabilitiesReply( nullptr )
-    , mCoverageCount( 0 )
-    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
+QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const& theUri )
+  : mUri( theUri )
+  , mCapabilitiesReply( nullptr )
+  , mCoverageCount( 0 )
+  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
@@ -62,10 +62,10 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &theUri )
 }
 
 QgsWcsCapabilities::QgsWcsCapabilities()
-    : mCapabilities()
-    , mCapabilitiesReply( nullptr )
-    , mCoverageCount( 0 )
-    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
+  : mCapabilities()
+  , mCapabilitiesReply( nullptr )
+  , mCoverageCount( 0 )
+  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
 }
 
@@ -89,7 +89,7 @@ void QgsWcsCapabilities::parseUri()
 }
 
 // TODO: return if successful
-void QgsWcsCapabilities::setUri( QgsDataSourceUri const &theUri )
+void QgsWcsCapabilities::setUri( QgsDataSourceUri const& theUri )
 {
   mUri = theUri;
 
@@ -119,7 +119,7 @@ QgsWcsCapabilitiesProperty QgsWcsCapabilities::capabilities()
   return mCapabilities;
 }
 
-bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary )
+bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary>& coverageSummary )
 {
   QgsDebugMsg( "Entering." );
 
@@ -140,7 +140,7 @@ QString QgsWcsCapabilities::getCoverageUrl() const
   return url;
 }
 
-bool QgsWcsCapabilities::sendRequest( QString const & url )
+bool QgsWcsCapabilities::sendRequest( QString const& url )
 {
   QgsDebugMsg( "url = " + url );
   mError = QLatin1String( "" );
@@ -288,7 +288,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( const QString& preferredVer
   return true;
 }
 
-QString QgsWcsCapabilities::getDescribeCoverageUrl( QString const &identifier ) const
+QString QgsWcsCapabilities::getDescribeCoverageUrl( QString const& identifier ) const
 {
   QString url = prepareUri( mUri.param( QStringLiteral( "url" ) ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=" + mVersion;
 
@@ -305,11 +305,11 @@ QString QgsWcsCapabilities::getDescribeCoverageUrl( QString const &identifier ) 
   return url;
 }
 
-bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool forceRefresh )
+bool QgsWcsCapabilities::describeCoverage( QString const& identifier, bool forceRefresh )
 {
   QgsDebugMsg( " identifier = " + identifier );
 
-  QgsWcsCoverageSummary *coverage = coverageSummary( identifier );
+  QgsWcsCoverageSummary* coverage = coverageSummary( identifier );
   if ( !coverage )
   {
     QgsDebugMsg( "coverage not found" );
@@ -443,12 +443,12 @@ void QgsWcsCapabilities::capabilitiesReplyProgress( qint64 bytesReceived, qint64
   emit statusChanged( msg );
 }
 
-QString QgsWcsCapabilities::stripNS( const QString & name )
+QString QgsWcsCapabilities::stripNS( const QString& name )
 {
   return name.contains( ':' ) ? name.section( ':', 1 ) : name;
 }
 
-bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities )
+bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const& xml, QgsWcsCapabilitiesProperty& capabilities )
 {
   QgsDebugMsg( "Entered." );
 #ifdef QGISDEBUG
@@ -540,7 +540,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   return true;
 }
 
-QDomElement QgsWcsCapabilities::firstChild( const QDomElement &element, const QString & name )
+QDomElement QgsWcsCapabilities::firstChild( const QDomElement& element, const QString& name )
 {
   QDomNode n1 = element.firstChild();
   while ( !n1.isNull() )
@@ -559,7 +559,7 @@ QDomElement QgsWcsCapabilities::firstChild( const QDomElement &element, const QS
   return QDomElement();
 }
 
-QString QgsWcsCapabilities::firstChildText( const QDomElement &element, const QString & name )
+QString QgsWcsCapabilities::firstChildText( const QDomElement& element, const QString& name )
 {
   QDomElement el = firstChild( element, name );
   if ( !el.isNull() )
@@ -569,7 +569,7 @@ QString QgsWcsCapabilities::firstChildText( const QDomElement &element, const QS
   return QString();
 }
 
-QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, const QString & path )
+QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement& element, const QString& path )
 {
   QList<QDomElement> list;
 
@@ -603,7 +603,7 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
   return list;
 }
 
-QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, const QString &path )
+QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement& element, const QString& path )
 {
   QStringList list;
   QList<QDomElement> elems = domElements( element, path );
@@ -615,7 +615,7 @@ QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, co
   return list;
 }
 
-QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QString & path )
+QDomElement QgsWcsCapabilities::domElement( const QDomElement& element, const QString& path )
 {
   QStringList names = path.split( '.' );
   if ( names.isEmpty() ) return QDomElement();
@@ -629,13 +629,13 @@ QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QS
   return domElement( el, names.join( QStringLiteral( "." ) ) );
 }
 
-QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QString & path )
+QString QgsWcsCapabilities::domElementText( const QDomElement& element, const QString& path )
 {
   QDomElement el = domElement( element, path );
   return el.text();
 }
 
-QList<int> QgsWcsCapabilities::parseInts( const QString &text )
+QList<int> QgsWcsCapabilities::parseInts( const QString& text )
 {
   QList<int> list;
   Q_FOREACH ( const QString& s, text.split( ' ' ) )
@@ -651,7 +651,7 @@ QList<int> QgsWcsCapabilities::parseInts( const QString &text )
   return list;
 }
 
-QList<double> QgsWcsCapabilities::parseDoubles( const QString &text )
+QList<double> QgsWcsCapabilities::parseDoubles( const QString& text )
 {
   QList<double> list;
   Q_FOREACH ( const QString& s, text.split( ' ' ) )
@@ -667,7 +667,7 @@ QList<double> QgsWcsCapabilities::parseDoubles( const QString &text )
   return list;
 }
 
-QString QgsWcsCapabilities::crsUrnToAuthId( const QString &text )
+QString QgsWcsCapabilities::crsUrnToAuthId( const QString& text )
 {
   QString authid = text; // may be also non URN, for example 'EPSG:4326'
 
@@ -685,7 +685,7 @@ QString QgsWcsCapabilities::crsUrnToAuthId( const QString &text )
 // ------------------------ 1.0 ----------------------------------------------
 
 
-void QgsWcsCapabilities::parseContentMetadata( QDomElement const & e, QgsWcsCoverageSummary &coverageSummary )
+void QgsWcsCapabilities::parseContentMetadata( QDomElement const& e, QgsWcsCoverageSummary& coverageSummary )
 {
   QDomNode n1 = e.firstChild();
   while ( !n1.isNull() )
@@ -712,7 +712,7 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const & e, QgsWcsCove
   }
 }
 
-void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const & e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
+void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const& e, QgsWcsCoverageSummary& coverageSummary, QgsWcsCoverageSummary* parent )
 {
   Q_UNUSED( parent );
   coverageSummary.orderId = ++mCoverageCount;
@@ -750,7 +750,7 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const & e, QgsW
   QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
 }
 
-bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
+bool QgsWcsCapabilities::convertToDom( QByteArray const& xml )
 {
   QgsDebugMsg( "Entered." );
   // Convert completed document into a Dom
@@ -776,7 +776,7 @@ bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
   return true;
 }
 
-bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
+bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const& xml, QgsWcsCoverageSummary* coverage )
 {
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
   if ( ! convertToDom( xml ) ) return false;
@@ -931,7 +931,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   return true;
 }
 // ------------------------ 1.1 ----------------------------------------------
-bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
+bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const& xml, QgsWcsCoverageSummary* coverage )
 {
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
   if ( ! convertToDom( xml ) ) return false;
@@ -1066,7 +1066,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 }
 
 
-void QgsWcsCapabilities::parseCoverageSummary( QDomElement const & e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
+void QgsWcsCapabilities::parseCoverageSummary( QDomElement const& e, QgsWcsCoverageSummary& coverageSummary, QgsWcsCoverageSummary* parent )
 {
   coverageSummary.orderId = ++mCoverageCount;
 
@@ -1159,13 +1159,13 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const & e, QgsWcsCove
 
 }
 
-void QgsWcsCapabilities::coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const
+void QgsWcsCapabilities::coverageParents( QMap<int, int>& parents, QMap<int, QStringList>& parentNames ) const
 {
   parents = mCoverageParents;
   parentNames = mCoverageParentIdentifiers;
 }
 
-void QgsWcsCapabilities::initCoverageSummary( QgsWcsCoverageSummary &coverageSummary )
+void QgsWcsCapabilities::initCoverageSummary( QgsWcsCoverageSummary& coverageSummary )
 {
   coverageSummary.valid = false;
   coverageSummary.described = false;
@@ -1190,7 +1190,7 @@ QString QgsWcsCapabilities::lastErrorFormat()
   return mErrorFormat;
 }
 
-bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
+bool QgsWcsCapabilities::setAuthorization( QNetworkRequest& request ) const
 {
   if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
   {
@@ -1204,7 +1204,7 @@ bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
   return true;
 }
 
-bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
+bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply* reply ) const
 {
   if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
   {
@@ -1215,15 +1215,15 @@ bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
 
 void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& text )
 {
-  QgsMessageOutput *message = QgsMessageOutput::createMessageOutput();
+  QgsMessageOutput* message = QgsMessageOutput::createMessageOutput();
   message->setTitle( title );
   message->setMessage( text, QgsMessageOutput::MessageText );
   message->showMessage();
 }
 
-QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const & theIdentifier )
+QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const& theIdentifier )
 {
-  QgsWcsCoverageSummary * cp = coverageSummary( theIdentifier );
+  QgsWcsCoverageSummary* cp = coverageSummary( theIdentifier );
   if ( cp ) return *cp;
 
   QgsWcsCoverageSummary c;
@@ -1231,7 +1231,7 @@ QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const & theIdentifie
   return c;
 }
 
-QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent )
+QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const& theIdentifier, QgsWcsCoverageSummary* parent )
 {
   QgsDebugMsgLevel( "theIdentifier = " + theIdentifier, 5 );
   if ( !parent )
@@ -1248,7 +1248,7 @@ QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theI
     else
     {
       // search sub coverages
-      QgsWcsCoverageSummary * sc = coverageSummary( theIdentifier, c );
+      QgsWcsCoverageSummary* sc = coverageSummary( theIdentifier, c );
       if ( sc )
       {
         return sc;

@@ -17,7 +17,7 @@
 #include <QEvent>
 
 QgsFocusWatcher::QgsFocusWatcher( QObject* parent )
-    : QObject( parent )
+  : QObject( parent )
 {
   Q_ASSERT( parent );
   parent->installEventFilter( this );

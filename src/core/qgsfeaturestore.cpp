@@ -20,12 +20,12 @@ QgsFeatureStore::QgsFeatureStore()
 }
 
 QgsFeatureStore::QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs )
-    : mFields( fields )
-    , mCrs( crs )
+  : mFields( fields )
+  , mCrs( crs )
 {
 }
 
-void QgsFeatureStore::setFields( const QgsFields & fields )
+void QgsFeatureStore::setFields( const QgsFields& fields )
 {
   mFields = fields;
   QgsFeatureList::iterator it = mFeatures.begin();

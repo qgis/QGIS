@@ -118,7 +118,7 @@ class CORE_EXPORT QgsFeatureRequest
          *                   If the order is ascending, by default nulls are last
          *                   If the order is descending, by default nulls are first
          */
-        OrderByClause( const QString &expression, bool ascending = true );
+        OrderByClause( const QString& expression, bool ascending = true );
 
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsFeatureRequest
          * @param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
          * @param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
          */
-        OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
+        OrderByClause( const QString& expression, bool ascending, bool nullsfirst );
 
         /**
          * The expression
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsFeatureRequest
          * Create a new empty order by
          */
         CORE_EXPORT OrderBy()
-            : QList<OrderByClause>()
+          : QList<OrderByClause>()
         {}
 
         /**
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with feature ID filter
     explicit QgsFeatureRequest( QgsFeatureId fid );
     //! construct a request with feature ID filter
-    explicit QgsFeatureRequest( const QgsFeatureIds &fids );
+    explicit QgsFeatureRequest( const QgsFeatureIds& fids );
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
@@ -248,7 +248,11 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * @return Filter type
      */
-    FilterType filterType() const { if ( mFilter == FilterNone && !mFilterRect.isNull() ) return FilterRect; else return mFilter; }
+    FilterType filterType() const
+    {
+      if ( mFilter == FilterNone && !mFilterRect.isNull() ) return FilterRect;
+      else return mFilter;
+    }
 
     /**
      * Set rectangle from which features will be taken. Empty rectangle removes the filter.
@@ -258,17 +262,26 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Get the rectangle from which features will be taken.
      */
-    const QgsRectangle& filterRect() const { return mFilterRect; }
+    const QgsRectangle& filterRect() const
+    {
+      return mFilterRect;
+    }
 
     //! Set feature ID that should be fetched.
     QgsFeatureRequest& setFilterFid( QgsFeatureId fid );
     //! Get the feature ID that should be fetched.
-    QgsFeatureId filterFid() const { return mFilterFid; }
+    QgsFeatureId filterFid() const
+    {
+      return mFilterFid;
+    }
 
     //! Set feature IDs that should be fetched.
     QgsFeatureRequest& setFilterFids( const QgsFeatureIds& fids );
     //! Get feature IDs that should be fetched.
-    const QgsFeatureIds& filterFids() const { return mFilterFids; }
+    const QgsFeatureIds& filterFids() const
+    {
+      return mFilterFids;
+    }
 
     /** Set the filter expression. {@see QgsExpression}
      * @param expression expression string
@@ -281,7 +294,10 @@ class CORE_EXPORT QgsFeatureRequest
      * @see setFilterExpression
      * @see expressionContext
      */
-    QgsExpression* filterExpression() const { return mFilterExpression; }
+    QgsExpression* filterExpression() const
+    {
+      return mFilterExpression;
+    }
 
     /** Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
@@ -295,7 +311,10 @@ class CORE_EXPORT QgsFeatureRequest
      * @see setExpressionContext
      * @see filterExpression
      */
-    QgsExpressionContext* expressionContext() { return &mExpressionContext; }
+    QgsExpressionContext* expressionContext()
+    {
+      return &mExpressionContext;
+    }
 
     /** Sets the expression context used to evaluate filter expressions.
      * @note added in QGIS 2.12
@@ -312,7 +331,11 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * @note Added in 2.12
      */
-    QgsFeatureRequest& disableFilter() { mFilter = FilterNone; return *this; }
+    QgsFeatureRequest& disableFilter()
+    {
+      mFilter = FilterNone;
+      return *this;
+    }
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -325,7 +348,7 @@ class CORE_EXPORT QgsFeatureRequest
      * @note added in QGIS 2.14
      */
 
-    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
+    QgsFeatureRequest& addOrderBy( const QString& expression, bool ascending = true );
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -336,7 +359,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * @note added in QGIS 2.14
      */
-    QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
+    QgsFeatureRequest& addOrderBy( const QString& expression, bool ascending, bool nullsfirst );
 
     /**
      * Return a list of order by clauses specified for this feature request.
@@ -363,11 +386,17 @@ class CORE_EXPORT QgsFeatureRequest
      * @see setLimit
      * @note added in QGIS 2.14
      */
-    long limit() const { return mLimit; }
+    long limit() const
+    {
+      return mLimit;
+    }
 
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( QgsFeatureRequest::Flags flags );
-    const Flags& flags() const { return mFlags; }
+    const Flags& flags() const
+    {
+      return mFlags;
+    }
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
@@ -377,7 +406,10 @@ class CORE_EXPORT QgsFeatureRequest
      * Return the subset of attributes which at least need to be fetched
      * @return A list of attributes to be fetched
      */
-    QgsAttributeList subsetOfAttributes() const { return mAttrs; }
+    QgsAttributeList subsetOfAttributes() const
+    {
+      return mAttrs;
+    }
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
@@ -390,7 +422,10 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );
     //! Get simplification method for geometries that will be fetched
     //! @note added in 2.2
-    const QgsSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
+    const QgsSimplifyMethod& simplifyMethod() const
+    {
+      return mSimplifyMethod;
+    }
 
     /**
      * Check if a feature is accepted by this requests filter

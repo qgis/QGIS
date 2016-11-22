@@ -23,9 +23,9 @@
 #include <QMouseEvent>
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mActiveLayer( nullptr )
-    , mFeatureNumber( -1 )
+  : QgsMapToolEdit( canvas )
+  , mActiveLayer( nullptr )
+  , mFeatureNumber( -1 )
 {}
 
 void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )

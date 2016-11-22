@@ -55,50 +55,74 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      * @see circleWidth()
      * @see setCircleColor()
      */
-    void setCircleWidth( double width ) { mCircleWidth = width; }
+    void setCircleWidth( double width )
+    {
+      mCircleWidth = width;
+    }
 
     /** Returns the line width for the displacement group circle in mm.
      * @see setCircleWidth()
      * @see circleColor()
      */
-    double circleWidth() const { return mCircleWidth; }
+    double circleWidth() const
+    {
+      return mCircleWidth;
+    }
 
     /** Sets the color used for drawing the displacement group circle.
      * @param color circle color
      * @see circleColor()
      * @see setCircleWidth()
      */
-    void setCircleColor( const QColor& color ) { mCircleColor = color; }
+    void setCircleColor( const QColor& color )
+    {
+      mCircleColor = color;
+    }
 
     /** Returns the color used for drawing the displacement group circle.
      * @see setCircleColor()
      * @see circleWidth()
      */
-    QColor circleColor() const { return mCircleColor; }
+    QColor circleColor() const
+    {
+      return mCircleColor;
+    }
 
     /** Sets a factor for increasing the ring size of displacement groups.
      * @param distance addition factor
      * @see circleRadiusAddition()
      */
-    void setCircleRadiusAddition( double distance ) { mCircleRadiusAddition = distance; }
+    void setCircleRadiusAddition( double distance )
+    {
+      mCircleRadiusAddition = distance;
+    }
 
     /** Returns the factor for increasing the ring size of displacement groups.
      * @see setCircleRadiusAddition()
      */
-    double circleRadiusAddition() const { return mCircleRadiusAddition; }
+    double circleRadiusAddition() const
+    {
+      return mCircleRadiusAddition;
+    }
 
     /** Returns the placement method used for dispersing the points.
      * @see setPlacement()
      * @note added in QGIS 2.12
      */
-    Placement placement() const { return mPlacement; }
+    Placement placement() const
+    {
+      return mPlacement;
+    }
 
     /** Sets the placement method used for dispersing the points.
      * @param placement placement method
      * @see placement()
      * @note added in QGIS 2.12
      */
-    void setPlacement( Placement placement ) { mPlacement = placement; }
+    void setPlacement( Placement placement )
+    {
+      mPlacement = placement;
+    }
 
     /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
      * @see setCenterSymbol()
@@ -115,7 +139,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointDisplacementRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsPointDisplacementRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   private:
 
@@ -135,7 +159,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group ) override;
 
     //helper functions
-    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double &circleRadius ) const;
+    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext& symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double& circleRadius ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext& context, QPointF centerPoint, int nSymbols );
     void drawSymbols( const ClusteredGroup& group, QgsRenderContext& context, const QList<QPointF>& symbolPositions );
 };

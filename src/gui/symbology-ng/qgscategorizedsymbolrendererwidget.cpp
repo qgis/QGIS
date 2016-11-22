@@ -45,9 +45,9 @@
 
 ///@cond PRIVATE
 
-QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject * parent ) : QAbstractItemModel( parent )
-    , mRenderer( nullptr )
-    , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
+QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject* parent ) : QAbstractItemModel( parent )
+  , mRenderer( nullptr )
+  , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
 {
 }
 
@@ -67,7 +67,7 @@ void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRendere
   }
 }
 
-void QgsCategorizedSymbolRendererModel::addCategory( const QgsRendererCategory &cat )
+void QgsCategorizedSymbolRendererModel::addCategory( const QgsRendererCategory& cat )
 {
   if ( !mRenderer ) return;
   int idx = mRenderer->categories().size();
@@ -76,7 +76,7 @@ void QgsCategorizedSymbolRendererModel::addCategory( const QgsRendererCategory &
   endInsertRows();
 }
 
-QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelIndex &index )
+QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelIndex& index )
 {
   if ( !mRenderer )
   {
@@ -92,7 +92,7 @@ QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelInd
 }
 
 
-Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
   {
@@ -112,7 +112,7 @@ Qt::DropActions QgsCategorizedSymbolRendererModel::supportedDropActions() const
   return Qt::MoveAction;
 }
 
-QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int role ) const
+QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() || !mRenderer )
     return QVariant();
@@ -159,7 +159,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
   return QVariant();
 }
 
-bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   if ( !index.isValid() )
     return false;
@@ -217,7 +217,7 @@ QVariant QgsCategorizedSymbolRendererModel::headerData( int section, Qt::Orienta
   return QVariant();
 }
 
-int QgsCategorizedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
+int QgsCategorizedSymbolRendererModel::rowCount( const QModelIndex& parent ) const
 {
   if ( parent.isValid() || !mRenderer )
   {
@@ -226,13 +226,13 @@ int QgsCategorizedSymbolRendererModel::rowCount( const QModelIndex &parent ) con
   return mRenderer->categories().size();
 }
 
-int QgsCategorizedSymbolRendererModel::columnCount( const QModelIndex & index ) const
+int QgsCategorizedSymbolRendererModel::columnCount( const QModelIndex& index ) const
 {
   Q_UNUSED( index );
   return 3;
 }
 
-QModelIndex QgsCategorizedSymbolRendererModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsCategorizedSymbolRendererModel::index( int row, int column, const QModelIndex& parent ) const
 {
   if ( hasIndex( row, column, parent ) )
   {
@@ -241,7 +241,7 @@ QModelIndex QgsCategorizedSymbolRendererModel::index( int row, int column, const
   return QModelIndex();
 }
 
-QModelIndex QgsCategorizedSymbolRendererModel::parent( const QModelIndex &index ) const
+QModelIndex QgsCategorizedSymbolRendererModel::parent( const QModelIndex& index ) const
 {
   Q_UNUSED( index );
   return QModelIndex();
@@ -254,15 +254,15 @@ QStringList QgsCategorizedSymbolRendererModel::mimeTypes() const
   return types;
 }
 
-QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData* QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList& indexes ) const
 {
-  QMimeData *mimeData = new QMimeData();
+  QMimeData* mimeData = new QMimeData();
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -273,7 +273,7 @@ QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &i
   return mimeData;
 }
 
-bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
   Q_UNUSED( row );
   Q_UNUSED( column );
@@ -359,10 +359,10 @@ void QgsCategorizedSymbolRendererModel::updateSymbology()
 
 // ------------------------------ View style --------------------------------
 QgsCategorizedSymbolRendererViewStyle::QgsCategorizedSymbolRendererViewStyle( QStyle* style )
-    : QProxyStyle( style )
+  : QProxyStyle( style )
 {}
 
-void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
+void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
 {
   if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
   {
@@ -386,9 +386,9 @@ QgsRendererWidget* QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer* l
 }
 
 QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
-    , mModel( nullptr )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
+  , mModel( nullptr )
 {
 
   // try to recognize the previous renderer
@@ -447,7 +447,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( categoryColumnChanged( QString ) ) );
 
-  connect( viewCategories, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( categoriesDoubleClicked( const QModelIndex & ) ) );
+  connect( viewCategories, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( categoriesDoubleClicked( const QModelIndex& ) ) );
   connect( viewCategories, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
   connect( btnChangeCategorizedSymbol, SIGNAL( clicked() ), this, SLOT( changeCategorizedSymbol() ) );
@@ -572,7 +572,7 @@ void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString& f
   emit widgetChanged();
 }
 
-void QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked( const QModelIndex & idx )
+void QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked( const QModelIndex& idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
     changeCategorySymbol();
@@ -582,7 +582,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
 {
   QgsRendererCategory category = mRenderer->categories().value( currentCategoryRow() );
 
-  QgsSymbol *symbol = category.symbol();
+  QgsSymbol* symbol = category.symbol();
   if ( symbol )
   {
     symbol = symbol->clone();
@@ -653,9 +653,9 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
     QgsExpression* expression = new QgsExpression( attrName );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::atlasScope( nullptr )
-    << QgsExpressionContextUtils::layerScope( mLayer );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::atlasScope( nullptr )
+            << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
     QgsFeatureIterator fit = mLayer->getFeatures();
@@ -757,7 +757,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   */
 
   // recreate renderer
-  QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
+  QgsCategorizedSymbolRenderer* r = new QgsCategorizedSymbolRenderer( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QScopedPointer< QgsColorRamp > ramp( getColorRamp() );
@@ -829,7 +829,7 @@ void QgsCategorizedSymbolRendererWidget::deleteAllCategories()
 void QgsCategorizedSymbolRendererWidget::addCategory()
 {
   if ( !mModel ) return;
-  QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+  QgsSymbol* symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategory cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
   emit widgetChanged();
@@ -967,7 +967,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   }
 }
 
-void QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget* container )
 {
   QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
   if ( !dlg )
@@ -1039,13 +1039,13 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {

@@ -37,9 +37,9 @@ class TestVectorLayerCache : public QObject
     Q_OBJECT
   public:
     TestVectorLayerCache()
-        : mVectorLayerCache( 0 )
-        , mFeatureIdIndex( 0 )
-        , mPointsLayer( 0 )
+      : mVectorLayerCache( 0 )
+      , mFeatureIdIndex( 0 )
+      , mPointsLayer( 0 )
     {}
 
   private slots:

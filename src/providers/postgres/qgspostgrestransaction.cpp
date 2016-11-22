@@ -20,14 +20,14 @@
 #include "qgslogger.h"
 #include "qgis.h"
 
-QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
-    : QgsTransaction( connString )
-    , mConn( nullptr )
+QgsPostgresTransaction::QgsPostgresTransaction( const QString& connString )
+  : QgsTransaction( connString )
+  , mConn( nullptr )
 {
 
 }
 
-bool QgsPostgresTransaction::beginTransaction( QString &error, int statementTimeout )
+bool QgsPostgresTransaction::beginTransaction( QString& error, int statementTimeout )
 {
   mConn = QgsPostgresConn::connectDb( mConnString, false /*readonly*/, false /*shared*/, true /*transaction*/ );
 
@@ -35,7 +35,7 @@ bool QgsPostgresTransaction::beginTransaction( QString &error, int statementTime
          && executeSql( QStringLiteral( "BEGIN TRANSACTION" ), error );
 }
 
-bool QgsPostgresTransaction::commitTransaction( QString &error )
+bool QgsPostgresTransaction::commitTransaction( QString& error )
 {
   if ( executeSql( QStringLiteral( "COMMIT TRANSACTION" ), error ) )
   {
@@ -46,7 +46,7 @@ bool QgsPostgresTransaction::commitTransaction( QString &error )
   return false;
 }
 
-bool QgsPostgresTransaction::rollbackTransaction( QString &error )
+bool QgsPostgresTransaction::rollbackTransaction( QString& error )
 {
   if ( executeSql( QStringLiteral( "ROLLBACK TRANSACTION" ), error ) )
   {
@@ -57,7 +57,7 @@ bool QgsPostgresTransaction::rollbackTransaction( QString &error )
   return false;
 }
 
-bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg )
+bool QgsPostgresTransaction::executeSql( const QString& sql, QString& errorMsg )
 {
   if ( !mConn )
   {

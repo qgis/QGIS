@@ -42,10 +42,10 @@ class CORE_EXPORT QgsGPSDetector : public QObject
   public slots:
     void advance();
     void detected( const QgsGPSInformation& );
-    void connDestroyed( QObject * );
+    void connDestroyed( QObject* );
 
   signals:
-    void detected( QgsGPSConnection * );
+    void detected( QgsGPSConnection* );
     void detectionFailed();
 
   private:
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsGPSDetector : public QObject
     QList< QPair< QString, QString > > mPortList;
     QList<BaudRateType> mBaudList;
 
-    QgsGPSConnection *mConn;
+    QgsGPSConnection* mConn;
 };
 
 #endif // QGSGPSDETECTOR_H

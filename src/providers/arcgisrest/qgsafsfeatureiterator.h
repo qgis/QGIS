@@ -31,7 +31,7 @@ class QgsAfsFeatureSource : public QObject, public QgsAbstractFeatureSource
     QgsAfsProvider* provider() const;
 
   signals:
-    void extentRequested( const QgsRectangle & );
+    void extentRequested( const QgsRectangle& );
 
   protected:
     QgsAfsProvider* mProvider;

@@ -61,41 +61,107 @@ class CORE_EXPORT QgsRasterFileWriter
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, const QgsRectangle& outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = nullptr );
 
-    void setOutputFormat( const QString& format ) { mOutputFormat = format; }
-    QString outputFormat() const { return mOutputFormat; }
+    void setOutputFormat( const QString& format )
+    {
+      mOutputFormat = format;
+    }
+    QString outputFormat() const
+    {
+      return mOutputFormat;
+    }
 
-    void setOutputProviderKey( const QString& key ) { mOutputProviderKey = key; }
-    QString outputProviderKey() const { return mOutputProviderKey; }
+    void setOutputProviderKey( const QString& key )
+    {
+      mOutputProviderKey = key;
+    }
+    QString outputProviderKey() const
+    {
+      return mOutputProviderKey;
+    }
 
-    void setTiledMode( bool t ) { mTiledMode = t; }
-    bool tiledMode() const { return mTiledMode; }
+    void setTiledMode( bool t )
+    {
+      mTiledMode = t;
+    }
+    bool tiledMode() const
+    {
+      return mTiledMode;
+    }
 
-    void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
-    int maxTileWidth() const { return mMaxTileWidth; }
+    void setMaxTileWidth( int w )
+    {
+      mMaxTileWidth = w;
+    }
+    int maxTileWidth() const
+    {
+      return mMaxTileWidth;
+    }
 
-    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
-    void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f ) { mBuildPyramidsFlag = f; }
+    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const
+    {
+      return mBuildPyramidsFlag;
+    }
+    void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f )
+    {
+      mBuildPyramidsFlag = f;
+    }
 
-    QList< int > pyramidsList() const { return mPyramidsList; }
-    void setPyramidsList( const QList< int > & list ) { mPyramidsList = list; }
+    QList< int > pyramidsList() const
+    {
+      return mPyramidsList;
+    }
+    void setPyramidsList( const QList< int >& list )
+    {
+      mPyramidsList = list;
+    }
 
-    QString pyramidsResampling() const { return mPyramidsResampling; }
-    void setPyramidsResampling( const QString & str ) { mPyramidsResampling = str; }
+    QString pyramidsResampling() const
+    {
+      return mPyramidsResampling;
+    }
+    void setPyramidsResampling( const QString& str )
+    {
+      mPyramidsResampling = str;
+    }
 
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsFormat; }
-    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f ) { mPyramidsFormat = f; }
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const
+    {
+      return mPyramidsFormat;
+    }
+    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f )
+    {
+      mPyramidsFormat = f;
+    }
 
-    void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
-    int maxTileHeight() const { return mMaxTileHeight; }
+    void setMaxTileHeight( int h )
+    {
+      mMaxTileHeight = h;
+    }
+    int maxTileHeight() const
+    {
+      return mMaxTileHeight;
+    }
 
-    void setCreateOptions( const QStringList& list ) { mCreateOptions = list; }
-    QStringList createOptions() const { return mCreateOptions; }
+    void setCreateOptions( const QStringList& list )
+    {
+      mCreateOptions = list;
+    }
+    QStringList createOptions() const
+    {
+      return mCreateOptions;
+    }
 
-    void setPyramidsConfigOptions( const QStringList& list ) { mPyramidsConfigOptions = list; }
-    QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
+    void setPyramidsConfigOptions( const QStringList& list )
+    {
+      mPyramidsConfigOptions = list;
+    }
+    QStringList pyramidsConfigOptions() const
+    {
+      return mPyramidsConfigOptions;
+    }
 
   private:
     QgsRasterFileWriter(); //forbidden

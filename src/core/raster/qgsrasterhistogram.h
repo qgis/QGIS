@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRasterHistogram
     }
 
     //! Compares region, size etc. not histogram itself
-    bool operator==( const QgsRasterHistogram &h ) const
+    bool operator==( const QgsRasterHistogram& h ) const
     {
       return ( h.bandNumber == bandNumber &&
                h.binCount == binCount &&

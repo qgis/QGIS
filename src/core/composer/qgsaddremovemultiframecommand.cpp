@@ -22,19 +22,19 @@
 
 
 QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent )
-    : QUndoCommand( text, parent )
-    , mMultiFrame( multiFrame )
-    , mComposition( c )
-    , mState( s )
-    , mFirstRun( true )
+  : QUndoCommand( text, parent )
+  , mMultiFrame( multiFrame )
+  , mComposition( c )
+  , mState( s )
+  , mFirstRun( true )
 {
 }
 
 QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand()
-    : mMultiFrame( nullptr )
-    , mComposition( nullptr )
-    , mState( Added )
-    , mFirstRun( true )
+  : mMultiFrame( nullptr )
+  , mComposition( nullptr )
+  , mState( Added )
+  , mFirstRun( true )
 {
 }
 

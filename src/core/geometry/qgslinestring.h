@@ -101,7 +101,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * inherit the dimensionality of the first point in the list.
      * @param points new points for line string. If empty, line string will be cleared.
      */
-    void setPoints( const QgsPointSequence &points );
+    void setPoints( const QgsPointSequence& points );
 
     /** Appends the contents of another line string to the end of this line string.
      * @param line line to append. Ownership is not transferred.
@@ -130,8 +130,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //reimplemented methods
 
-    virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
-    virtual int dimension() const override { return 1; }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "LineString" );
+    }
+    virtual int dimension() const override
+    {
+      return 1;
+    }
     virtual QgsLineString* clone() const override;
     virtual void clear() override;
 
@@ -156,8 +162,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
-    virtual int nCoordinates() const override { return mX.size(); }
-    void points( QgsPointSequence &pt ) const override;
+    virtual int nCoordinates() const override
+    {
+      return mX.size();
+    }
+    void points( QgsPointSequence& pt ) const override;
 
     void draw( QPainter& p ) const override;
 

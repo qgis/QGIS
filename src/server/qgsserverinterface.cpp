@@ -20,7 +20,7 @@
 
 //! Constructor
 QgsServerInterface::QgsServerInterface():
-    mConfigFilePath( QString() )
+  mConfigFilePath( QString() )
 {
 }
 

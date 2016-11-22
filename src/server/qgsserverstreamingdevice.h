@@ -28,7 +28,10 @@ class QgsServerStreamingDevice: public QIODevice
     QgsServerStreamingDevice( const QString& formatName, QgsRequestHandler* rh, QObject* parent = nullptr );
     ~QgsServerStreamingDevice();
 
-    bool isSequential() const override { return false; }
+    bool isSequential() const override
+    {
+      return false;
+    }
 
     bool open( OpenMode mode ) override;
     void close() override;
@@ -39,8 +42,8 @@ class QgsServerStreamingDevice: public QIODevice
 
     QgsServerStreamingDevice(); //default constructor forbidden
 
-    qint64 writeData( const char * data, qint64 maxSize ) override;
-    qint64 readData( char * data, qint64 maxSize ) override;
+    qint64 writeData( const char* data, qint64 maxSize ) override;
+    qint64 readData( char* data, qint64 maxSize ) override;
 };
 
 #endif // QGSSERVERSTREAMINGDEVICE_H

@@ -68,7 +68,10 @@ class CORE_EXPORT QgsMultiRenderChecker
      *
      * @param renderedImagePath A path to the rendered image with which control images will be compared
      */
-    void setRenderedImage( const QString& renderedImagePath ) { mRenderedImage = renderedImagePath; }
+    void setRenderedImage( const QString& renderedImagePath )
+    {
+      mRenderedImage = renderedImagePath;
+    }
 
     /**
      * Set the map settings to use to render the image
@@ -84,7 +87,10 @@ class CORE_EXPORT QgsMultiRenderChecker
      * @param theColorTolerance The maximum difference for each color component
      *                          including alpha to be considered correct.
      */
-    void setColorTolerance( unsigned int theColorTolerance ) { mColorTolerance = theColorTolerance; }
+    void setColorTolerance( unsigned int theColorTolerance )
+    {
+      mColorTolerance = theColorTolerance;
+    }
 
     /**
      * Test using renderer to generate the image to be compared.
@@ -106,7 +112,10 @@ class CORE_EXPORT QgsMultiRenderChecker
      *
      * @return A report
      */
-    QString report() const { return mReport; }
+    QString report() const
+    {
+      return mReport;
+    }
 
     /**
      * @brief controlImagePath
@@ -117,7 +126,10 @@ class CORE_EXPORT QgsMultiRenderChecker
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
-    static void drawBackground( QImage* image ) { QgsRenderChecker::drawBackground( image ); }
+    static void drawBackground( QImage* image )
+    {
+      QgsRenderChecker::drawBackground( image );
+    }
 
   private:
     QString mReport;
@@ -141,9 +153,12 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
     ~QgsCompositionChecker();
 
-    void setSize( QSize size ) { mSize = size; }
+    void setSize( QSize size )
+    {
+      mSize = size;
+    }
 
-    bool testComposition( QString &theReport, int page = 0, int pixelDiff = 0 );
+    bool testComposition( QString& theReport, int page = 0, int pixelDiff = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden

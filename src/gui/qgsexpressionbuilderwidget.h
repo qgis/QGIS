@@ -47,7 +47,7 @@ class QgsExpressionItem : public QStandardItem
                        const QString& expressionText,
                        const QString& helpText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode )
-        : QStandardItem( label )
+      : QStandardItem( label )
     {
       mExpressionText = expressionText;
       mHelpText = helpText;
@@ -58,32 +58,44 @@ class QgsExpressionItem : public QStandardItem
     QgsExpressionItem( const QString& label,
                        const QString& expressionText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode )
-        : QStandardItem( label )
+      : QStandardItem( label )
     {
       mExpressionText = expressionText;
       mType = itemType;
       setData( itemType, ItemTypeRole );
     }
 
-    QString getExpressionText() const { return mExpressionText; }
+    QString getExpressionText() const
+    {
+      return mExpressionText;
+    }
 
     /** Get the help text that is associated with this expression item.
       *
       * @return The help text.
       */
-    QString getHelpText() const { return mHelpText; }
+    QString getHelpText() const
+    {
+      return mHelpText;
+    }
 
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.
       */
-    void setHelpText( const QString& helpText ) { mHelpText = helpText; }
+    void setHelpText( const QString& helpText )
+    {
+      mHelpText = helpText;
+    }
 
     /** Get the type of expression item eg header, field, ExpressionNode.
       *
       * @return The QgsExpressionItem::ItemType
       */
-    QgsExpressionItem::ItemType getItemType() const { return mType; }
+    QgsExpressionItem::ItemType getItemType() const
+    {
+      return mType;
+    }
 
     //! Custom sort order role
     static const int CustomSortRole = Qt::UserRole + 1;
@@ -109,11 +121,11 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
   public:
     QgsExpressionItemSearchProxy();
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const override;
 
   protected:
 
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
 };
 
 
@@ -151,7 +163,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
 
     //! Sets geometry calculator used in distance/area calculations.
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea& da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
@@ -165,7 +177,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * @see setExpressionContext
      * @note added in QGIS 2.12
      */
-    QgsExpressionContext expressionContext() const { return mExpressionContext; }
+    QgsExpressionContext expressionContext() const
+    {
+      return mExpressionContext;
+    }
 
     /** Sets the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
@@ -245,22 +260,25 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * when text changes.
      * @param enabled True to enable auto saving.
      */
-    void setAutoSave( bool enabled ) { mAutoSave = enabled; }
+    void setAutoSave( bool enabled )
+    {
+      mAutoSave = enabled;
+    }
 
   private slots:
     void showContextMenu( QPoint );
     void setExpressionState( bool state );
-    void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void currentChanged( const QModelIndex& index, const QModelIndex& );
     void operatorButtonClicked();
     void on_btnRun_pressed();
     void on_btnNewFile_pressed();
     void on_cmbFileNames_currentItemChanged( QListWidgetItem* item, QListWidgetItem* lastitem );
-    void on_expressionTree_doubleClicked( const QModelIndex &index );
+    void on_expressionTree_doubleClicked( const QModelIndex& index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
     void on_txtSearchEditValues_textChanged();
     void on_lblPreview_linkActivated( const QString& link );
-    void on_mValuesListView_doubleClicked( const QModelIndex &index );
+    void on_mValuesListView_doubleClicked( const QModelIndex& index );
     void on_txtPython_textChanged();
 
   signals:
@@ -273,12 +291,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void expressionParsed( bool isValid );
 
   protected:
-    void showEvent( QShowEvent *e );
+    void showEvent( QShowEvent* e );
 
   private:
     void runPythonCode( const QString& code );
     void updateFunctionTree();
-    void fillFieldValues( const QString &fieldName, int countLimit );
+    void fillFieldValues( const QString& fieldName, int countLimit );
     QString loadFunctionHelp( QgsExpressionItem* functionName );
     QString helpStylesheet() const;
 
@@ -300,11 +318,11 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     bool mAutoSave;
     QString mFunctionsPath;
-    QgsVectorLayer *mLayer;
-    QStandardItemModel *mModel;
-    QStringListModel *mValuesModel;
-    QSortFilterProxyModel *mProxyValues;
-    QgsExpressionItemSearchProxy *mProxyModel;
+    QgsVectorLayer* mLayer;
+    QStandardItemModel* mModel;
+    QStringListModel* mValuesModel;
+    QSortFilterProxyModel* mProxyValues;
+    QgsExpressionItemSearchProxy* mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;

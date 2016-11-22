@@ -28,8 +28,8 @@ class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
 {
   public:
     QgsGlobeFeatureCursor( QgsVectorLayer* layer, const QgsFeatureIterator& iterator )
-        : mIterator( iterator )
-        , mLayer( layer )
+      : mIterator( iterator )
+      , mLayer( layer )
     {
       mIterator.nextFeature( mFeature );
     }
@@ -43,7 +43,7 @@ class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
     {
       if ( mFeature.isValid() )
       {
-        osgEarth::Features::Feature *feat = QgsGlobeFeatureUtils::featureFromQgsFeature( mLayer, mFeature );
+        osgEarth::Features::Feature* feat = QgsGlobeFeatureUtils::featureFromQgsFeature( mLayer, mFeature );
         mIterator.nextFeature( mFeature );
         return feat;
       }

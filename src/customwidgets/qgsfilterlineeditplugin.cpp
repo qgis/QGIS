@@ -18,9 +18,9 @@
 #include "qgsfilterlineeditplugin.h"
 
 
-QgsFilterLineEditPlugin::QgsFilterLineEditPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsFilterLineEditPlugin::QgsFilterLineEditPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsFilterLineEditPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsFilterLineEditPlugin::createWidget( QWidget *parent )
+QWidget* QgsFilterLineEditPlugin::createWidget( QWidget* parent )
 {
   return new QgsFilterLineEdit( parent );
 }
@@ -60,7 +60,7 @@ bool QgsFilterLineEditPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsFilterLineEditPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsFilterLineEditPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

@@ -20,13 +20,13 @@
 #include <QSettings>
 
 // defined in qgsgdalprovider.cpp
-void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards );
+void buildSupportedRasterFileFilterAndExtensions( QString& theFileFiltersString, QStringList& theExtensions, QStringList& theWildcards );
 
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
                                     QString name, QString path, QString uri,
-                                    QStringList *theSublayers )
-    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
+                                    QStringList* theSublayers )
+  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
@@ -54,7 +54,7 @@ QgsGdalLayerItem::~QgsGdalLayerItem()
 }
 
 
-bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
+bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
   if ( !hDS )
@@ -80,7 +80,7 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
   // get children from sublayers
   if ( !sublayers.isEmpty() )
   {
-    QgsDataItem * childItem = nullptr;
+    QgsDataItem* childItem = nullptr;
     QgsDebugMsg( QString( "got %1 sublayers" ).arg( sublayers.count() ) );
     for ( int i = 0; i < sublayers.count(); i++ )
     {
@@ -132,7 +132,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
     return nullptr;
@@ -264,7 +264,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     // add the item
     QStringList sublayers;
     QgsDebugMsgLevel( QString( "adding item name=%1 thePath=%2" ).arg( name, thePath ), 2 );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    QgsLayerItem* item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
     if ( item )
       return item;
   }
@@ -289,7 +289,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   QgsDebugMsgLevel( "GdalDataset opened " + thePath, 2 );
 
-  QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath,
+  QgsLayerItem* item = new QgsGdalLayerItem( parentItem, name, thePath, thePath,
       &sublayers );
 
   return item;

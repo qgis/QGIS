@@ -25,7 +25,7 @@
 #include <QSettings>
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   QSettings settings;
 

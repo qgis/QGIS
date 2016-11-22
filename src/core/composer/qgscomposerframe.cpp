@@ -18,10 +18,10 @@
 #include "qgscomposition.h"
 
 QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height )
-    : QgsComposerItem( x, y, width, height, c )
-    , mMultiFrame( mf )
-    , mHidePageIfEmpty( false )
-    , mHideBackgroundIfEmpty( false )
+  : QgsComposerItem( x, y, width, height, c )
+  , mMultiFrame( mf )
+  , mHidePageIfEmpty( false )
+  , mHideBackgroundIfEmpty( false )
 {
 
   //default to no background
@@ -37,10 +37,10 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 }
 
 QgsComposerFrame::QgsComposerFrame()
-    : QgsComposerItem( 0, 0, 0, 0, nullptr )
-    , mMultiFrame( nullptr )
-    , mHidePageIfEmpty( false )
-    , mHideBackgroundIfEmpty( false )
+  : QgsComposerItem( 0, 0, 0, 0, nullptr )
+  , mMultiFrame( nullptr )
+  , mHidePageIfEmpty( false )
+  , mHideBackgroundIfEmpty( false )
 {
   //default to no background
   setBackgroundEnabled( false );
@@ -50,7 +50,7 @@ QgsComposerFrame::~QgsComposerFrame()
 {
 }
 
-bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );
   frameElem.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
@@ -143,7 +143,7 @@ QString QgsComposerFrame::displayName() const
   return tr( "<frame>" );
 }
 
-void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
+void QgsComposerFrame::setSceneRect( const QRectF& rectangle )
 {
   QRectF fixedRect = rectangle;
 

@@ -23,8 +23,8 @@
 
 #include "qgspanelwidget.h"
 
-QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
-    : QWidget( parent )
+QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget* parent )
+  : QWidget( parent )
 {
   setupUi( this );
   clear();
@@ -32,7 +32,7 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
   connect( mBackButton, SIGNAL( pressed() ), this, SLOT( acceptCurrentPanel() ) );
 }
 
-void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
+void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget* panel )
 {
   // TODO Don't allow adding another main widget or else that would be strange for the user.
   connect( panel, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( showPanel( QgsPanelWidget* ) ),
@@ -43,12 +43,12 @@ void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
   mStackedWidget->setCurrentIndex( 0 );
 }
 
-QgsPanelWidget *QgsPanelWidgetStack::mainPanel()
+QgsPanelWidget* QgsPanelWidgetStack::mainPanel()
 {
   return qobject_cast<QgsPanelWidget*>( mStackedWidget->widget( 0 ) );
 }
 
-QgsPanelWidget *QgsPanelWidgetStack::takeMainPanel()
+QgsPanelWidget* QgsPanelWidgetStack::takeMainPanel()
 {
   // clear out the current stack
   acceptAllPanels();
@@ -114,7 +114,7 @@ void QgsPanelWidgetStack::acceptAllPanels()
   mStackedWidget->setUpdatesEnabled( true );
 }
 
-void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
+void QgsPanelWidgetStack::showPanel( QgsPanelWidget* panel )
 {
   mTitles.push( panel->panelTitle() );
 
@@ -129,7 +129,7 @@ void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
   this->updateBreadcrumb();
 }
 
-void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
+void QgsPanelWidgetStack::closePanel( QgsPanelWidget* panel )
 {
   mTitles.pop();
   mStackedWidget->setCurrentIndex( mStackedWidget->currentIndex() - 1 );

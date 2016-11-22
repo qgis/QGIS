@@ -21,7 +21,7 @@
 #include <QColorDialog>
 #include <QGraphicsScene>
 
-QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( nullptr )
+QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( nullptr )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
@@ -63,7 +63,7 @@ void QgsTextAnnotationDialog::showEvent( QShowEvent* )
   backgroundColorChanged( mItem ? mItem->frameBackgroundColor() : Qt::white );
 }
 
-void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

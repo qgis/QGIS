@@ -45,10 +45,13 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     virtual QgsSingleSymbolRenderer* clone() const override;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props = QgsStringMap() ) const override;
     static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
-    virtual Capabilities capabilities() override { return SymbolLevels; }
+    virtual Capabilities capabilities() override
+    {
+      return SymbolLevels;
+    }
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     //! create renderer from XML element
@@ -63,7 +66,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     //! creates a QgsSingleSymbolRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsSingleSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsSingleSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   protected:
     QScopedPointer<QgsSymbol> mSymbol;

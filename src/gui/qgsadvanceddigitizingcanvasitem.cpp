@@ -21,14 +21,14 @@
 
 
 QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
-    : QgsMapCanvasItem( canvas )
-    , mLockedPen( QPen( QColor( 100, 100, 255, 255 ), .7, Qt::DashLine ) )
-    , mConstruction1Pen( QPen( QColor( 100, 255, 100, 150 ), .7, Qt::DashLine ) )
-    , mConstruction2Pen( QPen( QColor( 100, 255, 100, 255 ), .7, Qt::DashLine ) )
-    , mSnapPen( QPen( QColor( 255, 175, 100, 150 ), 7 ) )
-    , mSnapLinePen( QPen( QColor( 200, 100, 50, 150 ), .7, Qt::DashLine ) )
-    , mCursorPen( QPen( QColor( 100, 255, 100, 255 ), .7 ) )
-    , mAdvancedDigitizingDockWidget( cadDockWidget )
+  : QgsMapCanvasItem( canvas )
+  , mLockedPen( QPen( QColor( 100, 100, 255, 255 ), .7, Qt::DashLine ) )
+  , mConstruction1Pen( QPen( QColor( 100, 255, 100, 150 ), .7, Qt::DashLine ) )
+  , mConstruction2Pen( QPen( QColor( 100, 255, 100, 255 ), .7, Qt::DashLine ) )
+  , mSnapPen( QPen( QColor( 255, 175, 100, 150 ), 7 ) )
+  , mSnapLinePen( QPen( QColor( 200, 100, 50, 150 ), .7, Qt::DashLine ) )
+  , mCursorPen( QPen( QColor( 100, 255, 100, 255 ), .7 ) )
+  , mAdvancedDigitizingDockWidget( cadDockWidget )
 {
 }
 

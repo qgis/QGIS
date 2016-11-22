@@ -93,7 +93,10 @@ class CORE_EXPORT QgsSymbol
     //! return new default symbol for specified geometry type
     static QgsSymbol* defaultSymbol( QgsWkbTypes::GeometryType geomType );
 
-    SymbolType type() const { return mType; }
+    SymbolType type() const
+    {
+      return mType;
+    }
 
     // symbol layers handling
 
@@ -103,7 +106,10 @@ class CORE_EXPORT QgsSymbol
      * @see symbolLayer
      * @see symbolLayerCount
      */
-    QgsSymbolLayerList symbolLayers() { return mLayers; }
+    QgsSymbolLayerList symbolLayers()
+    {
+      return mLayers;
+    }
 
     /** Returns a specific symbol layers contained in the symbol.
      * @param layer layer number
@@ -120,7 +126,10 @@ class CORE_EXPORT QgsSymbol
      * @see symbolLayers
      * @see symbolLayer
      */
-    int symbolLayerCount() { return mLayers.count(); }
+    int symbolLayerCount()
+    {
+      return mLayers.count();
+    }
 
     /**
      * Insert symbol layer to specified index
@@ -151,7 +160,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayer* takeSymbolLayer( int index );
 
     //! delete layer at specified index and set a new one
-    bool changeSymbolLayer( int index, QgsSymbolLayer *layer );
+    bool changeSymbolLayer( int index, QgsSymbolLayer* layer );
 
     /** Begins the rendering process for the symbol. This must be called before renderFeature(),
      * and should be followed by a call to stopRender().
@@ -199,7 +208,7 @@ class CORE_EXPORT QgsSymbol
      */
     virtual QgsSymbol* clone() const = 0;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument& doc, QDomElement& element, QgsStringMap props ) const;
 
     /** Returns the units to use for sizes and widths within the symbol. Individual
      * symbol layer definitions will interpret this in different ways, eg a marker symbol
@@ -223,19 +232,31 @@ class CORE_EXPORT QgsSymbol
     void setMapUnitScale( const QgsMapUnitScale& scale );
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const { return mAlpha; }
+    qreal alpha() const
+    {
+      return mAlpha;
+    }
     //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+    void setAlpha( qreal alpha )
+    {
+      mAlpha = alpha;
+    }
 
     /** Sets rendering hint flags for the symbol.
      * @see renderHints()
      */
-    void setRenderHints( RenderHints hints ) { mRenderHints = hints; }
+    void setRenderHints( RenderHints hints )
+    {
+      mRenderHints = hints;
+    }
 
     /** Returns the rendering hint flags for the symbol.
      * @see setRenderHints()
      */
-    RenderHints renderHints() const { return mRenderHints; }
+    RenderHints renderHints() const
+    {
+      return mRenderHints;
+    }
 
     /** Sets whether features drawn by the symbol should be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
@@ -245,7 +266,10 @@ class CORE_EXPORT QgsSymbol
      * @note added in QGIS 2.9
      * @see clipFeaturesToExtent
      */
-    void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
+    void setClipFeaturesToExtent( bool clipFeaturesToExtent )
+    {
+      mClipFeaturesToExtent = clipFeaturesToExtent;
+    }
 
     /** Returns whether features drawn by the symbol will be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
@@ -255,7 +279,10 @@ class CORE_EXPORT QgsSymbol
      * @note added in QGIS 2.9
      * @see setClipFeaturesToExtent
      */
-    bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
+    bool clipFeaturesToExtent() const
+    {
+      return mClipFeaturesToExtent;
+    }
 
     /**
      * Return a list of attributes required to render this feature.
@@ -270,8 +297,14 @@ class CORE_EXPORT QgsSymbol
     bool hasDataDefinedProperties() const;
 
     //! @note the layer will be NULL after stopRender
-    void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
-    const QgsVectorLayer* layer() const { return mLayer; }
+    void setLayer( const QgsVectorLayer* layer )
+    {
+      mLayer = layer;
+    }
+    const QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
 
     /**
      * Render a feature. Before calling this the startRender() method should be called to initialise
@@ -390,8 +423,14 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature* f = nullptr, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolRenderContext();
 
-    QgsRenderContext& renderContext() { return mRenderContext; }
-    const QgsRenderContext& renderContext() const { return mRenderContext; }
+    QgsRenderContext& renderContext()
+    {
+      return mRenderContext;
+    }
+    const QgsRenderContext& renderContext() const
+    {
+      return mRenderContext;
+    }
 
     /** Sets the original value variable value for data defined symbology
      * @param value value for original value variable. This usually represents the symbol property value
@@ -401,61 +440,112 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setOriginalValueVariable( const QVariant& value );
 
     //! Returns the output unit for the context
-    QgsUnitTypes::RenderUnit outputUnit() const { return mOutputUnit; }
+    QgsUnitTypes::RenderUnit outputUnit() const
+    {
+      return mOutputUnit;
+    }
 
     //! Sets the output unit for the context
-    void setOutputUnit( QgsUnitTypes::RenderUnit u ) { mOutputUnit = u; }
+    void setOutputUnit( QgsUnitTypes::RenderUnit u )
+    {
+      mOutputUnit = u;
+    }
 
-    QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }
-    void setMapUnitScale( const QgsMapUnitScale& scale ) { mMapUnitScale = scale; }
+    QgsMapUnitScale mapUnitScale() const
+    {
+      return mMapUnitScale;
+    }
+    void setMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mMapUnitScale = scale;
+    }
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const { return mAlpha; }
+    qreal alpha() const
+    {
+      return mAlpha;
+    }
     //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+    void setAlpha( qreal alpha )
+    {
+      mAlpha = alpha;
+    }
 
-    bool selected() const { return mSelected; }
-    void setSelected( bool selected ) { mSelected = selected; }
+    bool selected() const
+    {
+      return mSelected;
+    }
+    void setSelected( bool selected )
+    {
+      mSelected = selected;
+    }
 
     /** Returns the rendering hint flags for the symbol.
      * @see setRenderHints()
      */
-    QgsSymbol::RenderHints renderHints() const { return mRenderHints; }
+    QgsSymbol::RenderHints renderHints() const
+    {
+      return mRenderHints;
+    }
 
     /** Sets rendering hint flags for the symbol.
      * @see renderHints()
      */
-    void setRenderHints( QgsSymbol::RenderHints hints ) { mRenderHints = hints; }
+    void setRenderHints( QgsSymbol::RenderHints hints )
+    {
+      mRenderHints = hints;
+    }
 
-    void setFeature( const QgsFeature* f ) { mFeature = f; }
+    void setFeature( const QgsFeature* f )
+    {
+      mFeature = f;
+    }
     //! Current feature being rendered - may be null
-    const QgsFeature* feature() const { return mFeature; }
+    const QgsFeature* feature() const
+    {
+      return mFeature;
+    }
 
     //! Fields of the layer. Currently only available in startRender() calls
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)
     //! @note added in 2.4
-    QgsFields fields() const { return mFields; }
+    QgsFields fields() const
+    {
+      return mFields;
+    }
 
     /** Part count of current geometry
      * @note added in QGIS 2.16
      */
-    int geometryPartCount() const { return mGeometryPartCount; }
+    int geometryPartCount() const
+    {
+      return mGeometryPartCount;
+    }
 
     /** Sets the part count of current geometry
      * @note added in QGIS 2.16
      */
-    void setGeometryPartCount( int count ) { mGeometryPartCount = count; }
+    void setGeometryPartCount( int count )
+    {
+      mGeometryPartCount = count;
+    }
 
     /** Part number of current geometry
      * @note added in QGIS 2.16
      */
-    int geometryPartNum() const { return mGeometryPartNum; }
+    int geometryPartNum() const
+    {
+      return mGeometryPartNum;
+    }
 
     /** Sets the part number of current geometry
      * @note added in QGIS 2.16
      */
-    void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
+    void setGeometryPartNum( int num )
+    {
+      mGeometryPartNum = num;
+    }
 
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
@@ -637,7 +727,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * @returns approximate symbol bounds, in painter units
      * @note added in QGIS 2.14
     */
-    QRectF bounds( QPointF point, QgsRenderContext& context, const QgsFeature &feature = QgsFeature() ) const;
+    QRectF bounds( QPointF point, QgsRenderContext& context, const QgsFeature& feature = QgsFeature() ) const;
 
     virtual QgsMarkerSymbol* clone() const override;
 
@@ -711,11 +801,11 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 
   private:
 
-    void renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
     //! Calculates the bounds of a polygon including rings
-    QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
+    QRectF polygonBounds( const QPolygonF& points, const QList<QPolygonF>* rings ) const;
     //! Translates the rings in a polygon by a set distance
-    QList<QPolygonF>* translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
+    QList<QPolygonF>* translateRings( const QList<QPolygonF>* rings, double dx, double dy ) const;
 };
 
 #endif

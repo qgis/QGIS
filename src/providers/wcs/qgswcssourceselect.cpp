@@ -27,8 +27,8 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, managerMode, embeddedMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, managerMode, embeddedMode )
 {
   // Hide irrelevant widgets
   mWMSGroupBox->hide();
@@ -67,7 +67,7 @@ void QgsWCSSourceSelect::populateLayerList()
   if ( !mCapabilities.supportedCoverages( coverages ) )
     return;
 
-  QMap<int, QgsTreeWidgetItem *> items;
+  QMap<int, QgsTreeWidgetItem*> items;
   QMap<int, int> coverageParents;
   QMap<int, QStringList> coverageParentNames;
   mCapabilities.coverageParents( coverageParents, coverageParentNames );
@@ -82,7 +82,7 @@ void QgsWCSSourceSelect::populateLayerList()
   {
     QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
 
-    QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
+    QgsTreeWidgetItem* lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, coverage->identifier );
     lItem->setData( 0, Qt::UserRole + 1, "" );
@@ -105,7 +105,7 @@ void QgsWCSSourceSelect::populateLayerList()
 
 QString QgsWCSSourceSelect::selectedIdentifier()
 {
-  QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*> selectionList = mLayersTreeWidget->selectedItems();
   if ( selectionList.size() < 1 ) return QString(); // should not happen
   QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
   QgsDebugMsg( " identifier = " + identifier );
@@ -117,7 +117,10 @@ void QgsWCSSourceSelect::addClicked()
   QgsDataSourceUri uri = mUri;
 
   QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return; }
+  if ( identifier.isEmpty() )
+  {
+    return;
+  }
 
   uri.setParam( QStringLiteral( "identifier" ), identifier );
 
@@ -155,7 +158,10 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
 
   QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return; }
+  if ( identifier.isEmpty() )
+  {
+    return;
+  }
 
   mCapabilities.describeCoverage( identifier );
 
@@ -215,10 +221,16 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
 
   QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   QgsDebugMsg( "supportedFormat = " + c.supportedFormat.join( "," ) );
   return c.supportedFormat;
@@ -228,10 +240,16 @@ QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
 
   QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   return c.supportedCrs;
 }
@@ -240,16 +258,22 @@ QStringList QgsWCSSourceSelect::selectedLayersTimes()
 {
 
   QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   QgsDebugMsg( "times = " + c.times.join( "," ) );
   return c.times;
 }
 
-void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
+void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem* )
 {
   // TODO: I am not convinced to disable layers according to selected CRS
 }

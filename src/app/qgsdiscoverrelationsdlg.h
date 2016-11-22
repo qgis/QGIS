@@ -32,7 +32,7 @@ class APP_EXPORT QgsDiscoverRelationsDlg : public QDialog, private Ui::QgsDiscov
     Q_OBJECT
 
   public:
-    explicit QgsDiscoverRelationsDlg( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers, QWidget *parent = nullptr );
+    explicit QgsDiscoverRelationsDlg( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers, QWidget* parent = nullptr );
 
     /**
      * Get the selected relations.
@@ -46,7 +46,7 @@ class APP_EXPORT QgsDiscoverRelationsDlg : public QDialog, private Ui::QgsDiscov
     QList<QgsVectorLayer*> mLayers;
     QList<QgsRelation> mFoundRelations;
 
-    void addRelation( const QgsRelation &rel );
+    void addRelation( const QgsRelation& rel );
 
 };
 

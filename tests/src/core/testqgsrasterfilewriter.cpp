@@ -117,7 +117,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   if ( !mpRasterLayer->isValid() ) return false;
 
   // Open provider only (avoid layer)?
-  QgsRasterDataProvider * provider = mpRasterLayer->dataProvider();
+  QgsRasterDataProvider* provider = mpRasterLayer->dataProvider();
 
   // I don't see any method to get only a name without opening file
   QTemporaryFile tmpFile;
@@ -140,7 +140,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   qDebug() << "provider set";
 
   // Nuller currently is not really used
-  QgsRasterNuller *nuller = new QgsRasterNuller();
+  QgsRasterNuller* nuller = new QgsRasterNuller();
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
     //nuller->setNoData( ... );
@@ -154,7 +154,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   qDebug() << "nuller set";
 
   // Reprojection not really done
-  QgsRasterProjector *projector = new QgsRasterProjector;
+  QgsRasterProjector* projector = new QgsRasterProjector;
   projector->setCrs( provider->crs(), provider->crs() );
   if ( !pipe->insert( 2, projector ) )
   {

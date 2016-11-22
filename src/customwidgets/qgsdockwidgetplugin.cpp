@@ -18,9 +18,9 @@
 #include "qgsdockwidgetplugin.h"
 
 
-QgsDockWidgetPlugin::QgsDockWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsDockWidgetPlugin::QgsDockWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsDockWidgetPlugin::isContainer() const
   return true;
 }
 
-QWidget *QgsDockWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsDockWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsDockWidget( parent );
 }
@@ -60,7 +60,7 @@ bool QgsDockWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsDockWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsDockWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

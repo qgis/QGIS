@@ -23,12 +23,12 @@
 
 
 QgsBabelFormat::QgsBabelFormat( const QString& name )
-    : mName( name )
-    , mSupportsImport( false )
-    , mSupportsExport( false )
-    , mSupportsWaypoints( false )
-    , mSupportsRoutes( false )
-    , mSupportsTracks( false )
+  : mName( name )
+  , mSupportsImport( false )
+  , mSupportsExport( false )
+  , mSupportsWaypoints( false )
+  , mSupportsRoutes( false )
+  , mSupportsTracks( false )
 {
 }
 
@@ -115,13 +115,13 @@ QStringList QgsSimpleBabelFormat::importCommand( const QString& babel,
 {
   QStringList args;
   args
-  << QStringLiteral( "\"%1\"" ).arg( babel )
-  << featuretype
-  << QStringLiteral( "-i" )
-  << mFormat
-  << QStringLiteral( "-o" ) << QStringLiteral( "gpx" )
-  << QStringLiteral( "\"%1\"" ).arg( input )
-  << QStringLiteral( "\"%1\"" ).arg( output );
+      << QStringLiteral( "\"%1\"" ).arg( babel )
+      << featuretype
+      << QStringLiteral( "-i" )
+      << mFormat
+      << QStringLiteral( "-o" ) << QStringLiteral( "gpx" )
+      << QStringLiteral( "\"%1\"" ).arg( input )
+      << QStringLiteral( "\"%1\"" ).arg( output );
   return args;
 }
 

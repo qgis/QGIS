@@ -30,17 +30,20 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-    explicit QgsDateTimeEdit( QWidget *parent = nullptr );
+    explicit QgsDateTimeEdit( QWidget* parent = nullptr );
 
     //! determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
-    bool allowNull() const {return mAllowNull;}
+    bool allowNull() const
+    {
+      return mAllowNull;
+    }
 
     /**
      * @brief setDateTime set the date time in the widget and handles null date times.
      * @note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
      */
-    void setDateTime( const QDateTime &dateTime );
+    void setDateTime( const QDateTime& dateTime );
 
     /**
      * @brief dateTime returns the date time which can eventually be a null date/time
@@ -60,11 +63,11 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
 
-    void mousePressEvent( QMouseEvent*event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
 
 
   private slots:
-    void changed( const QDateTime & dateTime );
+    void changed( const QDateTime& dateTime );
 
 
   private:

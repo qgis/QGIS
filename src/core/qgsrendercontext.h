@@ -95,23 +95,47 @@ class CORE_EXPORT QgsRenderContext
 
     //getters
 
-    QPainter* painter() {return mPainter;}
-    const QPainter* constPainter() const { return mPainter; }
+    QPainter* painter()
+    {
+      return mPainter;
+    }
+    const QPainter* constPainter() const
+    {
+      return mPainter;
+    }
 
     /** Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.
      */
-    QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
+    QgsCoordinateTransform coordinateTransform() const
+    {
+      return mCoordTransform;
+    }
 
-    const QgsRectangle& extent() const {return mExtent;}
+    const QgsRectangle& extent() const
+    {
+      return mExtent;
+    }
 
-    const QgsMapToPixel& mapToPixel() const {return mMapToPixel;}
+    const QgsMapToPixel& mapToPixel() const
+    {
+      return mMapToPixel;
+    }
 
-    double scaleFactor() const {return mScaleFactor;}
+    double scaleFactor() const
+    {
+      return mScaleFactor;
+    }
 
-    double rasterScaleFactor() const {return mRasterScaleFactor;}
+    double rasterScaleFactor() const
+    {
+      return mRasterScaleFactor;
+    }
 
-    bool renderingStopped() const {return mRenderingStopped;}
+    bool renderingStopped() const
+    {
+      return mRenderingStopped;
+    }
 
     bool forceVectorOutput() const;
 
@@ -125,15 +149,27 @@ class CORE_EXPORT QgsRenderContext
 
     bool drawEditingInformation() const;
 
-    double rendererScale() const {return mRendererScale;}
+    double rendererScale() const
+    {
+      return mRendererScale;
+    }
 
-    QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
+    QgsLabelingEngineInterface* labelingEngine() const
+    {
+      return mLabelingEngine;
+    }
 
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    QgsLabelingEngine* labelingEngineV2() const { return mLabelingEngine2; }
+    QgsLabelingEngine* labelingEngineV2() const
+    {
+      return mLabelingEngine2;
+    }
 
-    QColor selectionColor() const { return mSelectionColor; }
+    QColor selectionColor() const
+    {
+      return mSelectionColor;
+    }
 
     /** Returns true if vector selections should be shown in the rendered map
      * @returns true if selections should be shown
@@ -147,24 +183,54 @@ class CORE_EXPORT QgsRenderContext
 
     //! Sets coordinate transformation.
     void setCoordinateTransform( const QgsCoordinateTransform& t );
-    void setMapToPixel( const QgsMapToPixel& mtp ) {mMapToPixel = mtp;}
-    void setExtent( const QgsRectangle& extent ) {mExtent = extent;}
+    void setMapToPixel( const QgsMapToPixel& mtp )
+    {
+      mMapToPixel = mtp;
+    }
+    void setExtent( const QgsRectangle& extent )
+    {
+      mExtent = extent;
+    }
 
     void setDrawEditingInformation( bool b );
 
-    void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
-    void setScaleFactor( double factor ) {mScaleFactor = factor;}
-    void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
-    void setRendererScale( double scale ) {mRendererScale = scale;}
-    void setPainter( QPainter* p ) {mPainter = p;}
+    void setRenderingStopped( bool stopped )
+    {
+      mRenderingStopped = stopped;
+    }
+    void setScaleFactor( double factor )
+    {
+      mScaleFactor = factor;
+    }
+    void setRasterScaleFactor( double factor )
+    {
+      mRasterScaleFactor = factor;
+    }
+    void setRendererScale( double scale )
+    {
+      mRendererScale = scale;
+    }
+    void setPainter( QPainter* p )
+    {
+      mPainter = p;
+    }
 
     void setForceVectorOutput( bool force );
 
-    void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
+    void setLabelingEngine( QgsLabelingEngineInterface* iface )
+    {
+      mLabelingEngine = iface;
+    }
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    void setLabelingEngineV2( QgsLabelingEngine* engine2 ) { mLabelingEngine2 = engine2; }
-    void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
+    void setLabelingEngineV2( QgsLabelingEngine* engine2 )
+    {
+      mLabelingEngine2 = engine2;
+    }
+    void setSelectionColor( const QColor& color )
+    {
+      mSelectionColor = color;
+    }
 
     /** Sets whether vector selections should be shown in the rendered map
      * @param showSelection set to true if selections should be shown
@@ -181,22 +247,34 @@ class CORE_EXPORT QgsRenderContext
     void setUseRenderingOptimization( bool enabled );
 
     //! Added in QGIS v2.4
-    const QgsVectorSimplifyMethod& vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
-    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
+    const QgsVectorSimplifyMethod& vectorSimplifyMethod() const
+    {
+      return mVectorSimplifyMethod;
+    }
+    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod )
+    {
+      mVectorSimplifyMethod = simplifyMethod;
+    }
 
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this render context.
      * @see expressionContext()
      * @note added in QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
+    void setExpressionContext( const QgsExpressionContext& context )
+    {
+      mExpressionContext = context;
+    }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this render context.
      * @see setExpressionContext()
      * @note added in QGIS 2.12
      */
-    QgsExpressionContext& expressionContext() { return mExpressionContext; }
+    QgsExpressionContext& expressionContext()
+    {
+      return mExpressionContext;
+    }
 
     /** Gets the expression context (const version). This context should be used for all expression evaluation
      * associated with this render context.
@@ -204,12 +282,21 @@ class CORE_EXPORT QgsRenderContext
      * @note added in QGIS 2.12
      * @note not available in Python bindings
      */
-    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
+    const QgsExpressionContext& expressionContext() const
+    {
+      return mExpressionContext;
+    }
 
     //! Returns pointer to the unsegmentized geometry
-    const QgsAbstractGeometry* geometry() const { return mGeometry; }
+    const QgsAbstractGeometry* geometry() const
+    {
+      return mGeometry;
+    }
     //! Sets pointer to original (unsegmentized) geometry
-    void setGeometry( const QgsAbstractGeometry* geometry ) { mGeometry = geometry; }
+    void setGeometry( const QgsAbstractGeometry* geometry )
+    {
+      mGeometry = geometry;
+    }
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
@@ -223,19 +310,34 @@ class CORE_EXPORT QgsRenderContext
      * @note added in QGIS 2.14
      * @see setFeatureFilterProvider()
      */
-    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
+    const QgsFeatureFilterProvider* featureFilterProvider() const
+    {
+      return mFeatureFilterProvider;
+    }
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
-    void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+    void setSegmentationTolerance( double tolerance )
+    {
+      mSegmentationTolerance = tolerance;
+    }
     //! Gets the segmentation tolerance applied when rendering curved geometries
-    double segmentationTolerance() const { return mSegmentationTolerance; }
+    double segmentationTolerance() const
+    {
+      return mSegmentationTolerance;
+    }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type )
+    {
+      mSegmentationToleranceType = type;
+    }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const
+    {
+      return mSegmentationToleranceType;
+    }
 
   private:
 

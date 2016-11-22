@@ -46,7 +46,10 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
     QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) override;
     QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) override;
     double legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const override;
-    QString diagramName() const override { return DIAGRAM_NAME_HISTOGRAM; }
+    QString diagramName() const override
+    {
+      return DIAGRAM_NAME_HISTOGRAM;
+    }
 
   private:
     QBrush mCategoryBrush;

@@ -32,24 +32,27 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   public:
     //! Constructor
-    QgsNewHttpConnection( QWidget *parent = nullptr, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewHttpConnection( QWidget* parent = nullptr, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsNewHttpConnection();
   public slots:
     //! Saves the connection to ~/.qt/qgisrc
     void accept() override;
 
-    void on_txtName_textChanged( const QString & );
+    void on_txtName_textChanged( const QString& );
 
-    void on_txtUrl_textChanged( const QString & );
+    void on_txtUrl_textChanged( const QString& );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
   private:
     QString mBaseKey;
     QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect * mAuthConfigSelect;
+    QgsAuthConfigSelect* mAuthConfigSelect;
 };
 
 #endif //  QGSNEWHTTPCONNECTION_H

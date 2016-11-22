@@ -18,9 +18,9 @@
 #include "qgsprojectionselectionwidgetplugin.h"
 
 
-QgsProjectionSelectionWidgetPlugin::QgsProjectionSelectionWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsProjectionSelectionWidgetPlugin::QgsProjectionSelectionWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsProjectionSelectionWidgetPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsProjectionSelectionWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsProjectionSelectionWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsProjectionSelectionWidget( parent );
 }
@@ -60,7 +60,7 @@ bool QgsProjectionSelectionWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsProjectionSelectionWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsProjectionSelectionWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

@@ -25,18 +25,18 @@
 #include "qgsgcplistwidget.h"
 #include "qgsgcplistmodel.h"
 
-QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
-    : QTableView( parent )
-    , mGCPList( nullptr )
-    , mGCPListModel( new QgsGCPListModel( this ) )
-    , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
-    , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
-    , mCoordDelegate( new QgsCoordDelegate( this ) )
-    , mPrevRow( 0 )
-    , mPrevColumn( 0 )
+QgsGCPListWidget::QgsGCPListWidget( QWidget* parent )
+  : QTableView( parent )
+  , mGCPList( nullptr )
+  , mGCPListModel( new QgsGCPListModel( this ) )
+  , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
+  , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
+  , mCoordDelegate( new QgsCoordDelegate( this ) )
+  , mPrevRow( 0 )
+  , mPrevColumn( 0 )
 {
   // Create a proxy model, which will handle dynamic sorting
-  QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
+  QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel( this );
   proxyModel->setSourceModel( mGCPListModel );
   proxyModel->setDynamicSortFilter( true );
   proxyModel->setSortRole( Qt::UserRole );
@@ -75,7 +75,7 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
            this, SLOT( updateItemCoords( QWidget* ) ) );
 }
 
-void QgsGCPListWidget::setGCPList( QgsGCPList *theGCPList )
+void QgsGCPListWidget::setGCPList( QgsGCPList* theGCPList )
 {
   mGCPListModel->setGCPList( theGCPList );
   mGCPList = theGCPList;
@@ -83,7 +83,7 @@ void QgsGCPListWidget::setGCPList( QgsGCPList *theGCPList )
   adjustTableContent();
 }
 
-void QgsGCPListWidget::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
+void QgsGCPListWidget::setGeorefTransform( QgsGeorefTransform* theGeorefTransform )
 {
   mGCPListModel->setGeorefTransform( theGeorefTransform );
   adjustTableContent();
@@ -106,7 +106,7 @@ void QgsGCPListWidget::closeEditors()
 void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
 {
   index = static_cast<const QSortFilterProxyModel*>( model() )->mapToSource( index );
-  QStandardItem *item = mGCPListModel->item( index.row(), 1 );
+  QStandardItem* item = mGCPListModel->item( index.row(), 1 );
   bool ok;
   int id = item->text().toInt( &ok );
 
@@ -119,10 +119,10 @@ void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
 void QgsGCPListWidget::itemClicked( QModelIndex index )
 {
   index = static_cast<const QSortFilterProxyModel*>( model() )->mapToSource( index );
-  QStandardItem *item = mGCPListModel->item( index.row(), index.column() );
+  QStandardItem* item = mGCPListModel->item( index.row(), index.column() );
   if ( item->isCheckable() )
   {
-    QgsGeorefDataPoint *p = mGCPList->at( index.row() );
+    QgsGeorefDataPoint* p = mGCPList->at( index.row() );
     if ( item->checkState() == Qt::Checked )
     {
       p->setEnabled( true );
@@ -141,10 +141,10 @@ void QgsGCPListWidget::itemClicked( QModelIndex index )
   mPrevColumn = index.column();
 }
 
-void QgsGCPListWidget::updateItemCoords( QWidget *editor )
+void QgsGCPListWidget::updateItemCoords( QWidget* editor )
 {
-  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
-  QgsGeorefDataPoint *dataPoint = mGCPList->at( mPrevRow );
+  QLineEdit* lineEdit = qobject_cast<QLineEdit*>( editor );
+  QgsGeorefDataPoint* dataPoint = mGCPList->at( mPrevRow );
   if ( lineEdit )
   {
     double value = lineEdit->text().toDouble();
@@ -192,11 +192,11 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   // Select the right-clicked item
   setCurrentIndex( index );
 
-  QAction *jumpToPointAction = new QAction( tr( "Recenter" ), this );
+  QAction* jumpToPointAction = new QAction( tr( "Recenter" ), this );
   connect( jumpToPointAction, SIGNAL( triggered() ), this, SLOT( jumpToPoint() ) );
   m.addAction( jumpToPointAction );
 
-  QAction *removeAction = new QAction( tr( "Remove" ), this );
+  QAction* removeAction = new QAction( tr( "Remove" ), this );
   connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeRow() ) );
   m.addAction( removeAction );
   m.exec( QCursor::pos(), removeAction );

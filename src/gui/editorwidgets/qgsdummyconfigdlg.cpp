@@ -16,7 +16,7 @@
 #include "qgsdummyconfigdlg.h"
 
 QgsDummyConfigDlg::QgsDummyConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent, const QString& description )
-    :    QgsEditorConfigWidget( vl, fieldIdx, parent )
+  :    QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 

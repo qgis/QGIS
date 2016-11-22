@@ -32,16 +32,16 @@
 #include "qgslogger.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
-    QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mLayer( layer )
+    QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mLayer( layer )
 {
   setupUi( this );
   setupListViews();
 
   setWindowTitle( tr( "Search query builder" ) );
 
-  QPushButton *pbn = new QPushButton( tr( "&Test" ) );
+  QPushButton* pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnTest_clicked() ) );
 
@@ -79,7 +79,7 @@ void QgsSearchQueryBuilder::populateFields()
   {
     QString fieldName = fields.at( idx ).name();
     mFieldMap[fieldName] = idx;
-    QStandardItem *myItem = new QStandardItem( fieldName );
+    QStandardItem* myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
   }
@@ -147,7 +147,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     // add item only if it's not there already
     if ( !insertedValues.contains( value ) )
     {
-      QStandardItem *myItem = new QStandardItem( value );
+      QStandardItem* myItem = new QStandardItem( value );
       myItem->setEditable( false );
       mModelValues->insertRow( mModelValues->rowCount(), myItem );
       insertedValues.insert( value );
@@ -202,8 +202,8 @@ long QgsSearchQueryBuilder::countRecords( const QString& searchString )
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( !search.prepare( &context ) )
   {
@@ -312,12 +312,12 @@ void QgsSearchQueryBuilder::setSearchString( const QString& searchString )
   txtSQL->setText( searchString );
 }
 
-void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
+void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex& index )
 {
   txtSQL->insertText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
-void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
+void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex& index )
 {
   txtSQL->insertText( mModelValues->data( index ).toString() );
 }

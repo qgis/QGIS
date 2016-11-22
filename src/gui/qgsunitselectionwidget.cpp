@@ -20,8 +20,8 @@
 #include <QDialogButtonBox>
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mBlockSignals( true )
+  : QgsPanelWidget( parent )
+  , mBlockSignals( true )
 {
   setupUi( this );
   mComboBoxMinScale->setScale( 0.0000001 );
@@ -49,7 +49,7 @@ QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget* parent )
   mBlockSignals = false;
 }
 
-void QgsMapUnitScaleWidget::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsMapUnitScaleWidget::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   // can't block signals on the widgets themselves, some use them to update
   // internal states
@@ -73,7 +73,7 @@ void QgsMapUnitScaleWidget::setMapUnitScale( const QgsMapUnitScale &scale )
   settingsChanged();
 }
 
-void QgsMapUnitScaleWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsMapUnitScaleWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mComboBoxMinScale->setMapCanvas( canvas );
   mComboBoxMinScale->setShowCurrentScaleButton( true );
@@ -123,9 +123,9 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 
 
 
-QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
+QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget* parent )
+  : QWidget( parent )
+  , mCanvas( nullptr )
 {
   mMapUnitIdx = -1;
 
@@ -141,7 +141,7 @@ QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   connect( mUnitCombo, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
 }
 
-void QgsUnitSelectionWidget::setUnits( const QStringList &units, int mapUnitIdx )
+void QgsUnitSelectionWidget::setUnits( const QStringList& units, int mapUnitIdx )
 {
   blockSignals( true );
   mUnitCombo->addItems( units );
@@ -149,7 +149,7 @@ void QgsUnitSelectionWidget::setUnits( const QStringList &units, int mapUnitIdx 
   blockSignals( false );
 }
 
-void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units )
+void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList& units )
 {
   blockSignals( true );
   mUnitCombo->clear();
@@ -208,7 +208,7 @@ void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
-void QgsUnitSelectionWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsUnitSelectionWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mCanvas = canvas;
 }
@@ -260,8 +260,8 @@ void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale& scale )
 
 
 QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget* parent )
-    : QDialog( parent )
-    , mWidget( nullptr )
+  : QDialog( parent )
+  , mWidget( nullptr )
 {
   QVBoxLayout* vLayout = new QVBoxLayout();
   mWidget = new QgsMapUnitScaleWidget();

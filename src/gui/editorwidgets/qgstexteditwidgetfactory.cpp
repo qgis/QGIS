@@ -20,7 +20,7 @@
 #include "qgstexteditsearchwidgetwrapper.h"
 
 QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
@@ -29,7 +29,7 @@ QgsEditorWidgetWrapper* QgsTextEditWidgetFactory::create( QgsVectorLayer* vl, in
   return new QgsTextEditWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsSearchWidgetWrapper*QgsTextEditWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper* QgsTextEditWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsTextEditSearchWidgetWrapper( vl, fieldIdx, parent );
 }

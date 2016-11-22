@@ -50,10 +50,10 @@ class CORE_EXPORT QgsAttributeEditorElement
      * @param parent
      */
     QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QgsAttributeEditorElement* parent = nullptr )
-        : mType( type )
-        , mName( name )
-        , mParent( parent )
-        , mShowLabel( true )
+      : mType( type )
+      , mName( name )
+      , mParent( parent )
+      , mShowLabel( true )
     {}
 
     //! Destructor
@@ -64,21 +64,30 @@ class CORE_EXPORT QgsAttributeEditorElement
      *
      * @return The name for this element
      */
-    QString name() const { return mName; }
+    QString name() const
+    {
+      return mName;
+    }
 
     /**
      * The type of this element
      *
      * @return The type
      */
-    AttributeEditorType type() const { return mType; }
+    AttributeEditorType type() const
+    {
+      return mType;
+    }
 
     /**
      * Get the parent of this element.
      *
      * @note Added in QGIS 3.0
      */
-    QgsAttributeEditorElement* parent() const { return mParent; }
+    QgsAttributeEditorElement* parent() const
+    {
+      return mParent;
+    }
 
     /**
      * Get the XML Dom element to save this element.
@@ -150,9 +159,9 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * @param parent The parent. May be another container.
      */
     QgsAttributeEditorContainer( const QString& name, QgsAttributeEditorElement* parent )
-        : QgsAttributeEditorElement( AeTypeContainer, name, parent )
-        , mIsGroupBox( true )
-        , mColumnCount( 1 )
+      : QgsAttributeEditorElement( AeTypeContainer, name, parent )
+      , mIsGroupBox( true )
+      , mColumnCount( 1 )
     {}
 
     //! Destructor
@@ -170,21 +179,30 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * @param isGroupBox If true, this will be a group box
      */
-    virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
+    virtual void setIsGroupBox( bool isGroupBox )
+    {
+      mIsGroupBox = isGroupBox;
+    }
 
     /**
      * Returns if this container is going to be rendered as a group box
      *
      * @return True if it will be a group box, false if it will be a tab
      */
-    virtual bool isGroupBox() const { return mIsGroupBox; }
+    virtual bool isGroupBox() const
+    {
+      return mIsGroupBox;
+    }
 
     /**
      * Get a list of the children elements of this container
      *
      * @return A list of elements
      */
-    QList<QgsAttributeEditorElement*> children() const { return mChildren; }
+    QList<QgsAttributeEditorElement*> children() const
+    {
+      return mChildren;
+    }
 
     /**
      * Traverses the element tree to find any element of the specified type
@@ -264,9 +282,9 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      * @param idx    The index of the field which should be embedded
      * @param parent The parent of this widget (used as container)
      */
-    QgsAttributeEditorField( const QString& name, int idx, QgsAttributeEditorElement *parent )
-        : QgsAttributeEditorElement( AeTypeField, name, parent )
-        , mIdx( idx )
+    QgsAttributeEditorField( const QString& name, int idx, QgsAttributeEditorElement* parent )
+      : QgsAttributeEditorElement( AeTypeField, name, parent )
+      , mIdx( idx )
     {}
 
     //! Destructor
@@ -276,7 +294,10 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      * Return the index of the field
      * @return
      */
-    int idx() const { return mIdx; }
+    int idx() const
+    {
+      return mIdx;
+    }
 
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
@@ -300,11 +321,11 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relationId   The id of the relation to embed
      * @param parent       The parent (used as container)
      */
-    QgsAttributeEditorRelation( const QString& name, const QString &relationId, QgsAttributeEditorElement* parent )
-        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relationId )
-        , mShowLinkButton( true )
-        , mShowUnlinkButton( true )
+    QgsAttributeEditorRelation( const QString& name, const QString& relationId, QgsAttributeEditorElement* parent )
+      : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+      , mRelationId( relationId )
+      , mShowLinkButton( true )
+      , mShowUnlinkButton( true )
     {}
 
     /**
@@ -315,11 +336,11 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param parent       The parent (used as container)
      */
     QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QgsAttributeEditorElement* parent )
-        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relation.id() )
-        , mRelation( relation )
-        , mShowLinkButton( true )
-        , mShowUnlinkButton( true )
+      : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+      , mRelationId( relation.id() )
+      , mRelation( relation )
+      , mShowLinkButton( true )
+      , mShowUnlinkButton( true )
     {}
 
     //! Destructor
@@ -330,7 +351,10 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      *
      * @return the id
      */
-    const QgsRelation& relation() const { return mRelation; }
+    const QgsRelation& relation() const
+    {
+      return mRelation;
+    }
 
     /**
      * Initializes the relation from the id

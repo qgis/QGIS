@@ -17,7 +17,7 @@
 #include "qgssqlexpressioncompiler.h"
 
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields )
+  : QgsSqlExpressionCompiler( source->mFields )
 {
 }
 

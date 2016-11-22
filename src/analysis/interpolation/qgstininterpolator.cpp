@@ -30,13 +30,13 @@
 #include <QProgressDialog>
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
-    : QgsInterpolator( inputData )
-    , mTriangulation( nullptr )
-    , mTriangleInterpolator( nullptr )
-    , mIsInitialized( false )
-    , mShowProgressDialog( showProgressDialog )
-    , mExportTriangulationToFile( false )
-    , mInterpolation( interpolation )
+  : QgsInterpolator( inputData )
+  , mTriangulation( nullptr )
+  , mTriangleInterpolator( nullptr )
+  , mIsInitialized( false )
+  , mShowProgressDialog( showProgressDialog )
+  , mExportTriangulationToFile( false )
+  , mInterpolation( interpolation )
 {
 }
 

@@ -24,7 +24,7 @@
 class QgsDefaultSearchWidgetWrapper;
 
 QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
-    : mName( name )
+  : mName( name )
 {
 }
 

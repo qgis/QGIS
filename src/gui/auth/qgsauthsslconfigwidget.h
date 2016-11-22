@@ -46,16 +46,16 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
      * @param hostport Unique host:port to associate with the server certificate
      * @param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent = nullptr,
-                                     const QSslCertificate &cert = QSslCertificate(),
-                                     const QString &hostport = QString(),
+    explicit QgsAuthSslConfigWidget( QWidget* parent = nullptr,
+                                     const QSslCertificate& cert = QSslCertificate(),
+                                     const QString& hostport = QString(),
                                      const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthSslConfigWidget();
 
     //! Access to the certificate's group box widget
-    QGroupBox *certificateGroupBox();
+    QGroupBox* certificateGroupBox();
     //! Access to the SSL configuration's group box widget
-    QGroupBox *sslConfigGroupBox();
+    QGroupBox* sslConfigGroupBox();
 
     //! Get the SSL configuration
     const QgsAuthConfigSslServer sslCustomConfig();
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
     // may also load existing config, if found
     //! Set SSl certificate and any associated host:port
-    void setSslCertificate( const QSslCertificate& cert, const QString &hostport = QString() );
+    void setSslCertificate( const QSslCertificate& cert, const QString& hostport = QString() );
 
     //! Load an existing SSL server configuration
     void loadSslCustomConfig( const QgsAuthConfigSslServer& config = QgsAuthConfigSslServer() );
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     void setConfigCheckable( bool checkable );
 
     //! Parse string for host:port
-    void validateHostPortText( const QString &txt );
+    void validateHostPortText( const QString& txt );
 
     //! Verify if the configuration if ready to save
     bool readyToSave();
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
       ConfigItem = 1001,
     };
 
-    bool validateHostPort( const QString &txt );
+    bool validateHostPort( const QString& txt );
 
     void setUpSslConfigTree();
     QTreeWidgetItem* addRootItem( const QString& label );
@@ -164,19 +164,19 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QSslCertificate mCert;
     QList<QSslCertificate> mConnectionCAs;
 
-    QTreeWidgetItem *mProtocolItem;
-    QComboBox *mProtocolCmbBx;
-    QTreeWidgetItem *mIgnoreErrorsItem;
-    QTreeWidgetItem *mVerifyModeItem;
-    QComboBox *mVerifyPeerCmbBx;
-    QTreeWidgetItem *mVerifyDepthItem;
-    QSpinBox *mVerifyDepthSpnBx;
+    QTreeWidgetItem* mProtocolItem;
+    QComboBox* mProtocolCmbBx;
+    QTreeWidgetItem* mIgnoreErrorsItem;
+    QTreeWidgetItem* mVerifyModeItem;
+    QComboBox* mVerifyPeerCmbBx;
+    QTreeWidgetItem* mVerifyDepthItem;
+    QSpinBox* mVerifyDepthSpnBx;
 
     bool mCanSave;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 //////////////// Embed in dialog ///////////////////
@@ -196,13 +196,16 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
      * @param cert SSL server certificate object
      * @param hostport Unique host:port to associate with the server certificate
      */
-    explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
+    explicit QgsAuthSslConfigDialog( QWidget* parent = nullptr,
                                      const QSslCertificate& cert = QSslCertificate(),
-                                     const QString &hostport = QString() );
+                                     const QString& hostport = QString() );
     ~QgsAuthSslConfigDialog();
 
     //! Access the embedded SSL server configuration widget
-    QgsAuthSslConfigWidget *sslCustomConfigWidget() { return mSslConfigWdgt; }
+    QgsAuthSslConfigWidget* sslCustomConfigWidget()
+    {
+      return mSslConfigWdgt;
+    }
 
   public slots:
     //! Overridden base dialog accept slot
@@ -212,8 +215,8 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     void checkCanSave( bool cansave );
 
   private:
-    QgsAuthSslConfigWidget *mSslConfigWdgt;
-    QPushButton *mSaveButton;
+    QgsAuthSslConfigWidget* mSslConfigWdgt;
+    QPushButton* mSaveButton;
 };
 
 #endif // QGSAUTHSSLCONFIGWIDGET_H

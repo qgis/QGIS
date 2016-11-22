@@ -52,7 +52,7 @@ class APP_EXPORT QgsPluginRegistry
     QString library( const QString& key );
 
     //! Retrieve a pointer to a loaded plugin
-    QgisPlugin * plugin( const QString& key );
+    QgisPlugin* plugin( const QString& key );
 
     //! Return whether the plugin is pythonic
     bool isPythonPlugin( const QString& key ) const;

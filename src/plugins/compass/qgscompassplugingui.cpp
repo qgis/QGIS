@@ -25,8 +25,8 @@
 #include "qgscompassplugingui.h"
 #include "compass.h"
 
-QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WindowFlags fl )
-    : QWidget( parent, fl )
+QgsCompassPluginGui::QgsCompassPluginGui( QWidget* parent, Qt::WindowFlags fl )
+  : QWidget( parent, fl )
 {
   setupUi( this );
 
@@ -56,7 +56,7 @@ void QgsCompassPluginGui::handleVisibilityChanged( bool visible )
   }
 }
 
-void QgsCompassPluginGui::handleAzimuth( const QVariant &azimuth, const QVariant &calLevel )
+void QgsCompassPluginGui::handleAzimuth( const QVariant& azimuth, const QVariant& calLevel )
 {
   this->mAzimutDisplay->setText( QString( "%1" ).arg( azimuth.toInt() ) + QString::fromUtf8( "°" ) );
 
@@ -79,7 +79,7 @@ void QgsCompassPluginGui::handleAzimuth( const QVariant &azimuth, const QVariant
 }
 
 //Copied from QgsDecorationNorthArrowDialog adapted to be portable
-void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileNameQString, int theRotationInt )
+void QgsCompassPluginGui::rotatePixmap( QLabel* pixmapLabel, QString myFileNameQString, int theRotationInt )
 {
   QPixmap myQPixmap;
   if ( myQPixmap.load( myFileNameQString ) )

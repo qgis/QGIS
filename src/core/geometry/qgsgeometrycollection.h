@@ -52,7 +52,10 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     //methods inherited from QgsAbstractGeometry
     virtual int dimension() const override;
-    virtual QString geometryType() const override { return QStringLiteral( "GeometryCollection" ); }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "GeometryCollection" );
+    }
     virtual void clear() override;
     virtual QgsAbstractGeometry* boundary() const override;
 
@@ -117,10 +120,22 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual int vertexCount( int part = 0, int ring = 0 ) const override { return mGeometries[part]->vertexCount( 0, ring ); }
-    virtual int ringCount( int part = 0 ) const override { return mGeometries[part]->ringCount(); }
-    virtual int partCount() const override { return mGeometries.size(); }
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override { return mGeometries[id.part]->vertexAt( id ); }
+    virtual int vertexCount( int part = 0, int ring = 0 ) const override
+    {
+      return mGeometries[part]->vertexCount( 0, ring );
+    }
+    virtual int ringCount( int part = 0 ) const override
+    {
+      return mGeometries[part]->ringCount();
+    }
+    virtual int partCount() const override
+    {
+      return mGeometries.size();
+    }
+    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override
+    {
+      return mGeometries[id.part]->vertexAt( id );
+    }
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;
@@ -133,14 +148,22 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /** Returns whether child type names are omitted from Wkt representations of the collection
      * @note added in QGIS 2.12
      */
-    virtual bool wktOmitChildType() const { return false; }
+    virtual bool wktOmitChildType() const
+    {
+      return false;
+    }
 
     /** Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString& wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType = QString() );
 
     virtual QgsRectangle calculateBoundingBox() const override;
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
+    virtual void clearCache() const override
+    {
+      mBoundingBox = QgsRectangle();
+      mCoordinateSequence.clear();
+      QgsAbstractGeometry::clearCache();
+    }
 
   private:
 

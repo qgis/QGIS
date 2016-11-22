@@ -38,20 +38,20 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-QgsColorButton::QgsColorButton( QWidget *parent, const QString& cdt, QgsColorSchemeRegistry* registry )
-    : QToolButton( parent )
-    , mBehaviour( QgsColorButton::ShowDialog )
-    , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
-    , mColor( QColor() )
-    , mDefaultColor( QColor() ) //default to invalid color
-    , mAllowAlpha( false )
-    , mAcceptLiveUpdates( true )
-    , mColorSet( false )
-    , mShowNoColorOption( false )
-    , mNoColorString( tr( "No color" ) )
-    , mShowNull( false )
-    , mPickingColor( false )
-    , mMenu( nullptr )
+QgsColorButton::QgsColorButton( QWidget* parent, const QString& cdt, QgsColorSchemeRegistry* registry )
+  : QToolButton( parent )
+  , mBehaviour( QgsColorButton::ShowDialog )
+  , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
+  , mColor( QColor() )
+  , mDefaultColor( QColor() ) //default to invalid color
+  , mAllowAlpha( false )
+  , mAcceptLiveUpdates( true )
+  , mColorSet( false )
+  , mShowNoColorOption( false )
+  , mNoColorString( tr( "No color" ) )
+  , mShowNull( false )
+  , mPickingColor( false )
+  , mMenu( nullptr )
 
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
@@ -168,7 +168,7 @@ void QgsColorButton::setToNull()
   setColor( QColor() );
 }
 
-bool QgsColorButton::event( QEvent *e )
+bool QgsColorButton::event( QEvent* e )
 {
   if ( e->type() == QEvent::ToolTip )
   {
@@ -179,7 +179,7 @@ bool QgsColorButton::event( QEvent *e )
     QString info = QString( "HEX: %1 \n"
                             "RGB: %2 \n"
                             "HSV: %3,%4,%5" ).arg( name,
-                                                   QgsSymbolLayerUtils::encodeColor( this->color() ) )
+                                QgsSymbolLayerUtils::encodeColor( this->color() ) )
                    .arg( hue ).arg( saturation ).arg( value );
     setToolTip( info );
   }
@@ -196,7 +196,7 @@ void QgsColorButton::setToNoColor()
   }
 }
 
-void QgsColorButton::mousePressEvent( QMouseEvent *e )
+void QgsColorButton::mousePressEvent( QMouseEvent* e )
 {
   if ( mPickingColor )
   {
@@ -217,7 +217,7 @@ void QgsColorButton::mousePressEvent( QMouseEvent *e )
   QToolButton::mousePressEvent( e );
 }
 
-bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resultColor )
+bool QgsColorButton::colorFromMimeData( const QMimeData* mimeData, QColor& resultColor )
 {
   bool hasAlpha = false;
   QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
@@ -242,7 +242,7 @@ bool QgsColorButton::colorFromMimeData( const QMimeData * mimeData, QColor& resu
   return false;
 }
 
-void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
+void QgsColorButton::mouseMoveEvent( QMouseEvent* e )
 {
   if ( mPickingColor )
   {
@@ -277,14 +277,14 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
   }
 
   //user is dragging color
-  QDrag *drag = new QDrag( this );
+  QDrag* drag = new QDrag( this );
   drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mColor ) );
   drag->setPixmap( QgsColorWidget::createDragIcon( mColor ) );
   drag->exec( Qt::CopyAction );
   setDown( false );
 }
 
-void QgsColorButton::mouseReleaseEvent( QMouseEvent *e )
+void QgsColorButton::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( mPickingColor )
   {
@@ -319,7 +319,7 @@ void QgsColorButton::stopPicking( QPointF eventPos, bool sampleColor )
   addRecentColor( mColor );
 }
 
-void QgsColorButton::keyPressEvent( QKeyEvent *e )
+void QgsColorButton::keyPressEvent( QKeyEvent* e )
 {
   if ( !mPickingColor )
   {
@@ -332,7 +332,7 @@ void QgsColorButton::keyPressEvent( QKeyEvent *e )
   stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
 }
 
-void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
+void QgsColorButton::dragEnterEvent( QDragEnterEvent* e )
 {
   //is dragged data valid color data?
   QColor mimeColor;
@@ -346,14 +346,14 @@ void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
   }
 }
 
-void QgsColorButton::dragLeaveEvent( QDragLeaveEvent *e )
+void QgsColorButton::dragLeaveEvent( QDragLeaveEvent* e )
 {
   Q_UNUSED( e );
   //reset button color
   setButtonBackground( mColor );
 }
 
-void QgsColorButton::dropEvent( QDropEvent *e )
+void QgsColorButton::dropEvent( QDropEvent* e )
 {
   //is dropped data valid color data?
   QColor mimeColor;
@@ -383,7 +383,7 @@ void QgsColorButton::setValidTemporaryColor( const QColor& newColor )
   }
 }
 
-QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChecks )
+QPixmap QgsColorButton::createMenuIcon( const QColor& color, const bool showChecks )
 {
   //create an icon pixmap
   QPixmap pixmap( 16, 16 );
@@ -542,7 +542,7 @@ void QgsColorButton::showEvent( QShowEvent* e )
   QToolButton::showEvent( e );
 }
 
-void QgsColorButton::resizeEvent( QResizeEvent *event )
+void QgsColorButton::resizeEvent( QResizeEvent* event )
 {
   QToolButton::resizeEvent( event );
   //recalculate icon size and redraw icon
@@ -550,7 +550,7 @@ void QgsColorButton::resizeEvent( QResizeEvent *event )
   setButtonBackground( mColor );
 }
 
-void QgsColorButton::setColor( const QColor &color )
+void QgsColorButton::setColor( const QColor& color )
 {
   QColor oldColor = mColor;
   mColor = color;
@@ -574,7 +574,7 @@ void QgsColorButton::addRecentColor( const QColor& color )
   QgsRecentColorScheme::addRecentColor( color );
 }
 
-void QgsColorButton::setButtonBackground( const QColor &color )
+void QgsColorButton::setButtonBackground( const QColor& color )
 {
   QColor backgroundColor = color;
 
@@ -667,7 +667,7 @@ void QgsColorButton::pasteColor()
 void QgsColorButton::activatePicker()
 {
   //pick color
-  QPixmap samplerPixmap = QPixmap(( const char ** ) sampler_cursor );
+  QPixmap samplerPixmap = QPixmap(( const char** ) sampler_cursor );
   setCursor( QCursor( samplerPixmap, 0, 0 ) );
   grabMouse();
   grabKeyboard();

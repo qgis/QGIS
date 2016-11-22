@@ -38,17 +38,20 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
      * @param parent Parent widget
      * @param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigSelect( QWidget *parent = nullptr, const QString &dataprovider = QString() );
+    explicit QgsAuthConfigSelect( QWidget* parent = nullptr, const QString& dataprovider = QString() );
     ~QgsAuthConfigSelect();
 
     //! Set the authentication config id for the resource
     void setConfigId( const QString& authcfg );
 
     //! Get the authentication config id for the resource
-    const QString configId() const { return mAuthCfg; }
+    const QString configId() const
+    {
+      return mAuthCfg;
+    }
 
     //! Set key of layer provider, if applicable
-    void setDataProviderKey( const QString &key );
+    void setDataProviderKey( const QString& key );
 
   signals:
     //! Emitted when authentication config is changed or missing
@@ -59,7 +62,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
   public slots:
     //! Show a small message bar with a close button
-    void showMessage( const QString &msg );
+    void showMessage( const QString& msg );
 
     //! Clear and hide small message bar
     void clearMessage();
@@ -88,8 +91,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     QgsAuthMethodConfigsMap mConfigs;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 
@@ -114,28 +117,28 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
      * @param datauri URI QString with of without an authcfg=ID string
      * @param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigUriEdit( QWidget *parent = nullptr,
-                                   const QString &datauri = QString(),
-                                   const QString &dataprovider = QString() );
+    explicit QgsAuthConfigUriEdit( QWidget* parent = nullptr,
+                                   const QString& datauri = QString(),
+                                   const QString& dataprovider = QString() );
     ~QgsAuthConfigUriEdit();
 
     //! Set the data source URI to parse
-    void setDataSourceUri( const QString &datauri );
+    void setDataSourceUri( const QString& datauri );
 
     //! The returned, possibly edited data source URI
     QString dataSourceUri();
 
     //! Whether a string contains an authcfg ID
-    static bool hasConfigId( const QString &txt );
+    static bool hasConfigId( const QString& txt );
 
   private slots:
     void saveChanges();
 
     void resetChanges();
 
-    void authCfgUpdated( const QString &authcfg );
+    void authCfgUpdated( const QString& authcfg );
 
-    void authCfgRemoved( const QString &authcfg );
+    void authCfgRemoved( const QString& authcfg );
 
   private:
     int authCfgIndex();
@@ -153,8 +156,8 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     QString mDataUriOrig;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 #endif // QGSAUTHCONFIGSELECT_H

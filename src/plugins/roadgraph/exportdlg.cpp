@@ -29,20 +29,20 @@
 //standard includes
 
 RgExportDlg::RgExportDlg( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   // create base widgets;
   setWindowTitle( tr( "Export feature" ) );
-  QVBoxLayout *v = new QVBoxLayout( this );
+  QVBoxLayout* v = new QVBoxLayout( this );
 
-  QHBoxLayout *h = new QHBoxLayout();
-  QLabel *l = new QLabel( tr( "Select destination layer" ), this );
+  QHBoxLayout* h = new QHBoxLayout();
+  QLabel* l = new QLabel( tr( "Select destination layer" ), this );
   h->addWidget( l );
   mcbLayers = new QComboBox( this );
   h->addWidget( mcbLayers );
   v->addLayout( h );
 
-  QDialogButtonBox *bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
   connect( bb, SIGNAL( accepted() ), this, SLOT( on_buttonBox_accepted() ) );
   connect( bb, SIGNAL( rejected() ), this, SLOT( on_buttonBox_rejected() ) );
   v->addWidget( bb );
@@ -79,7 +79,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
     // create a temporary layer
     myLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), QStringLiteral( "shortest path" ), QStringLiteral( "memory" ) );
 
-    QgsVectorDataProvider *prov = myLayer->dataProvider();
+    QgsVectorDataProvider* prov = myLayer->dataProvider();
     if ( !prov )
       return nullptr;
 
@@ -88,7 +88,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
     attrList.append( QgsField( QStringLiteral( "time" ), QVariant::Double, QLatin1String( "" ), 20, 8 ) );
     prov->addAttributes( attrList );
     myLayer->updateFields();
-    QList<QgsMapLayer *> myList;
+    QList<QgsMapLayer*> myList;
     myList << myLayer;
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
   }

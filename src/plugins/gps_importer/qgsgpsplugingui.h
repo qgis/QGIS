@@ -80,7 +80,10 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void on_pbnRefresh_clicked();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
   signals:
     void drawRasterLayer( const QString& );
@@ -107,7 +110,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     std::map<QString, QgsGPSDevice*>& mDevices;
     QString mBabelFilter;
     QString mImpFormat;
-    QAbstractButton *pbnOK;
+    QAbstractButton* pbnOK;
 };
 
 #endif

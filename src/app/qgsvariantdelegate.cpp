@@ -44,7 +44,7 @@
 #include "qgsvariantdelegate.h"
 
 QgsVariantDelegate::QgsVariantDelegate( QObject* parent )
-    : QItemDelegate( parent )
+  : QItemDelegate( parent )
 {
   mBoolExp.setPattern( QStringLiteral( "true|false" ) );
   mBoolExp.setCaseSensitivity( Qt::CaseInsensitive );

@@ -46,59 +46,59 @@
 #include <cmath>
 
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
-    : QgsComposerObject( composition )
-    , QGraphicsRectItem( nullptr )
-    , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( nullptr )
-    , mHAlignSnapItem( nullptr )
-    , mVAlignSnapItem( nullptr )
-    , mFrame( false )
-    , mBackground( true )
-    , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mFrameJoinStyle( Qt::MiterJoin )
-    , mItemPositionLocked( false )
-    , mLastValidViewScaleFactor( -1 )
-    , mItemRotation( 0 )
-    , mEvaluatedItemRotation( 0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mEffectsEnabled( true )
-    , mTransparency( 0 )
-    , mExcludeFromExports( false )
-    , mEvaluatedExcludeFromExports( false )
-    , mLastUsedPositionMode( UpperLeft )
-    , mIsGroupMember( false )
-    , mCurrentExportLayer( -1 )
-    , mId( QLatin1String( "" ) )
-    , mUuid( QUuid::createUuid().toString() )
+  : QgsComposerObject( composition )
+  , QGraphicsRectItem( nullptr )
+  , mRemovedFromComposition( false )
+  , mBoundingResizeRectangle( nullptr )
+  , mHAlignSnapItem( nullptr )
+  , mVAlignSnapItem( nullptr )
+  , mFrame( false )
+  , mBackground( true )
+  , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
+  , mFrameJoinStyle( Qt::MiterJoin )
+  , mItemPositionLocked( false )
+  , mLastValidViewScaleFactor( -1 )
+  , mItemRotation( 0 )
+  , mEvaluatedItemRotation( 0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mEffectsEnabled( true )
+  , mTransparency( 0 )
+  , mExcludeFromExports( false )
+  , mEvaluatedExcludeFromExports( false )
+  , mLastUsedPositionMode( UpperLeft )
+  , mIsGroupMember( false )
+  , mCurrentExportLayer( -1 )
+  , mId( QLatin1String( "" ) )
+  , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
-    : QgsComposerObject( composition )
-    , QGraphicsRectItem( 0, 0, width, height, nullptr )
-    , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( nullptr )
-    , mHAlignSnapItem( nullptr )
-    , mVAlignSnapItem( nullptr )
-    , mFrame( false )
-    , mBackground( true )
-    , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mFrameJoinStyle( Qt::MiterJoin )
-    , mItemPositionLocked( false )
-    , mLastValidViewScaleFactor( -1 )
-    , mItemRotation( 0 )
-    , mEvaluatedItemRotation( 0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mEffectsEnabled( true )
-    , mTransparency( 0 )
-    , mExcludeFromExports( false )
-    , mEvaluatedExcludeFromExports( false )
-    , mLastUsedPositionMode( UpperLeft )
-    , mIsGroupMember( false )
-    , mCurrentExportLayer( -1 )
-    , mId( QLatin1String( "" ) )
-    , mUuid( QUuid::createUuid().toString() )
+  : QgsComposerObject( composition )
+  , QGraphicsRectItem( 0, 0, width, height, nullptr )
+  , mRemovedFromComposition( false )
+  , mBoundingResizeRectangle( nullptr )
+  , mHAlignSnapItem( nullptr )
+  , mVAlignSnapItem( nullptr )
+  , mFrame( false )
+  , mBackground( true )
+  , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
+  , mFrameJoinStyle( Qt::MiterJoin )
+  , mItemPositionLocked( false )
+  , mLastValidViewScaleFactor( -1 )
+  , mItemRotation( 0 )
+  , mEvaluatedItemRotation( 0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mEffectsEnabled( true )
+  , mTransparency( 0 )
+  , mExcludeFromExports( false )
+  , mEvaluatedExcludeFromExports( false )
+  , mLastUsedPositionMode( UpperLeft )
+  , mIsGroupMember( false )
+  , mCurrentExportLayer( -1 )
+  , mId( QLatin1String( "" ) )
+  , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
   setPos( x, y );
@@ -417,7 +417,7 @@ void QgsComposerItem::setFrameEnabled( const bool drawFrame )
   emit frameChanged();
 }
 
-void QgsComposerItem::setFrameOutlineColor( const QColor &color )
+void QgsComposerItem::setFrameOutlineColor( const QColor& color )
 {
   QPen itemPen = pen();
   if ( itemPen.color() == color )
@@ -709,7 +709,7 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
   emit sizeChanged();
 }
 
-QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOnly, const QgsExpressionContext* context )
+QRectF QgsComposerItem::evalItemRect( const QRectF& newRect, const bool resizeOnly, const QgsExpressionContext* context )
 {
   QRectF result = newRect;
 
@@ -1107,7 +1107,7 @@ void QgsComposerItem::repaint()
   updateItem();
 }
 
-void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
+void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
   //maintain 2.10 API
   //TODO QGIS 3.0 - remove this

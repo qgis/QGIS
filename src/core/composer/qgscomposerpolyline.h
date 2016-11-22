@@ -42,7 +42,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
      * @param polyline nodes of the shape
      * @param c parent composition
      */
-    QgsComposerPolyline( const QPolygonF &polyline, QgsComposition* c );
+    QgsComposerPolyline( const QPolygonF& polyline, QgsComposition* c );
 
     //! Destructor
     ~QgsComposerPolyline();
@@ -51,13 +51,19 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     virtual QString displayName() const override;
 
     //! Returns the QgsSymbol used to draw the shape.
-    QgsLineSymbol* polylineStyleSymbol() { return mPolylineStyleSymbol.data(); }
+    QgsLineSymbol* polylineStyleSymbol()
+    {
+      return mPolylineStyleSymbol.data();
+    }
 
     //! Set the QgsSymbol used to draw the shape.
     void setPolylineStyleSymbol( QgsLineSymbol* symbol );
 
     //! Overridden to return shape type
-    virtual int type() const override { return ComposerPolyline; }
+    virtual int type() const override
+    {
+      return ComposerPolyline;
+    }
 
   protected:
 
@@ -71,13 +77,13 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     bool _removeNode( const int nodeIndex ) override;
 
     //! Draw nodes for the current shape.
-    void _draw( QPainter *painter ) override;
+    void _draw( QPainter* painter ) override;
 
     //! Read symbol in XML.
-    void _readXmlStyle( const QDomElement &elmt ) override;
+    void _readXmlStyle( const QDomElement& elmt ) override;
 
     //! Write the symbol in an XML document.
-    void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const override;
+    void _writeXmlStyle( QDomDocument& doc, QDomElement& elmt ) const override;
 
     //! Create a default symbol.
     void createDefaultPolylineStyleSymbol();

@@ -24,7 +24,7 @@
 
 
 QgsMapToolTouch::QgsMapToolTouch( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas ), mDragging( false ), mPinching( false )
+  : QgsMapTool( canvas ), mDragging( false ), mPinching( false )
 {
   // set cursor
 //  QBitmap panBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
@@ -92,19 +92,19 @@ void QgsMapToolTouch::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   }
 }
 
-bool QgsMapToolTouch::gestureEvent( QGestureEvent *event )
+bool QgsMapToolTouch::gestureEvent( QGestureEvent* event )
 {
   qDebug() << "gesture " << event;
-  if ( QGesture *gesture = event->gesture( Qt::PinchGesture ) )
+  if ( QGesture* gesture = event->gesture( Qt::PinchGesture ) )
   {
     mPinching = true;
-    pinchTriggered( static_cast<QPinchGesture *>( gesture ) );
+    pinchTriggered( static_cast<QPinchGesture*>( gesture ) );
   }
   return true;
 }
 
 
-void QgsMapToolTouch::pinchTriggered( QPinchGesture *gesture )
+void QgsMapToolTouch::pinchTriggered( QPinchGesture* gesture )
 {
   if ( gesture->state() == Qt::GestureFinished )
   {

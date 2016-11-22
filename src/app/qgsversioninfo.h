@@ -23,7 +23,7 @@ class QgsVersionInfo : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsVersionInfo( QObject *parent = nullptr );
+    explicit QgsVersionInfo( QObject* parent = nullptr );
 
   public slots:
 
@@ -32,19 +32,34 @@ class QgsVersionInfo : public QObject
      */
     void checkVersion();
 
-    QString html() const { return mAdditionalHtml; }
+    QString html() const
+    {
+      return mAdditionalHtml;
+    }
 
-    QString downloadInfo() const { return mDownloadInfo; }
+    QString downloadInfo() const
+    {
+      return mDownloadInfo;
+    }
 
-    int latestVersionCode() const { return mLatestVersion; }
+    int latestVersionCode() const
+    {
+      return mLatestVersion;
+    }
 
     bool newVersionAvailable() const;
 
     bool isDevelopmentVersion() const;
 
-    QNetworkReply::NetworkError error() const { return mError; }
+    QNetworkReply::NetworkError error() const
+    {
+      return mError;
+    }
 
-    QString errorString() const { return mErrorString; }
+    QString errorString() const
+    {
+      return mErrorString;
+    }
 
   private slots:
     void versionReplyFinished();

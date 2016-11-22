@@ -18,9 +18,9 @@
 #include "qgscollapsiblegroupboxplugin.h"
 
 
-QgsCollapsibleGroupBoxPlugin::QgsCollapsibleGroupBoxPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsCollapsibleGroupBoxPlugin::QgsCollapsibleGroupBoxPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsCollapsibleGroupBoxPlugin::isContainer() const
   return true;
 }
 
-QWidget *QgsCollapsibleGroupBoxPlugin::createWidget( QWidget *parent )
+QWidget* QgsCollapsibleGroupBoxPlugin::createWidget( QWidget* parent )
 {
   return new QgsCollapsibleGroupBox( parent );
 }
@@ -60,7 +60,7 @@ bool QgsCollapsibleGroupBoxPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsCollapsibleGroupBoxPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsCollapsibleGroupBoxPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

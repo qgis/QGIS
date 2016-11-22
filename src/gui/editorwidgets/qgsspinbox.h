@@ -45,7 +45,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /** Constructor for QgsSpinBox.
      * @param parent parent widget
      */
-    explicit QgsSpinBox( QWidget *parent = nullptr );
+    explicit QgsSpinBox( QWidget* parent = nullptr );
 
     /** Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.
@@ -57,7 +57,10 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /** Returns whether the widget is showing a clear button.
      * @see setShowClearButton()
      */
-    bool showClearButton() const {return mShowClearButton;}
+    bool showClearButton() const
+    {
+      return mShowClearButton;
+    }
 
     /** Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
@@ -71,7 +74,10 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * @returns true if spin box allows expression entry
      * @note added in QGIS 2.7
      */
-    bool expressionsEnabled() const {return mExpressionsEnabled;}
+    bool expressionsEnabled() const
+    {
+      return mExpressionsEnabled;
+    }
 
     //! Set the current value to the value defined by the clear value.
     virtual void clear() override;
@@ -96,8 +102,8 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      */
     int clearValue() const;
 
-    virtual int valueFromText( const QString & text ) const override;
-    virtual QValidator::State validate( QString & input, int & pos ) const override;
+    virtual int valueFromText( const QString& text ) const override;
+    virtual QValidator::State validate( QString& input, int& pos ) const override;
 
   protected:
 
@@ -119,7 +125,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
     bool mExpressionsEnabled;
 
-    QString stripped( const QString &originalText ) const;
+    QString stripped( const QString& originalText ) const;
 };
 
 #endif // QGSSPINBOX_H

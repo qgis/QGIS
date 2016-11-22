@@ -49,17 +49,32 @@ class CORE_EXPORT QgsComposerLegendStyle
     };
     QgsComposerLegendStyle();
 
-    QFont font() const { return mFont; }
-    QFont & rfont() { return mFont; }
-    void setFont( const QFont & font ) { mFont = font; }
+    QFont font() const
+    {
+      return mFont;
+    }
+    QFont& rfont()
+    {
+      return mFont;
+    }
+    void setFont( const QFont& font )
+    {
+      mFont = font;
+    }
 
-    double margin( Side side ) { return mMarginMap.value( side ); }
-    void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
+    double margin( Side side )
+    {
+      return mMarginMap.value( side );
+    }
+    void setMargin( Side side, double margin )
+    {
+      mMarginMap[side] = margin;
+    }
 
     // set all margins
     void setMargin( double margin );
 
-    void writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const;
+    void writeXml( const QString& name, QDomElement& elem, QDomDocument& doc ) const;
 
     void readXml( const QDomElement& elem, const QDomDocument& doc );
 

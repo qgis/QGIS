@@ -34,13 +34,13 @@ QgsSQLComposerDialog::SQLValidatorCallback::~SQLValidatorCallback()
 {
 }
 
-QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mTableSelectedCallback( nullptr )
-    , mSQLValidatorCallback( nullptr )
-    , mFocusedObject( nullptr )
-    , mAlreadyModifyingFields( false )
-    , mDistinct( false )
+QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mTableSelectedCallback( nullptr )
+  , mSQLValidatorCallback( nullptr )
+  , mFocusedObject( nullptr )
+  , mAlreadyModifyingFields( false )
+  , mDistinct( false )
 {
   setupUi( this );
 
@@ -61,7 +61,7 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget * parent, Qt::WindowFlags fl
            this, SLOT( splitSQLIntoFields() ) );
   connect( mColumnsEditor, SIGNAL( textChanged() ),
            this, SLOT( buildSQLFromFields() ) );
-  connect( mTablesEditor, SIGNAL( textChanged( const QString & ) ),
+  connect( mTablesEditor, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( buildSQLFromFields() ) );
   connect( mWhereEditor, SIGNAL( textChanged() ),
            this, SLOT( buildSQLFromFields() ) );
@@ -128,7 +128,7 @@ QgsSQLComposerDialog::~QgsSQLComposerDialog()
   mQueryEdit->lexer()->setAPIs( nullptr );
 }
 
-bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
+bool QgsSQLComposerDialog::eventFilter( QObject* obj, QEvent* event )
 {
   if ( event->type() == QEvent::FocusIn )
   {
@@ -239,10 +239,10 @@ void QgsSQLComposerDialog::buildSQLFromFields()
   sql += mTablesEditor->text();
 
   int rows = mTableJoins->rowCount();
-  for ( int i = 0;i < rows;i++ )
+  for ( int i = 0; i < rows; i++ )
   {
-    QTableWidgetItem * itemTable = mTableJoins->item( i, 0 );
-    QTableWidgetItem * itemOn = mTableJoins->item( i, 1 );
+    QTableWidgetItem* itemTable = mTableJoins->item( i, 0 );
+    QTableWidgetItem* itemOn = mTableJoins->item( i, 1 );
     if ( itemTable && !itemTable->text().isEmpty() &&
          itemOn && !itemOn->text().isEmpty() )
     {
@@ -346,7 +346,7 @@ void QgsSQLComposerDialog::addTableNames( const QStringList& list )
   addApis( list );
 }
 
-void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> & listNameTitle )
+void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle>& listNameTitle )
 {
   QStringList listCombo;
   QStringList listApi;
@@ -458,7 +458,7 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function>& list,
     entryText += QLatin1String( "(" );
     if ( !f.argumentList.isEmpty() )
     {
-      for ( int i = 0;i < f.argumentList.size();i++ )
+      for ( int i = 0; i < f.argumentList.size(); i++ )
       {
         if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += QLatin1String( "[" );
         if ( i > 0 ) entryText += QLatin1String( ", " );

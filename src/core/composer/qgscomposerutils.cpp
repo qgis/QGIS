@@ -26,7 +26,7 @@
 #define M_DEG2RAD 0.0174532925
 #endif
 
-void QgsComposerUtils::drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth )
+void QgsComposerUtils::drawArrowHead( QPainter* p, const double x, const double y, const double angle, const double arrowHeadWidth )
 {
   if ( !p )
   {
@@ -82,7 +82,7 @@ double QgsComposerUtils::angle( QPointF p1, QPointF p2 )
   return angle;
 }
 
-void QgsComposerUtils::rotate( const double angle, double &x, double &y )
+void QgsComposerUtils::rotate( const double angle, double& x, double& y )
 {
   double rotToRad = angle * M_PI / 180.0;
   double xRot, yRot;
@@ -146,7 +146,7 @@ double QgsComposerUtils::snappedAngle( const double angle )
   }
 }
 
-QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation )
+QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, const double rotation )
 {
   double originalWidth = originalRect.width();
   double originalHeight = originalRect.height();
@@ -259,7 +259,7 @@ double QgsComposerUtils::relativePosition( const double position, const double b
   return m * position + c;
 }
 
-QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString& orientationString, bool &ok )
+QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString& orientationString, bool& ok )
 {
   if ( orientationString.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -275,7 +275,7 @@ QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const
   return QgsComposition::Landscape; // default to landscape
 }
 
-bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, double &width, double &height )
+bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, double& width, double& height )
 {
   QList< QPair< QString, QSizeF > > presets;
   presets << qMakePair( QStringLiteral( "A5" ), QSizeF( 148, 210 ) );
@@ -306,7 +306,7 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
   presets << qMakePair( QStringLiteral( "Arch E1" ), QSizeF( 762, 1066.8 ) );
 
   QList< QPair< QString, QSizeF > >::const_iterator presetIt = presets.constBegin();
-  for ( ;presetIt != presets.constEnd(); ++presetIt )
+  for ( ; presetIt != presets.constEnd(); ++presetIt )
   {
     if ( presetString.compare(( *presetIt ).first, Qt::CaseInsensitive ) == 0 )
     {
@@ -318,7 +318,7 @@ bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, doubl
   return false;
 }
 
-void QgsComposerUtils::readDataDefinedPropertyMap( const QDomElement &itemElem, QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+void QgsComposerUtils::readDataDefinedPropertyMap( const QDomElement& itemElem, QMap<QgsComposerObject::DataDefinedProperty, QString>* dataDefinedNames, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined*>* dataDefinedProperties )
 {
   QMap<QgsComposerObject::DataDefinedProperty, QString>::const_iterator i = dataDefinedNames->constBegin();
   for ( ; i != dataDefinedNames->constEnd(); ++i )
@@ -333,7 +333,7 @@ void QgsComposerUtils::readDataDefinedPropertyMap( const QDomElement &itemElem, 
   }
 }
 
-void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement& ddElem, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined*>* dataDefinedProperties )
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
@@ -378,7 +378,7 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
   }
 }
 
-void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc, const QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
+void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement& itemElem, QDomDocument& doc, const QMap<QgsComposerObject::DataDefinedProperty, QString>* dataDefinedNames, const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined*>* dataDefinedProperties )
 {
   QMap<QgsComposerObject::DataDefinedProperty, QString >::const_iterator i = dataDefinedNames->constBegin();
   for ( ; i != dataDefinedNames->constEnd(); ++i )
@@ -426,7 +426,7 @@ void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomD
   }
 }
 
-QFont QgsComposerUtils::scaledFontPixelSize( const QFont &font )
+QFont QgsComposerUtils::scaledFontPixelSize( const QFont& font )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -436,7 +436,7 @@ QFont QgsComposerUtils::scaledFontPixelSize( const QFont &font )
   return scaledFont;
 }
 
-double QgsComposerUtils::fontAscentMM( const QFont &font )
+double QgsComposerUtils::fontAscentMM( const QFont& font )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -445,7 +445,7 @@ double QgsComposerUtils::fontAscentMM( const QFont &font )
   return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerUtils::fontDescentMM( const QFont &font )
+double QgsComposerUtils::fontDescentMM( const QFont& font )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -454,7 +454,7 @@ double QgsComposerUtils::fontDescentMM( const QFont &font )
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerUtils::fontHeightMM( const QFont &font )
+double QgsComposerUtils::fontHeightMM( const QFont& font )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -463,7 +463,7 @@ double QgsComposerUtils::fontHeightMM( const QFont &font )
   return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerUtils::fontHeightCharacterMM( const QFont &font, QChar character )
+double QgsComposerUtils::fontHeightCharacterMM( const QFont& font, QChar character )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -472,7 +472,7 @@ double QgsComposerUtils::fontHeightCharacterMM( const QFont &font, QChar charact
   return ( fontMetrics.boundingRect( character ).height() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
+double QgsComposerUtils::textWidthMM( const QFont& font, const QString& text )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
@@ -481,7 +481,7 @@ double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
+double QgsComposerUtils::textHeightMM( const QFont& font, const QString& text, double multiLineHeight )
 {
   QStringList multiLineSplit =  text.split( '\n' );
   int lines = multiLineSplit.size();
@@ -497,7 +497,7 @@ double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, d
   return textHeight / FONT_WORKAROUND_SCALE;
 }
 
-void QgsComposerUtils::drawText( QPainter *painter, QPointF pos, const QString &text, const QFont &font, const QColor &color )
+void QgsComposerUtils::drawText( QPainter* painter, QPointF pos, const QString& text, const QFont& font, const QColor& color )
 {
   if ( !painter )
   {
@@ -520,7 +520,7 @@ void QgsComposerUtils::drawText( QPainter *painter, QPointF pos, const QString &
   painter->restore();
 }
 
-void QgsComposerUtils::drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color, const Qt::AlignmentFlag halignment, const Qt::AlignmentFlag valignment, const int flags )
+void QgsComposerUtils::drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color, const Qt::AlignmentFlag halignment, const Qt::AlignmentFlag valignment, const int flags )
 {
   if ( !painter )
   {

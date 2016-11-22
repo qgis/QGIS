@@ -59,7 +59,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
 
   private slots:
     void setGuiElements();
-    void segmentSizeRadioChanged( QAbstractButton*radio );
+    void segmentSizeRadioChanged( QAbstractButton* radio );
     void composerMapChanged( QgsComposerItem* item );
 
   private:

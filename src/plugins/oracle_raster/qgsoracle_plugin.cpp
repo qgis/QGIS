@@ -36,10 +36,10 @@ static const QString sPluginIcon = QStringLiteral( ":/oracleplugin/oracleraster.
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mQActionPointer( nullptr )
+QgsOraclePlugin::QgsOraclePlugin( QgisInterface* theQgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( theQgisInterface )
+  , mQActionPointer( nullptr )
 {
 }
 
@@ -81,7 +81,7 @@ void QgsOraclePlugin::help()
 
 void QgsOraclePlugin::run()
 {
-  QgsOracleSelectGeoraster *myPluginGui = new QgsOracleSelectGeoraster( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
+  QgsOracleSelectGeoraster* myPluginGui = new QgsOracleSelectGeoraster( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   myPluginGui->show();
@@ -117,7 +117,7 @@ void QgsOraclePlugin::unload()
  */
 // Class factory to return a new instance of the plugin class
 
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new QgsOraclePlugin( theQgisInterfacePointer );
 }
@@ -164,7 +164,7 @@ QGISEXTERN QString icon()
 
 // Delete ourself
 
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

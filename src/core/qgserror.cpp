@@ -22,27 +22,27 @@
 
 #include <QRegExp>
 
-QgsErrorMessage::QgsErrorMessage( const QString & theMessage, const QString & theTag, const QString & theFile, const QString & theFunction, int theLine )
-    : mMessage( theMessage )
-    , mTag( theTag )
-    , mFile( theFile )
-    , mFunction( theFunction )
-    , mLine( theLine )
-    , mFormat( Text )
+QgsErrorMessage::QgsErrorMessage( const QString& theMessage, const QString& theTag, const QString& theFile, const QString& theFunction, int theLine )
+  : mMessage( theMessage )
+  , mTag( theTag )
+  , mFile( theFile )
+  , mFunction( theFunction )
+  , mLine( theLine )
+  , mFormat( Text )
 {
 }
 
-QgsError::QgsError( const QString & theMessage, const QString & theTag )
+QgsError::QgsError( const QString& theMessage, const QString& theTag )
 {
   append( theMessage, theTag );
 }
 
-void QgsError::append( const QString & theMessage, const QString & theTag )
+void QgsError::append( const QString& theMessage, const QString& theTag )
 {
   mMessageList.append( QgsErrorMessage( theMessage, theTag ) );
 }
 
-void QgsError::append( const QgsErrorMessage & theMessage )
+void QgsError::append( const QgsErrorMessage& theMessage )
 {
   mMessageList.append( theMessage );
 }

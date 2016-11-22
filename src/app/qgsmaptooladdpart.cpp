@@ -28,7 +28,7 @@
 #include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add part" );
 }
@@ -37,7 +37,7 @@ QgsMapToolAddPart::~QgsMapToolAddPart()
 {
 }
 
-void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( checkSelection() )
   {
@@ -49,10 +49,10 @@ void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
   }
 }
 
-void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
   {
     notifyNotVectorLayer();
@@ -235,7 +235,7 @@ void QgsMapToolAddPart::activate()
 bool QgsMapToolAddPart::checkSelection()
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
   {
     notifyNotVectorLayer();

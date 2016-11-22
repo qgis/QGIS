@@ -23,18 +23,18 @@
 
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
-    : mNodeType( t )
-    , mParent( nullptr )
-    , mExpanded( true )
+  : mNodeType( t )
+  , mParent( nullptr )
+  , mExpanded( true )
 {
 }
 
 QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
-    : QObject()
-    , mNodeType( other.mNodeType )
-    , mParent( nullptr )
-    , mExpanded( other.mExpanded )
-    , mProperties( other.mProperties )
+  : QObject()
+  , mNodeType( other.mNodeType )
+  , mParent( nullptr )
+  , mExpanded( other.mExpanded )
+  , mProperties( other.mProperties )
 {
   QList<QgsLayerTreeNode*> clonedChildren;
   Q_FOREACH ( QgsLayerTreeNode* child, other.mChildren )
@@ -75,18 +75,18 @@ void QgsLayerTreeNode::setExpanded( bool expanded )
 }
 
 
-void QgsLayerTreeNode::setCustomProperty( const QString &key, const QVariant &value )
+void QgsLayerTreeNode::setCustomProperty( const QString& key, const QVariant& value )
 {
   mProperties.setValue( key, value );
   emit customPropertyChanged( this, key );
 }
 
-QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &defaultValue ) const
+QVariant QgsLayerTreeNode::customProperty( const QString& key, const QVariant& defaultValue ) const
 {
   return mProperties.value( key, defaultValue );
 }
 
-void QgsLayerTreeNode::removeCustomProperty( const QString &key )
+void QgsLayerTreeNode::removeCustomProperty( const QString& key )
 {
   mProperties.remove( key );
   emit customPropertyChanged( this, key );
@@ -113,7 +113,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
   if ( nodes.isEmpty() )
     return;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
   {
     Q_ASSERT( !node->mParent );
     node->mParent = this;
@@ -152,7 +152,7 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   emit willRemoveChildren( this, from, to );
   while ( --count >= 0 )
   {
-    QgsLayerTreeNode *node = mChildren.takeAt( from );
+    QgsLayerTreeNode* node = mChildren.takeAt( from );
     node->mParent = nullptr;
     if ( destroy )
       delete node;
@@ -160,7 +160,7 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   emit removedChildren( this, from, to );
 }
 
-bool QgsLayerTreeNode::takeChild( QgsLayerTreeNode *node )
+bool QgsLayerTreeNode::takeChild( QgsLayerTreeNode* node )
 {
   int index = mChildren.indexOf( node );
   if ( index < 0 )

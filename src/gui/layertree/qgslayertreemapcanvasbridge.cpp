@@ -22,15 +22,15 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 
-QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject* parent )
-    : QObject( parent )
-    , mRoot( root )
-    , mCanvas( canvas )
-    , mPendingCanvasUpdate( false )
-    , mHasCustomLayerOrder( false )
-    , mAutoSetupOnFirstLayer( true )
-    , mAutoEnableCrsTransform( true )
-    , mLastLayerCount( !root->findLayers().isEmpty() )
+QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent )
+  : QObject( parent )
+  , mRoot( root )
+  , mCanvas( canvas )
+  , mPendingCanvasUpdate( false )
+  , mHasCustomLayerOrder( false )
+  , mAutoSetupOnFirstLayer( true )
+  , mAutoEnableCrsTransform( true )
+  , mLastLayerCount( !root->findLayers().isEmpty() )
 {
   connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
@@ -248,7 +248,7 @@ void QgsLayerTreeMapCanvasBridge::writeProject( QDomDocument& doc )
   doc.documentElement().appendChild( elem );
 }
 
-void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapCanvasLayer> &layers )
+void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers )
 {
   if ( QgsLayerTree::isLayer( node ) )
   {

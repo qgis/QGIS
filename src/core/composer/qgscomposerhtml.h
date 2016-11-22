@@ -53,7 +53,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setHtml
      * @note added in 2.5
      */
-    void setContentMode( ContentMode mode ) { mContentMode = mode; }
+    void setContentMode( ContentMode mode )
+    {
+      mContentMode = mode;
+    }
 
     /** Returns the source mode for item's HTML content.
      * @returns ContentMode for the item's source
@@ -62,7 +65,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see html
      * @note added in 2.5
      */
-    ContentMode contentMode() const { return mContentMode; }
+    ContentMode contentMode() const
+    {
+      return mContentMode;
+    }
 
     /** Sets the URL for content to display in the item when the item is using
      * the QgsComposerHtml::Url mode. Content is automatically fetched and the
@@ -79,7 +85,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setUrl
      * @see contentMode
      */
-    const QUrl& url() const { return mUrl; }
+    const QUrl& url() const
+    {
+      return mUrl;
+    }
 
     /** Sets the HTML to display in the item when the item is using
      * the QgsComposerHtml::ManualHtml mode. Setting the HTML using this function
@@ -100,7 +109,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see contentMode
      * @note added in 2.5
      */
-    QString html() const { return mHtml; }
+    QString html() const
+    {
+      return mHtml;
+    }
 
     /** Returns whether html item will evaluate QGIS expressions prior to rendering
      * the HTML content. If set, any content inside [% %] tags will be
@@ -110,7 +122,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setEvaluateExpressions
      * @note added in QGIS 2.5
      */
-    bool evaluateExpressions() const { return mEvaluateExpressions; }
+    bool evaluateExpressions() const
+    {
+      return mEvaluateExpressions;
+    }
 
     /** Sets whether the html item will evaluate QGIS expressions prior to rendering
      * the HTML content. If set, any content inside [% %] tags will be
@@ -127,7 +142,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @returns true if html item is using smart breaks
      * @see setUseSmartBreaks
      */
-    bool useSmartBreaks() const { return mUseSmartBreaks; }
+    bool useSmartBreaks() const
+    {
+      return mUseSmartBreaks;
+    }
 
     /** Sets whether the html item should use smart breaks. Smart breaks prevent
      * the html frame contents from breaking mid-way though a line of text.
@@ -160,7 +178,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setMaxBreakDistance
      * @see useSmartBreaks
      */
-    double maxBreakDistance() const { return mMaxBreakDistance; }
+    double maxBreakDistance() const
+    {
+      return mMaxBreakDistance;
+    }
 
     /** Sets the user stylesheet CSS rules to use while rendering the HTML content. These
      * allow for overriding the styles specified within the HTML source. Setting the stylesheet
@@ -181,7 +202,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see userStylesheetEnabled
      * @note added in 2.5
      */
-    QString userStylesheet() const { return mUserStylesheet; }
+    QString userStylesheet() const
+    {
+      return mUserStylesheet;
+    }
 
     /** Sets whether user stylesheets are enabled for the HTML content.
      * @param stylesheetEnabled set to true to enable user stylesheets
@@ -197,12 +221,15 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see userStylesheet
      * @note added in 2.5
      */
-    bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
+    bool userStylesheetEnabled() const
+    {
+      return mEnableUserStylesheet;
+    }
 
     virtual QString displayName() const override;
     QSizeF totalSize() const override;
     void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
-    bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const override;
     bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
     void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
     //overridden to break frames without dividing lines of text

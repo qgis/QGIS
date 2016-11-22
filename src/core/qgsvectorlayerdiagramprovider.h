@@ -31,12 +31,18 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
   public:
     //! Create label feature, takes ownership of the geometry instance
     QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
-        : QgsLabelFeature( id, geometry, size ) {}
+      : QgsLabelFeature( id, geometry, size ) {}
 
     //! Store feature's attributes - used for rendering of diagrams
-    void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+    void setAttributes( const QgsAttributes& attrs )
+    {
+      mAttributes = attrs;
+    }
     //! Get feature's attributes - used for rendering of diagrams
-    const QgsAttributes& attributes() { return mAttributes; }
+    const QgsAttributes& attributes()
+    {
+      return mAttributes;
+    }
 
   protected:
     //! Stores attribute values for diagram rendering
@@ -99,7 +105,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * the feature's original geometry will be used as an obstacle for labels. Ownership of obstacleGeometry
      * is transferred.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = nullptr );
+    virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr );
 
   protected:
     //! initialization method - called from constructors

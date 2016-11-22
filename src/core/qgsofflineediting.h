@@ -96,7 +96,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void warning( const QString& title, const QString& message );
 
   private:
-    void initializeSpatialMetadata( sqlite3 *sqlite_handle );
+    void initializeSpatialMetadata( sqlite3* sqlite_handle );
     bool createSpatialiteDB( const QString& offlineDbPath );
     void createLoggingTables( sqlite3* db );
     QgsVectorLayer* copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath, bool onlySelected );

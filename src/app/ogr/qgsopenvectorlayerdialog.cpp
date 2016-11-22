@@ -33,7 +33,7 @@
 #include "qgscontexthelp.h"
 
 QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -153,7 +153,7 @@ QString QgsOpenVectorLayerDialog::dataSourceType()
 
 void QgsOpenVectorLayerDialog::addNewConnection()
 {
-  QgsNewOgrConnection *nc = new QgsNewOgrConnection( this );
+  QgsNewOgrConnection* nc = new QgsNewOgrConnection( this );
   nc->exec();
   delete nc;
 
@@ -162,7 +162,7 @@ void QgsOpenVectorLayerDialog::addNewConnection()
 
 void QgsOpenVectorLayerDialog::editConnection()
 {
-  QgsNewOgrConnection *nc = new QgsNewOgrConnection( this, cmbDatabaseTypes->currentText(), cmbConnections->currentText() );
+  QgsNewOgrConnection* nc = new QgsNewOgrConnection( this, cmbDatabaseTypes->currentText(), cmbConnections->currentText() );
   nc->exec();
   delete nc;
 
@@ -334,13 +334,13 @@ void QgsOpenVectorLayerDialog::accept()
     if ( makeConnection || !pass.isEmpty() )
     {
       mDataSources << createDatabaseURI(
-        cmbDatabaseTypes->currentText(),
-        host,
-        database,
-        port,
-        user,
-        pass
-      );
+                     cmbDatabaseTypes->currentText(),
+                     host,
+                     database,
+                     port,
+                     user,
+                     pass
+                   );
     }
   }
   else if ( radioSrcProtocol->isChecked() )
@@ -461,14 +461,14 @@ void QgsOpenVectorLayerDialog::on_btnEdit_clicked()
   editConnection();
 }
 
-void QgsOpenVectorLayerDialog::on_cmbDatabaseTypes_currentIndexChanged( const QString & text )
+void QgsOpenVectorLayerDialog::on_cmbDatabaseTypes_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
   populateConnectionList();
   setSelectedConnectionType();
 }
 
-void QgsOpenVectorLayerDialog::on_cmbConnections_currentIndexChanged( const QString & text )
+void QgsOpenVectorLayerDialog::on_cmbConnections_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
   setSelectedConnection();

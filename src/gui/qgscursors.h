@@ -21,14 +21,14 @@
 /** \ingroup gui
  * Bitmap cursors for map operations.
  */
-extern GUI_EXPORT const char *zoom_in[];
-extern GUI_EXPORT const char *zoom_out[];
+extern GUI_EXPORT const char* zoom_in[];
+extern GUI_EXPORT const char* zoom_out[];
 
-extern GUI_EXPORT const char *capture_point_cursor[];
-extern GUI_EXPORT const char *select_cursor[];
-extern GUI_EXPORT const char *identify_cursor[];
-extern GUI_EXPORT const char *cross_hair_cursor[];
-extern GUI_EXPORT const char *sampler_cursor[];
+extern GUI_EXPORT const char* capture_point_cursor[];
+extern GUI_EXPORT const char* select_cursor[];
+extern GUI_EXPORT const char* identify_cursor[];
+extern GUI_EXPORT const char* cross_hair_cursor[];
+extern GUI_EXPORT const char* sampler_cursor[];
 
 #endif
 

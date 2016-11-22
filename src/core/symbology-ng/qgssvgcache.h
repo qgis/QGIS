@@ -175,7 +175,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                          bool& hasOutlineOpacityParam, bool& hasDefaultOutlineOpacity, double& defaultOutlineOpacity ) const;
 
     //! Get image data
-    QByteArray getImageData( const QString &path ) const;
+    QByteArray getImageData( const QString& path ) const;
 
     //! Get SVG content
     const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
   protected:
     //! protected constructor
-    QgsSvgCache( QObject * parent = nullptr );
+    QgsSvgCache( QObject* parent = nullptr );
 
     /** Creates new cache entry and returns pointer to it
      * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.

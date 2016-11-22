@@ -212,7 +212,9 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
       ++it;
       if ( it == vlist->end() )//restart at the beginning of the loop
-        {it = vlist->begin();}
+      {
+        it = vlist->begin();
+      }
 
 
     }

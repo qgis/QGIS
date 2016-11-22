@@ -54,7 +54,7 @@
 
 
 QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
-    : QgsDecorationItem( parent )
+  : QgsDecorationItem( parent )
 {
   setName( "Grid" );
 
@@ -208,7 +208,7 @@ void QgsDecorationGrid::run()
   }
 }
 
-void QgsDecorationGrid::render( QPainter * p )
+void QgsDecorationGrid::render( QPainter* p )
 {
   if ( ! mEnabled )
     return;

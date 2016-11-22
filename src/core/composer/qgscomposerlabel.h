@@ -32,11 +32,14 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {
     Q_OBJECT
   public:
-    QgsComposerLabel( QgsComposition *composition );
+    QgsComposerLabel( QgsComposition* composition );
     ~QgsComposerLabel();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerLabel; }
+    virtual int type() const override
+    {
+      return ComposerLabel;
+    }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
@@ -44,10 +47,16 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     //! Resizes the widget such that the text fits to the item. Keeps top left point
     void adjustSizeToText();
 
-    QString text() { return mText; }
+    QString text()
+    {
+      return mText;
+    }
     void setText( const QString& text );
 
-    int htmlState() { return mHtmlState; }
+    int htmlState()
+    {
+      return mHtmlState;
+    }
     void setHtmlState( int state );
 
     //! Returns the text as it appears on screen (with replaced data field)
@@ -59,38 +68,56 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Accessor for the vertical alignment of the label
      * @returns Qt::AlignmentFlag
      */
-    Qt::AlignmentFlag vAlign() const { return mVAlignment; }
+    Qt::AlignmentFlag vAlign() const
+    {
+      return mVAlignment;
+    }
 
     /** Accessor for the horizontal alignment of the label
      * @returns Qt::AlignmentFlag
      */
-    Qt::AlignmentFlag hAlign() const { return mHAlignment; }
+    Qt::AlignmentFlag hAlign() const
+    {
+      return mHAlignment;
+    }
 
     /** Mutator for the horizontal alignment of the label
      * @param a alignment
      * @returns void
      */
-    void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+    void setHAlign( Qt::AlignmentFlag a )
+    {
+      mHAlignment = a;
+    }
 
     /** Mutator for the vertical alignment of the label
      * @param a alignment
      * @returns void
      */
-    void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
+    void setVAlign( Qt::AlignmentFlag a )
+    {
+      mVAlignment = a;
+    }
 
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
      * @returns horizontal margin in mm
      * @note added in QGIS 2.7
      */
-    double marginX() const { return mMarginX; }
+    double marginX() const
+    {
+      return mMarginX;
+    }
 
     /** Returns the vertical margin between the edge of the frame and the label
      * contents.
      * @returns vertical margin in mm
      * @note added in QGIS 2.7
      */
-    double marginY() const { return mMarginY; }
+    double marginY() const
+    {
+      return mMarginY;
+    }
 
     /** Sets the margin between the edge of the frame and the label contents.
      * This method sets both the horizontal and vertical margins to the same
@@ -121,15 +148,21 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     void setMarginY( const double margin );
 
     //! Sets text color
-    void setFontColor( const QColor& c ) { mFontColor = c; }
+    void setFontColor( const QColor& c )
+    {
+      mFontColor = c;
+    }
     //! Get font color
-    QColor fontColor() const { return mFontColor; }
+    QColor fontColor() const
+    {
+      return mFontColor;
+    }
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag

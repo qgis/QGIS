@@ -63,8 +63,8 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
     QgsComposerHtml* mHtml;
     QgsComposerFrame* mFrame;
-    QgsCodeEditorHTML *mHtmlEditor;
-    QgsCodeEditorCSS *mStylesheetEditor;
+    QgsCodeEditorHTML* mHtmlEditor;
+    QgsCodeEditorCSS* mStylesheetEditor;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

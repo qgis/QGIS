@@ -26,7 +26,7 @@
 
 
 QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
   mToolName = tr( "Add ring" );
 }
@@ -35,13 +35,13 @@ QgsMapToolAddRing::~QgsMapToolAddRing()
 {
 }
 
-void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
 
   emit messageDiscarded();
 
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {

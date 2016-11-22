@@ -71,12 +71,21 @@ class CORE_EXPORT QgsContrastEnhancement
      *
      */
     //! \brief Return the maximum value for the contrast enhancement range.
-    double maximumValue() const { return mMaximumValue; }
+    double maximumValue() const
+    {
+      return mMaximumValue;
+    }
 
     //! \brief Return the minimum value for the contrast enhancement range.
-    double minimumValue() const { return mMinimumValue; }
+    double minimumValue() const
+    {
+      return mMinimumValue;
+    }
 
-    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
+    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const
+    {
+      return mContrastEnhancementAlgorithm;
+    }
 
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
@@ -123,7 +132,7 @@ class CORE_EXPORT QgsContrastEnhancement
     double mLookupTableOffset;
 
     //! \brief Pointer to the lookup table
-    int *mLookupTable;
+    int* mLookupTable;
 
     //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;

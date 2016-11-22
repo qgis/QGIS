@@ -29,10 +29,10 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
                                   std::map<QString, QgsGPSDevice*>& devices,
                                   const std::vector<QgsVectorLayer*>& gpxMapLayers,
                                   QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mGPXLayers( gpxMapLayers )
-    , mImporters( importers )
-    , mDevices( devices )
+  : QDialog( parent, fl )
+  , mGPXLayers( gpxMapLayers )
+  , mImporters( importers )
+  , mDevices( devices )
 {
   setupUi( this );
 

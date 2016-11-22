@@ -111,7 +111,7 @@ class ZoomControlHandler : public NavigationControlHandler
 {
   public:
     ZoomControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy )
-        : _manip( manip ), _dx( dx ), _dy( dy ) { }
+      : _manip( manip ), _dx( dx ), _dy( dy ) { }
     virtual void onMouseDown() override
     {
       _manip->zoom( _dx, _dy );
@@ -228,15 +228,15 @@ class NavigationControl : public osgEarth::Util::Controls::ImageControl
 
 
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mViewerWidget( 0 )
-    , mDockWidget( 0 )
-    , mSettingsDialog( 0 )
-    , mSelectedLat( 0. )
-    , mSelectedLon( 0. )
-    , mSelectedElevation( 0. )
-    , mLayerPropertiesFactory( 0 )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( theQgisInterface )
+  , mViewerWidget( 0 )
+  , mDockWidget( 0 )
+  , mSettingsDialog( 0 )
+  , mSelectedLat( 0. )
+  , mSelectedLon( 0. )
+  , mSelectedElevation( 0. )
+  , mLayerPropertiesFactory( 0 )
 {
 #ifdef Q_OS_MACX
   // update path to osg plugins on Mac OS X
@@ -276,7 +276,7 @@ void GlobePlugin::initGui()
 
   connect( mActionToggleGlobe, SIGNAL( triggered( bool ) ), this, SLOT( setGlobeEnabled( bool ) ) );
   connect( mLayerPropertiesFactory, SIGNAL( layerSettingsChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
-  connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ), mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
+  connect( this, SIGNAL( xyCoordinates( const QgsPoint& ) ), mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint& ) ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
 }
 
@@ -350,7 +350,7 @@ void GlobePlugin::run()
 
     osgEarth::MapOptions mapOptions;
     mapOptions.cache() = cacheOptions;
-    osgEarth::Map *map = new osgEarth::Map( /*mapOptions*/ );
+    osgEarth::Map* map = new osgEarth::Map( /*mapOptions*/ );
 
     // The MapNode will render the Map object in the scene graph.
     osgEarth::MapNodeOptions mapNodeOptions;
@@ -622,7 +622,7 @@ void GlobePlugin::showCurrentCoordinates( const osgEarth::GeoPoint& geoPoint )
   emit xyCoordinates( QgsCoordinateTransformCache::instance()->transform( GEO_EPSG_CRS_AUTHID, mQGisIface->mapCanvas()->mapSettings().destinationCrs().authid() ).transform( QgsPoint( pos.x(), pos.y() ) ) );
 }
 
-void GlobePlugin::setSelectedCoordinates( const osg::Vec3d &coords )
+void GlobePlugin::setSelectedCoordinates( const osg::Vec3d& coords )
 {
   mSelectedLon = coords.x();
   mSelectedLat = coords.y();
@@ -689,7 +689,7 @@ void GlobePlugin::addControl( osgEarth::Util::Controls::Control* control, int x,
   osgEarth::Util::Controls::ControlCanvas::get( mOsgViewer )->addControl( control );
 }
 
-void GlobePlugin::addImageControl( const std::string& imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler *handler )
+void GlobePlugin::addImageControl( const std::string& imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler* handler )
 {
   osg::Image* image = osgDB::readImageFile( imgPath );
   osgEarth::Util::Controls::ImageControl* control = new NavigationControl( image );
@@ -1099,8 +1099,8 @@ void GlobePlugin::unload()
   delete mSettingsDialog;
   mSettingsDialog = 0;
 
-  disconnect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
-              mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
+  disconnect( this, SIGNAL( xyCoordinates( const QgsPoint& ) ),
+              mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint& ) ) );
 }
 
 void GlobePlugin::enableFrustumHighlight( bool status )
@@ -1202,7 +1202,7 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new GlobePlugin( theQgisInterfacePointer );
 }
@@ -1250,7 +1250,7 @@ QGISEXTERN QString experimental()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

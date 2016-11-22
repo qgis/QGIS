@@ -81,21 +81,21 @@ QgsPostgresProvider::pkType( const QgsField& f ) const
 
 
 
-QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
-    : QgsVectorDataProvider( uri )
-    , mValid( false )
-    , mPrimaryKeyType( pktUnknown )
-    , mSpatialColType( sctNone )
-    , mDetectedGeomType( QgsWkbTypes::Unknown )
-    , mForce2d( false )
-    , mRequestedGeomType( QgsWkbTypes::Unknown )
-    , mShared( new QgsPostgresSharedData )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mEnabledCapabilities( 0 )
-    , mConnectionRO( nullptr )
-    , mConnectionRW( nullptr )
-    , mTransaction( nullptr )
+QgsPostgresProvider::QgsPostgresProvider( QString const& uri )
+  : QgsVectorDataProvider( uri )
+  , mValid( false )
+  , mPrimaryKeyType( pktUnknown )
+  , mSpatialColType( sctNone )
+  , mDetectedGeomType( QgsWkbTypes::Unknown )
+  , mForce2d( false )
+  , mRequestedGeomType( QgsWkbTypes::Unknown )
+  , mShared( new QgsPostgresSharedData )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mEnabledCapabilities( 0 )
+  , mConnectionRO( nullptr )
+  , mConnectionRW( nullptr )
+  , mTransaction( nullptr )
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
@@ -336,7 +336,7 @@ QString QgsPostgresProvider::storageType() const
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050600
 #include <algorithm>
 template <typename T>
-bool operator<( const QList<T> &lhs, const QList<T> &rhs )
+bool operator<( const QList<T>& lhs, const QList<T>& rhs )
 {
   return std::lexicographical_compare( lhs.begin(), lhs.end(),
                                        rhs.begin(), rhs.end() );
@@ -358,7 +358,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& re
 
 
 
-QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias ) const
+QString QgsPostgresProvider::pkParamWhereClause( int offset, const char* alias ) const
 {
   QString whereClause;
 
@@ -412,7 +412,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
   return whereClause;
 }
 
-void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &params ) const
+void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList& params ) const
 {
   switch ( mPrimaryKeyType )
   {
@@ -1545,7 +1545,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+void QgsPostgresProvider::uniqueValues( int index, QList<QVariant>& uniqueValues, int limit ) const
 {
   uniqueValues.clear();
 
@@ -1820,7 +1820,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
   }
 }
 
-QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const
+QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString& defaultValue ) const
 {
   if ( fieldValue.isNull() )
     return QString::null;
@@ -1926,7 +1926,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   return geometry;
 }
 
-bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
+bool QgsPostgresProvider::addFeatures( QgsFeatureList& flist )
 {
   if ( flist.isEmpty() )
     return true;
@@ -2187,7 +2187,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     mShared->addFeaturesCounted( flist.size() );
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while adding features: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2199,7 +2199,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
   return returnvalue;
 }
 
-bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds& id )
 {
   bool returnvalue = true;
 
@@ -2249,7 +2249,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
 
     mShared->addFeaturesCounted( -id.size() );
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while deleting features: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2260,7 +2260,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   return returnvalue;
 }
 
-bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
+bool QgsPostgresProvider::addAttributes( const QList<QgsField>& attributes )
 {
   bool returnvalue = true;
 
@@ -2321,7 +2321,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 
     returnvalue &= conn->commit();
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while adding attributes: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2376,7 +2376,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
 
     returnvalue &= conn->commit();
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while deleting attributes: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2436,7 +2436,7 @@ bool QgsPostgresProvider::renameAttributes( const QgsFieldNameMap& renamedAttrib
       throw PGException( result );
     returnvalue = conn->commit();
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while renaming attributes: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2448,7 +2448,7 @@ bool QgsPostgresProvider::renameAttributes( const QgsFieldNameMap& renamedAttrib
   return returnvalue;
 }
 
-bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   bool returnvalue = true;
 
@@ -2458,7 +2458,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
   if ( attr_map.isEmpty() )
     return true;
 
-  QgsPostgresConn *conn = connectionRW();
+  QgsPostgresConn* conn = connectionRW();
   if ( !conn )
     return false;
 
@@ -2477,7 +2477,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       if ( FID_IS_NEW( fid ) )
         continue;
 
-      const QgsAttributeMap &attrs = iter.value();
+      const QgsAttributeMap& attrs = iter.value();
       if ( attrs.isEmpty() )
         continue;
 
@@ -2546,7 +2546,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
     returnvalue &= conn->commit();
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while changing attributes: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2557,7 +2557,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
   return returnvalue;
 }
 
-void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList &params ) const
+void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList& params ) const
 {
   if ( geom.isEmpty() )
   {
@@ -2569,7 +2569,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList 
 
   QScopedPointer<QgsGeometry> convertedGeom( convertToProviderType( geom ) );
   QByteArray wkb( convertedGeom ? convertedGeom->exportToWkb() : geom.exportToWkb() );
-  const unsigned char *buf = reinterpret_cast< const unsigned char * >( wkb.constData() );
+  const unsigned char* buf = reinterpret_cast< const unsigned char* >( wkb.constData() );
   int wkbSize = wkb.length();
 
   for ( int i = 0; i < wkbSize; ++i )
@@ -2582,7 +2582,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry& geom, QStringList 
   params << param;
 }
 
-bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
 
   if ( mIsQuery || mGeometryColumn.isNull() )
@@ -2747,7 +2747,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
 
     returnvalue &= conn->commit();
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -2767,8 +2767,8 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
   return returnvalue;
 }
 
-bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
-    const QgsGeometryMap &geometry_map )
+bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap& attr_map,
+    const QgsGeometryMap& geometry_map )
 {
   Q_ASSERT( mSpatialColType != sctTopoGeometry );
 
@@ -2780,7 +2780,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
   if ( attr_map.isEmpty() )
     return true;
 
-  QgsPostgresConn *conn = connectionRW();
+  QgsPostgresConn* conn = connectionRW();
   if ( !conn )
     return false;
 
@@ -2800,7 +2800,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
       if ( FID_IS_NEW( fid ) )
         continue;
 
-      const QgsAttributeMap &attrs = attr_map.value( fid );
+      const QgsAttributeMap& attrs = attr_map.value( fid );
       if ( attrs.isEmpty() && !geometry_map.contains( fid ) )
         continue;
 
@@ -2865,7 +2865,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
         }
 
         QStringList params;
-        const QgsGeometry &geom = geometry_map[ fid ];
+        const QgsGeometry& geom = geometry_map[ fid ];
         appendGeomParam( geom, params );
 
         result = conn->PQexecPrepared( QStringLiteral( "updatefeature" ), params );
@@ -2895,7 +2895,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
     returnvalue &= conn->commit();
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     pushError( tr( "PostGIS error while changing attributes: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
@@ -3483,7 +3483,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   return mValid;
 }
 
-bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVariant> *options )
+bool QgsPostgresProvider::convertField( QgsField& field, const QMap<QString, QVariant>* options )
 {
   //determine field type to use for strings
   QString stringFieldType = QStringLiteral( "varchar" );
@@ -3569,13 +3569,13 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
 }
 
 QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const QString& uri,
-    const QgsFields &fields,
+    const QgsFields& fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
-    QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString, QVariant> *options )
+    QMap<int, int>* oldToNewAttrIdxMap,
+    QString* errorMessage,
+    const QMap<QString, QVariant>* options )
 {
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
@@ -3604,7 +3604,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
   QgsDebugMsg( QString( "Table name is: %1" ).arg( tableName ) );
 
   // create the table
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     if ( errorMessage )
@@ -3761,7 +3761,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
 
     conn->PQexecNR( QStringLiteral( "COMMIT" ) );
   }
-  catch ( PGException &e )
+  catch ( PGException& e )
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" )
@@ -3778,7 +3778,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri( false ) );
+  QgsPostgresProvider* provider = new QgsPostgresProvider( dsUri.uri( false ) );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -4110,7 +4110,8 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer*
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     const QString position = sqlResult.PQgetvalue( row, 5 );
     if ( position == QLatin1String( "1" ) )
-    { // first reference field => try to find if we have layers for the referenced table
+    {
+      // first reference field => try to find if we have layers for the referenced table
       const QList<QgsVectorLayer*> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
       Q_FOREACH ( const QgsVectorLayer* foundLayer, foundLayers )
       {
@@ -4132,7 +4133,8 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer*
       }
     }
     else
-    { // multi reference field => add the field pair to all the referenced layers found
+    {
+      // multi reference field => add the field pair to all the referenced layers found
       for ( int i = 0; i < nbFound; ++i )
       {
         result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
@@ -4151,7 +4153,7 @@ QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
  * Class factory to return a pointer to a newly created
  * QgsPostgresProvider object
  */
-QGISEXTERN QgsPostgresProvider * classFactory( const QString *uri )
+QGISEXTERN QgsPostgresProvider* classFactory( const QString* uri )
 {
   return new QgsPostgresProvider( *uri );
 }
@@ -4180,7 +4182,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsPgSourceSelect* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsPgSourceSelect( parent, fl );
 }
@@ -4190,7 +4192,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   Q_UNUSED( thePath );
   return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
@@ -4200,13 +4202,13 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFields &fields,
+  const QgsFields& fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem& srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+  QMap<int, int>* oldToNewAttrIdxMap,
+  QString* errorMessage,
+  const QMap<QString, QVariant>* options )
 {
   return QgsPostgresProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
@@ -4230,7 +4232,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   }
   schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4296,7 +4298,7 @@ QGISEXTERN bool deleteSchema( const QString& schema, const QgsDataSourceUri& uri
 
   QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4327,7 +4329,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4472,7 +4474,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4505,12 +4507,12 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
   return style;
 }
 
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString& errCause )
+QGISEXTERN int listStyles( const QString& uri, QStringList& ids, QStringList& names,
+                           QStringList& descriptions, QString& errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -4579,7 +4581,7 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -4620,8 +4622,8 @@ QGISEXTERN void cleanupProvider()
 // ----------
 
 QgsPostgresSharedData::QgsPostgresSharedData()
-    : mFeaturesCounted( -1 )
-    , mFidCounter( 0 )
+  : mFeaturesCounted( -1 )
+  , mFidCounter( 0 )
 {
 }
 

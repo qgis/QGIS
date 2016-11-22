@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     Q_OBJECT
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    QgsMapOverviewCanvas( QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
 
     ~QgsMapOverviewCanvas();
 
@@ -56,7 +56,10 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     QStringList layerSet() const;
 
-    void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
+    void enableAntiAliasing( bool flag )
+    {
+      mSettings.setFlag( QgsMapSettings::Antialiasing, flag );
+    }
 
     void updateFullExtent();
 
@@ -80,22 +83,22 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
   protected:
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * pe ) override;
+    void paintEvent( QPaintEvent* pe ) override;
 
     //! Overridden show event
-    void showEvent( QShowEvent * e ) override;
+    void showEvent( QShowEvent* e ) override;
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e ) override;
+    void resizeEvent( QResizeEvent* e ) override;
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e ) override;
+    void mouseMoveEvent( QMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e ) override;
+    void mousePressEvent( QMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e ) override;
+    void mouseReleaseEvent( QMouseEvent* e ) override;
 
     //! called when panning to reflect mouse movement
     void updatePanningWidget( QPoint pos );

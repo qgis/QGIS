@@ -23,16 +23,16 @@
 #include <QSettings>
 
 QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString& name ):
-    QgsEditorWidgetFactory( name )
+  QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsKeyValueWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
+QgsEditorWidgetWrapper* QgsKeyValueWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsKeyValueWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+QgsEditorConfigWidget* QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   Q_UNUSED( vl );
   Q_UNUSED( fieldIdx );
@@ -40,7 +40,7 @@ QgsEditorConfigWidget* QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Key/Value field" ) );
 }
 
-QgsEditorWidgetConfig QgsKeyValueWidgetFactory::readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx )
+QgsEditorWidgetConfig QgsKeyValueWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( configElement );
   Q_UNUSED( layer );
@@ -80,7 +80,7 @@ QString QgsKeyValueWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
   return result;
 }
 
-Qt::AlignmentFlag QgsKeyValueWidgetFactory::alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config ) const
+Qt::AlignmentFlag QgsKeyValueWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
 {
   Q_UNUSED( vl );
   Q_UNUSED( fieldIdx );

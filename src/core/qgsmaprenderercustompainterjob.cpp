@@ -26,11 +26,11 @@
 
 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
-    : QgsMapRendererJob( settings )
-    , mPainter( painter )
-    , mLabelingEngineV2( nullptr )
-    , mActive( false )
-    , mRenderSynchronously( false )
+  : QgsMapRendererJob( settings )
+  , mPainter( painter )
+  , mLabelingEngineV2( nullptr )
+  , mActive( false )
+  , mRenderSynchronously( false )
 {
   QgsDebugMsg( "QPAINTER construct" );
 }
@@ -203,12 +203,12 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
   {
     self->doRender();
   }
-  catch ( QgsException & e )
+  catch ( QgsException& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
-  catch ( std::exception & e )
+  catch ( std::exception& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
@@ -315,7 +315,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
 {
   if ( ml->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
     if ( vl->renderer() && vl->renderer()->forceRasterRender() )
     {
       //raster rendering is forced for this layer

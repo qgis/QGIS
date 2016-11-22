@@ -60,9 +60,9 @@ class QgsGeometryCheck : public QObject
     {
       Change() {}
       Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
-          : what( _what )
-          , type( _type )
-          , vidx( _vidx )
+        : what( _what )
+        , type( _type )
+        , vidx( _vidx )
       {}
       ChangeWhat what;
       ChangeType type;
@@ -72,8 +72,8 @@ class QgsGeometryCheck : public QObject
     typedef QMap<QgsFeatureId, QList<Change> > Changes;
 
     QgsGeometryCheck( CheckType checkType, QgsFeaturePool* featurePool )
-        : mCheckType( checkType )
-        , mFeaturePool( featurePool )
+      : mCheckType( checkType )
+      , mFeaturePool( featurePool )
     {}
     virtual ~QgsGeometryCheck() {}
     virtual void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const = 0;
@@ -81,8 +81,14 @@ class QgsGeometryCheck : public QObject
     virtual const QStringList& getResolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
     virtual QString errorName() const = 0;
-    CheckType getCheckType() const { return mCheckType; }
-    QgsFeaturePool* getFeaturePool() const { return mFeaturePool; }
+    CheckType getCheckType() const
+    {
+      return mCheckType;
+    }
+    QgsFeaturePool* getFeaturePool() const
+    {
+      return mFeaturePool;
+    }
 
   protected:
     const CheckType mCheckType;
@@ -107,17 +113,47 @@ class QgsGeometryCheckError
                            const QVariant& value = QVariant(),
                            ValueType valueType = ValueOther );
     virtual ~QgsGeometryCheckError();
-    const QgsGeometryCheck* check() const { return mCheck; }
-    QgsFeatureId featureId() const { return mFeatureId; }
+    const QgsGeometryCheck* check() const
+    {
+      return mCheck;
+    }
+    QgsFeatureId featureId() const
+    {
+      return mFeatureId;
+    }
     virtual QgsAbstractGeometry* geometry();
-    virtual QgsRectangle affectedAreaBBox() { return geometry() ? geometry()->boundingBox() : QgsRectangle(); }
-    virtual QString description() const { return mCheck->errorDescription(); }
-    const QgsPointV2& location() const { return mErrorLocation; }
-    const QVariant& value() const { return mValue; }
-    ValueType valueType() const { return mValueType; }
-    QgsVertexId vidx() const { return mVidx; }
-    Status status() const { return mStatus; }
-    const QString& resolutionMessage() const { return mResolutionMessage; }
+    virtual QgsRectangle affectedAreaBBox()
+    {
+      return geometry() ? geometry()->boundingBox() : QgsRectangle();
+    }
+    virtual QString description() const
+    {
+      return mCheck->errorDescription();
+    }
+    const QgsPointV2& location() const
+    {
+      return mErrorLocation;
+    }
+    const QVariant& value() const
+    {
+      return mValue;
+    }
+    ValueType valueType() const
+    {
+      return mValueType;
+    }
+    QgsVertexId vidx() const
+    {
+      return mVidx;
+    }
+    Status status() const
+    {
+      return mStatus;
+    }
+    const QString& resolutionMessage() const
+    {
+      return mResolutionMessage;
+    }
     void setFixed( int method )
     {
       mStatus = StatusFixed;
@@ -128,7 +164,10 @@ class QgsGeometryCheckError
       mStatus = StatusFixFailed;
       mResolutionMessage = reason;
     }
-    void setObsolete() { mStatus = StatusObsolete; }
+    void setObsolete()
+    {
+      mStatus = StatusObsolete;
+    }
     virtual bool isEqual( QgsGeometryCheckError* other ) const
     {
       return other->check() == check() &&

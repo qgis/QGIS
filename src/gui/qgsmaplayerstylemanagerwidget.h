@@ -40,14 +40,14 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
      * @param canvas The canvas object.
      * @param parent The parent.
      */
-    QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget *parent = 0 );
+    QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
 
   public slots:
     void apply() override {}
 
   private slots:
     void styleClicked( const QModelIndex& index );
-    void currentStyleChanged( const QString &name );
+    void currentStyleChanged( const QString& name );
     void styleAdded( const QString& name );
     void styleRemoved( const QString& name );
     void styleRenamed( const QString& oldname, const QString& newname );

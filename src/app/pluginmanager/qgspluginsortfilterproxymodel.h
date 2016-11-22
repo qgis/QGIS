@@ -43,7 +43,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    explicit QgsPluginSortFilterProxyModel( QObject *parent = nullptr );
+    explicit QgsPluginSortFilterProxyModel( QObject* parent = nullptr );
 
     //! (Re)configire the status filter
     void setAcceptedStatuses( const QStringList& statuses );
@@ -62,13 +62,13 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
 
   protected:
     //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.
-    bool filterByStatus( QModelIndex &index ) const;
+    bool filterByStatus( QModelIndex& index ) const;
 
     //! Filter by phrase: this method is used in filterAcceptsRow.
-    bool filterByPhrase( QModelIndex &index ) const;
+    bool filterByPhrase( QModelIndex& index ) const;
 
     //! The main filter method
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const override;
 
   private:
     QStringList mAcceptedStatuses;

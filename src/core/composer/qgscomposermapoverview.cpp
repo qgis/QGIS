@@ -26,23 +26,23 @@
 #include <QPainter>
 
 QgsComposerMapOverview::QgsComposerMapOverview( const QString& name, QgsComposerMap* map )
-    : QgsComposerMapItem( name, map )
-    , mFrameMapId( -1 )
-    , mFrameSymbol( nullptr )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mInverted( false )
-    , mCentered( false )
+  : QgsComposerMapItem( name, map )
+  , mFrameMapId( -1 )
+  , mFrameSymbol( nullptr )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mInverted( false )
+  , mCentered( false )
 {
   createDefaultFrameSymbol();
 }
 
 QgsComposerMapOverview::QgsComposerMapOverview()
-    : QgsComposerMapItem( QString(), nullptr )
-    , mFrameMapId( -1 )
-    , mFrameSymbol( nullptr )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mInverted( false )
-    , mCentered( false )
+  : QgsComposerMapItem( QString(), nullptr )
+  , mFrameMapId( -1 )
+  , mFrameSymbol( nullptr )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mInverted( false )
+  , mCentered( false )
 {
 }
 
@@ -62,7 +62,7 @@ QgsComposerMapOverview::~QgsComposerMapOverview()
   delete mFrameSymbol;
 }
 
-void QgsComposerMapOverview::draw( QPainter *painter )
+void QgsComposerMapOverview::draw( QPainter* painter )
 {
   if ( !mEnabled || mFrameMapId == -1 || !mComposerMap || !mComposerMap->composition() )
   {
@@ -136,10 +136,10 @@ void QgsComposerMapOverview::draw( QPainter *painter )
     //Construct a polygon corresponding to the overview map extent
     QPolygonF outerPolygon;
     outerPolygon << QPointF( 0, 0 )
-    << QPointF( mComposerMap->rect().width() * dotsPerMM, 0 )
-    << QPointF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM )
-    << QPointF( 0, mComposerMap->rect().height() * dotsPerMM )
-    << QPointF( 0, 0 );
+                 << QPointF( mComposerMap->rect().width() * dotsPerMM, 0 )
+                 << QPointF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM )
+                 << QPointF( 0, mComposerMap->rect().height() * dotsPerMM )
+                 << QPointF( 0, 0 );
 
     //Intersecting extent is an inner ring for the shaded area
     rings.append( intersectPolygon );
@@ -150,7 +150,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
   painter->restore();
 }
 
-bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerMapOverview::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {
@@ -173,7 +173,7 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   return ok;
 }
 
-bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsComposerMapOverview::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -241,7 +241,7 @@ void QgsComposerMapOverview::connectSignals()
   }
 }
 
-void QgsComposerMapOverview::setFrameSymbol( QgsFillSymbol *symbol )
+void QgsComposerMapOverview::setFrameSymbol( QgsFillSymbol* symbol )
 {
   delete mFrameSymbol;
   mFrameSymbol = symbol;
@@ -308,8 +308,8 @@ void QgsComposerMapOverview::overviewExtentChanged()
 // QgsComposerMapOverviewStack
 //
 
-QgsComposerMapOverviewStack::QgsComposerMapOverviewStack( QgsComposerMap *map )
-    : QgsComposerMapItemStack( map )
+QgsComposerMapOverviewStack::QgsComposerMapOverviewStack( QgsComposerMap* map )
+  : QgsComposerMapItemStack( map )
 {
 
 }
@@ -319,52 +319,52 @@ QgsComposerMapOverviewStack::~QgsComposerMapOverviewStack()
 
 }
 
-void QgsComposerMapOverviewStack::addOverview( QgsComposerMapOverview *overview )
+void QgsComposerMapOverviewStack::addOverview( QgsComposerMapOverview* overview )
 {
   QgsComposerMapItemStack::addItem( overview );
 }
 
-void QgsComposerMapOverviewStack::removeOverview( const QString &overviewId )
+void QgsComposerMapOverviewStack::removeOverview( const QString& overviewId )
 {
   QgsComposerMapItemStack::removeItem( overviewId );
 }
 
-void QgsComposerMapOverviewStack::moveOverviewUp( const QString &overviewId )
+void QgsComposerMapOverviewStack::moveOverviewUp( const QString& overviewId )
 {
   QgsComposerMapItemStack::moveItemUp( overviewId );
 }
 
-void QgsComposerMapOverviewStack::moveOverviewDown( const QString &overviewId )
+void QgsComposerMapOverviewStack::moveOverviewDown( const QString& overviewId )
 {
   QgsComposerMapItemStack::moveItemDown( overviewId );
 }
 
-const QgsComposerMapOverview *QgsComposerMapOverviewStack::constOverview( const QString &overviewId ) const
+const QgsComposerMapOverview* QgsComposerMapOverviewStack::constOverview( const QString& overviewId ) const
 {
   const QgsComposerMapItem* item = QgsComposerMapItemStack::constItem( overviewId );
   return dynamic_cast<const QgsComposerMapOverview*>( item );
 }
 
-QgsComposerMapOverview *QgsComposerMapOverviewStack::overview( const QString &overviewId ) const
+QgsComposerMapOverview* QgsComposerMapOverviewStack::overview( const QString& overviewId ) const
 {
   QgsComposerMapItem* item = QgsComposerMapItemStack::item( overviewId );
   return dynamic_cast<QgsComposerMapOverview*>( item );
 }
 
-QgsComposerMapOverview *QgsComposerMapOverviewStack::overview( const int index ) const
+QgsComposerMapOverview* QgsComposerMapOverviewStack::overview( const int index ) const
 {
   QgsComposerMapItem* item = QgsComposerMapItemStack::item( index );
   return dynamic_cast<QgsComposerMapOverview*>( item );
 }
 
-QgsComposerMapOverview &QgsComposerMapOverviewStack::operator[]( int idx )
+QgsComposerMapOverview& QgsComposerMapOverviewStack::operator[]( int idx )
 {
   QgsComposerMapItem* item = mItems.at( idx );
   QgsComposerMapOverview* overview = dynamic_cast<QgsComposerMapOverview*>( item );
   return *overview;
 }
 
-QList<QgsComposerMapOverview *> QgsComposerMapOverviewStack::asList() const
+QList<QgsComposerMapOverview*> QgsComposerMapOverviewStack::asList() const
 {
   QList< QgsComposerMapOverview* > list;
   QList< QgsComposerMapItem* >::const_iterator it = mItems.begin();
@@ -379,7 +379,7 @@ QList<QgsComposerMapOverview *> QgsComposerMapOverviewStack::asList() const
   return list;
 }
 
-bool QgsComposerMapOverviewStack::readXml( const QDomElement &elem, const QDomDocument &doc )
+bool QgsComposerMapOverviewStack::readXml( const QDomElement& elem, const QDomDocument& doc )
 {
   removeItems();
 

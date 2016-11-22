@@ -30,10 +30,10 @@
 #include <QMouseEvent>
 #include <QInputDialog>
 
-QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor& color )
-    : QDialog( parent, fl )
-    , mPreviousColor( color )
-    , mAllowAlpha( true )
+QgsColorDialog::QgsColorDialog( QWidget* parent, Qt::WindowFlags fl, const QColor& color )
+  : QDialog( parent, fl )
+  , mPreviousColor( color )
+  , mAllowAlpha( true )
 {
   setupUi( this );
 
@@ -79,7 +79,7 @@ void QgsColorDialog::setAllowAlpha( const bool allowAlpha )
   mColorWidget->setAllowAlpha( allowAlpha );
 }
 
-QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowAlpha )
+QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot, QWidget* parent, const QString& title, const bool allowAlpha )
 {
   QColor returnColor( initialColor );
 
@@ -124,7 +124,7 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   return returnColor;
 }
 
-QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowAlpha )
+QColor QgsColorDialog::getColor( const QColor& initialColor, QWidget* parent, const QString& title, const bool allowAlpha )
 {
   QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
 
@@ -167,7 +167,7 @@ void QgsColorDialog::on_mButtonBox_rejected()
   reject();
 }
 
-void QgsColorDialog::on_mButtonBox_clicked( QAbstractButton * button )
+void QgsColorDialog::on_mButtonBox_clicked( QAbstractButton* button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ResetRole && mPreviousColor.isValid() )
   {
@@ -186,7 +186,7 @@ void QgsColorDialog::saveSettings()
   settings.setValue( QStringLiteral( "/Windows/ColorDialog/geometry" ), saveGeometry() );
 }
 
-void QgsColorDialog::setColor( const QColor &color )
+void QgsColorDialog::setColor( const QColor& color )
 {
   if ( !color.isValid() )
   {
@@ -204,7 +204,7 @@ void QgsColorDialog::setColor( const QColor &color )
   emit currentColorChanged( fixedColor );
 }
 
-void QgsColorDialog::closeEvent( QCloseEvent *e )
+void QgsColorDialog::closeEvent( QCloseEvent* e )
 {
   saveSettings();
   QDialog::closeEvent( e );

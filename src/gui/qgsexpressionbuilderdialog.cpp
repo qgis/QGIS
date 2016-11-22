@@ -16,9 +16,9 @@
 #include "qgsexpressionbuilderdialog.h"
 #include <QSettings>
 
-QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent, const QString& key, const QgsExpressionContext &context )
-    : QDialog( parent )
-    , mRecentKey( key )
+QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent, const QString& key, const QgsExpressionContext& context )
+  : QDialog( parent )
+  , mRecentKey( key )
 {
   setupUi( this );
 
@@ -55,7 +55,7 @@ QgsExpressionContext QgsExpressionBuilderDialog::expressionContext() const
   return builder->expressionContext();
 }
 
-void QgsExpressionBuilderDialog::setExpressionContext( const QgsExpressionContext &context )
+void QgsExpressionBuilderDialog::setExpressionContext( const QgsExpressionContext& context )
 {
   builder->setExpressionContext( context );
 }
@@ -74,7 +74,7 @@ void QgsExpressionBuilderDialog::accept()
   QDialog::accept();
 }
 
-void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea & da )
+void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea& da )
 {
   // Store in child widget only.
   builder->setGeomCalculator( da );

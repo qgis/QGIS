@@ -47,7 +47,7 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     virtual void reloadModel() = 0;
 
     //! return given plugin metadata
-    virtual const QMap<QString, QString> * pluginMetadata( const QString& key ) const = 0;
+    virtual const QMap<QString, QString>* pluginMetadata( const QString& key ) const = 0;
 
     //! clear the repository listWidget
     virtual void clearRepositoryList() = 0;
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     virtual void showPluginManager( int tabIndex = -1 ) = 0;
 
     //! show the given message in the Plugin Manager internal message bar
-    virtual void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) = 0;
+    virtual void pushMessage( const QString& text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) = 0;
 };
 
 #endif

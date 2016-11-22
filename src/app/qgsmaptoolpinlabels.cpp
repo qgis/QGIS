@@ -29,15 +29,15 @@
 #include <QMouseEvent>
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
-    : QgsMapToolLabel( canvas )
-    , mDragging( false )
-    , mShowPinned( false )
-    , mRubberBand( nullptr )
+  : QgsMapToolLabel( canvas )
+  , mDragging( false )
+  , mShowPinned( false )
+  , mRubberBand( nullptr )
 {
   mToolName = tr( "Pin labels" );
 
   connect( QgisApp::instance()->actionToggleEditing(), SIGNAL( triggered() ), this, SLOT( updatePinnedLabels() ) );
-  connect( canvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( highlightPinnedLabels() ) );
+  connect( canvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( highlightPinnedLabels() ) );
 }
 
 QgsMapToolPinLabels::~QgsMapToolPinLabels()
@@ -141,7 +141,7 @@ void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition& labelpos,
     const QColor& color )
 {
   QgsRectangle rect = labelpos.labelRect;
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  QgsRubberBand* rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
   rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
   rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
@@ -223,7 +223,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  Q_FOREACH ( QgsRubberBand *rb, mHighlights )
+  Q_FOREACH ( QgsRubberBand* rb, mHighlights )
   {
     delete rb;
   }
@@ -231,7 +231,7 @@ void QgsMapToolPinLabels::removePinnedHighlights()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e )
+void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent* e )
 {
   bool doUnpin = e->modifiers() & Qt::ShiftModifier;
   bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier;
@@ -402,7 +402,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 #if 0
     QgsDebugMsg( QString( "Undoing and removing failed command from layer's undo stack" ) );
     int lastCmdIndx = vlayer->undoStack()->count();
-    const QgsUndoCommand* lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
+    const QgsUndoCommand* lastCmd = qobject_cast<const QgsUndoCommand*>( vlayer->undoStack()->command( lastCmdIndx ) );
     if ( lastCmd )
     {
       vlayer->undoEditCommand( lastCmd );

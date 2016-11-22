@@ -23,17 +23,17 @@
 #include <QRect>
 #include <qmath.h>
 
-QgsSlider::QgsSlider( QWidget * parent ) : QSlider( parent )
+QgsSlider::QgsSlider( QWidget* parent ) : QSlider( parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
 
-QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget * parent ) : QSlider( orientation, parent )
+QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget* parent ) : QSlider( orientation, parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
 
-void QgsSlider::paintEvent( QPaintEvent *event )
+void QgsSlider::paintEvent( QPaintEvent* event )
 {
   QSlider::paintEvent( event );
   QPainter painter( this );
@@ -44,25 +44,25 @@ void QgsSlider::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
-void QgsSlider::setMinimum( const QVariant &min )
+void QgsSlider::setMinimum( const QVariant& min )
 {
   mMin = min;
   update();
 }
 
-void QgsSlider::setMaximum( const QVariant &max )
+void QgsSlider::setMaximum( const QVariant& max )
 {
   mMax = max;
   update();
 }
 
-void QgsSlider::setSingleStep( const QVariant &step )
+void QgsSlider::setSingleStep( const QVariant& step )
 {
   mStep = step;
   update();
 }
 
-void QgsSlider::setValue( const QVariant &value )
+void QgsSlider::setValue( const QVariant& value )
 {
   mValue = value;
   update();

@@ -72,7 +72,10 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     //! Sets geometry (takes ownership). Geometry is expected to be in map coordinates
     void setGeometry( QgsAbstractGeometry* geom );
     //! Returns a pointer to the geometry
-    const QgsAbstractGeometry* geometry() { return mGeometry; }
+    const QgsAbstractGeometry* geometry()
+    {
+      return mGeometry;
+    }
     //! Moves vertex to new position (in map coordinates)
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
     //! Sets fill color for vertex markers
@@ -86,7 +89,10 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     //! Sets brush style
     void setBrushStyle( Qt::BrushStyle brushStyle );
     //! Sets vertex marker icon type
-    void setIconType( IconType iconType ) { mIconType = iconType; }
+    void setIconType( IconType iconType )
+    {
+      mIconType = iconType;
+    }
 
   protected:
     virtual void paint( QPainter* painter ) override;

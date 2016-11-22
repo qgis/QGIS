@@ -20,8 +20,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
-    : QWidget( parent )
+QgsAuthCertEditors::QgsAuthCertEditors( QWidget* parent )
+  : QWidget( parent )
 {
   setupUi( this );
 }
@@ -32,17 +32,17 @@ QgsAuthCertEditors::~QgsAuthCertEditors()
 
 
 
-QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
-    : QDialog( parent )
+QgsAuthCertManager::QgsAuthCertManager( QWidget* parent )
+  : QDialog( parent )
 {
   setWindowTitle( tr( "Certificate Manager" ) );
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setMargin( 6 );
 
   mCertEditors = new QgsAuthCertEditors( this );
   layout->addWidget( mCertEditors );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
       Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );

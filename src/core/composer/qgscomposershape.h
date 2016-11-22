@@ -43,7 +43,10 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     ~QgsComposerShape();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerShape; }
+    virtual int type() const override
+    {
+      return ComposerShape;
+    }
 
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
@@ -52,7 +55,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
@@ -61,13 +64,19 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //setters and getters
-    QgsComposerShape::Shape shapeType() const { return mShape; }
+    QgsComposerShape::Shape shapeType() const
+    {
+      return mShape;
+    }
     void setShapeType( QgsComposerShape::Shape s );
 
     //! Sets radius for rounded rectangle corners. Added in v2.1
     void setCornerRadius( double radius );
     //! Returns the radius for rounded rectangle corners
-    double cornerRadius() const { return mCornerRadius; }
+    double cornerRadius() const
+    {
+      return mCornerRadius;
+    }
 
     /** Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
      * enable drawing with a symbol.
@@ -76,7 +85,10 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     /** Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
-    QgsFillSymbol* shapeStyleSymbol() { return mShapeStyleSymbol; }
+    QgsFillSymbol* shapeStyleSymbol()
+    {
+      return mShapeStyleSymbol;
+    }
 
     /** Controls whether the shape should be drawn using a QgsFillSymbol.
      * Note: Added in v2.1 */

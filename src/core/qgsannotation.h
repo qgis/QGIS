@@ -57,19 +57,28 @@ class CORE_EXPORT QgsAnnotation
      * @see mapPositionFixed()
      * @see mapPositionCrs()
      */
-    virtual QgsPoint mapPosition() const { return QgsPoint(); }
+    virtual QgsPoint mapPosition() const
+    {
+      return QgsPoint();
+    }
 
     /** Returns the CRS of the map position, or an invalid CRS if the annotation does
      * not have a fixed map position.
     */
-    virtual QgsCoordinateReferenceSystem mapPositionCrs() const { return QgsCoordinateReferenceSystem(); }
+    virtual QgsCoordinateReferenceSystem mapPositionCrs() const
+    {
+      return QgsCoordinateReferenceSystem();
+    }
 
     /** Returns the relative position of the annotation, if it is not attached to a fixed map
      * position. The coordinates in the return point should be between 0 and 1, and represent
      * the relative percentage for the position compared to the map width and height.
      * @see mapPositionFixed()
      */
-    virtual QPointF relativePosition() const { return QPointF(); }
+    virtual QPointF relativePosition() const
+    {
+      return QPointF();
+    }
 
     /** Returns a scaling factor which should be applied to painters before rendering
      * the item.
@@ -81,7 +90,7 @@ class CORE_EXPORT QgsAnnotation
     virtual void setItemData( int role, const QVariant& value ) = 0;
 
     //! Paint the annotation to a destination painter
-    virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) = 0;
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr ) = 0;
 
 
 };

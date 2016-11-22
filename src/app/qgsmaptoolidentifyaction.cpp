@@ -45,12 +45,12 @@
 #include <QStatusBar>
 #include <QVariant>
 
-QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas * canvas )
-    : QgsMapToolIdentify( canvas )
+QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas* canvas )
+  : QgsMapToolIdentify( canvas )
 {
   mToolName = tr( "Identify" );
   // set cursor
-  QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
+  QPixmap myIdentifyQPixmap = QPixmap(( const char** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult>& ) ), this, SLOT( handleChangedRasterResults( QList<IdentifyResult>& ) ) );
@@ -70,14 +70,14 @@ QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
   }
 }
 
-QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
+QgsIdentifyResultsDialog* QgsMapToolIdentifyAction::resultsDialog()
 {
   if ( !mResultsDialog )
   {
     mResultsDialog = new QgsIdentifyResultsDialog( mCanvas, mCanvas->window() );
 
-    connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
-    connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );
+    connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer* ) ), this, SLOT( formatChanged( QgsRasterLayer* ) ) );
+    connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore& ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore& ) ) );
   }
 
   return mResultsDialog;
@@ -92,7 +92,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QLi
     return;
 
   QString filter = QStringLiteral( "$id IN (" );
-  Q_FOREACH ( const QgsFeature &feature, featureList )
+  Q_FOREACH ( const QgsFeature& feature, featureList )
   {
     filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
   }
@@ -159,7 +159,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   resultsDialog()->updateViewModes();
 }
 
-void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )
+void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult>& results )
 {
   // Add new result after raster format change
   QgsDebugMsg( QString( "%1 raster results" ).arg( results.size() ) );
@@ -195,7 +195,7 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
   return QgsProject::instance()->areaUnits();
 }
 
-void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )
+void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore& featureStore )
 {
   QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
   emit copyToClipboard( featureStore );

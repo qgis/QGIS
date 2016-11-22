@@ -32,7 +32,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
 
   public:
     QgsIFeatureSelectionManager( QObject* parent )
-        : QObject( parent ) {}
+      : QObject( parent ) {}
 
     /**
      * The number of features that are selected in this layer
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * @return A list of { @link QgsFeatureId } 's
      * @see selectedFeatures()
      */
-    virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
+    virtual const QgsFeatureIds& selectedFeaturesIds() const = 0;
 
   signals:
 

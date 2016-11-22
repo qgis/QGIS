@@ -42,29 +42,47 @@ class CORE_EXPORT QgsTracer : public QObject
     ~QgsTracer();
 
     //! Get layers used for tracing
-    QList<QgsVectorLayer*> layers() const { return mLayers; }
+    QList<QgsVectorLayer*> layers() const
+    {
+      return mLayers;
+    }
     //! Set layers used for tracing
     void setLayers( const QList<QgsVectorLayer*>& layers );
 
     //! Return true if reprojection to destination CRS is enabled
-    bool hasCrsTransformEnabled() const { return mReprojectionEnabled; }
+    bool hasCrsTransformEnabled() const
+    {
+      return mReprojectionEnabled;
+    }
     //! Set whether to do reprojection to destination CRS
     void setCrsTransformEnabled( bool enabled );
 
     //! Get CRS used for tracing
-    QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
+    QgsCoordinateReferenceSystem destinationCrs() const
+    {
+      return mCRS;
+    }
     //! Set CRS used for tracing
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! Get extent to which graph's features will be limited (empty extent means no limit)
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle extent() const
+    {
+      return mExtent;
+    }
     //! Set extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle& extent );
 
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
-    int maxFeatureCount() const { return mMaxFeatureCount; }
+    int maxFeatureCount() const
+    {
+      return mMaxFeatureCount;
+    }
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
-    void setMaxFeatureCount( int count ) { mMaxFeatureCount = count; }
+    void setMaxFeatureCount( int count )
+    {
+      mMaxFeatureCount = count;
+    }
 
     //! Build the internal data structures. This may take some time
     //! depending on how big the input layers are. It is not necessary
@@ -73,12 +91,18 @@ class CORE_EXPORT QgsTracer : public QObject
     bool init();
 
     //! Whether the internal data structures have been initialized
-    bool isInitialized() const { return mGraph != nullptr; }
+    bool isInitialized() const
+    {
+      return mGraph != nullptr;
+    }
 
     //! Whether there was an error during graph creation due to noding exception,
     //! indicating some input data topology problems
     //! @note added in QGIS 2.16
-    bool hasTopologyProblem() const { return mHasTopologyProblem; }
+    bool hasTopologyProblem() const
+    {
+      return mHasTopologyProblem;
+    }
 
     //! Possible errors that may happen when calling findShortestPath()
     enum PathError

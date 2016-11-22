@@ -88,33 +88,36 @@ namespace pal
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
+                     FeaturePart* feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
       //! Copy constructor
       LabelPosition( const LabelPosition& other );
 
-      ~LabelPosition() { delete nextPart; }
+      ~LabelPosition()
+      {
+        delete nextPart;
+      }
 
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
-      bool isIn( double *bbox );
+      bool isIn( double* bbox );
 
       /**
        * \brief Is the labelposition intersect the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
-      bool isIntersect( double *bbox );
+      bool isIntersect( double* bbox );
 
       /**
        * \brief Is the labelposition inside the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
-      bool isInside( double *bbox );
+      bool isInside( double* bbox );
 
       /**
        * \brief Check whether or not this overlap with another labelPosition
@@ -122,7 +125,7 @@ namespace pal
        * \param ls other labelposition
        * \return true or false
        */
-      bool isInConflict( LabelPosition *ls );
+      bool isInConflict( LabelPosition* ls );
 
       //! Return bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
@@ -157,12 +160,21 @@ namespace pal
       /** \brief return the feature corresponding to this labelposition
        * \return the feature
        */
-      FeaturePart * getFeaturePart();
+      FeaturePart* getFeaturePart();
 
-      int getNumOverlaps() const { return nbOverlap; }
-      void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
+      int getNumOverlaps() const
+      {
+        return nbOverlap;
+      }
+      void resetNumOverlaps()
+      {
+        nbOverlap = 0;  // called from problem.cpp, pal.cpp
+      }
 
-      int getProblemFeatureId() const { return probFeat; }
+      int getProblemFeatureId() const
+      {
+        return probFeat;
+      }
 
       /** Set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
@@ -176,13 +188,19 @@ namespace pal
       /** Returns the candidate label position's geographical cost.
        * @see setCost
        */
-      double cost() const { return mCost; }
+      double cost() const
+      {
+        return mCost;
+      }
 
       /** Sets the candidate label position's geographical cost.
        * @param newCost new cost for position
        * @see cost
       */
-      void setCost( double newCost ) { mCost = newCost; }
+      void setCost( double newCost )
+      {
+        mCost = newCost;
+      }
 
       /** Sets whether the position is marked as conflicting with an obstacle feature.
        * @param conflicts set to true to mark candidate as being in conflict
@@ -194,7 +212,10 @@ namespace pal
       /** Returns whether the position is marked as conflicting with an obstacle feature.
        * @see setConflictsWithObstacle
        */
-      bool conflictsWithObstacle() const { return mHasObstacleConflict; }
+      bool conflictsWithObstacle() const
+      {
+        return mHasObstacleConflict;
+      }
 
       //! Make sure the cost is less than 1
       void validateCost();
@@ -211,70 +232,103 @@ namespace pal
        */
       double getY( int i = 0 ) const;
 
-      double getWidth() const { return w; }
-      double getHeight() const { return h; }
+      double getWidth() const
+      {
+        return w;
+      }
+      double getHeight() const
+      {
+        return h;
+      }
 
       /**
        * \brief get alpha
        * \return alpha to rotate text (in rad)
        */
       double getAlpha() const;
-      bool getReversed() const { return reversed; }
-      bool getUpsideDown() const { return upsideDown; }
+      bool getReversed() const
+      {
+        return reversed;
+      }
+      bool getUpsideDown() const
+      {
+        return upsideDown;
+      }
 
-      Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition* getNextPart() const { return nextPart; }
-      void setNextPart( LabelPosition* next ) { nextPart = next; }
+      Quadrant getQuadrant() const
+      {
+        return quadrant;
+      }
+      LabelPosition* getNextPart() const
+      {
+        return nextPart;
+      }
+      void setNextPart( LabelPosition* next )
+      {
+        nextPart = next;
+      }
 
       // -1 if not multi-part
-      int getPartId() const { return partId; }
-      void setPartId( int id ) { partId = id; }
+      int getPartId() const
+      {
+        return partId;
+      }
+      void setPartId( int id )
+      {
+        partId = id;
+      }
 
       //! Increases the count of upside down characters for this label position
-      int incrementUpsideDownCharCount() { return ++mUpsideDownCharCount; }
+      int incrementUpsideDownCharCount()
+      {
+        return ++mUpsideDownCharCount;
+      }
 
       //! Returns the number of upside down characters for this label position
-      int upsideDownCharCount() const { return mUpsideDownCharCount; }
+      int upsideDownCharCount() const
+      {
+        return mUpsideDownCharCount;
+      }
 
-      void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );
-      void insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index );
+      void removeFromIndex( RTree<LabelPosition*, double, 2, double>* index );
+      void insertIntoIndex( RTree<LabelPosition*, double, 2, double>* index );
 
       typedef struct
       {
         Pal* pal;
-        FeaturePart *obstacle;
+        FeaturePart* obstacle;
       } PruneCtx;
 
       //! Check whether the candidate in ctx overlap with obstacle feat
-      static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
+      static bool pruneCallback( LabelPosition* candidatePosition, void* ctx );
 
       // for counting number of overlaps
       typedef struct
       {
-        LabelPosition *lp;
-        int *nbOv;
-        double *cost;
-        double *inactiveCost;
+        LabelPosition* lp;
+        int* nbOv;
+        double* cost;
+        double* inactiveCost;
         //int *feat;
       } CountContext;
 
       /*
        * count overlap, ctx = p_lp
        */
-      static bool countOverlapCallback( LabelPosition *lp, void *ctx );
+      static bool countOverlapCallback( LabelPosition* lp, void* ctx );
 
-      static bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
+      static bool countFullOverlapCallback( LabelPosition* lp, void* ctx );
 
-      static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
+      static bool removeOverlapCallback( LabelPosition* lp, void* ctx );
 
       // for polygon cost calculation
-      static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
+      static bool polygonObstacleCallback( pal::FeaturePart* obstacle, void* ctx );
 
     protected:
 
       int id;
 
-      FeaturePart *feature;
+      FeaturePart* feature;
 
       // bug # 1 (maxence 10/23/2008)
       int probFeat;

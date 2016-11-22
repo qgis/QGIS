@@ -28,17 +28,17 @@
 
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent, Qt::WindowFlags fl, QSettings* settings )
-    : QDialog( parent, fl )
-    , mOptsKey( settingsKey )
-    , mInit( false )
-    , mOptListWidget( nullptr )
-    , mOptStackedWidget( nullptr )
-    , mOptSplitter( nullptr )
-    , mOptButtonBox( nullptr )
-    , mDialogTitle( QLatin1String( "" ) )
-    , mIconOnly( false )
-    , mSettings( settings )
-    , mDelSettings( false )
+  : QDialog( parent, fl )
+  , mOptsKey( settingsKey )
+  , mInit( false )
+  , mOptListWidget( nullptr )
+  , mOptStackedWidget( nullptr )
+  , mOptSplitter( nullptr )
+  , mOptButtonBox( nullptr )
+  , mDialogTitle( QLatin1String( "" ) )
+  , mIconOnly( false )
+  , mSettings( settings )
+  , mDelSettings( false )
 {
 }
 
@@ -221,7 +221,7 @@ void QgsOptionsDialogBase::paintEvent( QPaintEvent* e )
 
 void QgsOptionsDialogBase::updateWindowTitle()
 {
-  QListWidgetItem *curitem = mOptListWidget->currentItem();
+  QListWidgetItem* curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
     setWindowTitle( QStringLiteral( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );

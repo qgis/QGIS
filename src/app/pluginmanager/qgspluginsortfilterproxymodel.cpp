@@ -18,13 +18,13 @@
 
 
 
-QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
+QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject* parent ) : QSortFilterProxyModel( parent )
 {
 }
 
 
 
-bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
 {
   QModelIndex inx = sourceModel()->index( sourceRow, 0, sourceParent );
 
@@ -56,7 +56,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString& spacers )
 
 
 
-bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
+bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex& index ) const
 {
   if ( mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
        && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
@@ -81,7 +81,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 
 
 
-bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
+bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex& index ) const
 {
   switch ( filterRole() )
   {

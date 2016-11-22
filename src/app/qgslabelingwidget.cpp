@@ -26,10 +26,10 @@
 #include "qgisapp.h"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
-    : QgsMapLayerConfigWidget( layer, canvas, parent )
-    , mLayer( layer )
-    , mCanvas( canvas )
-    , mWidget( nullptr )
+  : QgsMapLayerConfigWidget( layer, canvas, parent )
+  , mLayer( layer )
+  , mCanvas( canvas )
+  , mWidget( nullptr )
 {
   setupUi( this );
 
@@ -70,7 +70,7 @@ void QgsLabelingWidget::setLayer( QgsMapLayer* mapLayer )
     setEnabled( true );
   }
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mapLayer );
+  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mapLayer );
   mLayer = layer;
   if ( mLayer->labeling() )
   {

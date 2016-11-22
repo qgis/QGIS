@@ -49,14 +49,14 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param theQgisInterface Pointer to the QgisInterface object.
      */
-    explicit RoadGraphPlugin( QgisInterface * theQgisInterface );
+    explicit RoadGraphPlugin( QgisInterface* theQgisInterface );
     //! Destructor
     virtual ~RoadGraphPlugin();
 
     /**
      * return pointer to my Interface
      */
-    QgisInterface *iface();
+    QgisInterface* iface();
 
     /**
      * return pointer to graph director
@@ -120,7 +120,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface* mQGisIface;
 
     ////////////////////////////////////////////////////////////////////
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
@@ -130,18 +130,18 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     /**
      * on show settings
      */
-    QAction * mQSettingsAction;
+    QAction* mQSettingsAction;
 
     /**
      * GUI for use shortest path finder
      */
-    RgShortestPathWidget *mQShortestPathDock;
+    RgShortestPathWidget* mQShortestPathDock;
 
     /**
      * My graph settings.
      * @note. Should be used RgSettings
      */
-    RgLineVectorLayerSettings *mSettings;
+    RgLineVectorLayerSettings* mSettings;
 
     /**
      *  time unit for results presentation

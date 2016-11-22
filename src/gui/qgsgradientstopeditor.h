@@ -48,7 +48,10 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     /** Returns the current ramp created by the editor.
      * @see setGradientRamp()
      */
-    QgsGradientColorRamp gradientRamp() const { return mGradient; }
+    QgsGradientColorRamp gradientRamp() const
+    {
+      return mGradient;
+    }
 
     /** Sets the currently selected stop.
      * @param index index of stop, where 0 corresponds to the first stop
@@ -122,16 +125,16 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
   protected:
 
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseDoubleClickEvent( QMouseEvent * event ) override;
-    virtual void keyPressEvent( QKeyEvent * event ) override;
+    virtual void mouseMoveEvent( QMouseEvent* event ) override;
+    virtual void mousePressEvent( QMouseEvent* event ) override;
+    virtual void mouseDoubleClickEvent( QMouseEvent* event ) override;
+    virtual void keyPressEvent( QKeyEvent* event ) override;
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e ) override;
+    void dragEnterEvent( QDragEnterEvent* e ) override;
 
     //Reimplemented to accept dropped colors
-    void dropEvent( QDropEvent *e ) override;
+    void dropEvent( QDropEvent* e ) override;
 
   private:
 

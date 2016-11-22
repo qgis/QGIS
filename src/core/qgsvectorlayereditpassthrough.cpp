@@ -18,7 +18,7 @@
 #include "qgsvectordataprovider.h"
 
 QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer* layer )
-    : mModified( false )
+  : mModified( false )
 {
   L = layer;
 }
@@ -94,7 +94,7 @@ bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsG
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &/*oldValue*/ )
+bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant& newValue, const QVariant& /*oldValue*/ )
 {
   QgsAttributeMap map;
   map.insert( field, newValue );
@@ -109,7 +109,7 @@ bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int 
   return false;
 }
 
-bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
+bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField& field )
 {
   if ( L->dataProvider()->addAttributes( QList<QgsField>() << field ) )
   {

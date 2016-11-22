@@ -30,7 +30,7 @@ class GUI_EXPORT QgsWebViewWidgetConfigDlg : public QgsEditorConfigWidget, priva
     Q_OBJECT
 
   public:
-    explicit QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent );
+    explicit QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
 
     // QgsEditorConfigWidget interface
   public:

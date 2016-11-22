@@ -30,7 +30,7 @@ class GUI_EXPORT QgsPhotoConfigDlg : public QgsEditorConfigWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    explicit QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:

@@ -47,7 +47,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget* parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
     //! \brief Destructor
     ~QgsRasterLayerProperties();
 
@@ -99,7 +99,10 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
     //! Help button
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     //! Slot to reset all color rendering options to default
     void on_mResetColorRenderingBtn_clicked();
@@ -114,7 +117,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void toggleColorizeControls( bool colorizeEnabled );
 
     //! Transparency cell changed
-    void transparencyCellTextEdited( const QString & text );
+    void transparencyCellTextEdited( const QString& text );
 
     void aboutToShowStyleMenu();
 
@@ -147,7 +150,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     bool mRGBMinimumMaximumEstimated;
 
     //! \brief Pointer to the raster layer that this property dilog changes the behaviour of.
-    QgsRasterLayer * mRasterLayer;
+    QgsRasterLayer* mRasterLayer;
 
     /** \brief If the underlying raster layer doesn't have a provider
 

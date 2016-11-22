@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      */
     void createSearchWidgetWrappers( const QString& widgetId, int fieldIdx,
                                      const QgsEditorWidgetConfig& config,
-                                     const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
      * reflect the updated mode. Eg, showing multi edit tool buttons if the mode is set to MultiEditMode.
@@ -82,7 +82,10 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     /** Returns the current mode for the widget.
      * @see setMode()
      */
-    Mode mode() const { return mMode; }
+    Mode mode() const
+    {
+      return mMode;
+    }
 
     /** Resets the widget to an initial value.
      * @param initialValue initial value to show in widget
@@ -93,7 +96,10 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     /** Returns true if the widget's value has been changed since it was initialized.
      * @see initialize()
      */
-    bool hasChanged() const { return mIsChanged; }
+    bool hasChanged() const
+    {
+      return mIsChanged;
+    }
 
     /** Returns the current value of the attached editor widget.
      */

@@ -20,32 +20,32 @@
 #include "qgsmaplayerregistry.h"
 
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
-    : QgsLayerTreeNode( NodeLayer )
-    , mLayerId( layer->id() )
-    , mLayer( nullptr )
-    , mVisible( Qt::Checked )
+QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer* layer )
+  : QgsLayerTreeNode( NodeLayer )
+  , mLayerId( layer->id() )
+  , mLayer( nullptr )
+  , mVisible( Qt::Checked )
 {
   Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
   attachToLayer();
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
-    : QgsLayerTreeNode( NodeLayer )
-    , mLayerId( layerId )
-    , mLayerName( name )
-    , mLayer( nullptr )
-    , mVisible( Qt::Checked )
+  : QgsLayerTreeNode( NodeLayer )
+  , mLayerId( layerId )
+  , mLayerName( name )
+  , mLayer( nullptr )
+  , mVisible( Qt::Checked )
 {
   attachToLayer();
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
-    : QgsLayerTreeNode( other )
-    , mLayerId( other.mLayerId )
-    , mLayerName( other.mLayerName )
-    , mLayer( nullptr )
-    , mVisible( other.mVisible )
+  : QgsLayerTreeNode( other )
+  , mLayerId( other.mLayerId )
+  , mLayerName( other.mLayerName )
+  , mLayer( nullptr )
+  , mVisible( other.mVisible )
 {
   attachToLayer();
 }

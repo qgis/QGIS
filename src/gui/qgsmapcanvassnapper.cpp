@@ -27,8 +27,8 @@
 #include "qgsgeometry.h"
 
 QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
-    : mMapCanvas( canvas )
-    , mSnapper( nullptr )
+  : mMapCanvas( canvas )
+  , mSnapper( nullptr )
 {
   if ( !canvas )
     return;
@@ -90,7 +90,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( QPoint p, QList<QgsSnappingResult>&
   if ( !currentLayer )
     return 2;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
   if ( !vlayer )
     return 3;
 
@@ -240,7 +240,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
     }
 
     //layer
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *layerIt ) );
     if ( !vlayer || !vlayer->hasGeometryType() )
       continue;
 
@@ -330,7 +330,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
         //We have to check the intersection point is inside the tolerance distance for both layers
         double toleranceA = 0;
         double toleranceB = 0;
-        for ( int i = 0 ;i < snapLayers.size();++i )
+        for ( int i = 0 ; i < snapLayers.size(); ++i )
         {
           if ( snapLayers[i].mLayer == oSegIt->layer )
           {

@@ -29,14 +29,14 @@ class TestQgsFileDownloader: public QObject
     Q_OBJECT
   public:
     TestQgsFileDownloader()
-        : mTempFile( nullptr )
-        , mErrorMessage()
-        , mCanceled( false )
-        , mProgress( false )
-        , mError( false )
-        , mCompleted( false )
-        , mExited( false )
-        , mFileDownloader( nullptr )
+      : mTempFile( nullptr )
+      , mErrorMessage()
+      , mCanceled( false )
+      , mProgress( false )
+      , mError( false )
+      , mCompleted( false )
+      , mExited( false )
+      , mFileDownloader( nullptr )
     {}
 
   public slots:
@@ -89,14 +89,14 @@ class TestQgsFileDownloader: public QObject
 
   private:
     void makeCall( QUrl url , QString fileName, bool cancel = false );
-    QTemporaryFile *mTempFile;
+    QTemporaryFile* mTempFile;
     QString mErrorMessage;
     bool mCanceled;
     bool mProgress;
     bool mError;
     bool mCompleted;
     bool mExited;
-    QgsFileDownloader *mFileDownloader;
+    QgsFileDownloader* mFileDownloader;
 };
 
 void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )
@@ -226,11 +226,11 @@ void TestQgsFileDownloader::testSslError_data()
   QTest::addColumn<QString>( "result" );
 
   QTest::newRow( "expired" ) << "https://expired.badssl.com/"
-  << "Network error 6: SSL handshake failed;SSL Errors: ;The certificate has expired";
+                             << "Network error 6: SSL handshake failed;SSL Errors: ;The certificate has expired";
   QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
-  << "Network error 6: SSL handshake failed;SSL Errors: ;The certificate is self-signed, and untrusted";
+                                 << "Network error 6: SSL handshake failed;SSL Errors: ;The certificate is self-signed, and untrusted";
   QTest::newRow( "untrusted-root" ) << "https://untrusted-root.badssl.com/"
-  << "Network error 6: SSL handshake failed;No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
+                                    << "Network error 6: SSL handshake failed;No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
 }
 
 void TestQgsFileDownloader::testSslError()

@@ -25,11 +25,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 
-QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
-    : QWidget( parent )
-    , mExpressionDialogTitle( tr( "Expression dialog" ) )
-    , mDa( nullptr )
-    , mExpressionContextGenerator( nullptr )
+QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget* parent )
+  : QWidget( parent )
+  , mExpressionDialogTitle( tr( "Expression dialog" ) )
+  , mDa( nullptr )
+  , mExpressionContextGenerator( nullptr )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -67,7 +67,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                     << QgsExpressionContextUtils::projectScope();
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString& title )
@@ -95,7 +95,7 @@ void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
     layout->addWidget( mCombo );
 }
 
-void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
+void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea& da )
 {
   mDa = QSharedPointer<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
@@ -115,7 +115,7 @@ QString QgsFieldExpressionWidget::expression() const
   return asExpression();
 }
 
-bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
+bool QgsFieldExpressionWidget::isValidExpression( QString* expressionError ) const
 {
   QString temp;
   return QgsExpression::checkExpression( currentText(), &mExpressionContext, expressionError ? *expressionError : temp );
@@ -126,7 +126,7 @@ bool QgsFieldExpressionWidget::isExpression() const
   return !mFieldProxyModel->sourceFieldModel()->isField( currentText() );
 }
 
-QString QgsFieldExpressionWidget::currentField( bool *isExpression, bool *isValid ) const
+QString QgsFieldExpressionWidget::currentField( bool* isExpression, bool* isValid ) const
 {
   QString text = currentText();
   bool valueIsExpression = this->isExpression();
@@ -142,7 +142,7 @@ QString QgsFieldExpressionWidget::currentField( bool *isExpression, bool *isVali
   return text;
 }
 
-QgsVectorLayer *QgsFieldExpressionWidget::layer() const
+QgsVectorLayer* QgsFieldExpressionWidget::layer() const
 {
   return mFieldProxyModel->sourceFieldModel()->layer();
 }
@@ -152,7 +152,7 @@ void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpr
   mExpressionContextGenerator = generator;
 }
 
-void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
+void QgsFieldExpressionWidget::setLayer( QgsMapLayer* layer )
 {
   QgsVectorLayer* vl = qobject_cast< QgsVectorLayer* >( layer );
 
@@ -170,7 +170,7 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
     connect( mFieldProxyModel->sourceFieldModel()->layer(), SIGNAL( updatedFields() ), SLOT( reloadLayer() ), Qt::UniqueConnection );
 }
 
-void QgsFieldExpressionWidget::setField( const QString &fieldName )
+void QgsFieldExpressionWidget::setField( const QString& fieldName )
 {
   if ( fieldName.isEmpty() )
     return;

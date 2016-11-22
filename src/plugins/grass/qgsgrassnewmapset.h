@@ -51,9 +51,9 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     };
 
     //! Constructor
-    QgsGrassNewMapset( QgisInterface *iface,
-                       QgsGrassPlugin *plugin,
-                       QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsGrassNewMapset( QgisInterface* iface,
+                       QgsGrassPlugin* plugin,
+                       QWidget* parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassNewMapset();
@@ -69,12 +69,21 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
   public slots:
     //! Browse database
-    void on_mDatabaseButton_clicked() { browseDatabase(); }
+    void on_mDatabaseButton_clicked()
+    {
+      browseDatabase();
+    }
     void browseDatabase();
 
     //! Database changed
-    void on_mDatabaseLineEdit_returnPressed() { databaseChanged(); }
-    void on_mDatabaseLineEdit_textChanged() { databaseChanged(); }
+    void on_mDatabaseLineEdit_returnPressed()
+    {
+      databaseChanged();
+    }
+    void on_mDatabaseLineEdit_textChanged()
+    {
+      databaseChanged();
+    }
     void databaseChanged();
 
     /***************** LOCATION *****************/
@@ -85,20 +94,32 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setLocations();
 
     //! Location radio switched
-    void on_mCreateLocationRadioButton_clicked() { locationRadioSwitched(); }
-    void on_mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
+    void on_mCreateLocationRadioButton_clicked()
+    {
+      locationRadioSwitched();
+    }
+    void on_mSelectLocationRadioButton_clicked()
+    {
+      locationRadioSwitched();
+    }
     void locationRadioSwitched();
 
     //! Existing location selection
-    void on_mLocationComboBox_textChanged( const QString &txt )
+    void on_mLocationComboBox_textChanged( const QString& txt )
     {
       existingLocationChanged( txt );
     }
     void existingLocationChanged( const QString& );
 
     //! New location name has changed
-    void on_mLocationLineEdit_returnPressed() { newLocationChanged(); }
-    void on_mLocationLineEdit_textChanged() { newLocationChanged(); }
+    void on_mLocationLineEdit_returnPressed()
+    {
+      newLocationChanged();
+    }
+    void on_mLocationLineEdit_textChanged()
+    {
+      newLocationChanged();
+    }
     void newLocationChanged();
 
     //! Check location
@@ -113,8 +134,14 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void projectionSelected();
 
     //! Location radio switched
-    void on_mNoProjRadioButton_clicked() { projRadioSwitched(); }
-    void on_mProjRadioButton_clicked() { projRadioSwitched(); }
+    void on_mNoProjRadioButton_clicked()
+    {
+      projRadioSwitched();
+    }
+    void on_mProjRadioButton_clicked()
+    {
+      projRadioSwitched();
+    }
     void projRadioSwitched();
 
     //! Set GRASS projection structures for currently selected projection
@@ -129,22 +156,52 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setGrassRegionDefaults();
 
     //! Region Changed
-    void on_mNorthLineEdit_returnPressed() { regionChanged(); }
-    void on_mNorthLineEdit_textChanged() { regionChanged(); }
-    void on_mSouthLineEdit_returnPressed() { regionChanged(); }
-    void on_mSouthLineEdit_textChanged() { regionChanged(); }
-    void on_mEastLineEdit_returnPressed() { regionChanged(); }
-    void on_mEastLineEdit_textChanged() { regionChanged(); }
-    void on_mWestLineEdit_returnPressed() { regionChanged(); }
-    void on_mWestLineEdit_textChanged() { regionChanged(); }
+    void on_mNorthLineEdit_returnPressed()
+    {
+      regionChanged();
+    }
+    void on_mNorthLineEdit_textChanged()
+    {
+      regionChanged();
+    }
+    void on_mSouthLineEdit_returnPressed()
+    {
+      regionChanged();
+    }
+    void on_mSouthLineEdit_textChanged()
+    {
+      regionChanged();
+    }
+    void on_mEastLineEdit_returnPressed()
+    {
+      regionChanged();
+    }
+    void on_mEastLineEdit_textChanged()
+    {
+      regionChanged();
+    }
+    void on_mWestLineEdit_returnPressed()
+    {
+      regionChanged();
+    }
+    void on_mWestLineEdit_textChanged()
+    {
+      regionChanged();
+    }
     void regionChanged();
 
     //! Set current QGIS region
-    void on_mCurrentRegionButton_clicked() { setCurrentRegion(); }
+    void on_mCurrentRegionButton_clicked()
+    {
+      setCurrentRegion();
+    }
     void setCurrentRegion();
 
     //! Set region selected in combo box
-    void on_mRegionButton_clicked() { setSelectedRegion(); }
+    void on_mRegionButton_clicked()
+    {
+      setSelectedRegion();
+    }
     void setSelectedRegion();
 
     //! Draw current region on map
@@ -156,8 +213,14 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setMapsets();
 
     //! Mapset name changed
-    void on_mMapsetLineEdit_returnPressed() { mapsetChanged(); }
-    void on_mMapsetLineEdit_textChanged() { mapsetChanged(); }
+    void on_mMapsetLineEdit_returnPressed()
+    {
+      mapsetChanged();
+    }
+    void on_mMapsetLineEdit_textChanged()
+    {
+      mapsetChanged();
+    }
     void mapsetChanged();
 
     /******************** FINISH ******************/
@@ -176,13 +239,13 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void pageSelected( int index );
 
     //! Close event
-    void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent* e ) override;
 
     //! Key event
-    void keyPressEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent* e ) override;
 
     //! Set error line
-    void setError( QLabel *line, const QString &err = QString() );
+    void setError( QLabel* line, const QString& err = QString() );
   private:
     //! Get current gisdbase
     QString gisdbase();
@@ -191,21 +254,21 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     bool gisdbaseExists();
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface* mIface;
 
     //! Plugin
-    QgsGrassPlugin *mPlugin;
+    QgsGrassPlugin* mPlugin;
 
     //! Editing is already running
     static bool mRunning;
 
     //! Projection selector
-    QgsProjectionSelector *mProjectionSelector;
+    QgsProjectionSelector* mProjectionSelector;
 
     //! GRASS projection
     struct Cell_head mCellHead;
-    struct Key_Value *mProjInfo;
-    struct Key_Value *mProjUnits;
+    struct Key_Value* mProjInfo;
+    struct Key_Value* mProjUnits;
 
     //! Previous page
     int mPreviousPage;

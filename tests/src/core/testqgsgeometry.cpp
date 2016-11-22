@@ -115,25 +115,25 @@ class TestQgsGeometry : public QObject
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString& theTestName, const QString& theComment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
     //! A helper method to dump to qdebug the geometry of a multipolygon
-    void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
+    void dumpMultiPolygon( QgsMultiPolygon& theMultiPolygon );
     //! A helper method to dump to qdebug the geometry of a polygon
-    void dumpPolygon( QgsPolygon &thePolygon );
+    void dumpPolygon( QgsPolygon& thePolygon );
     //! A helper method to dump to qdebug the geometry of a polyline
-    void dumpPolyline( QgsPolyline &thePolyline );
+    void dumpPolyline( QgsPolyline& thePolyline );
 
     // Release return with delete []
-    unsigned char * hex2bytes( const char *hex, int *size )
+    unsigned char* hex2bytes( const char* hex, int* size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
-      unsigned char *out = new unsigned char[ba.size()];
+      unsigned char* out = new unsigned char[ba.size()];
       memcpy( out, ba.data(), ba.size() );
       *size = ba.size();
       return out;
     }
 
-    QString bytes2hex( const unsigned char *bytes, int size )
+    QString bytes2hex( const unsigned char* bytes, int size )
     {
-      QByteArray ba(( const char * )bytes, size );
+      QByteArray ba(( const char* )bytes, size );
       QString out = ba.toHex();
       return out;
     }
@@ -166,18 +166,18 @@ class TestQgsGeometry : public QObject
     QString mWktLine;
     QString mTestDataDir;
     QImage mImage;
-    QPainter * mpPainter;
+    QPainter* mpPainter;
     QPen mPen1;
     QPen mPen2;
     QString mReport;
 };
 
 TestQgsGeometry::TestQgsGeometry()
-    : mpPolylineGeometryD( nullptr )
-    , mpPolygonGeometryA( nullptr )
-    , mpPolygonGeometryB( nullptr )
-    , mpPolygonGeometryC( nullptr )
-    , mpPainter( nullptr )
+  : mpPolylineGeometryD( nullptr )
+  , mpPolygonGeometryA( nullptr )
+  , mpPolygonGeometryB( nullptr )
+  , mpPolygonGeometryC( nullptr )
+  , mpPainter( nullptr )
 {
 
 }
@@ -3399,7 +3399,7 @@ void TestQgsGeometry::simplifyCheck1()
 {
   QVERIFY( mpPolylineGeometryD->simplify( 0.5 ) );
   // should be a single polygon as A intersect B
-  QgsGeometry * mypSimplifyGeometry  =  mpPolylineGeometryD->simplify( 0.5 );
+  QgsGeometry* mypSimplifyGeometry  =  mpPolylineGeometryD->simplify( 0.5 );
   qDebug( "Geometry Type: %s", QgsWkbTypes::displayString( mypSimplifyGeometry->wkbType() ) );
   QVERIFY( mypSimplifyGeometry->wkbType() == QgsWkbTypes::LineString );
   QgsPolyline myLine = mypSimplifyGeometry->asPolyline();
@@ -3577,7 +3577,7 @@ void TestQgsGeometry::smoothCheck()
   QgsPolyline line = result.asPolyline();
   QgsPolyline expectedLine;
   expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
-  << QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 );
+               << QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, with min distance
@@ -3587,7 +3587,7 @@ void TestQgsGeometry::smoothCheck()
   line = result.asPolyline();
   expectedLine.clear();
   expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
-  << QgsPoint( 10.0, 7.5 ) << QgsPoint( 15, 12.5 ) << QgsPoint( 15.0, 20.0 );
+               << QgsPoint( 10.0, 7.5 ) << QgsPoint( 15, 12.5 ) << QgsPoint( 15.0, 20.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, with max angle
@@ -3597,7 +3597,7 @@ void TestQgsGeometry::smoothCheck()
   line = result.asPolyline();
   expectedLine.clear();
   expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 11.25, 1.25 )
-  << QgsPoint( 15.0, 5.0 ) << QgsPoint( 22.5, -2.5 ) << QgsPoint( 26.25, -5 ) << QgsPoint( 30, -5 );
+               << QgsPoint( 15.0, 5.0 ) << QgsPoint( 22.5, -2.5 ) << QgsPoint( 26.25, -5 ) << QgsPoint( 30, -5 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, with max angle, other direction
@@ -3607,7 +3607,7 @@ void TestQgsGeometry::smoothCheck()
   line = result.asPolyline();
   expectedLine.clear();
   expectedLine << QgsPoint( 30, -5 ) << QgsPoint( 26.25, -5 ) << QgsPoint( 22.5, -2.5 )
-  << QgsPoint( 15.0, 5.0 ) << QgsPoint( 11.25, 1.25 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 0, 0 );
+               << QgsPoint( 15.0, 5.0 ) << QgsPoint( 11.25, 1.25 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 0, 0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
   //linestring, max angle, first corner sharp
@@ -3626,8 +3626,8 @@ void TestQgsGeometry::smoothCheck()
   QgsMultiPolyline expectedMultiline;
   expectedMultiline << ( QgsPolyline() << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
                          <<  QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 ) )
-  << ( QgsPolyline() << QgsPoint( 30.0, 30.0 ) << QgsPoint( 37.5, 30.0 ) << QgsPoint( 40.0, 32.5 )
-       << QgsPoint( 40.0, 37.5 ) << QgsPoint( 42.5, 40.0 ) << QgsPoint( 50.0, 40.0 ) );
+                    << ( QgsPolyline() << QgsPoint( 30.0, 30.0 ) << QgsPoint( 37.5, 30.0 ) << QgsPoint( 40.0, 32.5 )
+                         << QgsPoint( 40.0, 37.5 ) << QgsPoint( 42.5, 40.0 ) << QgsPoint( 50.0, 40.0 ) );
   QVERIFY( QgsGeometry::compare( multiLine, expectedMultiline ) );
 
   //polygon
@@ -3639,9 +3639,9 @@ void TestQgsGeometry::smoothCheck()
   expectedPolygon << ( QgsPolyline() << QgsPoint( 2.5, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
                        <<  QgsPoint( 10.0, 7.5 ) << QgsPoint( 7.5, 10.0 ) << QgsPoint( 2.5, 10.0 ) << QgsPoint( 0, 7.5 )
                        << QgsPoint( 0, 2.5 ) << QgsPoint( 2.5, 0 ) )
-  << ( QgsPolyline() << QgsPoint( 2.5, 2.0 ) << QgsPoint( 3.5, 2.0 ) << QgsPoint( 4.0, 2.5 )
-       << QgsPoint( 4.0, 3.5 ) << QgsPoint( 3.5, 4.0 ) << QgsPoint( 2.5, 4.0 )
-       << QgsPoint( 2.0, 3.5 ) << QgsPoint( 2.0, 2.5 ) << QgsPoint( 2.5, 2.0 ) );
+                  << ( QgsPolyline() << QgsPoint( 2.5, 2.0 ) << QgsPoint( 3.5, 2.0 ) << QgsPoint( 4.0, 2.5 )
+                       << QgsPoint( 4.0, 3.5 ) << QgsPoint( 3.5, 4.0 ) << QgsPoint( 2.5, 4.0 )
+                       << QgsPoint( 2.0, 3.5 ) << QgsPoint( 2.0, 2.5 ) << QgsPoint( 2.5, 2.0 ) );
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
 
   //polygon with max angle - should be unchanged
@@ -3661,12 +3661,12 @@ void TestQgsGeometry::smoothCheck()
   QgsMultiPolygon multipoly = result.asMultiPolygon();
   QgsMultiPolygon expectedMultiPoly;
   expectedMultiPoly
-  << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 1.0, 0 ) << QgsPoint( 9, 0 ) << QgsPoint( 10.0, 1 )
-                         <<  QgsPoint( 10.0, 9 ) << QgsPoint( 9, 10.0 ) << QgsPoint( 1, 10.0 ) << QgsPoint( 0, 9 )
-                         << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) ) )
-  << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 2.2, 2.0 ) << QgsPoint( 3.8, 2.0 ) << QgsPoint( 4.0, 2.2 )
-                         <<  QgsPoint( 4.0, 3.8 ) << QgsPoint( 3.8, 4.0 ) << QgsPoint( 2.2, 4.0 ) << QgsPoint( 2.0, 3.8 )
-                         << QgsPoint( 2, 2.2 ) << QgsPoint( 2.2, 2 ) ) );
+      << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 1.0, 0 ) << QgsPoint( 9, 0 ) << QgsPoint( 10.0, 1 )
+                             <<  QgsPoint( 10.0, 9 ) << QgsPoint( 9, 10.0 ) << QgsPoint( 1, 10.0 ) << QgsPoint( 0, 9 )
+                             << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) ) )
+      << ( QgsPolygon() << ( QgsPolyline() << QgsPoint( 2.2, 2.0 ) << QgsPoint( 3.8, 2.0 ) << QgsPoint( 4.0, 2.2 )
+                             <<  QgsPoint( 4.0, 3.8 ) << QgsPoint( 3.8, 4.0 ) << QgsPoint( 2.2, 4.0 ) << QgsPoint( 2.0, 3.8 )
+                             << QgsPoint( 2, 2.2 ) << QgsPoint( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
 }
 
@@ -3779,7 +3779,7 @@ bool TestQgsGeometry::renderCheck( const QString& theTestName, const QString& th
   return myResultFlag;
 }
 
-void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
+void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon& theMultiPolygon )
 {
   qDebug( "Multipolygon Geometry Dump" );
   for ( int i = 0; i < theMultiPolygon.size(); i++ )
@@ -3790,7 +3790,7 @@ void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
   }
 }
 
-void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
+void TestQgsGeometry::dumpPolygon( QgsPolygon& thePolygon )
 {
   QVector<QPointF> myPoints;
   for ( int j = 0; j < thePolygon.size(); j++ )
@@ -3808,7 +3808,7 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
   mpPainter->drawPolygon( myPoints );
 }
 
-void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
+void TestQgsGeometry::dumpPolyline( QgsPolyline& thePolyline )
 {
   QVector<QPointF> myPoints;
 //  QgsPolyline myPolyline = thePolyline.at( j ); //rings of polygon
@@ -3842,9 +3842,9 @@ void TestQgsGeometry::wkbInOut()
 {
   // Premature end of WKB
   // See http://hub.qgis.org/issues/14182
-  const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
+  const char* hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
   int size;
-  unsigned char *wkb = hex2bytes( hexwkb, &size );
+  unsigned char* wkb = hex2bytes( hexwkb, &size );
   QgsGeometry g14182;
   // NOTE: wkb onwership transferred to QgsGeometry
   g14182.fromWkb( wkb, size );
@@ -3855,7 +3855,7 @@ void TestQgsGeometry::wkbInOut()
   QCOMPARE( wkt, QString() );
 
   //WKB with a truncated header
-  const char *badHeaderHexwkb = "0102";
+  const char* badHeaderHexwkb = "0102";
   wkb = hex2bytes( badHeaderHexwkb, &size );
   QgsGeometry badHeader;
   // NOTE: wkb onwership transferred to QgsGeometry

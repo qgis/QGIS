@@ -23,9 +23,9 @@
 #include <QDomElement>
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
-    , mBrightness( 0 )
-    , mContrast( 0 )
+  : QgsRasterInterface( input )
+  , mBrightness( 0 )
+  , mContrast( 0 )
 {
 }
 
@@ -36,7 +36,7 @@ QgsBrightnessContrastFilter::~QgsBrightnessContrastFilter()
 QgsBrightnessContrastFilter* QgsBrightnessContrastFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( nullptr );
+  QgsBrightnessContrastFilter* filter = new QgsBrightnessContrastFilter( nullptr );
   filter->setBrightness( mBrightness );
   filter->setContrast( mContrast );
   return filter;
@@ -109,12 +109,12 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface* input )
   return true;
 }
 
-QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     return outputBlock;
@@ -122,7 +122,7 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( bandNumber, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );

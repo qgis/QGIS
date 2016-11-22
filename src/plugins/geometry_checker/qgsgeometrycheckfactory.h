@@ -57,7 +57,10 @@ class QgsGeometryCheckFactoryRegistry
   private:
     QList<const QgsGeometryCheckFactory*> mFactories;
     QgsGeometryCheckFactoryRegistry() {}
-    ~QgsGeometryCheckFactoryRegistry() { qDeleteAll( mFactories ); }
+    ~QgsGeometryCheckFactoryRegistry()
+    {
+      qDeleteAll( mFactories );
+    }
 
     static QgsGeometryCheckFactoryRegistry* instance()
     {

@@ -32,22 +32,22 @@
 //standard includes
 
 
-RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent )
-    : QWidget( parent )
+RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings* s, QWidget* parent )
+  : QWidget( parent )
 {
   // create base widgets;
-  QTabWidget *tab = new QTabWidget( this );
-  QVBoxLayout *v = new QVBoxLayout( this );
+  QTabWidget* tab = new QTabWidget( this );
+  QVBoxLayout* v = new QVBoxLayout( this );
   v->addWidget( tab );
 
   // transportation layer
-  QFrame *frame = new QFrame( this );
+  QFrame* frame = new QFrame( this );
   tab->addTab( frame, tr( "Transportation layer" ) );
   v = new QVBoxLayout( frame );
-  QLabel *l = new QLabel( tr( "Layer" ), frame );
+  QLabel* l = new QLabel( tr( "Layer" ), frame );
   mcbLayers = new QgsMapLayerComboBox( frame );
   mcbLayers->setFilters( QgsMapLayerProxyModel::LineLayer );
-  QHBoxLayout *h = new QHBoxLayout();
+  QHBoxLayout* h = new QHBoxLayout();
 
   h->addWidget( l );
   h->addWidget( mcbLayers );

@@ -30,12 +30,12 @@
 #include <QInputDialog>
 #include <QVBoxLayout>
 
-QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color, Layout widgetLayout )
-    : QgsPanelWidget( parent )
-    , mAllowAlpha( true )
-    , mLastCustomColorIndex( 0 )
-    , mPickingColor( false )
-    , mDiscarded( false )
+QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget* parent, const QColor& color, Layout widgetLayout )
+  : QgsPanelWidget( parent )
+  , mAllowAlpha( true )
+  , mLastCustomColorIndex( 0 )
+  , mPickingColor( false )
+  , mDiscarded( false )
 {
   setupUi( this );
 
@@ -60,7 +60,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme*> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
 
   //choose a reasonable starting scheme
   int activeScheme = settings.value( QStringLiteral( "/Windows/ColorDialog/activeScheme" ), 0 ).toInt();
@@ -270,8 +270,8 @@ void QgsCompoundColorWidget::refreshSchemeComboBox()
 {
   mSchemeComboBox->blockSignals( true );
   mSchemeComboBox->clear();
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
-  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
+  QList<QgsColorScheme*> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme*>::const_iterator schemeIt = schemeList.constBegin();
   for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
   {
     mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
@@ -333,7 +333,7 @@ void QgsCompoundColorWidget::importPalette()
 void QgsCompoundColorWidget::removePalette()
 {
   //get current scheme
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme*> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
   int prevIndex = mSchemeComboBox->currentIndex();
   if ( prevIndex >= schemeList.length() )
   {
@@ -430,7 +430,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
   }
 
   //get schemes with ShowInColorDialog set
-  QList<QgsColorScheme *> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
+  QList<QgsColorScheme*> schemeList = QgsColorSchemeRegistry::instance()->schemes( QgsColorScheme::ShowInColorDialog );
   if ( index >= schemeList.length() )
   {
     return;
@@ -445,7 +445,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
   mActionCopyColors->setEnabled( false );
 }
 
-void QgsCompoundColorWidget::listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsCompoundColorWidget::listSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( deselected );
   mActionCopyColors->setEnabled( selected.length() > 0 );
@@ -514,7 +514,7 @@ void QgsCompoundColorWidget::on_mAddCustomColorButton_clicked()
 void QgsCompoundColorWidget::on_mSampleButton_clicked()
 {
   //activate picker color
-  QPixmap samplerPixmap = QPixmap(( const char ** ) sampler_cursor );
+  QPixmap samplerPixmap = QPixmap(( const char** ) sampler_cursor );
   setCursor( QCursor( samplerPixmap, 0, 0 ) );
   grabMouse();
   grabKeyboard();
@@ -618,7 +618,7 @@ void QgsCompoundColorWidget::stopPicking( QPoint eventPos, const bool takeSample
   mColorPreview->setColor( snappedColor, true );
 }
 
-void QgsCompoundColorWidget::setColor( const QColor &color )
+void QgsCompoundColorWidget::setColor( const QColor& color )
 {
   if ( !color.isValid() )
   {
@@ -631,7 +631,7 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     //alpha disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
   }
-  QList<QgsColorWidget*> colorWidgets = this->findChildren<QgsColorWidget *>();
+  QList<QgsColorWidget*> colorWidgets = this->findChildren<QgsColorWidget*>();
   Q_FOREACH ( QgsColorWidget* widget, colorWidgets )
   {
     if ( widget == mSamplePreview )
@@ -645,13 +645,13 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
   emit currentColorChanged( fixedColor );
 }
 
-void QgsCompoundColorWidget::setPreviousColor( const QColor &color )
+void QgsCompoundColorWidget::setPreviousColor( const QColor& color )
 {
   mOldColorLabel->setVisible( color.isValid() );
   mColorPreview->setColor2( color );
 }
 
-void QgsCompoundColorWidget::mousePressEvent( QMouseEvent *e )
+void QgsCompoundColorWidget::mousePressEvent( QMouseEvent* e )
 {
   if ( mPickingColor )
   {
@@ -663,7 +663,7 @@ void QgsCompoundColorWidget::mousePressEvent( QMouseEvent *e )
   QWidget::mousePressEvent( e );
 }
 
-QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
+QColor QgsCompoundColorWidget::averageColor( const QImage& image ) const
 {
   QRgb tmpRgb;
   int colorCount = 0;
@@ -702,7 +702,7 @@ QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
   return averageColor( snappedImage );
 }
 
-void QgsCompoundColorWidget::mouseMoveEvent( QMouseEvent *e )
+void QgsCompoundColorWidget::mouseMoveEvent( QMouseEvent* e )
 {
   if ( mPickingColor )
   {
@@ -718,7 +718,7 @@ void QgsCompoundColorWidget::mouseMoveEvent( QMouseEvent *e )
   QWidget::mouseMoveEvent( e );
 }
 
-void QgsCompoundColorWidget::mouseReleaseEvent( QMouseEvent *e )
+void QgsCompoundColorWidget::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( mPickingColor )
   {
@@ -731,7 +731,7 @@ void QgsCompoundColorWidget::mouseReleaseEvent( QMouseEvent *e )
   QWidget::mouseReleaseEvent( e );
 }
 
-void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
+void QgsCompoundColorWidget::keyPressEvent( QKeyEvent* e )
 {
   if ( !mPickingColor )
   {

@@ -48,7 +48,10 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual QDomElement save( QDomDocument& doc ) const = 0;
 
     //! Get list of sub-providers within the layer's labeling.
-    virtual QStringList subProviders() const { return QStringList( QString() ); }
+    virtual QStringList subProviders() const
+    {
+      return QStringList( QString() );
+    }
 
     //! Get associated label settings. In case of multiple sub-providers with different settings,
     //! they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)

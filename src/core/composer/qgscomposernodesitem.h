@@ -36,14 +36,14 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
      * @param mTagName tag used in XML file
      * @param c parent composition
      */
-    QgsComposerNodesItem( const QString &mTagName, QgsComposition* c );
+    QgsComposerNodesItem( const QString& mTagName, QgsComposition* c );
 
     /** Constructor
      * @param mTagName tag used in XML file
      * @param polygon nodes of the shape
      * @param c parent composition
      */
-    QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition* c );
+    QgsComposerNodesItem( const QString& mTagName, const QPolygonF& polygon, QgsComposition* c );
 
     //! Destructor
     ~QgsComposerNodesItem();
@@ -60,7 +60,10 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     /** Set a tag to indicate if we want to draw or not the shape's nodes.
      * @param display
      */
-    void setDisplayNodes( const bool display = true ) { mDrawNodes = display; }
+    void setDisplayNodes( const bool display = true )
+    {
+      mDrawNodes = display;
+    }
 
     /** Move a node to a new position.
      * @param index the index of the node to move
@@ -85,7 +88,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
       * @param position the position of the node
       * @return true if the index is valid and the position is set, false otherwise
       */
-    bool nodePosition( const int index, QPointF &position );
+    bool nodePosition( const int index, QPointF& position );
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
@@ -99,7 +102,10 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     bool removeNode( const int index );
 
     //! Returns the number of nodes in the shape.
-    int nodesSize() { return mPolygon.size(); }
+    int nodesSize()
+    {
+      return mPolygon.size();
+    }
 
     /** Select a node.
      * @param index the node to select
@@ -109,17 +115,23 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     /** Returns the currently selected node.
       * @return the index of the selected node, -1 otherwise
       */
-    int selectedNode() { return mSelectedNode; }
+    int selectedNode()
+    {
+      return mSelectedNode;
+    }
 
     /** Deselect a node.
      */
-    void unselectNode() { mSelectedNode = -1; }
+    void unselectNode()
+    {
+      mSelectedNode = -1;
+    }
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
   protected:
 
@@ -133,13 +145,13 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     virtual bool _removeNode( const int nodeIndex ) = 0;
 
     //! Method called in paint.
-    virtual void _draw( QPainter *painter ) = 0;
+    virtual void _draw( QPainter* painter ) = 0;
 
     //! Method called in readXml.
-    virtual void _readXmlStyle( const QDomElement &elmt ) = 0;
+    virtual void _readXmlStyle( const QDomElement& elmt ) = 0;
 
     //! Method called in writeXml.
-    virtual void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const = 0;
+    virtual void _writeXmlStyle( QDomDocument& doc, QDomElement& elmt ) const = 0;
 
     /** Rescale the current shape according to the boudning box. Useful when
      * the shape is resized thanks to the rubber band. */
@@ -163,8 +175,8 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     bool mDrawNodes;
 
     //! Draw nodes
-    void drawNodes( QPainter *painter ) const;
-    void drawSelectedNode( QPainter *painter ) const;
+    void drawNodes( QPainter* painter ) const;
+    void drawSelectedNode( QPainter* painter ) const;
 };
 
 #endif // QGSCOMPOSERNODESITEM_H

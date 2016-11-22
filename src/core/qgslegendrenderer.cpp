@@ -29,8 +29,8 @@
 
 
 QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings )
-    : mLegendModel( legendModel )
-    , mSettings( settings )
+  : mLegendModel( legendModel )
+  , mSettings( settings )
 {
 }
 

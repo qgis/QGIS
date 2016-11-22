@@ -22,8 +22,8 @@
 #include "qgssymbollayerutils.h"
 
 QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon ):
-    QgsComposerItemBaseWidget( nullptr, composerPolygon )
-    , mComposerPolygon( composerPolygon )
+  QgsComposerItemBaseWidget( nullptr, composerPolygon )
+  , mComposerPolygon( composerPolygon )
 {
   setupUi( this );
   setPanelTitle( tr( "Polygon properties" ) );

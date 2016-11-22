@@ -21,14 +21,14 @@
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
-    : QgsPaintEffect()
-    , mBlurLevel( 10 )
-    , mOffsetAngle( 135 )
-    , mOffsetDist( 2.0 )
-    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-    , mTransparency( 0.0 )
-    , mColor( Qt::black )
-    , mBlendMode( QPainter::CompositionMode_Multiply )
+  : QgsPaintEffect()
+  , mBlurLevel( 10 )
+  , mOffsetAngle( 135 )
+  , mOffsetDist( 2.0 )
+  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
+  , mTransparency( 0.0 )
+  , mColor( Qt::black )
+  , mBlendMode( QPainter::CompositionMode_Multiply )
 {
 
 }
@@ -38,7 +38,7 @@ QgsShadowEffect::~QgsShadowEffect()
 
 }
 
-void QgsShadowEffect::draw( QgsRenderContext &context )
+void QgsShadowEffect::draw( QgsRenderContext& context )
 {
   if ( !source() || !enabled() || !context.painter() )
     return;
@@ -109,7 +109,7 @@ QgsStringMap QgsShadowEffect::properties() const
   return props;
 }
 
-void QgsShadowEffect::readProperties( const QgsStringMap &props )
+void QgsShadowEffect::readProperties( const QgsStringMap& props )
 {
   bool ok;
   QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
@@ -147,7 +147,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   }
 }
 
-QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsShadowEffect::boundingRect( const QRectF& rect, const QgsRenderContext& context ) const
 {
   //offset distance
   double spread = mOffsetDist * QgsSymbolLayerUtils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
@@ -161,7 +161,7 @@ QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext
 // QgsDropShadowEffect
 //
 
-QgsPaintEffect *QgsDropShadowEffect::create( const QgsStringMap &map )
+QgsPaintEffect* QgsDropShadowEffect::create( const QgsStringMap& map )
 {
   QgsDropShadowEffect* effect = new QgsDropShadowEffect();
   effect->readProperties( map );
@@ -169,7 +169,7 @@ QgsPaintEffect *QgsDropShadowEffect::create( const QgsStringMap &map )
 }
 
 QgsDropShadowEffect::QgsDropShadowEffect()
-    : QgsShadowEffect()
+  : QgsShadowEffect()
 {
 
 }
@@ -189,7 +189,7 @@ QgsDropShadowEffect* QgsDropShadowEffect::clone() const
 // QgsInnerShadowEffect
 //
 
-QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
+QgsPaintEffect* QgsInnerShadowEffect::create( const QgsStringMap& map )
 {
   QgsInnerShadowEffect* effect = new QgsInnerShadowEffect();
   effect->readProperties( map );
@@ -197,7 +197,7 @@ QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
 }
 
 QgsInnerShadowEffect::QgsInnerShadowEffect()
-    : QgsShadowEffect()
+  : QgsShadowEffect()
 {
 
 }

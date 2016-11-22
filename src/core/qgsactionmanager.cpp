@@ -129,7 +129,7 @@ QList<QgsAction> QgsActionManager::actions( const QString& actionScope ) const
   }
 }
 
-void QgsActionManager::runAction( const QgsAction &action )
+void QgsActionManager::runAction( const QgsAction& action )
 {
   if ( action.type() == QgsAction::OpenUrl )
   {
@@ -156,7 +156,7 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+          << QgsExpressionContextUtils::projectScope();
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 

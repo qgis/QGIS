@@ -21,9 +21,9 @@
 #include "qgsattributeeditorcontext.h"
 
 
-QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent )
-    : QDialog( parent )
-    , mVectorLayer( vl )
+QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext& context, QWidget* parent )
+  : QDialog( parent )
+  , mVectorLayer( vl )
 {
   setupUi( this );
 

@@ -29,17 +29,26 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     Q_OBJECT
   public:
     //! Constructor
-    QgsOracleNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsOracleNewConnection( QWidget* parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOracleNewConnection();
 
-    QString originalConnName() const { return mOriginalConnName; }
-    QString connName() const { return txtName->text(); }
+    QString originalConnName() const
+    {
+      return mOriginalConnName;
+    }
+    QString connName() const
+    {
+      return txtName->text();
+    }
 
   public slots:
     void accept();
     void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
 };

@@ -28,14 +28,14 @@
 #include <QTemporaryFile>
 
 QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap )
-    : QgsMSLayerBuilder()
-    , mParameterMap( parameterMap )
+  : QgsMSLayerBuilder()
+  , mParameterMap( parameterMap )
 {
 
 }
 
 QgsRemoteOWSBuilder::QgsRemoteOWSBuilder()
-    : QgsMSLayerBuilder()
+  : QgsMSLayerBuilder()
 {
 
 }
@@ -233,10 +233,10 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   return result;
 }
 
-QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
-    const QString &layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url,
+    const QString& layerName,
+    QList<QTemporaryFile*>& filesToRemove,
+    QList<QgsMapLayer*>& layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( layerName );

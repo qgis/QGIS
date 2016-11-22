@@ -41,10 +41,10 @@ void QgsProjectBadLayerGuiHandler::handleBadLayers( const QList<QDomNode>& layer
 
   QMessageBox messageBox;
 
-  QAbstractButton *ignoreButton =
+  QAbstractButton* ignoreButton =
     messageBox.addButton( tr( "Ignore" ), QMessageBox::ActionRole );
 
-  QAbstractButton *okButton = messageBox.addButton( QMessageBox :: Ok );
+  QAbstractButton* okButton = messageBox.addButton( QMessageBox :: Ok );
 
   messageBox.addButton( QMessageBox :: Cancel );
 

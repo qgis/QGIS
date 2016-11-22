@@ -19,7 +19,7 @@
 #include "qgscheckboxconfigdlg.h"
 
 QgsCheckboxWidgetFactory::QgsCheckboxWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
@@ -28,7 +28,7 @@ QgsEditorWidgetWrapper* QgsCheckboxWidgetFactory::create( QgsVectorLayer* vl, in
   return new QgsCheckboxWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsSearchWidgetWrapper*QgsCheckboxWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper* QgsCheckboxWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsCheckboxSearchWidgetWrapper( vl, fieldIdx, parent );
 }

@@ -64,7 +64,10 @@ namespace pal
         char_num = num;
         char_info = new CharacterInfo[num];
       }
-      ~LabelInfo() { delete [] char_info; }
+      ~LabelInfo()
+      {
+        delete [] char_info;
+      }
 
       double max_char_angle_inside;
       double max_char_angle_outside;
@@ -105,7 +108,10 @@ namespace pal
 
       /** Returns the parent feature.
        */
-      QgsLabelFeature* feature() { return mLF; }
+      QgsLabelFeature* feature()
+      {
+        return mLF;
+      }
 
       /** Returns the layer that feature belongs to.
        */
@@ -123,7 +129,7 @@ namespace pal
        * \param candidates index for candidates
        * \return the number of candidates generated in lPos
        */
-      int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>* candidates );
+      int createCandidates( QList<LabelPosition*>& lPos, double bboxMin[2], double bboxMax[2], PointSet* mapShape, RTree<LabelPosition*, double, 2, double>* candidates );
 
       /** Generate candidates for point feature, located around a specified point.
        * @param x x coordinate of the point
@@ -132,7 +138,7 @@ namespace pal
        * @param angle orientation of the label
        * @returns the number of generated candidates
        */
-      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+      int createCandidatesAroundPoint( double x, double y, QList<LabelPosition*>& lPos, double angle );
 
       /** Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
@@ -141,7 +147,7 @@ namespace pal
        * @param angle orientation of the label
        * @returns the number of generated candidates (always 1)
        */
-      int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+      int createCandidatesOverPoint( double x, double y, QList<LabelPosition*>& lPos, double angle );
 
       /** Generates candidates following a prioritised list of predefined positions around a point.
        * @param x x coordinate of the point
@@ -150,14 +156,14 @@ namespace pal
        * @param angle orientation of the label
        * @returns the number of generated candidates
        */
-      int createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+      int createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition*>& lPos, double angle );
 
       /** Generate candidates for line feature.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
-      int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      int createCandidatesAlongLine( QList<LabelPosition*>& lPos, PointSet* mapShape );
 
       /** Generate candidates for line feature, by trying to place candidates towards the middle of the longest
        * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
@@ -165,7 +171,7 @@ namespace pal
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
-      int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition*>& lPos, PointSet* mapShape );
 
       /** Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
        * Candidates can "cut corners" if it helps them place near this mid point.
@@ -175,7 +181,7 @@ namespace pal
        * by a preset amount.
        * @returns the number of generated candidates
        */
-      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
+      int createCandidatesAlongLineNearMidpoint( QList<LabelPosition*>& lPos, PointSet* mapShape, double initialCost = 0.0 );
 
       /** Returns the label position for a curved label at a specific offset along a path.
        * @param path_positions line path to place label on
@@ -195,14 +201,14 @@ namespace pal
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
-      int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet* mapShape );
+      int createCurvedCandidatesAlongLine( QList<LabelPosition*>& lPos, PointSet* mapShape );
 
       /** Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
        * \return the number of generated candidates
        */
-      int createCandidatesForPolygon( QList<LabelPosition *> &lPos, PointSet *mapShape );
+      int createCandidatesForPolygon( QList<LabelPosition*>& lPos, PointSet* mapShape );
 
       /** Tests whether this feature part belongs to the same QgsLabelFeature as another
        * feature part.
@@ -220,37 +226,73 @@ namespace pal
       void print();
 #endif
 
-      double getLabelWidth() const { return mLF->size().width(); }
-      double getLabelHeight() const { return mLF->size().height(); }
-      double getLabelDistance() const { return mLF->distLabel(); }
+      double getLabelWidth() const
+      {
+        return mLF->size().width();
+      }
+      double getLabelHeight() const
+      {
+        return mLF->size().height();
+      }
+      double getLabelDistance() const
+      {
+        return mLF->distLabel();
+      }
 
       //! Returns true if the feature's label has a fixed rotation
-      bool hasFixedRotation() const { return mLF->hasFixedAngle(); }
+      bool hasFixedRotation() const
+      {
+        return mLF->hasFixedAngle();
+      }
 
       //! Returns the fixed angle for the feature's label
-      double fixedAngle() const { return mLF->fixedAngle(); }
+      double fixedAngle() const
+      {
+        return mLF->fixedAngle();
+      }
 
       //! Returns true if the feature's label has a fixed position
-      bool hasFixedPosition() const { return mLF->hasFixedPosition(); }
+      bool hasFixedPosition() const
+      {
+        return mLF->hasFixedPosition();
+      }
 
       //! Returns true if the feature's label should always been shown,
       //! even when it collides with other labels
-      bool alwaysShow() const { return mLF->alwaysShow(); }
+      bool alwaysShow() const
+      {
+        return mLF->alwaysShow();
+      }
 
       //! Returns true if the feature should act as an obstacle to labels
-      bool isObstacle() const { return mLF->isObstacle(); }
+      bool isObstacle() const
+      {
+        return mLF->isObstacle();
+      }
 
       //! Returns the feature's obstacle factor, which represents the penalty
       //! incurred for a label to overlap the feature
-      double obstacleFactor() const { return mLF->obstacleFactor(); }
+      double obstacleFactor() const
+      {
+        return mLF->obstacleFactor();
+      }
 
       //! Returns the distance between repeating labels for this feature
-      double repeatDistance() const { return mLF->repeatDistance(); }
+      double repeatDistance() const
+      {
+        return mLF->repeatDistance();
+      }
 
       //! Get number of holes (inner rings) - they are considered as obstacles
-      int getNumSelfObstacles() const { return mHoles.count(); }
+      int getNumSelfObstacles() const
+      {
+        return mHoles.count();
+      }
       //! Get hole (inner ring) - considered as obstacle
-      FeaturePart* getSelfObstacle( int i ) { return mHoles.at( i ); }
+      FeaturePart* getSelfObstacle( int i )
+      {
+        return mHoles.at( i );
+      }
 
       //! Check whether this part is connected with some other part
       bool isConnected( FeaturePart* p2 );
@@ -259,7 +301,7 @@ namespace pal
        * Return true on success, false if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart* other );
 
-      void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
+      void addSizePenalty( int nbp, QList<LabelPosition*>& lPos, double bbx[4], double bby[4] );
 
       /** Calculates the priority for the feature. This will be the feature's priority if set,
        * otherwise the layer's default priority.

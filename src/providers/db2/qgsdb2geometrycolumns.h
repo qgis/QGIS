@@ -31,15 +31,15 @@ static const int ENV_LUW = 1, ENV_ZOS = 2;
 class QgsDb2GeometryColumns // clazy:exclude=rule-of-three
 {
   public:
-    explicit QgsDb2GeometryColumns( const QSqlDatabase &db );
+    explicit QgsDb2GeometryColumns( const QSqlDatabase& db );
 
     ~QgsDb2GeometryColumns();
 
     bool isActive();
     void close();
     int  open();
-    int  open( const QString &schemaName, const QString &tableName );
-    bool populateLayerProperty( QgsDb2LayerProperty &layer );
+    int  open( const QString& schemaName, const QString& tableName );
+    bool populateLayerProperty( QgsDb2LayerProperty& layer );
     int  db2Environment();
 
   private:

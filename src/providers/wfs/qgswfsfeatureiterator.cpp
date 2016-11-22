@@ -33,8 +33,8 @@
 #include <QStyle>
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI& uri )
-    : QgsWfsRequest( uri.uri() )
-    , mNumberMatched( -1 )
+  : QgsWfsRequest( uri.uri() )
+  , mNumberMatched( -1 )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( hitsReplyFinished() ) );
 }
@@ -79,18 +79,18 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString& re
 // -------------------------
 
 QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData* shared )
-    : QgsWfsRequest( shared->mURI.uri() )
-    , mShared( shared )
-    , mStop( false )
-    , mProgressDialog( nullptr )
-    , mProgressDialogShowImmediately( false )
-    , mSupportsPaging( shared->mCaps.supportsPaging )
-    , mRemoveNSPrefix( false )
-    , mNumberMatched( -1 )
-    , mMainWindow( nullptr )
-    , mTimer( nullptr )
-    , mFeatureHitsAsyncRequest( shared->mURI )
-    , mTotalDownloadedFeatureCount( 0 )
+  : QgsWfsRequest( shared->mURI.uri() )
+  , mShared( shared )
+  , mStop( false )
+  , mProgressDialog( nullptr )
+  , mProgressDialogShowImmediately( false )
+  , mSupportsPaging( shared->mCaps.supportsPaging )
+  , mRemoveNSPrefix( false )
+  , mNumberMatched( -1 )
+  , mMainWindow( nullptr )
+  , mTimer( nullptr )
+  , mFeatureHitsAsyncRequest( shared->mURI )
+  , mTotalDownloadedFeatureCount( 0 )
 {
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsWFSFeatureGmlIdPair> >( "QVector<QgsWFSFeatureGmlIdPair>" );
@@ -119,10 +119,10 @@ void QgsWFSFeatureDownloader::setStopFlag()
   mStop = true;
 }
 
-QgsWFSProgressDialog::QgsWFSProgressDialog( const QString & labelText,
-    const QString & cancelButtonText,
-    int minimum, int maximum, QWidget * parent )
-    : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
+QgsWFSProgressDialog::QgsWFSProgressDialog( const QString& labelText,
+    const QString& cancelButtonText,
+    int minimum, int maximum, QWidget* parent )
+  : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
 {
   mCancel = new QPushButton( cancelButtonText, this );
   setCancelButton( mCancel );
@@ -130,7 +130,7 @@ QgsWFSProgressDialog::QgsWFSProgressDialog( const QString & labelText,
   connect( mHide, SIGNAL( clicked() ), this, SIGNAL( hide() ) );
 }
 
-void QgsWFSProgressDialog::resizeEvent( QResizeEvent * ev )
+void QgsWFSProgressDialog::resizeEvent( QResizeEvent* ev )
 {
   QProgressDialog::resizeEvent( ev );
   // Note: this relies heavily on the details of the layout done in QProgressDialogPrivate::layout()
@@ -570,7 +570,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         }
 
         QVector<QgsWFSFeatureGmlIdPair> featureList;
-        for ( int i = 0;i < featurePtrList.size();i++ )
+        for ( int i = 0; i < featurePtrList.size(); i++ )
         {
           QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
           QgsFeature& f = *( featPair.first );
@@ -712,8 +712,8 @@ QString QgsWFSFeatureDownloader::errorMessageWithReason( const QString& reason )
 }
 
 QgsWFSThreadedFeatureDownloader::QgsWFSThreadedFeatureDownloader( QgsWFSSharedData* shared )
-    : mShared( shared )
-    , mDownloader( nullptr )
+  : mShared( shared )
+  , mDownloader( nullptr )
 {
 }
 
@@ -747,18 +747,18 @@ void QgsWFSThreadedFeatureDownloader::run()
 QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
     bool ownSource,
     const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
-    , mShared( source->mShared )
-    , mDownloadFinished( false )
-    , mLoop( nullptr )
-    , mInterruptionChecker( nullptr )
-    , mCounter( 0 )
-    , mWriteTransferThreshold( 1024 * 1024 )
-    , mWriterFile( nullptr )
-    , mWriterStream( nullptr )
-    , mReaderFile( nullptr )
-    , mReaderStream( nullptr )
-    , mFetchGeometry( false )
+  : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
+  , mShared( source->mShared )
+  , mDownloadFinished( false )
+  , mLoop( nullptr )
+  , mInterruptionChecker( nullptr )
+  , mCounter( 0 )
+  , mWriteTransferThreshold( 1024 * 1024 )
+  , mWriterFile( nullptr )
+  , mWriterStream( nullptr )
+  , mReaderFile( nullptr )
+  , mReaderStream( nullptr )
+  , mFetchGeometry( false )
 {
   // Configurable for the purpose of unit tests
   QString threshold( getenv( "QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD" ) );
@@ -964,7 +964,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
       int idx = cachedFeature.fields().indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
       Q_ASSERT( idx >= 0 );
 
-      const QVariant &v = cachedFeature.attributes().value( idx );
+      const QVariant& v = cachedFeature.attributes().value( idx );
       if ( !v.isNull() && v.type() == QVariant::String )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toLatin1() ) );
@@ -1187,7 +1187,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
       int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
       if ( idx >= 0 )
       {
-        const QVariant &v = srcFeature.attributes().value( idx );
+        const QVariant& v = srcFeature.attributes().value( idx );
         if ( v.type() == fields.at( i ).type() )
           dstFeature.setAttribute( i, v );
         else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
@@ -1204,7 +1204,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
       int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
       if ( idx >= 0 )
       {
-        const QVariant &v = srcFeature.attributes().value( idx );
+        const QVariant& v = srcFeature.attributes().value( idx );
         if ( v.type() == fields.at( i ).type() )
           dstFeature.setAttribute( i, v );
         else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
@@ -1225,7 +1225,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
 // -------------------------
 
 QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider* p )
-    : mShared( p->mShared )
+  : mShared( p->mShared )
 {
 }
 

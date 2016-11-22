@@ -30,11 +30,11 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType theDataType )
-    : mContrastEnhancementAlgorithm( NoEnhancement )
-    , mContrastEnhancementFunction( nullptr )
-    , mEnhancementDirty( false )
-    , mLookupTable( nullptr )
-    , mRasterDataType( theDataType )
+  : mContrastEnhancementAlgorithm( NoEnhancement )
+  , mContrastEnhancementFunction( nullptr )
+  , mEnhancementDirty( false )
+  , mLookupTable( nullptr )
+  , mRasterDataType( theDataType )
 {
   mMinimumValue = minimumValuePossible( mRasterDataType );
   mMaximumValue = maximumValuePossible( mRasterDataType );
@@ -53,13 +53,13 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType theDataType )
 }
 
 QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce )
-    : mContrastEnhancementFunction( nullptr )
-    , mEnhancementDirty( true )
-    , mLookupTable( nullptr )
-    , mMinimumValue( ce.mMinimumValue )
-    , mMaximumValue( ce.mMaximumValue )
-    , mRasterDataType( ce.mRasterDataType )
-    , mRasterDataTypeRange( ce.mRasterDataTypeRange )
+  : mContrastEnhancementFunction( nullptr )
+  , mEnhancementDirty( true )
+  , mLookupTable( nullptr )
+  , mMinimumValue( ce.mMinimumValue )
+  , mMaximumValue( ce.mMaximumValue )
+  , mRasterDataType( ce.mRasterDataType )
+  , mRasterDataTypeRange( ce.mRasterDataTypeRange )
 {
   mLookupTableOffset = minimumValuePossible( mRasterDataType ) * -1;
 

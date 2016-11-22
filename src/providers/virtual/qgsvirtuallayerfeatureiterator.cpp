@@ -27,7 +27,7 @@ static QString quotedColumn( QString name )
 }
 
 QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>( source, ownSource, request )
+  : QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>( source, ownSource, request )
 {
   try
   {
@@ -53,15 +53,15 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
         wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
         wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
-        .arg( do_exact ? "" : "Mbr",
-              quotedColumn( mDefinition.geometryField() ),
-              mbr );
+               .arg( do_exact ? "" : "Mbr",
+                     quotedColumn( mDefinition.geometryField() ),
+                     mbr );
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFid )
       {
         wheres << QStringLiteral( "%1=%2" )
-        .arg( quotedColumn( mDefinition.uid() ) )
-        .arg( request.filterFid() );
+               .arg( quotedColumn( mDefinition.uid() ) )
+               .arg( request.filterFid() );
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFids )
       {
@@ -245,7 +245,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
 }
 
 QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider* p )
-    : mProvider( p )
+  : mProvider( p )
 {
 }
 

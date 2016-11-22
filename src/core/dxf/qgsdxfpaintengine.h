@@ -43,14 +43,23 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 
     void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
 
-    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
+    void drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode ) override;
     void drawPath( const QPainterPath& path ) override;
     void drawLines( const QLineF* lines, int lineCount ) override;
 
-    void setLayer( const QString& layer ) { mLayer = layer; }
-    QString layer() const { return mLayer; }
+    void setLayer( const QString& layer )
+    {
+      mLayer = layer;
+    }
+    QString layer() const
+    {
+      return mLayer;
+    }
 
-    void setShift( QPointF shift ) { mShift = shift; }
+    void setShift( QPointF shift )
+    {
+      mShift = shift;
+    }
 
   private:
     const QgsDxfPaintDevice* mPaintDevice;
@@ -75,7 +84,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void endPolygon();
     void endCurve();
 
-    void setRing( QgsPointSequence &polyline, const QPointF * points, int pointCount );
+    void setRing( QgsPointSequence& polyline, const QPointF* points, int pointCount );
 
     //utils for bezier curve calculation
     static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );

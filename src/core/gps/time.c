@@ -42,7 +42,7 @@
 
 #ifdef NMEA_WIN
 
-void nmea_time_now( nmeaTIME *stm )
+void nmea_time_now( nmeaTIME* stm )
 {
   SYSTEMTIME st;
 
@@ -59,10 +59,10 @@ void nmea_time_now( nmeaTIME *stm )
 
 #else /* NMEA_WIN */
 
-void nmea_time_now( nmeaTIME *stm )
+void nmea_time_now( nmeaTIME* stm )
 {
   time_t lt;
-  struct tm *tt;
+  struct tm* tt;
 
   time( &lt );
   tt = gmtime( &lt );

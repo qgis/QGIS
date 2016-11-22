@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   private:
     //! Simplify the geometry using the specified tolerance
-    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry& geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
+    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry& geometry, const QgsRectangle& envelope, double map2pixelTol, bool isaLinearRing );
 
   protected:
     //! Current simplification flags
@@ -77,20 +77,35 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   public:
     //! Gets the simplification hints of the vector layer managed
-    int simplifyFlags() const { return mSimplifyFlags; }
+    int simplifyFlags() const
+    {
+      return mSimplifyFlags;
+    }
     //! Sets the simplification hints of the vector layer managed
-    void setSimplifyFlags( int simplifyFlags ) { mSimplifyFlags = simplifyFlags; }
+    void setSimplifyFlags( int simplifyFlags )
+    {
+      mSimplifyFlags = simplifyFlags;
+    }
 
     //! Gets the local simplification algorithm of the vector layer managed
-    SimplifyAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+    SimplifyAlgorithm simplifyAlgorithm() const
+    {
+      return mSimplifyAlgorithm;
+    }
     //! Sets the local simplification algorithm of the vector layer managed
-    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
+    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm )
+    {
+      mSimplifyAlgorithm = simplifyAlgorithm;
+    }
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
 
     //! Sets the tolerance of the vector layer managed
-    void setTolerance( double value ) { mTolerance = value; }
+    void setTolerance( double value )
+    {
+      mTolerance = value;
+    }
 
     // MapToPixel simplification helper methods
   public:

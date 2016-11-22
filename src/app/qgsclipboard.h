@@ -74,18 +74,18 @@ class APP_EXPORT QgsClipboard : public QObject
      *  Place a copy of the selected features from the specified layer on
      *  the internal clipboard, destroying the previous contents.
      */
-    void replaceWithCopyOf( QgsVectorLayer *src );
+    void replaceWithCopyOf( QgsVectorLayer* src );
 
     /**
      *  Place a copy of features on the internal clipboard,
      *  destroying the previous contents.
      */
-    void replaceWithCopyOf( QgsFeatureStore & featureStore );
+    void replaceWithCopyOf( QgsFeatureStore& featureStore );
 
     /**
      *  Returns a copy of features on the internal clipboard.
      */
-    QgsFeatureList copyOf( const QgsFields &fields = QgsFields() ) const;
+    QgsFeatureList copyOf( const QgsFields& fields = QgsFields() ) const;
 
     /**
      *  Clears the internal clipboard.
@@ -106,7 +106,7 @@ class APP_EXPORT QgsClipboard : public QObject
      *  Returns a copy of features on the internal clipboard, transformed
      *  from the clipboard CRS to the destCRS.
      */
-    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields = QgsFields() ) const;
+    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields& fields = QgsFields() ) const;
 
     /**
      *  Get the clipboard CRS
@@ -138,7 +138,10 @@ class APP_EXPORT QgsClipboard : public QObject
     /**
      * Source fields
      */
-    QgsFields fields() const { return !mUseSystemClipboard ? mFeatureFields : retrieveFields(); }
+    QgsFields fields() const
+    {
+      return !mUseSystemClipboard ? mFeatureFields : retrieveFields();
+    }
 
   private slots:
 

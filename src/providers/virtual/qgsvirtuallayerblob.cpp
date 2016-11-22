@@ -20,14 +20,14 @@ email                : hugo dot mercier at oslandia dot com
 #include <limits>
 
 SpatialiteBlobHeader::SpatialiteBlobHeader()
-    : start( 0x00 )
-    , endianness( 0x01 )
-    , srid( -1 )
-    , mbrMinX( -DBL_MAX )
-    , mbrMinY( -DBL_MAX )
-    , mbrMaxX( DBL_MAX )
-    , mbrMaxY( DBL_MAX )
-    , end( 0x7C )
+  : start( 0x00 )
+  , endianness( 0x01 )
+  , srid( -1 )
+  , mbrMinX( -DBL_MAX )
+  , mbrMinY( -DBL_MAX )
+  , mbrMaxX( DBL_MAX )
+  , mbrMaxY( DBL_MAX )
+  , end( 0x7C )
 {}
 
 void SpatialiteBlobHeader::readFrom( const char* p )
@@ -74,7 +74,7 @@ void SpatialiteBlobHeader::writeTo( char* p ) const
 
 //
 // Convert a QgsGeometry into a Spatialite geometry BLOB
-void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size )
+void qgsGeometryToSpatialiteBlob( const QgsGeometry& geom, int32_t srid, char*& blob, int& size )
 {
   const int header_len = SpatialiteBlobHeader::length;
 

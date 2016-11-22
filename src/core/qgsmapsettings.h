@@ -119,14 +119,20 @@ class CORE_EXPORT QgsMapSettings
      * @note added in QGIS 2.16
      * @see setCustomRenderFlags()
      */
-    QString customRenderFlags() const { return mCustomRenderFlags; }
+    QString customRenderFlags() const
+    {
+      return mCustomRenderFlags;
+    }
 
     /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * @param customRenderFlags custom flags strings, separated by ';'
      * @note added in QGIS 2.16
      * @see customRenderFlags()
      */
-    void setCustomRenderFlags( const QString& customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
+    void setCustomRenderFlags( const QString& customRenderFlags )
+    {
+      mCustomRenderFlags = customRenderFlags;
+    }
 
     //! sets whether to use projections for this layer set
     void setCrsTransformEnabled( bool enabled );
@@ -144,14 +150,26 @@ class CORE_EXPORT QgsMapSettings
     void setMapUnits( QgsUnitTypes::DistanceUnit u );
 
     //! Set the background color of the map
-    void setBackgroundColor( const QColor& color ) { mBackgroundColor = color; }
+    void setBackgroundColor( const QColor& color )
+    {
+      mBackgroundColor = color;
+    }
     //! Get the background color of the map
-    QColor backgroundColor() const { return mBackgroundColor; }
+    QColor backgroundColor() const
+    {
+      return mBackgroundColor;
+    }
 
     //! Set color that is used for drawing of selected vector features
-    void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
+    void setSelectionColor( const QColor& color )
+    {
+      mSelectionColor = color;
+    }
     //! Get color that is used for drawing of selected vector features
-    QColor selectionColor() const { return mSelectionColor; }
+    QColor selectionColor() const
+    {
+      return mSelectionColor;
+    }
 
     //! Enumeration of flags that adjust the way the map is rendered
     enum Flag
@@ -180,9 +198,15 @@ class CORE_EXPORT QgsMapSettings
     bool testFlag( Flag flag ) const;
 
     //! sets format of internal QImage
-    void setOutputImageFormat( QImage::Format format ) { mImageFormat = format; }
+    void setOutputImageFormat( QImage::Format format )
+    {
+      mImageFormat = format;
+    }
     //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
-    QImage::Format outputImageFormat() const { return mImageFormat; }
+    QImage::Format outputImageFormat() const
+    {
+      return mImageFormat;
+    }
 
     //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
@@ -201,22 +225,37 @@ class CORE_EXPORT QgsMapSettings
      * @see expressionContext()
      * @note added in QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
+    void setExpressionContext( const QgsExpressionContext& context )
+    {
+      mExpressionContext = context;
+    }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
      * @see setExpressionContext()
      * @note added in QGIS 2.12
      */
-    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
+    const QgsExpressionContext& expressionContext() const
+    {
+      return mExpressionContext;
+    }
 
     // -- utility functions --
 
     //! @note not available in python bindings
-    const QgsDatumTransformStore& datumTransformStore() const { return mDatumTransformStore; }
-    QgsDatumTransformStore& datumTransformStore() { return mDatumTransformStore; }
+    const QgsDatumTransformStore& datumTransformStore() const
+    {
+      return mDatumTransformStore;
+    }
+    QgsDatumTransformStore& datumTransformStore()
+    {
+      return mDatumTransformStore;
+    }
 
-    const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
+    const QgsMapToPixel& mapToPixel() const
+    {
+      return mMapToPixel;
+    }
 
     /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
      * @param theLayer The layer
@@ -270,7 +309,7 @@ class CORE_EXPORT QgsMapSettings
      * @param layer
      * @return transform - may be invalid if the transform is not needed
      */
-    QgsCoordinateTransform layerTransform( QgsMapLayer *layer ) const;
+    QgsCoordinateTransform layerTransform( QgsMapLayer* layer ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
@@ -283,15 +322,27 @@ class CORE_EXPORT QgsMapSettings
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
-    void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+    void setSegmentationTolerance( double tolerance )
+    {
+      mSegmentationTolerance = tolerance;
+    }
     //! Gets the segmentation tolerance applied when rendering curved geometries
-    double segmentationTolerance() const { return mSegmentationTolerance; }
+    double segmentationTolerance() const
+    {
+      return mSegmentationTolerance;
+    }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type )
+    {
+      mSegmentationToleranceType = type;
+    }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const
+    {
+      return mSegmentationToleranceType;
+    }
 
   protected:
 

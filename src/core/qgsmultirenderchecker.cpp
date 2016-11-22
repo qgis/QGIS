@@ -18,7 +18,7 @@
 #include <QDebug>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
-    : mColorTolerance( 0 )
+  : mColorTolerance( 0 )
 {
 }
 
@@ -112,19 +112,19 @@ QString QgsMultiRenderChecker::controlImagePath() const
 ///@cond PRIVATE
 
 QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsMultiRenderChecker()
-    , mTestName( testName )
-    , mComposition( composition )
-    , mSize( 1122, 794 )
-    , mDotsPerMeter( 96 / 25.4 * 1000 )
+  : QgsMultiRenderChecker()
+  , mTestName( testName )
+  , mComposition( composition )
+  , mSize( 1122, 794 )
+  , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
   // The composer has some slight render inconsistencies on the whole image sometimes
   setColorTolerance( 5 );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
-    : mComposition( nullptr )
-    , mDotsPerMeter( 96 / 25.4 * 1000 )
+  : mComposition( nullptr )
+  , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 
@@ -132,7 +132,7 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
+bool QgsCompositionChecker::testComposition( QString& theReport, int page, int pixelDiff )
 {
   if ( !mComposition )
   {

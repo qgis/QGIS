@@ -77,7 +77,7 @@ class CORE_EXPORT QWebSettings : public QObject
       NotificationsEnabled
     };
     explicit QWebSettings( QObject* parent = 0 )
-        : QObject( parent )
+      : QObject( parent )
     {
     }
 
@@ -117,9 +117,9 @@ class CORE_EXPORT QWebPage : public QObject
     };
 
     explicit QWebPage( QObject* parent = 0 )
-        : QObject( parent )
-        , mSettings( new QWebSettings() )
-        , mFrame( new QWebFrame() )
+      : QObject( parent )
+      , mSettings( new QWebSettings() )
+      , mFrame( new QWebFrame() )
     {
     }
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QWebPage : public QObject
       Q_UNUSED( palette );
     }
 
-    void setViewportSize( const QSize & size ) const
+    void setViewportSize( const QSize& size ) const
     {
       Q_UNUSED( size );
     }
@@ -149,7 +149,7 @@ class CORE_EXPORT QWebPage : public QObject
       if ( !parent() )
         return;
 
-      QTextBrowser *tb = qobject_cast<QTextBrowser *>( parent() );
+      QTextBrowser* tb = qobject_cast<QTextBrowser*>( parent() );
       if ( !tb )
         return;
 
@@ -189,7 +189,7 @@ class CORE_EXPORT QWebPage : public QObject
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
+    virtual void javaScriptConsoleMessage( const QString&, int, const QString& ) {}
 
   private:
     QWebSettings* mSettings;
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      * @param parent parent object
      */
     explicit QgsWebPage( QObject* parent = 0 )
-        : QWebPage( parent )
+      : QWebPage( parent )
     {}
 
     /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
@@ -223,13 +223,19 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      * @param identifier identifier string
      * @see identifier()
      */
-    void setIdentifier( const QString& identifier ) { mIdentifier = identifier; }
+    void setIdentifier( const QString& identifier )
+    {
+      mIdentifier = identifier;
+    }
 
     /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
      * log so that users can identify which QgsWebPage has logged the message.
      * @see setIdentifier()
      */
-    QString identifier() const { return mIdentifier; }
+    QString identifier() const
+    {
+      return mIdentifier;
+    }
 
   protected:
 

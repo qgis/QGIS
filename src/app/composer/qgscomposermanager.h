@@ -30,17 +30,17 @@ class QgsComposerNameDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsComposerNameDelegate( QObject *parent = nullptr );
+    explicit QgsComposerNameDelegate( QObject* parent = nullptr );
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const override;
+    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option,
+                           const QModelIndex& index ) const override;
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-    void setModelData( QWidget *editor, QAbstractItemModel *model,
-                       const QModelIndex &index ) const override;
+    void setEditorData( QWidget* editor, const QModelIndex& index ) const override;
+    void setModelData( QWidget* editor, QAbstractItemModel* model,
+                       const QModelIndex& index ) const override;
 
-    void updateEditorGeometry( QWidget *editor,
-                               const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void updateEditorGeometry( QWidget* editor,
+                               const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 };
 
 /** A dialog that shows the existing composer instances. Lets the user add new
@@ -49,7 +49,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsComposerManager( QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
     void addTemplates( const QMap<QString, QString>& templates );
@@ -84,8 +84,8 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QPushButton* mDuplicateButton;
 
 #ifdef Q_OS_MAC
-    void showEvent( QShowEvent *event );
-    void changeEvent( QEvent * );
+    void showEvent( QShowEvent* event );
+    void changeEvent( QEvent* );
 
     QAction* mWindowAction;
 #endif
@@ -111,7 +111,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     //! Duplicate composer
     void duplicate_clicked();
     void rename_clicked();
-    void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
+    void on_mComposerListWidget_itemChanged( QListWidgetItem* item );
 };
 
 #endif // QGSCOMPOSERMANAGER_H

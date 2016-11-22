@@ -40,13 +40,13 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsPgSourceSelectDelegate( QObject *parent = nullptr )
-        : QItemDelegate( parent )
+    explicit QgsPgSourceSelectDelegate( QObject* parent = nullptr )
+      : QItemDelegate( parent )
     {}
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
+    void setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const override;
+    void setEditorData( QWidget* editor, const QModelIndex& index ) const override;
 };
 
 
@@ -63,7 +63,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsPgSourceSelect( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
@@ -76,7 +76,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QgsDataSourceUri dataSourceUri();
 
   signals:
-    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
+    void addDatabaseLayers( QStringList const& layerPathList, QString const& providerKey );
     void connectionsChanged();
     void addGeometryColumn( const QgsPostgresLayerProperty& );
     void progress( int, int );
@@ -103,20 +103,23 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString & text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
-    void on_cmbConnections_currentIndexChanged( const QString &text );
+    void on_mSearchTableEdit_textChanged( const QString& text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString& text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString& text );
+    void on_cmbConnections_currentIndexChanged( const QString& text );
     void setSql( const QModelIndex& index );
     //! Store the selected database
     void setLayerType( const QgsPostgresLayerProperty& layerProperty );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
-    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
-    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    void on_mTablesTreeView_clicked( const QModelIndex& index );
+    void on_mTablesTreeView_doubleClicked( const QModelIndex& index );
+    void treeWidgetSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     void columnThreadFinished();
 
@@ -153,8 +156,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QgsPgTableModel mTableModel;
     QgsDbFilterProxyModel mProxyModel;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton* mBuildQueryButton;
+    QPushButton* mAddButton;
 
     void finishList();
 };

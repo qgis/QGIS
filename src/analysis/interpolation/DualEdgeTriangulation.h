@@ -40,7 +40,10 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation();
     DualEdgeTriangulation( int nop, Triangulation* decorator );
     virtual ~DualEdgeTriangulation();
-    void setDecorator( Triangulation* d ) {mDecorator = d;}
+    void setDecorator( Triangulation* d )
+    {
+      mDecorator = d;
+    }
     //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
     void addLine( Line3D* line, bool breakline ) override;
     //! Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure
@@ -65,13 +68,25 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
     QList<int>* getSurroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box
-    virtual double getXMax() const override { return xMax; }
+    virtual double getXMax() const override
+    {
+      return xMax;
+    }
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double getXMin() const override { return xMin; }
+    virtual double getXMin() const override
+    {
+      return xMin;
+    }
     //! Returns the largest y-coordinate value of the bounding box
-    virtual double getYMax() const override { return yMax; }
+    virtual double getYMax() const override
+    {
+      return yMax;
+    }
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double getYMin() const override { return yMin; }
+    virtual double getYMin() const override
+    {
+      return yMin;
+    }
     //! Returns the number of points
     virtual int getNumberOfPoints() const override;
     //! Sets the behaviour of the triangulation in case of crossing forced lines
@@ -173,46 +188,46 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns true, if a half edge is on the convex hull and false otherwise
     bool edgeOnConvexHull( int edge );
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
-    void evaluateInfluenceRegion( Point3D* point, int edge, QSet<int> &set );
+    void evaluateInfluenceRegion( Point3D* point, int edge, QSet<int>& set );
 };
 
 inline DualEdgeTriangulation::DualEdgeTriangulation()
-    : xMax( 0 )
-    , xMin( 0 )
-    , yMax( 0 )
-    , yMin( 0 )
-    , mTriangleInterpolator( nullptr )
-    , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
-    , mEdgeColor( 0, 255, 0 )
-    , mForcedEdgeColor( 0, 0, 255 )
-    , mBreakEdgeColor( 100, 100, 0 )
-    , mDecorator( this )
-    , mEdgeInside( 0 )
-    , mEdgeOutside( 0 )
-    , mEdgeWithPoint( 0 )
-    , mUnstableEdge( 0 )
-    , mTwiceInsPoint( 0 )
+  : xMax( 0 )
+  , xMin( 0 )
+  , yMax( 0 )
+  , yMin( 0 )
+  , mTriangleInterpolator( nullptr )
+  , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
+  , mEdgeColor( 0, 255, 0 )
+  , mForcedEdgeColor( 0, 0, 255 )
+  , mBreakEdgeColor( 100, 100, 0 )
+  , mDecorator( this )
+  , mEdgeInside( 0 )
+  , mEdgeOutside( 0 )
+  , mEdgeWithPoint( 0 )
+  , mUnstableEdge( 0 )
+  , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( mDefaultStorageForPoints );
   mHalfEdge.reserve( mDefaultStorageForHalfEdges );
 }
 
 inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* decorator )
-    : xMax( 0 )
-    , xMin( 0 )
-    , yMax( 0 )
-    , yMin( 0 )
-    , mTriangleInterpolator( nullptr )
-    , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
-    , mEdgeColor( 0, 255, 0 )
-    , mForcedEdgeColor( 0, 0, 255 )
-    , mBreakEdgeColor( 100, 100, 0 )
-    , mDecorator( decorator ? decorator : this )
-    , mEdgeInside( 0 )
-    , mEdgeOutside( 0 )
-    , mEdgeWithPoint( 0 )
-    , mUnstableEdge( 0 )
-    , mTwiceInsPoint( 0 )
+  : xMax( 0 )
+  , xMin( 0 )
+  , yMax( 0 )
+  , yMin( 0 )
+  , mTriangleInterpolator( nullptr )
+  , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
+  , mEdgeColor( 0, 255, 0 )
+  , mForcedEdgeColor( 0, 0, 255 )
+  , mBreakEdgeColor( 100, 100, 0 )
+  , mDecorator( decorator ? decorator : this )
+  , mEdgeInside( 0 )
+  , mEdgeOutside( 0 )
+  , mEdgeWithPoint( 0 )
+  , mUnstableEdge( 0 )
+  , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );

@@ -41,7 +41,7 @@ class QgsGrassUtils
     static QString vectorLayerName( QString map, QString layer, int nLayers );
 
     // Add all vector layers to QGIS view
-    static void addVectorLayers( QgisInterface *iface,
+    static void addVectorLayers( QgisInterface* iface,
                                  QString gisbase, QString location, QString mapset, QString map );
 
     // Check if element exists in current mapset
@@ -60,7 +60,7 @@ class QgsGrassElementDialog: public QObject
 
   public:
     //! Constructor
-    explicit QgsGrassElementDialog( QWidget *parent );
+    explicit QgsGrassElementDialog( QWidget* parent );
 
     //! Destructor
     ~QgsGrassElementDialog();
@@ -71,7 +71,7 @@ class QgsGrassElementDialog: public QObject
     QString getItem( QString element,
                      QString title, QString label,
                      QString text, QString source = 0,
-                     bool * ok = 0 );
+                     bool* ok = 0 );
 
   public slots:
     void textChanged();
@@ -79,13 +79,13 @@ class QgsGrassElementDialog: public QObject
   private:
     QString mElement;
     QString mSource;
-    QDialog *mDialog;
-    QLineEdit *mLineEdit;
-    QLabel *mLabel;
-    QLabel *mErrorLabel;
-    QPushButton *mOkButton;
-    QPushButton *mCancelButton;
-    QWidget *mParent;
+    QDialog* mDialog;
+    QLineEdit* mLineEdit;
+    QLabel* mLabel;
+    QLabel* mErrorLabel;
+    QPushButton* mOkButton;
+    QPushButton* mCancelButton;
+    QWidget* mParent;
 };
 
 #endif // QGSGRASSUTILS_H

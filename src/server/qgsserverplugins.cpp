@@ -36,7 +36,7 @@ QgsServerPlugins::QgsServerPlugins()
 }
 
 // Construct on first use
-QStringList &QgsServerPlugins::serverPlugins()
+QStringList& QgsServerPlugins::serverPlugins()
 {
   static QStringList* pluginList = new QStringList();
   return *pluginList;
@@ -44,7 +44,7 @@ QStringList &QgsServerPlugins::serverPlugins()
 
 
 // This code is mainly borrowed from QGIS desktop Python plugin initialization
-bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
+bool QgsServerPlugins::initPlugins( QgsServerInterface* interface )
 {
 
   QString pythonlibName( QStringLiteral( "qgispython" ) );

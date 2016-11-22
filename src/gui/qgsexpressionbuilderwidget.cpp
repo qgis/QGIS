@@ -36,12 +36,12 @@
 
 
 
-QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
-    : QWidget( parent )
-    , mAutoSave( true )
-    , mLayer( nullptr )
-    , highlighter( nullptr )
-    , mExpressionValid( false )
+QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget* parent )
+  : QWidget( parent )
+  , mAutoSave( true )
+  , mLayer( nullptr )
+  , highlighter( nullptr )
+  , mExpressionValid( false )
 {
   setupUi( this );
 
@@ -59,14 +59,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState( bool ) ) );
-  connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  connect( expressionTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( currentChanged( const QModelIndex &, const QModelIndex & ) ) );
+  connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showContextMenu( const QPoint& ) ) );
+  connect( expressionTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
+           this, SLOT( currentChanged( const QModelIndex&, const QModelIndex& ) ) );
 
   connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
   connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
-  Q_FOREACH ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  Q_FOREACH ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton*>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
@@ -120,7 +120,7 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
   delete mProxyValues;
 }
 
-void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
+void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer* layer )
 {
   mLayer = layer;
 
@@ -130,7 +130,7 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
     mExpressionContext << QgsExpressionContextUtils::layerScope( mLayer );
 }
 
-void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
+void QgsExpressionBuilderWidget::currentChanged( const QModelIndex& index, const QModelIndex& )
 {
   txtSearchEditValues->setText( QLatin1String( "" ) );
 
@@ -267,7 +267,7 @@ void QgsExpressionBuilderWidget::loadFunctionCode( const QString& code )
   txtPython->setText( code );
 }
 
-void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex &index )
+void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex& index )
 {
   QModelIndex idx = mProxyModel->mapToSource( index );
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
@@ -310,7 +310,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 //  highlighter->addFields( fieldNames );
 }
 
-void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
+void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues )
 {
   QgsFields fields;
   Q_FOREACH ( const QString& fieldName, fieldValues.keys() )
@@ -366,13 +366,13 @@ void QgsExpressionBuilderWidget::registerItem( const QString& group,
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
   {
-    QgsExpressionItem *groupNode = mExpressionGroups.value( group );
+    QgsExpressionItem* groupNode = mExpressionGroups.value( group );
     groupNode->appendRow( item );
   }
   else
   {
     // If the group doesn't exist yet we make it first.
-    QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QLatin1String( "" ), QgsExpressionItem::Header );
+    QgsExpressionItem* newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QLatin1String( "" ), QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
     //Recent group should always be last group
     newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CustomSortRole );
@@ -497,7 +497,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   loadExpressionContext();
 }
 
-void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
+void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea& da )
 {
   mDa = da;
 }
@@ -512,7 +512,7 @@ void QgsExpressionBuilderWidget::setExpressionText( const QString& expression )
   txtExpressionString->setText( expression );
 }
 
-void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )
+void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext& context )
 {
   mExpressionContext = context;
 
@@ -626,7 +626,7 @@ void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList& gr
   }
 }
 
-void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
+void QgsExpressionBuilderWidget::showEvent( QShowEvent* e )
 {
   QWidget::showEvent( e );
   txtExpressionString->setFocus();
@@ -660,13 +660,13 @@ void QgsExpressionBuilderWidget::on_txtSearchEditValues_textChanged()
 void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString& link )
 {
   Q_UNUSED( link );
-  QgsMessageViewer * mv = new QgsMessageViewer( this );
+  QgsMessageViewer* mv = new QgsMessageViewer( this );
   mv->setWindowTitle( tr( "More info on expression error" ) );
   mv->setMessageAsHtml( txtExpressionString->toolTip() );
   mv->exec();
 }
 
-void QgsExpressionBuilderWidget::on_mValuesListView_doubleClicked( const QModelIndex &index )
+void QgsExpressionBuilderWidget::on_mValuesListView_doubleClicked( const QModelIndex& index )
 {
   // Insert the item text or replace selected text
   txtExpressionString->insertText( ' ' + index.data( Qt::DisplayRole ).toString() + ' ' );
@@ -747,9 +747,9 @@ void QgsExpressionBuilderWidget::autosave()
   QString file = item->text();
   saveFunctionFile( file );
   lblAutoSave->setText( QStringLiteral( "Saved" ) );
-  QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
+  QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
   lblAutoSave->setGraphicsEffect( effect );
-  QPropertyAnimation *anim = new QPropertyAnimation( effect, "opacity" );
+  QPropertyAnimation* anim = new QPropertyAnimation( effect, "opacity" );
   anim->setDuration( 2000 );
   anim->setStartValue( 1.0 );
   anim->setEndValue( 0.0 );

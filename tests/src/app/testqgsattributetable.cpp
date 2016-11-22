@@ -43,11 +43,11 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp* mQgisApp;
 };
 
 TestQgsAttributeTable::TestQgsAttributeTable()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }

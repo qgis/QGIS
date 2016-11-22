@@ -41,10 +41,10 @@
 #include <qwt_legend.h>
 
 QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
-    , mRamp( ramp )
-    , mCurrentPlotColorComponent( -1 )
-    , mCurrentPlotMarkerIndex( 0 )
+  : QDialog( parent )
+  , mRamp( ramp )
+  , mCurrentPlotColorComponent( -1 )
+  , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
 #ifdef Q_OS_MAC
@@ -104,25 +104,25 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mLightnessCurve = new QwtPlotCurve();
   mLightnessCurve->setTitle( QStringLiteral( "Lightness" ) );
   mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
-  mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+                  mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mLightnessCurve->attach( mPlot );
 
   mHueCurve = new QwtPlotCurve();
   mHueCurve->setTitle( QStringLiteral( "Hue" ) );
   mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ),
-  mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+            mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mHueCurve->attach( mPlot );
 
   mSaturationCurve = new QwtPlotCurve();
   mSaturationCurve->setTitle( QStringLiteral( "Saturation" ) );
   mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ),
-  mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+                   mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
   mAlphaCurve->setTitle( QStringLiteral( "Alpha" ) );
   mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
-  mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+              mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );
 
   mPlotFilter = new QgsGradientPlotEventFilter( mPlot );
@@ -184,11 +184,11 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   if ( mRamp.info().isEmpty() )
     return;
 
-  QgsDialog *dlg = new QgsDialog( this );
-  QLabel *label = nullptr;
+  QgsDialog* dlg = new QgsDialog( this );
+  QLabel* label = nullptr;
 
   // information table
-  QTableWidget *tableInfo = new QTableWidget( dlg );
+  QTableWidget* tableInfo = new QTableWidget( dlg );
   tableInfo->verticalHeader()->hide();
   tableInfo->horizontalHeader()->hide();
   tableInfo->setRowCount( mRamp.info().count() );
@@ -248,7 +248,7 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
     dlg->layout()->addWidget( label );
     if ( QFile::exists( fileName ) )
     {
-      QTextEdit *textEdit = new QTextEdit( dlg );
+      QTextEdit* textEdit = new QTextEdit( dlg );
       textEdit->setReadOnly( true );
       QFile file( fileName );
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -306,7 +306,7 @@ void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop& sto
   updatePlot();
 }
 
-void QgsGradientColorRampDialog::colorWidgetChanged( const QColor &color )
+void QgsGradientColorRampDialog::colorWidgetChanged( const QColor& color )
 {
   mStopEditor->setSelectedStopColor( color );
 }
@@ -451,7 +451,7 @@ void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor
   QColor brushColor = color;
   brushColor.setAlpha( 255 );
 
-  QwtPlotMarker *marker = new QwtPlotMarker();
+  QwtPlotMarker* marker = new QwtPlotMarker();
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 10, 10 ) ) );
 #else
@@ -573,14 +573,14 @@ void QgsGradientColorRampDialog::setColor2( const QColor& color )
 
 /// @cond PRIVATE
 
-QgsGradientPlotEventFilter::QgsGradientPlotEventFilter( QwtPlot *plot )
-    : QObject( plot )
-    , mPlot( plot )
+QgsGradientPlotEventFilter::QgsGradientPlotEventFilter( QwtPlot* plot )
+  : QObject( plot )
+  , mPlot( plot )
 {
   mPlot->canvas()->installEventFilter( this );
 }
 
-bool QgsGradientPlotEventFilter::eventFilter( QObject *object, QEvent *event )
+bool QgsGradientPlotEventFilter::eventFilter( QObject* object, QEvent* event )
 {
   if ( !mPlot->isEnabled() )
     return QObject::eventFilter( object, event );

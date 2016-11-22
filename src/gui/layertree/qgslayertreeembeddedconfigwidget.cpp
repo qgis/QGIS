@@ -22,8 +22,8 @@
 #include <QStandardItemModel>
 
 QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget* parent )
-    : QWidget( parent )
-    , mLayer( nullptr )
+  : QWidget( parent )
+  , mLayer( nullptr )
 {
   setupUi( this );
 }

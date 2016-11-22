@@ -33,11 +33,11 @@ class TestQgsComposerGroup : public QObject
 
   public:
     TestQgsComposerGroup()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
-        , mItem1( 0 )
-        , mItem2( 0 )
-        , mGroup( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
+      , mItem1( 0 )
+      , mItem2( 0 )
+      , mGroup( 0 )
     {}
 
   private slots:
@@ -54,8 +54,8 @@ class TestQgsComposerGroup : public QObject
 
     void dumpUndoStack( const QUndoStack&, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
 
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
+    QgsComposition* mComposition;
+    QgsMapSettings* mMapSettings;
     QgsComposerLabel* mItem1;
     QgsComposerLabel* mItem2;
     QgsComposerItemGroup* mGroup;
@@ -182,32 +182,32 @@ void TestQgsComposerGroup::deleteGroup()
   QVERIFY( mGroup->isRemoved() );
 }
 
-Q_DECLARE_METATYPE( QgsComposerItemGroup * );
-Q_DECLARE_METATYPE( QgsComposerPolygon * );
-Q_DECLARE_METATYPE( QgsComposerItem * );
+Q_DECLARE_METATYPE( QgsComposerItemGroup* );
+Q_DECLARE_METATYPE( QgsComposerPolygon* );
+Q_DECLARE_METATYPE( QgsComposerItem* );
 
 void TestQgsComposerGroup::undoRedo()
 {
-  QgsComposerPolygon *item1, *item2;
+  QgsComposerPolygon* item1, *item2;
   int polygonsAdded = 0;
   int groupsAdded = 0;
   int itemsRemoved = 0;
 
-  qRegisterMetaType<QgsComposerPolygon *>();
+  qRegisterMetaType<QgsComposerPolygon*>();
   QSignalSpy spyPolygonAdded( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon* ) ) );
   QCOMPARE( spyPolygonAdded.count(), 0 );
 
-  qRegisterMetaType<QgsComposerItemGroup *>();
+  qRegisterMetaType<QgsComposerItemGroup*>();
   QSignalSpy spyGroupAdded( mComposition, SIGNAL( composerItemGroupAdded( QgsComposerItemGroup* ) ) );
   QCOMPARE( spyGroupAdded.count(), 0 );
 
-  qRegisterMetaType<QgsComposerItem *>();
+  qRegisterMetaType<QgsComposerItem*>();
   QSignalSpy spyItemRemoved( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
   QCOMPARE( spyItemRemoved.count(), 0 );
 
   //test for crash when undo/redoing with groups
   // Set initial condition
-  QUndoStack *us = mComposition->undoStack();
+  QUndoStack* us = mComposition->undoStack();
   QgsDebugMsg( QString( "clearing" ) );
   us->clear();
   QgsDebugMsg( QString( "clearing completed" ) );

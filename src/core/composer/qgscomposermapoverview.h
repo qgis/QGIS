@@ -108,7 +108,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @see constOverview
      * @see overview
      */
-    QgsComposerMapOverview &operator[]( int idx );
+    QgsComposerMapOverview& operator[]( int idx );
 
     /** Returns a list of QgsComposerMapOverviews contained by the stack
      * @returns list of overviews
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @param doc DOM document
      * @see readXml
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
@@ -176,7 +176,10 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /** Returns id of source map.
      * @returns source map id, or -1 if no source map set
      */
-    int frameMapId() const { return mFrameMapId; }
+    int frameMapId() const
+    {
+      return mFrameMapId;
+    }
 
     /** Sets the fill symbol used for drawing the overview extent.
      * @param symbol fill symbol for overview
@@ -188,20 +191,29 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @returns fill symbol for overview
      * @see setFrameSymbol
      */
-    QgsFillSymbol* frameSymbol() { return mFrameSymbol; }
+    QgsFillSymbol* frameSymbol()
+    {
+      return mFrameSymbol;
+    }
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      * @note not available in python bindings
      */
-    const QgsFillSymbol* frameSymbol() const { return mFrameSymbol; }
+    const QgsFillSymbol* frameSymbol() const
+    {
+      return mFrameSymbol;
+    }
 
     /** Retrieves the blending mode used for drawing the overview.
      * @returns blending mode for overview
      * @see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    QPainter::CompositionMode blendMode() const
+    {
+      return mBlendMode;
+    }
 
     /** Sets the blending mode used for drawing the overview.
      * @param blendMode blending mode for overview
@@ -214,7 +226,10 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @returns true if overview frame is inverted
      * @see setInverted
      */
-    bool inverted() const { return mInverted; }
+    bool inverted() const
+    {
+      return mInverted;
+    }
 
     /** Sets whether the overview frame is inverted, ie, whether the shaded area is drawn outside
      * the extent of the overview map.
@@ -227,7 +242,10 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @returns true if map will be centered on overview
      * @see setCentered
      */
-    bool centered() const { return mCentered; }
+    bool centered() const
+    {
+      return mCentered;
+    }
 
     /** Sets whether the extent of the map is forced to center on the overview
      * @param centered set to true if map will be centered on overview

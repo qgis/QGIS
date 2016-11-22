@@ -76,7 +76,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @see minFrameSize
      * @see recalculateFrameRects
      */
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
+    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const
+    {
+      Q_UNUSED( frameIndex );
+      return QSizeF( 0, 0 );
+    }
 
     /** Returns the minimum size for a frames, if desired. If the minimum
      * size changes, the sizes of all frames can be recalculated by calling
@@ -88,7 +92,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @see fixedFrameSize
      * @see recalculateFrameRects
      */
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
+    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const
+    {
+      Q_UNUSED( frameIndex );
+      return QSizeF( 0, 0 );
+    }
 
     /** Renders a portion of the multiframe's content into a painter.
      * @param painter destination painter
@@ -111,7 +119,10 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * to and before the specified yPos
      * @note added in version 2.3
      */
-    virtual double findNearbyPageBreak( double yPos ) { return yPos; }
+    virtual double findNearbyPageBreak( double yPos )
+    {
+      return yPos;
+    }
 
     /** Removes a frame from the multiframe. This method automatically removes the frame from the
      * composition.
@@ -137,7 +148,10 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @returns resize mode
      * @see setResizeMode
      */
-    ResizeMode resizeMode() const { return mResizeMode; }
+    ResizeMode resizeMode() const
+    {
+      return mResizeMode;
+    }
 
     /** Stores state information about multiframe in DOM element. Implementations of writeXml
      * should also call the _writeXML method to save general multiframe properties.
@@ -146,7 +160,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
+    virtual bool writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXml
      * should call this method.
@@ -178,24 +192,36 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Returns the parent composition for the multiframe.
      * @returns composition
      */
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition* composition()
+    {
+      return mComposition;
+    }
 
     /** Returns whether undo commands should be created for interactions with the multiframe.
      * @returns true if undo commands should be created
      * @see setCreateUndoCommands
      */
-    bool createUndoCommands() const { return mCreateUndoCommands; }
+    bool createUndoCommands() const
+    {
+      return mCreateUndoCommands;
+    }
 
     /** Sets whether undo commands should be created for interactions with the multiframe.
      * @param enabled set to true if undo commands should be created
      * @see createUndoCommands
      */
-    void setCreateUndoCommands( bool enabled ) { mCreateUndoCommands = enabled; }
+    void setCreateUndoCommands( bool enabled )
+    {
+      mCreateUndoCommands = enabled;
+    }
 
     /** Returns the number of frames associated with this multiframe.
      * @returns number of child frames
     **/
-    int frameCount() const { return mFrameItems.size(); }
+    int frameCount() const
+    {
+      return mFrameItems.size();
+    }
 
     /** Returns a child frame from the multiframe.
      * @param i index of frame
@@ -210,7 +236,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @note added in version 2.5
      * @see frame
      */
-    int frameIndex( QgsComposerFrame *frame ) const;
+    int frameIndex( QgsComposerFrame* frame ) const;
 
     /** Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size

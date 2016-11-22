@@ -25,12 +25,12 @@
 #include "qgslogger.h"
 
 
-QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg , const QString &dataprovider )
-    : QDialog( parent )
-    , mAuthCfg( authcfg )
-    , mDataProvider( dataprovider )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget* parent , const QString& authcfg , const QString& dataprovider )
+  : QDialog( parent )
+  , mAuthCfg( authcfg )
+  , mDataProvider( dataprovider )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   bool disabled = QgsAuthManager::instance()->isDisabled();
   bool idok = true;
@@ -101,10 +101,10 @@ void QgsAuthConfigEdit::populateAuthMethods()
   QStringList authMethodKeys = QgsAuthManager::instance()->authMethodsKeys( mDataProvider );
 
   // sort by auth method description attribute, then populate
-  QMap<QString, QgsAuthMethod *> descmap;
-  Q_FOREACH ( const QString &authMethodKey, authMethodKeys )
+  QMap<QString, QgsAuthMethod*> descmap;
+  Q_FOREACH ( const QString& authMethodKey, authMethodKeys )
   {
-    QgsAuthMethod *authmethod = QgsAuthManager::instance()->authMethod( authMethodKey );
+    QgsAuthMethod* authmethod = QgsAuthManager::instance()->authMethod( authMethodKey );
     if ( !authmethod )
     {
       QgsDebugMsg( QString( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
@@ -113,10 +113,10 @@ void QgsAuthConfigEdit::populateAuthMethods()
     descmap.insert( authmethod->displayDescription(), authmethod );
   }
 
-  QMap<QString, QgsAuthMethod *>::iterator it = descmap.begin();
+  QMap<QString, QgsAuthMethod*>::iterator it = descmap.begin();
   for ( it = descmap.begin(); it != descmap.end(); ++it )
   {
-    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit*>(
+    QgsAuthMethodEdit* editWidget = qobject_cast<QgsAuthMethodEdit*>(
                                       QgsAuthManager::instance()->authMethodEditWidget( it.value()->key(), this ) );
     if ( !editWidget )
     {
@@ -197,7 +197,7 @@ void QgsAuthConfigEdit::loadConfig()
   cmbAuthMethods->setCurrentIndex( indx );
   stkwAuthMethods->setCurrentIndex( indx );
 
-  QgsAuthMethodEdit *editWidget = currentEditWidget();
+  QgsAuthMethodEdit* editWidget = currentEditWidget();
   if ( !editWidget )
   {
     QgsDebugMsg( QString( "Cast to edit widget FAILED for authcfg (%1) and auth method key (%2)" )
@@ -222,14 +222,14 @@ void QgsAuthConfigEdit::saveConfig()
 
   QString authMethodKey = cmbAuthMethods->currentData().toString();
 
-  QgsAuthMethodEdit *editWidget = currentEditWidget();
+  QgsAuthMethodEdit* editWidget = currentEditWidget();
   if ( !editWidget )
   {
     QgsDebugMsg( QString( "Cast to edit widget FAILED)" ) );
     return;
   }
 
-  QgsAuthMethod *authmethod = QgsAuthManager::instance()->authMethod( authMethodKey );
+  QgsAuthMethod* authmethod = QgsAuthManager::instance()->authMethod( authMethodKey );
   if ( !authmethod )
   {
     QgsDebugMsg( QString( "Save auth config FAILED when loading auth method instance from key (%1)" ).arg( authMethodKey ) );
@@ -316,7 +316,7 @@ void QgsAuthConfigEdit::saveConfig()
 
 void QgsAuthConfigEdit::on_btnClear_clicked()
 {
-  QgsAuthMethodEdit *editWidget = currentEditWidget();
+  QgsAuthMethodEdit* editWidget = currentEditWidget();
   if ( !editWidget )
   {
     QgsDebugMsg( QString( "Cast to edit widget FAILED)" ) );
@@ -336,7 +336,7 @@ void QgsAuthConfigEdit::clearAll()
 
   for ( int i = 0; i < stkwAuthMethods->count(); i++ )
   {
-    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit*>( stkwAuthMethods->widget( i ) );
+    QgsAuthMethodEdit* editWidget = qobject_cast<QgsAuthMethodEdit*>( stkwAuthMethods->widget( i ) );
     if ( editWidget )
     {
       editWidget->clearConfig();
@@ -350,7 +350,7 @@ void QgsAuthConfigEdit::validateAuth()
 {
   bool authok = !leName->text().isEmpty();
 
-  QgsAuthMethodEdit *editWidget = currentEditWidget();
+  QgsAuthMethodEdit* editWidget = currentEditWidget();
   if ( !editWidget )
   {
     QgsDebugMsg( QString( "Cast to edit widget FAILED" ) );
@@ -370,12 +370,12 @@ void QgsAuthConfigEdit::on_leName_textChanged( const QString& txt )
   validateAuth();
 }
 
-int QgsAuthConfigEdit::authMethodIndex( const QString &authMethodKey )
+int QgsAuthConfigEdit::authMethodIndex( const QString& authMethodKey )
 {
   return cmbAuthMethods->findData( QVariant( authMethodKey ) );
 }
 
-QgsAuthMethodEdit *QgsAuthConfigEdit::currentEditWidget()
+QgsAuthMethodEdit* QgsAuthConfigEdit::currentEditWidget()
 {
   return qobject_cast<QgsAuthMethodEdit*>( stkwAuthMethods->currentWidget() );
 }

@@ -35,8 +35,8 @@
 #include "qgsmessagelog.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
-    : QgsDataProvider( uri )
-    , mCacheMinMaxDirty( true )
+  : QgsDataProvider( uri )
+  , mCacheMinMaxDirty( true )
 {
   QSettings settings;
   setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
@@ -57,25 +57,25 @@ QString QgsVectorDataProvider::dataComment() const
   return QString();
 }
 
-bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist )
+bool QgsVectorDataProvider::addFeatures( QgsFeatureList& flist )
 {
   Q_UNUSED( flist );
   return false;
 }
 
-bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
+bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds& ids )
 {
   Q_UNUSED( ids );
   return false;
 }
 
-bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
+bool QgsVectorDataProvider::addAttributes( const QList<QgsField>& attributes )
 {
   Q_UNUSED( attributes );
   return false;
 }
 
-bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes )
+bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
   Q_UNUSED( attributes );
   return false;
@@ -87,7 +87,7 @@ bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap& renamedAttr
   return false;
 }
 
-bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   Q_UNUSED( attr_map );
   return false;
@@ -119,14 +119,14 @@ bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Const
   return false;
 }
 
-bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
   Q_UNUSED( geometry_map );
   return false;
 }
 
-bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap &attr_map,
-    const QgsGeometryMap &geometry_map )
+bool QgsVectorDataProvider::changeFeatures( const QgsChangedAttributesMap& attr_map,
+    const QgsGeometryMap& geometry_map )
 {
   Q_UNUSED( attr_map );
   Q_UNUSED( geometry_map );
@@ -305,7 +305,7 @@ QgsAttributeList QgsVectorDataProvider::pkAttributeIndexes() const
   return QgsAttributeList();
 }
 
-const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeTypes() const
+const QList< QgsVectorDataProvider::NativeType >& QgsVectorDataProvider::nativeTypes() const
 {
   return mNativeTypes;
 }
@@ -315,7 +315,7 @@ QgsAttrPalIndexNameHash QgsVectorDataProvider::palAttributeIndexNames() const
   return QgsAttrPalIndexNameHash();
 }
 
-bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
+bool QgsVectorDataProvider::supportedType( const QgsField& field ) const
 {
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
                     .arg( field.name(),
@@ -415,7 +415,7 @@ QVariant QgsVectorDataProvider::maximumValue( int index ) const
   return mCacheMaxValues[index];
 }
 
-void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, int limit ) const
+void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant>& values, int limit ) const
 {
   QgsFeature f;
   QgsAttributeList keys;

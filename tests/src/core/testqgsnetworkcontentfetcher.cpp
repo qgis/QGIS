@@ -26,7 +26,7 @@ class TestQgsNetworkContentFetcher : public QObject
     Q_OBJECT
   public:
     TestQgsNetworkContentFetcher()
-        : mLoaded( false )
+      : mLoaded( false )
     {}
 
   private slots:

@@ -33,19 +33,22 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     Q_OBJECT
 
   public:
-    QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat = "yyyy-MM-dd" );
+    QgsFieldValidator( QObject* parent, const QgsField& field, const QString& defaultValue, const QString& dateFormat = "yyyy-MM-dd" );
     ~QgsFieldValidator();
 
-    virtual State validate( QString &, int & ) const override;
-    virtual void fixup( QString & ) const override;
+    virtual State validate( QString&, int& ) const override;
+    virtual void fixup( QString& ) const override;
 
-    QString dateFormat() const { return mDateFormat; }
+    QString dateFormat() const
+    {
+      return mDateFormat;
+    }
 
   private:
     // Disables copy constructing
     Q_DISABLE_COPY( QgsFieldValidator )
 
-    QValidator *mValidator;
+    QValidator* mValidator;
     QgsField mField;
     QString mNullValue;
     QString mDefaultValue;

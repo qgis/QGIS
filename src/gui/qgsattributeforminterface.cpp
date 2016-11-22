@@ -19,7 +19,7 @@
 #include "qgsfeature.h"
 
 QgsAttributeFormInterface::QgsAttributeFormInterface( QgsAttributeForm* form )
-    : mForm( form )
+  : mForm( form )
 {
 }
 

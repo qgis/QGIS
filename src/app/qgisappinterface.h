@@ -42,7 +42,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * Constructor.
      * @param qgis Pointer to the QgisApp object
      */
-    QgisAppInterface( QgisApp *qgisapp );
+    QgisAppInterface( QgisApp* qgisapp );
     ~QgisAppInterface();
 
     QgsPluginManagerInterface* pluginManagerInterface() override;
@@ -78,13 +78,13 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void newProject( bool thePromptToSaveFlag = false ) override;
 
     //! Get pointer to the active layer (layer selected in the legend)
-    QgsMapLayer *activeLayer() override;
+    QgsMapLayer* activeLayer() override;
 
     //! set the active layer (layer selected in the legend)
-    bool setActiveLayer( QgsMapLayer *layer ) override;
+    bool setActiveLayer( QgsMapLayer* layer ) override;
 
     //! Add an icon to the plugins toolbar
-    int addToolBarIcon( QAction *qAction ) override;
+    int addToolBarIcon( QAction* qAction ) override;
 
     /**
      * Add a widget to the plugins toolbar.
@@ -96,9 +96,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QAction* addToolBarWidget( QWidget* widget ) override;
     //! Remove an icon (action) from the plugin toolbar
-    void removeToolBarIcon( QAction *qAction ) override;
+    void removeToolBarIcon( QAction* qAction ) override;
     //! Add an icon to the Raster toolbar
-    int addRasterToolBarIcon( QAction *qAction ) override;
+    int addRasterToolBarIcon( QAction* qAction ) override;
 
     /**
      * Add a widget to the raster toolbar.
@@ -110,9 +110,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QAction* addRasterToolBarWidget( QWidget* widget ) override;
     //! Remove an icon (action) from the Raster toolbar
-    void removeRasterToolBarIcon( QAction *qAction ) override;
+    void removeRasterToolBarIcon( QAction* qAction ) override;
     //! Add an icon to the Vector toolbar
-    int addVectorToolBarIcon( QAction *qAction ) override;
+    int addVectorToolBarIcon( QAction* qAction ) override;
 
     /**
      * Add a widget to the vector toolbar.
@@ -124,9 +124,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QAction* addVectorToolBarWidget( QWidget* widget ) override;
     //! Remove an icon (action) from the Vector toolbar
-    void removeVectorToolBarIcon( QAction *qAction ) override;
+    void removeVectorToolBarIcon( QAction* qAction ) override;
     //! Add an icon to the Database toolbar
-    int addDatabaseToolBarIcon( QAction *qAction ) override;
+    int addDatabaseToolBarIcon( QAction* qAction ) override;
 
     /**
      * Add a widget to the database toolbar.
@@ -138,9 +138,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QAction* addDatabaseToolBarWidget( QWidget* widget ) override;
     //! Remove an icon (action) from the Database toolbar
-    void removeDatabaseToolBarIcon( QAction *qAction ) override;
+    void removeDatabaseToolBarIcon( QAction* qAction ) override;
     //! Add an icon to the Web toolbar
-    int addWebToolBarIcon( QAction *qAction ) override;
+    int addWebToolBarIcon( QAction* qAction ) override;
 
     /**
      * Add a widget to the web toolbar.
@@ -152,7 +152,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QAction* addWebToolBarWidget( QWidget* widget ) override;
     //! Remove an icon (action) from the Web toolbar
-    void removeWebToolBarIcon( QAction *qAction ) override;
+    void removeWebToolBarIcon( QAction* qAction ) override;
 
     //! Add toolbar with specified name
     QToolBar* addToolBar( const QString& name ) override;
@@ -174,7 +174,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void openURL( const QString& url, bool useQgisDocDirectory = true ) override;
 
     //! Return a pointer to the map canvas used by qgisapp
-    QgsMapCanvas * mapCanvas() override;
+    QgsMapCanvas* mapCanvas() override;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
@@ -188,9 +188,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
         Plugins don't need to know about QgisApp, as we pass it as QWidget,
         it can be used for connecting slots and using as widget's parent
      */
-    QWidget * mainWindow() override;
+    QWidget* mainWindow() override;
 
-    QgsMessageBar * messageBar() override;
+    QgsMessageBar* messageBar() override;
 
     //! Open the message log dock widget *
     void openMessageLog() override;
@@ -262,36 +262,36 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removePluginWebMenu( const QString& name, QAction* action ) override;
 
     //! Add "add layer" action to the layer menu
-    void insertAddLayerAction( QAction *action ) override;
+    void insertAddLayerAction( QAction* action ) override;
     //! Remove "add layer" action from the layer menu
-    void removeAddLayerAction( QAction *action ) override;
+    void removeAddLayerAction( QAction* action ) override;
 
     //! Add a dock widget to the main window
-    void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) override;
+    void addDockWidget( Qt::DockWidgetArea area, QDockWidget* dockwidget ) override;
 
     //! Remove specified dock widget from main window (doesn't delete it).
-    void removeDockWidget( QDockWidget * dockwidget ) override;
+    void removeDockWidget( QDockWidget* dockwidget ) override;
 
     //! return CAD dock widget
-    QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
+    QgsAdvancedDigitizingDockWidget* cadDockWidget() override;
 
     /** Show layer properties dialog for layer
      * @param l layer to show properties table for
      */
-    virtual void showLayerProperties( QgsMapLayer *l ) override;
+    virtual void showLayerProperties( QgsMapLayer* l ) override;
 
     /** Show layer attribute dialog for layer
      * @param l layer to show attribute table for
      */
-    virtual QDialog* showAttributeTable( QgsVectorLayer *l, const QString& filterExpression = QString() ) override;
+    virtual QDialog* showAttributeTable( QgsVectorLayer* l, const QString& filterExpression = QString() ) override;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
-    virtual void addWindow( QAction *action ) override;
+    virtual void addWindow( QAction* action ) override;
 
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
-    virtual void removeWindow( QAction *action ) override;
+    virtual void removeWindow( QAction* action ) override;
 
     //! Register action to the shortcuts manager so its shortcut can be changed in GUI.
     virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) override;
@@ -329,139 +329,139 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
 
     //! Menus
-    virtual QMenu *projectMenu() override;
-    virtual QMenu *editMenu() override;
-    virtual QMenu *viewMenu() override;
-    virtual QMenu *layerMenu() override;
-    virtual QMenu *newLayerMenu() override;
+    virtual QMenu* projectMenu() override;
+    virtual QMenu* editMenu() override;
+    virtual QMenu* viewMenu() override;
+    virtual QMenu* layerMenu() override;
+    virtual QMenu* newLayerMenu() override;
     //! @note added in 2.5
-    virtual QMenu *addLayerMenu() override;
-    virtual QMenu *settingsMenu() override;
-    virtual QMenu *pluginMenu() override;
-    virtual QMenu *rasterMenu() override;
-    virtual QMenu *vectorMenu() override;
-    virtual QMenu *databaseMenu() override;
-    virtual QMenu *webMenu() override;
-    virtual QMenu *firstRightStandardMenu() override;
-    virtual QMenu *windowMenu() override;
-    virtual QMenu *helpMenu() override;
+    virtual QMenu* addLayerMenu() override;
+    virtual QMenu* settingsMenu() override;
+    virtual QMenu* pluginMenu() override;
+    virtual QMenu* rasterMenu() override;
+    virtual QMenu* vectorMenu() override;
+    virtual QMenu* databaseMenu() override;
+    virtual QMenu* webMenu() override;
+    virtual QMenu* firstRightStandardMenu() override;
+    virtual QMenu* windowMenu() override;
+    virtual QMenu* helpMenu() override;
 
     //! ToolBars
-    virtual QToolBar *fileToolBar() override;
-    virtual QToolBar *layerToolBar() override;
-    virtual QToolBar *mapNavToolToolBar() override;
-    virtual QToolBar *digitizeToolBar() override;
-    virtual QToolBar *advancedDigitizeToolBar() override;
-    virtual QToolBar *attributesToolBar() override;
-    virtual QToolBar *pluginToolBar() override;
-    virtual QToolBar *helpToolBar() override;
-    virtual QToolBar *rasterToolBar() override;
-    virtual QToolBar *vectorToolBar() override;
-    virtual QToolBar *databaseToolBar() override;
-    virtual QToolBar *webToolBar() override;
+    virtual QToolBar* fileToolBar() override;
+    virtual QToolBar* layerToolBar() override;
+    virtual QToolBar* mapNavToolToolBar() override;
+    virtual QToolBar* digitizeToolBar() override;
+    virtual QToolBar* advancedDigitizeToolBar() override;
+    virtual QToolBar* attributesToolBar() override;
+    virtual QToolBar* pluginToolBar() override;
+    virtual QToolBar* helpToolBar() override;
+    virtual QToolBar* rasterToolBar() override;
+    virtual QToolBar* vectorToolBar() override;
+    virtual QToolBar* databaseToolBar() override;
+    virtual QToolBar* webToolBar() override;
 
     //! Project menu actions
-    virtual QAction *actionNewProject() override;
-    virtual QAction *actionOpenProject() override;
-    virtual QAction *actionSaveProject() override;
-    virtual QAction *actionSaveProjectAs() override;
-    virtual QAction *actionSaveMapAsImage() override;
-    virtual QAction *actionProjectProperties() override;
-    virtual QAction *actionPrintComposer() override;
-    virtual QAction *actionShowComposerManager() override;
-    virtual QAction *actionExit() override;
+    virtual QAction* actionNewProject() override;
+    virtual QAction* actionOpenProject() override;
+    virtual QAction* actionSaveProject() override;
+    virtual QAction* actionSaveProjectAs() override;
+    virtual QAction* actionSaveMapAsImage() override;
+    virtual QAction* actionProjectProperties() override;
+    virtual QAction* actionPrintComposer() override;
+    virtual QAction* actionShowComposerManager() override;
+    virtual QAction* actionExit() override;
 
     //! Edit menu actions
-    virtual QAction *actionCutFeatures() override;
-    virtual QAction *actionCopyFeatures() override;
-    virtual QAction *actionPasteFeatures() override;
-    virtual QAction *actionAddFeature() override;
-    virtual QAction *actionDeleteSelected() override;
-    virtual QAction *actionMoveFeature() override;
-    virtual QAction *actionSplitFeatures() override;
-    virtual QAction *actionSplitParts() override;
-    virtual QAction *actionAddRing() override;
-    virtual QAction *actionAddPart() override;
-    virtual QAction *actionSimplifyFeature() override;
-    virtual QAction *actionDeleteRing() override;
-    virtual QAction *actionDeletePart() override;
-    virtual QAction *actionNodeTool() override;
+    virtual QAction* actionCutFeatures() override;
+    virtual QAction* actionCopyFeatures() override;
+    virtual QAction* actionPasteFeatures() override;
+    virtual QAction* actionAddFeature() override;
+    virtual QAction* actionDeleteSelected() override;
+    virtual QAction* actionMoveFeature() override;
+    virtual QAction* actionSplitFeatures() override;
+    virtual QAction* actionSplitParts() override;
+    virtual QAction* actionAddRing() override;
+    virtual QAction* actionAddPart() override;
+    virtual QAction* actionSimplifyFeature() override;
+    virtual QAction* actionDeleteRing() override;
+    virtual QAction* actionDeletePart() override;
+    virtual QAction* actionNodeTool() override;
 
     //! View menu actions
-    virtual QAction *actionPan() override;
-    virtual QAction *actionTouch() override;
-    virtual QAction *actionPanToSelected() override;
-    virtual QAction *actionZoomIn() override;
-    virtual QAction *actionZoomOut() override;
-    virtual QAction *actionSelect() override;
-    virtual QAction *actionSelectRectangle() override;
-    virtual QAction *actionSelectPolygon() override;
-    virtual QAction *actionSelectFreehand() override;
-    virtual QAction *actionSelectRadius() override;
-    virtual QAction *actionIdentify() override;
-    virtual QAction *actionFeatureAction() override;
-    virtual QAction *actionMeasure() override;
-    virtual QAction *actionMeasureArea() override;
-    virtual QAction *actionZoomFullExtent() override;
-    virtual QAction *actionZoomToLayer() override;
-    virtual QAction *actionZoomToSelected() override;
-    virtual QAction *actionZoomLast() override;
-    virtual QAction *actionZoomNext() override;
-    virtual QAction *actionZoomActualSize() override;
-    virtual QAction *actionMapTips() override;
-    virtual QAction *actionNewBookmark() override;
-    virtual QAction *actionShowBookmarks() override;
-    virtual QAction *actionDraw() override;
+    virtual QAction* actionPan() override;
+    virtual QAction* actionTouch() override;
+    virtual QAction* actionPanToSelected() override;
+    virtual QAction* actionZoomIn() override;
+    virtual QAction* actionZoomOut() override;
+    virtual QAction* actionSelect() override;
+    virtual QAction* actionSelectRectangle() override;
+    virtual QAction* actionSelectPolygon() override;
+    virtual QAction* actionSelectFreehand() override;
+    virtual QAction* actionSelectRadius() override;
+    virtual QAction* actionIdentify() override;
+    virtual QAction* actionFeatureAction() override;
+    virtual QAction* actionMeasure() override;
+    virtual QAction* actionMeasureArea() override;
+    virtual QAction* actionZoomFullExtent() override;
+    virtual QAction* actionZoomToLayer() override;
+    virtual QAction* actionZoomToSelected() override;
+    virtual QAction* actionZoomLast() override;
+    virtual QAction* actionZoomNext() override;
+    virtual QAction* actionZoomActualSize() override;
+    virtual QAction* actionMapTips() override;
+    virtual QAction* actionNewBookmark() override;
+    virtual QAction* actionShowBookmarks() override;
+    virtual QAction* actionDraw() override;
 
     //! Layer menu actions
-    virtual QAction *actionNewVectorLayer() override;
-    virtual QAction *actionAddOgrLayer() override;
-    virtual QAction *actionAddRasterLayer() override;
-    virtual QAction *actionAddPgLayer() override;
-    virtual QAction *actionAddWmsLayer() override;
+    virtual QAction* actionNewVectorLayer() override;
+    virtual QAction* actionAddOgrLayer() override;
+    virtual QAction* actionAddRasterLayer() override;
+    virtual QAction* actionAddPgLayer() override;
+    virtual QAction* actionAddWmsLayer() override;
     //! Get access to the native Add ArcGIS FeatureServer action.
-    virtual QAction *actionAddAfsLayer() override;
+    virtual QAction* actionAddAfsLayer() override;
     //! Get access to the native Add ArcGIS MapServer action.
-    virtual QAction *actionAddAmsLayer() override;
-    virtual QAction *actionCopyLayerStyle() override;
-    virtual QAction *actionPasteLayerStyle() override;
-    virtual QAction *actionOpenTable() override;
-    virtual QAction *actionOpenFieldCalculator() override;
-    virtual QAction *actionToggleEditing() override;
-    virtual QAction *actionSaveActiveLayerEdits() override;
-    virtual QAction *actionAllEdits() override;
-    virtual QAction *actionSaveEdits() override;
-    virtual QAction *actionSaveAllEdits() override;
-    virtual QAction *actionRollbackEdits() override;
-    virtual QAction *actionRollbackAllEdits() override;
-    virtual QAction *actionCancelEdits() override;
-    virtual QAction *actionCancelAllEdits() override;
-    virtual QAction *actionLayerSaveAs() override;
-    virtual QAction *actionDuplicateLayer() override;
-    virtual QAction *actionLayerProperties() override;
-    virtual QAction *actionAddToOverview() override;
-    virtual QAction *actionAddAllToOverview() override;
-    virtual QAction *actionRemoveAllFromOverview() override;
-    virtual QAction *actionHideAllLayers() override;
-    virtual QAction *actionShowAllLayers() override;
-    virtual QAction *actionHideSelectedLayers() override;
-    virtual QAction *actionShowSelectedLayers() override;
+    virtual QAction* actionAddAmsLayer() override;
+    virtual QAction* actionCopyLayerStyle() override;
+    virtual QAction* actionPasteLayerStyle() override;
+    virtual QAction* actionOpenTable() override;
+    virtual QAction* actionOpenFieldCalculator() override;
+    virtual QAction* actionToggleEditing() override;
+    virtual QAction* actionSaveActiveLayerEdits() override;
+    virtual QAction* actionAllEdits() override;
+    virtual QAction* actionSaveEdits() override;
+    virtual QAction* actionSaveAllEdits() override;
+    virtual QAction* actionRollbackEdits() override;
+    virtual QAction* actionRollbackAllEdits() override;
+    virtual QAction* actionCancelEdits() override;
+    virtual QAction* actionCancelAllEdits() override;
+    virtual QAction* actionLayerSaveAs() override;
+    virtual QAction* actionDuplicateLayer() override;
+    virtual QAction* actionLayerProperties() override;
+    virtual QAction* actionAddToOverview() override;
+    virtual QAction* actionAddAllToOverview() override;
+    virtual QAction* actionRemoveAllFromOverview() override;
+    virtual QAction* actionHideAllLayers() override;
+    virtual QAction* actionShowAllLayers() override;
+    virtual QAction* actionHideSelectedLayers() override;
+    virtual QAction* actionShowSelectedLayers() override;
 
     //! Plugin menu actions
-    virtual QAction *actionManagePlugins() override;
-    virtual QAction *actionPluginListSeparator() override;
-    virtual QAction *actionShowPythonDialog() override;
+    virtual QAction* actionManagePlugins() override;
+    virtual QAction* actionPluginListSeparator() override;
+    virtual QAction* actionShowPythonDialog() override;
 
     //! Settings menu actions
-    virtual QAction *actionToggleFullScreen() override;
-    virtual QAction *actionOptions() override;
-    virtual QAction *actionCustomProjection() override;
+    virtual QAction* actionToggleFullScreen() override;
+    virtual QAction* actionOptions() override;
+    virtual QAction* actionCustomProjection() override;
 
     //! Help menu actions
-    virtual QAction *actionHelpContents() override;
-    virtual QAction *actionQgisHomePage() override;
-    virtual QAction *actionCheckQgisVersion() override;
-    virtual QAction *actionAbout() override;
+    virtual QAction* actionHelpContents() override;
+    virtual QAction* actionQgisHomePage() override;
+    virtual QAction* actionCheckQgisVersion() override;
+    virtual QAction* actionAbout() override;
 
     /**
      * Open feature form
@@ -471,7 +471,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
      * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
      */
-    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
+    virtual bool openFeatureForm( QgsVectorLayer* l, QgsFeature& f, bool updateFeatureOnly = false, bool showModal = true ) override;
 
     /**
      * Returns a feature form for a given feature
@@ -481,7 +481,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      *
      * @return A feature form
      */
-    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
+    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer* layer, QgsFeature& feature ) override;
 
     /**
      * Access the vector layer tools instance.
@@ -509,7 +509,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list
      */
-    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
+    virtual QList<QgsMapLayer*> editableLayers( bool modified = false ) const override;
 
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() override;
@@ -524,15 +524,15 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
   private:
 
     /// QgisInterface aren't copied
-    QgisAppInterface( QgisAppInterface const & );
+    QgisAppInterface( QgisAppInterface const& );
 
     /// QgisInterface aren't copied
-    QgisAppInterface & operator=( QgisAppInterface const & );
+    QgisAppInterface& operator=( QgisAppInterface const& );
 
     //! Pointer to the QgisApp object
-    QgisApp *qgis;
+    QgisApp* qgis;
 
-    QTimer *mTimer;
+    QTimer* mTimer;
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;

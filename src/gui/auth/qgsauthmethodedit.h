@@ -45,7 +45,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
      * Load an existing config map into subclassed widget
      * @param configmap
      */
-    virtual void loadConfig( const QgsStringMap &configmap ) = 0;
+    virtual void loadConfig( const QgsStringMap& configmap ) = 0;
 
     //! Clear GUI controls in subclassed widget, optionally reloading any previously loaded config map
     virtual void resetConfig() = 0;
@@ -60,8 +60,8 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
      * @note Non-public since this is an abstract base class
      * @param parent Parent widget
      */
-    explicit QgsAuthMethodEdit( QWidget *parent = nullptr )
-        : QWidget( parent )
+    explicit QgsAuthMethodEdit( QWidget* parent = nullptr )
+      : QWidget( parent )
     {}
 
     virtual ~QgsAuthMethodEdit() {}

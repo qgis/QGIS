@@ -37,7 +37,7 @@
 #include "qgsmaptip.h"
 
 QgsMapTip::QgsMapTip()
-    : mWidget( nullptr ), mWebView( nullptr )
+  : mWidget( nullptr ), mWebView( nullptr )
 {
   // init the visible flag
   mMapTipVisible = false;
@@ -48,10 +48,10 @@ QgsMapTip::~QgsMapTip()
 
 }
 
-void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
-                            QgsPoint & mapPosition,
-                            QPoint & thePixelPosition,
-                            QgsMapCanvas *pMapCanvas )
+void QgsMapTip::showMapTip( QgsMapLayer* pLayer,
+                            QgsPoint& mapPosition,
+                            QPoint& thePixelPosition,
+                            QgsMapCanvas* pMapCanvas )
 {
   // Do the search using the active layer and the preferred label field for the
   // layer. The label field must be defined in the layer configuration
@@ -61,7 +61,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   // Show the maptip on the canvas
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-  backgroundColor, borderColor;
+          backgroundColor, borderColor;
 
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
@@ -158,7 +158,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 #endif
 }
 
-void QgsMapTip::clear( QgsMapCanvas * )
+void QgsMapTip::clear( QgsMapCanvas* )
 {
   if ( !mMapTipVisible )
     return;
@@ -170,9 +170,9 @@ void QgsMapTip::clear( QgsMapCanvas * )
   mMapTipVisible = false;
 }
 
-QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsMapCanvas *mapCanvas )
+QString QgsMapTip::fetchFeature( QgsMapLayer* layer, QgsPoint& mapPosition, QgsMapCanvas* mapCanvas )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
   if ( !vlayer )
     return QString();
 
@@ -193,8 +193,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( vlayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( vlayer );
   if ( mapCanvas )
     context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
@@ -213,7 +213,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 }
 
 //This slot handles all clicks
-void QgsMapTip::onLinkClicked( const QUrl &url )
+void QgsMapTip::onLinkClicked( const QUrl& url )
 {
   QDesktopServices::openUrl( url );
 }

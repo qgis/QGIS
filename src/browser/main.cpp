@@ -31,7 +31,7 @@
 
 #include "qgseditorwidgetregistry.h"
 
-int main( int argc, char ** argv )
+int main( int argc, char** argv )
 {
   QSettings settings;
 
@@ -68,8 +68,8 @@ int main( int argc, char ** argv )
     QStringList gdalShares;
     QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-    << appResources.append( "/share/gdal" )
-    << appResources.append( "/gdal" );
+               << appResources.append( "/share/gdal" )
+               << appResources.append( "/gdal" );
     Q_FOREACH ( const QString& gdalShare, gdalShares )
     {
       if ( QFile::exists( gdalShare ) )

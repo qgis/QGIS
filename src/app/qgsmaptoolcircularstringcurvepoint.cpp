@@ -22,7 +22,7 @@
 
 QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapToolCapture* parentTool,
     QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolAddCircularString( parentTool, canvas, mode )
+  : QgsMapToolAddCircularString( parentTool, canvas, mode )
 {
 
 }

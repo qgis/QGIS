@@ -83,12 +83,12 @@ static void _initRendererWidgetFunctions()
 }
 
 QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
-    , mStyle( style )
-    , mActiveWidget( nullptr )
-    , mPaintEffect( nullptr )
-    , mMapCanvas( nullptr )
+  : QDialog( parent )
+  , mLayer( layer )
+  , mStyle( style )
+  , mActiveWidget( nullptr )
+  , mPaintEffect( nullptr )
+  , mMapCanvas( nullptr )
 {
   setupUi( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
@@ -127,17 +127,17 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer,
 
   QList<QWidget*> widgets;
   widgets << mLayerTransparencySpnBx
-  << cboRenderers
-  << checkboxEnableOrderBy
-  << mBlendModeComboBox
-  << mFeatureBlendComboBox
-  << mEffectWidget;
+          << cboRenderers
+          << checkboxEnableOrderBy
+          << mBlendModeComboBox
+          << mFeatureBlendComboBox
+          << mEffectWidget;
 
   connectValueChanged( widgets, SIGNAL( widgetChanged() ) );
   connect( mEffectWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
 }
 
-void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *>& widgets, const char *slot )
+void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget*>& widgets, const char* slot )
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {
@@ -305,7 +305,7 @@ void QgsRendererPropertiesDialog::onOK()
   accept();
 }
 
-void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
+void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget* panel )
 {
   QgsDebugMsg( "Open panel!!!" );
   if ( mDockMode )
@@ -409,7 +409,7 @@ void QgsRendererPropertiesDialog::updateUIState( bool hidden )
 }
 
 
-void QgsRendererPropertiesDialog::keyPressEvent( QKeyEvent * e )
+void QgsRendererPropertiesDialog::keyPressEvent( QKeyEvent* e )
 {
   // Ignore the ESC key to avoid close the dialog without the properties window
   if ( !isWindow() && e->key() == Qt::Key_Escape )

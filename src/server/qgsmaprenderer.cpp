@@ -362,9 +362,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
     // Store the painter in case we need to swap it out for the
     // cache painter
-    QPainter * mypContextPainter = mRenderContext.painter();
+    QPainter* mypContextPainter = mRenderContext.painter();
     // Flattened image for drawing when a blending mode is set
-    QImage * mypFlattenedImage = nullptr;
+    QImage* mypFlattenedImage = nullptr;
 
     QString layerId = li.previous();
 
@@ -379,7 +379,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     QgsDebugMsg( "If there is a QPaintEngine error here, it is caused by an emit call" );
 
     //emit drawingProgress(myRenderCounter++, mLayerSet.size());
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
     if ( !ml )
     {
@@ -454,7 +454,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       bool flattenedLayer = false;
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
         if ((( vl->blendMode() != QPainter::CompositionMode_SourceOver )
              || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
              || ( vl->layerTransparency() != 0 ) ) )
@@ -470,7 +470,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
             return;
           }
           mypFlattenedImage->fill( 0 );
-          QPainter * mypPainter = new QPainter( mypFlattenedImage );
+          QPainter* mypPainter = new QPainter( mypFlattenedImage );
           if ( mySettings.value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() )
           {
             mypPainter->setRenderHint( QPainter::Antialiasing );
@@ -483,7 +483,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       // Per feature blending mode
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
         if ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {
           // set the painter to the feature blend mode, so that features drawn
@@ -533,7 +533,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       //apply layer transparency for vector layers
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
         if ( vl->layerTransparency() != 0 )
         {
           // a layer transparency has been set, so update the alpha for the flattened layer
@@ -654,7 +654,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs,
       {
         rect = transform.transformBoundingBox( mExtent );
       }
-      catch ( QgsCsException &e )
+      catch ( QgsCsException& e )
       {
         Q_UNUSED( e );
         QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
@@ -736,7 +736,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
         }
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       Q_UNUSED( cse );
       QgsDebugMsg( "Transform error caught" );
@@ -762,7 +762,7 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
         extent = transform.transformBoundingBox( extent );
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
     }
@@ -791,7 +791,7 @@ QgsRectangle QgsMapRenderer::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
         extent = transform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
     }
@@ -814,7 +814,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
         point = transform.transform( point, QgsCoordinateTransform::ForwardTransform );
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
@@ -838,7 +838,7 @@ QgsRectangle QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
         rect = transform.transform( rect, QgsCoordinateTransform::ForwardTransform );
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
@@ -860,7 +860,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
       if ( transform.isValid() )
         point = transform.transform( point, QgsCoordinateTransform::ReverseTransform );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
@@ -882,7 +882,7 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
       if ( transform.isValid() )
         rect = transform.transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ) );
     }
@@ -909,7 +909,7 @@ QgsRectangle QgsMapRenderer::fullExtent()
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
   Q_FOREACH ( const QString layerId, mLayerSet )
   {
-    QgsMapLayer * lyr = registry->mapLayer( layerId );
+    QgsMapLayer* lyr = registry->mapLayer( layerId );
     if ( !lyr )
     {
       QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( layerId ) );
@@ -975,7 +975,7 @@ QStringList& QgsMapRenderer::layerSet()
   return mLayerSet;
 }
 
-bool QgsMapRenderer::readXml( QDomNode & theNode )
+bool QgsMapRenderer::readXml( QDomNode& theNode )
 {
   QgsMapSettings tmpSettings;
   tmpSettings.readXml( theNode );
@@ -1014,7 +1014,7 @@ bool QgsMapRenderer::readXml( QDomNode & theNode )
   return true;
 }
 
-bool QgsMapRenderer::writeXml( QDomNode & theNode, QDomDocument & theDoc )
+bool QgsMapRenderer::writeXml( QDomNode& theNode, QDomDocument& theDoc )
 {
   QgsMapSettings tmpSettings;
   tmpSettings.setOutputDpi( outputDpi() );
@@ -1050,7 +1050,7 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
   mLabelingEngine = iface;
 }
 
-QgsCoordinateTransform QgsMapRenderer::transformation( const QgsMapLayer *layer ) const
+QgsCoordinateTransform QgsMapRenderer::transformation( const QgsMapLayer* layer ) const
 {
   if ( !layer || !mDestCRS )
   {

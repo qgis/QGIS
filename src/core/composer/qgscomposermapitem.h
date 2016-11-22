@@ -49,7 +49,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * @param doc DOM document
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets map item state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
@@ -68,41 +68,62 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * @returns composer map
      * @see setComposerMap
      */
-    virtual const QgsComposerMap* composerMap() const { return mComposerMap; }
+    virtual const QgsComposerMap* composerMap() const
+    {
+      return mComposerMap;
+    }
 
     /** Get the unique id for the map item
      * @returns unique id
      */
-    QString id() const { return mUuid; }
+    QString id() const
+    {
+      return mUuid;
+    }
 
     /** Sets the friendly display name for the item
      * @param name display name
      * @see name
      */
-    virtual void setName( const QString& name ) { mName = name; }
+    virtual void setName( const QString& name )
+    {
+      mName = name;
+    }
 
     /** Get friendly display name for the item
      * @returns display name
      * @see setName
      */
-    virtual QString name() const { return mName; }
+    virtual QString name() const
+    {
+      return mName;
+    }
 
     /** Controls whether the item will be drawn
      * @param enabled set to true to enable drawing of the item
      * @see enabled
      */
-    virtual void setEnabled( const bool enabled ) { mEnabled = enabled; }
+    virtual void setEnabled( const bool enabled )
+    {
+      mEnabled = enabled;
+    }
 
     /** Returns whether the item will be drawn
      * @returns true if item will be drawn on the map
      * @see setEnabled
      */
-    virtual bool enabled() const { return mEnabled; }
+    virtual bool enabled() const
+    {
+      return mEnabled;
+    }
 
     /** Returns true if the item is drawn using advanced effects, such as blend modes.
      * @returns true if item uses advanced effects
      */
-    virtual bool usesAdvancedEffects() const { return false; }
+    virtual bool usesAdvancedEffects() const
+    {
+      return false;
+    }
 
   protected:
 
@@ -144,7 +165,10 @@ class CORE_EXPORT QgsComposerMapItemStack
     /** Returns the number of items in the stack
      * @returns number of items in the stack
      */
-    int size() const { return mItems.size(); }
+    int size() const
+    {
+      return mItems.size();
+    }
 
     /** Stores the state of the item stack in a DOM node
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
@@ -152,7 +176,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * @returns true if write was successful
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument& doc ) const;
 
     /** Sets the item stack's state from a DOM document
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
@@ -237,7 +261,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * @see item
      * @note not available in python bindings
      */
-    QgsComposerMapItem &operator[]( int idx );
+    QgsComposerMapItem& operator[]( int idx );
 
     /** Returns a list of QgsComposerMapItems contained by the stack
      * @returns list of items

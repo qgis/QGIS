@@ -41,7 +41,7 @@ QgsAbstractGeometry* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr& wkbPtr )
   {
     type = wkbPtr.readHeader();
   }
-  catch ( const QgsWkbException &e )
+  catch ( const QgsWkbException& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "WKB exception while reading header: " + e.what() );
@@ -59,7 +59,7 @@ QgsAbstractGeometry* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr& wkbPtr )
     {
       geom->fromWkb( wkbPtr );  // also updates wkbPtr
     }
-    catch ( const QgsWkbException &e )
+    catch ( const QgsWkbException& e )
     {
       Q_UNUSED( e );
       QgsDebugMsg( "WKB exception: " + e.what() );

@@ -43,16 +43,25 @@ class QgsWfsRequest : public QObject
                      XmlError,
                      ServerExceptionError,
                      WFSVersionNotSupported
-                 };
+                   };
 
     //! \brief Return error code (after download/post)
-    ErrorCode errorCode() const { return mErrorCode; }
+    ErrorCode errorCode() const
+    {
+      return mErrorCode;
+    }
 
     //! \brief Return error message (after download/post)
-    const QString& errorMessage() const { return mErrorMessage; }
+    const QString& errorMessage() const
+    {
+      return mErrorMessage;
+    }
 
     //! \brief Return server response (after download/post)
-    const QByteArray& response() const { return mResponse; }
+    const QByteArray& response() const
+    {
+      return mResponse;
+    }
 
   public slots:
     //! Abort network request immediately
@@ -75,7 +84,7 @@ class QgsWfsRequest : public QObject
     QgsWFSDataSourceURI mUri;
 
     //! The reply to the request
-    QNetworkReply *mReply;
+    QNetworkReply* mReply;
 
     //! The error message associated with the last error.
     QString mErrorMessage;
@@ -101,14 +110,20 @@ class QgsWfsRequest : public QObject
   protected:
 
     //! base service URL
-    QUrl baseURL() const { return mUri.baseURL(); }
+    QUrl baseURL() const
+    {
+      return mUri.baseURL();
+    }
 
     /** Return (translated) error message, composed with a
         (possibly translated, but sometimes coming from server) reason  */
     virtual QString errorMessageWithReason( const QString& reason ) = 0;
 
     //! Return experiation delay in second
-    virtual int defaultExpirationInSec() { return 0; }
+    virtual int defaultExpirationInSec()
+    {
+      return 0;
+    }
 
   private:
     QString errorMessageFailedAuth();

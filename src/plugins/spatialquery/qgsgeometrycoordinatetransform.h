@@ -52,24 +52,26 @@ class QgsGeometryCoordinateTransform
      * \brief Transform the coordinates reference system of the geometry, if target have the different system of reference
      * \param geom      Geometry
      */
-    void transform( QgsGeometry *geom );
+    void transform( QgsGeometry* geom );
   private:
 
     /**
      * \brief Transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
      */
-    void setGeomTransform( QgsGeometry *geom );
+    void setGeomTransform( QgsGeometry* geom );
 
     /**
      * \brief None transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
      */
-    void setNoneGeomTransform( QgsGeometry *geom )
-    { Q_UNUSED( geom ); }
+    void setNoneGeomTransform( QgsGeometry* geom )
+    {
+      Q_UNUSED( geom );
+    }
 
     QgsCoordinateTransform mCoordTransform;
-    void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
+    void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry* );
 
     QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );
     QgsGeometryCoordinateTransform& operator=( const QgsGeometryCoordinateTransform& rh );

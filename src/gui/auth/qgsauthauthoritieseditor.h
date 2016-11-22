@@ -41,7 +41,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
      * Widget for viewing and editing certificate authorities directly in database
      * @param parent Parent widget
      */
-    explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
+    explicit QgsAuthAuthoritiesEditor( QWidget* parent = nullptr );
     ~QgsAuthAuthoritiesEditor();
 
   private slots:
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void refreshCaCertsView();
 
-    void showCertInfo( QTreeWidgetItem *item );
+    void showCertInfo( QTreeWidgetItem* item );
 
     //! Pass selection change on to UI update
     void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
   protected:
     //! Overridden show event of base widget
-    void showEvent( QShowEvent *e ) override;
+    void showEvent( QShowEvent* e ) override;
 
   private:
     enum CaType
@@ -102,38 +102,38 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void populateRootCaCerts();
 
-    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+    void populateCaCertsSection( QTreeWidgetItem* item, const QList<QSslCertificate>& certs,
                                  QgsAuthAuthoritiesEditor::CaType catype );
 
     void appendCertsToGroup( const QList<QSslCertificate>& certs,
                              QgsAuthAuthoritiesEditor::CaType catype,
-                             QTreeWidgetItem *parent = nullptr );
+                             QTreeWidgetItem* parent = nullptr );
 
     void appendCertsToItem( const QList<QSslCertificate>& certs,
                             QgsAuthAuthoritiesEditor::CaType catype,
-                            QTreeWidgetItem *parent = nullptr );
+                            QTreeWidgetItem* parent = nullptr );
 
     void updateCertTrustPolicyCache();
 
     void populateUtilitiesMenu();
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar* messageBar();
     int messageTimeout();
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 
-    QTreeWidgetItem * mRootCaSecItem;
-    QTreeWidgetItem * mFileCaSecItem;
-    QTreeWidgetItem * mDbCaSecItem;
+    QTreeWidgetItem* mRootCaSecItem;
+    QTreeWidgetItem* mFileCaSecItem;
+    QTreeWidgetItem* mDbCaSecItem;
 
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
     QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
 
-    QMenu * mUtilitiesMenu;
+    QMenu* mUtilitiesMenu;
     bool mDisabled;
-    QAction * mActionDefaultTrustPolicy;
-    QAction * mActionShowTrustedCAs;
+    QAction* mActionDefaultTrustPolicy;
+    QAction* mActionShowTrustedCAs;
 };
 
 #endif // QGSAUTHAUTHORITIESEDITOR_H

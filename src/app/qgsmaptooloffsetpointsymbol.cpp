@@ -29,10 +29,10 @@
 #include <QMouseEvent>
 
 QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas* canvas )
-    : QgsMapToolPointSymbol( canvas )
-    , mOffsetting( false )
-    , mOffsetItem( nullptr )
-    , mSymbolRotation( 0.0 )
+  : QgsMapToolPointSymbol( canvas )
+  , mOffsetting( false )
+  , mOffsetItem( nullptr )
+  , mSymbolRotation( 0.0 )
 {}
 
 QgsMapToolOffsetPointSymbol::~QgsMapToolOffsetPointSymbol()
@@ -48,7 +48,7 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer* ml )
   }
 
   //a vector layer
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( ml );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vLayer )
   {
     return false;
@@ -73,7 +73,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   QgsMapToolPointSymbol::canvasPressEvent( e );
 }
 
-void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint )
+void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint )
 {
   Q_UNUSED( e );
   mClickedFeature = feature;
@@ -83,7 +83,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, con
   mOffsetting = true;
 }
 
-bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext &context )
+bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& context )
 {
   bool ok = false;
 

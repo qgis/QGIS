@@ -34,10 +34,10 @@ class TestQgsComposerLabel : public QObject
 
   public:
     TestQgsComposerLabel()
-        : mComposition( 0 )
-        , mComposerLabel( 0 )
-        , mMapSettings( 0 )
-        , mVectorLayer( 0 )
+      : mComposition( 0 )
+      , mComposerLabel( 0 )
+      , mMapSettings( 0 )
+      , mVectorLayer( 0 )
     {}
 
   private slots:
@@ -60,7 +60,7 @@ class TestQgsComposerLabel : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QString mReport;
 };

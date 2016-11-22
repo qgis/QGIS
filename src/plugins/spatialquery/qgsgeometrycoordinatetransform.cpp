@@ -21,7 +21,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 QgsGeometryCoordinateTransform::QgsGeometryCoordinateTransform()
-    : mFuncTransform( nullptr )
+  : mFuncTransform( nullptr )
 {
 
 }
@@ -44,13 +44,13 @@ void QgsGeometryCoordinateTransform::setCoordinateTransform( QgsVectorLayer* lyr
 
 } // void QgsGeometryCoordinateTransform::setCoordinateTransform(QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference)
 
-void QgsGeometryCoordinateTransform::transform( QgsGeometry *geom )
+void QgsGeometryCoordinateTransform::transform( QgsGeometry* geom )
 {
   ( this->*mFuncTransform )( geom );
 
 } // void QgsGeometryCoordinateTransform::transformCoordenate()
 
-void QgsGeometryCoordinateTransform::setGeomTransform( QgsGeometry *geom )
+void QgsGeometryCoordinateTransform::setGeomTransform( QgsGeometry* geom )
 {
   geom->transform( mCoordTransform );
 

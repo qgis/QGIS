@@ -23,8 +23,8 @@
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mToolName = tr( "Pan" );
   // set cursor

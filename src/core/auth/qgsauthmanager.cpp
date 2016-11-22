@@ -46,7 +46,7 @@
 #include "qgscredentials.h"
 #include "qgslogger.h"
 
-QgsAuthManager *QgsAuthManager::smInstance = nullptr;
+QgsAuthManager* QgsAuthManager::smInstance = nullptr;
 
 const QString QgsAuthManager::smAuthConfigTable = QStringLiteral( "auth_configs" );
 const QString QgsAuthManager::smAuthPassTable = QStringLiteral( "auth_pass" );
@@ -59,7 +59,7 @@ const QString QgsAuthManager::smAuthManTag = QObject::tr( "Authentication Manage
 const QString QgsAuthManager::smAuthCfgRegex = QStringLiteral( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
 
 
-QgsAuthManager *QgsAuthManager::instance()
+QgsAuthManager* QgsAuthManager::instance()
 {
   if ( !smInstance )
   {
@@ -140,7 +140,7 @@ bool QgsAuthManager::init( const QString& pluginPath )
   QgsDebugMsg( QString( "QCA provider priorities: %1" ).arg( prlist.join( ", " ) ) );
 
   QgsDebugMsg( "Populating auth method registry" );
-  QgsAuthMethodRegistry * authreg = QgsAuthMethodRegistry::instance( pluginPath );
+  QgsAuthMethodRegistry* authreg = QgsAuthMethodRegistry::instance( pluginPath );
 
   QStringList methods = authreg->authMethodList();
 
@@ -471,7 +471,7 @@ bool QgsAuthManager::setMasterPassword( const QString& pass, bool verify )
   return true;
 }
 
-bool QgsAuthManager::verifyMasterPassword( const QString &compare )
+bool QgsAuthManager::verifyMasterPassword( const QString& compare )
 {
   if ( isDisabled() )
     return false;
@@ -570,13 +570,13 @@ bool QgsAuthManager::masterPasswordIsSet() const
   return !mMasterPass.isEmpty();
 }
 
-bool QgsAuthManager::masterPasswordSame( const QString &pass ) const
+bool QgsAuthManager::masterPasswordSame( const QString& pass ) const
 {
   return mMasterPass == pass;
 }
 
-bool QgsAuthManager::resetMasterPassword( const QString& newpass, const QString &oldpass,
-    bool keepbackup, QString *backuppath )
+bool QgsAuthManager::resetMasterPassword( const QString& newpass, const QString& oldpass,
+    bool keepbackup, QString* backuppath )
 {
   if ( isDisabled() )
     return false;
@@ -817,13 +817,13 @@ bool QgsAuthManager::configIdUnique( const QString& id ) const
   return !configids.contains( id );
 }
 
-bool QgsAuthManager::hasConfigId( const QString &txt ) const
+bool QgsAuthManager::hasConfigId( const QString& txt ) const
 {
   QRegExp rx( smAuthCfgRegex );
   return rx.indexIn( txt ) != -1;
 }
 
-QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )
+QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString& dataprovider )
 {
   QStringList providerAuthMethodsKeys;
   if ( !dataprovider.isEmpty() )
@@ -895,7 +895,7 @@ void QgsAuthManager::updateConfigAuthMethods()
   }
 }
 
-QgsAuthMethod *QgsAuthManager::configAuthMethod( const QString &authcfg )
+QgsAuthMethod* QgsAuthManager::configAuthMethod( const QString& authcfg )
 {
   if ( isDisabled() )
     return nullptr;
@@ -911,7 +911,7 @@ QgsAuthMethod *QgsAuthManager::configAuthMethod( const QString &authcfg )
   return authMethod( authMethodKey );
 }
 
-QString QgsAuthManager::configAuthMethodKey( const QString &authcfg ) const
+QString QgsAuthManager::configAuthMethodKey( const QString& authcfg ) const
 {
   if ( isDisabled() )
     return QString();
@@ -920,12 +920,12 @@ QString QgsAuthManager::configAuthMethodKey( const QString &authcfg ) const
 }
 
 
-QStringList QgsAuthManager::authMethodsKeys( const QString &dataprovider )
+QStringList QgsAuthManager::authMethodsKeys( const QString& dataprovider )
 {
   return authMethodsMap( dataprovider.toLower() ).uniqueKeys();
 }
 
-QgsAuthMethod *QgsAuthManager::authMethod( const QString &authMethodKey )
+QgsAuthMethod* QgsAuthManager::authMethod( const QString& authMethodKey )
 {
   if ( !mAuthMethods.contains( authMethodKey ) )
   {
@@ -936,7 +936,7 @@ QgsAuthMethod *QgsAuthManager::authMethod( const QString &authMethodKey )
   return mAuthMethods.value( authMethodKey );
 }
 
-QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
+QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString& dataprovider )
 {
   if ( dataprovider.isEmpty() )
   {
@@ -958,12 +958,12 @@ QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
   return filteredmap;
 }
 
-QWidget *QgsAuthManager::authMethodEditWidget( const QString &authMethodKey, QWidget *parent )
+QWidget* QgsAuthManager::authMethodEditWidget( const QString& authMethodKey, QWidget* parent )
 {
   return QgsAuthMethodRegistry::instance()->editWidget( authMethodKey, parent );
 }
 
-QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const QString &authcfg )
+QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const QString& authcfg )
 {
   if ( isDisabled() )
     return QgsAuthMethod::Expansions( nullptr );
@@ -976,7 +976,7 @@ QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const Q
   return QgsAuthMethod::Expansions( nullptr );
 }
 
-bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
+bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig& mconfig )
 {
   if ( !setMasterPassword( true ) )
     return false;
@@ -1052,7 +1052,7 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
 
 }
 
-bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &config )
+bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig& config )
 {
   if ( !setMasterPassword( true ) )
     return false;
@@ -1122,7 +1122,7 @@ bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &conf
   return true;
 }
 
-bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full )
+bool QgsAuthManager::loadAuthenticationConfig( const QString& authcfg, QgsAuthMethodConfig& mconfig, bool full )
 {
   if ( isDisabled() )
     return false;
@@ -1165,7 +1165,7 @@ bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMe
       }
 
       QString authMethodKey = configAuthMethodKey( authcfg );
-      QgsAuthMethod *authmethod = authMethod( authMethodKey );
+      QgsAuthMethod* authmethod = authMethod( authMethodKey );
       if ( authmethod )
       {
         authmethod->updateMethodConfig( mconfig );
@@ -1240,7 +1240,7 @@ bool QgsAuthManager::removeAllAuthenticationConfigs()
   return res;
 }
 
-bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
+bool QgsAuthManager::backupAuthenticationDatabase( QString* backuppath )
 {
   if ( !QFile::exists( authenticationDbPath() ) )
   {
@@ -1275,7 +1275,7 @@ bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
   return true;
 }
 
-bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppath )
+bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString* backuppath )
 {
   if ( isDisabled() )
     return false;
@@ -1354,8 +1354,8 @@ bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppa
   return true;
 }
 
-bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QString& authcfg,
-    const QString &dataprovider )
+bool QgsAuthManager::updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+    const QString& dataprovider )
 {
   if ( isDisabled() )
     return false;
@@ -1380,8 +1380,8 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
   return false;
 }
 
-bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString& authcfg,
-    const QString &dataprovider )
+bool QgsAuthManager::updateNetworkReply( QNetworkReply* reply, const QString& authcfg,
+    const QString& dataprovider )
 {
   if ( isDisabled() )
     return false;
@@ -1406,8 +1406,8 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString& au
   return false;
 }
 
-bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthManager::updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+    const QString& dataprovider )
 {
   if ( isDisabled() )
     return false;
@@ -1432,7 +1432,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   return false;
 }
 
-bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant& value, bool encrypt )
+bool QgsAuthManager::storeAuthSetting( const QString& key, const QVariant& value, bool encrypt )
 {
   if ( key.isEmpty() )
     return false;
@@ -1472,7 +1472,7 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant& value
   return true;
 }
 
-QVariant QgsAuthManager::getAuthSetting( const QString &key, const QVariant& defaultValue, bool decrypt )
+QVariant QgsAuthManager::getAuthSetting( const QString& key, const QVariant& defaultValue, bool decrypt )
 {
   if ( key.isEmpty() )
     return QVariant();
@@ -1588,7 +1588,7 @@ bool QgsAuthManager::initSslCaches()
   return res;
 }
 
-bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslKey &key )
+bool QgsAuthManager::storeCertIdentity( const QSslCertificate& cert, const QSslKey& key )
 {
   if ( cert.isNull() )
   {
@@ -1631,7 +1631,7 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
   return true;
 }
 
-const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
+const QSslCertificate QgsAuthManager::getCertIdentity( const QString& id )
 {
   QSslCertificate emptycert;
   QSslCertificate cert;
@@ -1664,7 +1664,7 @@ const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
   return cert;
 }
 
-const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( const QString &id )
+const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( const QString& id )
 {
   QPair<QSslCertificate, QSslKey> bundle;
   if ( id.isEmpty() )
@@ -1718,7 +1718,7 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
   return bundle;
 }
 
-const QStringList QgsAuthManager::getCertIdentityBundleToPem( const QString &id )
+const QStringList QgsAuthManager::getCertIdentityBundleToPem( const QString& id )
 {
   QPair<QSslCertificate, QSslKey> bundle( getCertIdentityBundle( id ) );
   if ( bundle.first.isValid() && !bundle.second.isNull() )
@@ -1774,7 +1774,7 @@ QStringList QgsAuthManager::getCertIdentityIds() const
   return identityids;
 }
 
-bool QgsAuthManager::existsCertIdentity( const QString &id )
+bool QgsAuthManager::existsCertIdentity( const QString& id )
 {
   if ( id.isEmpty() )
     return false;
@@ -1806,7 +1806,7 @@ bool QgsAuthManager::existsCertIdentity( const QString &id )
   return res;
 }
 
-bool QgsAuthManager::removeCertIdentity( const QString &id )
+bool QgsAuthManager::removeCertIdentity( const QString& id )
 {
   if ( id.isEmpty() )
   {
@@ -1833,7 +1833,7 @@ bool QgsAuthManager::removeCertIdentity( const QString &id )
   return true;
 }
 
-bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &config )
+bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer& config )
 {
   if ( config.isNull() )
   {
@@ -1874,7 +1874,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
   return true;
 }
 
-const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QString &id, const QString &hostport )
+const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QString& id, const QString& hostport )
 {
   QgsAuthConfigSslServer config;
 
@@ -1915,7 +1915,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QStri
   return config;
 }
 
-const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const QString &hostport )
+const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const QString& hostport )
 {
   QgsAuthConfigSslServer config;
 
@@ -1981,7 +1981,7 @@ const QList<QgsAuthConfigSslServer> QgsAuthManager::getSslCertCustomConfigs()
   return configs;
 }
 
-bool QgsAuthManager::existsSslCertCustomConfig( const QString &id , const QString &hostport )
+bool QgsAuthManager::existsSslCertCustomConfig( const QString& id , const QString& hostport )
 {
   if ( id.isEmpty() || hostport.isEmpty() )
   {
@@ -2018,7 +2018,7 @@ bool QgsAuthManager::existsSslCertCustomConfig( const QString &id , const QStrin
   return res;
 }
 
-bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString &hostport )
+bool QgsAuthManager::removeSslCertCustomConfig( const QString& id, const QString& hostport )
 {
   if ( id.isEmpty() || hostport.isEmpty() )
   {
@@ -2076,7 +2076,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   }
 }
 
-bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer &config )
+bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer& config )
 {
   if ( config.isNull() )
   {
@@ -2104,7 +2104,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   return true;
 }
 
-bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors )
+bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString& shahostport, const QList<QSslError>& errors )
 {
   QRegExp rx( "\\S+:\\S+:\\d+" );
   if ( !rx.exactMatch( shahostport ) )
@@ -2126,7 +2126,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
   }
 
   QSet<QSslError::SslError> errs;
-  Q_FOREACH ( const QSslError &error, errors )
+  Q_FOREACH ( const QSslError& error, errors )
   {
     if ( error.error() == QSslError::NoError )
       continue;
@@ -2208,7 +2208,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 }
 
 
-bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
+bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate>& certs )
 {
   if ( certs.size() < 1 )
   {
@@ -2259,7 +2259,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate& cert )
   return true;
 }
 
-const QSslCertificate QgsAuthManager::getCertAuthority( const QString &id )
+const QSslCertificate QgsAuthManager::getCertAuthority( const QString& id )
 {
   QSslCertificate emptycert;
   QSslCertificate cert;
@@ -2440,7 +2440,7 @@ bool QgsAuthManager::rebuildCaCertsCache()
   return res;
 }
 
-bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy )
+bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate& cert, QgsAuthCertUtils::CertTrustPolicy policy )
 {
   if ( cert.isNull() )
   {
@@ -2478,7 +2478,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
   return true;
 }
 
-QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSslCertificate &cert )
+QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSslCertificate& cert )
 {
   if ( cert.isNull() )
   {
@@ -2515,7 +2515,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
   return policy;
 }
 
-bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &certs )
+bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate>& certs )
 {
   if ( certs.size() < 1 )
   {
@@ -2531,7 +2531,7 @@ bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &cert
   return true;
 }
 
-bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
+bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate& cert )
 {
   if ( cert.isNull() )
   {
@@ -2561,7 +2561,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
   return true;
 }
 
-QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertificateTrustPolicy( const QSslCertificate &cert )
+QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertificateTrustPolicy( const QSslCertificate& cert )
 {
   if ( cert.isNull() )
   {
@@ -2747,8 +2747,8 @@ void QgsAuthManager::clearCachedConfig( const QString& authcfg )
   }
 }
 
-void QgsAuthManager::writeToConsole( const QString &message,
-                                     const QString &tag,
+void QgsAuthManager::writeToConsole( const QString& message,
+                                     const QString& tag,
                                      QgsAuthManager::MessageLevel level )
 {
   Q_UNUSED( tag );
@@ -2807,20 +2807,20 @@ void QgsAuthManager::tryToStartDbErase()
 }
 
 QgsAuthManager::QgsAuthManager()
-    : QObject()
-    , mAuthInit( false )
-    , mAuthDbPath( QString() )
-    , mQcaInitializer( nullptr )
-    , mMasterPass( QString() )
-    , mPassTries( 0 )
-    , mAuthDisabled( false )
-    , mScheduledDbEraseTimer( nullptr )
-    , mScheduledDbErase( false )
-    , mScheduledDbEraseRequestWait( 3 )
-    , mScheduledDbEraseRequestEmitted( false )
-    , mScheduledDbEraseRequestCount( 0 )
-    , mMutex( nullptr )
-    , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
+  : QObject()
+  , mAuthInit( false )
+  , mAuthDbPath( QString() )
+  , mQcaInitializer( nullptr )
+  , mMasterPass( QString() )
+  , mPassTries( 0 )
+  , mAuthDisabled( false )
+  , mScheduledDbEraseTimer( nullptr )
+  , mScheduledDbErase( false )
+  , mScheduledDbEraseRequestWait( 3 )
+  , mScheduledDbEraseRequestEmitted( false )
+  , mScheduledDbEraseRequestCount( 0 )
+  , mMutex( nullptr )
+  , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
@@ -2853,7 +2853,7 @@ bool QgsAuthManager::masterPasswordInput()
     return false;
 
   QString pass;
-  QgsCredentials * creds = QgsCredentials::instance();
+  QgsCredentials* creds = QgsCredentials::instance();
   creds->lock();
   bool ok = creds->getMasterPassword( pass, masterPasswordHashInDb() );
   creds->unlock();
@@ -2866,7 +2866,7 @@ bool QgsAuthManager::masterPasswordInput()
   return false;
 }
 
-bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
+bool QgsAuthManager::masterPasswordRowsInDb( int* rows ) const
 {
   if ( isDisabled() )
     return false;
@@ -2900,7 +2900,7 @@ bool QgsAuthManager::masterPasswordHashInDb() const
   return ( rows == 1 );
 }
 
-bool QgsAuthManager::masterPasswordCheckAgainstDb( const QString &compare ) const
+bool QgsAuthManager::masterPasswordCheckAgainstDb( const QString& compare ) const
 {
   if ( isDisabled() )
     return false;
@@ -3039,7 +3039,7 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
   return true;
 }
 
-bool QgsAuthManager::reencryptAllAuthenticationConfigs( const QString &prevpass, const QString &prevciv )
+bool QgsAuthManager::reencryptAllAuthenticationConfigs( const QString& prevpass, const QString& prevciv )
 {
   if ( isDisabled() )
     return false;
@@ -3052,7 +3052,7 @@ bool QgsAuthManager::reencryptAllAuthenticationConfigs( const QString &prevpass,
   return res;
 }
 
-bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, const QString &prevpass, const QString &prevciv )
+bool QgsAuthManager::reencryptAuthenticationConfig( const QString& authcfg, const QString& prevpass, const QString& prevciv )
 {
   if ( isDisabled() )
     return false;
@@ -3114,7 +3114,7 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
   }
 }
 
-bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass, const QString &prevciv )
+bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString& prevpass, const QString& prevciv )
 {
   // TODO: start remove (when function is actually used)
   Q_UNUSED( prevpass );
@@ -3133,7 +3133,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   QStringList encryptedsettings;
   encryptedsettings << "";
 
-  Q_FOREACH ( const QString &sett, encryptedsettings )
+  Q_FOREACH ( const QString& sett, encryptedsettings )
   {
     if ( sett.isEmpty() || !existsAuthSetting( sett ) )
       continue;
@@ -3200,13 +3200,13 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
 #endif
 }
 
-bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpass, const QString &prevciv )
+bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString& prevpass, const QString& prevciv )
 {
   if ( isDisabled() )
     return false;
 
   bool res = true;
-  Q_FOREACH ( const QString &identid, getCertIdentityIds() )
+  Q_FOREACH ( const QString& identid, getCertIdentityIds() )
   {
     res = res && reencryptAuthenticationIdentity( identid, prevpass, prevciv );
   }
@@ -3214,9 +3214,9 @@ bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpa
 }
 
 bool QgsAuthManager::reencryptAuthenticationIdentity(
-  const QString &identid,
-  const QString &prevpass,
-  const QString &prevciv )
+  const QString& identid,
+  const QString& prevpass,
+  const QString& prevciv )
 {
   if ( isDisabled() )
     return false;
@@ -3299,7 +3299,7 @@ bool QgsAuthManager::authDbOpen() const
   return true;
 }
 
-bool QgsAuthManager::authDbQuery( QSqlQuery *query ) const
+bool QgsAuthManager::authDbQuery( QSqlQuery* query ) const
 {
   if ( isDisabled() )
     return false;
@@ -3358,7 +3358,7 @@ bool QgsAuthManager::authDbCommit() const
   return true;
 }
 
-bool QgsAuthManager::authDbTransactionQuery( QSqlQuery *query ) const
+bool QgsAuthManager::authDbTransactionQuery( QSqlQuery* query ) const
 {
   if ( isDisabled() )
     return false;

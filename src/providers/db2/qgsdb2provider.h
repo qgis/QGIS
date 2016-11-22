@@ -34,7 +34,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( const QString &uri = QString() );
+    explicit QgsDb2Provider( const QString& uri = QString() );
 
     virtual ~QgsDb2Provider();
 
@@ -46,7 +46,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
      *
      * @param connInfo A string containing all connection information.
      */
-    static QSqlDatabase getDatabase( const QString &connInfo, QString &errMsg );
+    static QSqlDatabase getDatabase( const QString& connInfo, QString& errMsg );
 
     static bool openDatabase( QSqlDatabase db );
 
@@ -73,7 +73,10 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     virtual QString name() const override;
 
@@ -83,31 +86,31 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList& flist ) override;
 
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds& id ) override;
 
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override;
 
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap& geometry_map ) override;
 
     //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFields &fields,
+      const QgsFields& fields,
       QgsWkbTypes::Type wkbType,
       const QgsCoordinateReferenceSystem& srs,
       bool overwrite,
-      QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      QMap<int, int>* oldToNewAttrIdxMap,
+      QString* errorMessage = nullptr,
+      const QMap<QString, QVariant>* options = nullptr
     );
 
     //! Convert a QgsField to work with DB2
-    static bool convertField( QgsField &field );
+    static bool convertField( QgsField& field );
 
     //! Convert a QgsField to work with DB2
-    static QString qgsFieldToDb2Field( const QgsField &field );
+    static QString qgsFieldToDb2Field( const QgsField& field );
 
   protected:
     //! Loads fields from input file to member attributeFields
@@ -116,7 +119,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     void loadFields();
 
   private:
-    static void db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
+    static void db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString& geometryType, int& dim );
     static QString db2TypeName( int typeId );
 
     QgsFields mAttributeFields; //fields

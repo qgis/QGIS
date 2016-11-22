@@ -23,12 +23,12 @@
 #include <QRect>
 #include <qmath.h>
 
-QgsDial::QgsDial( QWidget *parent ) : QDial( parent )
+QgsDial::QgsDial( QWidget* parent ) : QDial( parent )
 {
   setMinimumSize( QSize( 50, 50 ) );
 }
 
-void QgsDial::paintEvent( QPaintEvent *event )
+void QgsDial::paintEvent( QPaintEvent* event )
 {
   QDial::paintEvent( event );
   QPainter painter( this );
@@ -39,25 +39,25 @@ void QgsDial::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
-void QgsDial::setMinimum( const QVariant &min )
+void QgsDial::setMinimum( const QVariant& min )
 {
   mMin = min;
   update();
 }
 
-void QgsDial::setMaximum( const QVariant &max )
+void QgsDial::setMaximum( const QVariant& max )
 {
   mMax = max;
   update();
 }
 
-void QgsDial::setSingleStep( const QVariant &step )
+void QgsDial::setSingleStep( const QVariant& step )
 {
   mStep = step;
   update();
 }
 
-void QgsDial::setValue( const QVariant &value )
+void QgsDial::setValue( const QVariant& value )
 {
   mValue = value;
   update();

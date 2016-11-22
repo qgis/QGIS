@@ -52,9 +52,9 @@ class TestQgsMapRendererJob : public QObject
 
   public:
     TestQgsMapRendererJob()
-        : mError( QgsVectorFileWriter::NoError )
-        , mMapSettings( 0 )
-        , mpPolysLayer( 0 )
+      : mError( QgsVectorFileWriter::NoError )
+      , mMapSettings( 0 )
+      , mpPolysLayer( 0 )
     {
     }
 
@@ -83,8 +83,8 @@ class TestQgsMapRendererJob : public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapSettings* mMapSettings;
+    QgsMapLayer* mpPolysLayer;
     QString mReport;
 };
 
@@ -183,7 +183,7 @@ void TestQgsMapRendererJob::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QVERIFY( mpPolysLayer->isValid() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   // add the test layer to the maprender
   mMapSettings->setLayers( QStringList() << mpPolysLayer->id() );
   mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );

@@ -52,7 +52,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * Constructor for QgsExpressionLineEdit.
      * @param parent parent widget
      */
-    explicit QgsExpressionLineEdit( QWidget *parent = nullptr );
+    explicit QgsExpressionLineEdit( QWidget* parent = nullptr );
 
     /**
      * Sets the title used in the expression builder dialog
@@ -65,7 +65,10 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * Returns the title used for the expression dialog.
      * @see setExpressionDialogTitle()
      */
-    QString expressionDialogTitle() const { return mExpressionDialogTitle; }
+    QString expressionDialogTitle() const
+    {
+      return mExpressionDialogTitle;
+    }
 
     /**
      * Sets whether the widget should show a multiline text editor.
@@ -78,7 +81,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * Set the geometry calculator used in the expression dialog.
      * @param distanceArea calculator
      */
-    void setGeomCalculator( const QgsDistanceArea &distanceArea );
+    void setGeomCalculator( const QgsDistanceArea& distanceArea );
 
     /**
      * Sets a layer associated with the widget. Required in order to get the fields and values
@@ -100,7 +103,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
       * Returns true if the current expression is valid.
       * @param expressionError will be set to any generated error message if specified
       */
-    bool isValidExpression( QString *expressionError = nullptr ) const;
+    bool isValidExpression( QString* expressionError = nullptr ) const;
 
     /**
      * Register an expression context generator class that will be used to retrieve

@@ -27,7 +27,7 @@ QgsDbFilterProxyModel::~QgsDbFilterProxyModel()
 
 }
 
-bool QgsDbFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
+bool QgsDbFilterProxyModel::filterAcceptsRow( int row, const QModelIndex& source_parent ) const
 {
   //if parent is valid, we have a toplevel item that should be always shown
   if ( !source_parent.isValid() )

@@ -37,8 +37,14 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;
 
-    virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
-    virtual int dimension() const override { return 1; }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "CompoundCurve" );
+    }
+    virtual int dimension() const override
+    {
+      return 1;
+    }
     virtual QgsCompoundCurve* clone() const override;
     virtual void clear() override;
 
@@ -55,7 +61,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual double length() const override;
     virtual QgsPointV2 startPoint() const override;
     virtual QgsPointV2 endPoint() const override;
-    virtual void points( QgsPointSequence &pts ) const override;
+    virtual void points( QgsPointSequence& pts ) const override;
     virtual int numPoints() const override;
 
     /** Returns a new line string geometry corresponding to a segmentized approximation
@@ -66,7 +72,10 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     /** Returns the number of curves in the geometry.
      */
-    int nCurves() const { return mCurves.size(); }
+    int nCurves() const
+    {
+      return mCurves.size();
+    }
 
     /** Returns the curve at the specified index.
      */

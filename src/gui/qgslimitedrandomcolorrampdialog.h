@@ -42,7 +42,10 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
      */
-    QgsLimitedRandomColorRamp ramp() const { return mRamp; }
+    QgsLimitedRandomColorRamp ramp() const
+    {
+      return mRamp;
+    }
 
     /** Sets the color ramp to show in the dialog.
      * @param ramp color ramp
@@ -102,13 +105,19 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
      */
-    QgsLimitedRandomColorRamp ramp() const { return mWidget->ramp(); }
+    QgsLimitedRandomColorRamp ramp() const
+    {
+      return mWidget->ramp();
+    }
 
     /** Sets the color ramp to show in the dialog.
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsLimitedRandomColorRamp& ramp ) { mWidget->setRamp( ramp ); }
+    void setRamp( const QgsLimitedRandomColorRamp& ramp )
+    {
+      mWidget->setRamp( ramp );
+    }
 
   signals:
 

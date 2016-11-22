@@ -70,14 +70,14 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
-    void makeGraph( QgsGraphBuilderInterface *builder,
+    void makeGraph( QgsGraphBuilderInterface* builder,
                     const QVector< QgsPoint >& additionalPoints,
                     QVector< QgsPoint>& snappedPoints ) const override;
 
     QString name() const override;
 
   private:
-    QgsVectorLayer *mVectorLayer;
+    QgsVectorLayer* mVectorLayer;
     int mDirectionFieldId;
     QString mDirectDirectionValue;
     QString mReverseDirectionValue;

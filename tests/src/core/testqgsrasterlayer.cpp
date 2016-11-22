@@ -54,12 +54,12 @@ class TestQgsRasterLayer : public QObject
     Q_OBJECT
   public:
     TestQgsRasterLayer()
-        : mpRasterLayer( nullptr )
-        , mpLandsatRasterLayer( nullptr )
-        , mpFloat32RasterLayer( nullptr )
-        , mPngRasterLayer( nullptr )
-        , mGeoJp2RasterLayer( nullptr )
-        , mMapSettings( nullptr )
+      : mpRasterLayer( nullptr )
+      , mpLandsatRasterLayer( nullptr )
+      , mpFloat32RasterLayer( nullptr )
+      , mPngRasterLayer( nullptr )
+      , mGeoJp2RasterLayer( nullptr )
+      , mMapSettings( nullptr )
     {}
     ~TestQgsRasterLayer()
     {
@@ -101,13 +101,13 @@ class TestQgsRasterLayer : public QObject
     bool testColorRamp( const QString& name, QgsColorRamp* colorRamp,
                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries );
     QString mTestDataDir;
-    QgsRasterLayer * mpRasterLayer;
-    QgsRasterLayer * mpLandsatRasterLayer;
-    QgsRasterLayer * mpFloat32RasterLayer;
-    QgsRasterLayer * mPngRasterLayer;
-    QgsRasterLayer * mGeoJp2RasterLayer;
+    QgsRasterLayer* mpRasterLayer;
+    QgsRasterLayer* mpLandsatRasterLayer;
+    QgsRasterLayer* mpFloat32RasterLayer;
+    QgsRasterLayer* mPngRasterLayer;
+    QgsRasterLayer* mGeoJp2RasterLayer;
 
-    QgsMapSettings * mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 };
 
@@ -117,8 +117,8 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-        : QObject( nullptr )
-        , rendererChanged( false )
+      : QObject( nullptr )
+      , rendererChanged( false )
     {}
     bool rendererChanged;
   public slots:
@@ -176,7 +176,7 @@ void TestQgsRasterLayer::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpRasterLayer
+    QList<QgsMapLayer*>() << mpRasterLayer
     << mpLandsatRasterLayer
     << mpFloat32RasterLayer
     << mPngRasterLayer
@@ -410,7 +410,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   mReport += QLatin1String( "<h2>Check Stats with scale/offset</h2>\n" );
 
   QFileInfo myRasterFileInfo( mTestDataDir + "scaleoffset.tif" );
-  QgsRasterLayer * myRasterLayer;
+  QgsRasterLayer* myRasterLayer;
   myRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
   QVERIFY( myRasterLayer );
@@ -496,7 +496,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   QFile::remove( myTempPath + "landsat.tif" );
   QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" ) );
   QFileInfo myRasterFileInfo( myTempPath + "landsat.tif" );
-  QgsRasterLayer * mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+  QgsRasterLayer* mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() );
 
   QVERIFY( mypLayer->isValid() );
@@ -579,12 +579,12 @@ void TestQgsRasterLayer::registry()
   QFile::remove( myTempPath + "landsat.tif" );
   QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" ) );
   QFileInfo myRasterFileInfo( myTempPath + "landsat.tif" );
-  QgsRasterLayer * mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+  QgsRasterLayer* mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() );
   QVERIFY( mypLayer->isValid() );
 
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mypLayer, false );
+    QList<QgsMapLayer*>() << mypLayer, false );
   QgsMapLayerRegistry::instance()->removeMapLayers(
     QStringList() << mypLayer->id() );
 }

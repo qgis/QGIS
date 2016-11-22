@@ -54,18 +54,33 @@ class CORE_EXPORT QgsRasterIterator
        @return false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
                              int& nCols, int& nRows,
-                             QgsRasterBlock **block,
+                             QgsRasterBlock** block,
                              int& topLeftCol, int& topLeftRow );
 
     void stopRasterRead( int bandNumber );
 
-    const QgsRasterInterface* input() const { return mInput; }
+    const QgsRasterInterface* input() const
+    {
+      return mInput;
+    }
 
-    void setMaximumTileWidth( int w ) { mMaximumTileWidth = w; }
-    int maximumTileWidth() const { return mMaximumTileWidth; }
+    void setMaximumTileWidth( int w )
+    {
+      mMaximumTileWidth = w;
+    }
+    int maximumTileWidth() const
+    {
+      return mMaximumTileWidth;
+    }
 
-    void setMaximumTileHeight( int h ) { mMaximumTileHeight = h; }
-    int maximumTileHeight() const { return mMaximumTileHeight; }
+    void setMaximumTileHeight( int h )
+    {
+      mMaximumTileHeight = h;
+    }
+    int maximumTileHeight() const
+    {
+      return mMaximumTileHeight;
+    }
 
   private:
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates

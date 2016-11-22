@@ -29,7 +29,10 @@ class CORE_EXPORT QgsGeometryCache
   public:
     QgsGeometryCache();
 
-    inline QgsGeometryMap& cachedGeometries() { return mCachedGeometries; }
+    inline QgsGeometryMap& cachedGeometries()
+    {
+      return mCachedGeometries;
+    }
 
     //! fetch geometry from cache, return true if successful
     bool geometry( QgsFeatureId fid, QgsGeometry& geometry );
@@ -38,13 +41,22 @@ class CORE_EXPORT QgsGeometryCache
     void cacheGeometry( QgsFeatureId fid, const QgsGeometry& geom );
 
     //! get rid of the cached geometry
-    void removeGeometry( QgsFeatureId fid ) { mCachedGeometries.remove( fid ); }
+    void removeGeometry( QgsFeatureId fid )
+    {
+      mCachedGeometries.remove( fid );
+    }
 
     //! Deletes the geometries in mCachedGeometries
     void deleteCachedGeometries();
 
-    void setCachedGeometriesRect( const QgsRectangle& extent ) { mCachedGeometriesRect = extent; }
-    const QgsRectangle& cachedGeometriesRect() { return mCachedGeometriesRect; }
+    void setCachedGeometriesRect( const QgsRectangle& extent )
+    {
+      mCachedGeometriesRect = extent;
+    }
+    const QgsRectangle& cachedGeometriesRect()
+    {
+      return mCachedGeometriesRect;
+    }
 
   protected:
 

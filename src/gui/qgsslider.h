@@ -27,13 +27,13 @@ class GUI_EXPORT QgsSlider : public QSlider
 {
     Q_OBJECT
   public:
-    QgsSlider( QWidget *parent = nullptr );
-    QgsSlider( Qt::Orientation orientation, QWidget * parent = nullptr );
+    QgsSlider( QWidget* parent = nullptr );
+    QgsSlider( Qt::Orientation orientation, QWidget* parent = nullptr );
 
-    void setMinimum( const QVariant &min );
-    void setMaximum( const QVariant &max );
-    void setSingleStep( const QVariant &step );
-    void setValue( const QVariant &value );
+    void setMinimum( const QVariant& min );
+    void setMaximum( const QVariant& max );
+    void setSingleStep( const QVariant& step );
+    void setValue( const QVariant& value );
     QVariant variantValue() const;
 
   signals:
@@ -43,7 +43,7 @@ class GUI_EXPORT QgsSlider : public QSlider
     void valueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent * event ) override;
+    virtual void paintEvent( QPaintEvent* event ) override;
 
   private:
     void update();

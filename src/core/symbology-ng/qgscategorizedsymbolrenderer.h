@@ -47,9 +47,9 @@ class CORE_EXPORT QgsRendererCategory
     QgsSymbol* symbol() const;
     QString label() const;
 
-    void setValue( const QVariant &value );
+    void setValue( const QVariant& value );
     void setSymbol( QgsSymbol* s );
-    void setLabel( const QString &label );
+    void setLabel( const QString& label );
 
     // @note added in 2.5
     bool renderState() const;
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsRendererCategory
     // debugging
     QString dump() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument& doc, QDomElement& element, QgsStringMap props ) const;
 
   protected:
     QVariant mValue;
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsRendererCategory
     QString mLabel;
     bool mRender;
 
-    void swap( QgsRendererCategory & other );
+    void swap( QgsRendererCategory& other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
@@ -89,8 +89,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QSet<QString> usedAttributes() const override;
     virtual QString dump() const override;
     virtual QgsCategorizedSymbolRenderer* clone() const override;
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
-    virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
+    virtual void toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props = QgsStringMap() ) const override;
+    virtual Capabilities capabilities() override
+    {
+      return SymbolLevels | Filter;
+    }
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
@@ -99,9 +102,12 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * @param sym source symbol to use for categories. Ownership is not transferred.
      * @see setSourceSymbol()
      */
-    void updateSymbols( QgsSymbol * sym );
+    void updateSymbols( QgsSymbol* sym );
 
-    const QgsCategoryList& categories() const { return mCategories; }
+    const QgsCategoryList& categories() const
+    {
+      return mCategories;
+    }
 
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( const QVariant& val );
@@ -110,14 +116,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! @note added in 2.5
     int categoryIndexForLabel( const QString& val );
 
-    bool updateCategoryValue( int catIndex, const QVariant &value );
+    bool updateCategoryValue( int catIndex, const QVariant& value );
     bool updateCategorySymbol( int catIndex, QgsSymbol* symbol );
     bool updateCategoryLabel( int catIndex, const QString& label );
 
     //! @note added in 2.5
     bool updateCategoryRenderState( int catIndex, bool render );
 
-    void addCategory( const QgsRendererCategory &category );
+    void addCategory( const QgsRendererCategory& category );
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
 
@@ -127,8 +133,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
-    QString classAttribute() const { return mAttrName; }
-    void setClassAttribute( const QString& attr ) { mAttrName = attr; }
+    QString classAttribute() const
+    {
+      return mAttrName;
+    }
+    void setClassAttribute( const QString& attr )
+    {
+      mAttrName = attr;
+    }
 
     //! create renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& element );
@@ -168,8 +180,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void setSourceColorRamp( QgsColorRamp* ramp );
 
     //! @note added in 2.1
-    bool invertedColorRamp() { return mInvertedColorRamp; }
-    void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
+    bool invertedColorRamp()
+    {
+      return mInvertedColorRamp;
+    }
+    void setInvertedColorRamp( bool inverted )
+    {
+      mInvertedColorRamp = inverted;
+    }
 
     /** Update the color ramp used and all symbols colors.
       * @param ramp color ramp. Ownership is transferred to the renderer
@@ -182,12 +200,15 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemChecked( const QString& key ) override;
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
-    virtual QString legendClassificationAttribute() const override { return classAttribute(); }
+    virtual QString legendClassificationAttribute() const override
+    {
+      return classAttribute();
+    }
 
     //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsCategorizedSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsCategorizedSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   protected:
     QString mAttrName;
@@ -213,7 +234,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   private:
 
     //! Returns calculated classification value for a feature
-    QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
+    QVariant valueForFeature( QgsFeature& feature, QgsRenderContext& context ) const;
 
 };
 

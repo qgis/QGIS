@@ -29,7 +29,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsTransactionGroup( QObject *parent = 0 );
+    explicit QgsTransactionGroup( QObject* parent = 0 );
 
     ~QgsTransactionGroup();
 

@@ -33,7 +33,7 @@ class TestQgsMapToolSelect : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolSelect()
-        : canvas( 0 )
+      : canvas( 0 )
     {}
 
   private slots:
@@ -50,21 +50,21 @@ class TestQgsMapToolSelect : public QObject
     QgsFeatureList testSelectVector( QgsVectorLayer* layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
-    unsigned char *
-    hex2bytes( const char *hex, int *size )
+    unsigned char*
+    hex2bytes( const char* hex, int* size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
-      unsigned char *out = new unsigned char[ba.size()];
+      unsigned char* out = new unsigned char[ba.size()];
       memcpy( out, ba.data(), ba.size() );
       *size = ba.size();
       return out;
     }
 
     // TODO: make this a QgsGeometry member...
-    QgsGeometry geomFromHexWKB( const char *hexwkb )
+    QgsGeometry geomFromHexWKB( const char* hexwkb )
     {
       int wkbsize;
-      unsigned char *wkb = hex2bytes( hexwkb, &wkbsize );
+      unsigned char* wkb = hex2bytes( hexwkb, &wkbsize );
       QgsGeometry geom;
       // NOTE: QgsGeometry takes ownership of wkb
       geom.fromWkb( wkb, wkbsize );

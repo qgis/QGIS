@@ -15,14 +15,14 @@
 
 #include "qwt5_histogram_item.h"
 
-HistogramItem::HistogramItem( const QwtText &title ):
-    QwtPlotItem( title )
+HistogramItem::HistogramItem( const QwtText& title ):
+  QwtPlotItem( title )
 {
   init();
 }
 
-HistogramItem::HistogramItem( const QString &title ):
-    QwtPlotItem( QwtText( title ) )
+HistogramItem::HistogramItem( const QString& title ):
+  QwtPlotItem( QwtText( title ) )
 {
   init();
 }
@@ -61,18 +61,18 @@ double HistogramItem::baseline() const
   return d_data->reference;
 }
 
-void HistogramItem::setData( const QwtIntervalData &data )
+void HistogramItem::setData( const QwtIntervalData& data )
 {
   d_data->data = data;
   itemChanged();
 }
 
-const QwtIntervalData &HistogramItem::data() const
+const QwtIntervalData& HistogramItem::data() const
 {
   return d_data->data;
 }
 
-void HistogramItem::setColor( const QColor &color )
+void HistogramItem::setColor( const QColor& color )
 {
   if ( d_data->color != color )
   {
@@ -114,7 +114,7 @@ int HistogramItem::spacing() const
   return d_data->spacing;
 }
 
-void HistogramItem::setPen( const QPen &pen )
+void HistogramItem::setPen( const QPen& pen )
 {
   if ( d_data->pen != pen )
   {
@@ -179,10 +179,10 @@ bool HistogramItem::testHistogramAttribute( HistogramAttribute attribute ) const
   return d_data->attributes & attribute;
 }
 
-void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
-                          const QwtScaleMap &yMap, const QRect & ) const
+void HistogramItem::draw( QPainter* painter, const QwtScaleMap& xMap,
+                          const QwtScaleMap& yMap, const QRect& ) const
 {
-  const QwtIntervalData &iData = d_data->data;
+  const QwtIntervalData& iData = d_data->data;
   const int x0 = xMap.transform( baseline() );
   const int y0 = yMap.transform( baseline() );
 
@@ -253,7 +253,7 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
   }
 }
 
-void HistogramItem::drawBar( QPainter *painter,
+void HistogramItem::drawBar( QPainter* painter,
                              Qt::Orientation, QRect rect ) const
 {
   painter->save();
@@ -308,18 +308,18 @@ void HistogramItem::drawBar( QPainter *painter,
 
 //!  Update the widget that represents the curve on the legend
 // this was adapted from QwtPlotCurve::updateLegend()
-void HistogramItem::updateLegend( QwtLegend *legend ) const
+void HistogramItem::updateLegend( QwtLegend* legend ) const
 {
   if ( !legend )
     return;
 
   QwtPlotItem::updateLegend( legend );
 
-  QWidget *widget = legend->find( this );
+  QWidget* widget = legend->find( this );
   if ( !widget || !widget->inherits( "QwtLegendItem" ) )
     return;
 
-  QwtLegendItem *legendItem = ( QwtLegendItem * )widget;
+  QwtLegendItem* legendItem = ( QwtLegendItem* )widget;
 
   const bool doUpdate = legendItem->updatesEnabled();
   legendItem->setUpdatesEnabled( false );

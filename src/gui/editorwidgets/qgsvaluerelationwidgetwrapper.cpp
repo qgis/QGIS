@@ -39,11 +39,11 @@ bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelation
 }
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
-    , mListWidget( nullptr )
-    , mLineEdit( nullptr )
-    , mLayer( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
+  , mListWidget( nullptr )
+  , mLineEdit( nullptr )
+  , mLayer( nullptr )
 {
 }
 
@@ -130,7 +130,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   {
     Q_FOREACH ( const ValueRelationItem& element, mCache )
     {
-      QListWidgetItem *item;
+      QListWidgetItem* item;
       item = new QListWidgetItem( element.second );
       item->setData( Qt::UserRole, element.first );
 

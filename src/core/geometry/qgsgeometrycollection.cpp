@@ -42,7 +42,7 @@ QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection& c ): 
   }
 }
 
-QgsGeometryCollection& QgsGeometryCollection::operator=( const QgsGeometryCollection & c )
+QgsGeometryCollection& QgsGeometryCollection::operator=( const QgsGeometryCollection& c )
 {
   if ( &c != this )
   {
@@ -63,7 +63,7 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
-QgsGeometryCollection *QgsGeometryCollection::clone() const
+QgsGeometryCollection* QgsGeometryCollection::clone() const
 {
   return new QgsGeometryCollection( *this );
 }
@@ -75,7 +75,7 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
-QgsAbstractGeometry*QgsGeometryCollection::boundary() const
+QgsAbstractGeometry* QgsGeometryCollection::boundary() const
 {
   return nullptr;
 }
@@ -108,7 +108,7 @@ bool QgsGeometryCollection::addGeometry( QgsAbstractGeometry* g )
   return true;
 }
 
-bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry *g, int index )
+bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry* g, int index )
 {
   if ( !g )
   {
@@ -233,7 +233,7 @@ QByteArray QgsGeometryCollection::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QList<QByteArray> wkbForGeometries;
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( geom )
     {
@@ -259,7 +259,7 @@ QByteArray QgsGeometryCollection::asWkb() const
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + " (";
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     QString childWkt = geom->asWkt( precision );
     if ( wktOmitChildType() )
@@ -279,7 +279,7 @@ QString QgsGeometryCollection::asWkt( int precision ) const
 QDomElement QgsGeometryCollection::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
     elemGeometryMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -291,7 +291,7 @@ QDomElement QgsGeometryCollection::asGML2( QDomDocument& doc, int precision, con
 QDomElement QgsGeometryCollection::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
     elemGeometryMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -303,7 +303,7 @@ QDomElement QgsGeometryCollection::asGML3( QDomDocument& doc, int precision, con
 QString QgsGeometryCollection::asJSON( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     json += geom->asJSON( precision ) + ", ";
   }
@@ -500,7 +500,7 @@ double QgsGeometryCollection::perimeter() const
   return perimeter;
 }
 
-bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType )
+bool QgsGeometryCollection::fromCollectionWkt( const QString& wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType )
 {
   clear();
 

@@ -51,7 +51,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setViewMode( QgsDualView::ViewMode mode );
 
     //! Get the view mode for the dual view
-    QgsDualView::ViewMode viewMode() {return mViewMode;}
+    QgsDualView::ViewMode viewMode()
+    {
+      return mViewMode;
+    }
 
     void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature );
 
@@ -119,7 +122,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setShowUnlinkButton( bool showUnlinkButton );
 
   private slots:
-    void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
+    void setViewMode( int mode )
+    {
+      setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );
+    }
     void updateButtons();
 
     void addFeature();

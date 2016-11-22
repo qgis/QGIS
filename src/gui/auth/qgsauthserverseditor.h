@@ -37,7 +37,7 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
      * Widget for editing authentication configurations directly in database
      * @param parent Parent Widget
      */
-    explicit QgsAuthServersEditor( QWidget *parent = nullptr );
+    explicit QgsAuthServersEditor( QWidget* parent = nullptr );
     ~QgsAuthServersEditor();
 
   private slots:
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
 
   protected:
     //! Overridden show event of base widget
-    void showEvent( QShowEvent *e ) override;
+    void showEvent( QShowEvent* e ) override;
 
   private:
     enum ConfigType
@@ -78,26 +78,26 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
 
     void setupSslConfigsTree();
 
-    void populateSslConfigsSection( QTreeWidgetItem *item,
+    void populateSslConfigsSection( QTreeWidgetItem* item,
                                     const QList<QgsAuthConfigSslServer>& configs,
                                     QgsAuthServersEditor::ConfigType conftype );
 
     void appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer>& configs,
                                   QgsAuthServersEditor::ConfigType conftype,
-                                  QTreeWidgetItem *parent = nullptr );
+                                  QTreeWidgetItem* parent = nullptr );
 
     void appendSslConfigsToItem( const QList<QgsAuthConfigSslServer>& configs,
                                  QgsAuthServersEditor::ConfigType conftype,
-                                 QTreeWidgetItem *parent = nullptr );
+                                 QTreeWidgetItem* parent = nullptr );
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar* messageBar();
     int messageTimeout();
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 
-    QTreeWidgetItem *mRootSslConfigItem;
+    QTreeWidgetItem* mRootSslConfigItem;
 };
 
 #endif // QGSAUTHSERVERSEDITOR_H

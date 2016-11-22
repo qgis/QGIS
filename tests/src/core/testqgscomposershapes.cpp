@@ -34,9 +34,9 @@ class TestQgsComposerShapes : public QObject
 
   public:
     TestQgsComposerShapes()
-        : mComposition( 0 )
-        , mComposerShape( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mComposerShape( 0 )
+      , mMapSettings( 0 )
     {}
 
   private slots:
@@ -53,7 +53,7 @@ class TestQgsComposerShapes : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 };
 

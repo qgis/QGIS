@@ -22,11 +22,11 @@ email                : jef at norbit dot de
 #include <QMetaType>
 
 QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
-    : QThread()
-    , mName( name )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mAllowGeometrylessTables( allowGeometrylessTables )
-    , mStopped( false )
+  : QThread()
+  , mName( name )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mAllowGeometrylessTables( allowGeometrylessTables )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }
@@ -41,7 +41,7 @@ void QgsOracleColumnTypeThread::run()
   mStopped = false;
 
   QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
-  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
+  QgsOracleConn* conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
     QgsDebugMsg( "Connection failed - " + conninfo );
@@ -65,7 +65,7 @@ void QgsOracleColumnTypeThread::run()
         end = layerProperties.end();
         it != end; ++it )
   {
-    QgsOracleLayerProperty &layerProperty = *it;
+    QgsOracleLayerProperty& layerProperty = *it;
     if ( !mStopped )
     {
       emit progress( i++, n );

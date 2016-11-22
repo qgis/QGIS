@@ -38,8 +38,8 @@ QgsCurvePolygon::~QgsCurvePolygon()
 }
 
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon& p )
-    : QgsSurface( p )
-    , mExteriorRing( nullptr )
+  : QgsSurface( p )
+  , mExteriorRing( nullptr )
 {
   mWkbType = p.mWkbType;
   if ( p.mExteriorRing )
@@ -53,7 +53,7 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon& p )
   }
 }
 
-QgsCurvePolygon& QgsCurvePolygon::operator=( const QgsCurvePolygon & p )
+QgsCurvePolygon& QgsCurvePolygon::operator=( const QgsCurvePolygon& p )
 {
   if ( &p != this )
   {

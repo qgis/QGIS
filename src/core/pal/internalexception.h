@@ -92,7 +92,7 @@ namespace pal
       */
       class NoLabelPosition : public std::exception
       {
-          const char * what() const throw() override
+          const char* what() const throw() override
           {
             return "No way to compute positions";
           }

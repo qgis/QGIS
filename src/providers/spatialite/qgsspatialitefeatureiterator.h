@@ -81,7 +81,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString mbr( const QgsRectangle& rect );
     bool prepareStatement( const QString& whereClause, long limit = -1 , const QString& orderBy = QString() );
     QString quotedPrimaryKey();
-    bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
+    bool getFeature( sqlite3_stmt* stmt, QgsFeature& feature );
     QString fieldName( const QgsField& fld );
     QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type, QVariant::Type subType );
     void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
@@ -92,7 +92,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     /**
       * SQLite statement handle
      */
-    sqlite3_stmt *sqliteStatement;
+    sqlite3_stmt* sqliteStatement;
 
     //! Geometry column index used when fetching geometry
     int mGeomColIdx;
@@ -104,7 +104,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QgsFeatureId mRowNumber;
 
   private:
-    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys ) override;
 
     bool mOrderByCompiled;
     bool mExpressionCompiled;

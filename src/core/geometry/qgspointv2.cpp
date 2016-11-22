@@ -31,40 +31,40 @@
  ****************************************************************************/
 
 QgsPointV2::QgsPointV2( double x, double y )
-    : QgsAbstractGeometry()
-    , mX( x )
-    , mY( y )
-    , mZ( 0.0 )
-    , mM( 0.0 )
+  : QgsAbstractGeometry()
+  , mX( x )
+  , mY( y )
+  , mZ( 0.0 )
+  , mM( 0.0 )
 {
   mWkbType = QgsWkbTypes::Point;
 }
 
 QgsPointV2::QgsPointV2( const QgsPoint& p )
-    : QgsAbstractGeometry()
-    , mX( p.x() )
-    , mY( p.y() )
-    , mZ( 0.0 )
-    , mM( 0.0 )
+  : QgsAbstractGeometry()
+  , mX( p.x() )
+  , mY( p.y() )
+  , mZ( 0.0 )
+  , mM( 0.0 )
 {
   mWkbType = QgsWkbTypes::Point;
 }
 
 QgsPointV2::QgsPointV2( QPointF p )
-    : QgsAbstractGeometry()
-    , mX( p.x() )
-    , mY( p.y() )
-    , mZ( 0.0 )
-    , mM( 0.0 )
+  : QgsAbstractGeometry()
+  , mX( p.x() )
+  , mY( p.y() )
+  , mZ( 0.0 )
+  , mM( 0.0 )
 {
   mWkbType = QgsWkbTypes::Point;
 }
 
 QgsPointV2::QgsPointV2( QgsWkbTypes::Type type, double x, double y, double z, double m )
-    : mX( x )
-    , mY( y )
-    , mZ( z )
-    , mM( m )
+  : mX( x )
+  , mY( y )
+  , mZ( z )
+  , mM( m )
 {
   //protect against non-point WKB types
   Q_ASSERT( QgsWkbTypes::flatType( type ) == QgsWkbTypes::Point );
@@ -91,7 +91,7 @@ bool QgsPointV2::operator!=( const QgsPointV2& pt ) const
   return !operator==( pt );
 }
 
-QgsPointV2 *QgsPointV2::clone() const
+QgsPointV2* QgsPointV2::clone() const
 {
   return new QgsPointV2( *this );
 }

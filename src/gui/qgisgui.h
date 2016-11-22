@@ -87,8 +87,8 @@ namespace QgisGui
     This method returns true if cancel all was clicked, otherwise false
   */
 
-  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+  bool GUI_EXPORT openFilesRememberingFilter( QString const& filterName,
+      QString const& filters, QStringList& selectedFiles, QString& enc, QString& title,
       bool cancelAll = false );
 
   /** A helper function to get an image name from the user. It will nicely
@@ -99,7 +99,7 @@ namespace QgisGui
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, const QString& theMessage, const QString& defaultFilename = QString::null );
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget* theParent, const QString& theMessage, const QString& defaultFilename = QString::null );
 
   /**
     Convenience function for readily creating file filters.
@@ -109,7 +109,7 @@ namespace QgisGui
     call.  The regular express, glob, will have both all lower and upper
     case versions added.
   */
-  QString GUI_EXPORT createFileFilter_( QString const &longName, QString const &glob );
+  QString GUI_EXPORT createFileFilter_( QString const& longName, QString const& glob );
 
   /**
    * Create file filters suitable for use with QFileDialog
@@ -117,7 +117,7 @@ namespace QgisGui
    * @param format extension e.g. "png"
    * @return QString e.g. "PNG format (*.png, *.PNG)"
    */
-  QString GUI_EXPORT createFileFilter_( QString const &format );
+  QString GUI_EXPORT createFileFilter_( QString const& format );
 
   /**
    * Show font selection dialog
@@ -126,7 +126,7 @@ namespace QgisGui
    * @param title optional dialog title
    * @return QFont the selected fon
    */
-  QFont GUI_EXPORT getFont( bool &ok, const QFont &initial, const QString &title = QString() );
+  QFont GUI_EXPORT getFont( bool& ok, const QFont& initial, const QString& title = QString() );
 }
 
 #endif

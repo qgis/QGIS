@@ -51,7 +51,7 @@ class QgsDb2TableModel : public QStandardItemModel
     ~QgsDb2TableModel();
 
     //! Adds entry for one database table to the model
-    void addTableEntry( const QgsDb2LayerProperty &property );
+    void addTableEntry( const QgsDb2LayerProperty& property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex& index, const QString& sql );
@@ -61,7 +61,10 @@ class QgsDb2TableModel : public QStandardItemModel
     void setGeometryTypesForTable( QgsDb2LayerProperty layerProperty );
 
     //! Returns the number of tables in the model
-    int tableCount() const { return mTableCount; }
+    int tableCount() const
+    {
+      return mTableCount;
+    }
 
     enum columns
     {
@@ -76,9 +79,9 @@ class QgsDb2TableModel : public QStandardItemModel
       dbtmColumns
     };
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
-    QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
+    QString layerURI( const QModelIndex& index, const QString& connInfo, bool useEstimatedMetadata );
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 

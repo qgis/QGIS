@@ -22,8 +22,8 @@
 #include "qgshillshaderenderer.h"
 #include "qgsrasterdataprovider.h"
 
-QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
-    : QgsRasterRendererWidget( layer, extent )
+QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent )
+  : QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 
@@ -73,7 +73,7 @@ QgsHillshadeRendererWidget::~QgsHillshadeRendererWidget()
 
 }
 
-QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
+QgsRasterRenderer* QgsHillshadeRendererWidget::renderer()
 {
   if ( !mRasterLayer )
   {
@@ -94,7 +94,7 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
   return renderer;
 }
 
-void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer *renderer )
+void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer* renderer )
 {
   const QgsHillshadeRenderer* r = dynamic_cast<const QgsHillshadeRenderer*>( renderer );
   if ( r )

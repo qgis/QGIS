@@ -25,8 +25,8 @@
 #include <QUrl>
 
 
-QgsAfsRootItem::QgsAfsRootItem( QgsDataItem* parent, const QString &name, const QString &path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsAfsRootItem::QgsAfsRootItem( QgsDataItem* parent, const QString& name, const QString& path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconAfs.svg" );
@@ -53,9 +53,9 @@ QList<QAction*> QgsAfsRootItem::actions()
   return QList<QAction*>() << actionNew;
 }
 
-QWidget * QgsAfsRootItem::paramWidget()
+QWidget* QgsAfsRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, true );
+  QgsAfsSourceSelect* select = new QgsAfsSourceSelect( 0, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
@@ -78,9 +78,9 @@ void QgsAfsRootItem::newConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem* parent, const QString &name, const QString &path, const QString &url )
-    : QgsDataCollectionItem( parent, name, path )
-    , mUrl( url )
+QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& url )
+  : QgsDataCollectionItem( parent, name, path )
+  , mUrl( url )
 {
   mIconName = QStringLiteral( "mIconAfs.svg" );
 }
@@ -107,9 +107,9 @@ QVector<QgsDataItem*> QgsAfsConnectionItem::createChildren()
   return layers;
 }
 
-bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
+bool QgsAfsConnectionItem::equal( const QgsDataItem* other )
 {
-  const QgsAfsConnectionItem *o = dynamic_cast<const QgsAfsConnectionItem *>( other );
+  const QgsAfsConnectionItem* o = dynamic_cast<const QgsAfsConnectionItem*>( other );
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
@@ -147,8 +147,8 @@ void QgsAfsConnectionItem::deleteConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem* parent, const QString &name, const QString &url, const QString &title, const QString& authid )
-    : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, QStringLiteral( "arcgisfeatureserver" ) )
+QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem* parent, const QString& name, const QString& url, const QString& title, const QString& authid )
+  : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, QStringLiteral( "arcgisfeatureserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
   setState( Populated );

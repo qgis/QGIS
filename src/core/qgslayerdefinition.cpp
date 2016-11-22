@@ -25,7 +25,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgslayerdefinition.h"
 
-bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
+bool QgsLayerDefinition::loadLayerDefinition( const QString& path, QgsLayerTreeGroup* rootGroup, QString& errorMessage )
 {
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -48,11 +48,11 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeG
   return loadLayerDefinition( doc, rootGroup, errorMessage );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
+bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString& errorMessage )
 {
   Q_UNUSED( errorMessage );
 
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
 
   // reorder maplayer nodes based on dependencies
   // dependencies have to be resolved before IDs get changed
@@ -142,7 +142,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
-    QgsVectorLayer* vlayer = dynamic_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer* vlayer = dynamic_cast< QgsVectorLayer* >( layer );
     if ( vlayer )
     {
       vlayer->createJoinCaches();
@@ -151,7 +151,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   }
 
   QList<QgsLayerTreeNode*> nodes = root->children();
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
     root->takeChild( node );
   delete root;
 
@@ -161,7 +161,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 
 }
 
-bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage )
+bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString& errorMessage )
 {
   if ( !path.endsWith( QLatin1String( ".qlr" ) ) )
     path = path.append( ".qlr" );
@@ -185,7 +185,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   return true;
 }
 
-bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath )
+bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString& errorMessage, const QString& relativeBasePath )
 {
   Q_UNUSED( errorMessage );
   QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
@@ -308,15 +308,15 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
 }
 
 QgsLayerDefinition::DependencySorter::DependencySorter( const QDomDocument& doc )
-    : mHasCycle( false )
-    , mHasMissingDependency( false )
+  : mHasCycle( false )
+  , mHasMissingDependency( false )
 {
   init( doc );
 }
 
 QgsLayerDefinition::DependencySorter::DependencySorter( const QString& fileName )
-    : mHasCycle( false )
-    , mHasMissingDependency( false )
+  : mHasCycle( false )
+  , mHasMissingDependency( false )
 {
   QDomDocument doc;
   QFile pFile( fileName );

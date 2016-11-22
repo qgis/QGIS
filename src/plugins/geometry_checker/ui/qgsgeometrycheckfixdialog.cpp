@@ -30,13 +30,13 @@
 #include <QSettings>
 #include <QGridLayout>
 
-QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
-    const QList<QgsGeometryCheckError *> &errors,
-    QgisInterface* iface, QWidget *parent )
-    : QDialog( parent )
-    , mChecker( checker )
-    , mErrors( errors )
-    , mIface( iface )
+QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker* checker,
+    const QList<QgsGeometryCheckError*>& errors,
+    QgisInterface* iface, QWidget* parent )
+  : QDialog( parent )
+  , mChecker( checker )
+  , mErrors( errors )
+  , mIface( iface )
 {
   setWindowTitle( tr( "Fix errors" ) );
 
@@ -75,7 +75,7 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
 
 }
 
-void QgsGeometryCheckerFixDialog::showEvent( QShowEvent * )
+void QgsGeometryCheckerFixDialog::showEvent( QShowEvent* )
 {
   setupNextError();
 }

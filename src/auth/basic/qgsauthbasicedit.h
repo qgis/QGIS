@@ -29,7 +29,7 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
     Q_OBJECT
 
   public:
-    explicit QgsAuthBasicEdit( QWidget *parent = nullptr );
+    explicit QgsAuthBasicEdit( QWidget* parent = nullptr );
     virtual ~QgsAuthBasicEdit();
 
     bool validateConfig() override;
@@ -37,7 +37,7 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
     QgsStringMap configMap() const override;
 
   public slots:
-    void loadConfig( const QgsStringMap &configmap ) override;
+    void loadConfig( const QgsStringMap& configmap ) override;
 
     void resetConfig() override;
 

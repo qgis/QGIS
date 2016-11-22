@@ -40,18 +40,48 @@ class ANALYSIS_EXPORT QgsNineCellFilter
       @return 0 in case of success*/
     int processRaster( QProgressDialog* p );
 
-    double cellSizeX() const { return mCellSizeX; }
-    void setCellSizeX( double size ) { mCellSizeX = size; }
-    double cellSizeY() const { return mCellSizeY; }
-    void setCellSizeY( double size ) { mCellSizeY = size; }
+    double cellSizeX() const
+    {
+      return mCellSizeX;
+    }
+    void setCellSizeX( double size )
+    {
+      mCellSizeX = size;
+    }
+    double cellSizeY() const
+    {
+      return mCellSizeY;
+    }
+    void setCellSizeY( double size )
+    {
+      mCellSizeY = size;
+    }
 
-    double zFactor() const { return mZFactor; }
-    void setZFactor( double factor ) { mZFactor = factor; }
+    double zFactor() const
+    {
+      return mZFactor;
+    }
+    void setZFactor( double factor )
+    {
+      mZFactor = factor;
+    }
 
-    double inputNodataValue() const { return mInputNodataValue; }
-    void setInputNodataValue( double value ) { mInputNodataValue = value; }
-    double outputNodataValue() const { return mOutputNodataValue; }
-    void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
+    double inputNodataValue() const
+    {
+      return mInputNodataValue;
+    }
+    void setInputNodataValue( double value )
+    {
+      mInputNodataValue = value;
+    }
+    double outputNodataValue() const
+    {
+      return mOutputNodataValue;
+    }
+    void setOutputNodataValue( double value )
+    {
+      mOutputNodataValue = value;
+    }
 
     /** Calculates output value from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/

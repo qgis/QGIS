@@ -54,31 +54,31 @@ class GUI_EXPORT QgsAuthGuiUtils
 
 
     //! Verify the authentication system is active, else notify user
-    static bool isDisabled( QgsMessageBar *msgbar, int timeout = 0 );
+    static bool isDisabled( QgsMessageBar* msgbar, int timeout = 0 );
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)
-    static void setMasterPassword( QgsMessageBar *msgbar, int timeout = 0 );
+    static void setMasterPassword( QgsMessageBar* msgbar, int timeout = 0 );
 
     //! Clear the currently cached master password (not its hash in database)
-    static void clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout = 0 );
+    static void clearCachedMasterPassword( QgsMessageBar* msgbar, int timeout = 0 );
 
     //! Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it
-    static void resetMasterPassword( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void resetMasterPassword( QgsMessageBar* msgbar, int timeout = 0, QWidget* parent = nullptr );
 
     //! Clear all cached authentication configs for session
-    static void clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0 );
+    static void clearCachedAuthenticationConfigs( QgsMessageBar* msgbar, int timeout = 0 );
 
     //! Remove all authentication configs
-    static void removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void removeAuthenticationConfigs( QgsMessageBar* msgbar, int timeout = 0, QWidget* parent = nullptr );
 
     //! Completely clear out the authentication database (configs and master password)
-    static void eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void eraseAuthenticationDatabase( QgsMessageBar* msgbar, int timeout = 0, QWidget* parent = nullptr );
 
     //! Color a widget via a stylesheet if a file path is found or not
-    static void fileFound( bool found, QWidget * widget );
+    static void fileFound( bool found, QWidget* widget );
 
     //! Open file dialog for auth associated widgets
-    static QString getOpenFileName( QWidget *parent, const QString& title, const QString& extfilter );
+    static QString getOpenFileName( QWidget* parent, const QString& title, const QString& extfilter );
 };
 
 #endif // QGSAUTHGUIUTILS_H

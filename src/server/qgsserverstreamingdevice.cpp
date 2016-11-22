@@ -46,14 +46,14 @@ void QgsServerStreamingDevice::close()
   QIODevice::close();
 }
 
-qint64 QgsServerStreamingDevice::writeData( const char * data, qint64 maxSize )
+qint64 QgsServerStreamingDevice::writeData( const char* data, qint64 maxSize )
 {
   QByteArray ba( data, maxSize );
   mRequestHandler->setGetFeatureResponse( &ba );
   return maxSize;
 }
 
-qint64 QgsServerStreamingDevice::readData( char * data, qint64 maxSize )
+qint64 QgsServerStreamingDevice::readData( char* data, qint64 maxSize )
 {
   Q_UNUSED( data );
   Q_UNUSED( maxSize );

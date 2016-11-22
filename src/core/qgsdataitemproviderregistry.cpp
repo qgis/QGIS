@@ -37,17 +37,26 @@ class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 {
   public:
     QgsDataItemProviderFromPlugin( const QString& name, dataCapabilities_t* capabilitiesFunc, dataItem_t* dataItemFunc )
-        : mName( name )
-        , mCapabilitiesFunc( capabilitiesFunc )
-        , mDataItemFunc( dataItemFunc )
+      : mName( name )
+      , mCapabilitiesFunc( capabilitiesFunc )
+      , mDataItemFunc( dataItemFunc )
     {
     }
 
-    virtual QString name() override { return mName; }
+    virtual QString name() override
+    {
+      return mName;
+    }
 
-    virtual int capabilities() override { return mCapabilitiesFunc(); }
+    virtual int capabilities() override
+    {
+      return mCapabilitiesFunc();
+    }
 
-    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override { return mDataItemFunc( path, parentItem ); }
+    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override
+    {
+      return mDataItemFunc( path, parentItem );
+    }
 
   protected:
     QString mName;
@@ -62,13 +71,13 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
   Q_FOREACH ( const QString& key, providersList )
   {
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    QLibrary* library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
       continue;
 
     // new / better way of returning data items from providers
 
-    dataItemProviders_t* dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
+    dataItemProviders_t* dataItemProvidersFn = reinterpret_cast< dataItemProviders_t* >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
     if ( dataItemProvidersFn )
     {
       // the function is a factory - we keep ownership of the returned providers
@@ -77,14 +86,14 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
     // legacy support - using dataItem() and dataCapabilities() methods
 
-    dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
+    dataCapabilities_t* dataCapabilities = reinterpret_cast< dataCapabilities_t* >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
     if ( !dataCapabilities )
     {
       QgsDebugMsg( library->fileName() + " does not have dataCapabilities" );
       continue;
     }
 
-    dataItem_t *dataItem = reinterpret_cast< dataItem_t * >( cast_to_fptr( library->resolve( "dataItem" ) ) );
+    dataItem_t* dataItem = reinterpret_cast< dataItem_t* >( cast_to_fptr( library->resolve( "dataItem" ) ) );
     if ( !dataItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );

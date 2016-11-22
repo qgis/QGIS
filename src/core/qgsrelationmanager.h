@@ -38,7 +38,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /** Constructor for QgsRelationManager.
      * @param project associated project (used to notify project of changes)
      */
-    explicit QgsRelationManager( QgsProject *project = nullptr );
+    explicit QgsRelationManager( QgsProject* project = nullptr );
 
     /**
      * Will set the specified relations and remove any relation currently set.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * @return A list of relations where the specified layer is the referenced part.
      */
-    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
+    QList<QgsRelation> referencedRelations( QgsVectorLayer* layer = nullptr ) const;
 
     /**
      * Discover all the relations available from the current layers.
@@ -138,8 +138,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
     void changed();
 
   private slots:
-    void readProject( const QDomDocument &doc );
-    void writeProject( QDomDocument &doc );
+    void readProject( const QDomDocument& doc );
+    void writeProject( QDomDocument& doc );
     void layersRemoved( const QStringList& layers );
 
   private:

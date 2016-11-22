@@ -31,7 +31,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     ~QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFromSld( QDomElement& element );
 
     void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
     QString layerType() const override;
@@ -40,85 +40,169 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QgsEllipseSymbolLayer* clone() const override;
     QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
-    void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const override;
+    void writeSldMarker( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const override;
 
-    bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext& context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
 
-    void setSymbolName( const QString& name ) { mSymbolName = name; }
-    QString symbolName() const { return mSymbolName; }
+    void setSymbolName( const QString& name )
+    {
+      mSymbolName = name;
+    }
+    QString symbolName() const
+    {
+      return mSymbolName;
+    }
 
-    void setSymbolWidth( double w ) { mSymbolWidth = w; }
-    double symbolWidth() const { return mSymbolWidth; }
+    void setSymbolWidth( double w )
+    {
+      mSymbolWidth = w;
+    }
+    double symbolWidth() const
+    {
+      return mSymbolWidth;
+    }
 
-    void setSymbolHeight( double h ) { mSymbolHeight = h; }
-    double symbolHeight() const { return mSymbolHeight; }
+    void setSymbolHeight( double h )
+    {
+      mSymbolHeight = h;
+    }
+    double symbolHeight() const
+    {
+      return mSymbolHeight;
+    }
 
-    Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
-    void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+    Qt::PenStyle outlineStyle() const
+    {
+      return mOutlineStyle;
+    }
+    void setOutlineStyle( Qt::PenStyle outlineStyle )
+    {
+      mOutlineStyle = outlineStyle;
+    }
 
     /** Get outline join style.
      * @note added in 2.16 */
-    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+    Qt::PenJoinStyle penJoinStyle() const
+    {
+      return mPenJoinStyle;
+    }
 
     /** Set outline join style.
      * @note added in 2.16 */
-    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+    void setPenJoinStyle( Qt::PenJoinStyle style )
+    {
+      mPenJoinStyle = style;
+    }
 
-    void setOutlineWidth( double w ) { mOutlineWidth = w; }
-    double outlineWidth() const { return mOutlineWidth; }
+    void setOutlineWidth( double w )
+    {
+      mOutlineWidth = w;
+    }
+    double outlineWidth() const
+    {
+      return mOutlineWidth;
+    }
 
-    void setFillColor( const QColor& c ) override { setColor( c ); }
-    QColor fillColor() const override { return color(); }
+    void setFillColor( const QColor& c ) override
+    {
+      setColor( c );
+    }
+    QColor fillColor() const override
+    {
+      return color();
+    }
 
-    void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
-    QColor outlineColor() const override { return mOutlineColor; }
+    void setOutlineColor( const QColor& c ) override
+    {
+      mOutlineColor = c;
+    }
+    QColor outlineColor() const override
+    {
+      return mOutlineColor;
+    }
 
     /** Sets the units for the symbol's width.
      * @param unit symbol units
      * @see symbolWidthUnit()
      * @see setSymbolHeightUnit()
     */
-    void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
+    void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit )
+    {
+      mSymbolWidthUnit = unit;
+    }
 
     /** Returns the units for the symbol's width.
      * @see setSymbolWidthUnit()
      * @see symbolHeightUnit()
     */
-    QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
+    QgsUnitTypes::RenderUnit symbolWidthUnit() const
+    {
+      return mSymbolWidthUnit;
+    }
 
-    void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
+    void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mSymbolWidthMapUnitScale = scale;
+    }
+    const QgsMapUnitScale& symbolWidthMapUnitScale() const
+    {
+      return mSymbolWidthMapUnitScale;
+    }
 
     /** Sets the units for the symbol's height.
      * @param unit symbol units
      * @see symbolHeightUnit()
      * @see setSymbolWidthUnit()
     */
-    void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
+    void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit )
+    {
+      mSymbolHeightUnit = unit;
+    }
 
     /** Returns the units for the symbol's height.
      * @see setSymbolHeightUnit()
      * @see symbolWidthUnit()
     */
-    QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
+    QgsUnitTypes::RenderUnit symbolHeightUnit() const
+    {
+      return mSymbolHeightUnit;
+    }
 
-    void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolHeightMapUnitScale = scale; }
-    const QgsMapUnitScale& symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
+    void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mSymbolHeightMapUnitScale = scale;
+    }
+    const QgsMapUnitScale& symbolHeightMapUnitScale() const
+    {
+      return mSymbolHeightMapUnitScale;
+    }
 
     /** Sets the units for the symbol's outline width.
      * @param unit symbol units
      * @see outlineWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit )
+    {
+      mOutlineWidthUnit = unit;
+    }
 
     /** Returns the units for the symbol's outline width.
      * @see setOutlineWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit outlineWidthUnit() const
+    {
+      return mOutlineWidthUnit;
+    }
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mOutlineWidthMapUnitScale = scale;
+    }
+    const QgsMapUnitScale& outlineWidthMapUnitScale() const
+    {
+      return mOutlineWidthMapUnitScale;
+    }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;

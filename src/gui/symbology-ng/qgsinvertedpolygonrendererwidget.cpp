@@ -27,7 +27,7 @@ QgsRendererWidget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* lay
 }
 
 QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
+  : QgsRendererWidget( layer, style )
 {
   if ( !layer )
   {

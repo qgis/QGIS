@@ -87,7 +87,7 @@ class CORE_EXPORT QgsField
 
     /** Assignment operator
      */
-    QgsField& operator =( const QgsField &other );
+    QgsField& operator =( const QgsField& other );
 
     //! Destructor
     virtual ~QgsField();

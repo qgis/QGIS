@@ -40,42 +40,63 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /** Constructor
       * @param reply */
-    QgsNetworkReplyParser( QNetworkReply *reply );
+    QgsNetworkReplyParser( QNetworkReply* reply );
 
     /** Indicates if successfully parsed
       * @return true if successfully parsed */
-    bool isValid() const { return mValid; }
+    bool isValid() const
+    {
+      return mValid;
+    }
 
     /** Get number of parts
       * @return number of parts */
-    int parts() const { return mHeaders.size(); }
+    int parts() const
+    {
+      return mHeaders.size();
+    }
 
     /** Get part header
       * @param part part index
       * @param headerName header name
       * @return raw header */
-    QByteArray rawHeader( int part, const QByteArray & headerName ) const { return mHeaders.value( part ).value( headerName ); }
+    QByteArray rawHeader( int part, const QByteArray& headerName ) const
+    {
+      return mHeaders.value( part ).value( headerName );
+    }
 
     //! Get headers
-    QList< RawHeaderMap > headers() const { return mHeaders; }
+    QList< RawHeaderMap > headers() const
+    {
+      return mHeaders;
+    }
 
     /** Get part part body
       * @param part part index
       * @return part body */
-    QByteArray body( int part ) const { return mBodies.value( part ); }
+    QByteArray body( int part ) const
+    {
+      return mBodies.value( part );
+    }
 
     //! Get bodies
-    QList<QByteArray> bodies() const { return mBodies; }
+    QList<QByteArray> bodies() const
+    {
+      return mBodies;
+    }
 
     //! Parsing error
-    QString error() const { return mError; }
+    QString error() const
+    {
+      return mError;
+    }
 
     /** Test if reply is multipart.
       * @return true if reply is multipart */
-    static bool isMultipart( QNetworkReply *reply );
+    static bool isMultipart( QNetworkReply* reply );
 
   private:
-    QNetworkReply *mReply;
+    QNetworkReply* mReply;
 
     bool mValid;
 

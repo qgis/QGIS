@@ -26,10 +26,10 @@
 #include "qgslogger.h"
 
 QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
-    : QGraphicsItem()
-    , mMapCanvas( mapCanvas )
-    , mRectRotation( 0.0 )
-    , mItemSize( 0, 0 )
+  : QGraphicsItem()
+  , mMapCanvas( mapCanvas )
+  , mRectRotation( 0.0 )
+  , mItemSize( 0, 0 )
 {
   Q_ASSERT( mapCanvas && mapCanvas->scene() );
   mapCanvas->scene()->addItem( this );
@@ -40,9 +40,9 @@ QgsMapCanvasItem::~QgsMapCanvasItem()
   update(); // schedule redraw of canvas
 }
 
-void QgsMapCanvasItem::paint( QPainter * painter,
-                              const QStyleOptionGraphicsItem * option,
-                              QWidget * widget )
+void QgsMapCanvasItem::paint( QPainter* painter,
+                              const QStyleOptionGraphicsItem* option,
+                              QWidget* widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );

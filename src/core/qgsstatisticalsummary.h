@@ -75,14 +75,20 @@ class CORE_EXPORT QgsStatisticalSummary
      * are always calculated (eg sum, min and max).
      * @see setStatistics
      */
-    Statistics statistics() const { return mStatistics; }
+    Statistics statistics() const
+    {
+      return mStatistics;
+    }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg sum, min and max).
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( Statistics stats )
+    {
+      mStatistics = stats;
+    }
 
     /** Resets the calculated values
      */
@@ -141,90 +147,138 @@ class CORE_EXPORT QgsStatisticalSummary
 
     /** Returns calculated count of values
      */
-    int count() const { return mCount; }
+    int count() const
+    {
+      return mCount;
+    }
 
     /** Returns the number of missing (null) values
      * @note added in QGIS 2.16
      */
-    int countMissing() const { return mMissing; }
+    int countMissing() const
+    {
+      return mMissing;
+    }
 
     /** Returns calculated sum of values
      */
-    double sum() const { return mSum; }
+    double sum() const
+    {
+      return mSum;
+    }
 
     /** Returns calculated mean of values
      */
-    double mean() const { return mMean; }
+    double mean() const
+    {
+      return mMean;
+    }
 
     /** Returns calculated median of values. This is only calculated if Statistic::Median has
      * been specified in the constructor or via setStatistics.
      */
-    double median() const { return mMedian; }
+    double median() const
+    {
+      return mMedian;
+    }
 
     /** Returns calculated minimum from values.
      */
-    double min() const { return mMin; }
+    double min() const
+    {
+      return mMin;
+    }
 
     /** Returns calculated maximum from values.
      */
-    double max() const { return mMax; }
+    double max() const
+    {
+      return mMax;
+    }
 
     /** Returns calculated range (difference between maximum and minimum values).
      */
-    double range() const { return mMax - mMin; }
+    double range() const
+    {
+      return mMax - mMin;
+    }
 
     /** Returns population standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics.
      * @see sampleStDev
      */
-    double stDev() const { return mStdev; }
+    double stDev() const
+    {
+      return mStdev;
+    }
 
     /** Returns sample standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics.
      * @see stDev
      */
-    double sampleStDev() const { return mSampleStdev; }
+    double sampleStDev() const
+    {
+      return mSampleStdev;
+    }
 
     /** Returns variety of values. The variety is the count of unique values from the list.
      * This is only calculated if Statistic::Variety has been specified in the constructor
      * or via setStatistics.
      */
-    int variety() const { return mValueCount.count(); }
+    int variety() const
+    {
+      return mValueCount.count();
+    }
 
     /** Returns minority of values. The minority is the value with least occurances in the list
      * This is only calculated if Statistic::Minority has been specified in the constructor
      * or via setStatistics.
      * @see majority
      */
-    double minority() const { return mMinority; }
+    double minority() const
+    {
+      return mMinority;
+    }
 
     /** Returns majority of values. The majority is the value with most occurances in the list
      * This is only calculated if Statistic::Majority has been specified in the constructor
      * or via setStatistics.
      * @see minority
      */
-    double majority() const { return mMajority; }
+    double majority() const
+    {
+      return mMajority;
+    }
 
     /** Returns the first quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method.
      * @see thirdQuartile
      * @see interQuartileRange
      */
-    double firstQuartile() const { return mFirstQuartile; }
+    double firstQuartile() const
+    {
+      return mFirstQuartile;
+    }
 
     /** Returns the third quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method.
      * @see firstQuartile
      * @see interQuartileRange
      */
-    double thirdQuartile() const { return mThirdQuartile; }
+    double thirdQuartile() const
+    {
+      return mThirdQuartile;
+    }
 
     /** Returns the inter quartile range of the values. The quartiles are calculated using the
      * "Tukey's hinges" method.
      * @see firstQuartile
      * @see thirdQuartile
      */
-    double interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
+    double interQuartileRange() const
+    {
+      return mThirdQuartile - mFirstQuartile;
+    }
 
     /** Returns the friendly display name for a statistic
      * @param statistic statistic to return name for

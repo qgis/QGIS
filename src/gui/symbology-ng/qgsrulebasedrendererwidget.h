@@ -49,27 +49,27 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
   public:
     QgsRuleBasedRendererModel( QgsRuleBasedRenderer* r );
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
     virtual QVariant headerData( int section, Qt::Orientation orientation,
                                  int role = Qt::DisplayRole ) const override;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    virtual int columnCount( const QModelIndex& = QModelIndex() ) const override;
     //! provide model index for parent's child item
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
     //! provide parent model index
-    virtual QModelIndex parent( const QModelIndex &index ) const override;
+    virtual QModelIndex parent( const QModelIndex& index ) const override;
 
     // editing support
-    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
 
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
 
     // new methods
 
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
     //! @note not available in python bindungs
-    void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &theCountMap );
+    void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount>& theCountMap );
     void clearFeatureCounts();
 
   protected:
@@ -121,7 +121,10 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void editRule( const QModelIndex& index );
     void removeRule();
     void countFeatures();
-    void clearFeatureCounts() { mModel->clearFeatureCounts(); }
+    void clearFeatureCounts()
+    {
+      mModel->clearFeatureCounts();
+    }
 
     void refineRuleScales();
     void refineRuleCategories();
@@ -199,7 +202,10 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
      * Return the current set rule.
      * @return The current rule.
      */
-    QgsRuleBasedRenderer::Rule* rule() { return mRule; }
+    QgsRuleBasedRenderer::Rule* rule()
+    {
+      return mRule;
+    }
 
   public slots:
 
@@ -254,7 +260,10 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 
     ~QgsRendererRulePropsDialog();
 
-    QgsRuleBasedRenderer::Rule* rule() { return mPropsWidget->rule(); }
+    QgsRuleBasedRenderer::Rule* rule()
+    {
+      return mPropsWidget->rule();
+    }
 
   public slots:
     void testFilter();

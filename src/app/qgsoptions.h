@@ -45,7 +45,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * @param name name for the widget
      * @param modal true for modal dialog
      */
-    QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsOptions( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOptions();
 
@@ -64,7 +64,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem& crs );
-    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void on_pbnEditCreateOptions_pressed();
     void on_pbnEditPyramidsOptions_pressed();
     void editGdalDriver( const QString& driverName );
@@ -74,9 +74,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void rejectOptions();
     //! Slot to change the theme this is handled when the user
 
-    void iconSizeChanged( const QString &iconSize );
+    void iconSizeChanged( const QString& iconSize );
 
-    void uiThemeChanged( const QString &theme );
+    void uiThemeChanged( const QString& theme );
 
     /** Slot to handle when type of project to open after launch is changed
      */
@@ -159,7 +159,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mBtnRemoveHiddenPath_clicked();
 
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
@@ -202,10 +205,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mButtonAddColor_clicked();
 
   private:
-    QSettings *mSettings;
+    QSettings* mSettings;
     QStringList i18nList();
-    void initContrastEnhancement( QComboBox *cbox, const QString& name, const QString& defaultVal );
-    void saveContrastEnhancement( QComboBox *cbox, const QString& name );
+    void initContrastEnhancement( QComboBox* cbox, const QString& name, const QString& defaultVal );
+    void saveContrastEnhancement( QComboBox* cbox, const QString& name );
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
@@ -215,7 +218,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void saveDefaultDatumTransformations();
 
-    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+    QListWidgetItem* addScaleToScaleList( const QString& newScale );
     void addScaleToScaleList( QListWidgetItem* newItem );
 
   protected:

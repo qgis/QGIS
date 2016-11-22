@@ -31,16 +31,16 @@
 #include "qgslogger.h"
 
 
-QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
-    const QList<QSslError> &sslErrors,
-    QWidget *parent,
-    const QString &digest,
-    const QString &hostport )
-    : QDialog( parent )
-    , mSslConfiguration( reply->sslConfiguration() )
-    , mSslErrors( sslErrors )
-    , mDigest( digest )
-    , mHostPort( hostport )
+QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply* reply,
+    const QList<QSslError>& sslErrors,
+    QWidget* parent,
+    const QString& digest,
+    const QString& hostport )
+  : QDialog( parent )
+  , mSslConfiguration( reply->sslConfiguration() )
+  , mSslErrors( sslErrors )
+  , mDigest( digest )
+  , mHostPort( hostport )
 {
   if ( mDigest.isEmpty() )
   {
@@ -55,7 +55,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   }
 
   setupUi( this );
-  QStyle *style = QApplication::style();
+  QStyle* style = QApplication::style();
   lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
   lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
@@ -124,7 +124,7 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
     QSslCertificate cert = peerchain.takeFirst();
     if ( !cert.isNull() )
     {
-      QgsAuthCertInfoDialog *dlg = new QgsAuthCertInfoDialog( cert, false, this, peerchain );
+      QgsAuthCertInfoDialog* dlg = new QgsAuthCertInfoDialog( cert, false, this, peerchain );
       dlg->setWindowModality( Qt::WindowModal );
       dlg->resize( 675, 500 );
       dlg->exec();
@@ -135,7 +135,7 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
 
 void QgsAuthSslErrorsDialog::showCertificateChainCAsInfo()
 {
-  QgsAuthTrustedCAsDialog *dlg = new QgsAuthTrustedCAsDialog( this, mSslConfiguration.caCertificates() );
+  QgsAuthTrustedCAsDialog* dlg = new QgsAuthTrustedCAsDialog( this, mSslConfiguration.caCertificates() );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
@@ -162,7 +162,7 @@ void QgsAuthSslErrorsDialog::clearCertificateConfig()
   checkCanSave();
 }
 
-void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton *button )
+void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton* button )
 {
   QDialogButtonBox::StandardButton btnenum( buttonBox->standardButton( button ) );
   switch ( btnenum )
@@ -189,26 +189,26 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
 {
   QStringList errs;
   errs.reserve( mSslErrors.size() );
-  Q_FOREACH ( const QSslError &err, mSslErrors )
+  Q_FOREACH ( const QSslError& err, mSslErrors )
   {
     errs <<  QStringLiteral( "* %1: %2" )
-    .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
-          err.errorString() );
+         .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
+               err.errorString() );
   }
   teSslErrors->setPlainText( errs.join( QStringLiteral( "\n" ) ) );
 }
 
-QPushButton *QgsAuthSslErrorsDialog::ignoreButton()
+QPushButton* QgsAuthSslErrorsDialog::ignoreButton()
 {
   return buttonBox->button( QDialogButtonBox::Ignore );
 }
 
-QPushButton *QgsAuthSslErrorsDialog::saveButton()
+QPushButton* QgsAuthSslErrorsDialog::saveButton()
 {
   return buttonBox->button( QDialogButtonBox::Save );
 }
 
-QPushButton *QgsAuthSslErrorsDialog::abortButton()
+QPushButton* QgsAuthSslErrorsDialog::abortButton()
 {
   return buttonBox->button( QDialogButtonBox::Abort );
 }

@@ -21,7 +21,7 @@
 #include "qgsmarkersymbollayer.h"
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles()
-    : mRowStyles( QList<QgsConditionalStyle>() )
+  : mRowStyles( QList<QgsConditionalStyle>() )
 {}
 
 QList<QgsConditionalStyle> QgsConditionalLayerStyles::rowStyles()
@@ -48,7 +48,7 @@ QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString
   return QList<QgsConditionalStyle>();
 }
 
-bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc ) const
+bool QgsConditionalLayerStyles::writeXml( QDomNode& node, QDomDocument& doc ) const
 {
   QDomElement stylesel = doc.createElement( QStringLiteral( "conditionalstyles" ) );
   QDomElement rowel = doc.createElement( QStringLiteral( "rowstyles" ) );
@@ -79,14 +79,14 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc ) co
   return true;
 }
 
-bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
+bool QgsConditionalLayerStyles::readXml( const QDomNode& node )
 {
   QDomElement condel = node.firstChildElement( QStringLiteral( "conditionalstyles" ) );
   mRowStyles.clear();
   mFieldStyles.clear();
   QDomElement rowstylesel = condel.firstChildElement( QStringLiteral( "rowstyles" ) );
   QDomNodeList nodelist = rowstylesel.toElement().elementsByTagName( QStringLiteral( "style" ) );
-  for ( int i = 0;i < nodelist.count(); i++ )
+  for ( int i = 0; i < nodelist.count(); i++ )
   {
     QDomElement styleElm = nodelist.at( i ).toElement();
     QgsConditionalStyle style = QgsConditionalStyle();
@@ -97,14 +97,14 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
   QDomElement fieldstylesel = condel.firstChildElement( QStringLiteral( "fieldstyles" ) );
   nodelist = fieldstylesel.toElement().elementsByTagName( QStringLiteral( "fieldstyle" ) );
   QList<QgsConditionalStyle> styles;
-  for ( int i = 0;i < nodelist.count(); i++ )
+  for ( int i = 0; i < nodelist.count(); i++ )
   {
     styles.clear();
     QDomElement fieldel = nodelist.at( i ).toElement();
     QString fieldName = fieldel.attribute( QStringLiteral( "fieldname" ) );
     QDomNodeList stylenodelist = fieldel.toElement().elementsByTagName( QStringLiteral( "style" ) );
     styles.reserve( stylenodelist.count() );
-    for ( int i = 0;i < stylenodelist.count(); i++ )
+    for ( int i = 0; i < stylenodelist.count(); i++ )
     {
       QDomElement styleElm = stylenodelist.at( i ).toElement();
       QgsConditionalStyle style = QgsConditionalStyle();
@@ -118,35 +118,35 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node )
 }
 
 QgsConditionalStyle::QgsConditionalStyle()
-    : mValid( false )
-    , mSymbol( nullptr )
-    , mBackColor( QColor( 0, 0, 0, 0 ) )
-    , mTextColor( QColor( 0, 0, 0, 0 ) )
+  : mValid( false )
+  , mSymbol( nullptr )
+  , mBackColor( QColor( 0, 0, 0, 0 ) )
+  , mTextColor( QColor( 0, 0, 0, 0 ) )
 {}
 
 QgsConditionalStyle::QgsConditionalStyle( const QString& rule )
-    : mValid( false )
-    , mSymbol( nullptr )
-    , mBackColor( QColor( 0, 0, 0, 0 ) )
-    , mTextColor( QColor( 0, 0, 0, 0 ) )
+  : mValid( false )
+  , mSymbol( nullptr )
+  , mBackColor( QColor( 0, 0, 0, 0 ) )
+  , mTextColor( QColor( 0, 0, 0, 0 ) )
 {
   setRule( rule );
 }
 
-QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
-    : mValid( other.mValid )
-    , mName( other.mName )
-    , mRule( other.mRule )
-    , mFont( other.mFont )
-    , mBackColor( other.mBackColor )
-    , mTextColor( other.mTextColor )
-    , mIcon( other.mIcon )
+QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle& other )
+  : mValid( other.mValid )
+  , mName( other.mName )
+  , mRule( other.mRule )
+  , mFont( other.mFont )
+  , mBackColor( other.mBackColor )
+  , mTextColor( other.mTextColor )
+  , mIcon( other.mIcon )
 {
   if ( other.mSymbol.data() )
     mSymbol.reset( other.mSymbol->clone() );
 }
 
-QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle & other )
+QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle& other )
 {
   mValid = other.mValid;
   mRule = other.mRule;
@@ -275,7 +275,7 @@ QgsConditionalStyle QgsConditionalStyle::compressStyles( const QList<QgsConditio
   return style;
 }
 
-bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc ) const
+bool QgsConditionalStyle::writeXml( QDomNode& node, QDomDocument& doc ) const
 {
   QDomElement stylesel = doc.createElement( QStringLiteral( "style" ) );
   stylesel.setAttribute( QStringLiteral( "rule" ), mRule );
@@ -293,7 +293,7 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc ) const
   return true;
 }
 
-bool QgsConditionalStyle::readXml( const QDomNode &node )
+bool QgsConditionalStyle::readXml( const QDomNode& node )
 {
   QDomElement styleElm = node.toElement();
   setRule( styleElm.attribute( QStringLiteral( "rule" ) ) );

@@ -17,10 +17,10 @@
 
 #include "qgsdialog.h"
 
-QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
+QgsDialog::QgsDialog( QWidget* parent, Qt::WindowFlags fl,
                       QDialogButtonBox::StandardButtons buttons,
                       Qt::Orientation orientation )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );
@@ -28,7 +28,7 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   // layout
-  QLayout *layout = nullptr;
+  QLayout* layout = nullptr;
   if ( orientation == Qt::Horizontal )
     layout = new QVBoxLayout();
   else

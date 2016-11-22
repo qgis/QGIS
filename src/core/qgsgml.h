@@ -76,13 +76,13 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Constructor
     QgsGmlStreamingParser( const QString& typeName,
                            const QString& geometryAttribute,
-                           const QgsFields & fields,
+                           const QgsFields& fields,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
 
     //! Constructor for a join layer, or dealing with renamed fields
     QgsGmlStreamingParser( const QList<LayerProperties>& layerProperties,
-                           const QgsFields & fields,
+                           const QgsFields& fields,
                            const QMap< QString, QPair<QString, QString> >& mapFieldNameToSrcLayerNameFieldName,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
@@ -103,31 +103,58 @@ class CORE_EXPORT QgsGmlStreamingParser
     QVector<QgsGmlFeaturePtrGmlIdPair> getAndStealReadyFeatures();
 
     //! Return the EPSG code, or 0 if unknown
-    int getEPSGCode() const { return mEpsg; }
+    int getEPSGCode() const
+    {
+      return mEpsg;
+    }
 
     //! Return the value of the srsName attribute
-    const QString& srsName() const { return mSrsName; }
+    const QString& srsName() const
+    {
+      return mSrsName;
+    }
 
     //! Return layer bounding box
-    const QgsRectangle& layerExtent() const { return mLayerExtent; }
+    const QgsRectangle& layerExtent() const
+    {
+      return mLayerExtent;
+    }
 
     //! Return the geometry type
-    QgsWkbTypes::Type wkbType() const { return mWkbType; }
+    QgsWkbTypes::Type wkbType() const
+    {
+      return mWkbType;
+    }
 
     //! Return WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
-    int numberMatched() const { return mNumberMatched; }
+    int numberMatched() const
+    {
+      return mNumberMatched;
+    }
 
     //! Return WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
-    int numberReturned() const { return mNumberReturned; }
+    int numberReturned() const
+    {
+      return mNumberReturned;
+    }
 
     //! Return whether the document parser is a OGC exception
-    bool isException() const { return mIsException; }
+    bool isException() const
+    {
+      return mIsException;
+    }
 
     //! Return the exception text.
-    const QString& exceptionText() const { return mExceptionText; }
+    const QString& exceptionText() const
+    {
+      return mExceptionText;
+    }
 
     //! Return whether a "truncatedResponse" element is found
-    bool isTruncatedResponse() const { return mTruncatedResponse; }
+    bool isTruncatedResponse() const
+    {
+      return mTruncatedResponse;
+    }
 
   private:
 
@@ -193,7 +220,7 @@ class CORE_EXPORT QgsGmlStreamingParser
       */
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
     //! Creates a rectangle from a coordinate string.
-    bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
+    bool createBBoxFromCoordinateString( QgsRectangle& bb, const QString& coordString ) const;
 
     /** Creates a set of points from a coordinate string.
        @param points list that will contain the created points
@@ -211,9 +238,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     int pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const;
 
     int pointsFromString( QList<QgsPoint>& points, const QString& coordString ) const;
-    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& ) const;
-    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const;
-    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
+    int getPointWKB( QgsWkbPtr& wkbPtr, const QgsPoint& ) const;
+    int getLineWKB( QgsWkbPtr& wkbPtr, const QList<QgsPoint>& lineCoordinates ) const;
+    int getRingWKB( QgsWkbPtr& wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
 
     /** Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
@@ -228,10 +255,16 @@ class CORE_EXPORT QgsGmlStreamingParser
     int totalWKBFragmentSize() const;
 
     //! Get safely (if empty) top from mode stack
-    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
+    ParseMode modeStackTop()
+    {
+      return mParseModeStack.isEmpty() ? none : mParseModeStack.top();
+    }
 
     //! Safely (if empty) pop from mode stack
-    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
+    ParseMode modeStackPop()
+    {
+      return mParseModeStack.isEmpty() ? none : mParseModeStack.pop();
+    }
 
     //! Expat parser
     XML_Parser mParser;
@@ -333,7 +366,7 @@ class CORE_EXPORT QgsGml : public QObject
     QgsGml(
       const QString& typeName,
       const QString& geometryAttribute,
-      const QgsFields & fields );
+      const QgsFields& fields );
 
     ~QgsGml();
 
@@ -358,13 +391,19 @@ class CORE_EXPORT QgsGml : public QObject
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
-    int getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent = nullptr );
+    int getFeatures( const QByteArray& data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent = nullptr );
 
     //! Get parsed features for given type name
-    QMap<QgsFeatureId, QgsFeature* > featuresMap() const { return mFeatures; }
+    QMap<QgsFeatureId, QgsFeature* > featuresMap() const
+    {
+      return mFeatures;
+    }
 
     //! Get feature ids map
-    QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
+    QMap<QgsFeatureId, QString > idsMap() const
+    {
+      return mIdMap;
+    }
 
     /** Returns features spatial reference system
       @note Added in QGIS 2.1 */

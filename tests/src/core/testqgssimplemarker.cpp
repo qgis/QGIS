@@ -44,11 +44,11 @@ class TestQgsSimpleMarkerSymbol : public QObject
 
   public:
     TestQgsSimpleMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mSimpleMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mSimpleMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -72,7 +72,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
+    QgsVectorLayer* mpPointsLayer;
     QgsSimpleMarkerSymbolLayer* mSimpleMarkerLayer;
     QgsMarkerSymbol* mMarkerSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -103,7 +103,7 @@ void TestQgsSimpleMarkerSymbol::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //setup symbol
   mSimpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();

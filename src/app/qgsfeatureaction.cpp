@@ -33,13 +33,13 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid& actionId, int defaultAttr, QObject *parent )
-    : QAction( name, parent )
-    , mLayer( layer )
-    , mFeature( &f )
-    , mActionId( actionId )
-    , mIdx( defaultAttr )
-    , mFeatureSaved( false )
+QgsFeatureAction::QgsFeatureAction( const QString& name, QgsFeature& f, QgsVectorLayer* layer, const QUuid& actionId, int defaultAttr, QObject* parent )
+  : QAction( name, parent )
+  , mLayer( layer )
+  , mFeature( &f )
+  , mActionId( actionId )
+  , mIdx( defaultAttr )
+  , mFeatureSaved( false )
 {
 }
 
@@ -48,9 +48,9 @@ void QgsFeatureAction::execute()
   mLayer->actions()->doAction( mActionId, *mFeature, mIdx );
 }
 
-QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
+QgsAttributeDialog* QgsFeatureAction::newDialog( bool cloneFeature )
 {
-  QgsFeature *f = cloneFeature ? new QgsFeature( *mFeature ) : mFeature;
+  QgsFeature* f = cloneFeature ? new QgsFeature( *mFeature ) : mFeature;
 
   QgsAttributeEditorContext context;
 
@@ -64,7 +64,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
+  QgsAttributeDialog* dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
@@ -72,7 +72,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
-    QAction *a = new QAction( tr( "Run actions" ), dialog );
+    QAction* a = new QAction( tr( "Run actions" ), dialog );
     a->setEnabled( false );
     dialog->addAction( a );
 
@@ -82,11 +82,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
         continue;
 
       QgsFeature& feat = const_cast<QgsFeature&>( *dialog->feature() );
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
+      QgsFeatureAction* a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
       dialog->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 
-      QAbstractButton *pb = dialog->findChild<QAbstractButton *>( action.name() );
+      QAbstractButton* pb = dialog->findChild<QAbstractButton*>( action.name() );
       if ( pb )
         connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
     }
@@ -95,12 +95,12 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   return dialog;
 }
 
-bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
+bool QgsFeatureAction::viewFeatureForm( QgsHighlight* h )
 {
   if ( !mLayer )
     return false;
 
-  QgsAttributeDialog *dialog = newDialog( true );
+  QgsAttributeDialog* dialog = newDialog( true );
   dialog->setHighlight( h );
   // delete the dialog when it is closed
   dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -201,13 +201,13 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   }
   else
   {
-    QgsAttributeDialog *dialog = newDialog( false );
+    QgsAttributeDialog* dialog = newDialog( false );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->setMode( QgsAttributeForm::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
-    connect( dialog->attributeForm(), SIGNAL( featureSaved( const QgsFeature & ) ), this, SLOT( onFeatureSaved( const QgsFeature & ) ) );
+    connect( dialog->attributeForm(), SIGNAL( featureSaved( const QgsFeature& ) ), this, SLOT( onFeatureSaved( const QgsFeature& ) ) );
 
     if ( !showModal )
     {
@@ -256,4 +256,4 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
   }
 }
 
-QHash<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;
+QHash<QgsVectorLayer*, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;

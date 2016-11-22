@@ -264,7 +264,7 @@ bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer*>& layerNo
 {
   Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
     if ( !vl )
       continue;
 
@@ -278,7 +278,7 @@ bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer*>& layerNo
 {
   Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layerNode->layer() );
     if ( !vl )
       continue;
 
@@ -306,20 +306,20 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup* group )
     group->removeChildNode( node );
 }
 
-QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
+QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode* node )
 {
   QStringList list;
 
   if ( QgsLayerTree::isGroup( node ) )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    Q_FOREACH ( QgsLayerTreeNode* child, QgsLayerTree::toGroup( node )->children() )
     {
       list << invisibleLayerList( child );
     }
   }
   else if ( QgsLayerTree::isLayer( node ) )
   {
-    QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( node );
+    QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
 
     if ( !layer->isVisible() )
       list << layer->layerId();

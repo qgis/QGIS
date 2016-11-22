@@ -38,24 +38,24 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                               const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+                               const QString& dataprovider = QString() ) override;
 
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-                                   const QString &dataprovider = QString() ) override;
+    bool updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+                                   const QString& dataprovider = QString() ) override;
 
-    void clearCachedConfig( const QString &authcfg ) override;
+    void clearCachedConfig( const QString& authcfg ) override;
 
-    void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
+    void updateMethodConfig( QgsAuthMethodConfig& mconfig ) override;
 
   private:
-    QgsAuthMethodConfig getMethodConfig( const QString &authcfg, bool fullconfig = true );
+    QgsAuthMethodConfig getMethodConfig( const QString& authcfg, bool fullconfig = true );
 
-    void putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig );
+    void putMethodConfig( const QString& authcfg, const QgsAuthMethodConfig& mconfig );
 
-    void removeMethodConfig( const QString &authcfg );
+    void removeMethodConfig( const QString& authcfg );
 
-    QString escapeUserPass( const QString &theVal, QChar delim = '\'' ) const;
+    QString escapeUserPass( const QString& theVal, QChar delim = '\'' ) const;
 
     static QMap<QString, QgsAuthMethodConfig> mAuthConfigCache;
 };

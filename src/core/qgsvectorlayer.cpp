@@ -108,9 +108,9 @@ typedef QString loadStyle_t(
 
 typedef int listStyles_t(
   const QString& uri,
-  QStringList &ids,
-  QStringList &names,
-  QStringList &descriptions,
+  QStringList& ids,
+  QStringList& names,
+  QStringList& descriptions,
   QString& errCause
 );
 
@@ -124,27 +124,27 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
                                 const QString& baseName,
                                 const QString& providerKey,
                                 bool loadDefaultStyleFlag )
-    : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
-    , mDataProvider( nullptr )
-    , mProviderKey( providerKey )
-    , mReadOnly( false )
-    , mWkbType( QgsWkbTypes::Unknown )
-    , mRenderer( nullptr )
-    , mLabeling( new QgsVectorLayerSimpleLabeling )
-    , mLabelFontNotFoundNotified( false )
-    , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
-    , mLayerTransparency( 0 )
-    , mVertexMarkerOnlyForSelection( false )
-    , mCache( new QgsGeometryCache() )
-    , mEditBuffer( nullptr )
-    , mJoinBuffer( nullptr )
-    , mExpressionFieldBuffer( nullptr )
-    , mDiagramRenderer( nullptr )
-    , mDiagramLayerSettings( nullptr )
-    , mValidExtent( false )
-    , mLazyExtent( true )
-    , mSymbolFeatureCounted( false )
-    , mEditCommandActive( false )
+  : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
+  , mDataProvider( nullptr )
+  , mProviderKey( providerKey )
+  , mReadOnly( false )
+  , mWkbType( QgsWkbTypes::Unknown )
+  , mRenderer( nullptr )
+  , mLabeling( new QgsVectorLayerSimpleLabeling )
+  , mLabelFontNotFoundNotified( false )
+  , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
+  , mLayerTransparency( 0 )
+  , mVertexMarkerOnlyForSelection( false )
+  , mCache( new QgsGeometryCache() )
+  , mEditBuffer( nullptr )
+  , mJoinBuffer( nullptr )
+  , mExpressionFieldBuffer( nullptr )
+  , mDiagramRenderer( nullptr )
+  , mDiagramLayerSettings( nullptr )
+  , mValidExtent( false )
+  , mLazyExtent( true )
+  , mSymbolFeatureCounted( false )
+  , mEditCommandActive( false )
 
 {
   mActions = new QgsActionManager( this );
@@ -311,8 +311,8 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( this );
 
   if ( behaviour == SetSelection || behaviour == AddToSelection )
   {
@@ -397,7 +397,7 @@ void QgsVectorLayer::selectByIds( const QgsFeatureIds& ids, QgsVectorLayer::Sele
   emit selectionChanged( newSelection, deselectedFeatures, true );
 }
 
-void QgsVectorLayer::modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds& deselectIds )
+void QgsVectorLayer::modifySelection( const QgsFeatureIds& selectIds, const QgsFeatureIds& deselectIds )
 {
   QgsFeatureIds intersectingIds = selectIds & deselectIds;
   if ( !intersectingIds.isEmpty() )
@@ -440,7 +440,7 @@ QgsFeatureIds QgsVectorLayer::allFeatureIds() const
   return ids;
 }
 
-void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
+void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle& rect )
 {
   // normalize the rectangle
   rect.normalize();
@@ -640,7 +640,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
 
     //! Constructor
     explicit QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures( QProgressDialog* dialog )
-        : mDialog( dialog )
+      : mDialog( dialog )
     {
     }
 
@@ -738,8 +738,8 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 );
   renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+                                    << QgsExpressionContextUtils::projectScope()
+                                    << QgsExpressionContextUtils::layerScope( this );
 
   mRenderer->startRender( renderContext, fields() );
 
@@ -799,7 +799,7 @@ void QgsVectorLayer::updateExtents()
   mValidExtent = false;
 }
 
-void QgsVectorLayer::setExtent( const QgsRectangle &r )
+void QgsVectorLayer::setExtent( const QgsRectangle& r )
 {
   QgsMapLayer::setExtent( r );
   mValidExtent = true;
@@ -966,7 +966,7 @@ bool QgsVectorLayer::addFeature( QgsFeature& feature, bool alsoUpdateExtent )
   return success;
 }
 
-bool QgsVectorLayer::updateFeature( QgsFeature &f )
+bool QgsVectorLayer::updateFeature( QgsFeature& f )
 {
   QgsFeatureRequest req;
   req.setFilterFid( f.id() );
@@ -1156,7 +1156,7 @@ int QgsVectorLayer::addRing( QgsCurve* ring, QgsFeatureId* featureId )
   return result;
 }
 
-int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
+int QgsVectorLayer::addPart( const QList<QgsPoint>& points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return 7;
@@ -1182,7 +1182,7 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
   return result;
 }
 
-int QgsVectorLayer::addPart( const QgsPointSequence &points )
+int QgsVectorLayer::addPart( const QgsPointSequence& points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return 7;
@@ -1548,7 +1548,7 @@ void QgsVectorLayer::setDataSource( const QString& dataSource, const QString& ba
 }
 
 
-bool QgsVectorLayer::setDataProvider( QString const & provider )
+bool QgsVectorLayer::setDataProvider( QString const& provider )
 {
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
@@ -1596,7 +1596,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       QStringList stuff = reg.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
+      const QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
 
       QMap<QString, QgsMapLayer*>::const_iterator it;
       for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
@@ -1639,8 +1639,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
 
 /* virtual */
-bool QgsVectorLayer::writeXml( QDomNode & layer_node,
-                               QDomDocument & document ) const
+bool QgsVectorLayer::writeXml( QDomNode& layer_node,
+                               QDomDocument& document ) const
 {
   // first get the layer element so that we can append the type attribute
 
@@ -1844,7 +1844,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   return true;
 }
 
-bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsVectorLayer::readStyle( const QDomNode& node, QString& errorMessage )
 {
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
@@ -2039,7 +2039,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   return true;
 }
 
-bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsVectorLayer::writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
   QDomElement mapLayerNode = node.toElement();
 
@@ -2160,7 +2160,7 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry& geom )
 }
 
 
-bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
+bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant& newValue, const QVariant& oldValue )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
@@ -2168,7 +2168,7 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
 }
 
-bool QgsVectorLayer::addAttribute( const QgsField &field )
+bool QgsVectorLayer::addAttribute( const QgsField& field )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
@@ -2808,7 +2808,7 @@ void QgsVectorLayer::setAnnotationForm( const QString& ui )
   mAnnotationForm = ui;
 }
 
-void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
+void QgsVectorLayer::setRenderer( QgsFeatureRenderer* r )
 {
   if ( !hasGeometryType() )
     return;
@@ -3118,7 +3118,7 @@ QString QgsVectorLayer::defaultValueExpression( int index ) const
     return mFields.at( index ).defaultValueExpression();
 }
 
-void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+void QgsVectorLayer::uniqueValues( int index, QList<QVariant>& uniqueValues, int limit ) const
 {
   uniqueValues.clear();
   if ( !mDataProvider )
@@ -3192,7 +3192,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
         return;
       }
       FALLTHROUGH;
-      //we need to go through each feature
+    //we need to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
     {
@@ -3289,7 +3289,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString& sub
         return mDataProvider->uniqueStringsMatching( index, substring, limit, feedback );
       }
       FALLTHROUGH;
-      //we need to go through each feature
+    //we need to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
     {
@@ -3468,7 +3468,7 @@ QVariant QgsVectorLayer::maximumValue( int index ) const
       }
 
       FALLTHROUGH;
-      //no choice but to go through each feature
+    //no choice but to go through each feature
     case QgsFields::OriginJoin:
     case QgsFields::OriginExpression:
     {
@@ -3536,7 +3536,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   return c.calculate( aggregate, fieldOrExpression, context, ok );
 }
 
-QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly ) const
+QList<QVariant> QgsVectorLayer::getValues( const QString& fieldOrExpression, bool& ok, bool selectedOnly ) const
 {
   QList<QVariant> values;
 
@@ -3550,8 +3550,8 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
     // try to use expression
     expression.reset( new QgsExpression( fieldOrExpression ) );
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( this );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::layerScope( this );
 
     if ( expression->hasParserError() || !expression->prepare( &context ) )
     {
@@ -3601,7 +3601,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   return values;
 }
 
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount ) const
+QList<double> QgsVectorLayer::getDoubleValues( const QString& fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount ) const
 {
   QList<double> values;
 
@@ -3945,8 +3945,8 @@ QgsExpressionContext QgsVectorLayer::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( this );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::layerScope( this );
 
   return expContext;
 }
@@ -4159,7 +4159,7 @@ QString QgsVectorLayer::metadata() const
     myMetadata += "</p>\n";
 #endif
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsDebugMsg( cse.what() );
@@ -4258,16 +4258,16 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
 }
 
-int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
+int QgsVectorLayer::listStylesInDatabase( QStringList& ids, QStringList& names, QStringList& descriptions, QString& msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QgsProviderRegistry* pReg = QgsProviderRegistry::instance();
+  QLibrary* myLib = pReg->providerLibrary( mProviderKey );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
     return -1;
   }
-  listStyles_t* listStylesExternalMethod = reinterpret_cast< listStyles_t * >( cast_to_fptr( myLib->resolve( "listStyles" ) ) );
+  listStyles_t* listStylesExternalMethod = reinterpret_cast< listStyles_t* >( cast_to_fptr( myLib->resolve( "listStyles" ) ) );
 
   if ( !listStylesExternalMethod )
   {
@@ -4279,16 +4279,16 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
   return listStylesExternalMethod( mDataSource, ids, names, descriptions, msgError );
 }
 
-QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &msgError )
+QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString& msgError )
 {
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QgsProviderRegistry* pReg = QgsProviderRegistry::instance();
+  QLibrary* myLib = pReg->providerLibrary( mProviderKey );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
     return QObject::tr( "" );
   }
-  getStyleById_t* getStyleByIdMethod = reinterpret_cast< getStyleById_t * >( cast_to_fptr( myLib->resolve( "getStyleById" ) ) );
+  getStyleById_t* getStyleByIdMethod = reinterpret_cast< getStyleById_t* >( cast_to_fptr( myLib->resolve( "getStyleById" ) ) );
 
   if ( !getStyleByIdMethod )
   {
@@ -4302,18 +4302,18 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString& styleId, QString &m
 
 
 void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& description,
-    bool useAsDefault, const QString& uiFileContent, QString &msgError )
+    bool useAsDefault, const QString& uiFileContent, QString& msgError )
 {
 
   QString sldStyle, qmlStyle;
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+  QgsProviderRegistry* pReg = QgsProviderRegistry::instance();
+  QLibrary* myLib = pReg->providerLibrary( mProviderKey );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
     return;
   }
-  saveStyle_t* saveStyleExternalMethod = reinterpret_cast< saveStyle_t * >( cast_to_fptr( myLib->resolve( "saveStyle" ) ) );
+  saveStyle_t* saveStyleExternalMethod = reinterpret_cast< saveStyle_t* >( cast_to_fptr( myLib->resolve( "saveStyle" ) ) );
 
   if ( !saveStyleExternalMethod )
   {
@@ -4343,21 +4343,21 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 
 
 
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
+QString QgsVectorLayer::loadNamedStyle( const QString& theURI, bool& theResultFlag )
 {
   return loadNamedStyle( theURI, theResultFlag, false );
 }
 
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
+QString QgsVectorLayer::loadNamedStyle( const QString& theURI, bool& theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
   {
-    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+    QgsProviderRegistry* pReg = QgsProviderRegistry::instance();
+    QLibrary* myLib = pReg->providerLibrary( mProviderKey );
     if ( myLib )
     {
-      loadStyle_t* loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );
+      loadStyle_t* loadStyleExternalMethod = reinterpret_cast< loadStyle_t* >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );
       if ( loadStyleExternalMethod )
       {
         QString qml, errorMsg;

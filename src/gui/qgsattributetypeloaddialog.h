@@ -35,7 +35,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     Q_OBJECT
 
   public:
-    QgsAttributeTypeLoadDialog( QgsVectorLayer *vl );
+    QgsAttributeTypeLoadDialog( QgsVectorLayer* vl );
     ~QgsAttributeTypeLoadDialog();
 
     /**
@@ -48,13 +48,13 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
      * Sets predefined vector layer for selection of data
      * @param layer Vector layer which is to be set as predefined one
      */
-    void setVectorLayer( QgsVectorLayer *layer );
+    void setVectorLayer( QgsVectorLayer* layer );
 
     /**
      * Getter to value map which is currently active
      * @return value map of vlues selected from layer
      */
-    QMap<QString, QVariant> &valueMap();
+    QMap<QString, QVariant>& valueMap();
 
     /**
      * Returns true if the "Add NULL value" checkbox has been checked.
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
      */
     void loadDataToValueMap();
 
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer* mLayer;
     QMap<QString, QVariant> mValueMap;
 };
 

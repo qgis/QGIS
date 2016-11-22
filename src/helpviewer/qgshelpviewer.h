@@ -44,17 +44,17 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT
   public:
-    QgsHelpViewer( QWidget *parent = nullptr, Qt::WindowFlags = 0 );
+    QgsHelpViewer( QWidget* parent = nullptr, Qt::WindowFlags = 0 );
     ~QgsHelpViewer();
   public slots:
     void showHelp( const QString& );
     void fileExit();
   protected:
-    void moveEvent( QMoveEvent *event ) override;
-    void resizeEvent( QResizeEvent *event ) override;
+    void moveEvent( QMoveEvent* event ) override;
+    void resizeEvent( QResizeEvent* event ) override;
   private:
     void restorePosition();
     void saveWindowLocation();
-    QgsReaderThread *mThread;
+    QgsReaderThread* mThread;
 };
 #endif // QGSHELPVIEWER_H

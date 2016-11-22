@@ -108,8 +108,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     struct Error
     {
       Error( const QString& lid, const QString& msg )
-          : layerID( lid )
-          , message( msg )
+        : layerID( lid )
+        , message( msg )
       {}
 
       QString layerID;
@@ -128,10 +128,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Set which vector layers should be cached while rendering
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setRequestedGeometryCacheForLayers( const QStringList& layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
+    void setRequestedGeometryCacheForLayers( const QStringList& layerIds )
+    {
+      mRequestedGeomCacheForLayers = layerIds;
+    }
 
     //! Find out how log it took to finish the job (in miliseconds)
-    int renderingTime() const { return mRenderingTime; }
+    int renderingTime() const
+    {
+      return mRenderingTime;
+    }
 
     /**
      * Return map settings with which this job was started.
@@ -162,7 +168,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
-    static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
+    static bool reprojectToLayerExtent( const QgsMapLayer* ml, const QgsCoordinateTransform& ct, QgsRectangle& extent, QgsRectangle& r2 );
 
     //! @note not available in python bindings
     LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );

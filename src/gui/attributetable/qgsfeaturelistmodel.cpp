@@ -22,9 +22,9 @@
 #include <QItemSelection>
 #include <QSettings>
 
-QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
-    : QAbstractProxyModel( parent )
-    , mInjectNull( false )
+QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel* sourceModel, QObject* parent )
+  : QAbstractProxyModel( parent )
+  , mInjectNull( false )
 {
   setSourceModel( sourceModel );
   mExpression = new QgsExpression( QLatin1String( "" ) );
@@ -35,7 +35,7 @@ QgsFeatureListModel::~QgsFeatureListModel()
   delete mExpression;
 }
 
-void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
+void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel* sourceModel )
 {
   QAbstractProxyModel::setSourceModel( sourceModel );
   mFilterModel = sourceModel;
@@ -52,12 +52,12 @@ void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceMo
   }
 }
 
-QgsVectorLayerCache *QgsFeatureListModel::layerCache()
+QgsVectorLayerCache* QgsFeatureListModel::layerCache()
 {
   return mFilterModel->layerCache();
 }
 
-QgsFeatureId QgsFeatureListModel::idxToFid( const QModelIndex &index ) const
+QgsFeatureId QgsFeatureListModel::idxToFid( const QModelIndex& index ) const
 {
   return mFilterModel->masterModel()->rowToId( mapToMaster( index ).row() );
 }
@@ -67,7 +67,7 @@ QModelIndex QgsFeatureListModel::fidToIdx( const QgsFeatureId fid ) const
   return mFilterModel->mapFromMaster( mFilterModel->masterModel()->idToIndex( fid ) );
 }
 
-QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
+QVariant QgsFeatureListModel::data( const QModelIndex& index, int role ) const
 {
   if ( mInjectNull && index.row() == 0 )
   {
@@ -93,8 +93,8 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
     context.setFeature( feat );
     return mExpression->evaluate( &context );
   }
@@ -139,7 +139,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   return sourceModel()->data( mapToSource( index ), role );
 }
 
-Qt::ItemFlags QgsFeatureListModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsFeatureListModel::flags( const QModelIndex& index ) const
 {
   if ( mInjectNull && index.row() == 0 )
   {
@@ -177,8 +177,8 @@ bool QgsFeatureListModel::setDisplayExpression( const QString& expression )
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
 
   exp->prepare( &context );
 
@@ -206,7 +206,7 @@ QString QgsFeatureListModel::displayExpression() const
   return mExpression->expression();
 }
 
-bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &feat )
+bool QgsFeatureListModel::featureByIndex( const QModelIndex& index, QgsFeature& feat )
 {
   return mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 }
@@ -237,7 +237,7 @@ void QgsFeatureListModel::onEndInsertRows( const QModelIndex& parent, int first,
   endInsertRows();
 }
 
-QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) const
+QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex& proxyIndex ) const
 {
   if ( !proxyIndex.isValid() )
     return QModelIndex();
@@ -247,7 +247,7 @@ QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) co
   return mFilterModel->mapToMaster( mFilterModel->index( proxyIndex.row() - offset, proxyIndex.column() ) );
 }
 
-QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &sourceIndex ) const
+QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex& sourceIndex ) const
 {
   if ( !sourceIndex.isValid() )
     return QModelIndex();
@@ -269,7 +269,7 @@ QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection& 
 
 // Override some methods from QAbstractProxyModel, not that interesting
 
-QModelIndex QgsFeatureListModel::mapToSource( const QModelIndex &proxyIndex ) const
+QModelIndex QgsFeatureListModel::mapToSource( const QModelIndex& proxyIndex ) const
 {
   if ( !proxyIndex.isValid() )
     return QModelIndex();
@@ -279,7 +279,7 @@ QModelIndex QgsFeatureListModel::mapToSource( const QModelIndex &proxyIndex ) co
   return sourceModel()->index( proxyIndex.row() - offset, proxyIndex.column() );
 }
 
-QModelIndex QgsFeatureListModel::mapFromSource( const QModelIndex &sourceIndex ) const
+QModelIndex QgsFeatureListModel::mapFromSource( const QModelIndex& sourceIndex ) const
 {
   if ( !sourceIndex.isValid() )
     return QModelIndex();
@@ -300,7 +300,7 @@ QModelIndex QgsFeatureListModel::parent( const QModelIndex& child ) const
   return QModelIndex();
 }
 
-int QgsFeatureListModel::columnCount( const QModelIndex&parent ) const
+int QgsFeatureListModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent )
   return 1;

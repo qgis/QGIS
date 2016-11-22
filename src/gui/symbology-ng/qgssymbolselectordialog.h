@@ -117,7 +117,10 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      * @brief Return the symbol that is currently active in the widget. Can be null.
      * @return The active symbol.
      */
-    QgsSymbol* symbol() { return mSymbol; }
+    QgsSymbol* symbol()
+    {
+      return mSymbol;
+    }
 
   protected:
 
@@ -233,7 +236,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     const QgsVectorLayer* mVectorLayer;
 
     QStandardItemModel* model;
-    QWidget *mPresentWidget;
+    QWidget* mPresentWidget;
 
   private:
     QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
@@ -275,7 +278,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent* e ) override;
 
     void loadSymbol();
     //! @note not available in python bindings

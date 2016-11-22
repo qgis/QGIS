@@ -37,7 +37,7 @@
 #include <osgEarthUtil/EarthManipulator>
 
 QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

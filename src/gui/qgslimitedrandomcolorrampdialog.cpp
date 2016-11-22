@@ -23,8 +23,8 @@
 
 
 QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp& ramp, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mRamp( ramp )
+  : QgsPanelWidget( parent )
+  , mRamp( ramp )
 {
   setupUi( this );
 
@@ -116,7 +116,7 @@ void QgsLimitedRandomColorRampWidget::setVal2( int val )
 }
 
 QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   QVBoxLayout* vLayout = new QVBoxLayout();
   mWidget = new QgsLimitedRandomColorRampWidget( ramp );

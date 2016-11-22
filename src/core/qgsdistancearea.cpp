@@ -55,7 +55,7 @@ QgsDistanceArea::QgsDistanceArea()
 
 
 //! Copy constructor
-QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
+QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea& origDA )
 {
   _copy( origDA );
 }
@@ -65,7 +65,7 @@ QgsDistanceArea::~QgsDistanceArea()
 }
 
 //! Assignment operator
-QgsDistanceArea & QgsDistanceArea::operator=( const QgsDistanceArea & origDA )
+QgsDistanceArea& QgsDistanceArea::operator=( const QgsDistanceArea& origDA )
 {
   if ( this == & origDA )
   {
@@ -77,7 +77,7 @@ QgsDistanceArea & QgsDistanceArea::operator=( const QgsDistanceArea & origDA )
 }
 
 //! Copy helper. Avoid Sqlite3 accesses.
-void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
+void QgsDistanceArea::_copy( const QgsDistanceArea& origDA )
 {
   mEllipsoidalMode = origDA.mEllipsoidalMode;
   mEllipsoid = origDA.mEllipsoid;
@@ -123,9 +123,9 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   //
   // SQLITE3 stuff - get parameters for selected ellipsoid
   //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3*      myDatabase;
+  const char*   myTail;
+  sqlite3_stmt* myPreparedStatement;
   int           myResult;
 
   // Shortcut if ellipsoid is none.
@@ -174,8 +174,8 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   {
     if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      radius = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      parameter2 = QString( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
+      radius = QString( reinterpret_cast< const char* >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      parameter2 = QString( reinterpret_cast< const char* >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
     }
   }
   // close the sqlite3 statement
@@ -459,7 +459,7 @@ double QgsDistanceArea::measureLine( const QgsCurve* curve ) const
   return measureLine( linePoints );
 }
 
-double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
+double QgsDistanceArea::measureLine( const QList<QgsPoint>& points ) const
 {
   if ( points.size() < 2 )
     return 0;
@@ -492,7 +492,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
     return total;
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
@@ -501,7 +501,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 
 }
 
-double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const
+double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const
 {
   QgsUnitTypes::DistanceUnit units;
   return measureLine( p1, p2, units );
@@ -534,7 +534,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2, Qgs
       result = computeDistanceFlat( p1, p2 );
     }
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
@@ -640,7 +640,7 @@ QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* a
       points.clear();
     }
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
@@ -682,7 +682,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points ) const
       return computePolygonArea( points );
     }
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area." ) );
@@ -827,7 +827,7 @@ double QgsDistanceArea::computeDistance( const QList<QgsPoint>& points ) const
 
     return total;
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );

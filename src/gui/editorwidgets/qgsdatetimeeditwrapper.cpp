@@ -27,20 +27,20 @@
 #include <QCalendarWidget>
 
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mQDateTimeEdit( nullptr )
-    , mQgsDateTimeEdit( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mQDateTimeEdit( nullptr )
+  , mQgsDateTimeEdit( nullptr )
 {
 }
 
-QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
+QWidget* QgsDateTimeEditWrapper::createWidget( QWidget* parent )
 {
   QgsDateTimeEdit* widget = new QgsDateTimeEdit( parent );
   widget->setDateTime( QDateTime::currentDateTime() );
   return widget;
 }
 
-void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
+void QgsDateTimeEditWrapper::initWidget( QWidget* editor )
 {
   QgsDateTimeEdit* qgsEditor = dynamic_cast<QgsDateTimeEdit*>( editor );
   if ( qgsEditor )
@@ -144,7 +144,7 @@ QVariant QgsDateTimeEditWrapper::value() const
   }
 }
 
-void QgsDateTimeEditWrapper::setValue( const QVariant &value )
+void QgsDateTimeEditWrapper::setValue( const QVariant& value )
 {
   if ( !mQDateTimeEdit )
     return;

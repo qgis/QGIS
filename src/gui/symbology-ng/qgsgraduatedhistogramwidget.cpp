@@ -44,11 +44,11 @@
 #endif
 
 
-QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
-    : QgsHistogramWidget( parent )
-    , mRenderer( nullptr )
-    , mHistoPicker( nullptr )
-    , mPressedValue( 0 )
+QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget* parent )
+  : QgsHistogramWidget( parent )
+  , mRenderer( nullptr )
+  , mHistoPicker( nullptr )
+  , mPressedValue( 0 )
 {
   //clear x axis title to make more room for graph
   setXAxisTitle( QString() );
@@ -73,7 +73,7 @@ QgsGraduatedHistogramWidget::~QgsGraduatedHistogramWidget()
 {
 }
 
-void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer *renderer )
+void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer* renderer )
 {
   mRenderer = renderer;
 }
@@ -163,7 +163,7 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
   refresh();
 }
 
-void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRangeIndex, int& pixelDistance ) const
+void QgsGraduatedHistogramWidget::findClosestRange( double value, int& closestRangeIndex, int& pixelDistance ) const
 {
   const QgsRangeList& ranges = mRenderer->ranges();
 
@@ -182,14 +182,14 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
 
 /// @cond PRIVATE
 
-QgsGraduatedHistogramEventFilter::QgsGraduatedHistogramEventFilter( QwtPlot *plot )
-    : QObject( plot )
-    , mPlot( plot )
+QgsGraduatedHistogramEventFilter::QgsGraduatedHistogramEventFilter( QwtPlot* plot )
+  : QObject( plot )
+  , mPlot( plot )
 {
   mPlot->canvas()->installEventFilter( this );
 }
 
-bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *event )
+bool QgsGraduatedHistogramEventFilter::eventFilter( QObject* object, QEvent* event )
 {
   if ( !mPlot->isEnabled() )
     return QObject::eventFilter( object, event );

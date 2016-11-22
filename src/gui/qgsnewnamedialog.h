@@ -45,7 +45,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QgsNewNameDialog( const QString& source = QString::null, const QString& initial = QString::null,
                       const QStringList& extensions = QStringList(), const QStringList& existing = QStringList(),
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent = nullptr, Qt::WindowFlags flags = QgisGui::ModalDialogFlags );
+                      QWidget* parent = nullptr, Qt::WindowFlags flags = QgisGui::ModalDialogFlags );
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).
@@ -74,7 +74,10 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * @note added in QGIS 2.12
      * @see setOverwriteEnabled()
      */
-    bool overwriteEnabled() const { return mOverwriteEnabled; }
+    bool overwriteEnabled() const
+    {
+      return mOverwriteEnabled;
+    }
 
     /** Sets the string used for warning users if a conflicting name exists.
      * @param string warning string. If empty a default warning string will be used.
@@ -87,7 +90,10 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * @note added in QGIS 2.12
      * @see setConflictingNameWarning()
      */
-    QString conflictingNameWarning() const { return mConflictingNameWarning; }
+    QString conflictingNameWarning() const
+    {
+      return mConflictingNameWarning;
+    }
 
     /** Name entered by user.
      * @return new name
@@ -111,9 +117,9 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QStringList mExtensions;
     Qt::CaseSensitivity mCaseSensitivity;
     QLabel* mHintLabel;
-    QLineEdit *mLineEdit;
-    QLabel *mNamesLabel; // list of names with extensions
-    QLabel *mErrorLabel;
+    QLineEdit* mLineEdit;
+    QLabel* mNamesLabel; // list of names with extensions
+    QLabel* mErrorLabel;
     QString mOkString;
     QRegExp mRegexp;
     bool mOverwriteEnabled;

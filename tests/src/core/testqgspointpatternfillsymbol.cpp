@@ -45,11 +45,11 @@ class TestQgsPointPatternFillSymbol : public QObject
 
   public:
     TestQgsPointPatternFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mPointPatternFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mPointPatternFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -66,7 +66,7 @@ class TestQgsPointPatternFillSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QgsPointPatternFillSymbolLayer* mPointPatternFill;
     QgsFillSymbol* mFillSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -101,7 +101,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   //setup symbol
   mPointPatternFill = new QgsPointPatternFillSymbolLayer();

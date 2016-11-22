@@ -15,8 +15,8 @@
 
 #include "qgswebviewconfigdlg.h"
 
-QgsWebViewWidgetConfigDlg::QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-    :  QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsWebViewWidgetConfigDlg::QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+  :  QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   connect( sbWidgetHeight, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );

@@ -22,8 +22,8 @@
 #include "qgssymbollayerutils.h"
 
 QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline* composerPolyline ):
-    QgsComposerItemBaseWidget( nullptr, composerPolyline )
-    , mComposerPolyline( composerPolyline )
+  QgsComposerItemBaseWidget( nullptr, composerPolyline )
+  , mComposerPolyline( composerPolyline )
 {
   setupUi( this );
   setPanelTitle( tr( "Polyline properties" ) );

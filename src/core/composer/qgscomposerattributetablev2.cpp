@@ -33,8 +33,8 @@
 //QgsComposerAttributeTableCompareV2
 
 QgsComposerAttributeTableCompareV2::QgsComposerAttributeTableCompareV2()
-    : mCurrentSortColumn( 0 )
-    , mAscending( true )
+  : mCurrentSortColumn( 0 )
+  , mAscending( true )
 {
 }
 
@@ -50,17 +50,17 @@ bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow& 
 //
 
 QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands )
-    : QgsComposerTableV2( composition, createUndoCommands )
-    , mSource( LayerAttributes )
-    , mVectorLayer( nullptr )
-    , mCurrentAtlasLayer( nullptr )
-    , mComposerMap( nullptr )
-    , mMaximumNumberOfFeatures( 30 )
-    , mShowUniqueRowsOnly( false )
-    , mShowOnlyVisibleFeatures( false )
-    , mFilterToAtlasIntersection( false )
-    , mFilterFeatures( false )
-    , mFeatureFilter( QLatin1String( "" ) )
+  : QgsComposerTableV2( composition, createUndoCommands )
+  , mSource( LayerAttributes )
+  , mVectorLayer( nullptr )
+  , mCurrentAtlasLayer( nullptr )
+  , mComposerMap( nullptr )
+  , mMaximumNumberOfFeatures( 30 )
+  , mShowUniqueRowsOnly( false )
+  , mShowOnlyVisibleFeatures( false )
+  , mFilterToAtlasIntersection( false )
+  , mFilterFeatures( false )
+  , mFeatureFilter( QLatin1String( "" ) )
 {
   //set first vector layer from layer registry as default one
   QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
@@ -167,7 +167,7 @@ void QgsComposerAttributeTableV2::setRelationId( const QString& relationId )
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::atlasLayerChanged( QgsVectorLayer *layer )
+void QgsComposerAttributeTableV2::atlasLayerChanged( QgsVectorLayer* layer )
 {
   if ( mSource != QgsComposerAttributeTableV2::AtlasFeature || layer == mCurrentAtlasLayer )
   {
@@ -385,7 +385,7 @@ void QgsComposerAttributeTableV2::restoreFieldAliasMap( const QMap<int, QString>
   }
 }
 
-bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &contents )
+bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents& contents )
 {
   contents.clear();
 
@@ -431,7 +431,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
         return false;
@@ -548,7 +548,7 @@ QgsExpressionContext QgsComposerAttributeTableV2::createExpressionContext() cons
   return context;
 }
 
-QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant ) const
+QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant& variant ) const
 {
   //avoid converting variants to string if not required (try to maintain original type for sorting)
   if ( mWrapString.isEmpty() || !variant.toString().contains( mWrapString ) )
@@ -559,7 +559,7 @@ QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant )
   return replaced;
 }
 
-QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
+QgsVectorLayer* QgsComposerAttributeTableV2::sourceLayer()
 {
   switch ( mSource )
   {
@@ -625,7 +625,7 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
   return attributesBySortRank;
 }
 
-void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
+void QgsComposerAttributeTableV2::setWrapString( const QString& wrapString )
 {
   if ( wrapString == mWrapString )
   {
@@ -637,7 +637,7 @@ void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
   emit changed();
 }
 
-bool QgsComposerAttributeTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
+bool QgsComposerAttributeTableV2::writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
 {
   QDomElement composerTableElem = doc.createElement( QStringLiteral( "ComposerAttributeTableV2" ) );
   composerTableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
@@ -752,7 +752,7 @@ bool QgsComposerAttributeTableV2::readXml( const QDomElement& itemElem, const QD
   return true;
 }
 
-void QgsComposerAttributeTableV2::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
+void QgsComposerAttributeTableV2::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )
 {
   mFrameItems.push_back( frame );
   connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );

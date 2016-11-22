@@ -22,10 +22,10 @@
 #include <QDir>
 #include <QSettings>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mDt( dt )
-    , mLayerName( layerName )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget* parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mDt( dt )
+  , mLayerName( layerName )
 {
   setupUi( this );
 
@@ -58,7 +58,7 @@ void QgsDatumTransformDialog::load()
   QList< QList< int > >::const_iterator it = mDt.constBegin();
   for ( ; it != mDt.constEnd(); ++it )
   {
-    QTreeWidgetItem *item = new QTreeWidgetItem();
+    QTreeWidgetItem* item = new QTreeWidgetItem();
     bool itemDisabled = false;
     bool itemHidden = false;
 
@@ -148,7 +148,7 @@ void QgsDatumTransformDialog::setDatumTransformInfo( const QString& srcCRSauthId
 QList< int > QgsDatumTransformDialog::selectedDatumTransform()
 {
   QList<int> list;
-  QTreeWidgetItem * item = mDatumTransformTreeWidget->currentItem();
+  QTreeWidgetItem* item = mDatumTransformTreeWidget->currentItem();
   if ( item )
   {
     list.reserve( 2 );
@@ -229,7 +229,7 @@ void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
   load();
 }
 
-void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* )
 {
   if ( !current )
     return;

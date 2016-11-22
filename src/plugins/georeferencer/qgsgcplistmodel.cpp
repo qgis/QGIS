@@ -49,23 +49,23 @@ class QgsStandardItem : public QStandardItem
     }
 };
 
-QgsGCPListModel::QgsGCPListModel( QObject *parent )
-    : QStandardItemModel( parent )
-    , mGCPList( nullptr )
-    , mGeorefTransform( nullptr )
+QgsGCPListModel::QgsGCPListModel( QObject* parent )
+  : QStandardItemModel( parent )
+  , mGCPList( nullptr )
+  , mGeorefTransform( nullptr )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );
 }
 
-void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
+void QgsGCPListModel::setGCPList( QgsGCPList* theGCPList )
 {
   mGCPList = theGCPList;
   updateModel();
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
+void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform* theGeorefTransform )
 {
   mGeorefTransform = theGeorefTransform;
   updateModel();
@@ -105,14 +105,14 @@ void QgsGCPListModel::updateModel()
   }
 
   itemLabels << tr( "Visible" )
-  << tr( "ID" )
-  << tr( "Source X" )
-  << tr( "Source Y" )
-  << tr( "Dest. X" )
-  << tr( "Dest. Y" )
-  << tr( "dX (%1)" ).arg( unitType )
-  << tr( "dY (%1)" ).arg( unitType )
-  << tr( "Residual (%1)" ).arg( unitType );
+             << tr( "ID" )
+             << tr( "Source X" )
+             << tr( "Source Y" )
+             << tr( "Dest. X" )
+             << tr( "Dest. Y" )
+             << tr( "dX (%1)" ).arg( unitType )
+             << tr( "dY (%1)" ).arg( unitType )
+             << tr( "Residual (%1)" ).arg( unitType );
 
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );
@@ -120,14 +120,14 @@ void QgsGCPListModel::updateModel()
   for ( int i = 0; i < mGCPList->sizeAll(); ++i )
   {
     int j = 0;
-    QgsGeorefDataPoint *p = mGCPList->at( i );
+    QgsGeorefDataPoint* p = mGCPList->at( i );
 
     if ( !p )
       continue;
 
     p->setId( i );
 
-    QStandardItem *si = new QStandardItem();
+    QStandardItem* si = new QStandardItem();
     si->setTextAlignment( Qt::AlignCenter );
     si->setCheckable( true );
     if ( p->isEnabled() )
@@ -191,7 +191,7 @@ void QgsGCPListModel::updateModel()
 }
 
 // --------------------------- public slots -------------------------------- //
-void QgsGCPListModel::replaceDataPoint( QgsGeorefDataPoint *newDataPoint, int i )
+void QgsGCPListModel::replaceDataPoint( QgsGeorefDataPoint* newDataPoint, int i )
 {
   mGCPList->replace( i, newDataPoint );
 }

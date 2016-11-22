@@ -18,9 +18,9 @@
 #include "qgsproject.h"
 #include "qgsscalewidget.h"
 
-QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
+QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget* parent )
+  : QWidget( parent )
+  , mCanvas( nullptr )
 {
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -82,7 +82,7 @@ void QgsScaleRangeWidget::reloadProjectScales()
   }
 }
 
-void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
+void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas* mapCanvas )
 {
   mMinimumScaleWidget->setMapCanvas( mapCanvas );
   mMaximumScaleWidget->setMapCanvas( mapCanvas );

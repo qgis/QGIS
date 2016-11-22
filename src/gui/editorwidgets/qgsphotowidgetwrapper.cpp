@@ -25,11 +25,11 @@
 #include "qgsfilterlineedit.h"
 
 QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mPhotoLabel( nullptr )
-    , mPhotoPixmapLabel( nullptr )
-    , mLineEdit( nullptr )
-    , mButton( nullptr )
+  :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mPhotoLabel( nullptr )
+  , mPhotoPixmapLabel( nullptr )
+  , mLineEdit( nullptr )
+  , mButton( nullptr )
 {
 #ifdef WITH_QTWEBKIT
   mWebView = nullptr;
@@ -220,7 +220,7 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
   if ( mLineEdit )
   {
 
-    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( fle )
     {
       fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );

@@ -49,7 +49,12 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
+    virtual void clearCache() const override
+    {
+      mBoundingBox = QgsRectangle();
+      mCoordinateSequence.clear();
+      QgsAbstractGeometry::clearCache();
+    }
 
     mutable QgsCoordinateSequence mCoordinateSequence;
     mutable QgsRectangle mBoundingBox;

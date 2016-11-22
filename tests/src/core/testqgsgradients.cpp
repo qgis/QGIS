@@ -43,11 +43,11 @@ class TestQgsGradients : public QObject
 
   public:
     TestQgsGradients()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mGradientFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mGradientFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -73,7 +73,7 @@ class TestQgsGradients : public QObject
     bool setQml( const QString& theType );
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QgsGradientFillSymbolLayer* mGradientFill;
     QgsFillSymbol* mFillSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -108,7 +108,7 @@ void TestQgsGradients::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   //setup gradient fill
   mGradientFill = new QgsGradientFillSymbolLayer();

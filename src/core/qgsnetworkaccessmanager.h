@@ -50,51 +50,54 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     // and creates that instance on the first call.
     static QgsNetworkAccessManager* instance();
 
-    QgsNetworkAccessManager( QObject *parent = nullptr );
+    QgsNetworkAccessManager( QObject* parent = nullptr );
 
     //! destructor
     ~QgsNetworkAccessManager();
 
     //! insert a factory into the proxy factories list
-    void insertProxyFactory( QNetworkProxyFactory *factory );
+    void insertProxyFactory( QNetworkProxyFactory* factory );
 
     //! remove a factory from the proxy factories list
-    void removeProxyFactory( QNetworkProxyFactory *factory );
+    void removeProxyFactory( QNetworkProxyFactory* factory );
 
     //! retrieve proxy factory list
-    const QList<QNetworkProxyFactory *> proxyFactories() const;
+    const QList<QNetworkProxyFactory*> proxyFactories() const;
 
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
-    const QNetworkProxy &fallbackProxy() const;
+    const QNetworkProxy& fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    const QStringList& excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
-    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+    void setFallbackProxyAndExcludes( const QNetworkProxy& proxy, const QStringList& excludes );
 
     //! Get name for QNetworkRequest::CacheLoadControl
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl );
 
     //! Get QNetworkRequest::CacheLoadControl from name
-    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString& theName );
 
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
     //! return whether the system proxy should be used
-    bool useSystemProxy() const { return mUseSystemProxy; }
+    bool useSystemProxy() const
+    {
+      return mUseSystemProxy;
+    }
 
   signals:
-    void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
-    void requestCreated( QNetworkReply * );
-    void requestTimedOut( QNetworkReply * );
+    void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest&, QIODevice* );
+    void requestCreated( QNetworkReply* );
+    void requestTimedOut( QNetworkReply* );
 
   private slots:
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
+    virtual QNetworkReply* createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest& req, QIODevice* outgoingData = nullptr ) override;
 
   private:
     QList<QNetworkProxyFactory*> mProxyFactories;
@@ -102,7 +105,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
     bool mInitialized;
-    static QgsNetworkAccessManager *smMainNAM;
+    static QgsNetworkAccessManager* smMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

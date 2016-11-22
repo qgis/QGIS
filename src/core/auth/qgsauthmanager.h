@@ -68,7 +68,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Enforce singleton pattern
      * @note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
      */
-    static QgsAuthManager *instance();
+    static QgsAuthManager* instance();
 
     ~QgsAuthManager();
 
@@ -76,10 +76,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QSqlDatabase authDbConnection() const;
 
     //! Name of the authentication database table that stores configs
-    const QString authDbConfigTable() const { return smAuthConfigTable; }
+    const QString authDbConfigTable() const
+    {
+      return smAuthConfigTable;
+    }
 
     //! Name of the authentication database table that stores server exceptions/configs
-    const QString authDbServersTable() const { return smAuthServersTable; }
+    const QString authDbServersTable() const
+    {
+      return smAuthServersTable;
+    }
 
     //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
     bool init( const QString& pluginPath = QString::null );
@@ -93,7 +99,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** The standard authentication database file in ~/.qgis3/ or defined location
      * @see QgsApplication::qgisAuthDbFilePath
      */
-    const QString authenticationDbPath() const { return mAuthDbPath; }
+    const QString authenticationDbPath() const
+    {
+      return mAuthDbPath;
+    }
 
     /** Main call to initially set or continually check master password is set
      * @note If it is not set, the user is asked for its input
@@ -112,7 +121,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @note Do not emit verification signals when only comparing
      * @param compare Password to compare against
      */
-    bool verifyMasterPassword( const QString &compare = QString::null );
+    bool verifyMasterPassword( const QString& compare = QString::null );
 
     //! Whether master password has be input and verified, i.e. authentication database is accessible
     bool masterPasswordIsSet() const;
@@ -123,7 +132,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Clear supplied master password
      * @note This will not necessarily clear authenticated connections cached in network connection managers
      */
-    void clearMasterPassword() { mMasterPass = QString(); }
+    void clearMasterPassword()
+    {
+      mMasterPass = QString();
+    }
 
     /** Check whether supplied password is the same as the one already set
      * @param pass Password to verify
@@ -137,12 +149,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param keepbackup Whether to keep the generated backup of current database
      * @param backuppath Where the backup is located, if kept
      */
-    bool resetMasterPassword( const QString& newpass, const QString& oldpass, bool keepbackup, QString *backuppath = nullptr );
+    bool resetMasterPassword( const QString& newpass, const QString& oldpass, bool keepbackup, QString* backuppath = nullptr );
 
     /** Whether there is a scheduled opitonal erase of authentication database.
      * @note not available in Python bindings
      */
-    bool scheduledAuthDbErase() { return mScheduledDbErase; }
+    bool scheduledAuthDbErase()
+    {
+      return mScheduledDbErase;
+    }
 
     /** Schedule an optional erase of authentication database, starting when mutex is lockable.
      * @note When an erase is scheduled, any attempt to set the master password,
@@ -164,16 +179,22 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param emitted Setting to false will cause signal to be emitted by the schedule timer.
      * Setting to true will stop any emitting, but will not stop the schedule timer.
      */
-    void setScheduledAuthDbEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
+    void setScheduledAuthDbEraseRequestEmitted( bool emitted )
+    {
+      mScheduledDbEraseRequestEmitted = emitted;
+    }
 
     //! Simple text tag describing authentication system for message logs
-    QString authManTag() const { return smAuthManTag; }
+    QString authManTag() const
+    {
+      return smAuthManTag;
+    }
 
     //! Instantiate and register existing C++ core authentication methods from plugins
     bool registerCoreAuthMethods();
 
     //! Get mapping of authentication config ids and their base configs (not decrypted data)
-    QgsAuthMethodConfigsMap availableAuthMethodConfigs( const QString &dataprovider = QString() );
+    QgsAuthMethodConfigsMap availableAuthMethodConfigs( const QString& dataprovider = QString() );
 
     //! Sync the confg/authentication method cache with what is in database
     void updateConfigAuthMethods();
@@ -182,7 +203,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Get authentication method from the config/provider cache
      * @param authcfg Authentication config id
      */
-    QgsAuthMethod *configAuthMethod( const QString& authcfg );
+    QgsAuthMethod* configAuthMethod( const QString& authcfg );
 
     /**
      * Get key of authentication method associated with config ID
@@ -193,33 +214,33 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Get keys of supported authentication methods
      */
-    QStringList authMethodsKeys( const QString &dataprovider = QString() );
+    QStringList authMethodsKeys( const QString& dataprovider = QString() );
 
     /**
      * Get authentication method from the config/provider cache via its key
      * @param authMethodKey Authentication method key
      */
-    QgsAuthMethod *authMethod( const QString &authMethodKey );
+    QgsAuthMethod* authMethod( const QString& authMethodKey );
 
     /**
      * Get available authentication methods mapped to their key
      * @param dataprovider Provider key filter, returning only methods that support a particular provider
      * @note not available in Python bindings
      */
-    QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() );
+    QgsAuthMethodsMap authMethodsMap( const QString& dataprovider = QString() );
 
     /**
      * Get authentication method edit widget via its key
      * @param authMethodKey Authentication method key
      * @param parent Parent widget
      */
-    QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
+    QWidget* authMethodEditWidget( const QString& authMethodKey, QWidget* parent );
 
     /**
      * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
      * @param authcfg
      */
-    QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
+    QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString& authcfg );
 
     //! Get a unique generated 7-character string to assign to as config id
     const QString uniqueConfigId() const;
@@ -228,16 +249,19 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Verify if provided authentication id is unique
      * @param id Id to check
      */
-    bool configIdUnique( const QString &id ) const;
+    bool configIdUnique( const QString& id ) const;
 
     /**
      * Return whether a string includes an authcfg ID token
      * @param txt String to check
      */
-    bool hasConfigId( const QString &txt ) const;
+    bool hasConfigId( const QString& txt ) const;
 
     //! Return regular expression for authcfg=.{7} key/value token for authentication ids
-    QString configIdRegex() const { return smAuthCfgRegex;}
+    QString configIdRegex() const
+    {
+      return smAuthCfgRegex;
+    }
 
     //! Get list of authentication ids from database
     QStringList configIds() const;
@@ -247,7 +271,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param mconfig Associated authentication config id
      * @return Whether operation succeeded
      */
-    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig );
+    bool storeAuthenticationConfig( QgsAuthMethodConfig& mconfig );
 
     /**
      * Update an authentication config in the database
@@ -263,7 +287,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param full Whether to decrypt and populate all sensitive data in subclass
      * @return Whether operation succeeded
      */
-    bool loadAuthenticationConfig( const QString& authcfg, QgsAuthMethodConfig &mconfig, bool full = false );
+    bool loadAuthenticationConfig( const QString& authcfg, QgsAuthMethodConfig& mconfig, bool full = false );
 
     /**
      * Remove an authentication config in the database
@@ -282,7 +306,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Close connection to current authentication database and back it up
      * @return Path to backup
      */
-    bool backupAuthenticationDatabase( QString *backuppath = nullptr );
+    bool backupAuthenticationDatabase( QString* backuppath = nullptr );
 
     /**
      * Erase all rows from all tables in authentication database
@@ -290,7 +314,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param backuppath Where the backup is locate
      * @return Whether operation succeeded
      */
-    bool eraseAuthenticationDatabase( bool backup, QString *backuppath = nullptr );
+    bool eraseAuthenticationDatabase( bool backup, QString* backuppath = nullptr );
 
 
     ////////////////// Auth Method calls ///////////////////////
@@ -302,8 +326,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
-    bool updateNetworkRequest( QNetworkRequest &request, const QString& authcfg,
-                               const QString &dataprovider = QString() );
+    bool updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+                               const QString& dataprovider = QString() );
 
     /**
      * Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
@@ -312,8 +336,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
-    bool updateNetworkReply( QNetworkReply *reply, const QString& authcfg,
-                             const QString &dataprovider = QString() );
+    bool updateNetworkReply( QNetworkReply* reply, const QString& authcfg,
+                             const QString& dataprovider = QString() );
 
     /**
      * Provider call to update a QgsDataSourceUri with an authentication config
@@ -322,8 +346,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param dataprovider Provider key filter, offering logic branching in authentication method
      * @return Whether operation succeeded
      */
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString& authcfg,
-                                   const QString &dataprovider = QString() );
+    bool updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+                                   const QString& dataprovider = QString() );
 
     ////////////////// Generic settings ///////////////////////
 
@@ -376,7 +400,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool storeSslCertCustomConfig( const QgsAuthConfigSslServer& config );
 
     //! Get an SSL certificate custom config by id (sha hash) and host:port
-    const QgsAuthConfigSslServer getSslCertCustomConfig( const QString& id, const QString &hostport );
+    const QgsAuthConfigSslServer getSslCertCustomConfig( const QString& id, const QString& hostport );
 
     //! Get an SSL certificate custom config by host:port
     const QgsAuthConfigSslServer getSslCertCustomConfigByHost( const QString& hostport );
@@ -385,24 +409,27 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QList<QgsAuthConfigSslServer> getSslCertCustomConfigs();
 
     //! Check if SSL certificate custom config exists
-    bool existsSslCertCustomConfig( const QString& id, const QString &hostport );
+    bool existsSslCertCustomConfig( const QString& id, const QString& hostport );
 
     //! Remove an SSL certificate custom config
-    bool removeSslCertCustomConfig( const QString& id, const QString &hostport );
+    bool removeSslCertCustomConfig( const QString& id, const QString& hostport );
 
     /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
      * @note not available in Python bindings
      */
-    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; }
+    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache()
+    {
+      return mIgnoredSslErrorsCache;
+    }
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
 
     //! Update ignored SSL error cache with possible ignored SSL errors, using server config
-    bool updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer &config );
+    bool updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer& config );
 
     //! Update ignored SSL error cache with possible ignored SSL errors, using sha:host:port key
-    bool updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors );
+    bool updateIgnoredSslErrorsCache( const QString& shahostport, const QList<QSslError>& errors );
 
     //! Rebuild ignoredSSL error cache
     bool rebuildIgnoredSslErrorCache();
@@ -470,7 +497,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
 
     //! Get cache of certificate sha1s, per trust policy
-    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > getCertTrustCache() { return mCertTrustCache; }
+    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > getCertTrustCache()
+    {
+      return mCertTrustCache;
+    }
 
     //! Rebuild certificate authority cache
     bool rebuildCertTrustCache();
@@ -485,7 +515,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool rebuildTrustedCaCertsCache();
 
     //! Get cache of trusted certificate authorities, ready for network connections
-    const QList<QSslCertificate> getTrustedCaCertsCache() { return mTrustedCaCertsCache; }
+    const QList<QSslCertificate> getTrustedCaCertsCache()
+    {
+      return mTrustedCaCertsCache;
+    }
 
     //! Get concatenated string of all trusted CA certificates
     const QByteArray getTrustedCaCertsPemText();
@@ -493,7 +526,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
 #endif
 
     //! Return pointer to mutex
-    QMutex *mutex() { return mMutex; }
+    QMutex* mutex()
+    {
+      return mMutex;
+    }
 
   signals:
 
@@ -549,9 +585,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool masterPasswordInput();
 
-    bool masterPasswordRowsInDb( int *rows ) const;
+    bool masterPasswordRowsInDb( int* rows ) const;
 
-    bool masterPasswordCheckAgainstDb( const QString &compare = QString::null ) const;
+    bool masterPasswordCheckAgainstDb( const QString& compare = QString::null ) const;
 
     bool masterPasswordStoreInDb() const;
 
@@ -573,27 +609,42 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool authDbOpen() const;
 
-    bool authDbQuery( QSqlQuery *query ) const;
+    bool authDbQuery( QSqlQuery* query ) const;
 
     bool authDbStartTransaction() const;
 
     bool authDbCommit() const;
 
-    bool authDbTransactionQuery( QSqlQuery *query ) const;
+    bool authDbTransactionQuery( QSqlQuery* query ) const;
 
 #ifndef QT_NO_SSL
-    void insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate> &certs );
+    void insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate>& certs );
 #endif
 
-    const QString authDbPassTable() const { return smAuthPassTable; }
+    const QString authDbPassTable() const
+    {
+      return smAuthPassTable;
+    }
 
-    const QString authDbSettingsTable() const { return smAuthSettingsTable; }
+    const QString authDbSettingsTable() const
+    {
+      return smAuthSettingsTable;
+    }
 
-    const QString authDbIdentitiesTable() const { return smAuthIdentitiesTable; }
+    const QString authDbIdentitiesTable() const
+    {
+      return smAuthIdentitiesTable;
+    }
 
-    const QString authDbAuthoritiesTable() const { return smAuthAuthoritiesTable; }
+    const QString authDbAuthoritiesTable() const
+    {
+      return smAuthAuthoritiesTable;
+    }
 
-    const QString authDbTrustTable() const { return smAuthTrustTable; }
+    const QString authDbTrustTable() const
+    {
+      return smAuthTrustTable;
+    }
 
     static QgsAuthManager* smInstance;
     static const QString smAuthConfigTable;
@@ -609,7 +660,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit;
     QString mAuthDbPath;
 
-    QCA::Initializer * mQcaInitializer;
+    QCA::Initializer* mQcaInitializer;
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod*> mAuthMethods;
@@ -618,12 +669,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mPassTries;
     bool mAuthDisabled;
     QString mAuthDisabledMessage;
-    QTimer *mScheduledDbEraseTimer;
+    QTimer* mScheduledDbEraseTimer;
     bool mScheduledDbErase;
     int mScheduledDbEraseRequestWait; // in seconds
     bool mScheduledDbEraseRequestEmitted;
     int mScheduledDbEraseRequestCount;
-    QMutex *mMutex;
+    QMutex* mMutex;
 
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert

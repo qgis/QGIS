@@ -31,12 +31,12 @@ class QString;
 class QgsConfigParserUtils
 {
   public:
-    static void appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList,
+    static void appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList& crsList,
                                           const QStringList& constrainedCrsList );
     static void appendCrsElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
                                          const QString& crsText, QDomDocument& doc );
     static void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-                                          const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList,
+                                          const QgsCoordinateReferenceSystem& layerCRS, const QStringList& crsList,
                                           const QStringList& constrainedCrsList );
     static void appendLayerBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
                                         const QgsCoordinateReferenceSystem& layerCRS, const QString& crsText );

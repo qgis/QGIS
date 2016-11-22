@@ -37,8 +37,14 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 
     QPaintEngine* paintEngine() const override;
 
-    void setDrawingSize( QSizeF size ) { mDrawingSize = size; }
-    void setOutputSize( const QRectF& r ) { mRectangle = r; }
+    void setDrawingSize( QSizeF size )
+    {
+      mDrawingSize = size;
+    }
+    void setOutputSize( const QRectF& r )
+    {
+      mRectangle = r;
+    }
 
     //! Returns scale factor for line width
     double widthScaleFactor() const;

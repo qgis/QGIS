@@ -28,9 +28,9 @@
 
 
 QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions& options ) :
-    mOptions( options ),
-    mLayer( 0 ),
-    mProfile( 0 )
+  mOptions( options ),
+  mLayer( 0 ),
+  mProfile( 0 )
 {
 }
 

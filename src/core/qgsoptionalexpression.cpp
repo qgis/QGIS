@@ -17,19 +17,19 @@
 #include "qgsoptionalexpression.h"
 
 QgsOptionalExpression::QgsOptionalExpression()
-    : QgsOptional<QgsExpression>()
+  : QgsOptional<QgsExpression>()
 {
 
 }
 
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression& expression )
-    : QgsOptional<QgsExpression>( expression )
+  : QgsOptional<QgsExpression>( expression )
 {
 
 }
 
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression& expression, bool enabled )
-    : QgsOptional<QgsExpression>( expression, enabled )
+  : QgsOptional<QgsExpression>( expression, enabled )
 {
 
 }

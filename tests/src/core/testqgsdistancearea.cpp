@@ -227,12 +227,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   daCRS.createFromSrsId( da.sourceCrsId() );
   QgsPolyline ring;
   ring << QgsPoint( 0, 0 )
-  << QgsPoint( 1, 0 )
-  << QgsPoint( 1, 1 )
-  << QgsPoint( 2, 1 )
-  << QgsPoint( 2, 2 )
-  << QgsPoint( 0, 2 )
-  << QgsPoint( 0, 0 );
+       << QgsPoint( 1, 0 )
+       << QgsPoint( 1, 1 )
+       << QgsPoint( 2, 1 )
+       << QgsPoint( 2, 2 )
+       << QgsPoint( 0, 2 )
+       << QgsPoint( 0, 0 );
   QgsPolygon poly;
   poly << ring;
 
@@ -272,12 +272,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   // now try with a source CRS which is in feet
   ring.clear();
   ring << QgsPoint( 1850000, 4423000 )
-  << QgsPoint( 1851000, 4423000 )
-  << QgsPoint( 1851000, 4424000 )
-  << QgsPoint( 1852000, 4424000 )
-  << QgsPoint( 1852000, 4425000 )
-  << QgsPoint( 1851000, 4425000 )
-  << QgsPoint( 1850000, 4423000 );
+       << QgsPoint( 1851000, 4423000 )
+       << QgsPoint( 1851000, 4424000 )
+       << QgsPoint( 1852000, 4424000 )
+       << QgsPoint( 1852000, 4425000 )
+       << QgsPoint( 1851000, 4425000 )
+       << QgsPoint( 1850000, 4423000 );
   poly.clear();
   poly << ring;
   polygon = QgsGeometry::fromPolygon( poly );

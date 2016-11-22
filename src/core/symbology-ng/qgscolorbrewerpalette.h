@@ -80,7 +80,7 @@ class CORE_EXPORT QgsColorBrewerPalette
     }
 
     // extracted ColorBrewer data
-    static const char *brewerString;
+    static const char* brewerString;
 };
 
 #endif // QGSCOLORBREWERPALETTE_H

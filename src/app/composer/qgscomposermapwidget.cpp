@@ -42,8 +42,8 @@
 #include <QMessageBox>
 
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
-    : QgsComposerItemBaseWidget( nullptr, composerMap )
-    , mComposerMap( composerMap )
+  : QgsComposerItemBaseWidget( nullptr, composerMap )
+  , mComposerMap( composerMap )
 {
   setupUi( this );
   setPanelTitle( tr( "Map properties" ) );
@@ -744,7 +744,7 @@ void QgsComposerMapWidget::handleChangedFrameDisplay( QgsComposerMapGrid::Border
   mComposerMap->updateBoundingRect();
 }
 
-void QgsComposerMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text )
+void QgsComposerMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text )
 {
   QgsComposerMapGrid* grid = currentGrid();
   if ( !grid )
@@ -903,7 +903,7 @@ void QgsComposerMapWidget::insertAnnotationDirectionEntries( QComboBox* c )
   c->addItem( tr( "Vertical descending" ), QgsComposerMapGrid::VerticalDescending );
 }
 
-void QgsComposerMapWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
+void QgsComposerMapWidget::initFrameDisplayBox( QComboBox* c, QgsComposerMapGrid::DisplayMode display )
 {
   if ( !c )
   {
@@ -912,7 +912,7 @@ void QgsComposerMapWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid
   c->setCurrentIndex( c->findData( display ) );
 }
 
-void QgsComposerMapWidget::initAnnotationDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
+void QgsComposerMapWidget::initAnnotationDisplayBox( QComboBox* c, QgsComposerMapGrid::DisplayMode display )
 {
   if ( !c )
   {
@@ -975,14 +975,14 @@ void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMapGrid:
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::insertFrameDisplayEntries( QComboBox *c )
+void QgsComposerMapWidget::insertFrameDisplayEntries( QComboBox* c )
 {
   c->addItem( tr( "All" ), QgsComposerMapGrid::ShowAll );
   c->addItem( tr( "Latitude/Y only" ), QgsComposerMapGrid::LatitudeOnly );
   c->addItem( tr( "Longitude/X only" ), QgsComposerMapGrid::LongitudeOnly );
 }
 
-void QgsComposerMapWidget::insertAnnotationDisplayEntries( QComboBox *c )
+void QgsComposerMapWidget::insertAnnotationDisplayEntries( QComboBox* c )
 {
   c->insertItem( 0, tr( "Show all" ) );
   c->insertItem( 1, tr( "Show latitude only" ) );

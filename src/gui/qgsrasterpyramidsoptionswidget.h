@@ -26,7 +26,7 @@ class QCheckBox;
  * A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
-      private Ui::QgsRasterPyramidsOptionsWidgetBase
+  private Ui::QgsRasterPyramidsOptionsWidgetBase
 {
     Q_OBJECT
 
@@ -35,14 +35,31 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
     QgsRasterPyramidsOptionsWidget( QWidget* parent = nullptr, const QString& provider = "gdal" );
     ~QgsRasterPyramidsOptionsWidget();
 
-    QStringList configOptions() const { return mSaveOptionsWidget->options(); }
-    QgsRasterFormatSaveOptionsWidget* createOptionsWidget() { return mSaveOptionsWidget; }
-    const QList<int> overviewList() const { return mOverviewList; }
+    QStringList configOptions() const
+    {
+      return mSaveOptionsWidget->options();
+    }
+    QgsRasterFormatSaveOptionsWidget* createOptionsWidget()
+    {
+      return mSaveOptionsWidget;
+    }
+    const QList<int> overviewList() const
+    {
+      return mOverviewList;
+    }
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const
-    { return static_cast< QgsRaster::RasterPyramidsFormat >( cbxPyramidsFormat->currentIndex() ); }
+    {
+      return static_cast< QgsRaster::RasterPyramidsFormat >( cbxPyramidsFormat->currentIndex() );
+    }
     QString resamplingMethod() const;
-    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
-    void setRasterFileName( const QString& file ) { mSaveOptionsWidget->setRasterFileName( file ); }
+    void setRasterLayer( QgsRasterLayer* rasterLayer )
+    {
+      mSaveOptionsWidget->setRasterLayer( rasterLayer );
+    }
+    void setRasterFileName( const QString& file )
+    {
+      mSaveOptionsWidget->setRasterFileName( file );
+    }
 
   public slots:
 

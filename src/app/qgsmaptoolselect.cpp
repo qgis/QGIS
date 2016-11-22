@@ -30,7 +30,7 @@
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+  : QgsMapTool( canvas )
 {
   mToolName = tr( "Select" );
   mCursor = Qt::ArrowCursor;

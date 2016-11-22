@@ -35,7 +35,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
 
     QgsPointMarkerItem( QgsMapCanvas* canvas = nullptr );
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter* painter ) override;
 
     /** Sets the center point of the marker symbol (in map coordinates)
      * @param p center point
@@ -66,7 +66,10 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     /** Returns the feature used for rendering the marker symbol.
      * @see setFeature()
      */
-    QgsFeature feature() const { return mFeature; }
+    QgsFeature feature() const
+    {
+      return mFeature;
+    }
 
     /** Must be called after setting the symbol or feature and when the symbol's size may
      * have changed.

@@ -18,9 +18,9 @@
 #include "qgsrelationeditorwidgetplugin.h"
 
 
-QgsRelationEditorWidgetPlugin::QgsRelationEditorWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsRelationEditorWidgetPlugin::QgsRelationEditorWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsRelationEditorWidgetPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsRelationEditorWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsRelationEditorWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsRelationEditorWidget( parent );
 }
@@ -60,7 +60,7 @@ bool QgsRelationEditorWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsRelationEditorWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsRelationEditorWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

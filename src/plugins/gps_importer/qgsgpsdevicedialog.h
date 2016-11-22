@@ -30,7 +30,7 @@ class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase
     void on_pbnUpdateDevice_clicked();
     void on_pbnClose_clicked();
     void slotUpdateDeviceList( const QString& selection = "" );
-    void slotSelectionChanged( QListWidgetItem *current );
+    void slotSelectionChanged( QListWidgetItem* current );
 
   signals:
     void devicesChanged();

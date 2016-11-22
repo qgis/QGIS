@@ -40,13 +40,13 @@ class CORE_EXPORT QgsCredentials
     //! virtual destructor
     virtual ~QgsCredentials();
 
-    bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
+    bool get( const QString& realm, QString& username, QString& password, const QString& message = QString::null );
     void put( const QString& realm, const QString& username, const QString& password );
 
-    bool getMasterPassword( QString &password, bool stored = false );
+    bool getMasterPassword( QString& password, bool stored = false );
 
     //! retrieves instance
-    static QgsCredentials *instance();
+    static QgsCredentials* instance();
 
     /**
      * Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
@@ -66,19 +66,22 @@ class CORE_EXPORT QgsCredentials
      * Return pointer to mutex
      * @note added in 2.4
      */
-    QMutex *mutex() { return &mMutex; }
+    QMutex* mutex()
+    {
+      return &mMutex;
+    }
 
   protected:
     QgsCredentials();
 
     //! request a password
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) = 0;
+    virtual bool request( const QString& realm, QString& username, QString& password, const QString& message = QString::null ) = 0;
 
     //! request a master password
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) = 0;
+    virtual bool requestMasterPassword( QString& password, bool stored = false ) = 0;
 
     //! register instance
-    void setInstance( QgsCredentials *theInstance );
+    void setInstance( QgsCredentials* theInstance );
 
   private:
     Q_DISABLE_COPY( QgsCredentials )
@@ -87,7 +90,7 @@ class CORE_EXPORT QgsCredentials
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
-    static QgsCredentials *smInstance;
+    static QgsCredentials* smInstance;
 
     QMutex mMutex;
 };
@@ -110,8 +113,8 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+    virtual bool request( const QString& realm, QString& username, QString& password, const QString& message = QString::null ) override;
+    virtual bool requestMasterPassword( QString& password, bool stored = false ) override;
 };
 
 
@@ -134,8 +137,8 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+    virtual bool request( const QString& realm, QString& username, QString& password, const QString& message = QString::null ) override;
+    virtual bool requestMasterPassword( QString& password, bool stored = false ) override;
 };
 
 #endif

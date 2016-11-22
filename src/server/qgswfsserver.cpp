@@ -67,14 +67,14 @@ static const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" )
 
 QgsWfsServer::QgsWfsServer(
   const QString& configFilePath
-  , QMap<QString, QString> &parameters
+  , QMap<QString, QString>& parameters
   , QgsWfsProjectParser* cp
   , QgsRequestHandler* rh
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
 #endif
 )
-    : QgsOWSServer(
+  : QgsOWSServer(
       configFilePath
       , parameters
       , rh
@@ -82,13 +82,13 @@ QgsWfsServer::QgsWfsServer(
       , accessControl
 #endif
     )
-    , mWithGeom( true )
-    , mConfigParser( cp )
+  , mWithGeom( true )
+  , mConfigParser( cp )
 {
 }
 
 QgsWfsServer::QgsWfsServer()
-    : QgsOWSServer(
+  : QgsOWSServer(
       QString()
       , QMap<QString, QString>()
       , nullptr
@@ -96,8 +96,8 @@ QgsWfsServer::QgsWfsServer()
       , nullptr
 #endif
     )
-    , mWithGeom( true )
-    , mConfigParser( nullptr )
+  , mWithGeom( true )
+  , mConfigParser( nullptr )
 {
 }
 
@@ -418,7 +418,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                    << QgsExpressionContextUtils::projectScope();
 
   QDomDocument doc;
   QString errorMsg;
@@ -758,7 +758,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
     featureIdOk = true;
     featureIdList = feature_id_it.value().split( QStringLiteral( "," ) );
     QStringList typeNameList;
-    Q_FOREACH ( const QString &fidStr, featureIdList )
+    Q_FOREACH ( const QString& fidStr, featureIdList )
     {
       // testing typename in the WFS featureID
       if ( !fidStr.contains( QLatin1String( "." ) ) )
@@ -874,7 +874,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   mTypeNames = mTypeName.split( QStringLiteral( "," ) );
-  Q_FOREACH ( const QString &tnStr, mTypeNames )
+  Q_FOREACH ( const QString& tnStr, mTypeNames )
   {
     mTypeName = tnStr;
     layerList = mConfigParser->mapLayerFromTypeName( tnStr );
@@ -961,7 +961,7 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
       if ( featureIdOk )
       {
-        Q_FOREACH ( const QString &fidStr, featureIdList )
+        Q_FOREACH ( const QString& fidStr, featureIdList )
         {
           if ( !fidStr.startsWith( tnStr ) )
             continue;
@@ -1227,7 +1227,7 @@ void QgsWfsServer::startGetFeature( QgsRequestHandler& request, const QString& f
         if ( exportGeom.transform( transform ) == 0 )
           rect = new QgsRectangle( exportGeom.boundingBox() );
       }
-      catch ( QgsException &cse )
+      catch ( QgsException& cse )
       {
         Q_UNUSED( cse );
       }
@@ -1833,7 +1833,7 @@ QDomDocument QgsWfsServer::transaction( const QString& requestBody )
   // Put the Feature Ids of the inserted feature
   if ( !insertResults.isEmpty() )
   {
-    Q_FOREACH ( const QString &fidStr, insertResults )
+    Q_FOREACH ( const QString& fidStr, insertResults )
     {
       QDomElement irElem = doc.createElement( QStringLiteral( "InsertResult" ) );
       QDomElement fiElem = doc.createElement( QStringLiteral( "ogc:FeatureId" ) );
@@ -1858,7 +1858,7 @@ QgsFeatureIds QgsWfsServer::getFeatureIdsFromFilter( const QDomElement& filterEl
 {
   QgsFeatureIds fids;
 
-  QgsVectorDataProvider *provider = layer->dataProvider();
+  QgsVectorDataProvider* provider = layer->dataProvider();
   QDomNodeList fidNodes = filterElem.elementsByTagName( QStringLiteral( "FeatureId" ) );
 
   if ( fidNodes.size() != 0 )

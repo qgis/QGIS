@@ -22,11 +22,11 @@ class QgsOpenRasterDialog : public QDialog, private Ui::QgsOpenRasterDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOpenRasterDialog( QWidget *parent = 0 );
-    void getRasterOptions( QString &rasterFileName, QString &modifiedFileName, QString &worldFileName );
+    explicit QgsOpenRasterDialog( QWidget* parent = 0 );
+    void getRasterOptions( QString& rasterFileName, QString& modifiedFileName, QString& worldFileName );
 
   protected:
-    void changeEvent( QEvent *e );
+    void changeEvent( QEvent* e );
 
   private slots:
     void on_tbnSelectRaster_clicked();

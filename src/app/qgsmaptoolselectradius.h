@@ -45,7 +45,7 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
     //! sets the rubber band to a circle approximated using 40 segments.
     // The radius center point is defined in the canvasPressEvent event.
-    void setRadiusRubberBand( QgsPoint & radiusEdge );
+    void setRadiusRubberBand( QgsPoint& radiusEdge );
 
     //! used for storing all of the maps point for the polygon
     QgsRubberBand* mRubberBand;

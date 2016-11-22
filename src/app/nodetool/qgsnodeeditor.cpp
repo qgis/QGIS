@@ -35,16 +35,16 @@ static const int MinRadiusRole = Qt::UserRole + 1;
 
 
 QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer* layer, QgsSelectedFeature* selectedFeature, QgsMapCanvas* canvas, QObject* parent )
-    : QAbstractTableModel( parent )
-    , mLayer( layer )
-    , mSelectedFeature( selectedFeature )
-    , mCanvas( canvas )
-    , mHasZ( false )
-    , mHasM( false )
-    , mHasR( true ) //always show for now - avoids scanning whole feature for curves TODO - avoid this
-    , mZCol( -1 )
-    , mMCol( -1 )
-    , mRCol( -1 )
+  : QAbstractTableModel( parent )
+  , mLayer( layer )
+  , mSelectedFeature( selectedFeature )
+  , mCanvas( canvas )
+  , mHasZ( false )
+  , mHasM( false )
+  , mHasR( true ) //always show for now - avoids scanning whole feature for curves TODO - avoid this
+  , mZCol( -1 )
+  , mMCol( -1 )
+  , mRCol( -1 )
 {
 
   if ( !mSelectedFeature->vertexMap().isEmpty() )
@@ -280,11 +280,11 @@ void QgsNodeEditorModel::featureChanged()
 }
 
 QgsNodeEditor::QgsNodeEditor(
-  QgsVectorLayer *layer,
-  QgsSelectedFeature *selectedFeature,
-  QgsMapCanvas *canvas )
-    : mUpdatingTableSelection( false )
-    , mUpdatingNodeSelection( false )
+  QgsVectorLayer* layer,
+  QgsSelectedFeature* selectedFeature,
+  QgsMapCanvas* canvas )
+  : mUpdatingTableSelection( false )
+  , mUpdatingNodeSelection( false )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
 
@@ -382,7 +382,7 @@ void QgsNodeEditor::zoomToNode( int idx )
   }
 }
 
-void QgsNodeEditor::keyPressEvent( QKeyEvent * e )
+void QgsNodeEditor::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
@@ -402,7 +402,7 @@ QString CoordinateItemDelegate::displayText( const QVariant& value, const QLocal
   return locale.toString( value.toDouble(), 'f', 4 );
 }
 
-QWidget*CoordinateItemDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index ) const
+QWidget* CoordinateItemDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index ) const
 {
   QLineEdit* lineEdit = new QLineEdit( parent );
   QDoubleValidator* validator = new QDoubleValidator();

@@ -51,12 +51,12 @@
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "WFS" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
 
-QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities &caps )
-    : QgsVectorDataProvider( uri )
-    , mShared( new QgsWFSSharedData( uri ) )
-    , mWKBType( QgsWkbTypes::Unknown )
-    , mValid( true )
-    , mCapabilities( 0 )
+QgsWFSProvider::QgsWFSProvider( const QString& uri, const QgsWfsCapabilities::Capabilities& caps )
+  : QgsVectorDataProvider( uri )
+  , mShared( new QgsWFSSharedData( uri ) )
+  , mWKBType( QgsWkbTypes::Unknown )
+  , mValid( true )
+  , mCapabilities( 0 )
 {
   mShared->mCaps = caps;
   connect( mShared.data(), SIGNAL( raiseError( const QString& ) ), this, SLOT( pushErrorSlot( const QString& ) ) );
@@ -142,9 +142,15 @@ class QgsWFSProviderSQLFunctionValidator: public QgsSQLStatement::RecursiveVisit
       const QList<QgsWfsCapabilities::Function>& spatialPredicatesList,
       const QList<QgsWfsCapabilities::Function>& functionList );
 
-    bool hasError() const { return mError; }
+    bool hasError() const
+    {
+      return mError;
+    }
 
-    const QString& errorMessage() const { return mErrorMessage; }
+    const QString& errorMessage() const
+    {
+      return mErrorMessage;
+    }
 
   protected:
     void visit( const QgsSQLStatement::NodeFunction& n ) override;
@@ -159,9 +165,9 @@ class QgsWFSProviderSQLFunctionValidator: public QgsSQLStatement::RecursiveVisit
 QgsWFSProviderSQLFunctionValidator::QgsWFSProviderSQLFunctionValidator(
   const QList<QgsWfsCapabilities::Function>& spatialPredicatesList,
   const QList<QgsWfsCapabilities::Function>& functionList )
-    : mSpatialPredicatesList( spatialPredicatesList )
-    , mFunctionList( functionList )
-    , mError( false )
+  : mSpatialPredicatesList( spatialPredicatesList )
+  , mFunctionList( functionList )
+  , mError( false )
 {
 }
 
@@ -204,9 +210,15 @@ class QgsWFSProviderSQLColumnRefValidator: public QgsSQLStatement::RecursiveVisi
       const QMap < QString, QgsFields >& mapTypenameToFields,
       const QMap < QString, QString >& mapTypenameToGeometryAttribute );
 
-    bool hasError() const { return mError; }
+    bool hasError() const
+    {
+      return mError;
+    }
 
-    const QString& errorMessage() const { return mErrorMessage; }
+    const QString& errorMessage() const
+    {
+      return mErrorMessage;
+    }
 
   protected:
     void visit( const QgsSQLStatement::NodeColumnRef& n ) override;
@@ -227,12 +239,12 @@ QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
   const QMap< QString, QString >& mapTypenameAliasToTypename,
   const QMap < QString, QgsFields >& mapTypenameToFields,
   const QMap < QString, QString >& mapTypenameToGeometryAttribute )
-    : mCaps( caps )
-    , mDefaultTypeName( defaultTypeName )
-    , mMapTableAliasToName( mapTypenameAliasToTypename )
-    , mMapTypenameToFields( mapTypenameToFields )
-    , mMapTypenameToGeometryAttribute( mapTypenameToGeometryAttribute )
-    , mError( false )
+  : mCaps( caps )
+  , mDefaultTypeName( defaultTypeName )
+  , mMapTableAliasToName( mapTypenameAliasToTypename )
+  , mMapTypenameToFields( mapTypenameToFields )
+  , mMapTypenameToGeometryAttribute( mapTypenameToGeometryAttribute )
+  , mError( false )
 {
 }
 
@@ -528,7 +540,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
       if ( !columnRef->tableName().isEmpty() )
       {
         const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
-        for ( int i = 0; i < tableFields.size();i++ )
+        for ( int i = 0; i < tableFields.size(); i++ )
         {
           QgsField srcField = tableFields.at( i );
           QString fieldName( srcField.name() );
@@ -561,7 +573,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
         Q_FOREACH ( const QString& typeName, typenameList )
         {
           const QgsFields tableFields = mapTypenameToFields[typeName];
-          for ( int i = 0; i < tableFields.size();i++ )
+          for ( int i = 0; i < tableFields.size(); i++ )
           {
             QgsField srcField = tableFields.at( i );
             QString fieldName( srcField.name() );
@@ -705,7 +717,7 @@ bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
 
 QgsAbstractFeatureSource* QgsWFSProvider::featureSource() const
 {
-  QgsWFSFeatureSource *fs = new QgsWFSFeatureSource( this );
+  QgsWFSFeatureSource* fs = new QgsWFSFeatureSource( this );
   /*connect( fs, SIGNAL( extentRequested( const QgsRectangle & ) ),
            this, SLOT( extendExtent( const QgsRectangle & ) ) );*/
   return fs;
@@ -779,7 +791,7 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
   return QgsFeatureIterator( new QgsWFSFeatureIterator( new QgsWFSFeatureSource( this ), true, request ) );
 }
 
-bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
+bool QgsWFSProvider::addFeatures( QgsFeatureList& flist )
 {
   //create <Transaction> xml
   QDomDocument transactionDoc;
@@ -884,7 +896,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   }
 }
 
-bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
+bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds& id )
 {
   if ( id.size() < 1 )
   {
@@ -945,7 +957,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   }
 }
 
-bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
   //find out typename from uri and strip namespace prefix
   QString tname = mShared->mURI.typeName();
@@ -1025,7 +1037,7 @@ QString QgsWFSProvider::convertToXML( const QVariant& value )
   return valueStr;
 }
 
-bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   //find out typename from uri and strip namespace prefix
   QString tname = mShared->mURI.typeName();
@@ -1632,7 +1644,7 @@ void QgsWFSProvider::handleException( const QDomDocument& serverResponse )
   pushError( tr( "unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QGISEXTERN QgsWFSProvider* classFactory( const QString *uri )
+QGISEXTERN QgsWFSProvider* classFactory( const QString* uri )
 {
   return new QgsWFSProvider( *uri );
 }

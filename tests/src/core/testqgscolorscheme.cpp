@@ -29,10 +29,13 @@ class DummyColorScheme : public QgsColorScheme
 
     virtual ~DummyColorScheme() {}
 
-    virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    virtual QString schemeName() const override
+    {
+      return QStringLiteral( "Dummy scheme" );
+    }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
       if ( context == QLatin1String( "testscheme" ) )

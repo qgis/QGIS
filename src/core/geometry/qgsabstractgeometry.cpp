@@ -36,7 +36,7 @@ QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry& geom )
   mWkbType = geom.mWkbType;
 }
 
-QgsAbstractGeometry& QgsAbstractGeometry::operator=( const QgsAbstractGeometry & geom )
+QgsAbstractGeometry& QgsAbstractGeometry::operator=( const QgsAbstractGeometry& geom )
 {
   if ( &geom != this )
   {
@@ -140,9 +140,9 @@ int QgsAbstractGeometry::nCoordinates() const
 {
   int nCoords = 0;
 
-  Q_FOREACH ( const QgsRingSequence &r, coordinateSequence() )
+  Q_FOREACH ( const QgsRingSequence& r, coordinateSequence() )
   {
-    Q_FOREACH ( const QgsPointSequence &p, r )
+    Q_FOREACH ( const QgsPointSequence& p, r )
     {
       nCoords += p.size();
     }

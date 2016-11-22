@@ -26,7 +26,7 @@
 #include <QSettings>
 
 QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString& name )
-    :  QgsEditorWidgetFactory( name )
+  :  QgsEditorWidgetFactory( name )
 {
 }
 
@@ -35,7 +35,7 @@ QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* v
   return new QgsValueRelationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsSearchWidgetWrapper *QgsValueRelationWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+QgsSearchWidgetWrapper* QgsValueRelationWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsValueRelationSearchWidgetWrapper( vl, fieldIdx, parent );
 }

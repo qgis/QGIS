@@ -22,9 +22,9 @@
 #include <qmath.h>
 
 QgsHistogram::QgsHistogram()
-    : mMax( 0 )
-    , mMin( 0 )
-    , mIQR( 0 )
+  : mMax( 0 )
+  , mMin( 0 )
+  , mIQR( 0 )
 {
 
 }
@@ -46,13 +46,13 @@ void QgsHistogram::prepareValues()
   mIQR = s.interQuartileRange();
 }
 
-void QgsHistogram::setValues( const QList<double> &values )
+void QgsHistogram::setValues( const QList<double>& values )
 {
   mValues = values;
   prepareValues();
 }
 
-bool QgsHistogram::setValues( QgsVectorLayer *layer, const QString &fieldOrExpression )
+bool QgsHistogram::setValues( QgsVectorLayer* layer, const QString& fieldOrExpression )
 {
   mValues.clear();
   if ( !layer )

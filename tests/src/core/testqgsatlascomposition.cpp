@@ -38,15 +38,15 @@ class TestQgsAtlasComposition : public QObject
 
   public:
     TestQgsAtlasComposition()
-        : mComposition( 0 )
-        , mLabel1( 0 )
-        , mLabel2( 0 )
-        , mAtlasMap( 0 )
-        , mOverview( 0 )
-        , mMapSettings( 0 )
-        , mVectorLayer( 0 )
-        , mVectorLayer2( 0 )
-        , mAtlas( 0 )
+      : mComposition( 0 )
+      , mLabel1( 0 )
+      , mLabel2( 0 )
+      , mAtlasMap( 0 )
+      , mOverview( 0 )
+      , mMapSettings( 0 )
+      , mVectorLayer( 0 )
+      , mVectorLayer2( 0 )
+      , mAtlas( 0 )
     {}
 
     ~TestQgsAtlasComposition();
@@ -84,7 +84,7 @@ class TestQgsAtlasComposition : public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsVectorLayer* mVectorLayer2;
     QgsAtlasComposition* mAtlas;
@@ -280,7 +280,7 @@ void TestQgsAtlasComposition::predefinedscales_render()
   mAtlas->setPredefinedScales( scales );
 
   {
-    const QVector<qreal> &setScales = mAtlas->predefinedScales();
+    const QVector<qreal>& setScales = mAtlas->predefinedScales();
     for ( int i = 0; i < setScales.size(); i++ )
     {
       QVERIFY( setScales[i] == scales[i] );

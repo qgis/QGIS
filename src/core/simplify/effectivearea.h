@@ -62,7 +62,7 @@ struct MINHEAP
 {
   int maxSize;
   int usedSize;
-  areanode **key_array;
+  areanode** key_array;
 };
 
 /**
@@ -70,34 +70,34 @@ struct MINHEAP
  */
 struct EFFECTIVE_AREAS
 {
-  EFFECTIVE_AREAS( const QgsCurve& curve )
+    EFFECTIVE_AREAS( const QgsCurve& curve )
       : is3d( curve.is3D() )
       , initial_arealist( nullptr )
       , res_arealist( nullptr )
-  {
-    curve.points( inpts );
-    initial_arealist = new areanode[ inpts.size()];
-    res_arealist = new double[ inpts.size()];
-  }
+    {
+      curve.points( inpts );
+      initial_arealist = new areanode[ inpts.size()];
+      res_arealist = new double[ inpts.size()];
+    }
 
-  ~EFFECTIVE_AREAS()
-  {
-    delete [] initial_arealist;
-    delete [] res_arealist;
-  }
+    ~EFFECTIVE_AREAS()
+    {
+      delete [] initial_arealist;
+      delete [] res_arealist;
+    }
 
-  bool is3d;
-  QgsPointSequence inpts;
-  areanode *initial_arealist;
-  double *res_arealist;
+    bool is3d;
+    QgsPointSequence inpts;
+    areanode* initial_arealist;
+    double* res_arealist;
 
-private:
+  private:
 
-  EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other );
-  EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other );
+    EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other );
+    EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other );
 
 };
 
-void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld );
+void ptarray_calc_areas( EFFECTIVE_AREAS* ea, int avoid_collaps, int set_area, double trshld );
 
 #endif /* _EFFECTIVEAREA_H */

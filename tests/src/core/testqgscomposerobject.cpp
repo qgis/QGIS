@@ -31,8 +31,8 @@ class TestQgsComposerObject : public QObject
 
   public:
     TestQgsComposerObject()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
     {
     }
 
@@ -51,9 +51,9 @@ class TestQgsComposerObject : public QObject
     void writeRetrieveCustomProperties(); //test writing/retreiving custom properties from xml
 
   private:
-    bool renderCheck( const QString& testName, QImage &image, int mismatchCount = 0 );
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
+    bool renderCheck( const QString& testName, QImage& image, int mismatchCount = 0 );
+    QgsComposition* mComposition;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 
 };
@@ -298,7 +298,7 @@ void TestQgsComposerObject::writeRetrieveCustomProperties()
   delete readObject;
 }
 
-bool TestQgsComposerObject::renderCheck( const QString& testName, QImage &image, int mismatchCount )
+bool TestQgsComposerObject::renderCheck( const QString& testName, QImage& image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
   QString myTmpDir = QDir::tempPath() + '/';

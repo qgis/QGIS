@@ -26,7 +26,7 @@
 #include "cpl_string.h"
 #include "gdal.h"
 
-QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
@@ -61,7 +61,7 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode
   //insert available input layers
   for ( ; layer_it != mapLayers.end(); ++layer_it )
   {
-    QgsRasterLayer* rl = qobject_cast<QgsRasterLayer *>( layer_it.value() );
+    QgsRasterLayer* rl = qobject_cast<QgsRasterLayer*>( layer_it.value() );
     if ( rl )
     {
       mElevationLayerComboBox->addItem( rl->name(), QVariant( rl->id() ) );

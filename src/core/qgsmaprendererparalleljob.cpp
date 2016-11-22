@@ -25,9 +25,9 @@
 
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
-    : QgsMapRendererQImageJob( settings )
-    , mStatus( Idle )
-    , mLabelingEngineV2( nullptr )
+  : QgsMapRendererQImageJob( settings )
+  , mStatus( Idle )
+  , mLabelingEngineV2( nullptr )
 {
 }
 
@@ -226,12 +226,12 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob& job )
   {
     job.renderer->render();
   }
-  catch ( QgsException & e )
+  catch ( QgsException& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
-  catch ( std::exception & e )
+  catch ( std::exception& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
@@ -254,12 +254,12 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
   {
     drawLabeling( self->mSettings, self->mLabelingRenderContext, self->mLabelingEngineV2, &painter );
   }
-  catch ( QgsException & e )
+  catch ( QgsException& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
   }
-  catch ( std::exception & e )
+  catch ( std::exception& e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );

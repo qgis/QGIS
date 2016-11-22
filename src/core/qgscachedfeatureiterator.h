@@ -71,7 +71,10 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * @param f      Will write to this feature
      * @return bool  true if the operation was ok
      */
-    virtual bool nextFeatureFilterFids( QgsFeature& f ) override { return fetchFeature( f ); }
+    virtual bool nextFeatureFilterFids( QgsFeature& f ) override
+    {
+      return fetchFeature( f );
+    }
 
   private:
     QgsFeatureIds mFeatureIds;

@@ -26,7 +26,7 @@
 
 
 QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f )
-    : QgsVectorLayerUndoCommand( buffer )
+  : QgsVectorLayerUndoCommand( buffer )
 {
   static int addedIdLowWaterMark = -1;
 
@@ -70,7 +70,7 @@ void QgsVectorLayerUndoCommandAddFeature::redo()
 
 
 QgsVectorLayerUndoCommandDeleteFeature::QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid )
-    : QgsVectorLayerUndoCommand( buffer )
+  : QgsVectorLayerUndoCommand( buffer )
 {
   mFid = fid;
 
@@ -113,9 +113,9 @@ void QgsVectorLayerUndoCommandDeleteFeature::redo()
 
 
 QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry& newGeom )
-    : QgsVectorLayerUndoCommand( buffer )
-    , mFid( fid )
-    , mNewGeom( newGeom )
+  : QgsVectorLayerUndoCommand( buffer )
+  , mFid( fid )
+  , mNewGeom( newGeom )
 {
   if ( FID_IS_NEW( mFid ) )
   {
@@ -137,12 +137,12 @@ int QgsVectorLayerUndoCommandChangeGeometry::id() const
   return 1;
 }
 
-bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *other )
+bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand* other )
 {
   if ( other->id() != id() )
     return false;
 
-  const QgsVectorLayerUndoCommandChangeGeometry *merge = dynamic_cast<const QgsVectorLayerUndoCommandChangeGeometry *>( other );
+  const QgsVectorLayerUndoCommandChangeGeometry* merge = dynamic_cast<const QgsVectorLayerUndoCommandChangeGeometry*>( other );
   if ( !merge )
     return false;
 
@@ -214,13 +214,13 @@ void QgsVectorLayerUndoCommandChangeGeometry::redo()
 }
 
 
-QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue )
-    : QgsVectorLayerUndoCommand( buffer )
-    , mFid( fid )
-    , mFieldIndex( fieldIndex )
-    , mOldValue( oldValue )
-    , mNewValue( newValue )
-    , mFirstChange( true )
+QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant& newValue, const QVariant& oldValue )
+  : QgsVectorLayerUndoCommand( buffer )
+  , mFid( fid )
+  , mFieldIndex( fieldIndex )
+  , mOldValue( oldValue )
+  , mNewValue( newValue )
+  , mFirstChange( true )
 {
   if ( FID_IS_NEW( mFid ) )
   {
@@ -305,10 +305,10 @@ void QgsVectorLayerUndoCommandChangeAttribute::redo()
 
 
 QgsVectorLayerUndoCommandAddAttribute::QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer* buffer, const QgsField& field )
-    : QgsVectorLayerUndoCommand( buffer )
-    , mField( field )
+  : QgsVectorLayerUndoCommand( buffer )
+  , mField( field )
 {
-  const QgsFields &fields = layer()->fields();
+  const QgsFields& fields = layer()->fields();
   int i;
   for ( i = 0; i < fields.count() && fields.fieldOrigin( i ) != QgsFields::OriginJoin; i++ )
     ;
@@ -337,8 +337,8 @@ void QgsVectorLayerUndoCommandAddAttribute::redo()
 
 
 QgsVectorLayerUndoCommandDeleteAttribute::QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex )
-    : QgsVectorLayerUndoCommand( buffer )
-    , mFieldIndex( fieldIndex )
+  : QgsVectorLayerUndoCommand( buffer )
+  , mFieldIndex( fieldIndex )
 {
   const QgsFields& fields = layer()->fields();
   QgsFields::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
@@ -439,10 +439,10 @@ void QgsVectorLayerUndoCommandDeleteAttribute::redo()
 
 
 QgsVectorLayerUndoCommandRenameAttribute::QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex, const QString& newName )
-    : QgsVectorLayerUndoCommand( buffer )
-    , mFieldIndex( fieldIndex )
-    , mOldName( layer()->fields().at( fieldIndex ).name() )
-    , mNewName( newName )
+  : QgsVectorLayerUndoCommand( buffer )
+  , mFieldIndex( fieldIndex )
+  , mOldName( layer()->fields().at( fieldIndex ).name() )
+  , mNewName( newName )
 {
 }
 

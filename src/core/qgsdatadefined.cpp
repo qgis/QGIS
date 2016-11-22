@@ -29,7 +29,7 @@ QgsDataDefined::QgsDataDefined( bool active,
   d = new QgsDataDefinedPrivate( active, useexpr, expr, field );
 }
 
-QgsDataDefined::QgsDataDefined( const QgsExpression * expression )
+QgsDataDefined::QgsDataDefined( const QgsExpression* expression )
 {
   bool active = bool( expression );
   bool useExpression = expression && ! expression->isField();
@@ -39,13 +39,13 @@ QgsDataDefined::QgsDataDefined( const QgsExpression * expression )
                                  !useExpression ? ( expression ? expression->expression() : QString() ) : QString() );
 }
 
-QgsDataDefined::QgsDataDefined( const QgsDataDefined &other )
-    : d( other.d )
+QgsDataDefined::QgsDataDefined( const QgsDataDefined& other )
+  : d( other.d )
 {
 
 }
 
-QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString &baseName )
+QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap& map, const QString& baseName )
 {
   QString prefix;
   if ( !baseName.isEmpty() )
@@ -67,7 +67,7 @@ QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString 
   return new QgsDataDefined( active, useExpression, expression, field );
 }
 
-QgsDataDefined::QgsDataDefined( const QString & string )
+QgsDataDefined::QgsDataDefined( const QString& string )
 {
   QgsExpression expression( string );
 
@@ -124,7 +124,7 @@ QString QgsDataDefined::expressionString() const
   return d->expressionString;
 }
 
-void QgsDataDefined::setExpressionString( const QString &expr )
+void QgsDataDefined::setExpressionString( const QString& expr )
 {
   if ( expr == d->expressionString )
     return;
@@ -178,7 +178,7 @@ bool QgsDataDefined::expressionIsPrepared() const
   return d->expressionPrepared;
 }
 
-QgsExpression *QgsDataDefined::expression()
+QgsExpression* QgsDataDefined::expression()
 {
   //Ideally there should be a detach here, but that causes issues
   //as detaching can create a new expression which will be unprepared
@@ -215,7 +215,7 @@ QString QgsDataDefined::field() const
   return d->field;
 }
 
-void QgsDataDefined::setField( const QString &field )
+void QgsDataDefined::setField( const QString& field )
 {
   if ( field == d->field )
     return;
@@ -226,7 +226,7 @@ void QgsDataDefined::setField( const QString &field )
   d->exprRefColumns.clear();
 }
 
-QgsStringMap QgsDataDefined::toMap( const QString &baseName ) const
+QgsStringMap QgsDataDefined::toMap( const QString& baseName ) const
 {
   QgsStringMap map;
   QString prefix;
@@ -243,7 +243,7 @@ QgsStringMap QgsDataDefined::toMap( const QString &baseName ) const
   return map;
 }
 
-QDomElement QgsDataDefined::toXmlElement( QDomDocument &document, const QString& elementName ) const
+QDomElement QgsDataDefined::toXmlElement( QDomDocument& document, const QString& elementName ) const
 {
   QDomElement element = document.createElement( elementName );
   element.setAttribute( QStringLiteral( "active" ), d->active ? "true" : "false" );
@@ -253,7 +253,7 @@ QDomElement QgsDataDefined::toXmlElement( QDomDocument &document, const QString&
   return element;
 }
 
-bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
+bool QgsDataDefined::setFromXmlElement( const QDomElement& element )
 {
   if ( element.isNull() )
   {
@@ -270,17 +270,17 @@ bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
   return true;
 }
 
-bool QgsDataDefined::operator==( const QgsDataDefined &other ) const
+bool QgsDataDefined::operator==( const QgsDataDefined& other ) const
 {
   return *( other.d ) == *d;
 }
 
-bool QgsDataDefined::operator!=( const QgsDataDefined &other ) const
+bool QgsDataDefined::operator!=( const QgsDataDefined& other ) const
 {
   return !( *this == other );
 }
 
-QgsDataDefined &QgsDataDefined::operator=( const QgsDataDefined & rhs )
+QgsDataDefined& QgsDataDefined::operator=( const QgsDataDefined& rhs )
 {
   d.detach();
   d = rhs.d;

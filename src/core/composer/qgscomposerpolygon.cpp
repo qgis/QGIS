@@ -23,15 +23,15 @@
 #include <limits>
 
 QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
-    , mPolygonStyleSymbol( nullptr )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
+  , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
 QgsComposerPolygon::QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
-    , mPolygonStyleSymbol( nullptr )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
+  , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
@@ -72,7 +72,7 @@ QString QgsComposerPolygon::displayName() const
   return tr( "<polygon>" );
 }
 
-void QgsComposerPolygon::_draw( QPainter *painter )
+void QgsComposerPolygon::_draw( QPainter* painter )
 {
   //setup painter scaling to dots so that raster symbology is drawn to scale
   const double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
@@ -100,7 +100,7 @@ void QgsComposerPolygon::_draw( QPainter *painter )
   painter->scale( dotsPerMM, dotsPerMM );
 }
 
-void QgsComposerPolygon::_readXmlStyle( const QDomElement &elmt )
+void QgsComposerPolygon::_readXmlStyle( const QDomElement& elmt )
 {
   mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt ) );
 }
@@ -112,7 +112,7 @@ void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol* symbol )
   emit frameChanged();
 }
 
-void QgsComposerPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
+void QgsComposerPolygon::_writeXmlStyle( QDomDocument& doc, QDomElement& elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
                          mPolygonStyleSymbol.data(),

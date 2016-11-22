@@ -35,7 +35,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * @note Added in QGIS 3.0
      */
-    QgsTabWidget( QWidget *parent = nullptr );
+    QgsTabWidget( QWidget* parent = nullptr );
 
     /**
      * Hides the tab with the given widget
@@ -91,16 +91,16 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     struct TabInformation
     {
       TabInformation( QWidget* wdg, const QString& lbl )
-          : sourceIndex( -1 )
-          , widget( wdg )
-          , label( lbl )
-          , visible( true )
+        : sourceIndex( -1 )
+        , widget( wdg )
+        , label( lbl )
+        , visible( true )
       {}
 
       TabInformation()
-          : sourceIndex( -1 )
-          , widget( nullptr )
-          , visible( true )
+        : sourceIndex( -1 )
+        , widget( nullptr )
+        , visible( true )
       {}
 
       bool operator ==( const TabInformation& other );

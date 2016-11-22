@@ -27,7 +27,7 @@ class QgsRasterLayer;
  * A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
-      private Ui::QgsRasterFormatSaveOptionsWidgetBase
+  private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
     Q_OBJECT
 
@@ -49,12 +49,23 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     void setFormat( const QString& format );
     void setProvider( const QString& provider );
-    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
-    void setRasterFileName( const QString& file ) { mRasterLayer = nullptr; mRasterFileName = file; }
+    void setRasterLayer( QgsRasterLayer* rasterLayer )
+    {
+      mRasterLayer = rasterLayer;
+      mRasterFileName = QString();
+    }
+    void setRasterFileName( const QString& file )
+    {
+      mRasterLayer = nullptr;
+      mRasterFileName = file;
+    }
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format )
-    { mPyramids = true; mPyramidsFormat = format; }
+    {
+      mPyramids = true;
+      mPyramidsFormat = format;
+    }
 
   public slots:
 
@@ -78,7 +89,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void updateControls();
 
   protected:
-    virtual void showEvent( QShowEvent * event ) override;
+    virtual void showEvent( QShowEvent* event ) override;
 
   signals:
     void optionsChanged();
@@ -102,7 +113,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void setCreateOptions( const QString& profile, const QString& options );
     void setCreateOptions( const QString& profile, const QStringList& list );
     QStringList profiles() const;
-    bool eventFilter( QObject *obj, QEvent *event ) override;
+    bool eventFilter( QObject* obj, QEvent* event ) override;
     QString pseudoFormat() const;
 
 };

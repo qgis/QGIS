@@ -26,9 +26,9 @@
 #include "qgslogger.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
-    : QgsEditorWidgetFactory( name )
-    , mCanvas( canvas )
-    , mMessageBar( messageBar )
+  : QgsEditorWidgetFactory( name )
+  , mCanvas( canvas )
+  , mMessageBar( messageBar )
 {
 }
 
@@ -37,7 +37,7 @@ QgsEditorWidgetWrapper* QgsRelationReferenceFactory::create( QgsVectorLayer* vl,
   return new QgsRelationReferenceWidgetWrapper( vl, fieldIdx, editor, mCanvas, mMessageBar, parent );
 }
 
-QgsSearchWidgetWrapper*QgsRelationReferenceFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper* QgsRelationReferenceFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsRelationReferenceSearchWidgetWrapper( vl, fieldIdx, mCanvas, parent );
 }
@@ -165,8 +165,8 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
   QgsExpression expr( referencedLayer->displayExpression() );
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( referencedLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( referencedLayer );
   context.setFeature( feature );
   QString title = expr.evaluate( &context ).toString();
   if ( expr.hasEvalError() )

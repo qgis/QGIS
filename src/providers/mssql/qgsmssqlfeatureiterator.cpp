@@ -27,9 +27,9 @@
 
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
-    , mExpressionCompiled( false )
-    , mOrderByCompiled( false )
+  : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
+  , mExpressionCompiled( false )
+  , mOrderByCompiled( false )
 {
   mClosed = false;
   mQuery = nullptr;
@@ -120,10 +120,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     foo.setRealNumberPrecision( 8 );
     foo.setRealNumberNotation( QTextStream::FixedNotation );
     foo <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' << qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
-    <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
+        <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' << qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
+        <<  qgsDoubleToString( request.filterRect().xMaximum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
+        <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
+        <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
 
     mStatement += QStringLiteral( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
@@ -447,18 +447,18 @@ bool QgsMssqlFeatureIterator::close()
 ///////////////
 
 QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider* p )
-    : mFields( p->mAttributeFields )
-    , mFidColName( p->mFidColName )
-    , mGeometryColName( p->mGeometryColName )
-    , mGeometryColType( p->mGeometryColType )
-    , mSchemaName( p->mSchemaName )
-    , mTableName( p->mTableName )
-    , mUserName( p->mUserName )
-    , mPassword( p->mPassword )
-    , mService( p->mService )
-    , mDatabaseName( p->mDatabaseName )
-    , mHost( p->mHost )
-    , mSqlWhereClause( p->mSqlWhereClause )
+  : mFields( p->mAttributeFields )
+  , mFidColName( p->mFidColName )
+  , mGeometryColName( p->mGeometryColName )
+  , mGeometryColType( p->mGeometryColType )
+  , mSchemaName( p->mSchemaName )
+  , mTableName( p->mTableName )
+  , mUserName( p->mUserName )
+  , mPassword( p->mPassword )
+  , mService( p->mService )
+  , mDatabaseName( p->mDatabaseName )
+  , mHost( p->mHost )
+  , mSqlWhereClause( p->mSqlWhereClause )
 {
   mSRId = p->mSRId;
   mIsGeography = p->mParser.IsGeography;

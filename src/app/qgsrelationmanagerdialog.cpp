@@ -19,10 +19,10 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent )
-    : QWidget( parent )
-    , Ui::QgsRelationManagerDialogBase()
-    , mRelationManager( relationMgr )
+QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget* parent )
+  : QWidget( parent )
+  , Ui::QgsRelationManagerDialogBase()
+  , mRelationManager( relationMgr )
 {
   setupUi( this );
 
@@ -48,7 +48,7 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers
   mRelationsTable->sortByColumn( 0, Qt::AscendingOrder );
 }
 
-void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
+void QgsRelationManagerDialog::addRelation( const QgsRelation& rel )
 {
   mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();

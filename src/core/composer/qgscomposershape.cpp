@@ -24,12 +24,12 @@
 #include <QPainter>
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mShape( Ellipse )
-    , mCornerRadius( 0 )
-    , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
-    , mShapeStyleSymbol( nullptr )
-    , mMaxSymbolBleed( 0 )
+  : QgsComposerItem( composition )
+  , mShape( Ellipse )
+  , mCornerRadius( 0 )
+  , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
+  , mShapeStyleSymbol( nullptr )
+  , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -43,12 +43,12 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition )
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition )
-    : QgsComposerItem( x, y, width, height, composition )
-    , mShape( Ellipse )
-    , mCornerRadius( 0 )
-    , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
-    , mShapeStyleSymbol( nullptr )
-    , mMaxSymbolBleed( 0 )
+  : QgsComposerItem( x, y, width, height, composition )
+  , mShape( Ellipse )
+  , mCornerRadius( 0 )
+  , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
+  , mShapeStyleSymbol( nullptr )
+  , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -271,7 +271,7 @@ double QgsComposerShape::estimatedFrameBleed() const
   return mMaxSymbolBleed;
 }
 
-bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( QStringLiteral( "ComposerShape" ) );
   composerShapeElem.setAttribute( QStringLiteral( "shapeType" ), mShape );

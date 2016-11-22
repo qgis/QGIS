@@ -51,9 +51,9 @@ static const QString sPluginIcon = ":/[pluginlcasename]/[pluginlcasename].png";
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-[pluginname]::[pluginname]( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+[pluginname]::[pluginname]( QgisInterface* theQgisInterface ):
+  QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
+  mQGisIface( theQgisInterface )
 {
 }
 
@@ -93,7 +93,7 @@ void [pluginname]::help()
 // not be enough
 void [pluginname]::run()
 {
-  [pluginname]Gui *myPluginGui = new [pluginname]Gui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  [pluginname]Gui* myPluginGui = new [pluginname]Gui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   myPluginGui->show();
@@ -126,7 +126,7 @@ void [pluginname]::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new [pluginname]( theQgisInterfacePointer );
 }
@@ -167,7 +167,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

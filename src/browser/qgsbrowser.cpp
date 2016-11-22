@@ -43,14 +43,14 @@
 #define QGIS_ICON_SIZE 24
 #endif
 
-QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
-    : QMainWindow( parent, flags )
-    , mDirtyMetadata( true )
-    , mDirtyPreview( true )
-    , mDirtyAttributes( true )
-    , mLayer( nullptr )
-    , mParamWidget( nullptr )
-    , mAttributeTableFilterModel( nullptr )
+QgsBrowser::QgsBrowser( QWidget* parent, Qt::WindowFlags flags )
+  : QMainWindow( parent, flags )
+  , mDirtyMetadata( true )
+  , mDirtyPreview( true )
+  , mDirtyAttributes( true )
+  , mLayer( nullptr )
+  , mParamWidget( nullptr )
+  , mAttributeTableFilterModel( nullptr )
 {
   setupUi( this );
 
@@ -86,8 +86,8 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
   setIconSize( QSize( size, size ) );
 
   //Change all current icon sizes.
-  QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  Q_FOREACH ( QToolBar * toolbar, toolbars )
+  QList<QToolBar*> toolbars = findChildren<QToolBar*>();
+  Q_FOREACH ( QToolBar* toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
@@ -115,7 +115,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
 {
   mIndex = index;
 
-  QgsDataItem *item = mModel->dataItem( index );
+  QgsDataItem* item = mModel->dataItem( index );
   if ( !item )
     return;
 
@@ -159,7 +159,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
     paramEnable = true;
   }
 
-  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( mModel->dataItem( index ) );
+  QgsLayerItem* layerItem = qobject_cast<QgsLayerItem*>( mModel->dataItem( index ) );
   if ( layerItem )
   {
     bool res = layerClicked( layerItem );
@@ -204,7 +204,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   QgsDebugMsg( QString( "clicked: %1 %2 %3" ).arg( index.row() ).arg( index.column() ).arg( item->name() ) );
 }
 
-bool QgsBrowser::layerClicked( QgsLayerItem *item )
+bool QgsBrowser::layerClicked( QgsLayerItem* item )
 {
   if ( !item )
     return false;
@@ -237,7 +237,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
   QgsDebugMsg( "Layer created" );
 
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mLayer );
+    QList<QgsMapLayer*>() << mLayer );
 
   return true;
 }
@@ -245,7 +245,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
 
 void QgsBrowser::itemDoubleClicked( const QModelIndex& index )
 {
-  QgsDataItem *item = mModel->dataItem( index );
+  QgsDataItem* item = mModel->dataItem( index );
   if ( !item )
     return;
 
@@ -259,7 +259,7 @@ void QgsBrowser::newVectorLayer()
   QModelIndex selectedIndex = treeView->selectionModel()->currentIndex();
   if ( selectedIndex.isValid() )
   {
-    QgsDirectoryItem * dirItem = qobject_cast<QgsDirectoryItem *>( mModel->dataItem( selectedIndex ) );
+    QgsDirectoryItem* dirItem = qobject_cast<QgsDirectoryItem*>( mModel->dataItem( selectedIndex ) );
     if ( dirItem )
     {
       QSettings settings;
@@ -281,7 +281,7 @@ void QgsBrowser::newVectorLayer()
 
 void QgsBrowser::on_mActionWmsConnections_triggered()
 {
-  QDialog *wmss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wms" ), this ) );
+  QDialog* wmss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wms" ), this ) );
   if ( !wmss )
   {
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
@@ -298,7 +298,7 @@ void QgsBrowser::on_mActionSetProjection_triggered()
   if ( !mLayer )
     return;
 
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+  QgsGenericProjectionSelector* mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setSelectedCrsId( mLayer->crs().srsid() );
   if ( mySelector->exec() )
@@ -312,8 +312,8 @@ void QgsBrowser::on_mActionSetProjection_triggered()
     // selectedIndexes() is protected
 #endif
 
-    QgsDataItem *item = mModel->dataItem( mIndex );
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
+    QgsDataItem* item = mModel->dataItem( mIndex );
+    QgsLayerItem* layerItem = qobject_cast<QgsLayerItem*>( item );
     if ( layerItem )
     {
       if ( !layerItem->setCrs( srs ) )
@@ -363,7 +363,7 @@ void QgsBrowser::restoreWindowState()
   }
 }
 
-void QgsBrowser::keyPressEvent( QKeyEvent * e )
+void QgsBrowser::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_Escape )
   {
@@ -375,7 +375,7 @@ void QgsBrowser::keyPressEvent( QKeyEvent * e )
   }
 }
 
-void QgsBrowser::keyReleaseEvent( QKeyEvent * e )
+void QgsBrowser::keyReleaseEvent( QKeyEvent* e )
 {
   if ( treeView->hasFocus() && ( e->key() == Qt::Key_Up || e->key() == Qt::Key_Down ) )
   {
@@ -439,7 +439,7 @@ void QgsBrowser::updateCurrentTab()
       mapCanvas->setExtent( fullExtent );
       mapCanvas->refresh();
 
-      QgsRasterLayer *rlayer = qobject_cast< QgsRasterLayer * >( mLayer );
+      QgsRasterLayer* rlayer = qobject_cast< QgsRasterLayer* >( mLayer );
       if ( rlayer )
       {
         connect( rlayer->dataProvider(), &QgsRasterDataProvider::dataChanged, rlayer, &QgsRasterLayer::triggerRepaint );
@@ -472,7 +472,7 @@ void QgsBrowser::tabChanged()
   // Store last selected tab for selected data item
   if ( mIndex.isValid() )
   {
-    QgsDataItem *item = mModel->dataItem( mIndex );
+    QgsDataItem* item = mModel->dataItem( mIndex );
     if ( !item )
       return;
 
@@ -490,7 +490,7 @@ void QgsBrowser::refresh( const QModelIndex& index )
 {
   if ( index.isValid() )
   {
-    QgsDataItem *item = mModel->dataItem( index );
+    QgsDataItem* item = mModel->dataItem( index );
     if ( item )
     {
       QgsDebugMsg( "path = " + item->path() );
@@ -532,7 +532,7 @@ void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
     QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( vLayer, cacheSize, this );
     layerCache->setCacheGeometry( false );
 
-    QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache );
+    QgsAttributeTableModel* tableModel = new QgsAttributeTableModel( layerCache );
 
     mAttributeTableFilterModel = new QgsAttributeTableFilterModel( nullptr, tableModel, this );
 

@@ -36,11 +36,26 @@ class QgsOracleColumnTypeThread : public QThread
     // by emitting the setLayerType() signal.
     virtual void run();
 
-    bool isStopped() const { return mStopped; }
-    QVector<QgsOracleLayerProperty> layerProperties() const { return mLayerProperties; }
-    QString connectionName() const { return mName; }
-    bool useEstimatedMetadata() const { return mUseEstimatedMetadata; }
-    bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
+    bool isStopped() const
+    {
+      return mStopped;
+    }
+    QVector<QgsOracleLayerProperty> layerProperties() const
+    {
+      return mLayerProperties;
+    }
+    QString connectionName() const
+    {
+      return mName;
+    }
+    bool useEstimatedMetadata() const
+    {
+      return mUseEstimatedMetadata;
+    }
+    bool allowGeometrylessTables() const
+    {
+      return mAllowGeometrylessTables;
+    }
 
   signals:
     void setLayerType( QgsOracleLayerProperty layerProperty );

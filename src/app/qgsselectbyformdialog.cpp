@@ -19,7 +19,7 @@
 #include <QSettings>
 
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAttributeEditorContext& context, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   QgsAttributeEditorContext dlgContext = context;
   dlgContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );

@@ -39,16 +39,16 @@ class CORE_EXPORT QgsAuthCrypto
     static const QString decrypt( const QString& pass, const QString& cipheriv, const QString& text );
 
     //! Generate SHA256 hash for master password, with iterations and salt
-    static void passwordKeyHash( const QString &pass,
-                                 QString *salt,
-                                 QString *hash,
-                                 QString *cipheriv = nullptr );
+    static void passwordKeyHash( const QString& pass,
+                                 QString* salt,
+                                 QString* hash,
+                                 QString* cipheriv = nullptr );
 
     //! Verify existing master password hash to a re-generated one
     static bool verifyPasswordKeyHash( const QString& pass,
                                        const QString& salt,
                                        const QString& hash,
-                                       QString *hashderived = nullptr );
+                                       QString* hashderived = nullptr );
 
   private:
     static QString encryptdecrypt( const QString& passstr,

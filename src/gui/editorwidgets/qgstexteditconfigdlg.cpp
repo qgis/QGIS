@@ -17,7 +17,7 @@
 
 #include "qgseditorwidgetconfig.h"
 QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   connect( mIsMultiline, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );

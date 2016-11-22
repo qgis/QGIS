@@ -29,15 +29,15 @@
 #include "qgsauthmanager.h"
 
 
-QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
+QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget* parent ,
     QgsAuthImportCertDialog::CertFilter filter,
     QgsAuthImportCertDialog::CertInput input )
-    : QDialog( parent )
-    , mFilter( filter )
-    , mInput( input )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mFilter( filter )
+  , mInput( input )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -172,7 +172,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   int certssize = certs.size();
 
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  Q_FOREACH ( const QSslCertificate& cert, certs )
   {
     if ( cert.isValid() )
       ++validcerts;
@@ -196,7 +196,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   if ( !nixcerts.isEmpty() )
   {
-    Q_FOREACH ( const QSslCertificate &nixcert, nixcerts )
+    Q_FOREACH ( const QSslCertificate& nixcert, nixcerts )
     {
       certs.removeOne( nixcert );
     }
@@ -242,7 +242,7 @@ void QgsAuthImportCertDialog::on_chkAllowInvalid_toggled( bool checked )
   validateCertificates();
 }
 
-QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QString &extfilter )
+QString QgsAuthImportCertDialog::getOpenFileName( const QString& title, const QString& extfilter )
 {
   QSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QDir::homePath() ).toString();

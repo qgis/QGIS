@@ -36,15 +36,27 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAfsProvider( const QString& uri );
     ~QgsAfsProvider() {}
 
-    bool getFeature( QgsFeatureId id, QgsFeature& f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
+    bool getFeature( QgsFeatureId id, QgsFeature& f, bool fetchGeometry, const QList<int>& fetchAttributes, const QgsRectangle& filterRect = QgsRectangle() );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource* featureSource() const override;
-    QString storageType() const override { return QStringLiteral( "ESRI ArcGIS Feature Server" ); }
+    QString storageType() const override
+    {
+      return QStringLiteral( "ESRI ArcGIS Feature Server" );
+    }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
-    QgsWkbTypes::Type wkbType() const override { return static_cast<QgsWkbTypes::Type>( mGeometryType ); }
-    long featureCount() const override { return mObjectIds.size(); }
-    QgsFields fields() const override { return mFields; }
+    QgsWkbTypes::Type wkbType() const override
+    {
+      return static_cast<QgsWkbTypes::Type>( mGeometryType );
+    }
+    long featureCount() const override
+    {
+      return mObjectIds.size();
+    }
+    QgsFields fields() const override
+    {
+      return mFields;
+    }
     /* Read only for the moment
     bool addFeatures( QgsFeatureList &flist ) override{ return false; }
     bool deleteFeatures( const QgsFeatureIds &id ) override{ return false; }
@@ -53,21 +65,48 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override{ return false; }
     bool changeGeometryValues( QgsGeometryMap & geometry_map ) override{ return false; }
     */
-    QgsVectorDataProvider::Capabilities capabilities() const override { return QgsVectorDataProvider::NoCapabilities; }
-    QgsAttributeList pkAttributeIndexes() const override { return QgsAttributeList() << mObjectIdFieldIdx; }
-    QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
+    QgsVectorDataProvider::Capabilities capabilities() const override
+    {
+      return QgsVectorDataProvider::NoCapabilities;
+    }
+    QgsAttributeList pkAttributeIndexes() const override
+    {
+      return QgsAttributeList() << mObjectIdFieldIdx;
+    }
+    QgsAttrPalIndexNameHash palAttributeIndexNames() const override
+    {
+      return QgsAttrPalIndexNameHash();
+    }
 
     /* Inherited from QgsDataProvider */
-    QgsCoordinateReferenceSystem crs() const override { return mSourceCRS; }
-    void setDataSourceUri( const QString & uri ) override;
-    QgsRectangle extent() const override { return mExtent; }
-    bool isValid() const override { return mValid; }
+    QgsCoordinateReferenceSystem crs() const override
+    {
+      return mSourceCRS;
+    }
+    void setDataSourceUri( const QString& uri ) override;
+    QgsRectangle extent() const override
+    {
+      return mExtent;
+    }
+    bool isValid() const override
+    {
+      return mValid;
+    }
     /* Read only for the moment
     void updateExtents() override{}
     */
-    QString name() const override { return mLayerName; }
-    QString description() const override { return mLayerDescription; }
-    void reloadData() override { mCache.clear(); }
+    QString name() const override
+    {
+      return mLayerName;
+    }
+    QString description() const override
+    {
+      return mLayerDescription;
+    }
+    void reloadData() override
+    {
+      mCache.clear();
+    }
 
   private:
     bool mValid;

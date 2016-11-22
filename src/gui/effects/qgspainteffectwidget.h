@@ -71,7 +71,10 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
   public:
     QgsDrawSourceWidget( QWidget* parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsDrawSourceWidget(); }
+    static QgsPaintEffectWidget* create()
+    {
+      return new QgsDrawSourceWidget();
+    }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
@@ -104,7 +107,10 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
   public:
     QgsBlurWidget( QWidget* parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsBlurWidget(); }
+    static QgsPaintEffectWidget* create()
+    {
+      return new QgsBlurWidget();
+    }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
@@ -139,7 +145,10 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
   public:
     QgsShadowEffectWidget( QWidget* parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsShadowEffectWidget(); }
+    static QgsPaintEffectWidget* create()
+    {
+      return new QgsShadowEffectWidget();
+    }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
@@ -175,7 +184,10 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
   public:
     QgsGlowWidget( QWidget* parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsGlowWidget(); }
+    static QgsPaintEffectWidget* create()
+    {
+      return new QgsGlowWidget();
+    }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
@@ -211,7 +223,10 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
   public:
     QgsTransformWidget( QWidget* parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsTransformWidget(); }
+    static QgsPaintEffectWidget* create()
+    {
+      return new QgsTransformWidget();
+    }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
@@ -250,7 +265,10 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
   public:
     QgsColorEffectWidget( QWidget* parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsColorEffectWidget(); }
+    static QgsPaintEffectWidget* create()
+    {
+      return new QgsColorEffectWidget();
+    }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 

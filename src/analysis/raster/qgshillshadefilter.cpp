@@ -19,9 +19,9 @@
 
 QgsHillshadeFilter::QgsHillshadeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat, double lightAzimuth,
                                         double lightAngle )
-    : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
-    , mLightAzimuth( lightAzimuth )
-    , mLightAngle( lightAngle )
+  : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
+  , mLightAzimuth( lightAzimuth )
+  , mLightAngle( lightAngle )
 {
 }
 

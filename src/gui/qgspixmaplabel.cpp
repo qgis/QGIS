@@ -16,13 +16,13 @@
 #include "qgspixmaplabel.h"
 
 
-QgsPixmapLabel::QgsPixmapLabel( QWidget *parent )
-    : QLabel( parent )
+QgsPixmapLabel::QgsPixmapLabel( QWidget* parent )
+  : QLabel( parent )
 {
   this->setMinimumSize( 1, 1 );
 }
 
-void QgsPixmapLabel::setPixmap( const QPixmap & p )
+void QgsPixmapLabel::setPixmap( const QPixmap& p )
 {
   bool sizeChanged = ( p.size() != mPixmap.size() );
   mPixmap = p;
@@ -53,7 +53,7 @@ QSize QgsPixmapLabel::sizeHint() const
   return QSize( w, heightForWidth( w ) );
 }
 
-void QgsPixmapLabel::resizeEvent( QResizeEvent * e )
+void QgsPixmapLabel::resizeEvent( QResizeEvent* e )
 {
   QLabel::resizeEvent( e );
   QLabel::setPixmap( mPixmap.scaled( this->size(),

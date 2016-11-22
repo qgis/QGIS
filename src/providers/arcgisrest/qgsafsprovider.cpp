@@ -30,10 +30,10 @@
 
 
 QgsAfsProvider::QgsAfsProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mValid( false )
-    , mGeometryType( QgsWkbTypes::Unknown )
-    , mObjectIdFieldIdx( -1 )
+  : QgsVectorDataProvider( uri )
+  , mValid( false )
+  , mGeometryType( QgsWkbTypes::Unknown )
+  , mObjectIdFieldIdx( -1 )
 {
   mDataSource = QgsDataSourceUri( uri );
 
@@ -160,7 +160,7 @@ QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest& request
   return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( this ), true, request );
 }
 
-bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int>& /*fetchAttributes*/, const QgsRectangle& filterRect )
+bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature& f, bool fetchGeometry, const QList<int>& /*fetchAttributes*/, const QgsRectangle& filterRect )
 {
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
@@ -255,7 +255,7 @@ bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeome
   return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
 }
 
-void QgsAfsProvider::setDataSourceUri( const QString &uri )
+void QgsAfsProvider::setDataSourceUri( const QString& uri )
 {
   mDataSource = QgsDataSourceUri( uri );
   QgsDataProvider::setDataSourceUri( uri );

@@ -30,27 +30,27 @@
 ///@cond PRIVATE
 
 QgsSnapIndex::PointSnapItem::PointSnapItem( const QgsSnapIndex::CoordIdx* _idx )
-    : SnapItem( QgsSnapIndex::SnapPoint )
-    , idx( _idx )
+  : SnapItem( QgsSnapIndex::SnapPoint )
+  , idx( _idx )
 {}
 
-QgsPointV2 QgsSnapIndex::PointSnapItem::getSnapPoint( const QgsPointV2 &/*p*/ ) const
+QgsPointV2 QgsSnapIndex::PointSnapItem::getSnapPoint( const QgsPointV2& /*p*/ ) const
 {
   return idx->point();
 }
 
 QgsSnapIndex::SegmentSnapItem::SegmentSnapItem( const QgsSnapIndex::CoordIdx* _idxFrom, const QgsSnapIndex::CoordIdx* _idxTo )
-    : SnapItem( QgsSnapIndex::SnapSegment )
-    , idxFrom( _idxFrom )
-    , idxTo( _idxTo )
+  : SnapItem( QgsSnapIndex::SnapSegment )
+  , idxFrom( _idxFrom )
+  , idxTo( _idxTo )
 {}
 
-QgsPointV2 QgsSnapIndex::SegmentSnapItem::getSnapPoint( const QgsPointV2 &p ) const
+QgsPointV2 QgsSnapIndex::SegmentSnapItem::getSnapPoint( const QgsPointV2& p ) const
 {
   return QgsGeometryUtils::projPointOnSegment( p, idxFrom->point(), idxTo->point() );
 }
 
-bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2& inter ) const
+bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& inter ) const
 {
   const QgsPointV2& q1 = idxFrom->point(), & q2 = idxTo->point();
   QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
@@ -87,7 +87,7 @@ bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPointV2 &p1, const
   return true;
 }
 
-bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPointV2 &p, QgsPointV2 &pProj )
+bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPointV2& p, QgsPointV2& pProj )
 {
   const QgsPointV2& s1 = idxFrom->point();
   const QgsPointV2& s2 = idxTo->point();
@@ -110,11 +110,11 @@ class Raytracer
     // See http://playtechs.blogspot.ch/2007/03/raytracing-on-grid.html
   public:
     Raytracer( float x0, float y0, float x1, float y1 )
-        : m_dx( qAbs( x1 - x0 ) )
-        , m_dy( qAbs( y1 - y0 ) )
-        , m_x( qFloor( x0 ) )
-        , m_y( qFloor( y0 ) )
-        , m_n( 1 )
+      : m_dx( qAbs( x1 - x0 ) )
+      , m_dy( qAbs( y1 - y0 ) )
+      , m_x( qFloor( x0 ) )
+      , m_y( qFloor( y0 ) )
+      , m_n( 1 )
     {
       if ( m_dx == 0. )
       {
@@ -151,8 +151,14 @@ class Raytracer
         m_error -= ( y0 - qFloor( y0 ) ) * m_dx;
       }
     }
-    int curCol() const { return m_x; }
-    int curRow() const { return m_y; }
+    int curCol() const
+    {
+      return m_x;
+    }
+    int curRow() const
+    {
+      return m_y;
+    }
     void next()
     {
       if ( m_error > 0 )
@@ -176,7 +182,10 @@ class Raytracer
       --m_n;
     }
 
-    bool isValid() const { return m_n > 0; }
+    bool isValid() const
+    {
+      return m_n > 0;
+    }
 
   private:
     float m_dx, m_dy;
@@ -250,9 +259,9 @@ QList<QgsSnapIndex::SnapItem*> QgsSnapIndex::GridRow::getSnapItems( int colStart
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsSnapIndex::QgsSnapIndex( const QgsPointV2& origin, double cellSize )
-    : mOrigin( origin )
-    , mCellSize( cellSize )
-    , mRowsStartIdx( 0 )
+  : mOrigin( origin )
+  , mCellSize( cellSize )
+  , mRowsStartIdx( 0 )
 {
 }
 
@@ -262,7 +271,7 @@ QgsSnapIndex::~QgsSnapIndex()
 }
 
 
-const QgsSnapIndex::Cell *QgsSnapIndex::getCell( int col, int row ) const
+const QgsSnapIndex::Cell* QgsSnapIndex::getCell( int col, int row ) const
 {
   if ( row < mRowsStartIdx || row >= mRowsStartIdx + mGridRows.size() )
   {
@@ -457,8 +466,8 @@ QgsSnapIndex::SnapItem* QgsSnapIndex::getSnapItem( const QgsPointV2& pos, double
 
 
 
-QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *referenceLayer )
-    : mReferenceLayer( referenceLayer )
+QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer* referenceLayer )
+  : mReferenceLayer( referenceLayer )
 {
   // Build spatial index
   QgsFeatureRequest req;

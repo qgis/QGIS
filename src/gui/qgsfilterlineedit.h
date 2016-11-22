@@ -60,7 +60,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see setShowClearButton()
      * @note added in QGIS 3.0
      */
-    bool showClearButton() const { return mClearButtonVisible; }
+    bool showClearButton() const
+    {
+      return mClearButtonVisible;
+    }
 
     /** Sets whether the widget's clear button is visible.
      * @param visible set to false to hide the clear button
@@ -74,14 +77,20 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see setClearMode()
      * @note added in QGIS 3.0
      */
-    ClearMode clearMode() const { return mClearMode; }
+    ClearMode clearMode() const
+    {
+      return mClearMode;
+    }
 
     /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see clearMode()
      * @note added in QGIS 3.0
      */
-    void setClearMode( ClearMode mode ) { mClearMode = mode; }
+    void setClearMode( ClearMode mode )
+    {
+      mClearMode = mode;
+    }
 
     /** Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
@@ -89,13 +98,19 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param nullValue string to show when widget's value is null
      * @see nullValue()
      */
-    void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
+    void setNullValue( const QString& nullValue )
+    {
+      mNullValue = nullValue;
+    }
 
     /** Returns the string used for representating null values in the widget.
      * @see setNullValue()
      * @see isNull()
      */
-    QString nullValue() const { return mNullValue; }
+    QString nullValue() const
+    {
+      return mNullValue;
+    }
 
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -105,7 +120,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see clearMode()
      * @note added in QGIS 3.0
      */
-    void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
+    void setDefaultValue( const QString& defaultValue )
+    {
+      mDefaultValue = defaultValue;
+    }
 
     /** Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -114,7 +132,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see clearMode()
      * @note added in QGIS 3.0
      */
-    QString defaultValue() const { return mDefaultValue; }
+    QString defaultValue() const
+    {
+      return mDefaultValue;
+    }
 
     /**
      * Sets the current text for the widget with support for handling null values.
@@ -123,7 +144,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * widget will be set to the current nullValue().
      * @see value()
      */
-    void setValue( const QString& value ) { setText( value.isNull() ? mNullValue : value ); }
+    void setValue( const QString& value )
+    {
+      setText( value.isNull() ? mNullValue : value );
+    }
 
     /**
      * Returns the text of this edit with support for handling null values. If the text
@@ -133,7 +157,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @return Current text (or null string if it matches the nullValue() property )
      * @see setValue()
      */
-    QString value() const { return isNull() ? QString::null : text(); }
+    QString value() const
+    {
+      return isNull() ? QString::null : text();
+    }
 
     /**
      * Determine if the current text represents null.
@@ -141,7 +168,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @return True if the widget's value is null.
      * @see nullValue()
      */
-    inline bool isNull() const { return text() == mNullValue; }
+    inline bool isNull() const
+    {
+      return text() == mNullValue;
+    }
 
   public slots:
 
@@ -173,7 +203,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void leaveEvent( QEvent* e ) override;
 
   private slots:
-    void onTextChanged( const QString &text );
+    void onTextChanged( const QString& text );
 
   private:
 
@@ -211,7 +241,7 @@ class QgsSpinBoxLineEdit : public QgsFilterLineEdit
   public:
 
     QgsSpinBoxLineEdit( QWidget* parent = nullptr )
-        : QgsFilterLineEdit( parent )
+      : QgsFilterLineEdit( parent )
     {}
 
   public slots:

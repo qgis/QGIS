@@ -23,7 +23,7 @@
 #include <QImage>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band ):
-    QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
+  QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
 {
 
 }
@@ -34,7 +34,7 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 
 QgsSingleBandColorDataRenderer* QgsSingleBandColorDataRenderer::clone() const
 {
-  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
+  QgsSingleBandColorDataRenderer* renderer = new QgsSingleBandColorDataRenderer( nullptr, mBand );
   renderer->copyCommonProperties( this );
   return renderer;
 }
@@ -52,17 +52,17 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
   return r;
 }
 
-QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     return outputBlock;
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( mBand, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );

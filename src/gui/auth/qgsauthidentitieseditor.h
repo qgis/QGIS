@@ -38,7 +38,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
      * Widget for editing authentication configurations directly in database
      * @param parent Parent widget
      */
-    explicit QgsAuthIdentitiesEditor( QWidget *parent = nullptr );
+    explicit QgsAuthIdentitiesEditor( QWidget* parent = nullptr );
     ~QgsAuthIdentitiesEditor();
 
   private slots:
@@ -46,7 +46,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void refreshIdentitiesView();
 
-    void showCertInfo( QTreeWidgetItem *item );
+    void showCertInfo( QTreeWidgetItem* item );
 
     //! Pass selection change on to UI update
     void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
   protected:
     //! Overridden show event of base widget
-    void showEvent( QShowEvent *e ) override;
+    void showEvent( QShowEvent* e ) override;
 
   private:
     enum IdentityType
@@ -81,25 +81,25 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void setupIdentitiesTree();
 
-    void populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+    void populateIdentitiesSection( QTreeWidgetItem* item, const QList<QSslCertificate>& certs,
                                     QgsAuthIdentitiesEditor::IdentityType identype );
 
     void appendIdentitiesToGroup( const QList<QSslCertificate>& certs,
                                   QgsAuthIdentitiesEditor::IdentityType identype,
-                                  QTreeWidgetItem *parent = nullptr );
+                                  QTreeWidgetItem* parent = nullptr );
 
     void appendIdentitiesToItem( const QList<QSslCertificate>& certs,
                                  QgsAuthIdentitiesEditor::IdentityType identype,
-                                 QTreeWidgetItem *parent = nullptr );
+                                 QTreeWidgetItem* parent = nullptr );
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar* messageBar();
     int messageTimeout();
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 
-    QTreeWidgetItem *mRootCertIdentItem;
+    QTreeWidgetItem* mRootCertIdentItem;
 };
 
 #endif // QGSAUTHIDENTITIESEDITOR_H

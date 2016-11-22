@@ -28,11 +28,11 @@
 #include <QMessageBox>
 
 QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mLayer( layer )
-    , mCanvas( canvas )
-    , mRootRule( nullptr )
-    , mModel( nullptr )
+  : QgsPanelWidget( parent )
+  , mLayer( layer )
+  , mCanvas( canvas )
+  , mRootRule( nullptr )
+  , mModel( nullptr )
 {
   setupUi( this );
 
@@ -51,7 +51,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, Q
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
 
-  connect( viewRules, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editRule( const QModelIndex & ) ) );
+  connect( viewRules, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( editRule( const QModelIndex& ) ) );
 
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
@@ -211,8 +211,8 @@ static QString _formatScale( int denom )
 ////
 
 QgsRuleBasedLabelingModel::QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule* rootRule, QObject* parent )
-    : QAbstractItemModel( parent )
-    , mRootRule( rootRule )
+  : QAbstractItemModel( parent )
+  , mRootRule( rootRule )
 {
 }
 
@@ -437,14 +437,14 @@ void _renderer2labelingRules( QDomElement& ruleElem )
   }
 }
 
-QMimeData*QgsRuleBasedLabelingModel::mimeData( const QModelIndexList& indexes ) const
+QMimeData* QgsRuleBasedLabelingModel::mimeData( const QModelIndexList& indexes ) const
 {
-  QMimeData *mimeData = new QMimeData();
+  QMimeData* mimeData = new QMimeData();
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
@@ -542,7 +542,7 @@ bool QgsRuleBasedLabelingModel::removeRows( int row, int count, const QModelInde
   return true;
 }
 
-QgsRuleBasedLabeling::Rule*QgsRuleBasedLabelingModel::ruleForIndex( const QModelIndex& index ) const
+QgsRuleBasedLabeling::Rule* QgsRuleBasedLabelingModel::ruleForIndex( const QModelIndex& index ) const
 {
   if ( index.isValid() )
     return static_cast<QgsRuleBasedLabeling::Rule*>( index.internalPointer() );
@@ -568,12 +568,12 @@ void QgsRuleBasedLabelingModel::updateRule( const QModelIndex& parent, int row )
 /////////
 
 QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* mapCanvas )
-    : QgsPanelWidget( parent )
-    , mRule( rule )
-    , mLayer( layer )
-    , mLabelingGui( nullptr )
-    , mSettings( nullptr )
-    , mMapCanvas( mapCanvas )
+  : QgsPanelWidget( parent )
+  , mRule( rule )
+  , mLayer( layer )
+  , mLabelingGui( nullptr )
+  , mSettings( nullptr )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
@@ -645,12 +645,12 @@ void QgsLabelingRulePropsWidget::testFilter()
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else
   {
@@ -690,12 +690,12 @@ void QgsLabelingRulePropsWidget::buildExpression()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else
   {

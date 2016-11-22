@@ -106,48 +106,66 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * @param repeatingLockButton optional button for toggling repeating lock mode
          */
         CadConstraint( QLineEdit* lineEdit, QToolButton* lockerButton, QToolButton* relativeButton = nullptr, QToolButton* repeatingLockButton = nullptr )
-            : mLineEdit( lineEdit )
-            , mLockerButton( lockerButton )
-            , mRelativeButton( relativeButton )
-            , mRepeatingLockButton( repeatingLockButton )
-            , mLockMode( NoLock )
-            , mRepeatingLock( false )
-            , mRelative( false )
-            , mValue( 0.0 )
+          : mLineEdit( lineEdit )
+          , mLockerButton( lockerButton )
+          , mRelativeButton( relativeButton )
+          , mRepeatingLockButton( repeatingLockButton )
+          , mLockMode( NoLock )
+          , mRepeatingLock( false )
+          , mRelative( false )
+          , mValue( 0.0 )
         {}
 
         /**
          * The current lock mode of this constraint
          * @return Lock mode
          */
-        LockMode lockMode() const { return mLockMode; }
+        LockMode lockMode() const
+        {
+          return mLockMode;
+        }
 
         /**
          * Is any kind of lock mode enabled
          */
-        bool isLocked() const { return mLockMode != NoLock; }
+        bool isLocked() const
+        {
+          return mLockMode != NoLock;
+        }
 
         /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * @note added in QGIS 2.16
          * @see setRepeatingLock()
          */
-        bool isRepeatingLock() const { return mRepeatingLock; }
+        bool isRepeatingLock() const
+        {
+          return mRepeatingLock;
+        }
 
         /**
          * Is the constraint in relative mode
          */
-        bool relative() const { return mRelative; }
+        bool relative() const
+        {
+          return mRelative;
+        }
 
         /**
          * The value of the constraint
          */
-        double value() const { return mValue; }
+        double value() const
+        {
+          return mValue;
+        }
 
         /**
          * The line edit that manages the value of the constraint
          */
-        QLineEdit* lineEdit() const { return mLineEdit; }
+        QLineEdit* lineEdit() const
+        {
+          return mLineEdit;
+        }
 
         /**
          * Set the lock mode
@@ -204,7 +222,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @param canvas The map canvas on which the widget operates
      * @param parent The parent
      */
-    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent = nullptr );
+    explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget* parent = nullptr );
 
     /**
      * Disables the CAD tools when hiding the dock
@@ -242,7 +260,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @param e A mouse event (may be modified)
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
-    bool canvasKeyPressEventFilter( QKeyEvent *e );
+    bool canvasKeyPressEventFilter( QKeyEvent* e );
 
     //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
     //! @return false if no solution was found (invalid constraints)
@@ -257,29 +275,56 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The snapping mode
      * @return Snapping mode
      */
-    QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
+    QgsMapMouseEvent::SnappingMode snappingMode()
+    {
+      return mSnappingMode;
+    }
 
     //! key press event on the dock
     void keyPressEvent( QKeyEvent* e ) override;
 
     //! determines if CAD tools are enabled or if map tools behaves "nomally"
-    bool cadEnabled() const { return mCadEnabled; }
+    bool cadEnabled() const
+    {
+      return mCadEnabled;
+    }
 
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
-    bool constructionMode() const { return mConstructionMode; }
+    bool constructionMode() const
+    {
+      return mConstructionMode;
+    }
 
     //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
-    AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
+    AdditionalConstraint additionalConstraint() const
+    {
+      return mAdditionalConstraint;
+    }
     //! Constraint on the angle
-    const CadConstraint* constraintAngle() const  { return mAngleConstraint.data(); }
+    const CadConstraint* constraintAngle() const
+    {
+      return mAngleConstraint.data();
+    }
     //! Constraint on the distance
-    const CadConstraint* constraintDistance() const { return mDistanceConstraint.data(); }
+    const CadConstraint* constraintDistance() const
+    {
+      return mDistanceConstraint.data();
+    }
     //! Constraint on the X coordinate
-    const CadConstraint* constraintX() const { return mXConstraint.data(); }
+    const CadConstraint* constraintX() const
+    {
+      return mXConstraint.data();
+    }
     //! Constraint on the Y coordinate
-    const CadConstraint* constraintY() const { return mYConstraint.data(); }
+    const CadConstraint* constraintY() const
+    {
+      return mYConstraint.data();
+    }
     //! Constraint on a common angle
-    bool commonAngleConstraint() const { return mCommonAngleConstraint; }
+    bool commonAngleConstraint() const
+    {
+      return mCommonAngleConstraint;
+    }
 
     /**
      * The last point.
@@ -305,20 +350,32 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * The number of points in the CAD point helper list
      */
-    inline int pointsCount() const { return mCadPointList.count(); }
+    inline int pointsCount() const
+    {
+      return mCadPointList.count();
+    }
 
     /**
      * Is it snapped to a vertex
      */
-    inline bool snappedToVertex() const { return mSnappedToVertex; }
+    inline bool snappedToVertex() const
+    {
+      return mSnappedToVertex;
+    }
 
     /**
      * Snapped to a segment
      */
-    const QList<QgsPoint>& snappedSegment() const { return mSnappedSegment; }
+    const QList<QgsPoint>& snappedSegment() const
+    {
+      return mSnappedSegment;
+    }
 
     //! return the action used to enable/disable the tools
-    QAction* enableAction() { return mEnableAction; }
+    QAction* enableAction()
+    {
+      return mEnableAction;
+    }
 
     /**
      * Enables the tool (call this when an appropriate map tool is set and in the condition to make use of
@@ -423,7 +480,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool filterKeyPress( QKeyEvent* e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    bool eventFilter( QObject *obj, QEvent *event ) override;
+    bool eventFilter( QObject* obj, QEvent* event ) override;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
     void triggerMouseMoveEvent();

@@ -32,19 +32,19 @@
 #endif
 
 QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString& rendererName, const QString& labelAttributeName )
-    : QgsFeatureRenderer( rendererName )
-    , mLabelAttributeName( labelAttributeName )
-    , mLabelIndex( -1 )
-    , mTolerance( 3 )
-    , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
-    , mDrawLabels( true )
-    , mMaxLabelScaleDenominator( -1 )
-    , mSpatialIndex( nullptr )
+  : QgsFeatureRenderer( rendererName )
+  , mLabelAttributeName( labelAttributeName )
+  , mLabelIndex( -1 )
+  , mTolerance( 3 )
+  , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
+  , mDrawLabels( true )
+  , mMaxLabelScaleDenominator( -1 )
+  , mSpatialIndex( nullptr )
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
 }
 
-void QgsPointDistanceRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsPointDistanceRenderer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   mRenderer->toSld( doc, element, props );
 }
@@ -159,7 +159,7 @@ void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer* r )
   mRenderer.reset( r );
 }
 
-const QgsFeatureRenderer*QgsPointDistanceRenderer::embeddedRenderer() const
+const QgsFeatureRenderer* QgsPointDistanceRenderer::embeddedRenderer() const
 {
   return mRenderer.data();
 }
@@ -462,7 +462,7 @@ QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const Clu
   return clusterScope;
 }
 
-QgsMarkerSymbol* QgsPointDistanceRenderer::firstSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsMarkerSymbol* QgsPointDistanceRenderer::firstSymbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mRenderer )
   {

@@ -22,10 +22,10 @@
 #include <QSettings>
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mTextEdit( nullptr )
-    , mPlainTextEdit( nullptr )
-    , mLineEdit( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mTextEdit( nullptr )
+  , mPlainTextEdit( nullptr )
+  , mLineEdit( nullptr )
 {
 }
 
@@ -122,7 +122,7 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
       defVal = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
     }
 
-    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date )
     {
       mPlaceholderText = defVal.toString();

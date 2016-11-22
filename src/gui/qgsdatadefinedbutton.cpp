@@ -33,8 +33,8 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const QgsDataDefined* datadefined,
     DataTypes datatypes,
     const QString& description )
-    : QToolButton( parent )
-    , mExpressionContextGenerator( nullptr )
+  : QToolButton( parent )
+  , mExpressionContextGenerator( nullptr )
 {
   // set up static icons
   if ( mIconDataDefine.isNull() )
@@ -200,7 +200,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
 }
 
 
-void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
+void QgsDataDefinedButton::updateDataDefined( QgsDataDefined* dd ) const
 {
   if ( !dd )
     return;
@@ -223,7 +223,7 @@ void QgsDataDefinedButton::setVectorLayer( QgsVectorLayer* layer )
   mVectorLayer = layer;
 }
 
-void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
+void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent* event )
 {
   // Ctrl-click to toggle activated state
   if (( event->modifiers() & ( Qt::ControlModifier ) )
@@ -696,14 +696,14 @@ void QgsDataDefinedButton::registerExpressionContextGenerator( QgsExpressionCont
   mExpressionContextGenerator = generator;
 }
 
-void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )
+void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant* assistant )
 {
   mActionAssistant->setText( title.isEmpty() ? tr( "Assistant..." ) : title );
   mAssistant.reset( assistant );
   mAssistant.data()->setParent( this, Qt::Dialog );
 }
 
-QgsDataDefinedAssistant *QgsDataDefinedButton::assistant()
+QgsDataDefinedAssistant* QgsDataDefinedButton::assistant()
 {
   return mAssistant.data();
 }
@@ -717,13 +717,13 @@ void QgsDataDefinedButton::checkCheckedWidgets( bool check )
   }
   for ( int i = 0; i < mCheckedWidgets.size(); ++i )
   {
-    QAbstractButton *btn = qobject_cast< QAbstractButton * >( mCheckedWidgets.at( i ) );
+    QAbstractButton* btn = qobject_cast< QAbstractButton* >( mCheckedWidgets.at( i ) );
     if ( btn && btn->isCheckable() )
     {
       btn->setChecked( true );
       continue;
     }
-    QGroupBox *grpbx = qobject_cast< QGroupBox * >( mCheckedWidgets.at( i ) );
+    QGroupBox* grpbx = qobject_cast< QGroupBox* >( mCheckedWidgets.at( i ) );
     if ( grpbx && grpbx->isCheckable() )
     {
       grpbx->setChecked( true );
