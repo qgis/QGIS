@@ -582,7 +582,6 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
   QgsSymbol* s = mStyle->symbol( symbolName );
-  QgsUnitTypes::RenderUnit unit = s->outputUnit();
   // remove all symbol layers from original symbolgroupsCombo
   while ( mSymbol->symbolLayerCount() )
     mSymbol->deleteSymbolLayer( 0 );
@@ -593,7 +592,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
     mSymbol->appendSymbolLayer( sl );
   }
   mSymbol->setAlpha( s->alpha() );
-  mSymbol->setOutputUnit( unit );
+
   // delete the temporary symbol
   delete s;
 
