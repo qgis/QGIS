@@ -24,7 +24,7 @@ from .connector import VLayerConnector
 
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsVirtualLayerDefinition
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
 
@@ -100,13 +100,14 @@ class FakeDatabase(Database):
         return LSqlResultModel(self, sql, parent)
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, _filter=""):
-        q = QUrl.toPercentEncoding(sql)
-        s = "?query=%s" % q
+        df = QgsVirtualLayerDefinition()
+        df.setQuery(sql)
         if uniqueCol is not None:
-            s += "&uid=" + uniqueCol
+            uniqueCol = uniqueCol.strip('"').replace('""', '"')
+            df.setUid(uniqueCol)
         if geomCol is not None:
-            s += "&geometry=" + geomCol
-        vl = QgsVectorLayer(s, layerName, "virtual")
+            df.setGeometryField(geomCol)
+        vl = QgsVectorLayer(df.toString(), layerName, "virtual")
         if _filter:
             vl.setSubsetString(_filter)
         return vl
