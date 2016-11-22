@@ -43,38 +43,42 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       wheres << subset;
     }
 
-    if ( mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
+    if ( !mDefinition.uid().isNull() )
     {
-      bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
-      QgsRectangle rect( request.filterRect() );
-      QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
-      wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
-      wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
-      .arg( do_exact ? "" : "Mbr",
-            quotedColumn( mDefinition.geometryField() ),
-            mbr );
-    }
-    else if ( !mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFid )
-    {
-      wheres << QStringLiteral( "%1=%2" )
-      .arg( quotedColumn( mDefinition.uid() ) )
-      .arg( request.filterFid() );
-    }
-    else if ( !mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFids )
-    {
-      QString values = quotedColumn( mDefinition.uid() ) + " IN (";
-      bool first = true;
-      Q_FOREACH ( QgsFeatureId v, request.filterFids() )
+      // filters are only available when a column with unique id exists
+      if ( mDefinition.hasDefinedGeometry() && !request.filterRect().isNull() )
       {
-        if ( !first )
-        {
-          values += QLatin1String( "," );
-        }
-        first = false;
-        values += QString::number( v );
+        bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
+        QgsRectangle rect( request.filterRect() );
+        QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
+        wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
+        wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
+        .arg( do_exact ? "" : "Mbr",
+              quotedColumn( mDefinition.geometryField() ),
+              mbr );
       }
-      values += QLatin1String( ")" );
-      wheres << values;
+      else if ( request.filterType() == QgsFeatureRequest::FilterFid )
+      {
+        wheres << QStringLiteral( "%1=%2" )
+        .arg( quotedColumn( mDefinition.uid() ) )
+        .arg( request.filterFid() );
+      }
+      else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+      {
+        QString values = quotedColumn( mDefinition.uid() ) + " IN (";
+        bool first = true;
+        Q_FOREACH ( QgsFeatureId v, request.filterFids() )
+        {
+          if ( !first )
+          {
+            values += QLatin1String( "," );
+          }
+          first = false;
+          values += QString::number( v );
+        }
+        values += QLatin1String( ")" );
+        wheres << values;
+      }
     }
 
     mFields = mSource->provider()->fields();

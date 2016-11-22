@@ -446,7 +446,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsMapLayerRegistry.instance().addMapLayer(l2)
 
         query = toPercent("SELECT * FROM france_parts")
-        l4 = QgsVectorLayer("?query=%s" % query, "tt", "virtual")
+        l4 = QgsVectorLayer("?query=%s&uid=ObjectId" % query, "tt", "virtual")
         self.assertEqual(l4.isValid(), True)
 
         self.assertEqual(l4.dataProvider().wkbType(), 3)
