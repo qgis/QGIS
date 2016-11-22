@@ -95,7 +95,7 @@ void TestStyle::initTestCase()
 
   //initize a temporary memory-based style for tests to avoid clashing with shipped symbols
   mStyle = new QgsStyle();
-  mStyle->createMemoryDB();
+  mStyle->createMemoryDb();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();

@@ -58,11 +58,18 @@ QgsStyle* QgsStyle::defaultStyle() // static
     // copy default style if user style doesn't exist
     if ( !QFile::exists( styleFilename ) )
     {
-      QFile::copy( QgsApplication::defaultStylePath(), styleFilename );
+      mDefaultStyle = new QgsStyle;
+      mDefaultStyle->createDb( styleFilename );
+      if ( QFile::exists( QgsApplication::defaultStylePath() ) )
+      {
+        mDefaultStyle->importXml( QgsApplication::defaultStylePath() );
+      }
     }
-
-    mDefaultStyle = new QgsStyle;
-    mDefaultStyle->load( styleFilename );
+    else
+    {
+      mDefaultStyle = new QgsStyle;
+      mDefaultStyle->load( styleFilename );
+    }
   }
   return mDefaultStyle;
 }
@@ -289,7 +296,22 @@ bool QgsStyle::openDB( const QString& filename )
   return true;
 }
 
-bool QgsStyle::createMemoryDB()
+bool QgsStyle::createDb( const QString& filename )
+{
+  mErrorString.clear();
+  if ( !openDB( filename ) )
+  {
+    mErrorString = QStringLiteral( "Unable to create database" );
+    QgsDebugMsg( mErrorString );
+    return false;
+  }
+
+  createTables();
+
+  return true;
+}
+
+bool QgsStyle::createMemoryDb()
 {
   mErrorString.clear();
   if ( !openDB( QStringLiteral( ":memory:" ) ) )
@@ -298,6 +320,14 @@ bool QgsStyle::createMemoryDB()
     QgsDebugMsg( mErrorString );
     return false;
   }
+
+  createTables();
+
+  return true;
+}
+
+void QgsStyle::createTables()
+{
   char *query = sqlite3_mprintf( "CREATE TABLE symbol("\
                                  "id INTEGER PRIMARY KEY,"\
                                  "name TEXT UNIQUE,"\
@@ -322,7 +352,6 @@ bool QgsStyle::createMemoryDB()
                                  "name TEXT,"\
                                  "xml TEXT);" );
   runEmptyQuery( query );
-  return true;
 }
 
 bool QgsStyle::load( const QString& filename )
@@ -1526,6 +1555,11 @@ bool QgsStyle::importXml( const QString& filename )
   QDomElement symbolsElement = docEl.firstChildElement( QStringLiteral( "symbols" ) );
   QDomElement e = symbolsElement.firstChildElement();
 
+  // gain speed by re-grouping the INSERT statements in a transaction
+  char* query;
+  query = sqlite3_mprintf( "BEGIN TRANSACTION;" );
+  runEmptyQuery( query );
+
   if ( version == STYLE_CURRENT_VERSION )
   {
     // For the new style, load symbols individualy
@@ -1609,6 +1643,9 @@ bool QgsStyle::importXml( const QString& filename )
     }
     e = e.nextSiblingElement();
   }
+
+  query = sqlite3_mprintf( "COMMIT TRANSACTION;" );
+  runEmptyQuery( query );
 
   mFileName = filename;
   return true;
