@@ -11,3 +11,5 @@
 --suffix=none
 --break-after-logical
 --style=allman
+--align-pointer=type
+--align-reference=type
