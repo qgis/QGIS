@@ -644,6 +644,9 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_path" ), project->fileInfo().filePath(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_folder" ), project->fileInfo().dir().path(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), project->fileInfo().fileName(), true ) );
+  QgsCoordinateReferenceSystem projectCrs = project->crs();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true ) );
 
   scope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor() );
   return scope;
