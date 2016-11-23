@@ -1475,6 +1475,9 @@ tests:
       OUTPUT_LAYER:
         name: expected/pole_inaccessibility_polys.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:extractbyattribute
     name: Extract by attribute (is null)
