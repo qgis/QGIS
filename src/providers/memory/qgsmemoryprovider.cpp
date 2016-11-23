@@ -331,15 +331,14 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
   // TODO: sanity checks of fields and geometries
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    mFeatures[mNextFeatureId] = *it;
-    QgsFeature& newfeat = mFeatures[mNextFeatureId];
-    newfeat.setFeatureId( mNextFeatureId );
-    newfeat.setValid( true );
     it->setFeatureId( mNextFeatureId );
+    it->setValid( true );
+
+    mFeatures.insert( mNextFeatureId, *it );
 
     // update spatial index
     if ( mSpatialIndex )
-      mSpatialIndex->insertFeature( newfeat );
+      mSpatialIndex->insertFeature( *it );
 
     mNextFeatureId++;
   }
