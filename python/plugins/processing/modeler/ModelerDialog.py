@@ -65,7 +65,7 @@ class ModelerDialog(BASE, WIDGET):
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.centralWidget().layout().insertWidget(1, self.bar)
+        self.centralWidget().layout().insertWidget(0, self.bar)
 
         self.zoom = 1
 
@@ -189,9 +189,9 @@ class ModelerDialog(BASE, WIDGET):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
         if hasattr(self.textName, 'setPlaceholderText'):
-            self.textName.setPlaceholderText(self.tr('[Enter model name here]'))
+            self.textName.setPlaceholderText(self.tr('Enter model name here'))
         if hasattr(self.textGroup, 'setPlaceholderText'):
-            self.textGroup.setPlaceholderText(self.tr('[Enter group name here]'))
+            self.textGroup.setPlaceholderText(self.tr('Enter group name here'))
 
         # Connect signals and slots
         self.inputsTree.doubleClicked.connect(self.addInput)
@@ -262,9 +262,7 @@ class ModelerDialog(BASE, WIDGET):
 
     def runModel(self):
         if len(self.alg.algs) == 0:
-            QMessageBox.warning(self, self.tr('Empty model'),
-                                self.tr("Model doesn't contains any algorithms and/or "
-                                        "parameters and can't be executed"))
+            self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
         if self.alg.provider is None:
@@ -306,6 +304,8 @@ class ModelerDialog(BASE, WIDGET):
 
         img.save(filename)
 
+        self.bar.pushMessage("", "Model was correctly exported as image", level=QgsMessageBar.SUCCESS, duration=5)
+
     def exportAsPython(self):
         filename, filter = QFileDialog.getSaveFileName(self,
                                                        self.tr('Save Model As Python Script'), '',
@@ -319,8 +319,8 @@ class ModelerDialog(BASE, WIDGET):
         text = self.alg.toPython()
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
-        QMessageBox.information(self, self.tr('Model exported'),
-                                self.tr('Model was correctly exported.'))
+
+        self.bar.pushMessage("", "Model was correctly exported as python script", level=QgsMessageBar.SUCCESS, duration=5)
 
     def saveModel(self, saveAs):
         if str(self.textGroup.text()).strip() == '' \
