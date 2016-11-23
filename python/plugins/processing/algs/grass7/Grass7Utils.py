@@ -254,7 +254,7 @@ class Grass7Utils(object):
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrass7Execution(commands)
-        proc = subprocess.Popen(
+        with subprocess.Popen(
             command,
             shell=True,
             stdout=subprocess.PIPE,
@@ -262,18 +262,18 @@ class Grass7Utils(object):
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             env=grassenv
-        ).stdout
-        for line in iter(proc.readline, ''):
-            if 'GRASS_INFO_PERCENT' in line:
-                try:
-                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
-                except:
-                    pass
-            else:
-                if 'r.out' in line or 'v.out' in line:
-                    grassOutDone = True
-                loglines.append(line)
-                progress.setConsoleInfo(line)
+        ) as proc:
+            for line in iter(proc.stdout.readline, ''):
+                if 'GRASS_INFO_PERCENT' in line:
+                    try:
+                        progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
+                    except:
+                        pass
+                else:
+                    if 'r.out' in line or 'v.out' in line:
+                        grassOutDone = True
+                    loglines.append(line)
+                    progress.setConsoleInfo(line)
 
         # Some GRASS scripts, like r.mapcalculator or r.fillnulls, call
         # other GRASS scripts during execution. This may override any
@@ -283,7 +283,7 @@ class Grass7Utils(object):
 
         if not grassOutDone and outputCommands:
             command, grassenv = Grass7Utils.prepareGrass7Execution(outputCommands)
-            proc = subprocess.Popen(
+            with subprocess.Popen(
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
@@ -291,17 +291,17 @@ class Grass7Utils(object):
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv
-            ).stdout
-            for line in iter(proc.readline, ''):
-                if 'GRASS_INFO_PERCENT' in line:
-                    try:
-                        progress.setPercentage(int(
-                            line[len('GRASS_INFO_PERCENT') + 2:]))
-                    except:
-                        pass
-                else:
-                    loglines.append(line)
-                    progress.setConsoleInfo(line)
+            ) as proc:
+                for line in iter(proc.stdout.readline, ''):
+                    if 'GRASS_INFO_PERCENT' in line:
+                        try:
+                            progress.setPercentage(int(
+                                line[len('GRASS_INFO_PERCENT') + 2:]))
+                        except:
+                            pass
+                    else:
+                        loglines.append(line)
+                        progress.setConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
