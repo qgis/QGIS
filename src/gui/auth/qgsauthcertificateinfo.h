@@ -20,7 +20,7 @@
 
 #include <QFile>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QtCrypto>
 #include <QSslCertificate>
 #endif

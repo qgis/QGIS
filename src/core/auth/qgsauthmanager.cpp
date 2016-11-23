@@ -33,7 +33,7 @@
 
 #include <QtCrypto>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif
 
@@ -197,7 +197,7 @@ bool QgsAuthManager::init( const QString& pluginPath )
 
       updateConfigAuthMethods();
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
       initSslCaches();
 #endif
 
@@ -258,7 +258,7 @@ bool QgsAuthManager::init( const QString& pluginPath )
       return false;
   }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
   initSslCaches();
 #endif
 
@@ -1572,7 +1572,7 @@ bool QgsAuthManager::removeAuthSetting( const QString& key )
 }
 
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 ////////////////// Certificate calls ///////////////////////
 

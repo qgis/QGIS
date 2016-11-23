@@ -20,9 +20,8 @@
 
 #include <QFile>
 #include <QObject>
+#include <QCryptographicHash>
 #include <QUrl>
-
-#include "qgsauthcertutils.h"
 
 
 //////////////////////////////////////////////
@@ -156,7 +155,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 }
 
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 //////////////////////////////////////////////////////
 // QgsPkiBundle
@@ -302,7 +301,7 @@ const QString QgsPkiBundle::certId() const
   {
     return QString::null;
   }
-  return QgsAuthCertUtils::shaHexForCert( mCert );
+  return QString( mCert.digest( QCryptographicHash::Sha1 ).toHex() );
 }
 
 void QgsPkiBundle::setClientCert( const QSslCertificate &cert )

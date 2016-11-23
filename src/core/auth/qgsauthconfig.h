@@ -20,7 +20,7 @@
 #include <QHash>
 #include <QString>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslCertificate>
 #include <QSslKey>
 #include <QSslError>
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 /** \ingroup core
  * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain

@@ -32,7 +32,7 @@ else(QCA_INCLUDE_DIR AND QCA_LIBRARY)
   )
 
   if(APPLE)
-    if(QCA_LIBRARY AND QCA_LIBRARY MATCHES "qca(2)?\\.framework")
+    if(QCA_LIBRARY AND QCA_LIBRARY MATCHES "qca(2)?-qt5\\.framework")
       set(QCA_LIBRARY "${QCA_LIBRARY}" CACHE FILEPATH "QCA framework" FORCE)
       set(QCA_INCLUDE_DIR "${QCA_LIBRARY}/Headers" CACHE FILEPATH "QCA framework headers" FORCE)
     endif()

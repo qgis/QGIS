@@ -20,7 +20,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMessageBox>
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslError>
 #endif
 
@@ -64,7 +64,7 @@ void QgsFileDownloader::startDownload()
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
   connect( nam, &QgsNetworkAccessManager::requestTimedOut, this, &QgsFileDownloader::onRequestTimedOut );
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
   connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors );
 #endif
   if ( mGuiNotificationsEnabled )
@@ -89,7 +89,7 @@ void QgsFileDownloader::onRequestTimedOut()
   error( tr( "Network request %1 timed out" ).arg( mUrl.toString() ) );
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
   Q_UNUSED( reply );

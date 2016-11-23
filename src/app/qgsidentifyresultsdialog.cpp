@@ -78,7 +78,9 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   // page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+#ifdef WITH_QTWEBKIT
   page()->setForwardUnsupportedContent( true );
+#endif
   page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
   settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
   settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
