@@ -364,7 +364,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
   return it;
 }
 
-bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid )
+bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid ) const
 {
   return mCache.contains( fid );
 }
