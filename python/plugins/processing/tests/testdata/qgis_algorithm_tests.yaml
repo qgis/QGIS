@@ -1553,6 +1553,9 @@ tests:
       OUTPUT:
         name: expected/lines_split_with_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:splitwithlines
     name: Split lines with same lines
@@ -1567,6 +1570,9 @@ tests:
       OUTPUT:
         name: expected/lines_split_with_same_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:splitwithlines
     name: Split polygons with lines
@@ -1581,4 +1587,7 @@ tests:
       OUTPUT:
         name: expected/polys_split_with_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
      
