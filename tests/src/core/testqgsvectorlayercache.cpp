@@ -51,6 +51,8 @@ class TestVectorLayerCache : public QObject
     void testCacheAttrActions(); // Test attribute add/ attribute delete
     void testFeatureActions();   // Test adding/removing features works
     void testSubsetRequest();
+    void testFullCache();
+    void testFullCacheThroughRequest();
 
     void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
 
@@ -216,6 +218,52 @@ void TestVectorLayerCache::testSubsetRequest()
 
   mVectorLayerCache->featureAtId( 16, f );
   QVERIFY( a == f.attribute( 3 ) );
+}
+
+void TestVectorLayerCache::testFullCache()
+{
+  // cache is too small to fit all features
+  QgsVectorLayerCache cache( mPointsLayer, 2 );
+  QVERIFY( !cache.hasFullCache() );
+  QVERIFY( cache.cacheSize() < mPointsLayer->featureCount() );
+  // but we set it to full cache
+  cache.setFullCache( true );
+  // so now it should have sufficient size for all features
+  QVERIFY( cache.cacheSize() >= mPointsLayer->featureCount() );
+  QVERIFY( cache.hasFullCache() );
+
+  // double check that everything is indeed in the cache
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( cache.isFidCached( f.id() ) );
+  }
+}
+
+void TestVectorLayerCache::testFullCacheThroughRequest()
+{
+  // make sure cache is sufficient size for all features
+  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->featureCount() * 2 );
+  QVERIFY( !cache.hasFullCache() );
+
+  // now request all features from cache
+  QgsFeatureIterator it = cache.getFeatures( QgsFeatureRequest() );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    // suck in all features
+  }
+
+  // cache should now contain all features
+  it = mPointsLayer->getFeatures();
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( cache.isFidCached( f.id() ) );
+  }
+
+  // so it should be a full cache!
+  QVERIFY( cache.hasFullCache() );
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )

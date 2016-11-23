@@ -180,6 +180,10 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequ
     {
       idx->requestCompleted( featureRequest, fids );
     }
+    if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone )
+    {
+      mFullCache = true;
+    }
   }
 }
 
