@@ -732,9 +732,7 @@ void QgsDualView::progress( int i, bool& cancel )
     mProgressDlg->show();
   }
 
-  mProgressDlg->setValue( i );
   mProgressDlg->setLabelText( tr( "%1 features loaded." ).arg( i ) );
-
   QCoreApplication::processEvents();
 
   cancel = mProgressDlg && mProgressDlg->wasCanceled();
