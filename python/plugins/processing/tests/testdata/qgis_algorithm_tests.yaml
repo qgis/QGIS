@@ -193,43 +193,6 @@ tests:
         name: expected/basic_statistics_string.html
         type: file
 
-  # Split lines with lines considers two cases
-  # case 1: two different layers
-  - algorithm: qgis:splitlineswithlines
-    name: Split lines with lines
-    params:
-      INPUT_A:
-        name: lines.gml
-        type: vector
-      INPUT_B:
-        name: custom/lines2.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/lines_split_with_lines.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-
-  # case 2 split line layer with iself
-  - algorithm: qgis:splitlineswithlines
-    name: Split lines with same lines
-    params:
-      INPUT_A:
-        name: custom/lines2.gml
-        type: vector
-      INPUT_B:
-        name: custom/lines2.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/lines_split_with_same_lines.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-
   - algorithm: qgis:addautoincrementalfield
     name: Add autoincremental field
     params:
@@ -1576,3 +1539,55 @@ tests:
       OUTPUT:
         name: expected/delete_column.gml
         type: vector
+
+  - algorithm: qgis:splitwithlines
+    name: Split lines with lines
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:splitwithlines
+    name: Split lines with same lines
+    params:
+      INPUT_A:
+        name: custom/lines2.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_same_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:splitwithlines
+    name: Split polygons with lines
+    params:
+      INPUT_A:
+        name: polys.gml
+        type: vector
+      INPUT_B:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_split_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+     
