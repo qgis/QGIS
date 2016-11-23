@@ -161,6 +161,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       if ( source->mFields.fieldOrigin( idx ) != QgsFields::OriginProvider )
       {
         mProviderRequest.disableFilter();
+        // can't limit at provider side
+        mProviderRequest.setLimit( -1 );
       }
     }
   }
