@@ -174,7 +174,7 @@ QgsVectorLayer* QgsVectorLayerCache::layer()
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
 {
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
-  if ( fids.count() < mCache.size() )
+  if ( fids.count() <= mCache.size() )
   {
     Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
     {
