@@ -114,6 +114,7 @@
         <file>themes/default/mActionAddBasicShape.svg</file>
         <file>themes/default/mActionAddBasicCircle.svg</file>
         <file>themes/default/mActionEditNodesItem.svg</file>
+        <file>themes/default/mActionEditHelpContent.svg</file>
         <file>themes/default/mActionAddNodesItem.svg</file>
         <file>themes/default/mActionAddPolygon.svg</file>
         <file>themes/default/mActionAddPolyline.svg</file>
@@ -278,6 +279,7 @@
         <file>themes/default/mActionRotatePointSymbols.svg</file>
         <file>themes/default/mActionSaveAllEdits.svg</file>
         <file>themes/default/mActionSaveAsPDF.svg</file>
+        <file>themes/default/mActionSaveAsPython.svg</file>
         <file>themes/default/mActionSaveAsSVG.svg</file>
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.svg</file>
@@ -307,6 +309,7 @@
         <file>themes/default/mActionSimplify.svg</file>
         <file>themes/default/mActionSplitFeatures.svg</file>
         <file>themes/default/mActionSplitParts.svg</file>
+        <file>themes/default/mActionStart.svg</file>
         <file>themes/default/mActionSum.svg</file>
         <file>themes/default/mActionTextAnnotation.svg</file>
         <file>themes/default/mActionToggleEditing.svg</file>

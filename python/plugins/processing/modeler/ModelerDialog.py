@@ -31,7 +31,7 @@ import sys
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, pyqtSignal
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter
 from qgis.core import QgsApplication
@@ -65,7 +65,7 @@ class ModelerDialog(BASE, WIDGET):
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().insertWidget(1, self.bar)
+        self.centralWidget().layout().insertWidget(1, self.bar)
 
         self.zoom = 1
 
@@ -74,8 +74,9 @@ class ModelerDialog(BASE, WIDGET):
                             Qt.WindowCloseButtonHint)
 
         settings = QSettings()
-        self.splitter.restoreState(settings.value("/Processing/splitterModeler", QByteArray()))
+        self.restoreState(settings.value("/Processing/stateModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
+        self.splitter.restoreState(settings.value("/Processing/stateModelerSplitter", QByteArray()))
 
         self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
@@ -185,15 +186,6 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
         self.algorithmTree.setDropIndicatorShown(True)
 
-        # Set icons
-        self.btnOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
-        self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.btnSaveAs.setIcon(QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnExportImage.setIcon(QgsApplication.getThemeIcon('/mActionSaveMapAsImage.svg'))
-        self.btnExportPython.setIcon(QgsApplication.getThemeIcon('/console/iconSaveAsConsole.png'))
-        self.btnEditHelp.setIcon(QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
-        self.btnRun.setIcon(QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
-
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
         if hasattr(self.textName, 'setPlaceholderText'):
@@ -206,13 +198,15 @@ class ModelerDialog(BASE, WIDGET):
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
-        self.btnOpen.clicked.connect(self.openModel)
-        self.btnSave.clicked.connect(self.save)
-        self.btnSaveAs.clicked.connect(self.saveAs)
-        self.btnExportImage.clicked.connect(self.exportAsImage)
-        self.btnExportPython.clicked.connect(self.exportAsPython)
-        self.btnEditHelp.clicked.connect(self.editHelp)
-        self.btnRun.clicked.connect(self.runModel)
+        iconSize = settings.value("iconsize", 24)
+        self.mToolbar.setIconSize(QSize(iconSize, iconSize))
+        self.mActionOpen.triggered.connect(self.openModel)
+        self.mActionSave.triggered.connect(self.save)
+        self.mActionSaveAs.triggered.connect(self.saveAs)
+        self.mActionExportImage.triggered.connect(self.exportAsImage)
+        self.mActionExportPython.triggered.connect(self.exportAsPython)
+        self.mActionEditHelp.triggered.connect(self.editHelp)
+        self.mActionRun.triggered.connect(self.runModel)
 
         if alg is not None:
             self.alg = alg
@@ -235,8 +229,9 @@ class ModelerDialog(BASE, WIDGET):
 
     def closeEvent(self, evt):
         settings = QSettings()
-        settings.setValue("/Processing/splitterModeler", self.splitter.saveState())
+        settings.setValue("/Processing/stateModeler", self.saveState())
         settings.setValue("/Processing/geometryModeler", self.saveGeometry())
+        settings.setValue("/Processing/stateModelerSplitter", self.splitter.saveState())
 
         if self.hasChanged:
             ret = QMessageBox.question(
