@@ -56,7 +56,8 @@ from processing.core.parameters import (
     ParameterFile,
     ParameterString,
     ParameterNumber,
-    ParameterBoolean
+    ParameterBoolean,
+    ParameterTable
 )
 
 
@@ -167,6 +168,16 @@ def createTest(text):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'raster',
+                'name': filepath
+            }
+            if not schema:
+                p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
+
+            params[param.name] = p
+        if isinstance(param, ParameterTable):
+            schema, filepath = extractSchemaPath(token)
+            p = {
+                'type': 'table',
                 'name': filepath
             }
             if not schema:

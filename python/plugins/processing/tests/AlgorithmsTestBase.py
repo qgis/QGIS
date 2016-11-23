@@ -137,7 +137,7 @@ class AlgorithmsTest(object):
         parameter based on its key `type` and return the appropriate parameter to pass to the algorithm.
         """
         try:
-            if param['type'] == 'vector' or param['type'] == 'raster':
+            if param['type'] in ('vector', 'raster', 'table'):
                 return self.load_layer(param)
             elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
@@ -154,7 +154,7 @@ class AlgorithmsTest(object):
         Loads a result parameter. Creates a temporary destination where the result should go to and returns this location
         so it can be sent to the algorithm as parameter.
         """
-        if param['type'] in ['vector', 'file', 'regex']:
+        if param['type'] in ['vector', 'file', 'table', 'regex']:
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
             basename = os.path.basename(param['name'])
@@ -175,7 +175,7 @@ class AlgorithmsTest(object):
         """
         filepath = self.filepath_from_param(param)
 
-        if param['type'] == 'vector':
+        if param['type'] in ('vector', 'table'):
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
         elif param['type'] == 'raster':
             lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
@@ -199,7 +199,7 @@ class AlgorithmsTest(object):
         Checks if result produced by an algorithm matches with the expected specification.
         """
         for id, expected_result in list(expected.items()):
-            if 'vector' == expected_result['type']:
+            if expected_result['type'] in ('vector', 'table'):
                 expected_lyr = self.load_layer(expected_result)
                 try:
                     results[id]
