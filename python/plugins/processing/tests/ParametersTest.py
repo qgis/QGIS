@@ -39,6 +39,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterPoint,
                                         ParameterString,
                                         ParameterVector,
+                                        ParameterTable,
                                         ParameterTableField,
                                         ParameterSelection,
                                         ParameterExpression,
@@ -629,6 +630,22 @@ class ParameterTableFieldTest(unittest.TestCase):
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
         self.assertTrue(isinstance(result, ParameterTableField))
+        self.assertTrue(result.optional)
+
+
+class ParameterTableTest(unittest.TestCase):
+
+    def testScriptCode(self):
+        parameter = ParameterTable(
+            'myName', 'myDesc')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterTable))
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertTrue(isinstance(result, ParameterTable))
         self.assertTrue(result.optional)
 
 if __name__ == '__main__':
