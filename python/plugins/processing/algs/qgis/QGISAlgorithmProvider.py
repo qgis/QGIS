@@ -179,6 +179,7 @@ from .GeometryByExpression import GeometryByExpression
 from .SnapGeometries import SnapGeometriesToLayer
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .CreateAttributeIndex import CreateAttributeIndex
+from .DropGeometry import DropGeometry
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -227,7 +228,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
-                        SplitWithLines(), SplitLinesWithLines(),  CreateConstantRaster(),
+                        SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
@@ -242,7 +243,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         TinInterpolationZValue(), TinInterpolationAttribute(),
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
-                        PoleOfInaccessibility(), CreateAttributeIndex()
+                        PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry()
                         ]
 
         if hasMatplotlib:

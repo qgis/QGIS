@@ -1637,3 +1637,14 @@ tests:
       OUTPUT:
         name: expected/split_lines_with_lines_same.gml
         type: vector
+
+  - algorithm: qgis:dropgeometries
+    name: Drop geometries
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_TABLE:
+        name: expected/dropped_geometry.csv
+        type: vector
