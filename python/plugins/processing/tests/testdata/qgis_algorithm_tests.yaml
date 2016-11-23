@@ -1552,3 +1552,27 @@ tests:
         name: lines.gml
         type: vector
     results: {}
+
+  - algorithm: qgis:deletecolumn
+    name: Delete columns (multiple)
+    params:
+      COLUMN: floatval;name
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/delete_columns.gml
+        type: vector
+
+  - algorithm: qgis:deletecolumn
+    name: Delete columns (single)
+    params:
+      COLUMN: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/delete_column.gml
+        type: vector
