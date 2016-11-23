@@ -206,7 +206,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
-    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverride( presetName ) );
+    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();

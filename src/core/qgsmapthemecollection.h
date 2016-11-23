@@ -174,7 +174,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
      * @note Added in QGIS 3.0
      */
-    QMap<QString, QString> mapThemeStyleOverride( const QString& name );
+    QMap<QString, QString> mapThemeStyleOverrides( const QString& name );
 
     /**
      * Reads the map theme collection state from XML

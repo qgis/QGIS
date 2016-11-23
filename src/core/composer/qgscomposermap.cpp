@@ -599,7 +599,7 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
     }
 
     if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      return QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverride( presetName );
+      return QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
     else
       return QMap<QString, QString>();
   }

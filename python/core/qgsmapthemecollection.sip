@@ -114,7 +114,7 @@ class QgsMapThemeCollection : QObject
     /**
      * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
      */
-    QMap<QString, QString> mapThemeStyleOverride( const QString& name );
+    QMap<QString, QString> mapThemeStyleOverrides( const QString& name );
 
     /**
      * Reads the map theme collection state from XML

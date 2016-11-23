@@ -131,7 +131,7 @@ void QgsMapThemeCollection::applyMapThemeCheckedLegendNodesToLayer( const QStrin
 }
 
 
-QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverride( const QString& presetName )
+QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QString& presetName )
 {
   QMap<QString, QString> styleOverrides;
   if ( !mMapThemes.contains( presetName ) )
