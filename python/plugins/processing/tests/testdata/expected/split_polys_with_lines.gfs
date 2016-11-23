@@ -1,10 +1,10 @@
 <GMLFeatureClassList>
   <GMLFeatureClass>
-    <Name>polys_split_with_lines</Name>
-    <ElementPath>polys_split_with_lines</ElementPath>
+    <Name>split_polys_with_lines</Name>
+    <ElementPath>split_polys_with_lines</ElementPath>
     <!--POLYGON-->
     <GeometryType>3</GeometryType>
-    <SRSName>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</SRSName>
+    <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>7</FeatureCount>
       <ExtentXMin>-1.00000</ExtentXMin>
@@ -12,12 +12,6 @@
       <ExtentYMin>-3.00000</ExtentYMin>
       <ExtentYMax>6.00000</ExtentYMax>
     </DatasetSpecificInfo>
-    <PropertyDefn>
-      <Name>fid</Name>
-      <ElementPath>fid</ElementPath>
-      <Type>String</Type>
-      <Width>7</Width>
-    </PropertyDefn>
     <PropertyDefn>
       <Name>name</Name>
       <ElementPath>name</ElementPath>

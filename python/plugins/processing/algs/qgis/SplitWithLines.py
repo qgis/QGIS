@@ -47,7 +47,7 @@ class SplitWithLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer, single geometries only'), [dataobjects.TYPE_VECTOR_POLYGON,
-                                          dataobjects.TYPE_VECTOR_LINE]))
+                                                                                           dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
 
@@ -101,6 +101,9 @@ class SplitWithLines(GeoAlgorithm):
                 if len(lines) > 0:  # has intersection of bounding boxes
                     splittingLines = []
 
+                    engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                    engine.prepareGeometry()
+
                     for i in lines:
                         try:
                             splitGeom = splitGeoms[i]
@@ -112,9 +115,6 @@ class SplitWithLines(GeoAlgorithm):
                             if inFeatA.id() == i:
                                 continue
 
-                        engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
-                        engine.prepareGeometry()
-
                         if engine.intersects(splitGeom.geometry()):
                             splittingLines.append(splitGeom)
 
@@ -123,13 +123,14 @@ class SplitWithLines(GeoAlgorithm):
                             splitterPList = None
                             outGeoms = []
 
+                            split_geom_engine = QgsGeometry.createGeometryEngine(splitGeom.geometry())
+                            split_geom_engine.prepareGeometry()
+
                             while len(inGeoms) > 0:
                                 inGeom = inGeoms.pop()
-                                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
-                                engine.prepareGeometry()
-                                inPoints = vector.extractPoints(inGeom)
 
-                                if engine.intersects(splitGeom.geometry()):
+                                if split_geom_engine.intersects(inGeom.geometry()):
+                                    inPoints = vector.extractPoints(inGeom)
                                     if splitterPList == None:
                                         splitterPList = vector.extractPoints(splitGeom)
 
@@ -143,7 +144,6 @@ class SplitWithLines(GeoAlgorithm):
                                     # splitGeometry: If there are several intersections
                                     # between geometry and splitLine, only the first one is considered.
                                     if result == 0:  # split occurred
-
                                         if inPoints == vector.extractPoints(inGeom):
                                             # bug in splitGeometry: sometimes it returns 0 but
                                             # the geometry is unchanged
@@ -166,12 +166,12 @@ class SplitWithLines(GeoAlgorithm):
                     passed = True
 
                     if QgsWkbTypes.geometryType( aGeom.wkbType() )  == QgsWkbTypes.LineGeometry \
-                            and not QgsWkbTypes.isMultiType( aGeom.wkbType() ):
+                            and not QgsWkbTypes.isMultiType(aGeom.wkbType()):
                         passed = len(aGeom.asPolyline()) > 2
 
                         if not passed:
                             passed = (len(aGeom.asPolyline()) == 2 and
-                                 aGeom.asPolyline()[0] != aGeom.asPolyline()[1])
+                                      aGeom.asPolyline()[0] != aGeom.asPolyline()[1])
                             # sometimes splitting results in lines of zero length
 
                     if passed:
@@ -182,6 +182,6 @@ class SplitWithLines(GeoAlgorithm):
 
         if multiGeoms > 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                self.tr('Feature geometry error: %s input features ignored due to multi-geometry.') % str(multiGeoms))
+                                   self.tr('Feature geometry error: %s input features ignored due to multi-geometry.') % str(multiGeoms))
 
         del writer

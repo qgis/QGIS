@@ -1595,3 +1595,45 @@ tests:
       OUTPUT:
         name: expected/create_points.gml
         type: vector
+
+  - algorithm: qgis:splitwithlines
+    name: Split lines with lines (new alg)
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_lines_with_lines.gml
+        type: vector
+
+  - algorithm: qgis:splitwithlines
+    name: Split poly with lines
+    params:
+      INPUT_A:
+        name: polys.gml
+        type: vector
+      INPUT_B:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_polys_with_lines.gml
+        type: vector
+
+  - algorithm: qgis:splitwithlines
+    name: Split lines with same lines
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_lines_with_lines_same.gml
+        type: vector

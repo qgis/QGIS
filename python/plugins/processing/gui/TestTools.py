@@ -174,7 +174,7 @@ def createTest(text):
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
             params[param.name] = p
-        if isinstance(param, ParameterTable):
+        elif isinstance(param, ParameterTable):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'table',
