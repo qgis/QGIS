@@ -335,7 +335,11 @@ void TestQgsFields::indexFromName()
   QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
   QgsField field3( QStringLiteral( "testfield3" ) );
+  field3.setAlias( QStringLiteral( "" ) );
   fields.append( field3 );
+
+  QCOMPARE( fields.lookupField( QString( "" ) ), -1 );
+  QCOMPARE( fields.lookupField( QString() ), -1 );
 
   QCOMPARE( fields.indexFromName( QString( "bad" ) ), -1 );
   QCOMPARE( fields.lookupField( QString( "bad" ) ), -1 );

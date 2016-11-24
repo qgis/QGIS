@@ -290,6 +290,9 @@ QIcon QgsFields::iconForField( int fieldIdx ) const
 
 int QgsFields::lookupField( const QString& fieldName ) const
 {
+  if ( fieldName.isEmpty() ) //shortcut
+    return -1;
+
   for ( int idx = 0; idx < count(); ++idx )
   {
     if ( d->fields[idx].field.name() == fieldName )
@@ -305,7 +308,7 @@ int QgsFields::lookupField( const QString& fieldName ) const
   for ( int idx = 0; idx < count(); ++idx )
   {
     QString alias = d->fields[idx].field.alias();
-    if ( !alias.isNull() && QString::compare( alias, fieldName, Qt::CaseInsensitive ) == 0 )
+    if ( !alias.isEmpty() && QString::compare( alias, fieldName, Qt::CaseInsensitive ) == 0 )
       return idx;
   }
 
