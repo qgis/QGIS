@@ -32,7 +32,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, pyqtSignal
-from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy
+from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
@@ -67,6 +67,17 @@ class ModelerDialog(BASE, WIDGET):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.centralWidget().layout().insertWidget(0, self.bar)
 
+        try:
+            self.setDockOptions(self.dockOptions() | QMainWindow.GroupedDragging)
+        except:
+            pass
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.propertiesDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.inputsDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.algorithmsDock)
+        self.tabifyDockWidget(self.inputsDock, self.algorithmsDock)
+        self.inputsDock.raise_()
+
         self.zoom = 1
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
@@ -76,9 +87,7 @@ class ModelerDialog(BASE, WIDGET):
         settings = QSettings()
         self.restoreState(settings.value("/Processing/stateModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
-        self.splitter.restoreState(settings.value("/Processing/stateModelerSplitter", QByteArray()))
 
-        self.tabWidget.setCurrentIndex(0)
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
 
@@ -231,7 +240,6 @@ class ModelerDialog(BASE, WIDGET):
         settings = QSettings()
         settings.setValue("/Processing/stateModeler", self.saveState())
         settings.setValue("/Processing/geometryModeler", self.saveGeometry())
-        settings.setValue("/Processing/stateModelerSplitter", self.splitter.saveState())
 
         if self.hasChanged:
             ret = QMessageBox.question(
