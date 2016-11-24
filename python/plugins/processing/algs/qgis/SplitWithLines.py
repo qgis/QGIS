@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsSpatialIndex, QgsWkbTypes, QgsMessageLog
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsSpatialIndex, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -147,7 +147,6 @@ class SplitWithLines(GeoAlgorithm):
                                         if inPoints == vector.extractPoints(inGeom):
                                             # bug in splitGeometry: sometimes it returns 0 but
                                             # the geometry is unchanged
-                                            QgsMessageLog.logMessage("appending")
                                             outGeoms.append(inGeom)
                                         else:
                                             inGeoms.append(inGeom)
@@ -155,7 +154,6 @@ class SplitWithLines(GeoAlgorithm):
                                             for aNewGeom in newGeometries:
                                                 inGeoms.append(aNewGeom)
                                     else:
-                                        QgsMessageLog.logMessage("appending else")
                                         outGeoms.append(inGeom)
                                 else:
                                     outGeoms.append(inGeom)
