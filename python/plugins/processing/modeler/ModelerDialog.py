@@ -287,9 +287,9 @@ class ModelerDialog(BASE, WIDGET):
         self.saveModel(True)
 
     def exportAsImage(self):
-        filename, filter = QFileDialog.getSaveFileName(self,
-                                                       self.tr('Save Model As Image'), '',
-                                                       self.tr('PNG files (*.png *.PNG)'))
+        filename, fileFilter = QFileDialog.getSaveFileName(self,
+                                                           self.tr('Save Model As Image'), '',
+                                                           self.tr('PNG files (*.png *.PNG)'))
         if not filename:
             return
 

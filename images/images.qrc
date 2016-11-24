@@ -115,6 +115,8 @@
         <file>themes/default/mActionAddBasicCircle.svg</file>
         <file>themes/default/mActionEditNodesItem.svg</file>
         <file>themes/default/mActionEditHelpContent.svg</file>
+        <file>themes/default/mActionIncreaseFont.svg</file>
+        <file>themes/default/mActionDecreaseFont.svg</file>
         <file>themes/default/mActionAddNodesItem.svg</file>
         <file>themes/default/mActionAddPolygon.svg</file>
         <file>themes/default/mActionAddPolyline.svg</file>
