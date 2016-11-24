@@ -31,16 +31,15 @@ else(QCA_INCLUDE_DIR AND QCA_LIBRARY)
       /usr/local/lib
   )
 
-  if(APPLE)
-    if(QCA_LIBRARY AND QCA_LIBRARY MATCHES "qca(2)?-qt5\\.framework")
-      set(QCA_LIBRARY "${QCA_LIBRARY}" CACHE FILEPATH "QCA framework" FORCE)
-      set(QCA_INCLUDE_DIR "${QCA_LIBRARY}/Headers" CACHE FILEPATH "QCA framework headers" FORCE)
-    endif()
-  endif(APPLE)
+  set(_qca_fw)
+  if(QCA_LIBRARY MATCHES "/qca.*\\.framework")
+    string(REGEX REPLACE "^(.*/qca.*\\.framework).*$" "\\1" _qca_fw "${QCA_LIBRARY}")
+  endif()
 
   find_path(QCA_INCLUDE_DIR
     NAMES QtCrypto
     PATHS
+      "${_qca_fw}/Headers"
       ${LIB_DIR}/include
       "$ENV{LIB_DIR}/include"
       $ENV{INCLUDE}
