@@ -60,7 +60,6 @@ class CreateNewScriptAction(ToolboxAction):
         if self.scriptType == self.SCRIPT_R:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.show()
-        dlg.exec_()
         if dlg.update:
             if self.scriptType == self.SCRIPT_PYTHON:
                 algList.reloadProvider('script')
