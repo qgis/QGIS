@@ -194,8 +194,8 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             self.popupError(reply.error(), reply.request().url().toString())
         else:
-            resources = str(reply.readAll()).splitlines()
-            resources = [r.split(',') for r in resources]
+            resources = bytes(reply.readAll()).decode('utf8').splitlines()
+            resources = [r.split(',', 2) for r in resources]
             self.resources = {f: (v, n) for f, v, n in resources}
 
         reply.deleteLater()
@@ -242,7 +242,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No detailed description available for this script</h2>')
         else:
-            content = str(reply.readAll())
+            content = bytes(reply.readAll()).decode('utf8')
             descriptions = json.loads(content)
             html = '<h2>%s</h2>' % item.name
             html += self.tr('<p><b>Description:</b> %s</p>') % getDescription(ALG_DESC, descriptions)
@@ -287,7 +287,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 self.popupError(reply.error(), reply.request().url().toString())
                 content = None
         else:
-            content = reply.readAll()
+            content = bytes(reply.readAll()).decode('utf8')
 
         reply.deleteLater()
         if content:
