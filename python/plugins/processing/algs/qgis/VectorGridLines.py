@@ -50,6 +50,11 @@ class VectorGridLines(GeoAlgorithm):
     STEP_Y = 'STEP_Y'
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use GridLine instead
+        self.showInToolbox = False
+
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
@@ -58,7 +63,7 @@ class VectorGridLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Grid extent')))
+                                          self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.STEP_X,
                                           self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.STEP_Y,
