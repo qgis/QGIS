@@ -84,18 +84,18 @@ class GdalUtils(object):
             loglines = []
             loglines.append('GDAL execution console output')
             try:
-                proc = subprocess.Popen(
+                with subprocess.Popen(
                     fused_command,
                     shell=True,
                     stdout=subprocess.PIPE,
                     stdin=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
-                ).stdout
-                for line in proc:
-                    progress.setConsoleInfo(line)
-                    loglines.append(line)
-                success = True
+                ) as proc:
+                    for line in proc.stdout:
+                        progress.setConsoleInfo(line)
+                        loglines.append(line)
+                    success = True
             except IOError as e:
                 if retry_count < 5:
                     retry_count += 1
