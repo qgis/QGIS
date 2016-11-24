@@ -33,7 +33,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " you make must be made available in source form to whoever you give"
                         " modified versions to, and that you can not create a new version of"
                         " QGIS under a 'closed source' license. Visit"
-                        " <a href=\"https://qgis.org\"> the QGIS home page (https://qgis.org)</a>"
+                        " <a href=\"https://qgis.org\"> the QGIS home page</a>"
                         " for more information."
                       ) );
   addGenericTip( myTip );
@@ -73,10 +73,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " and it will help to avoid confusion if you refer to each by"
                         " its name:"
                         "<ul>"
-                        "<li>QGIS Library - this is the C++ library that contains"
+                        "<li><strong>QGIS Library</strong> - this is the C++ library that contains"
                         " the core logic that is used to build the QGIS user interface and other applications.</li>"
-                        "<li>QGIS Desktop - this is the desktop application that you know and love so much :-).</li>"
-                        "<li>QGIS Server - this is a server-side application based on the QGIS Library"
+                        "<li><strong>QGIS Desktop</strong> - this is the desktop application that you know and love so much :-).</li>"
+                        "<li><strong>QGIS Server</strong> - this is a server-side application based on the QGIS Library"
                         " that will serve up your .qgs projects using OGC standard protocols.</li>"
                         "</ul>"
                       ) );
@@ -86,7 +86,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can add a current date variable to your map"
                         " layout. Create a regular text label and add the string"
                         " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
-                        " <a href=\"https://doc.qt.io/qt-4.8/qdate.html#toString\">"
+                        " <a href=\"https://doc.qt.io/qt-5.7/qdate.html#toString\">"
                         "QDate::toString format documentation</a> for the possible date formats."
                       ) );
   addGuiTip( myTip );
@@ -97,19 +97,18 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " move them around with the arrow keys. For accurate positioning use the"
                         " <strong>Position and Size</strong> section, which can be found in the"
                         " tab <strong>Item Properties -> Position and Size</strong>."
-                        " The other move tool (map canvas icon with right arrow) allows one"
-                        " to move the map content within a map frame."
+                        " The other move tool (a scrolled map icon with four oriented arrows)"
+                        " allows you to move the map content within a map frame."
                       ) );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
   myTip.setTitle( tr( "Lock an element in the layout view" ) );
-  myTip.setContent( tr( "By left clicking an element in the layout view you can"
-                        " select it, by right clicking an element you can lock it. A lock symbol"
-                        " will appear in the upper left corner of the selected element. This"
-                        " prevents the element from accidentally being moved with the mouse. While"
-                        " in a locked state, you cannot move an element with the mouse but you can"
-                        " still move it with the arrow keys or by absolutely positioning it by"
-                        " setting its <strong>Position and Size</strong>."
+  myTip.setContent( tr( "Locking an element in the layout view prevents you to select or accidentally"
+                        " move it with the mouse. (Un)Locking an item is done by ticking its checkbox"
+                        " in the <strong>Items</strong> tab. While in a locked state, you can"
+                        " still get it selected from the <strong>Items</strong> tab, move it with the arrow keys"
+                        " or configure any of its properties in the <strong>Item Properties</strong> tab"
+                        " including precisely place it by setting its <strong>Position and Size</strong>."
                       ) );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
@@ -138,7 +137,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can use the scroll wheel on your mouse to zoom in,"
                         " out and pan the map. Scroll forwards to zoom in, scroll backwards to"
                         " zoom out and press and hold the scroll wheel down to pan the map. You"
-                        " can configure options for scroll wheel behaviour in the Options panel."
+                        " can configure the zoom scale factor in the <strong>Options -> Map tools</strong> panel."
                       ) );
   addGuiTip( myTip );
   // by Tim
@@ -174,7 +173,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " have the financial ability to help, please consider sponsoring the"
                         " development of QGIS. We use money from sponsors to pay for"
                         " travel and costs related to our regular hackfest meetings, and to generally"
-                        " support the goals of our project. Please see the<a"
+                        " support the goals of our project. Please see the <a"
                         " href=\"https://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html\">QGIS Sponsorship Web"
                         " Page</a> for more details."
                       ) );
@@ -183,8 +182,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS has Plugins!" ) );
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
-                        " Plugins->Manage and Install Plugins menu. In addition there are a lot"
-                        " of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
+                        " <strong>Plugins -> Manage and Install</strong> Plugins menu. In addition there"
+                        " are a lot of <a href=\"https://plugins.qgis.org/\">Python plugins </a>"
                         " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
                         " Check out the plugins and see what they can do for you."
@@ -221,7 +220,37 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If you have a number of aerial photos spread across a wide area, instead of "
                         "loading each file as a separate layer you can treat them all as a single layer "
                         "by using a .vrt file. "
-                        "To create a .vrt, go to Raster -> Miscellaneous -> Build Virtual Raster (Catalog)."
+                        "To create a .vrt, go to <strong>Raster -> Miscellaneous -> Build Virtual Raster (Catalog)</strong>."
+                      ) );
+  addGuiTip( myTip );
+  // by Harrissou Sant-anna
+  myTip.setTitle( tr( "Switch quickly between different styles of the layer" ) );
+  myTip.setContent( tr( "From the Layer properties dialog, use the <strong>Styles -> Add</strong> combobox"
+                        " to create as many combinations of layer properties settings (symbology, labeling,"
+                        " diagram, fields form, actions...) as you want. Then, simply switch between styles"
+                        " from the context menu of the layer in <strong>Layers Panel</strong> to automatically"
+                        "get different custom representations of your data."
+                      ) );
+  addGuiTip( myTip );
+  // by Harrissou Sant-anna
+  myTip.setTitle( tr( "Live update rendering" ) );
+  myTip.setContent( tr( "Use the <strong>Layer Styling</strong> panel to easily and quickly configure the layer"
+                        " rendering. Check the <strong>Live update</strong> option to automatically apply to"
+                        " the map canvas each of your modifications."
+                      ) );
+  addGuiTip( myTip );
+  // by Harrissou Sant-anna
+  myTip.setTitle( tr( "Print or export a specific feature from an atlas composition" ) );
+  myTip.setContent( tr( "If you want to print or export the composition of only one feature of the atlas,"
+                        " start the atlas preview, select the desired feature in the drop-down list"
+                        " and click on <strong>Composer -> Print</strong> menu (or use <strong>Composer ->"
+                        " Export...</strong> to any supported file format)."
+                      ) );
+  addGuiTip( myTip );
+  // by Harrissou Sant-anna
+  myTip.setTitle( tr( "Start QGIS from command line" ) );
+  myTip.setContent( tr( "QGIS supports a number of options when started from the command line. To get a list"
+                        " of the options, enter qgis --help on the command line."
                       ) );
   addGuiTip( myTip );
 
