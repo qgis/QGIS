@@ -161,18 +161,18 @@ def executeOtb(commands, progress, addToLog=True):
     loglines.append(tr("OTB execution console output"))
     os.putenv('ITK_AUTOLOAD_PATH', otbLibPath())
     fused_command = ''.join(['"%s" ' % re.sub(r'^"|"$', '', c) for c in commands])
-    proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.STDOUT, universal_newlines=True).stdout
-    if isMac():  # This trick avoids having an uninterrupted system call exception if OTB is not installed
-        time.sleep(1)
-    for line in iter(proc.readline, ""):
-        if "[*" in line:
-            idx = line.find("[*")
-            perc = int(line[idx - 4:idx - 2].strip(" "))
-            if perc != 0:
-                progress.setPercentage(perc)
-        else:
-            loglines.append(line)
-            progress.setConsoleInfo(line)
+    with subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.STDOUT, universal_newlines=True) as proc:
+        if isMac():  # This trick avoids having an uninterrupted system call exception if OTB is not installed
+            time.sleep(1)
+        for line in iter(proc.stdout.readline, ""):
+            if "[*" in line:
+                idx = line.find("[*")
+                perc = int(line[idx - 4:idx - 2].strip(" "))
+                if perc != 0:
+                    progress.setPercentage(perc)
+            else:
+                loglines.append(line)
+                progress.setConsoleInfo(line)
 
     if addToLog:
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

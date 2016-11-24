@@ -128,28 +128,28 @@ def getSagaInstalledVersion(runSaga=False):
         # (python docs advices to use subprocess32 instead of python2.7's subprocess)
         commands = ["saga_cmd -v"]
     while retries < maxRetries:
-        proc = subprocess.Popen(
+        with subprocess.Popen(
             commands,
             shell=True,
             stdout=subprocess.PIPE,
             stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-        ).stdout
-        if isMac():  # This trick avoids having an uninterrupted system call exception if SAGA is not installed
-            time.sleep(1)
-        try:
-            lines = proc.readlines()
-            for line in lines:
-                if line.startswith("SAGA Version:"):
-                    _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
-                    _installedVersionFound = True
-                    return _installedVersion
-            return None
-        except IOError:
-            retries += 1
-        except:
-            return None
+        ) as proc:
+            if isMac():  # This trick avoids having an uninterrupted system call exception if SAGA is not installed
+                time.sleep(1)
+            try:
+                lines = proc.stdout.readlines()
+                for line in lines:
+                    if line.startswith("SAGA Version:"):
+                        _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
+                        _installedVersionFound = True
+                        return _installedVersion
+                return None
+            except IOError:
+                retries += 1
+            except:
+                return None
 
     return _installedVersion
 
@@ -163,28 +163,29 @@ def executeSaga(progress):
         command = [sagaBatchJobFilename()]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
-    proc = subprocess.Popen(
+    with subprocess.Popen(
         command,
         shell=True,
         stdout=subprocess.PIPE,
         stdin=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
         universal_newlines=True,
-    ).stdout
-    try:
-        for line in iter(proc.readline, ''):
-            if '%' in line:
-                s = ''.join([x for x in line if x.isdigit()])
-                try:
-                    progress.setPercentage(int(s))
-                except:
-                    pass
-            else:
-                line = line.strip()
-                if line != '/' and line != '-' and line != '\\' and line != '|':
-                    loglines.append(line)
-                    progress.setConsoleInfo(line)
-    except:
-        pass
+    ) as proc:
+        try:
+            for line in iter(proc.stdout.readline, ''):
+                if '%' in line:
+                    s = ''.join([x for x in line if x.isdigit()])
+                    try:
+                        progress.setPercentage(int(s))
+                    except:
+                        pass
+                else:
+                    line = line.strip()
+                    if line != '/' and line != '-' and line != '\\' and line != '|':
+                        loglines.append(line)
+                        progress.setConsoleInfo(line)
+        except:
+            pass
+
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
