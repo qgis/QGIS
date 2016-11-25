@@ -29,6 +29,9 @@
 #include "qgslocalec.h"
 #include "qgscsexception.h"
 
+#include "cpl_conv.h"
+#include "ogr_srs_api.h"
+
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
