@@ -29,13 +29,24 @@ QgsTask::QgsTask( const QString &name, const Flags& flags )
     , mFlags( flags )
     , mDescription( name )
     , mStatus( Queued )
+    , mOverallStatus( Queued )
     , mProgress( 0.0 )
+    , mTotalProgress( 0.0 )
     , mShouldTerminate( false )
 {}
+
+QgsTask::~QgsTask()
+{
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    delete subTask.task;
+  }
+}
 
 void QgsTask::start()
 {
   mStatus = Running;
+  mOverallStatus = Running;
   emit statusChanged( Running );
   emit begun();
   TaskResult result = run();
@@ -65,6 +76,15 @@ void QgsTask::cancel()
     // immediately terminate unstarted jobs
     terminated();
   }
+  else if ( mStatus == Terminated )
+  {
+    processSubTasksForTermination();
+  }
+
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    subTask.task->cancel();
+  }
 }
 
 void QgsTask::hold()
@@ -72,7 +92,12 @@ void QgsTask::hold()
   if ( mStatus == Queued )
   {
     mStatus = OnHold;
-    emit statusChanged( OnHold );
+    processSubTasksForHold();
+  }
+
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    subTask.task->hold();
   }
 }
 
@@ -81,28 +106,167 @@ void QgsTask::unhold()
   if ( mStatus == OnHold )
   {
     mStatus = Queued;
+    mOverallStatus = Queued;
     emit statusChanged( Queued );
+  }
+
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    subTask.task->unhold();
+  }
+}
+
+void QgsTask::addSubTask( QgsTask* subTask, const QgsTaskList& dependencies,
+                          SubTaskDependency subTaskDependency )
+{
+  mSubTasks << SubTask( subTask, dependencies, subTaskDependency );
+  connect( subTask, &QgsTask::progressChanged, this, [=] { setProgress( mProgress ); } );
+  connect( subTask, &QgsTask::statusChanged, this, &QgsTask::subTaskStatusChanged );
+}
+
+void QgsTask::subTaskStatusChanged( int status )
+{
+  QgsTask* subTask = qobject_cast< QgsTask* >( sender() );
+  if ( !subTask )
+    return;
+
+  if ( status == Running && mStatus == Queued )
+  {
+    mOverallStatus = Running;
+  }
+  else if ( status == Complete && mStatus == Complete )
+  {
+    //check again if all subtasks are complete
+    processSubTasksForCompletion();
+  }
+  else if (( status == Complete || status == Terminated ) && mStatus == Terminated )
+  {
+    //check again if all subtasks are terminated
+    processSubTasksForTermination();
+  }
+  else if (( status == Complete || status == Terminated || status == OnHold ) && mStatus == OnHold )
+  {
+    processSubTasksForHold();
+  }
+  else if ( status == Terminated )
+  {
+    //uh oh...
+    cancel();
   }
 }
 
 void QgsTask::setProgress( double progress )
 {
   mProgress = progress;
-  emit progressChanged( progress );
+
+  if ( !mSubTasks.isEmpty() )
+  {
+    // calculate total progress including subtasks
+
+    double totalProgress = 0.0;
+    Q_FOREACH ( const SubTask& subTask, mSubTasks )
+    {
+      if ( subTask.task->status() == QgsTask::Complete )
+      {
+        totalProgress += 100.0;
+      }
+      else
+      {
+        totalProgress += subTask.task->progress();
+      }
+    }
+    progress = ( progress + totalProgress ) / ( mSubTasks.count() + 1 );
+  }
+
+  mTotalProgress = progress;
+  emit progressChanged( mTotalProgress );
 }
 
 void QgsTask::completed()
 {
   mStatus = Complete;
-  emit statusChanged( Complete );
-  emit taskCompleted();
+  processSubTasksForCompletion();
+}
+
+void QgsTask::processSubTasksForCompletion()
+{
+  bool subTasksCompleted = true;
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    if ( subTask.task->status() != Complete )
+    {
+      subTasksCompleted = false;
+      break;
+    }
+  }
+
+  if ( mStatus == Complete && subTasksCompleted )
+  {
+    mOverallStatus = Complete;
+    setProgress( 100.0 );
+    emit statusChanged( Complete );
+    emit taskCompleted();
+  }
+  else if ( mStatus == Complete )
+  {
+    // defer completion until all subtasks are complete
+    mOverallStatus = Running;
+  }
+}
+
+void QgsTask::processSubTasksForTermination()
+{
+  bool subTasksTerminated = true;
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    if ( subTask.task->status() != Terminated && subTask.task->status() != Complete )
+    {
+      subTasksTerminated = false;
+      break;
+    }
+  }
+
+  if ( mStatus == Terminated && subTasksTerminated && mOverallStatus != Terminated )
+  {
+    mOverallStatus = Terminated;
+    emit statusChanged( Terminated );
+    emit taskTerminated();
+  }
+  else if ( mStatus == Terminated && !subTasksTerminated )
+  {
+    // defer termination until all subtasks are terminated (or complete)
+    mOverallStatus = Running;
+  }
+}
+
+void QgsTask::processSubTasksForHold()
+{
+  bool subTasksRunning = false;
+  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  {
+    if ( subTask.task->status() == Running )
+    {
+      subTasksRunning = true;
+      break;
+    }
+  }
+
+  if ( mStatus == OnHold && !subTasksRunning && mOverallStatus != OnHold )
+  {
+    mOverallStatus = OnHold;
+    emit statusChanged( OnHold );
+  }
+  else if ( mStatus == OnHold && subTasksRunning )
+  {
+    // defer hold until all subtasks finish running
+    mOverallStatus = Running;
+  }
 }
 
 void QgsTask::terminated()
 {
   mStatus = Terminated;
-  emit statusChanged( Terminated );
-  emit taskTerminated();
+  processSubTasksForTermination();
 }
 
 
@@ -126,38 +290,81 @@ QgsTaskManager::~QgsTaskManager()
 
   //then clean them up, including waiting for them to terminate
   mTaskMutex->lock();
-  QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
-  for ( ; it != mTasks.constEnd(); ++it )
+  Q_FOREACH ( QgsTask* task, mParentTasks )
   {
-    cleanupAndDeleteTask( it.value().task );
+    cleanupAndDeleteTask( task );
   }
   mTaskMutex->unlock();
 
   delete mTaskMutex;
 }
 
-long QgsTaskManager::addTask( QgsTask* task, const QgsTaskList& dependencies )
+long QgsTaskManager::addTask( QgsTask* task )
+{
+  return addTaskPrivate( task, QgsTaskList(), false );
+}
+
+long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition& definition )
+{
+  return addTaskPrivate( definition.task,
+                         definition.dependencies,
+                         false );
+}
+
+
+long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bool isSubTask )
 {
   QMutexLocker ml( mTaskMutex );
-  mTasks.insert( mNextTaskId, task );
 
-  connect( task, &QgsTask::progressChanged, this, &QgsTaskManager::taskProgressChanged );
+  long taskId = mNextTaskId++;
+
+  mTasks.insert( taskId, task );
+
+  if ( isSubTask )
+    mSubTasks << task;
+  else
+    mParentTasks << task;
+
   connect( task, &QgsTask::statusChanged, this, &QgsTaskManager::taskStatusChanged );
+  if ( !isSubTask )
+  {
+    connect( task, &QgsTask::progressChanged, this, &QgsTaskManager::taskProgressChanged );
+  }
+
+  // add all subtasks, must be done before dependency resolution
+  Q_FOREACH ( const QgsTask::SubTask& subTask, task->mSubTasks )
+  {
+    switch ( subTask.dependency )
+    {
+      case QgsTask::ParentDependsOnSubTask:
+        dependencies << subTask.task;
+        break;
+
+      case QgsTask::SubTaskIndependent:
+        //nothing
+        break;
+    }
+    //recursively add sub tasks
+    addTaskPrivate( subTask.task, subTask.dependencies, true );
+  }
 
   if ( !dependencies.isEmpty() )
   {
-    mTaskDependencies.insert( mNextTaskId, dependencies );
+    mTaskDependencies.insert( taskId, dependencies );
   }
 
-  if ( hasCircularDependencies( mNextTaskId ) )
+  if ( hasCircularDependencies( taskId ) )
   {
     task->cancel();
   }
 
-  emit taskAdded( mNextTaskId );
-  processQueue();
+  if ( !isSubTask )
+  {
+    emit taskAdded( taskId );
+    processQueue();
+  }
 
-  return mNextTaskId++;
+  return taskId;
 }
 
 QgsTask* QgsTaskManager::task( long id ) const
@@ -170,11 +377,8 @@ QList<QgsTask*> QgsTaskManager::tasks() const
 {
   QMutexLocker ml( mTaskMutex );
   QList< QgsTask* > list;
-  for ( QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin(); it != mTasks.constEnd(); ++it )
-  {
-    list << it.value().task;
-  }
-  return list;
+
+  return mParentTasks.toList();
 }
 
 long QgsTaskManager::taskId( QgsTask *task ) const
@@ -197,10 +401,8 @@ long QgsTaskManager::taskId( QgsTask *task ) const
 void QgsTaskManager::cancelAll()
 {
   QMutexLocker ml( mTaskMutex );
-  QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
-  for ( ; it != mTasks.constEnd(); ++it )
+  Q_FOREACH ( QgsTask* task, mParentTasks )
   {
-    QgsTask* task = it.value().task;
     if ( task->isActive() )
     {
       task->cancel();
@@ -290,15 +492,16 @@ QStringList QgsTaskManager::dependentLayers( long taskId ) const
 QList<QgsTask*> QgsTaskManager::activeTasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  QList< QgsTask* > taskList = mActiveTasks;
-  taskList.detach();
-  return taskList;
+  QSet< QgsTask* > activeTasks = mActiveTasks;
+  activeTasks.intersect( mParentTasks );
+  return activeTasks.toList();
 }
 
 int QgsTaskManager::countActiveTasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  return mActiveTasks.count();
+  QSet< QgsTask* > tasks = mActiveTasks;
+  return tasks.intersect( mParentTasks ).count();
 }
 
 void QgsTaskManager::taskProgressChanged( double progress )
@@ -312,7 +515,8 @@ void QgsTaskManager::taskProgressChanged( double progress )
     return;
 
   emit progressChanged( id, progress );
-  if ( mActiveTasks.count() == 1 )
+
+  if ( countActiveTasks() == 1 )
   {
     emit finalTaskProgressChanged( progress );
   }
@@ -340,7 +544,11 @@ void QgsTaskManager::taskStatusChanged( int status )
     cancelDependentTasks( id );
   }
 
-  emit statusChanged( id, status );
+  if ( !mSubTasks.contains( task ) )
+  {
+    // don't emit status changed for subtasks
+    emit statusChanged( id, status );
+  }
   processQueue();
 }
 
@@ -370,6 +578,7 @@ void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
   }
 }
 
+
 bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 {
   if ( !task )
@@ -396,17 +605,17 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 void QgsTaskManager::processQueue()
 {
   QMutexLocker ml( mTaskMutex );
-  int prevActiveCount = mActiveTasks.count();
+  int prevActiveCount = countActiveTasks();
   mActiveTasks.clear();
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask* task = it.value().task;
-    if ( task && task->status() == QgsTask::Queued && dependenciesSatisified( taskId( task ) ) )
+    if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisified( taskId( task ) ) )
     {
       mTasks[ it.key()].future = QtConcurrent::run( task, &QgsTask::start );
     }
 
-    if ( task && ( task->status() != QgsTask::Complete && task->status() != QgsTask::Terminated ) )
+    if ( task && ( task->mStatus != QgsTask::Complete && task->mStatus != QgsTask::Terminated ) )
     {
       mActiveTasks << task;
     }
@@ -416,9 +625,10 @@ void QgsTaskManager::processQueue()
   {
     emit allTasksFinished();
   }
-  if ( prevActiveCount != mActiveTasks.count() )
+  int newActiveCount = countActiveTasks();
+  if ( prevActiveCount != newActiveCount )
   {
-    emit countActiveTasksChanged( mActiveTasks.count() );
+    emit countActiveTasksChanged( newActiveCount );
   }
 }
 

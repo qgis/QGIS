@@ -76,6 +76,7 @@ QgsTaskManagerModel::QgsTaskManagerModel( QgsTaskManager *manager, QObject *pare
   }
 
   connect( mManager, &QgsTaskManager::taskAdded, this, &QgsTaskManagerModel::taskAdded );
+  // not right - should be completion
   connect( mManager, &QgsTaskManager::taskAboutToBeDeleted, this, &QgsTaskManagerModel::taskDeleted );
   connect( mManager, &QgsTaskManager::progressChanged, this, &QgsTaskManagerModel::progressChanged );
   connect( mManager, &QgsTaskManager::statusChanged, this, &QgsTaskManagerModel::statusChanged );
@@ -133,31 +134,33 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 
   QgsTask* task = indexToTask( index );
-  if ( !task )
-    return QVariant();
-
-  switch ( role )
+  if ( task )
   {
-    case Qt::DisplayRole:
-    case Qt::EditRole:
-      switch ( index.column() )
-      {
-        case Description:
-          return task->description();
-        case Progress:
-          return task->progress();
-        case Status:
-          return static_cast<int>( task->status() );
-        default:
-          return QVariant();
-      }
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+      case Qt::EditRole:
+        switch ( index.column() )
+        {
+          case Description:
+            return task->description();
+          case Progress:
+            return task->progress();
+          case Status:
+            return static_cast<int>( task->status() );
+          default:
+            return QVariant();
+        }
 
-    case StatusRole:
-      return static_cast<int>( task->status() );
+      case StatusRole:
+        return static_cast<int>( task->status() );
 
-    default:
-      return QVariant();
+      default:
+        return QVariant();
+    }
   }
+
+  return QVariant();
 }
 
 Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
@@ -171,8 +174,8 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 
   if ( index.column() == Status )
   {
-    if ( static_cast< QgsTask::TaskStatus >( data( index, StatusRole ).toInt() ) == QgsTask::Running )
-      flags = flags | Qt::ItemIsEditable;
+    //if ( static_cast< QgsTask::TaskStatus >( data( index, StatusRole ).toInt() ) == QgsTask::Running )
+    flags = flags | Qt::ItemIsEditable;
   }
   return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -204,7 +207,8 @@ bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &val
 
 void QgsTaskManagerModel::taskAdded( long id )
 {
-  beginInsertRows( QModelIndex(), mRowToTaskIdMap.count(), mRowToTaskIdMap.count() );
+  beginInsertRows( QModelIndex(), mRowToTaskIdMap.count(),
+                   mRowToTaskIdMap.count() );
   mRowToTaskIdMap.insert( mRowToTaskIdMap.count(), id );
   endInsertRows();
 }
@@ -256,8 +260,11 @@ QgsTask *QgsTaskManagerModel::indexToTask( const QModelIndex &index ) const
   if ( !index.isValid() || index.parent().isValid() )
     return nullptr;
 
-  long id = mRowToTaskIdMap.value( index.row() );
-  return mManager->task( id );
+  long id = mRowToTaskIdMap.value( index.row(), -1 );
+  if ( id >= 0 )
+    return mManager->task( id );
+  else
+    return nullptr;
 }
 
 int QgsTaskManagerModel::idToRow( long id ) const
@@ -297,7 +304,7 @@ void QgsProgressBarDelegate::paint( QPainter *painter, const QStyleOptionViewIte
 
   int progress = index.data().toInt();
 
-  QStyleOptionProgressBarV2 progressBarOption;
+  QStyleOptionProgressBar progressBarOption;
   progressBarOption.state = option.state;
   progressBarOption.rect = option.rect;
   progressBarOption.rect.setTop( option.rect.top() + 1 );

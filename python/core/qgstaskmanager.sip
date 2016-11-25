@@ -96,10 +96,10 @@ class QgsTask : QObject
     void start();
 
     /**
-     * Notifies the task that it should terminate. Calling this is not gauranteed
+     * Notifies the task that it should terminate. Calling this is not guaranteed
      * to immediately end the task, rather it sets the isCancelled() flag which
      * task subclasses can check and terminate their operations at an appropriate
-     * time.
+     * time. Any subtasks owned by this task will also be cancelled.
      * @see isCancelled()
      */
     void cancel();
@@ -120,6 +120,35 @@ class QgsTask : QObject
      * @see hold()
      */
     void unhold();
+
+    //! Controls how subtasks relate to their parent task
+    enum SubTaskDependency
+    {
+      SubTaskIndependent, //!< Subtask is independent of the parent, and can run before, after or at the same time as the parent.
+      ParentDependsOnSubTask, //!< Subtask must complete before parent can begin
+    };
+
+    /**
+     * Adds a subtask to this task.
+     *
+     * Subtasks allow a single task to be created which
+     * consists of multiple smaller tasks. Subtasks are not visible or indepedently
+     * controllable by users. Ownership of the subtask is transferred.
+     * Subtasks can have an optional list of dependant tasks, which must be completed
+     * before the subtask can begin. By default subtasks are considered independent
+     * of the parent task, ie they can be run either before, after, or at the same
+     * time as the parent task. This behaviour can be overriden through the subTaskDependency
+     * argument.
+     *
+     * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
+     * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
+     * task should be added to the manager.
+     *
+     * Subtasks can be nested, ie a subtask can legally be a parent task itself with
+     * its own set of subtasks.
+     */
+    void addSubTask( QgsTask* subTask /Transfer/, const QgsTaskList& dependencies = QgsTaskList(),
+                     SubTaskDependency subTaskDependency = SubTaskIndependent );
 
   signals:
 
@@ -258,17 +287,42 @@ class QgsTaskManager : QObject
 
     virtual ~QgsTaskManager();
 
+    /**
+     * Definition of a task for inclusion within a task bundle.
+     */
+    struct TaskDefinition
+    {
+      /**
+       * Constructor for TaskDefinition. Ownership of the task is transferred to the definition.
+       */
+      TaskDefinition( QgsTask* task, QgsTaskList dependencies = QgsTaskList() );
+
+      //! Task
+      QgsTask* task;
+
+      /**
+       * List of dependencies which must be completed before task can run.
+       * These tasks must be completed before task can run. If any dependent tasks are
+       * cancelled this task will also be cancelled. Dependent tasks must also be added
+       * to the task manager for proper handling of dependencies.
+       */
+      QgsTaskList dependencies;
+    };
+
     /** Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
      * the task.
-     * @param task task to add
-     * @param dependencies list of dependent tasks. These tasks must be completed
-     * before task can run. If any dependent tasks are cancelled this task will also
-     * be cancelled. Dependent tasks must also be added to this task manager for proper
-     * handling of dependencies.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task /Transfer/, const QgsTaskList& dependencies = QgsTaskList() );
+    long addTask( QgsTask* task /Transfer/ );
+
+    /**
+     * Adds a task to the manager, using a full task definition (including dependancy
+     * handling). Ownership of the task is transferred to the manager, and the task
+     * manager will be responsible for starting the task.
+     * @returns unique task ID
+     */
+    long addTask( const TaskDefinition& task /Transfer/ );
 
     /** Returns the task with matching ID.
      * @param id task ID

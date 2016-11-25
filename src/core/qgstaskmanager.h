@@ -22,6 +22,11 @@
 #include <QMap>
 #include <QFuture>
 
+class QgsTask;
+
+//! List of QgsTask objects
+typedef QList< QgsTask* > QgsTaskList;
+
 /**
  * \ingroup core
  * \class QgsTask
@@ -78,6 +83,8 @@ class CORE_EXPORT QgsTask : public QObject
      */
     QgsTask( const QString& description = QString(), const Flags& flags = AllFlags );
 
+    ~QgsTask();
+
     /**
      * Returns the flags associated with the task.
      */
@@ -92,12 +99,12 @@ class CORE_EXPORT QgsTask : public QObject
      * Returns true if the task is active, ie it is not complete and has
      * not been cancelled.
      */
-    bool isActive() const { return mStatus == Running; }
+    bool isActive() const { return mOverallStatus == Running; }
 
     /**
      * Returns the current task status.
      */
-    TaskStatus status() const { return mStatus; }
+    TaskStatus status() const { return mOverallStatus; }
 
     /**
      * Returns the task's description.
@@ -107,7 +114,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Returns the task's progress (between 0.0 and 100.0)
      */
-    double progress() const { return mProgress; }
+    double progress() const { return mTotalProgress; }
 
     /**
      * Starts the task. Should only be called for tasks which are not being
@@ -118,10 +125,10 @@ class CORE_EXPORT QgsTask : public QObject
     void start();
 
     /**
-     * Notifies the task that it should terminate. Calling this is not gauranteed
+     * Notifies the task that it should terminate. Calling this is not guaranteed
      * to immediately end the task, rather it sets the isCancelled() flag which
      * task subclasses can check and terminate their operations at an appropriate
-     * time.
+     * time. Any subtasks owned by this task will also be cancelled.
      * @see isCancelled()
      */
     void cancel();
@@ -142,6 +149,36 @@ class CORE_EXPORT QgsTask : public QObject
      * @see hold()
      */
     void unhold();
+
+    //! Controls how subtasks relate to their parent task
+    enum SubTaskDependency
+    {
+      SubTaskIndependent = 0, //!< Subtask is independent of the parent, and can run before, after or at the same time as the parent.
+      ParentDependsOnSubTask, //!< Subtask must complete before parent can begin
+    };
+
+    /**
+     * Adds a subtask to this task.
+     *
+     * Subtasks allow a single task to be created which
+     * consists of multiple smaller tasks. Subtasks are not visible or indepedently
+     * controllable by users. Ownership of the subtask is transferred.
+     * Subtasks can have an optional list of dependant tasks, which must be completed
+     * before the subtask can begin. By default subtasks are considered independent
+     * of the parent task, ie they can be run either before, after, or at the same
+     * time as the parent task. This behaviour can be overriden through the subTaskDependency
+     * argument. Note that subtasks should NEVER be dependent on their parent task, and violating
+     * this constraint will prevent the task from completing successfully.
+     *
+     * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
+     * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
+     * task should be added to the manager.
+     *
+     * Subtasks can be nested, ie a subtask can legally be a parent task itself with
+     * its own set of subtasks.
+     */
+    void addSubTask( QgsTask* subTask, const QgsTaskList& dependencies = QgsTaskList(),
+                     SubTaskDependency subTaskDependency = SubTaskIndependent );
 
   signals:
 
@@ -183,6 +220,8 @@ class CORE_EXPORT QgsTask : public QObject
      * terminated()
      */
     void taskTerminated();
+
+    void subTaskComplete();
 
   protected:
 
@@ -253,13 +292,43 @@ class CORE_EXPORT QgsTask : public QObject
      */
     void setProgress( double progress );
 
+  private slots:
+    void subTaskStatusChanged( int status );
+
   private:
 
     Flags mFlags;
     QString mDescription;
+    //! Status of this (parent) task alone
     TaskStatus mStatus;
+    //! Status of this task and all subtasks
+    TaskStatus mOverallStatus;
+
+
+    //! Progress of this (parent) task alone
     double mProgress;
+    //! Overall progress of this task and all subtasks
+    double mTotalProgress;
     bool mShouldTerminate;
+
+    struct SubTask
+    {
+      SubTask( QgsTask* task, QgsTaskList dependencies, SubTaskDependency dependency )
+          : task( task )
+          , dependencies( dependencies )
+          , dependency( dependency )
+      {}
+      QgsTask* task;
+      QgsTaskList dependencies;
+      SubTaskDependency dependency;
+    };
+    QList< SubTask > mSubTasks;
+
+    void processSubTasksForCompletion();
+
+    void processSubTasksForTermination();
+
+    void processSubTasksForHold();
 
     friend class QgsTaskManager;
 
@@ -267,8 +336,6 @@ class CORE_EXPORT QgsTask : public QObject
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
 
-//! List of QgsTask objects
-typedef QList< QgsTask* > QgsTaskList;
 
 /** \ingroup core
  * \class QgsTaskManager
@@ -289,17 +356,46 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     virtual ~QgsTaskManager();
 
+    /**
+     * Definition of a task for inclusion in the manager.
+     */
+    struct TaskDefinition
+    {
+
+      /**
+       * Constructor for TaskDefinition.
+       */
+      TaskDefinition( QgsTask* task, QgsTaskList dependencies = QgsTaskList() )
+          : task( task )
+          , dependencies( dependencies )
+      {}
+
+      //! Task
+      QgsTask* task;
+
+      /**
+       * List of dependencies which must be completed before task can run.
+       * These tasks must be completed before task can run. If any dependent tasks are
+       * cancelled this task will also be cancelled. Dependent tasks must also be added
+       * to the task manager for proper handling of dependencies.
+       */
+      QgsTaskList dependencies;
+    };
+
     /** Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
      * the task.
-     * @param task task to add
-     * @param dependencies list of dependent tasks. These tasks must be completed
-     * before task can run. If any dependent tasks are cancelled this task will also
-     * be cancelled. Dependent tasks must also be added to this task manager for proper
-     * handling of dependencies.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task, const QgsTaskList& dependencies = QgsTaskList() );
+    long addTask( QgsTask* task );
+
+    /**
+     * Adds a task to the manager, using a full task definition (including dependancy
+     * handling). Ownership of the task is transferred to the manager, and the task
+     * manager will be responsible for starting the task.
+     * @returns unique task ID
+     */
+    long addTask( const TaskDefinition& task );
 
     /** Returns the task with matching ID.
      * @param id task ID
@@ -312,7 +408,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QList<QgsTask*> tasks() const;
 
     //! Returns the number of tasks tracked by the manager.
-    int count() const { return mTasks.count(); }
+    int count() const { return mParentTasks.count(); }
 
     /** Returns the unique task ID corresponding to a task managed by the class.
      * @param task task to find
@@ -418,8 +514,16 @@ class CORE_EXPORT QgsTaskManager : public QObject
     //! Tracks the next unique task ID
     long mNextTaskId;
 
-    //! List of active (queued or running) tasks
-    QList< QgsTask* > mActiveTasks;
+    //! List of active (queued or running) tasks. Includes subtasks.
+    QSet< QgsTask* > mActiveTasks;
+    //! List of parent tasks
+    QSet< QgsTask* > mParentTasks;
+    //! List of subtasks
+    QSet< QgsTask* > mSubTasks;
+
+    long addTaskPrivate( QgsTask* task,
+                         QgsTaskList dependencies,
+                         bool isSubTask );
 
     bool cleanupAndDeleteTask( QgsTask* task );
 
@@ -433,6 +537,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     void cancelDependentTasks( long taskId );
 
     bool resolveDependencies( long firstTaskId, long currentTaskId, QSet< long >& results ) const;
+
 
 };
 
