@@ -99,12 +99,19 @@ qgis:createattributeindex: >
 qgis:createconstantrasterlayer: >
   Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cellsize as the input one, and all cells with the specified value.
 
-qgis:creategrid:
-  This algorithm creates a vector layer with a grid convering a given extent. Features can be lines or polygons, and the shape used in the grid can be rectangles, diamond or hexagons.
+qgis:creategridlines:
+  This algorithm creates a line vector layer with a grid covering a given extent.
 
-  The size of each element in the grid is defined using a horizontal and vertical spaciong.
+  The size of each element in the grid is defined using a horizontal and vertical spacing.
 
-  The CRS of the output layer must be defined. The grid extent and the spacing values are supposed to be expressed in the coordinates and units of this CRS.
+  The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
+
+qgis:creategridpolygon:
+  This algorithm creates a polygon vector layer with a grid covering a given extent. The grid shape can be rectangles, diamond or hexagons.
+
+  The size of each element in the grid is defined using a horizontal and vertical spacing.
+
+  The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
 
 qgis:createpointsalonglines: >
   This algorithms creates a points layer, with points distributed along the lines of an input vector layer. the distance between points (measured along the line) is defined as a parameter.

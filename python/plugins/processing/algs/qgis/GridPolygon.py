@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -29,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -51,12 +51,13 @@ class GridPolygon(GeoAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    #def getIcon(self):
-    #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create grid (polygon)')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+        self.tags = self.tr('grid,polygons,vector,create,fishnet')
 
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
@@ -67,10 +68,10 @@ class GridPolygon(GeoAlgorithm):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
-                                          self.tr('Horizontal spacing'), default=10.0))
+                                          self.tr('Horizontal spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.VSPACING,
-                                          self.tr('Vertical spacing'), default=10.0))
-        self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
+                                          self.tr('Vertical spacing'), 0.0, 1000000000.0, 0.0001))
+        self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
@@ -104,7 +105,8 @@ class GridPolygon(GeoAlgorithm):
         fields = [QgsField('left', QVariant.Double, '', 24, 16),
                   QgsField('top', QVariant.Double, '', 24, 16),
                   QgsField('right', QVariant.Double, '', 24, 16),
-                  QgsField('bottom', QVariant.Double, '', 24, 16)
+                  QgsField('bottom', QVariant.Double, '', 24, 16),
+                  QgsField('id', QVariant.Int, '', 10, 0)
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
@@ -112,22 +114,27 @@ class GridPolygon(GeoAlgorithm):
 
         if idx == 0:
             self._rectangleGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing)
+                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
         elif idx == 1:
             self._diamondGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing)
+                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
         elif idx == 2:
             self._hexagonGrid(
-                writer, width, height, originX, originY, hSpacing, vSpacing)
+                writer, width, height, originX, originY, hSpacing, vSpacing, progress)
 
         del writer
 
     def _rectangleGrid(self, writer, width, height, originX, originY,
-                       hSpacing, vSpacing):
+                       hSpacing, vSpacing, progress):
         ft = QgsFeature()
 
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
+        cells = rows * columns
+        count_update = cells * 0.05
+
+        id = 1
+        count = 0
 
         for col in range(columns):
             # (column + 1) and (row + 1) calculation is used to maintain
@@ -147,11 +154,15 @@ class GridPolygon(GeoAlgorithm):
                 polyline.append(QgsPoint(x1, y1))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x2, y2])
+                ft.setAttributes([x1, y1, x2, y2, id])
                 writer.addFeature(ft)
+                id += 1
+                count += 1
+                if int(math.fmod(count, count_update)) == 0:
+                    progress.setPercentage(int(count / cells * 100))
 
     def _diamondGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing):
+                     hSpacing, vSpacing, progress):
         ft = QgsFeature()
 
         halfHSpacing = hSpacing / 2
@@ -159,6 +170,12 @@ class GridPolygon(GeoAlgorithm):
 
         columns = int(math.ceil(float(width) / halfHSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
+
+        cells = rows * columns
+        count_update = cells * 0.05
+
+        id = 1
+        count = 0
 
         for col in range(columns):
             x1 = originX + ((col + 0) * halfHSpacing)
@@ -183,11 +200,15 @@ class GridPolygon(GeoAlgorithm):
                 polyline.append(QgsPoint(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x3, y3])
+                ft.setAttributes([x1, y1, x3, y3, id])
                 writer.addFeature(ft)
+                id += 1
+                count += 1
+                if int(math.fmod(count, count_update)) == 0:
+                    progress.setPercentage(int(count / cells * 100))
 
     def _hexagonGrid(self, writer, width, height, originX, originY,
-                     hSpacing, vSpacing):
+                     hSpacing, vSpacing, progress):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
@@ -199,6 +220,12 @@ class GridPolygon(GeoAlgorithm):
 
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
+
+        cells = rows * columns
+        count_update = cells * 0.05
+
+        id = 1
+        count = 0
 
         for col in range(columns):
             # (column + 1) and (row + 1) calculation is used to maintain
@@ -229,5 +256,9 @@ class GridPolygon(GeoAlgorithm):
                 polyline.append(QgsPoint(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
-                ft.setAttributes([x1, y1, x4, y3])
+                ft.setAttributes([x1, y1, x4, y3, id])
                 writer.addFeature(ft)
+                id += 1
+                count += 1
+                if int(math.fmod(count, count_update)) == 0:
+                    progress.setPercentage(int(count / cells * 100))

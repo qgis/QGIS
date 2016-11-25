@@ -50,6 +50,11 @@ class VectorGridPolygons(GeoAlgorithm):
     STEP_Y = 'STEP_Y'
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use GridPolygon instead
+        self.showInToolbox = False
+
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
