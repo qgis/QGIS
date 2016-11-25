@@ -1463,9 +1463,9 @@ QList<QDomElement> QgsServerProjectParser::publishedComposerElements() const
   return composerElemList;
 }
 
-QList< QPair< QString, QgsLayerCoordinateTransform > > QgsServerProjectParser::layerCoordinateTransforms() const
+QList< QPair< QString, QgsDatumTransformStore::Entry > > QgsServerProjectParser::layerCoordinateTransforms() const
 {
-  QList< QPair< QString, QgsLayerCoordinateTransform > > layerTransformList;
+  QList< QPair< QString, QgsDatumTransformStore::Entry > > layerTransformList;
 
   QDomElement coordTransformInfoElem = mXMLDoc->documentElement().firstChildElement( QStringLiteral( "mapcanvas" ) ).firstChildElement( QStringLiteral( "layer_coordinate_transform_info" ) );
   if ( coordTransformInfoElem.isNull() )
@@ -1477,10 +1477,10 @@ QList< QPair< QString, QgsLayerCoordinateTransform > > QgsServerProjectParser::l
   layerTransformList.reserve( layerTransformNodeList.size() );
   for ( int i = 0; i < layerTransformNodeList.size(); ++i )
   {
-    QPair< QString, QgsLayerCoordinateTransform > layerEntry;
+    QPair< QString, QgsDatumTransformStore::Entry > layerEntry;
     QDomElement layerTransformElem = layerTransformNodeList.at( i ).toElement();
     layerEntry.first = layerTransformElem.attribute( QStringLiteral( "layerid" ) );
-    QgsLayerCoordinateTransform t;
+    QgsDatumTransformStore::Entry t;
     t.srcAuthId = layerTransformElem.attribute( QStringLiteral( "srcAuthId" ) );
     t.destAuthId = layerTransformElem.attribute( QStringLiteral( "destAuthId" ) );
     t.srcDatumTransform = layerTransformElem.attribute( QStringLiteral( "srcDatumTransform" ), QStringLiteral( "-1" ) ).toInt();

@@ -34,6 +34,7 @@ class QgsLabelingResults;
 class QgsMapLayerRenderer;
 class QgsMapRendererCache;
 class QgsPalLabeling;
+class QgsFeatureFilterProvider;
 
 
 /** \ingroup core
@@ -104,6 +105,18 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Get pointer to internal labeling engine (in order to get access to the results)
     virtual QgsLabelingResults* takeLabelingResults() = 0;
+
+    //! @note Added in QGIS 3.0
+    //! Set the feature filter provider used by the QgsRenderContext of
+    //! each LayerRenderJob.
+    //! Ownership is not transferred and the provider must not be deleted
+    //! before the render job.
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; };
+
+    //! @note Added in QGIS 3.0
+    //! Returns the feature filter provider used by the QgsRenderContext of
+    //! each LayerRenderJob.
+    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; };
 
     struct Error
     {
@@ -182,7 +195,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! called when rendering has finished to update all layers' geometry caches
     void updateLayerGeometryCaches();
-
     QgsMapSettings mSettings;
     Errors mErrors;
 
@@ -195,6 +207,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     QTime mRenderingStart;
     int mRenderingTime;
+
+    const QgsFeatureFilterProvider *mFeatureFilterProvider;
 };
 
 

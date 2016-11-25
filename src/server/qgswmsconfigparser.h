@@ -18,8 +18,12 @@
 #ifndef QGSWMSCONFIGPARSER_H
 #define QGSWMSCONFIGPARSER_H
 
-#include "qgsmaprenderer.h"
+#include "qgsunittypes.h"
+#include "qgspallabeling.h"
+#include "qgsdatumtransformstore.h"
 
+class QPainter;
+class QDomDocument;
 class QgsComposerHtml;
 class QgsComposerLabel;
 class QgsComposerLegend;
@@ -27,6 +31,7 @@ class QgsComposerMap;
 class QgsComposition;
 class QgsMapLayer;
 class QgsLegendModel;
+class QgsMapSettings;
 
 
 class SERVER_EXPORT QgsWmsConfigParser
@@ -56,7 +61,7 @@ class SERVER_EXPORT QgsWmsConfigParser
     virtual QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const = 0;
 
     //! Returns if output are MM or PIXEL
-    virtual QgsMapRenderer::OutputUnits outputUnits() const = 0;
+    virtual QgsUnitTypes::RenderUnit outputUnits() const = 0;
 
     //! Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file
     virtual QStringList identifyDisabledLayers() const = 0;
@@ -82,8 +87,8 @@ class SERVER_EXPORT QgsWmsConfigParser
     //! Draw text annotation items from the QGIS projectfile
     virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const = 0;
 
-    //! Load PAL engine settings from the QGIS projectfile
-    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const = 0;
+    //! Load PAL engine settings  into global project instance
+    virtual void loadLabelSettings() const = 0;
 
     virtual QString serviceUrl() const = 0;
 
@@ -115,15 +120,10 @@ class SERVER_EXPORT QgsWmsConfigParser
     virtual void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
     //printing
-
-    //! Creates a print composition, usually for a GetPrint request. Replaces map and label parameters
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
-
-    //! Creates a print composition, usually for a GetPrint request. Replaces map and label parameters
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
+    QgsComposition* createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     //! Creates a composition from the project file (probably delegated to the fallback parser)
-    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
+    virtual QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
 
     //! Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
@@ -131,7 +131,7 @@ class SERVER_EXPORT QgsWmsConfigParser
     virtual void setScaleDenominator( double denom ) = 0;
     virtual void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) = 0;
 
-    virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
+    virtual QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const = 0;
 
     virtual int nLayers() const = 0;
 

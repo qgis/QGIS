@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmsutils.h
+    qgsmapserverutils.h
     ---------------------
     begin                : August 2010
     copyright            : (C) 2010 by Marco Hugentobler
@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMSUTILS_H
-#define QGSMSUTILS_H
+#ifndef QGSMAPSERVERUTILS_H
+#define QGSMAPSERVERUTILS_H
 
 #include <QString>
 
 //! Some utility functions that may be included from everywhere in the code
-namespace QgsMSUtils
+namespace QgsMapServerUtils
 {
 
   /** Creates a ramdom filename for a temporary file. This function also creates the directory to store

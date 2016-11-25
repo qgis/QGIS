@@ -65,6 +65,18 @@ class QgsMapRendererJob : QObject
     //! Get pointer to internal labeling engine (in order to get access to the results)
     virtual QgsLabelingResults* takeLabelingResults() = 0 /Transfer/;
 
+    //! @note Added in QGIS 3.0
+    //! Set the feature filter provider used by the QgsRenderContext of
+    //! each LayerRenderJob.
+    //! Ownership is not transferred and the provider must not be deleted
+    //! before the render job.
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider *f );
+
+    //! @note Added in QGIS 3.0
+    //! Returns the feature filter provider used by the QgsRenderContext of
+    //! each LayerRenderJob.
+    const QgsFeatureFilterProvider* featureFilterProvider() const;
+
     struct Error
     {
       Error( const QString& lid, const QString& msg );

@@ -86,7 +86,7 @@ class QgsServerProjectParser
 
     QList<QDomElement> publishedComposerElements() const;
 
-    //QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+    //QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
 
     /** Returns the text of the <layername> element for a layer element
     @return id or a null string in case of error*/

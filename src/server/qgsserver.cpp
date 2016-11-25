@@ -22,6 +22,7 @@
 #include "qgsconfig.h"
 #include "qgsserver.h"
 
+#include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
 #include "qgsfontutils.h"
@@ -61,7 +62,6 @@
 
 QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
-QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
 #endif
@@ -386,8 +386,6 @@ bool QgsServer::init( )
 
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
-  sMapRenderer =  new QgsMapRenderer;
-  sMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
 #ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
@@ -439,12 +437,6 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
   QgsProject::instance()->removeAllMapLayers();
-
-  // Clean up  Expression Context
-  // because each call to QgsMapLayer::draw add items to QgsExpressionContext scope
-  // list. This prevent the scope list to grow indefinitely and seriously deteriorate
-  // performances and memory in the long run
-  sMapRenderer->rendererContext()->setExpressionContext( QgsExpressionContext() );
 
   qApp->processEvents();
 
@@ -594,7 +586,6 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
           , parameterMap
           , p
           , theRequestHandler.data()
-          , sMapRenderer
           , sCapabilitiesCache
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
           , accessControl

@@ -33,4 +33,11 @@ class QgsDatumTransformStore
 
     void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
 
+    struct Entry
+    {
+      QString srcAuthId;
+      QString destAuthId;
+      int srcDatumTransform; //-1 if unknown or not specified
+      int destDatumTransform;
+    };
 };
