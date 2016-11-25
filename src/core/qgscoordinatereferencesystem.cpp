@@ -226,7 +226,7 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &theDefini
     if ( OSRExportToWkt( crs, &wkt ) == OGRERR_NONE )
     {
       theWkt = wkt;
-      OGRFree( wkt );
+      CPLFree( wkt );
     }
     OSRDestroySpatialReference( crs );
   }
@@ -1280,7 +1280,7 @@ QString QgsCoordinateReferenceSystem::toWkt() const
     if ( OSRExportToWkt( d->mCRS, &wkt ) == OGRERR_NONE )
     {
       d->mWkt = wkt;
-      OGRFree( wkt );
+      CPLFree( wkt );
     }
   }
   return d->mWkt;
@@ -1823,7 +1823,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
       wkts.insert( epsg, wkt );
       n++;
 
-      OGRFree( wkt );
+      CPLFree( wkt );
     }
 
     f.close();

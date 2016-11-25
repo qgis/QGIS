@@ -2860,13 +2860,13 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
     char *pszProj4;
     OSRExportToProj4( mySpatialRefSys, &pszProj4 );
     QgsDebugMsg( pszProj4 );
-    OGRFree( pszProj4 );
+    CPLFree( pszProj4 );
 
     char *pszWkt = nullptr;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
 
     srs = QgsCoordinateReferenceSystem::fromWkt( pszWkt );
-    OGRFree( pszWkt );
+    CPLFree( pszWkt );
   }
   else
   {

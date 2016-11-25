@@ -108,10 +108,10 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS, wkt ) != CE_None )
     {
-      OGRFree( wkt );
+      CPLFree( wkt );
       return false;
     }
-    OGRFree( wkt );
+    CPLFree( wkt );
   }
 
   for ( int i = 0; i < GDALGetRasterCount( hSrcDS ); ++i )

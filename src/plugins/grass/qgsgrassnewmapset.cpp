@@ -446,7 +446,7 @@ void QgsGrassNewMapset::setGrassProjection()
       QgsDebugMsg( QString( "ret = %1" ).arg( ret ) );
       QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number(( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
 
-      OGRFree( wkt );
+      CPLFree( wkt );
     }
 
     if ( !mProjInfo || !mProjUnits )

@@ -206,12 +206,12 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
       char *pszProj4;
       OSRExportToProj4( hCRS, &pszProj4 );
       QgsDebugMsg( pszProj4 );
-      OGRFree( pszProj4 );
+      CPLFree( pszProj4 );
 
       char *pszWkt = nullptr;
       OSRExportToWkt( hCRS, &pszWkt );
       QString myWktString = QString( pszWkt );
-      OGRFree( pszWkt );
+      CPLFree( pszWkt );
 
       // create CRS from Wkt
       mCrs = QgsCoordinateReferenceSystem::fromWkt( myWktString );
