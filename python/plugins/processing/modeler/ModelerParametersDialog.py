@@ -158,7 +158,7 @@ class ModelerParametersDialog(QDialog):
                     label.setVisible(self.showAdvanced)
                     widget.setVisible(self.showAdvanced)
                     self.widgets[param.name] = widget
-    
+
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 

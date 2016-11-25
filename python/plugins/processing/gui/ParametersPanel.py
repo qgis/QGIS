@@ -119,10 +119,10 @@ class ParametersPanel(BASE, WIDGET):
                     button.toggled.connect(self.buttonToggled)
                     widget = QWidget()
                     widget.setLayout(layout)
-    
+
                 tooltips = self.alg.getParameterDescriptions()
                 widget.setToolTip(tooltips.get(param.name, param.description))
-    
+
                 label = QLabel(desc)
                 # label.setToolTip(tooltip)
                 self.labels[param.name] = label

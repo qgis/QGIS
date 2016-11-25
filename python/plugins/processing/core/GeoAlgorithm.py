@@ -48,6 +48,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
 from processing.algs.help import shortHelp
 
+
 class GeoAlgorithm(object):
 
     def __init__(self):
@@ -132,10 +133,9 @@ class GeoAlgorithm(object):
         """
         pass
 
-
     def getParametersPanel(self, parent):
-        return ParametersPanel(parent, self) 
-    
+        return ParametersPanel(parent, self)
+
     def getCustomParametersDialog(self):
         """If the algorithm has a custom parameters dialog, it should
         be returned here, ready to be executed.
@@ -185,12 +185,12 @@ class GeoAlgorithm(object):
         calling from the console.
         """
         return None
-    
+
     def processBeforeAddingToModeler(self, alg, model):
         """Add here any task that has to be performed before adding an algorithm
         to a model, such as changing the value of a parameter depending on value
-        of another one""" 
-        pass 
+        of another one"""
+        pass
 
     # =========================================================
 

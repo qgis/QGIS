@@ -20,37 +20,38 @@ class ExpressionWidget(BASE, WIDGET):
     def __init__(self, options):
         super(ExpressionWidget, self).__init__(None)
         self.setupUi(self)
-        
+
         self.setList(options)
-        
+
         def doubleClicked(item):
             self.text.insertPlainText(self.options[item.text()])
+
         def addButtonText(text):
             if any(c for c in text if c.islower()):
                 self.text.insertPlainText(" %s()" % text)
                 self.text.moveCursor(QTextCursor.PreviousCharacter, QTextCursor.MoveAnchor)
             else:
-                self.text.insertPlainText(" %s " % text)                         
+                self.text.insertPlainText(" %s " % text)
         buttons = [b for b in self.buttonsGroupBox.children()if isinstance(b, QPushButton)]
         for button in buttons:
             button.clicked.connect(partial(addButtonText, button.text()))
         self.listWidget.itemDoubleClicked.connect(doubleClicked)
-    
+
     def setList(self, options):
         self.options = options
         self.listWidget.clear()
         for opt in options.keys():
             self.listWidget.addItem(opt)
-              
+
     def setValue(self, value):
         self.text.setPlainText(value)
-        
+
     def value(self):
         return self.text.toPlainText()
 
-    
+
 class ExpressionWidgetWrapper(WidgetWrapper):
-    
+
     def _panel(self, options):
         return ExpressionWidget(options)
 
@@ -61,7 +62,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             for lyr in layers:
                 for n in xrange(lyr.bandCount()):
                     name = '%s@%i' % (lyr.name(), n + 1)
-                    options[name] = name 
+                    options[name] = name
             return self._panel(options)
         elif self.dialogType == DIALOG_BATCH:
             return QLineEdit()
@@ -109,7 +110,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_BATCH:
             return self.widget.setText(value)
 
-
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.datatype == dataobjects.TYPE_FILE:
@@ -130,6 +130,3 @@ class LayersListWidgetWrapper(WidgetWrapper):
             if len(values) == 0 and not self.param.optional:
                 raise InvalidParameterValue()
             return values
-
-    
-        

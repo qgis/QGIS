@@ -39,6 +39,7 @@ from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
 
+
 class RasterCalculator(GeoAlgorithm):
 
     LAYERS = 'LAYERS'
@@ -52,11 +53,13 @@ class RasterCalculator(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Raster')
 
         self.addParameter(ParameterMultipleInput(self.LAYERS,
-                                          self.tr('Input layers'),
-                                          datatype=dataobjects.TYPE_RASTER,
-                                          optional=True,
-                                          metadata={'widget_wrapper': LayersListWidgetWrapper}))
+                                                 self.tr('Input layers'),
+                                                 datatype=dataobjects.TYPE_RASTER,
+                                                 optional=True,
+                                                 metadata={'widget_wrapper': LayersListWidgetWrapper}))
+
         class ParameterRasterCalculatorExpression(ParameterString):
+
             def evaluateForModeler(self, value, model):
                 # print value
                 for i in list(model.inputs.values()):
@@ -76,8 +79,8 @@ class RasterCalculator(GeoAlgorithm):
                 return value
 
         self.addParameter(ParameterRasterCalculatorExpression(self.EXPRESSION, self.tr('Expression'),
-                                          multiline=True,
-                                          metadata={'widget_wrapper': ExpressionWidgetWrapper}))
+                                                              multiline=True,
+                                                              metadata={'widget_wrapper': ExpressionWidgetWrapper}))
         self.addParameter(ParameterNumber(self.CELLSIZE,
                                           self.tr('Cellsize (use 0 or empty to set it automatically)'),
                                           minValue=0.0, default=0.0, optional=True))
@@ -85,7 +88,6 @@ class RasterCalculator(GeoAlgorithm):
                                           self.tr('Output extent'),
                                           optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
-
 
     def processAlgorithm(self, progress):
         expression = self.getParameterValue(self.EXPRESSION)
@@ -123,6 +125,7 @@ class RasterCalculator(GeoAlgorithm):
                     bbox.combineExtentWith(lyr.extent())
             else:
                 raise GeoAlgorithmExecutionException(self.tr("No layers selected"))
+
         def _cellsize(layer):
             return (layer.extent().xMaximum() - layer.extent().xMinimum()) / layer.width()
         cellsize = self.getParameterValue(self.CELLSIZE) or min([_cellsize(lyr) for lyr in layersDict.values()])
@@ -130,12 +133,12 @@ class RasterCalculator(GeoAlgorithm):
         height = math.floor((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
         driverName = GdalUtils.getFormatShortNameFromFilename(output)
         calc = QgsRasterCalculator(expression,
-                                    output,
-                                    driverName,
-                                    bbox,
-                                    width,
-                                    height,
-                                    entries)
+                                   output,
+                                   driverName,
+                                   bbox,
+                                   width,
+                                   height,
+                                   entries)
 
         res = calc.processCalculation()
         if res == QgsRasterCalculator.ParserError:
