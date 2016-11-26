@@ -178,6 +178,7 @@
   <tabstop>mCbxShowForm</tabstop>
   <tabstop>mCbxMapIdentification</tabstop>
   <tabstop>mCbxReadOnly</tabstop>
+  <tabstop>mCbxAllowAddFeatures</tabstop>
   <tabstop>mFilterGroupBox</tabstop>
   <tabstop>mAvailableFieldsList</tabstop>
   <tabstop>mAddFilterButton</tabstop>
