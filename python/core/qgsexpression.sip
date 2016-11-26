@@ -8,7 +8,7 @@ class QgsExpression
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
-     * {@link prepare()} should alwys be called before every
+     * {@link prepare()} should always be called before every
      * loop in which this expression is used.
      */
     QgsExpression( const QString& expr );
@@ -49,7 +49,8 @@ class QgsExpression
 
     /**
      * Get list of columns referenced by the expression.
-     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     *
+     * @note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
@@ -146,16 +147,16 @@ class QgsExpression
      */
     static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
 
-    void setScale( double scale );
-
-    double scale();
-
     /**
      * Set the expression string, will reset the whole internal structure.
      *
      * @note Added in QGIS 2.18
      */
     void setExpression( const QString& expression );
+
+    void setScale( double scale );
+
+    double scale();
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole
@@ -172,6 +173,7 @@ class QgsExpression
      * (used by $length, $area and $perimeter functions only)
      * @see setGeomCalculator()
      * @see distanceUnits()
+     * @see areaUnits()
      */
     QgsDistanceArea *geomCalculator();
 
@@ -188,6 +190,7 @@ class QgsExpression
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
+     * @see areaUnits()
      */
     QGis::UnitType distanceUnits() const;
 
@@ -195,6 +198,7 @@ class QgsExpression
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
+     * @see setAreaUnits()
      */
     void setDistanceUnits( QGis::UnitType unit );
 
@@ -358,7 +362,7 @@ class QgsExpression
     //! List of parameters, used for function definition
     typedef QList< QgsExpression::Parameter > ParameterList;
 
-    /**
+    /** \ingroup core
      * A abstract base class for defining QgsExpression functions.
      */
     class Function
@@ -377,7 +381,7 @@ class QgsExpression
                   bool isContextual = false );
 
         /** Constructor for function which uses unnamed parameters and group list
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          */
         Function( const QString& fnname,
                   int params,
@@ -403,7 +407,7 @@ class QgsExpression
                   bool isContextual = false );
 
         /** Constructor for function which uses named parameter list and group list.
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          */
         Function( const QString& fnname,
                   const QgsExpression::ParameterList& params,
@@ -419,6 +423,7 @@ class QgsExpression
 
         /** The name of the function. */
         QString name() const;
+
         /** The number of parameters this function takes. */
         int params() const;
 
@@ -431,6 +436,7 @@ class QgsExpression
         const QgsExpression::ParameterList& parameters() const;
 
         /** Does this function use a geometry object. */
+        //TODO QGIS 3.0 - rename to usesGeometry()
         bool usesgeometry() const;
 
         /** Returns a list of possible aliases for the function. These include
@@ -455,7 +461,7 @@ class QgsExpression
 
         /** Returns true if the function is deprecated and should not be presented as a valid option
          * to users in expression builders.
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          */
         virtual bool isDeprecated() const;
 
@@ -465,12 +471,13 @@ class QgsExpression
         QString group() const;
 
         /** Returns a list of the groups the function belongs to.
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          * @see group()
         */
         QStringList groups() const;
 
         /** The help text for the function. */
+        //TODO QGIS 3.0 - rename to helpText()
         const QString helptext() const;
 
         //! @deprecated Use QgsExpressionContext variant instead
@@ -684,6 +691,7 @@ class QgsExpression
 
     //! Named node
     //! @note added in QGIS 2.16
+    //! \ingroup core
     class NamedNode
     {
       public:
@@ -737,7 +745,7 @@ class QgsExpression
     //TODO QGIS 3.0 - remove
     //! @deprecated use QgsInterval instead
     class Interval
-   {
+    {
       public:
         Interval( int seconds = 0 );
 
@@ -785,6 +793,8 @@ class QgsExpression
         virtual QgsExpression::Node* clone() const;
     };
 
+    /** \ingroup core
+     */
     class NodeBinaryOperator : QgsExpression::Node
     {
       public:
@@ -820,6 +830,8 @@ class QgsExpression
         QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval *i );
     };
 
+    /** \ingroup core
+     */
     class NodeInOperator : QgsExpression::Node
     {
       public:
@@ -841,6 +853,8 @@ class QgsExpression
         virtual QgsExpression::Node* clone() const;
     };
 
+    /** \ingroup core
+     */
     class NodeFunction : QgsExpression::Node
     {
       public:
@@ -865,6 +879,8 @@ class QgsExpression
         static bool validateParams( int fnIndex, QgsExpression::NodeList* args, QString& error );
     };
 
+    /** \ingroup core
+     */
     class NodeLiteral : QgsExpression::Node
     {
       public:
@@ -884,6 +900,8 @@ class QgsExpression
         virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
+    /** \ingroup core
+     */
     class NodeColumnRef : QgsExpression::Node
     {
       public:
@@ -904,6 +922,8 @@ class QgsExpression
         virtual QgsExpression::Node* clone() const;
     };
 
+    /** \ingroup core
+     */
     class WhenThen
     {
       public:
@@ -919,6 +939,8 @@ class QgsExpression
 
     };
 
+    /** \ingroup core
+     */
     class NodeCondition : QgsExpression::Node
     {
       public:
@@ -938,8 +960,10 @@ class QgsExpression
 
     //////
 
-    /** Support for visitor pattern - algorithms dealing with the expressions
-        may be implemented without modifying the Node classes */
+    /** \ingroup core
+     * Support for visitor pattern - algorithms dealing with the expressions
+     * may be implemented without modifying the Node classes
+     */
     class Visitor
     {
       public:

@@ -200,7 +200,7 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Edition capability flags
-      * @note Added in QGIS 3.0 */
+      * @note Added in QGIS 2.18 */
     enum EditionCapability
     {
       /** Flag to indicate that a new layer can be added to the dataset */
@@ -217,11 +217,11 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
-      * @note Added in QGIS 3.0 */
+      * @note Added in QGIS 2.18 */
     Q_DECLARE_FLAGS( EditionCapabilities, EditionCapability )
 
     /** Enumeration to describe how to handle existing files
-        @note Added in QGIS 3.0
+        @note Added in QGIS 2.18
      */
     typedef enum
     {
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** \ingroup core
      * Options to pass to writeAsVectorFormat()
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     class CORE_EXPORT SaveVectorOptions
     {
@@ -490,20 +490,20 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /**
      * Return edition capabilites for an existing dataset name.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static EditionCapabilities editionCapabilities( const QString& datasetName );
 
     /**
      * Returns whether the target layer already exists.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static bool targetLayerExists( const QString& datasetName,
                                    const QString& layerName );
 
     /**
      * Returns whether there are among the attributes specified some that do not exist yet in the layer
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static bool areThereNewFieldsToCreate( const QString& datasetName,
                                            const QString& layerName,

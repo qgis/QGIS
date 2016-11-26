@@ -33,7 +33,7 @@ class QgsExpressionFieldBuffer
      * @param index The index of the expression to change
      * @param name   New name for field
      *
-     * @note added in 3.0
+     * @note added in 2.18
      */
     void renameExpression( int index, const QString& name );
 

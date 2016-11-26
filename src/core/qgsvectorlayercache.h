@@ -139,7 +139,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * a result of a call to setFullCache() or by through a feature request which resulted in
      * all available features being cached.
      * @see setFullCache()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     bool hasFullCache() const { return mFullCache; }
 
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     bool isFidCached( const QgsFeatureId fid ) const;
 
     /** Returns the set of feature IDs for features which are cached.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see isFidCached()
      */
     QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }

@@ -511,8 +511,8 @@ class CORE_EXPORT QgsExpression
     typedef QVariant( *FcnEvalContext )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
     /** \ingroup core
-      * A abstract base class for defining QgsExpression functions.
-      */
+     * A abstract base class for defining QgsExpression functions.
+     */
     class CORE_EXPORT Function
     {
       public:
@@ -540,7 +540,7 @@ class CORE_EXPORT QgsExpression
         }
 
         /** Constructor for function which uses unnamed parameters and group list
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          */
         Function( const QString& fnname,
                   int params,
@@ -588,7 +588,7 @@ class CORE_EXPORT QgsExpression
         {}
 
         /** Constructor for function which uses named parameter list and group list.
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          */
         Function( const QString& fnname,
                   const ParameterList& params,
@@ -653,7 +653,8 @@ class CORE_EXPORT QgsExpression
 
         /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
-         * Functions are non lazy default and will be given the node return value when called **/
+         * Functions are non lazy default and will be given the node return value when called
+         */
         bool lazyEval() const { return mLazyEval; }
 
         virtual QStringList referencedColumns() const { return mReferencedColumns; }
@@ -665,7 +666,7 @@ class CORE_EXPORT QgsExpression
 
         /** Returns true if the function is deprecated and should not be presented as a valid option
          * to users in expression builders.
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          */
         virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( "deprecated" ); }
 
@@ -675,7 +676,7 @@ class CORE_EXPORT QgsExpression
         QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
 
         /** Returns a list of the groups the function belongs to.
-         * @note added in QGIS 3.0
+         * @note added in QGIS 2.18
          * @see group()
         */
         QStringList groups() const { return mGroups; }
@@ -1441,7 +1442,8 @@ class CORE_EXPORT QgsExpression
 
     /** \ingroup core
      * Support for visitor pattern - algorithms dealing with the expressions
-        may be implemented without modifying the Node classes */
+     * may be implemented without modifying the Node classes
+     */
     class CORE_EXPORT Visitor
     {
       public:

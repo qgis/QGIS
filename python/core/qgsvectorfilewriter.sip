@@ -20,6 +20,8 @@ class QgsVectorFileWriter
       Hidden
     };
 
+    /** \ingroup core
+     */
     class Option
     {
       public:
@@ -30,6 +32,8 @@ class QgsVectorFileWriter
         QgsVectorFileWriter::OptionType type;
     };
 
+    /** \ingroup core
+     */
     class SetOption : QgsVectorFileWriter::Option
     {
       public:
@@ -40,6 +44,8 @@ class QgsVectorFileWriter
         bool allowNone;
     };
 
+    /** \ingroup core
+     */
     class StringOption: QgsVectorFileWriter::Option
     {
       public:
@@ -48,6 +54,8 @@ class QgsVectorFileWriter
         QString defaultValue;
     };
 
+    /** \ingroup core
+     */
     class IntOption: QgsVectorFileWriter::Option
     {
       public:
@@ -56,12 +64,16 @@ class QgsVectorFileWriter
         int defaultValue;
     };
 
+    /** \ingroup core
+     */
     class BoolOption : QgsVectorFileWriter::SetOption
     {
       public:
         BoolOption( const QString& docString, bool defaultValue );
     };
 
+    /** \ingroup core
+     */
     class HiddenOption : QgsVectorFileWriter::Option
     {
       public:
@@ -106,7 +118,8 @@ class QgsVectorFileWriter
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
-    /** Interface to convert raw field values to their user-friendly value.
+    /** \ingroup core
+     * Interface to convert raw field values to their user-friendly value.
      * @note Added in QGIS 2.16
      */
     class FieldValueConverter
@@ -133,7 +146,7 @@ class QgsVectorFileWriter
     };
 
     /** Edition capability flags
-      * @note Added in QGIS 3.0 */
+      * @note Added in QGIS 2.18 */
     enum EditionCapability
     {
         /** Flag to indicate that a new layer can be added to the dataset */
@@ -152,7 +165,7 @@ class QgsVectorFileWriter
     typedef QFlags<QgsVectorFileWriter::EditionCapability> EditionCapabilities;
 
     /** Enumeration to describe how to handle existing files
-        @note Added in QGIS 3.0
+        @note Added in QGIS 2.18
      */
     enum ActionOnExistingFile
     {
@@ -259,7 +272,7 @@ class QgsVectorFileWriter
 
     /**
      * Options to pass to writeAsVectorFormat()
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     class SaveVectorOptions
     {
@@ -330,7 +343,7 @@ class QgsVectorFileWriter
      * @param options options.
      * @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * @param errorMessage pointer to buffer fo error message
-     * @note added in 3.0
+     * @note added in 2.18
      */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
@@ -412,21 +425,29 @@ class QgsVectorFileWriter
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
     /**
+     * Get the ogr geometry type from an internal QGIS wkb type enum.
+     *
+     * Will drop M values and convert Z to 2.5D where required.
+     * @note not available in python bindings
+     */
+    // static OGRwkbGeometryType ogrTypeFromWkbType( QgsWKBTypes::Type type );
+
+    /**
      * Return edition capabilites for an existing dataset name.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static EditionCapabilities editionCapabilities( const QString& datasetName );
 
     /**
      * Returns whether the target layer already exists.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static bool targetLayerExists( const QString& datasetName,
                                    const QString& layerName );
 
     /**
      * Returns whether there are among the attributes specified some that do not exist yet in the layer
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static bool areThereNewFieldsToCreate( const QString& datasetName,
                                            const QString& layerName,
