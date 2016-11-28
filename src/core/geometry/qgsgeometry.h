@@ -399,12 +399,12 @@ class CORE_EXPORT QgsGeometry
     int addPart( const QgsGeometry& newPart );
 
     /**
-     * Removes the interior rings from a (multi)polygon geometry. If the minimumRingArea
+     * Removes the interior rings from a (multi)polygon geometry. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
      * @note added in QGIS 3.0
      */
-    QgsGeometry removeInteriorRings( double minimumRingArea = -1 ) const;
+    QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/
