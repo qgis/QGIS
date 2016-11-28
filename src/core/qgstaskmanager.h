@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QMap>
 #include <QFuture>
+#include <QReadWriteLock>
 
 class QgsTask;
 
@@ -310,6 +311,7 @@ class CORE_EXPORT QgsTask : public QObject
     //! Overall progress of this task and all subtasks
     double mTotalProgress;
     bool mShouldTerminate;
+    int mStartCount;
 
     struct SubTask
     {
@@ -408,7 +410,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QList<QgsTask*> tasks() const;
 
     //! Returns the number of tasks tracked by the manager.
-    int count() const { return mParentTasks.count(); }
+    int count() const;
 
     /** Returns the unique task ID corresponding to a task managed by the class.
      * @param task task to find
@@ -425,9 +427,6 @@ class CORE_EXPORT QgsTaskManager : public QObject
     //! Returns the set of task IDs on which a task is dependent
     //! @note not available in Python bindings
     QSet< long > dependencies( long taskId ) const;
-
-    //! Will return true if the specified task has circular dependencies
-    bool hasCircularDependencies( long taskId ) const;
 
     /** Sets a list of layers on which as task is dependent. The task will automatically
      * be cancelled if any of these layers are above to be removed.
@@ -501,12 +500,20 @@ class CORE_EXPORT QgsTaskManager : public QObject
     {
       TaskInfo( QgsTask* task = nullptr )
           : task( task )
+          , added( false )
       {}
       QgsTask* task;
+      bool added;
       QFuture< void > future;
     };
 
-    mutable QMutex* mTaskMutex;
+    mutable QReadWriteLock* mTaskMutex;
+    mutable QReadWriteLock* mActiveTaskMutex;
+    mutable QReadWriteLock* mParentTaskMutex;
+    mutable QReadWriteLock* mSubTaskMutex;
+    mutable QReadWriteLock* mDependenciesMutex;
+    mutable QReadWriteLock* mLayerDependenciesMutex;
+
     QMap< long, TaskInfo > mTasks;
     QMap< long, QgsTaskList > mTaskDependencies;
     QMap< long, QStringList > mLayerDependencies;
@@ -520,6 +527,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QSet< QgsTask* > mParentTasks;
     //! List of subtasks
     QSet< QgsTask* > mSubTasks;
+
+    QSet< QgsTask* > mPendingDeletion;
 
     long addTaskPrivate( QgsTask* task,
                          QgsTaskList dependencies,
@@ -538,7 +547,10 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     bool resolveDependencies( long firstTaskId, long currentTaskId, QSet< long >& results ) const;
 
+    //! Will return true if the specified task has circular dependencies
+    bool hasCircularDependencies( long taskId ) const;
 
+    friend class TestQgsTaskManager;
 };
 
 #endif //QGSTASKMANAGER_H

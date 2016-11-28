@@ -161,7 +161,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
     QgsTaskManager* mManager;
 
-    QMap< int, long > mRowToTaskIdMap;
+    QList< long > mRowToTaskIdList;
 
     QgsTask* indexToTask( const QModelIndex& index ) const;
     int idToRow( long id ) const;

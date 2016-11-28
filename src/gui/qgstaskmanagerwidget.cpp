@@ -69,15 +69,12 @@ QgsTaskManagerModel::QgsTaskManagerModel( QgsTaskManager *manager, QObject *pare
   Q_ASSERT( mManager );
 
   //populate row to id map
-  int i = 0;
   Q_FOREACH ( QgsTask* task, mManager->tasks() )
   {
-    mRowToTaskIdMap.insert( i, mManager->taskId( task ) );
+    mRowToTaskIdList << mManager->taskId( task );
   }
 
   connect( mManager, &QgsTaskManager::taskAdded, this, &QgsTaskManagerModel::taskAdded );
-  // not right - should be completion
-  connect( mManager, &QgsTaskManager::taskAboutToBeDeleted, this, &QgsTaskManagerModel::taskDeleted );
   connect( mManager, &QgsTaskManager::progressChanged, this, &QgsTaskManagerModel::progressChanged );
   connect( mManager, &QgsTaskManager::statusChanged, this, &QgsTaskManagerModel::statusChanged );
 }
@@ -90,7 +87,7 @@ QModelIndex QgsTaskManagerModel::index( int row, int column, const QModelIndex &
     return QModelIndex();
   }
 
-  if ( !parent.isValid() && row >= 0 && row < mManager->count() )
+  if ( !parent.isValid() && row >= 0 && row < mRowToTaskIdList.count() )
   {
     //return an index for the task at this position
     return createIndex( row, column );
@@ -113,7 +110,7 @@ int QgsTaskManagerModel::rowCount( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
   {
-    return mManager->count();
+    return mRowToTaskIdList.count();
   }
   else
   {
@@ -183,6 +180,7 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   Q_UNUSED( role );
+  return false;
 
   if ( !index.isValid() )
     return false;
@@ -207,25 +205,23 @@ bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &val
 
 void QgsTaskManagerModel::taskAdded( long id )
 {
-  beginInsertRows( QModelIndex(), mRowToTaskIdMap.count(),
-                   mRowToTaskIdMap.count() );
-  mRowToTaskIdMap.insert( mRowToTaskIdMap.count(), id );
+  beginInsertRows( QModelIndex(), mRowToTaskIdList.count(),
+                   mRowToTaskIdList.count() );
+  mRowToTaskIdList << id;
   endInsertRows();
 }
 
 void QgsTaskManagerModel::taskDeleted( long id )
 {
-  for ( QMap< int, long >::iterator it = mRowToTaskIdMap.begin(); it != mRowToTaskIdMap.end(); )
+  for ( int row = 0; row < mRowToTaskIdList.count(); ++row )
   {
-    if ( it.value() == id )
+    if ( mRowToTaskIdList.at( row ) == id )
     {
-      beginRemoveRows( QModelIndex(), it.key(), it.key() );
-      it = mRowToTaskIdMap.erase( it );
+      beginRemoveRows( QModelIndex(), row, row );
+      mRowToTaskIdList.removeAt( row );
       endRemoveRows();
       return;
     }
-    else
-      ++it;
   }
 }
 
@@ -244,15 +240,20 @@ void QgsTaskManagerModel::progressChanged( long id, double progress )
 
 void QgsTaskManagerModel::statusChanged( long id, int status )
 {
-  Q_UNUSED( status );
-
-  QModelIndex index = idToIndex( id, Status );
-  if ( !index.isValid() )
+  if ( status == QgsTask::Complete || status == QgsTask::Terminated )
   {
-    return;
+    taskDeleted( id );
   }
+  else
+  {
+    QModelIndex index = idToIndex( id, Status );
+    if ( !index.isValid() )
+    {
+      return;
+    }
 
-  emit dataChanged( index, index );
+    emit dataChanged( index, index );
+  }
 }
 
 QgsTask *QgsTaskManagerModel::indexToTask( const QModelIndex &index ) const
@@ -260,7 +261,7 @@ QgsTask *QgsTaskManagerModel::indexToTask( const QModelIndex &index ) const
   if ( !index.isValid() || index.parent().isValid() )
     return nullptr;
 
-  long id = mRowToTaskIdMap.value( index.row(), -1 );
+  long id = index.row() >= 0 && index.row() < mRowToTaskIdList.count() ? mRowToTaskIdList.at( index.row() ) : -1;
   if ( id >= 0 )
     return mManager->task( id );
   else
@@ -269,11 +270,11 @@ QgsTask *QgsTaskManagerModel::indexToTask( const QModelIndex &index ) const
 
 int QgsTaskManagerModel::idToRow( long id ) const
 {
-  for ( QMap< int, long >::const_iterator it = mRowToTaskIdMap.constBegin(); it != mRowToTaskIdMap.constEnd(); ++it )
+  for ( int row = 0; row < mRowToTaskIdList.count(); ++row )
   {
-    if ( it.value() == id )
+    if ( mRowToTaskIdList.at( row ) == id )
     {
-      return it.key();
+      return row;
     }
   }
   return -1;

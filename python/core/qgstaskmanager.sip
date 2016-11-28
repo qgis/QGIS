@@ -353,9 +353,6 @@ class QgsTaskManager : QObject
     //! @note not available in Python bindings
     //QSet< long > dependencies( long taskId ) const;
 
-    //! Will return true if the specified task has circular dependencies
-    bool hasCircularDependencies( long taskId ) const;
-
     /** Sets a list of layers on which as task is dependent. The task will automatically
      * be cancelled if any of these layers are above to be removed.
      * @param taskId task ID
