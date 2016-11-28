@@ -683,6 +683,41 @@ int QgsGeometry::addPart( const QgsGeometry& newPart )
   return addPart( newPart.d->geometry->clone() );
 }
 
+QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
+{
+  if ( !d->geometry || type() != QgsWkbTypes::PolygonGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.removeInteriorRings( minimumRingArea );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsCurvePolygon* newPoly = static_cast< QgsCurvePolygon* >( d->geometry->clone() );
+    newPoly->removeInteriorRings( minimumRingArea );
+    return QgsGeometry( newPoly );
+  }
+}
+
 int QgsGeometry::addPart( GEOSGeometry *newPart )
 {
   if ( !d->geometry || !newPart )

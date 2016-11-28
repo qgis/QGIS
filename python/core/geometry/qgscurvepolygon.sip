@@ -57,6 +57,14 @@ class QgsCurvePolygon: public QgsSurface
     /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
+    /**
+     * Removes the interior rings from the polygon. If the minimumRingArea
+     * parameter is specified then only rings smaller than this minimum
+     * area will be removed.
+     * @note added in QGIS 3.0
+     */
+    void removeInteriorRings( double minimumRingArea = -1 );
+
     virtual void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false );

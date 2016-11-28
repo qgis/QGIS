@@ -546,6 +546,24 @@ bool QgsCurvePolygon::removeInteriorRing( int nr )
   return true;
 }
 
+void QgsCurvePolygon::removeInteriorRings( double minimumRingArea )
+{
+  for ( int ringIndex = mInteriorRings.size() - 1; ringIndex >= 0; --ringIndex )
+  {
+    if ( minimumRingArea < 0 )
+      delete mInteriorRings.takeAt( ringIndex );
+    else
+    {
+      double area;
+      mInteriorRings.at( ringIndex )->sumUpArea( area );
+      if ( area < minimumRingArea )
+        delete mInteriorRings.takeAt( ringIndex );
+    }
+  }
+
+  clearCache();
+}
+
 void QgsCurvePolygon::draw( QPainter& p ) const
 {
   if ( mInteriorRings.size() < 1 )

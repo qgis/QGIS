@@ -398,6 +398,14 @@ class CORE_EXPORT QgsGeometry
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsGeometry& newPart );
 
+    /**
+     * Removes the interior rings from a (multi)polygon geometry. If the minimumRingArea
+     * parameter is specified then only rings smaller than this minimum
+     * area will be removed.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry removeInteriorRings( double minimumRingArea = -1 ) const;
+
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/
     int translate( double dx, double dy );
