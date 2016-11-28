@@ -50,6 +50,9 @@ class CORE_EXPORT QgsColorRamp
      */
     virtual QString type() const = 0;
 
+
+    virtual void invert() = 0;
+
     /** Creates a clone of the color ramp.
      */
     virtual QgsColorRamp* clone() const = 0;
@@ -123,6 +126,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "gradient" ); }
+    virtual void invert() override;
     virtual QgsGradientColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
 
@@ -255,6 +259,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "random" ); }
+    virtual void invert() override { return; }
     virtual QgsLimitedRandomColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     int count() const override { return mCount; }
@@ -370,6 +375,8 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 
     QString type() const override;
 
+    virtual void invert() override { return; }
+
     QgsRandomColorRamp* clone() const override;
 
     QgsStringMap properties() const override;
@@ -424,6 +431,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "preset" ); }
+    virtual void invert() override;
     virtual QgsPresetSchemeColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     int count() const override;
@@ -455,9 +463,11 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
     /** Constructor for QgsColorBrewerColorRamp
      * @param schemeName color brewer scheme name
      * @param colors number of colors in ramp
+     * @param inverted invert ramp ordering
      */
     QgsColorBrewerColorRamp( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
-                             int colors = DEFAULT_COLORBREWER_COLORS );
+                             int colors = DEFAULT_COLORBREWER_COLORS,
+                             bool inverted = false );
 
     /** Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
      * map.
@@ -469,6 +479,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "colorbrewer" ); }
+    virtual void invert() override;
     virtual QgsColorBrewerColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     virtual int count() const override { return mColors; }
@@ -517,6 +528,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
     QString mSchemeName;
     int mColors;
     QList<QColor> mPalette;
+    bool mInverted;
 };
 
 
