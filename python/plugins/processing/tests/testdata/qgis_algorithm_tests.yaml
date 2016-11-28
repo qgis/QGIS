@@ -1729,3 +1729,27 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: qgis:deleteholes
+    name: Delete holes (no min)
+    params:
+      INPUT:
+        name: custom/remove_holes.gml
+        type: vector
+      MIN_AREA: 0.0
+    results:
+      OUTPUT:
+        name: expected/removed_holes.gml
+        type: vector
+
+  - algorithm: qgis:deleteholes
+    name: Delete holes (with min)
+    params:
+      INPUT:
+        name: custom/remove_holes.gml
+        type: vector
+      MIN_AREA: 5.0
+    results:
+      OUTPUT:
+        name: expected/removed_holes_min_area.gml
+        type: vector
