@@ -54,16 +54,23 @@ class QgsCurvePolygon: public QgsSurface
     void setInteriorRings( const QList<QgsCurve*>& rings );
     /** Adds an interior ring to the geometry (takes ownership)*/
     virtual void addInteriorRing( QgsCurve* ring /Transfer/ );
-    /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
-    bool removeInteriorRing( int nr );
 
     /**
-     * Removes the interior rings from the polygon. If the minimumRingArea
+     * Removes an interior ring from the polygon. The first interior ring has index 0.
+     * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
+     * the function will return true.  It is not possible to remove the exterior ring using this method.
+     * @see removeInteriorRings()
+     */
+    bool removeInteriorRing( int ringIndex );
+
+    /**
+     * Removes the interior rings from the polygon. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
      * @note added in QGIS 3.0
+     * @see removeInteriorRing()
      */
-    void removeInteriorRings( double minimumRingArea = -1 );
+    void removeInteriorRings( double minimumAllowedArea = -1 );
 
     virtual void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
