@@ -24,7 +24,7 @@
 #include <QtTest/QtTest>
 
 //enable to allow fragile tests which intermittently fail
-//#define WITH_FLAKY_TESTS
+#define WITH_FLAKY_TESTS
 
 class TestTask : public QgsTask
 {

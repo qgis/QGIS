@@ -279,12 +279,12 @@ void QgsTask::terminated()
 
 QgsTaskManager::QgsTaskManager( QObject* parent )
     : QObject( parent )
-    , mTaskMutex( new QReadWriteLock( QReadWriteLock::Recursive ) )
-    , mActiveTaskMutex( new QReadWriteLock( QReadWriteLock::Recursive ) )
-    , mParentTaskMutex( new QReadWriteLock( QReadWriteLock::Recursive ) )
-    , mSubTaskMutex( new QReadWriteLock( QReadWriteLock::Recursive ) )
-    , mDependenciesMutex( new QReadWriteLock( QReadWriteLock::Recursive ) )
-    , mLayerDependenciesMutex( new QReadWriteLock( QReadWriteLock::Recursive ) )
+    , mTaskMutex( new QReadWriteLock() )
+    , mActiveTaskMutex( new QReadWriteLock() )
+    , mParentTaskMutex( new QReadWriteLock() )
+    , mSubTaskMutex( new QReadWriteLock() )
+    , mDependenciesMutex( new QReadWriteLock() )
+    , mLayerDependenciesMutex( new QReadWriteLock() )
     , mNextTaskId( 0 )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
