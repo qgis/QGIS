@@ -48,22 +48,22 @@ class CORE_EXPORT QgsAuthMethodRegistry
     virtual ~QgsAuthMethodRegistry();
 
     //! Return path for the library of the auth method
-    QString library( const QString & authMethodKey ) const;
+    QString library( const QString& authMethodKey ) const;
 
     //! Return list of auth method plugins found
     QString pluginList( bool asHtml = false ) const;
 
     //! Return library directory where plugins are found
-    const QDir & libraryDirectory() const;
+    const QDir& libraryDirectory() const;
 
     //! Set library directory where to search for plugins
-    void setLibraryDirectory( const QDir & path );
+    void setLibraryDirectory( const QDir& path );
 
     /** Create an instance of the auth method
         @param authMethodKey identificator of the auth method
         @return instance of auth method or nullptr on error
      */
-    QgsAuthMethod *authMethod( const QString & authMethodKey );
+    QgsAuthMethod* authMethod( const QString& authMethodKey );
 
     /** Return the auth method capabilities
         @param authMethodKey identificator of the auth method
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
      * @param parent Parent widget
      * @param authMethodKey identificator of the auth method
      */
-    QWidget *editWidget( const QString & authMethodKey, QWidget * parent = nullptr );
+    QWidget* editWidget( const QString& authMethodKey, QWidget* parent = nullptr );
 
 #if QT_VERSION >= 0x050000
 
@@ -83,8 +83,8 @@ class CORE_EXPORT QgsAuthMethodRegistry
         @param functionName name of function
         @return pointer to function or nullptr on error
      */
-    QFunctionPointer function( const QString & authMethodKey,
-                               const QString & functionName );
+    QFunctionPointer function( const QString& authMethodKey,
+                               const QString& functionName );
 #else
 
     /** Get pointer to auth method function
@@ -92,12 +92,12 @@ class CORE_EXPORT QgsAuthMethodRegistry
         @param functionName name of function
         @return pointer to function or nullptr on error
      */
-    void *function( const QString & authMethodKey,
-                    const QString & functionName );
+    void* function( const QString& authMethodKey,
+                    const QString& functionName );
 #endif
 
     //! Return the library object associated with an auth method key
-    QLibrary *authMethodLibrary( const QString & authMethodKey ) const;
+    QLibrary* authMethodLibrary( const QString& authMethodKey ) const;
 
     //! Return list of available auth methods by their keys
     QStringList authMethodList() const;

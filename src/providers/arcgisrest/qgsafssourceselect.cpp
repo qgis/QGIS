@@ -27,7 +27,7 @@
 
 
 QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
-    : QgsSourceSelectDialog( QStringLiteral( "ArcGisFeatureServer" ), QgsSourceSelectDialog::FeatureService, parent, fl )
+  : QgsSourceSelectDialog( QStringLiteral( "ArcGisFeatureServer" ), QgsSourceSelectDialog::FeatureService, parent, fl )
 {
   if ( embeddedMode )
   {
@@ -39,7 +39,7 @@ QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   btnSave->hide();
 }
 
-bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
+bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection& connection )
 {
   QString errorTitle, errorMessage;
   QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
@@ -92,7 +92,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   return true;
 }
 
-void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const QModelIndex& index )
+void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection& connection, const QModelIndex& index )
 {
   if ( !index.isValid() )
   {

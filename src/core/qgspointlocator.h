@@ -62,13 +62,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     //! Get associated layer
     //! @note added in QGIS 2.14
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
     //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
     //! @note added in QGIS 2.14
     QgsCoordinateReferenceSystem destinationCrs() const;
     //! Get extent of the area point locator covers - if null then it caches the whole layer
     //! @note added in QGIS 2.14
-    const QgsRectangle* extent() const { return mExtent; }
+    const QgsRectangle* extent() const
+    {
+      return mExtent;
+    }
     //! Configure extent - if not null, it will index only that area
     //! @note added in QGIS 2.14
     void setExtent( const QgsRectangle* extent );
@@ -98,75 +104,105 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     struct Match
     {
-      //! construct invalid match
-      Match()
+        //! construct invalid match
+        Match()
           : mType( Invalid )
           , mDist( 0 )
           , mPoint()
           , mLayer( nullptr )
           , mFid( 0 )
           , mVertexIndex( 0 )
-      {}
+        {}
 
-      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
+        Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = nullptr )
           : mType( t )
           , mDist( dist )
           , mPoint( pt )
           , mLayer( vl )
           , mFid( fid )
           , mVertexIndex( vertexIndex )
-      {
-        if ( edgePoints )
         {
-          mEdgePoints[0] = edgePoints[0];
-          mEdgePoints[1] = edgePoints[1];
+          if ( edgePoints )
+          {
+            mEdgePoints[0] = edgePoints[0];
+            mEdgePoints[1] = edgePoints[1];
+          }
         }
-      }
 
-      Type type() const { return mType; }
+        Type type() const
+        {
+          return mType;
+        }
 
-      bool isValid() const { return mType != Invalid; }
-      bool hasVertex() const { return mType == Vertex; }
-      bool hasEdge() const { return mType == Edge; }
-      bool hasArea() const { return mType == Area; }
+        bool isValid() const
+        {
+          return mType != Invalid;
+        }
+        bool hasVertex() const
+        {
+          return mType == Vertex;
+        }
+        bool hasEdge() const
+        {
+          return mType == Edge;
+        }
+        bool hasArea() const
+        {
+          return mType == Area;
+        }
 
-      //! for vertex / edge match
-      //! units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
-      double distance() const { return mDist; }
+        //! for vertex / edge match
+        //! units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
+        double distance() const
+        {
+          return mDist;
+        }
 
-      //! for vertex / edge match
-      //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
-      QgsPoint point() const { return mPoint; }
+        //! for vertex / edge match
+        //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
+        QgsPoint point() const
+        {
+          return mPoint;
+        }
 
-      //! for vertex / edge match (first vertex of the edge)
-      int vertexIndex() const { return mVertexIndex; }
+        //! for vertex / edge match (first vertex of the edge)
+        int vertexIndex() const
+        {
+          return mVertexIndex;
+        }
 
-      /**
-       * The vector layer where the snap occurred.
-       * Will be null if the snap happened on an intersection.
-       */
-      QgsVectorLayer* layer() const { return mLayer; }
+        /**
+         * The vector layer where the snap occurred.
+         * Will be null if the snap happened on an intersection.
+         */
+        QgsVectorLayer* layer() const
+        {
+          return mLayer;
+        }
 
-      /**
-       * The id of the feature to which the snapped geometry belongs.
-       */
-      QgsFeatureId featureId() const { return mFid; }
+        /**
+         * The id of the feature to which the snapped geometry belongs.
+         */
+        QgsFeatureId featureId() const
+        {
+          return mFid;
+        }
 
-      //! Only for a valid edge match - obtain endpoints of the edge
-      void edgePoints( QgsPoint& pt1, QgsPoint& pt2 ) const
-      {
-        pt1 = mEdgePoints[0];
-        pt2 = mEdgePoints[1];
-      }
+        //! Only for a valid edge match - obtain endpoints of the edge
+        void edgePoints( QgsPoint& pt1, QgsPoint& pt2 ) const
+        {
+          pt1 = mEdgePoints[0];
+          pt2 = mEdgePoints[1];
+        }
 
-    protected:
-      Type mType;
-      double mDist;
-      QgsPoint mPoint;
-      QgsVectorLayer* mLayer;
-      QgsFeatureId mFid;
-      int mVertexIndex; // e.g. vertex index
-      QgsPoint mEdgePoints[2];
+      protected:
+        Type mType;
+        double mDist;
+        QgsPoint mPoint;
+        QgsVectorLayer* mLayer;
+        QgsFeatureId mFid;
+        int mVertexIndex; // e.g. vertex index
+        QgsPoint mEdgePoints[2];
     };
 
     typedef class QList<Match> MatchList;
@@ -204,7 +240,10 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     //! Return how many geometries are cached in the index
     //! @note added in QGIS 2.14
-    int cachedGeometryCount() const { return mGeoms.count(); }
+    int cachedGeometryCount() const
+    {
+      return mGeoms.count();
+    }
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );

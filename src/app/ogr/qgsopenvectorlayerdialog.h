@@ -82,9 +82,12 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     void on_btnNew_clicked();
     void on_btnEdit_clicked();
     void on_btnDelete_clicked();
-    void on_cmbDatabaseTypes_currentIndexChanged( const QString & text );
-    void on_cmbConnections_currentIndexChanged( const QString & text );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_cmbDatabaseTypes_currentIndexChanged( const QString& text );
+    void on_cmbConnections_currentIndexChanged( const QString& text );
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 };
 
 #endif // QGSOPENVECTORDIALOG_H

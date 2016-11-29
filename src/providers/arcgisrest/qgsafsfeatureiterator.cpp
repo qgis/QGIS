@@ -21,7 +21,7 @@
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider* provider )
 // FIXME: ugly const_cast...
-    : mProvider( const_cast<QgsAfsProvider*>( provider ) )
+  : mProvider( const_cast<QgsAfsProvider*>( provider ) )
 {
 }
 
@@ -38,7 +38,7 @@ QgsAfsProvider* QgsAfsFeatureSource::provider() const
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
+  : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
 {
   mFeatureIterator = 0;
 }

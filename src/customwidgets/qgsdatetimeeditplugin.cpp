@@ -18,9 +18,9 @@
 #include "qgsdatetimeedit.h"
 
 
-QgsDateTimeEditPlugin::QgsDateTimeEditPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsDateTimeEditPlugin::QgsDateTimeEditPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsDateTimeEditPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsDateTimeEditPlugin::createWidget( QWidget *parent )
+QWidget* QgsDateTimeEditPlugin::createWidget( QWidget* parent )
 {
   return new QgsDateTimeEdit( parent );
 }
@@ -60,7 +60,7 @@ bool QgsDateTimeEditPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsDateTimeEditPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsDateTimeEditPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

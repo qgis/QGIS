@@ -68,14 +68,20 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Get the labeling settings. May return a null pointer.
          */
-        QgsPalLayerSettings* settings() const { return mSettings; }
+        QgsPalLayerSettings* settings() const
+        {
+          return mSettings;
+        }
 
         /**
          * Determines if scale based labeling is active
          *
          * @return True if scale based labeling is active
          */
-        bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
+        bool dependsOnScale() const
+        {
+          return mScaleMinDenom != 0 || mScaleMaxDenom != 0;
+        }
 
         /**
          * The minimum scale at which this label rule should be applied
@@ -85,7 +91,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @return The minimum scale denominator
          */
-        int scaleMinDenom() const { return mScaleMinDenom; }
+        int scaleMinDenom() const
+        {
+          return mScaleMinDenom;
+        }
 
         /**
          * The maximum scale denominator at which this label rule should be applied
@@ -95,37 +104,55 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @return The maximum scale denominator
          */
-        int scaleMaxDenom() const { return mScaleMaxDenom; }
+        int scaleMaxDenom() const
+        {
+          return mScaleMaxDenom;
+        }
 
         /**
          * A filter that will check if this rule applies
          * @return An expression
          */
-        QString filterExpression() const { return mFilterExp; }
+        QString filterExpression() const
+        {
+          return mFilterExp;
+        }
 
         /**
          * A human readable description for this rule
          *
          * @return Description
          */
-        QString description() const { return mDescription; }
+        QString description() const
+        {
+          return mDescription;
+        }
 
         /**
          * Returns if this rule is active
          *
          * @return True if the rule is active
          */
-        bool active() const { return mIsActive; }
+        bool active() const
+        {
+          return mIsActive;
+        }
 
         /**
          * Check if this rule is an ELSE rule
          *
          * @return True if this rule is an else rule
          */
-        bool isElse() const { return mElseRule; }
+        bool isElse() const
+        {
+          return mElseRule;
+        }
 
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
-        QString ruleKey() const { return mRuleKey; }
+        QString ruleKey() const
+        {
+          return mRuleKey;
+        }
 
         //! set new settings (or NULL). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings* settings );
@@ -136,7 +163,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Set to 0 to disable the minimum check
          * @param scaleMinDenom The minimum scale denominator for this rule
          */
-        void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+        void setScaleMinDenom( int scaleMinDenom )
+        {
+          mScaleMinDenom = scaleMinDenom;
+        }
 
         /**
          * Set the maximum denominator for which this rule shall apply.
@@ -144,37 +174,56 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * Set to 0 to disable the maximum check
          * @param scaleMaxDenom maximum scale denominator for this rule
          */
-        void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+        void setScaleMaxDenom( int scaleMaxDenom )
+        {
+          mScaleMaxDenom = scaleMaxDenom;
+        }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
          *
          * @param filterExp An expression
          */
-        void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString& filterExp )
+        {
+          mFilterExp = filterExp;
+          initFilter();
+        }
 
         /**
          * Set a human readable description for this rule
          *
          * @param description Description
          */
-        void setDescription( const QString& description ) { mDescription = description; }
+        void setDescription( const QString& description )
+        {
+          mDescription = description;
+        }
 
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated
          */
-        void setActive( bool state ) { mIsActive = state; }
+        void setActive( bool state )
+        {
+          mIsActive = state;
+        }
 
         /**
          * Sets if this rule is an ELSE rule
          *
          * @param iselse If true, this rule is an ELSE rule
          */
-        void setIsElse( bool iselse ) { mElseRule = iselse; }
+        void setIsElse( bool iselse )
+        {
+          mElseRule = iselse;
+        }
 
         //! Override the assigned rule key (should be used just internally by rule-based labeling)
-        void setRuleKey( const QString& key ) { mRuleKey = key; }
+        void setRuleKey( const QString& key )
+        {
+          mRuleKey = key;
+        }
 
         // parent / child operations
 
@@ -183,35 +232,56 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * @return A list of rules
          */
-        const RuleList& children() const { return mChildren; }
+        const RuleList& children() const
+        {
+          return mChildren;
+        }
 
         /**
          * Return all children rules of this rule
          *
          * @return A list of rules
          */
-        RuleList& children() { return mChildren; }
+        RuleList& children()
+        {
+          return mChildren;
+        }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * @return A list of descendant rules
          */
-        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        RuleList descendants() const
+        {
+          RuleList l;
+          Q_FOREACH ( Rule* c, mChildren )
+          {
+            l += c;
+            l += c->descendants();
+          }
+          return l;
+        }
 
         /**
          * The parent rule
          *
          * @return Parent rule
          */
-        const Rule* parent() const { return mParent; }
+        const Rule* parent() const
+        {
+          return mParent;
+        }
 
         /**
          * The parent rule
          *
          * @return Parent rule
          */
-        Rule* parent() { return mParent; }
+        Rule* parent()
+        {
+          return mParent;
+        }
 
         //! add child rule, take ownership, sets this as parent
         void appendChild( Rule* rule );
@@ -243,7 +313,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         // evaluation
 
         //! add providers
-        void createSubProviders( QgsVectorLayer* layer, RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider *provider );
+        void createSubProviders( QgsVectorLayer* layer, RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider* provider );
 
         //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
         void subProviderIds( QStringList& list ) const;
@@ -311,8 +381,14 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other );
     ~QgsRuleBasedLabeling();
 
-    Rule* rootRule() { return mRootRule; }
-    const Rule* rootRule() const { return mRootRule; }
+    Rule* rootRule()
+    {
+      return mRootRule;
+    }
+    const Rule* rootRule() const
+    {
+      return mRootRule;
+    }
 
     //! Create the instance from a DOM element with saved configuration
     static QgsRuleBasedLabeling* create( const QDomElement& element );
@@ -321,7 +397,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
     virtual QString type() const override;
     virtual QDomElement save( QDomDocument& doc ) const override;
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer* layer ) const override;
+    virtual QgsVectorLayerLabelProvider* provider( QgsVectorLayer* layer ) const override;
     virtual QStringList subProviders() const override;
     virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
 
@@ -348,7 +424,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
     virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr ) override;
 
     //! create a label provider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
+    virtual QgsVectorLayerLabelProvider* createProvider( QgsVectorLayer* layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings* settings );
 
     //! return subproviders
     virtual QList<QgsAbstractLabelProvider*> subProviders() override;

@@ -69,11 +69,17 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
       Point
     };
 
-    QgsComposerMouseHandles( QgsComposition *composition );
+    QgsComposerMouseHandles( QgsComposition* composition );
     virtual ~QgsComposerMouseHandles();
 
-    void setComposition( QgsComposition* c ) { mComposition = c; }
-    QgsComposition* composition() { return mComposition; }
+    void setComposition( QgsComposition* c )
+    {
+      mComposition = c;
+    }
+    QgsComposition* composition()
+    {
+      return mComposition;
+    }
 
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
@@ -81,10 +87,16 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QgsComposerMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     //! Returns true is user is currently dragging the handles
-    bool isDragging() { return mIsDragging; }
+    bool isDragging()
+    {
+      return mIsDragging;
+    }
 
     //! Returns true is user is currently resizing with the handles
-    bool isResizing() { return mIsResizing; }
+    bool isResizing()
+    {
+      return mIsResizing;
+    }
 
   protected:
 
@@ -92,8 +104,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void mouseReleaseEvent( QGraphicsSceneMouseEvent* event ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent* event ) override;
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event ) override;
-    void hoverMoveEvent( QGraphicsSceneHoverEvent * event ) override;
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event ) override;
+    void hoverMoveEvent( QGraphicsSceneHoverEvent* event ) override;
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent* event ) override;
 
   public slots:
 
@@ -143,7 +155,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QRectF selectionBounds() const;
 
     //! Returns true if all selected items have same rotation, and if so, updates passed rotation variable
-    bool selectionRotation( double & rotation ) const;
+    bool selectionRotation( double& rotation ) const;
 
     //! Redraws or hides the handles based on the current selection
     void updateHandles();

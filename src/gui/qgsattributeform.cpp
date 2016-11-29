@@ -51,25 +51,25 @@
 
 int QgsAttributeForm::sFormCounter = 0;
 
-QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget* parent )
-    : QWidget( parent )
-    , mLayer( vl )
-    , mMessageBar( nullptr )
-    , mOwnsMessageBar( true )
-    , mMultiEditUnsavedMessageBarItem( nullptr )
-    , mMultiEditMessageBarItem( nullptr )
-    , mInvalidConstraintMessage( nullptr )
-    , mContext( context )
-    , mButtonBox( nullptr )
-    , mSearchButtonBox( nullptr )
-    , mFormNr( sFormCounter++ )
-    , mIsSaving( false )
-    , mPreventFeatureRefresh( false )
-    , mIsSettingFeature( false )
-    , mIsSettingMultiEditFeatures( false )
-    , mUnsavedMultiEditChanges( false )
-    , mEditCommandMessage( tr( "Attributes changed" ) )
-    , mMode( SingleEditMode )
+QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature, const QgsAttributeEditorContext& context, QWidget* parent )
+  : QWidget( parent )
+  , mLayer( vl )
+  , mMessageBar( nullptr )
+  , mOwnsMessageBar( true )
+  , mMultiEditUnsavedMessageBarItem( nullptr )
+  , mMultiEditMessageBarItem( nullptr )
+  , mInvalidConstraintMessage( nullptr )
+  , mContext( context )
+  , mButtonBox( nullptr )
+  , mSearchButtonBox( nullptr )
+  , mFormNr( sFormCounter++ )
+  , mIsSaving( false )
+  , mPreventFeatureRefresh( false )
+  , mIsSettingFeature( false )
+  , mIsSettingMultiEditFeatures( false )
+  , mUnsavedMultiEditChanges( false )
+  , mEditCommandMessage( tr( "Attributes changed" ) )
+  , mMode( SingleEditMode )
 {
   init();
   initPython();
@@ -657,7 +657,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       {
         mUnsavedMultiEditChanges = true;
 
-        QLabel *msgLabel = new QLabel( tr( "Unsaved multiedit changes: <a href=\"#apply\">apply changes</a> or <a href=\"#reset\">reset changes</a>." ), mMessageBar );
+        QLabel* msgLabel = new QLabel( tr( "Unsaved multiedit changes: <a href=\"#apply\">apply changes</a> or <a href=\"#reset\">reset changes</a>." ), mMessageBar );
         msgLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
         msgLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
         connect( msgLabel, &QLabel::linkActivated, this, &QgsAttributeForm::multiEditMessageClicked );
@@ -690,7 +690,7 @@ void QgsAttributeForm::updateAllConstraints()
   }
 }
 
-void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
+void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper* eww )
 {
   // get the current feature set in the form
   QgsFeature ft;
@@ -729,7 +729,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
   }
 }
 
-bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
+bool QgsAttributeForm::currentFormFeature( QgsFeature& feature )
 {
   bool rc = true;
   feature = QgsFeature( mFeature );
@@ -797,8 +797,8 @@ void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::Container
   }
 }
 
-bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
-    QStringList &descriptions )
+bool QgsAttributeForm::currentFormValidConstraints( QStringList& invalidFields,
+    QStringList& descriptions )
 {
   bool valid( true );
 
@@ -880,7 +880,7 @@ void QgsAttributeForm::onUpdatedFields()
 }
 
 void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
-    const QString &description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result )
+    const QString& description, const QString& err, QgsEditorWidgetWrapper::ConstraintResult result )
 {
   QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sender() );
   Q_ASSERT( eww );
@@ -1232,7 +1232,7 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *l = new QLabel( fieldName );
+      QLabel* l = new QLabel( fieldName );
       QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
       QWidget* w = nullptr;
@@ -1281,7 +1281,7 @@ void QgsAttributeForm::init()
 
     if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).isEmpty() )
     {
-      QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+      QSpacerItem* spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
       gridLayout->addItem( spacerItem, row, 0 );
       gridLayout->setRowStretch( row, 1 );
       row++;
@@ -1578,7 +1578,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
         if ( context.formMode() != QgsAttributeEditorContext::Embed )
         {
-          QScrollArea *scrollArea = new QScrollArea( parent );
+          QScrollArea* scrollArea = new QScrollArea( parent );
 
           scrollArea->setWidget( myContainer );
           scrollArea->setWidgetResizable( true );

@@ -46,7 +46,7 @@ class TestQgsZonalStatistics : public QObject
 };
 
 TestQgsZonalStatistics::TestQgsZonalStatistics()
-    : mVectorLayer( nullptr )
+  : mVectorLayer( nullptr )
 {
 
 }
@@ -72,7 +72,7 @@ void TestQgsZonalStatistics::initTestCase()
 
   mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mVectorLayer );
+    QList<QgsMapLayer*>() << mVectorLayer );
 
   mRasterPath = myTempPath + "edge_problem.asc";
 }

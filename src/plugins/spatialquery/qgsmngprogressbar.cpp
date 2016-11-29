@@ -18,7 +18,7 @@
 
 #include "qgsmngprogressbar.h"
 
-MngProgressBar::MngProgressBar( QProgressBar *pb )
+MngProgressBar::MngProgressBar( QProgressBar* pb )
 {
   mPb = pb;
   mPb->reset();

@@ -34,7 +34,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsVirtualLayerProvider( QString const &uri = "" );
+    explicit QgsVirtualLayerProvider( QString const& uri = "" );
 
     //! Destructor
     virtual ~QgsVirtualLayerProvider();
@@ -61,7 +61,10 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     //! Set the subset string used to create a subset of features in the layer (WHERE clause)
     virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     QgsFields fields() const override;
 
@@ -92,16 +95,16 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     struct SourceLayer
     {
       SourceLayer(): layer( nullptr ) {}
-      SourceLayer( QgsVectorLayer *l, const QString& n = "" )
-          : layer( l )
-          , name( n )
+      SourceLayer( QgsVectorLayer* l, const QString& n = "" )
+        : layer( l )
+        , name( n )
       {}
       SourceLayer( const QString& p, const QString& s, const QString& n, const QString& e = "UTF-8" )
-          : layer( nullptr )
-          , name( n )
-          , source( s )
-          , provider( p )
-          , encoding( e )
+        : layer( nullptr )
+        , name( n )
+        , source( s )
+        , provider( p )
+        , encoding( e )
       {}
       // non-null if it refers to a live layer
       QgsVectorLayer* layer;

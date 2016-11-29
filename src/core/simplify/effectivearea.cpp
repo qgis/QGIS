@@ -41,7 +41,7 @@ static void destroy_minheap( MINHEAP tree )
 /**
  * Calculate the area of a triangle in 2d
  */
-static double triarea2d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
+static double triarea2d( const QgsPointV2& P1, const QgsPointV2& P2, const QgsPointV2& P3 )
 {
   return qAbs( 0.5 * (( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
@@ -49,7 +49,7 @@ static double triarea2d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPo
 /**
  * Calculate the area of a triangle in 3d space
  */
-static double triarea3d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
+static double triarea3d( const QgsPointV2& P1, const QgsPointV2& P2, const QgsPointV2& P3 )
 {
   //LWDEBUG( 2, "Entered  triarea3d" );
   double ax, bx, ay, by, az, bz, cx, cy, cz, area;
@@ -72,7 +72,7 @@ static double triarea3d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPo
 /**
  * We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refere to
  */
-static int cmpfunc( const void * a, const void * b )
+static int cmpfunc( const void* a, const void* b )
 {
   double v1 = ( *( areanode** )a )->area;
   double v2 = ( *( areanode** )b )->area;
@@ -90,13 +90,13 @@ static int cmpfunc( const void * a, const void * b )
 /**
  * Sift Down
  */
-static void down( MINHEAP *tree, areanode *arealist, int parent )
+static void down( MINHEAP* tree, areanode* arealist, int parent )
 {
   //LWDEBUG( 2, "Entered  down" );
-  areanode **treearray = tree->key_array;
+  areanode** treearray = tree->key_array;
   int left = parent * 2 + 1;
   int right = left + 1;
-  areanode *tmp;
+  areanode* tmp;
   int swap = parent;
   double leftarea = 0;
   double rightarea = 0;
@@ -129,14 +129,14 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
 /**
  * Sift Up
  */
-static void up( MINHEAP *tree, areanode *arealist, int c )
+static void up( MINHEAP* tree, areanode* arealist, int c )
 {
   //LWDEBUG( 2, "Entered  up" );
-  areanode *tmp;
+  areanode* tmp;
 
   Q_UNUSED( arealist );
 
-  areanode **treearray = tree->key_array;
+  areanode** treearray = tree->key_array;
   int parent = ( c - 1 ) / 2;
 
   while ((( areanode* )treearray[c] )->area < (( areanode* )treearray[parent] )->area )
@@ -157,10 +157,10 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
 /**
  * Get a reference to the point with the smallest effective area from the root of the min heap
  */
-static areanode* minheap_pop( MINHEAP *tree, areanode *arealist )
+static areanode* minheap_pop( MINHEAP* tree, areanode* arealist )
 {
   //LWDEBUG( 2, "Entered  minheap_pop" );
-  areanode *res = tree->key_array[0];
+  areanode* res = tree->key_array[0];
 
   // put last value first
   tree->key_array[0] = tree->key_array[( tree->usedSize ) - 1];
@@ -174,9 +174,9 @@ static areanode* minheap_pop( MINHEAP *tree, areanode *arealist )
 /**
  * The member of the minheap at index idx is changed. Update the tree and make restore the heap property
  */
-static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
+static void minheap_update( MINHEAP* tree, areanode* arealist, int idx )
 {
-  areanode **treearray = tree->key_array;
+  areanode** treearray = tree->key_array;
   int parent = ( idx - 1 ) / 2;
 
   if ((( areanode* )treearray[idx] )->area < (( areanode* )treearray[parent] )->area )
@@ -188,7 +188,7 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
 /**
  * To get the effective area, we have to check what area a point results in when all smaller areas are eliminated
  */
-static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
+static void tune_areas( EFFECTIVE_AREAS* ea, int avoid_collaps, int set_area, double trshld )
 {
   //LWDEBUG( 2, "Entered  tune_areas" );
   QgsPointV2 P1;
@@ -293,7 +293,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 /**
  * We calculate the effective area for the first time
  */
-void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
+void ptarray_calc_areas( EFFECTIVE_AREAS* ea, int avoid_collaps, int set_area, double trshld )
 {
   //LWDEBUG( 2, "Entered  ptarray_calc_areas" );
   int i;

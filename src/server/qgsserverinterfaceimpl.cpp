@@ -23,7 +23,7 @@
 
 //! Constructor
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
-    : mCapabilitiesCache( capCache )
+  : mCapabilitiesCache( capCache )
 {
   mRequestHandler = nullptr;
   mAccessControls = new QgsAccessControl();
@@ -48,7 +48,7 @@ void QgsServerInterfaceImpl::clearRequestHandler()
   mRequestHandler = nullptr;
 }
 
-void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
+void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler* requestHandler )
 {
   mRequestHandler = requestHandler;
 }
@@ -58,7 +58,7 @@ void QgsServerInterfaceImpl::setConfigFilePath( const QString& configFilePath )
   mConfigFilePath = configFilePath;
 }
 
-void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priority )
+void QgsServerInterfaceImpl::registerFilter( QgsServerFilter* filter, int priority )
 {
   mFilters.insert( priority, filter );
 }

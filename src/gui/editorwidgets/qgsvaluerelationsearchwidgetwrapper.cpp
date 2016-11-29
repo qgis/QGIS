@@ -27,11 +27,11 @@
 #include <QCompleter>
 
 QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mComboBox( nullptr )
-    , mListWidget( nullptr )
-    , mLineEdit( nullptr )
-    , mLayer( nullptr )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mComboBox( nullptr )
+  , mListWidget( nullptr )
+  , mLineEdit( nullptr )
+  , mLayer( nullptr )
 {
 }
 
@@ -261,7 +261,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     Q_FOREACH ( const ValueRelationItem& element, mCache )
     {
-      QListWidgetItem *item;
+      QListWidgetItem* item;
       item = new QListWidgetItem( element.second );
       item->setData( Qt::UserRole, element.first );
 

@@ -20,12 +20,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 QgsMultiPointV2::QgsMultiPointV2()
-    : QgsGeometryCollection()
+  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QgsMultiPointV2 *QgsMultiPointV2::clone() const
+QgsMultiPointV2* QgsMultiPointV2::clone() const
 {
   return new QgsMultiPointV2( *this );
 }
@@ -48,7 +48,7 @@ bool QgsMultiPointV2::fromWkt( const QString& wkt )
 QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -64,7 +64,7 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument& doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {
@@ -82,7 +82,7 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
 
   QgsPointSequence pts;
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsPointV2*>( geom ) )
     {

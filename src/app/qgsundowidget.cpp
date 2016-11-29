@@ -20,8 +20,8 @@
 #include "qgsmapcanvas.h"
 
 
-QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QgsPanelWidget( parent )
+QgsUndoWidget::QgsUndoWidget( QWidget* parent, QgsMapCanvas* mapCanvas )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
 
@@ -150,7 +150,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 
 
 
-void QgsUndoWidget::setupUi( QWidget *UndoWidget )
+void QgsUndoWidget::setupUi( QWidget* UndoWidget )
 {
   if ( UndoWidget->objectName().isEmpty() )
     UndoWidget->setObjectName( QStringLiteral( "UndoWidget" ) );
@@ -188,7 +188,7 @@ void QgsUndoWidget::setupUi( QWidget *UndoWidget )
   QMetaObject::connectSlotsByName( UndoWidget );
 } // setupUi
 
-void QgsUndoWidget::retranslateUi( QWidget *UndoWidget )
+void QgsUndoWidget::retranslateUi( QWidget* UndoWidget )
 {
   UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo Panel", nullptr, QApplication::UnicodeUTF8 ) );
   undoButton->setText( QApplication::translate( "UndoWidget", "Undo", nullptr, QApplication::UnicodeUTF8 ) );

@@ -42,11 +42,23 @@ class CORE_EXPORT QgsRasterRange
      */
     QgsRasterRange( double theMin, double theMax );
 
-    double min() const { return mMin; }
-    double max() const { return mMax; }
+    double min() const
+    {
+      return mMin;
+    }
+    double max() const
+    {
+      return mMax;
+    }
 
-    double setMin( double theMin ) { return mMin = theMin; }
-    double setMax( double theMax ) { return mMax = theMax; }
+    double setMin( double theMin )
+    {
+      return mMin = theMin;
+    }
+    double setMax( double theMax )
+    {
+      return mMax = theMax;
+    }
 
     inline bool operator==( QgsRasterRange o ) const
     {
@@ -59,7 +71,7 @@ class CORE_EXPORT QgsRasterRange
      *  @return true if value is in at least one of ranges
      *  @note not available in python bindings
      */
-    static bool contains( double value, const QgsRasterRangeList &rangeList );
+    static bool contains( double value, const QgsRasterRangeList& rangeList );
 
   private:
     double mMin;

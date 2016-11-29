@@ -71,7 +71,7 @@
 
 QgsWmsServer::QgsWmsServer(
   const QString& configFilePath
-  , QMap<QString, QString> &parameters
+  , QMap<QString, QString>& parameters
   , QgsWmsConfigParser* cp
   , QgsRequestHandler* rh
   , QgsMapRenderer* renderer
@@ -80,7 +80,7 @@ QgsWmsServer::QgsWmsServer(
   , const QgsAccessControl* accessControl
 #endif
 )
-    : QgsOWSServer(
+  : QgsOWSServer(
       configFilePath
       , parameters
       , rh
@@ -88,12 +88,12 @@ QgsWmsServer::QgsWmsServer(
       , accessControl
 #endif
     )
-    , mMapRenderer( renderer )
-    , mCapabilitiesCache( capCache )
-    , mConfigParser( cp )
-    , mOwnsConfigParser( false )
-    , mDrawLegendLayerLabel( true )
-    , mDrawLegendItemLabel( true )
+  , mMapRenderer( renderer )
+  , mCapabilitiesCache( capCache )
+  , mConfigParser( cp )
+  , mOwnsConfigParser( false )
+  , mDrawLegendLayerLabel( true )
+  , mDrawLegendItemLabel( true )
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mMapRenderer->setFeatureFilterProvider( mAccessControl );
@@ -101,7 +101,7 @@ QgsWmsServer::QgsWmsServer(
 }
 
 QgsWmsServer::QgsWmsServer()
-    : QgsOWSServer(
+  : QgsOWSServer(
       QString()
       , QMap<QString, QString>()
       , nullptr
@@ -109,12 +109,12 @@ QgsWmsServer::QgsWmsServer()
       , nullptr
 #endif
     )
-    , mMapRenderer( nullptr )
-    , mCapabilitiesCache()
-    , mConfigParser( nullptr )
-    , mOwnsConfigParser( false )
-    , mDrawLegendLayerLabel( true )
-    , mDrawLegendItemLabel( true )
+  , mMapRenderer( nullptr )
+  , mCapabilitiesCache()
+  , mConfigParser( nullptr )
+  , mOwnsConfigParser( false )
+  , mDrawLegendLayerLabel( true )
+  , mDrawLegendItemLabel( true )
 {
 }
 
@@ -400,7 +400,7 @@ void QgsWmsServer::executeRequest()
   cleanupAfterRequest();
 }
 
-void QgsWmsServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats )
+void QgsWmsServer::appendFormats( QDomDocument& doc, QDomElement& elem, const QStringList& formats )
 {
   Q_FOREACH ( const QString& format, formats )
   {
@@ -675,7 +675,7 @@ static QgsLayerTreeModelLegendNode* _findLegendNodeForRule( QgsLayerTreeModel* l
 }
 
 
-static QgsRectangle _parseBBOX( const QString &bboxStr, bool &ok )
+static QgsRectangle _parseBBOX( const QString& bboxStr, bool& ok )
 {
   ok = false;
 
@@ -812,9 +812,9 @@ QImage* QgsWmsServer::getLegendGraphics()
   Q_FOREACH ( const QString& layerId, layerIds )
   {
     // get layer
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
     // create tree layer node
-    QgsLayerTreeLayer *layer = rootGroup.addLayer( ml );
+    QgsLayerTreeLayer* layer = rootGroup.addLayer( ml );
     // store the layer's name
     layerNameMap.insert( layerId, ml->name() );
     // set layer name with layer's title to have it in legend
@@ -971,7 +971,7 @@ QImage* QgsWmsServer::getLegendGraphics()
   // reset layers' name
   Q_FOREACH ( const QString& layerId, layerIds )
   {
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
     ml->setName( layerNameMap[ layerId ] );
   }
   //  clear map layer registry
@@ -1259,7 +1259,7 @@ QByteArray* QgsWmsServer::getPrint( const QString& formatString )
   delete theImage;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( !mAccessControl->layerReadPermission( layer ) )
     {
@@ -1407,7 +1407,7 @@ QImage* QgsWmsServer::getMap( HitTest* hitTest )
   mMapRenderer->setLayerSet( layerSet );
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     if ( !mAccessControl->layerReadPermission( layer ) )
     {
@@ -1486,7 +1486,7 @@ void QgsWmsServer::getMapAsDxf()
   QMap<QString, QString > formatOptionsMap;
   readFormatOptions( formatOptionsMap );
 
-  QList< QPair<QgsVectorLayer *, int > > layers;
+  QList< QPair<QgsVectorLayer*, int > > layers;
   readDxfLayerSettings( layers, formatOptionsMap );
   dxf.addLayers( layers );
 
@@ -1729,7 +1729,7 @@ int QgsWmsServer::getFeatureInfo( QDomDocument& result, const QString& version )
       {
         continue;
       }
-      QgsMapLayer * registeredMapLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayer->id() );
+      QgsMapLayer* registeredMapLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayer->id() );
       if ( registeredMapLayer )
       {
         currentLayer = registeredMapLayer;
@@ -2490,9 +2490,9 @@ int QgsWmsServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   return 0;
 }
 
-QStringList QgsWmsServer::layerSet( const QStringList &layersList,
-                                    const QStringList &stylesList,
-                                    const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator ) const
+QStringList QgsWmsServer::layerSet( const QStringList& layersList,
+                                    const QStringList& stylesList,
+                                    const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator ) const
 {
   Q_UNUSED( destCRS );
   QStringList layerKeys;
@@ -2539,7 +2539,7 @@ QStringList QgsWmsServer::layerSet( const QStringList &layersList,
         {
           layerKeys.push_front( theMapLayer->id() );
           QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << theMapLayer, false, false );
+            QList<QgsMapLayer*>() << theMapLayer, false, false );
         }
       }
       else
@@ -2590,7 +2590,7 @@ void QgsWmsServer::applyRequestedLayerFilters( const QStringList& layerList , QH
       //we need to find the maplayer objects matching the layer name
       QList<QgsMapLayer*> layersToFilter;
 
-      Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
       {
         if ( layer )
         {
@@ -2604,7 +2604,7 @@ void QgsWmsServer::applyRequestedLayerFilters( const QStringList& layerList , QH
         }
       }
 
-      Q_FOREACH ( QgsMapLayer *filter, layersToFilter )
+      Q_FOREACH ( QgsMapLayer* filter, layersToFilter )
       {
         QgsVectorLayer* filteredLayer = qobject_cast<QgsVectorLayer*>( filter );
         if ( filteredLayer )
@@ -2817,7 +2817,7 @@ QStringList QgsWmsServer::applyFeatureSelections( const QStringList& layerList )
     QString layerName = layerIdSplit.at( 0 );
     QgsVectorLayer* vLayer = nullptr;
 
-    Q_FOREACH ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( layer )
       {
@@ -2861,7 +2861,7 @@ void QgsWmsServer::clearFeatureSelections( const QStringList& layerIds ) const
 
   Q_FOREACH ( const QString& id, layerIds )
   {
-    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( layerMap.value( id, nullptr ) );
+    QgsVectorLayer* layer = qobject_cast< QgsVectorLayer* >( layerMap.value( id, nullptr ) );
     if ( !layer )
       continue;
 
@@ -2927,8 +2927,8 @@ void QgsWmsServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
       //modify symbols of current renderer
       QgsRenderContext context;
       context.expressionContext() << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope()
-      << QgsExpressionContextUtils::layerScope( vl );
+                                  << QgsExpressionContextUtils::projectScope()
+                                  << QgsExpressionContextUtils::layerScope( vl );
 
       QgsSymbolList symbolList = renderer->symbols( context );
       QgsSymbolList::iterator symbolIt = symbolList.begin();
@@ -3241,7 +3241,7 @@ QDomElement QgsWmsServer::createFeatureGML(
 
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                    << QgsExpressionContextUtils::projectScope();
   if ( layer )
     expressionContext << QgsExpressionContextUtils::layerScope( layer );
   expressionContext.setFeature( *feat );
@@ -3257,7 +3257,7 @@ QDomElement QgsWmsServer::createFeatureGML(
         QgsRectangle transformedBox = transform.transformBoundingBox( box );
         box = transformedBox;
       }
-      catch ( QgsCsException &e )
+      catch ( QgsCsException& e )
       {
         QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( e.what() ) );
       }
@@ -3362,7 +3362,7 @@ QDomElement QgsWmsServer::createFeatureGML(
 QString QgsWmsServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal )
 {
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vl, vl->fields().field( idx ).name() );
-  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() ) )
+  if ( QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() ) )
   {
     QString value( factory->representValue( vl, idx, setup.config(), QVariant(), attributeVal ) );
     if ( setup.config().value( QStringLiteral( "AllowMulti" ) ).toBool() && value.startsWith( QLatin1String( "{" ) ) && value.endsWith( QLatin1String( "}" ) ) )
@@ -3484,7 +3484,7 @@ void QgsWmsServer::readFormatOptions( QMap<QString, QString>& formatOptions ) co
   }
 }
 
-void QgsWmsServer::readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const
+void QgsWmsServer::readDxfLayerSettings( QList< QPair<QgsVectorLayer*, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const
 {
   layers.clear();
 

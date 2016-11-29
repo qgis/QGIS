@@ -46,7 +46,7 @@ class CORE_EXPORT QgsAction
      * Default constructor
      */
     QgsAction()
-        : mType( Generic )
+      : mType( Generic )
     {}
 
     /**
@@ -58,11 +58,11 @@ class CORE_EXPORT QgsAction
      * @param capture       If this is set to true, the output will be captured when an action is run
      */
     QgsAction( ActionType type, const QString& description, const QString& command, bool capture = false )
-        : mType( type )
-        , mDescription( description )
-        , mCommand( command )
-        , mCaptureOutput( capture )
-        , mId( QUuid::createUuid() )
+      : mType( type )
+      , mDescription( description )
+      , mCommand( command )
+      , mCaptureOutput( capture )
+      , mId( QUuid::createUuid() )
     {}
 
     /**
@@ -77,41 +77,59 @@ class CORE_EXPORT QgsAction
      * @param actionScopes         A set of scopes in which this action will be available
      */
     QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString(), const QSet<QString>& actionScopes = QSet<QString>() )
-        : mType( type )
-        , mDescription( description )
-        , mShortTitle( shortTitle )
-        , mIcon( icon )
-        , mCommand( action )
-        , mCaptureOutput( capture )
-        , mActionScopes( actionScopes )
-        , mId( QUuid::createUuid() )
+      : mType( type )
+      , mDescription( description )
+      , mShortTitle( shortTitle )
+      , mIcon( icon )
+      , mCommand( action )
+      , mCaptureOutput( capture )
+      , mActionScopes( actionScopes )
+      , mId( QUuid::createUuid() )
     {}
 
     //! The name of the action. This may be a longer description.
-    QString name() const { return mDescription; }
+    QString name() const
+    {
+      return mDescription;
+    }
 
     //! The short title is used to label user interface elements like buttons
-    QString shortTitle() const { return mShortTitle; }
+    QString shortTitle() const
+    {
+      return mShortTitle;
+    }
 
     /**
      * Returns a unique id for this action.
      *
      * @note Added in QGIS 3.0
      */
-    QUuid id() const { return mId; }
+    QUuid id() const
+    {
+      return mId;
+    }
 
     /**
      * Returns true if this action was a default constructed one.
      *
      * @note Added in QGIS 3.0
      */
-    bool isValid() const { return !mId.isNull(); }
+    bool isValid() const
+    {
+      return !mId.isNull();
+    }
 
     //! The path to the icon
-    QString iconPath() const { return mIcon; }
+    QString iconPath() const
+    {
+      return mIcon;
+    }
 
     //! The icon
-    QIcon icon() const { return QIcon( mIcon ); }
+    QIcon icon() const
+    {
+      return QIcon( mIcon );
+    }
 
     /**
      * Returns the command that is executed by this action.
@@ -120,13 +138,22 @@ class CORE_EXPORT QgsAction
      *
      * @note Added in QGIS 3.0
      */
-    QString command() const { return mCommand; }
+    QString command() const
+    {
+      return mCommand;
+    }
 
     //! The action type
-    ActionType type() const { return mType; }
+    ActionType type() const
+    {
+      return mType;
+    }
 
     //! Whether to capture output for display when this action is run
-    bool capture() const { return mCaptureOutput; }
+    bool capture() const
+    {
+      return mCaptureOutput;
+    }
 
     //! Checks if the action is runable on the current platform
     bool runable() const;

@@ -86,11 +86,11 @@ void TestQgsAttributeForm::testFieldConstraint()
   layer->setConstraintExpression( 0, QString() );
 
   // get wrapper
-  QgsEditorWidgetWrapper *ww;
+  QgsEditorWidgetWrapper* ww;
   ww = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
 
   // no constraint so we expect a label with just the field name
-  QLabel *label = form.mBuddyMap.value( ww->widget() );
+  QLabel* label = form.mBuddyMap.value( ww->widget() );
   QCOMPARE( label->text(), QString( "col0" ) );
 
   // set a not null constraint
@@ -170,17 +170,17 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QString inv = QStringLiteral( "<font color=\"red\">✘</font>" );
 
   // get wrappers for each widget
-  QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
+  QgsEditorWidgetWrapper* ww0, *ww1, *ww2, *ww3;
   ww0 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
   ww1 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[1] );
   ww2 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[2] );
   ww3 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[3] );
 
   // get label for wrappers
-  QLabel *label0 = form.mBuddyMap.value( ww0->widget() );
-  QLabel *label1 = form.mBuddyMap.value( ww1->widget() );
-  QLabel *label2 = form.mBuddyMap.value( ww2->widget() );
-  QLabel *label3 = form.mBuddyMap.value( ww3->widget() );
+  QLabel* label0 = form.mBuddyMap.value( ww0->widget() );
+  QLabel* label1 = form.mBuddyMap.value( ww1->widget() );
+  QLabel* label2 = form.mBuddyMap.value( ww2->widget() );
+  QLabel* label3 = form.mBuddyMap.value( ww3->widget() );
 
   // no constraint so we expect a label with just the field name
   QCOMPARE( label0->text(), QString( "col0" ) );
@@ -244,10 +244,10 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QgsAttributeForm form( layer );
   form.setFeature( ft );
 
-  QPushButton *okButton = form.mButtonBox->button( QDialogButtonBox::Ok );
+  QPushButton* okButton = form.mButtonBox->button( QDialogButtonBox::Ok );
 
   // get wrapper
-  QgsEditorWidgetWrapper *ww;
+  QgsEditorWidgetWrapper* ww;
   ww = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
 
   // testing stuff

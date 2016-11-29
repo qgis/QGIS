@@ -37,33 +37,33 @@
 #include <QNetworkRequest>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry()
-    : file( QString() )
-    , size( 0.0 )
-    , outlineWidth( 0 )
-    , widthScaleFactor( 1.0 )
-    , rasterScaleFactor( 1.0 )
-    , fill( Qt::black )
-    , outline( Qt::black )
-    , image( nullptr )
-    , picture( nullptr )
-    , nextEntry( nullptr )
-    , previousEntry( nullptr )
+  : file( QString() )
+  , size( 0.0 )
+  , outlineWidth( 0 )
+  , widthScaleFactor( 1.0 )
+  , rasterScaleFactor( 1.0 )
+  , fill( Qt::black )
+  , outline( Qt::black )
+  , image( nullptr )
+  , picture( nullptr )
+  , nextEntry( nullptr )
+  , previousEntry( nullptr )
 {
 }
 
 QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou, const QString& lk )
-    : file( f )
-    , lookupKey( lk.isEmpty() ? f : lk )
-    , size( s )
-    , outlineWidth( ow )
-    , widthScaleFactor( wsf )
-    , rasterScaleFactor( rsf )
-    , fill( fi )
-    , outline( ou )
-    , image( nullptr )
-    , picture( nullptr )
-    , nextEntry( nullptr )
-    , previousEntry( nullptr )
+  : file( f )
+  , lookupKey( lk.isEmpty() ? f : lk )
+  , size( s )
+  , outlineWidth( ow )
+  , widthScaleFactor( wsf )
+  , rasterScaleFactor( rsf )
+  , fill( fi )
+  , outline( ou )
+  , image( nullptr )
+  , picture( nullptr )
+  , nextEntry( nullptr )
+  , previousEntry( nullptr )
 {
 }
 
@@ -100,11 +100,11 @@ QgsSvgCache* QgsSvgCache::instance()
   return &mInstance;
 }
 
-QgsSvgCache::QgsSvgCache( QObject *parent )
-    : QObject( parent )
-    , mTotalSize( 0 )
-    , mLeastRecentEntry( nullptr )
-    , mMostRecentEntry( nullptr )
+QgsSvgCache::QgsSvgCache( QObject* parent )
+  : QObject( parent )
+  , mTotalSize( 0 )
+  , mLeastRecentEntry( nullptr )
+  , mMostRecentEntry( nullptr )
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }
@@ -183,7 +183,7 @@ const QByteArray& QgsSvgCache::svgContent( const QString& file, double size, con
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   return currentEntry->svgContent;
 }
@@ -192,7 +192,7 @@ QSizeF QgsSvgCache::svgViewboxSize( const QString& file, double size, const QCol
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   return currentEntry->viewboxSize;
 }
@@ -372,7 +372,7 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElem
   return 1.0;
 }
 
-QByteArray QgsSvgCache::getImageData( const QString &path ) const
+QByteArray QgsSvgCache::getImageData( const QString& path ) const
 {
   // is it a path to local file?
   QFile svgFile( path );
@@ -417,7 +417,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // the url points to a remote resource, download it!
-  QNetworkReply *reply = nullptr;
+  QNetworkReply* reply = nullptr;
 
   // The following code blocks until the file is downloaded...
   // TODO: use signals to get reply finished notification, in this moment
@@ -536,7 +536,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   mTotalSize += ( image->width() * image->height() * 32 );
 }
 
-void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
+void QgsSvgCache::cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput )
 {
   Q_UNUSED( forceVectorOutput );
   if ( !entry )

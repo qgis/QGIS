@@ -35,27 +35,33 @@ static void setItemBold_( QTreeWidgetItem* item )
   item->setFont( 0, secf );
 }
 
-static const QString configFoundText_() { return QObject::tr( "Configuration loaded from database" ); }
-static const QString configNotFoundText_() { return QObject::tr( "Configuration not found in database" ); }
+static const QString configFoundText_()
+{
+  return QObject::tr( "Configuration loaded from database" );
+}
+static const QString configNotFoundText_()
+{
+  return QObject::tr( "Configuration not found in database" );
+}
 
-QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
+QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget* parent,
     const QSslCertificate& cert,
-    const QString &hostport,
-    const QList<QSslCertificate> &connectionCAs )
-    : QWidget( parent )
-    , mCert( nullptr )
-    , mConnectionCAs( connectionCAs )
-    , mProtocolItem( nullptr )
-    , mProtocolCmbBx( nullptr )
-    , mIgnoreErrorsItem( nullptr )
-    , mVerifyModeItem( nullptr )
-    , mVerifyPeerCmbBx( nullptr )
-    , mVerifyDepthItem( nullptr )
-    , mVerifyDepthSpnBx( nullptr )
-    , mCanSave( false )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+    const QString& hostport,
+    const QList<QSslCertificate>& connectionCAs )
+  : QWidget( parent )
+  , mCert( nullptr )
+  , mConnectionCAs( connectionCAs )
+  , mProtocolItem( nullptr )
+  , mProtocolCmbBx( nullptr )
+  , mIgnoreErrorsItem( nullptr )
+  , mVerifyModeItem( nullptr )
+  , mVerifyPeerCmbBx( nullptr )
+  , mVerifyDepthItem( nullptr )
+  , mVerifyDepthSpnBx( nullptr )
+  , mCanSave( false )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -92,7 +98,7 @@ QgsAuthSslConfigWidget::~QgsAuthSslConfigWidget()
 {
 }
 
-QGroupBox *QgsAuthSslConfigWidget::certificateGroupBox()
+QGroupBox* QgsAuthSslConfigWidget::certificateGroupBox()
 {
   if ( mDisabled )
   {
@@ -101,7 +107,7 @@ QGroupBox *QgsAuthSslConfigWidget::certificateGroupBox()
   return grpbxCert;
 }
 
-QGroupBox *QgsAuthSslConfigWidget::sslConfigGroupBox()
+QGroupBox* QgsAuthSslConfigWidget::sslConfigGroupBox()
 {
   if ( mDisabled )
   {
@@ -111,9 +117,9 @@ QGroupBox *QgsAuthSslConfigWidget::sslConfigGroupBox()
 }
 
 // private
-QTreeWidgetItem* QgsAuthSslConfigWidget::addRootItem( const QString &label )
+QTreeWidgetItem* QgsAuthSslConfigWidget::addRootItem( const QString& label )
 {
-  QTreeWidgetItem *item = new QTreeWidgetItem(
+  QTreeWidgetItem* item = new QTreeWidgetItem(
     QStringList() << label,
     ( int )ConfigParent );
   setItemBold_( item );
@@ -143,7 +149,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
                            ( int )QSsl::SslV2 );
   mProtocolCmbBx->setMaximumWidth( 300 );
   mProtocolCmbBx->setCurrentIndex( 0 );
-  QTreeWidgetItem *protocolitem = new QTreeWidgetItem(
+  QTreeWidgetItem* protocolitem = new QTreeWidgetItem(
     mProtocolItem,
     QStringList() << QLatin1String( "" ),
     ( int )ConfigItem );
@@ -159,7 +165,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
                              ( int )QSslSocket::VerifyNone );
   mVerifyPeerCmbBx->setMaximumWidth( 300 );
   mVerifyPeerCmbBx->setCurrentIndex( 0 );
-  QTreeWidgetItem *peerverifycmbxitem = new QTreeWidgetItem(
+  QTreeWidgetItem* peerverifycmbxitem = new QTreeWidgetItem(
     mVerifyModeItem,
     QStringList() << QLatin1String( "" ),
     ( int )ConfigItem );
@@ -173,7 +179,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mVerifyDepthSpnBx->setMaximum( 10 );
   mVerifyDepthSpnBx->setMaximumWidth( 200 );
   mVerifyDepthSpnBx->setAlignment( Qt::AlignHCenter );
-  QTreeWidgetItem *peerverifyspnbxitem = new QTreeWidgetItem(
+  QTreeWidgetItem* peerverifyspnbxitem = new QTreeWidgetItem(
     mVerifyDepthItem,
     QStringList() << QLatin1String( "" ),
     ( int )ConfigItem );
@@ -186,7 +192,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   QList<QPair<QSslError::SslError, QString> > errenums = QgsAuthCertUtils::sslErrorEnumStrings();
   for ( int i = 0; i < errenums.size(); i++ )
   {
-    QTreeWidgetItem *item = new QTreeWidgetItem(
+    QTreeWidgetItem* item = new QTreeWidgetItem(
       mIgnoreErrorsItem,
       QStringList() << errenums.at( i ).second,
       ( int )ConfigItem );
@@ -244,7 +250,7 @@ void QgsAuthSslConfigWidget::enableSslCustomOptions( bool enable )
   }
 }
 
-void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate &cert, const QString &hostport )
+void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate& cert, const QString& hostport )
 {
   if ( mDisabled )
   {
@@ -282,7 +288,7 @@ void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate &cert, con
   validateHostPortText( leHost->text() );
 }
 
-void QgsAuthSslConfigWidget::loadSslCustomConfig( const QgsAuthConfigSslServer &config )
+void QgsAuthSslConfigWidget::loadSslCustomConfig( const QgsAuthConfigSslServer& config )
 {
   if ( mDisabled )
   {
@@ -374,7 +380,7 @@ void QgsAuthSslConfigWidget::resetSslProtocol()
   mProtocolCmbBx->setCurrentIndex( 0 );
 }
 
-void QgsAuthSslConfigWidget::appendSslIgnoreErrors( const QList<QSslError> &errors )
+void QgsAuthSslConfigWidget::appendSslIgnoreErrors( const QList<QSslError>& errors )
 {
   if ( mDisabled )
   {
@@ -390,7 +396,7 @@ void QgsAuthSslConfigWidget::appendSslIgnoreErrors( const QList<QSslError> &erro
 
   for ( int i = 0; i < mIgnoreErrorsItem->childCount(); i++ )
   {
-    QTreeWidgetItem *item( mIgnoreErrorsItem->child( i ) );
+    QTreeWidgetItem* item( mIgnoreErrorsItem->child( i ) );
     if ( errenums.contains(( QSslError::SslError )item->data( 0, Qt::UserRole ).toInt() ) )
     {
       item->setCheckState( 0, Qt::Checked );
@@ -398,7 +404,7 @@ void QgsAuthSslConfigWidget::appendSslIgnoreErrors( const QList<QSslError> &erro
   }
 }
 
-void QgsAuthSslConfigWidget::setSslIgnoreErrorEnums( const QList<QSslError::SslError> &errorenums )
+void QgsAuthSslConfigWidget::setSslIgnoreErrorEnums( const QList<QSslError::SslError>& errorenums )
 {
   if ( mDisabled )
   {
@@ -412,7 +418,7 @@ void QgsAuthSslConfigWidget::setSslIgnoreErrorEnums( const QList<QSslError::SslE
   setSslIgnoreErrors( errors );
 }
 
-void QgsAuthSslConfigWidget::setSslIgnoreErrors( const QList<QSslError> &errors )
+void QgsAuthSslConfigWidget::setSslIgnoreErrors( const QList<QSslError>& errors )
 {
   if ( mDisabled )
   {
@@ -433,7 +439,7 @@ void QgsAuthSslConfigWidget::setSslIgnoreErrors( const QList<QSslError> &errors 
 
   for ( int i = 0; i < mIgnoreErrorsItem->childCount(); i++ )
   {
-    QTreeWidgetItem *item( mIgnoreErrorsItem->child( i ) );
+    QTreeWidgetItem* item( mIgnoreErrorsItem->child( i ) );
     bool enable( errenums.contains(( QSslError::SslError )item->data( 0, Qt::UserRole ).toInt() ) );
     item->setCheckState( 0, enable ? Qt::Checked : Qt::Unchecked );
   }
@@ -460,7 +466,7 @@ const QList<QSslError::SslError> QgsAuthSslConfigWidget::sslIgnoreErrorEnums()
   }
   for ( int i = 0; i < mIgnoreErrorsItem->childCount(); i++ )
   {
-    QTreeWidgetItem *item( mIgnoreErrorsItem->child( i ) );
+    QTreeWidgetItem* item( mIgnoreErrorsItem->child( i ) );
     if ( item->checkState( 0 ) == Qt::Checked )
     {
       errs.append(( QSslError::SslError )item->data( 0, Qt::UserRole ).toInt() );
@@ -528,7 +534,7 @@ bool QgsAuthSslConfigWidget::readyToSave()
   return cansave;
 }
 
-void QgsAuthSslConfigWidget::setSslHost( const QString &host )
+void QgsAuthSslConfigWidget::setSslHost( const QString& host )
 {
   if ( mDisabled )
   {
@@ -537,7 +543,7 @@ void QgsAuthSslConfigWidget::setSslHost( const QString &host )
   leHost->setText( host );
 }
 
-bool QgsAuthSslConfigWidget::validateHostPort( const QString &txt )
+bool QgsAuthSslConfigWidget::validateHostPort( const QString& txt )
 {
   QString hostport( txt );
   if ( hostport.isEmpty() )
@@ -553,7 +559,7 @@ bool QgsAuthSslConfigWidget::validateHostPort( const QString &txt )
            && QStringLiteral( "https://%1:%2" ).arg( url.host() ).arg( url.port() ) == urlbase );
 }
 
-void QgsAuthSslConfigWidget::validateHostPortText( const QString &txt )
+void QgsAuthSslConfigWidget::validateHostPortText( const QString& txt )
 {
   if ( mDisabled )
   {
@@ -585,7 +591,7 @@ void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
     return;
   }
 
-  QgsAuthCertInfoDialog * dlg = new QgsAuthCertInfoDialog( mCert, false, this, mConnectionCAs );
+  QgsAuthCertInfoDialog* dlg = new QgsAuthCertInfoDialog( mCert, false, this, mConnectionCAs );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
@@ -595,12 +601,12 @@ void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
 
 //////////////// Embed in dialog ///////////////////
 
-QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent , const QSslCertificate& cert , const QString &hostport )
-    : QDialog( parent )
-    , mSslConfigWdgt( nullptr )
+QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget* parent , const QSslCertificate& cert , const QString& hostport )
+  : QDialog( parent )
+  , mSslConfigWdgt( nullptr )
 {
   setWindowTitle( tr( "Custom Certificate Configuration" ) );
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setMargin( 6 );
 
   mSslConfigWdgt = new QgsAuthSslConfigWidget( this, cert, hostport );
@@ -608,7 +614,7 @@ QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent , const QSslCert
            this, SLOT( checkCanSave( bool ) ) );
   layout->addWidget( mSslConfigWdgt );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(
     QDialogButtonBox::Close | QDialogButtonBox::Save, Qt::Horizontal, this );
 
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );

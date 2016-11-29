@@ -36,7 +36,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
     /** Returns the global instance pointer, creating the object on the first call.
      */
-    static QgsColorSchemeRegistry * instance();
+    static QgsColorSchemeRegistry* instance();
 
     /** Constructor for an empty color scheme registry
      */
@@ -82,13 +82,13 @@ class CORE_EXPORT QgsColorSchemeRegistry
     /** Returns all color schemes in the registry
      * @returns list of color schemes
      */
-    QList<QgsColorScheme *> schemes() const;
+    QList<QgsColorScheme*> schemes() const;
 
     /** Returns all color schemes in the registry which have a specified flag set
      * @param flag flag to match
      * @returns list of color schemes with flag set
      */
-    QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
+    QList<QgsColorScheme*> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
     /** Return color schemes of a specific type
      * @param schemeList destination list for matching schemes
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
   private:
 
-    static QgsColorSchemeRegistry *mInstance;
+    static QgsColorSchemeRegistry* mInstance;
 
     QList< QgsColorScheme* > mColorSchemeList;
 
@@ -107,8 +107,8 @@ class CORE_EXPORT QgsColorSchemeRegistry
 template<class T> void QgsColorSchemeRegistry::schemes( QList<T*>& schemeList )
 {
   schemeList.clear();
-  QList<QgsColorScheme *> schemeInstanceList = schemes();
-  QList<QgsColorScheme *>::iterator schemeIt = schemeInstanceList.begin();
+  QList<QgsColorScheme*> schemeInstanceList = schemes();
+  QList<QgsColorScheme*>::iterator schemeIt = schemeInstanceList.begin();
   for ( ; schemeIt != schemeInstanceList.end(); ++schemeIt )
   {
     T* scheme = dynamic_cast<T*>( *schemeIt );

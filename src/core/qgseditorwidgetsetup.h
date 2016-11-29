@@ -36,17 +36,26 @@ class CORE_EXPORT QgsEditorWidgetSetup
     /**
      * @return the widget type to use
      */
-    QString type() const { return mType; }
+    QString type() const
+    {
+      return mType;
+    }
 
     /**
      * @return the widget configuration to used
      */
-    QgsEditorWidgetConfig config() const { return mConfig; }
+    QgsEditorWidgetConfig config() const
+    {
+      return mConfig;
+    }
 
     /**
      * @return true if there is no widget configured.
      */
-    bool isNull() const { return mType.isEmpty(); }
+    bool isNull() const
+    {
+      return mType.isEmpty();
+    }
   private:
     QString mType;
     QgsEditorWidgetConfig mConfig;

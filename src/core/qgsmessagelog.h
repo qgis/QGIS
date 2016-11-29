@@ -33,7 +33,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
     Q_OBJECT
 
   public:
-    static QgsMessageLog *instance();
+    static QgsMessageLog* instance();
 
     enum MessageLevel
     {
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
     void emitMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
 
-    static QgsMessageLog *sInstance;
+    static QgsMessageLog* sInstance;
 };
 
 

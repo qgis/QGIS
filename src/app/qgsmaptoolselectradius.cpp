@@ -31,8 +31,8 @@ email                : jpalmer at linz dot govt dot nz
 const int RADIUS_SEGMENTS = 40;
 
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
@@ -100,7 +100,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
+void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint& radiusEdge )
 {
   double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
   mRubberBand->reset( QgsWkbTypes::PolygonGeometry );

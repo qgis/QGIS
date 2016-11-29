@@ -18,11 +18,11 @@
 #include <QMenu>
 
 QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget* parent )
-    : QToolButton( parent )
-    , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
-    , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-    , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-    , mMenu( nullptr )
+  : QToolButton( parent )
+  , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
+  , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
+  , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
+  , mMenu( nullptr )
 {
   setFocusPolicy( Qt::StrongFocus );
   setPopupMode( QToolButton::InstantPopup );

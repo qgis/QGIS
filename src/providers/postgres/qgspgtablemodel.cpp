@@ -23,8 +23,8 @@
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
+  : QStandardItemModel()
+  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -49,7 +49,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
   QgsDebugMsg( layerProperty.toString() );
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem = nullptr;
+  QStandardItem* schemaItem = nullptr;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
@@ -75,19 +75,19 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
-    QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+    QStandardItem* schemaNameItem = new QStandardItem( layerProperty.schemaName );
+    QStandardItem* typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
-    QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
+    QStandardItem* geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
 
-    QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
-    QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
-    QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QLatin1String( "" ) );
+    QStandardItem* tableItem = new QStandardItem( layerProperty.tableName );
+    QStandardItem* commentItem = new QStandardItem( layerProperty.tableComment );
+    QStandardItem* geomItem  = new QStandardItem( layerProperty.geometryColName );
+    QStandardItem* sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QLatin1String( "" ) );
     sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN );
     if ( sridItem->isEditable() )
     {
@@ -95,7 +95,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
-    QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
+    QStandardItem* pkItem = new QStandardItem( QLatin1String( "" ) );
     if ( !layerProperty.pkCols.isEmpty() )
     {
       pkItem->setText( tr( "Select..." ) );
@@ -107,7 +107,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
     pkItem->setData( "", Qt::UserRole + 2 );
 
-    QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
+    QStandardItem* selItem = new QStandardItem( QLatin1String( "" ) );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -127,7 +127,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     childItemList << selItem;
     childItemList << sqlItem;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    Q_FOREACH ( QStandardItem* item, childItemList )
     {
       if ( tip.isEmpty() )
       {
@@ -172,7 +172,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
   }
 }
 
-void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
+void QgsPgTableModel::setSql( const QModelIndex& index, const QString& sql )
 {
   if ( !index.isValid() || !index.parent().isValid() )
   {
@@ -251,7 +251,7 @@ QIcon QgsPgTableModel::iconForWkbType( QgsWkbTypes::Type type )
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
 }
 
-bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+bool QgsPgTableModel::setData( const QModelIndex& idx, const QVariant& value, int role )
 {
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
@@ -285,7 +285,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
     for ( int i = 0; i < dbtmColumns; i++ )
     {
-      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
+      QStandardItem* item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
       {
         if ( i == dbtmSchema )
@@ -315,7 +315,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
   return true;
 }
 
-QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& connInfo, bool useEstimatedMetadata )
+QString QgsPgTableModel::layerURI( const QModelIndex& index, const QString& connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
   {
@@ -331,7 +331,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
     return QString::null;
   }
 
-  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QStandardItem* pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
   QSet<QString> s0( pkItem->data( Qt::UserRole + 1 ).toStringList().toSet() );
   QSet<QString> s1( pkItem->data( Qt::UserRole + 2 ).toStringList().toSet() );
   if ( !s0.isEmpty() && s0.intersect( s1 ).isEmpty() )

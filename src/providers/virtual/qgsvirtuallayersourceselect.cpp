@@ -36,8 +36,8 @@ email                : hugo dot mercier at oslandia dot com
 #include <QTextStream>
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mSrid( 0 )
+  : QDialog( parent, fl )
+  , mSrid( 0 )
 {
   setupUi( this );
 
@@ -295,7 +295,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
     QStringList ids = mEmbeddedSelectionDialog->layers();
     Q_FOREACH ( const QString& id, ids )
     {
-      QgsVectorLayer *vl = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+      QgsVectorLayer* vl = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
       addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
     }
   }
@@ -328,7 +328,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
 }
 
-QGISEXTERN QgsVirtualLayerSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsVirtualLayerSourceSelect* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsVirtualLayerSourceSelect( parent, fl );
 }

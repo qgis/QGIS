@@ -31,8 +31,8 @@ QgsRendererWidget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* l
 }
 
 QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
   {
@@ -320,7 +320,7 @@ void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateC
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged( const QString & text )
+void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged( const QString& text )
 {
   if ( !mRenderer )
   {
@@ -387,7 +387,7 @@ void QgsPointDisplacementRendererWidget::updateCenterSymbolFromWidget()
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsPointDisplacementRendererWidget::cleanUpSymbolSelector( QgsPanelWidget* container )
 {
   if ( container )
   {

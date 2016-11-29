@@ -18,8 +18,8 @@
 #include "qgsmessageviewer.h"
 #include <QSettings>
 
-QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
-    : QDialog( parent, fl )
+QgsMessageViewer::QgsMessageViewer( QWidget* parent, Qt::WindowFlags fl, bool deleteOnClose )
+  : QDialog( parent, fl )
 {
   setupUi( this );
   if ( deleteOnClose )
@@ -42,23 +42,23 @@ QgsMessageViewer::~QgsMessageViewer()
   settings.setValue( QStringLiteral( "/Windows/MessageViewer/geometry" ), saveGeometry() );
 }
 
-void QgsMessageViewer::setMessageAsHtml( const QString &msg )
+void QgsMessageViewer::setMessageAsHtml( const QString& msg )
 {
   txtMessage->setHtml( msg );
 }
 
-void QgsMessageViewer::setMessageAsPlainText( const QString &msg )
+void QgsMessageViewer::setMessageAsPlainText( const QString& msg )
 {
   txtMessage->setPlainText( msg );
 }
 
-void QgsMessageViewer::appendMessage( const QString &msg )
+void QgsMessageViewer::appendMessage( const QString& msg )
 {
   txtMessage->append( msg );
 }
 
 
-void QgsMessageViewer::setMessage( const QString &message, MessageType msgType )
+void QgsMessageViewer::setMessage( const QString& message, MessageType msgType )
 {
   if ( msgType == MessageHtml )
     setMessageAsHtml( message );

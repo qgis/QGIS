@@ -41,7 +41,7 @@ class QgsDb2RootItem : public QgsDataCollectionItem
      */
     QVector<QgsDataItem*> createChildren() override;
 
-    virtual QWidget * paramWidget() override;
+    virtual QWidget* paramWidget() override;
 
     virtual QList<QAction*> actions() override;
 
@@ -62,38 +62,44 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     ~QgsDb2ConnectionItem();
 
     static bool ConnInfoFromSettings( const QString connName,
-                                      QString &connInfo, QString &errorMsg );
+                                      QString& connInfo, QString& errorMsg );
 
     static bool ConnInfoFromParameters(
-      const QString &service,
-      const QString &driver,
-      const QString &host,
-      const QString &port,
-      const QString &database,
-      const QString &username,
-      const QString &password,
-      const QString &authcfg,
-      QString &connInfo,
-      QString &errorMsg );
+      const QString& service,
+      const QString& driver,
+      const QString& host,
+      const QString& port,
+      const QString& database,
+      const QString& username,
+      const QString& password,
+      const QString& authcfg,
+      QString& connInfo,
+      QString& errorMsg );
 
     /**
      * Fetch geometry column data from server and populate Browser Panel with
      * schemas and layers.
      */
     QVector<QgsDataItem*> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    virtual bool equal( const QgsDataItem* other ) override;
 
     /**
      * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
      */
     virtual QList<QAction*> actions() override;
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
-    bool handleDrop( const QMimeData * data, const QString& toSchema );
+    virtual bool acceptDrop() override
+    {
+      return true;
+    }
+    virtual bool handleDrop( const QMimeData* data, Qt::DropAction action ) override;
+    bool handleDrop( const QMimeData* data, const QString& toSchema );
     void refresh() override;
 
-    QString connInfo() const { return mConnInfo; }
+    QString connInfo() const
+    {
+      return mConnInfo;
+    }
 
   signals:
     void addGeometryColumn( QgsDb2LayerProperty );
@@ -141,8 +147,11 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
 
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    virtual bool acceptDrop() override
+    {
+      return true;
+    }
+    virtual bool handleDrop( const QMimeData* data, Qt::DropAction action ) override;
 };
 
 /**

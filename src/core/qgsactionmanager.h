@@ -49,8 +49,8 @@ class CORE_EXPORT QgsActionManager
 {
   public:
     //! Constructor
-    QgsActionManager( QgsVectorLayer *layer )
-        : mLayer( layer )
+    QgsActionManager( QgsVectorLayer* layer )
+      : mLayer( layer )
     {}
 
     /** Add an action with the given name and action details.
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsActionManager
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
-    void doAction( const QUuid& actionId, const QgsFeature &feature, int defaultValueIndex = 0 );
+    void doAction( const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex = 0 );
 
     /** Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
@@ -107,7 +107,10 @@ class CORE_EXPORT QgsActionManager
     QList<QgsAction> actions( const QString& actionScope = QString() ) const;
 
     //! Return the layer
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
 
     //! Writes the actions out in XML format
     bool writeXml( QDomNode& layer_node ) const;
@@ -140,10 +143,10 @@ class CORE_EXPORT QgsActionManager
 
   private:
     QList<QgsAction> mActions;
-    QgsVectorLayer *mLayer;
-    static void ( *smPythonExecute )( const QString & );
+    QgsVectorLayer* mLayer;
+    static void ( *smPythonExecute )( const QString& );
 
-    void runAction( const QgsAction &action );
+    void runAction( const QgsAction& action );
 
     QMap<QString, QUuid> mDefaultActions;
 

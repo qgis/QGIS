@@ -57,29 +57,29 @@ QRegExp QgsDelimitedTextProvider::WktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+
 QRegExp QgsDelimitedTextProvider::CrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mLayerValid( false )
-    , mValid( false )
-    , mFile( nullptr )
-    , mGeomRep( GeomNone )
-    , mFieldCount( 0 )
-    , mXFieldIndex( -1 )
-    , mYFieldIndex( -1 )
-    , mWktFieldIndex( -1 )
-    , mWktHasPrefix( false )
-    , mXyDms( false )
-    , mSubsetString( QLatin1String( "" ) )
-    , mSubsetExpression( nullptr )
-    , mBuildSubsetIndex( true )
-    , mUseSubsetIndex( false )
-    , mMaxInvalidLines( 50 )
-    , mShowInvalidLines( true )
-    , mRescanRequired( false )
-    , mCrs()
-    , mWkbType( QgsWkbTypes::NoGeometry )
-    , mGeometryType( QgsWkbTypes::UnknownGeometry )
-    , mBuildSpatialIndex( false )
-    , mSpatialIndex( nullptr )
+  : QgsVectorDataProvider( uri )
+  , mLayerValid( false )
+  , mValid( false )
+  , mFile( nullptr )
+  , mGeomRep( GeomNone )
+  , mFieldCount( 0 )
+  , mXFieldIndex( -1 )
+  , mYFieldIndex( -1 )
+  , mWktFieldIndex( -1 )
+  , mWktHasPrefix( false )
+  , mXyDms( false )
+  , mSubsetString( QLatin1String( "" ) )
+  , mSubsetExpression( nullptr )
+  , mBuildSubsetIndex( true )
+  , mUseSubsetIndex( false )
+  , mMaxInvalidLines( 50 )
+  , mShowInvalidLines( true )
+  , mRescanRequired( false )
+  , mCrs()
+  , mWkbType( QgsWkbTypes::NoGeometry )
+  , mGeometryType( QgsWkbTypes::UnknownGeometry )
+  , mBuildSpatialIndex( false )
+  , mSpatialIndex( nullptr )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -193,7 +193,7 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
   }
 }
 
-QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
+QgsAbstractFeatureSource* QgsDelimitedTextProvider::featureSource() const
 {
   // If the file has become invalid, rescan to check that it is still invalid.
   //
@@ -203,7 +203,7 @@ QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
   return new QgsDelimitedTextFeatureSource( this );
 }
 
-QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filename, QString *message )
+QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filename, QString* message )
 {
   // Look for a file with the same name as the data file, but an extra 't' or 'T' at the end
   QStringList types;
@@ -248,7 +248,10 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString& filenam
   if ( ! reTypeList.exactMatch( strTypeList ) )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
-    if ( message ) { *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() ); }
+    if ( message )
+    {
+      *message = tr( "File type string in %1 is not correctly formatted" ).arg( csvtInfo.fileName() );
+    }
     return types;
   }
 
@@ -557,7 +560,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     for ( int i = 0; i < parts.size(); i++ )
     {
 
-      QString &value = parts[i];
+      QString& value = parts[i];
       // Ignore empty fields - spreadsheet generated CSV files often
       // have random empty fields at the end of a row
       if ( value.isEmpty() )
@@ -805,7 +808,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   mUseSpatialIndex = buildSpatialIndex;
 }
 
-QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp )
+QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString& sWkt, bool wktHasPrefixRegexp )
 {
   QgsGeometry geom;
   try
@@ -824,7 +827,7 @@ QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPre
   return geom;
 }
 
-double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk )
+double QgsDelimitedTextProvider::dmsStringToDouble( const QString& sX, bool* xOk )
 {
   static QString negative( QStringLiteral( "swSW-" ) );
   QRegExp re( CrdDmsRegexp );
@@ -860,7 +863,7 @@ double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk
   return x;
 }
 
-bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString& decimalPoint, bool xyDms )
+bool QgsDelimitedTextProvider::pointFromXY( QString& sX, QString& sY, QgsPoint& pt, const QString& decimalPoint, bool xyDms )
 {
   if ( ! decimalPoint.isEmpty() )
   {
@@ -911,7 +914,7 @@ void QgsDelimitedTextProvider::clearInvalidLines() const
   mNExtraInvalidLines = 0;
 }
 
-bool QgsDelimitedTextProvider::recordIsEmpty( QStringList &record )
+bool QgsDelimitedTextProvider::recordIsEmpty( QStringList& record )
 {
   Q_FOREACH ( const QString& s, record )
   {
@@ -989,7 +992,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
 
   // If there is a new subset string then encode it..
 
-  QgsExpression *expression = nullptr;
+  QgsExpression* expression = nullptr;
   if ( ! nonNullSubset.isEmpty() )
   {
 
@@ -1022,7 +1025,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
 
   if ( valid )
   {
-    QgsExpression * tmpSubsetExpression = mSubsetExpression;
+    QgsExpression* tmpSubsetExpression = mSubsetExpression;
     // using a tmp pointer to avoid the pointer being dereferenced by
     // a friend class after it has been freed but before it has been
     // reassigned
@@ -1120,7 +1123,7 @@ QgsWkbTypes::Type QgsDelimitedTextProvider::wkbType() const
  */
 long QgsDelimitedTextProvider::featureCount() const
 {
-  if ( mRescanRequired ) const_cast<QgsDelimitedTextProvider *>( this )->rescanFile();
+  if ( mRescanRequired ) const_cast<QgsDelimitedTextProvider*>( this )->rescanFile();
   return mNumberFeatures;
 }
 
@@ -1164,7 +1167,7 @@ QString  QgsDelimitedTextProvider::description() const
  * Class factory to return a pointer to a newly created
  * QgsDelimitedTextProvider object
  */
-QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri )
+QGISEXTERN QgsDelimitedTextProvider* classFactory( const QString* uri )
 {
   return new QgsDelimitedTextProvider( *uri );
 }
@@ -1193,7 +1196,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsDelimitedTextSourceSelect* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsDelimitedTextSourceSelect( parent, fl );
 }

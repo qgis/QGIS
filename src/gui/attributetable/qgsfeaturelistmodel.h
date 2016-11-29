@@ -38,14 +38,14 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
   public:
     struct FeatureInfo
     {
-    public:
-      FeatureInfo()
+      public:
+        FeatureInfo()
           : isNew( false )
           , isEdited( false )
-      {}
+        {}
 
-      bool isNew;
-      bool isEdited;
+        bool isNew;
+        bool isEdited;
     };
 
     enum Role
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     };
 
   public:
-    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = nullptr );
+    explicit QgsFeatureListModel( QgsAttributeTableFilterModel* sourceModel, QObject* parent = nullptr );
     virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel* sourceModel );
@@ -109,7 +109,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     virtual QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
     virtual QModelIndex parent( const QModelIndex& child ) const override;
-    virtual int columnCount( const QModelIndex&parent = QModelIndex() ) const override;
+    virtual int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
     virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
 
     QModelIndex fidToIndex( QgsFeatureId fid ) override;

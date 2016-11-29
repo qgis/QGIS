@@ -42,9 +42,9 @@ email                : tim@linfiniti.com
 
 
 QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+  : QgsDecorationItem( parent )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -94,7 +94,7 @@ void QgsDecorationCopyright::run()
 }
 
 
-void QgsDecorationCopyright::render( QPainter * theQPainter )
+void QgsDecorationCopyright::render( QPainter* theQPainter )
 {
   //Large IF statement to enable/disable copyright label
   if ( enabled() )

@@ -26,20 +26,20 @@
 #include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
 
-QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
-    : QWidget( parent )
-    , mRelayMessages( relayMessages )
-    , mConfigModel( nullptr )
-    , mAuthUtilitiesMenu( nullptr )
-    , mActionSetMasterPassword( nullptr )
-    , mActionClearCachedMasterPassword( nullptr )
-    , mActionResetMasterPassword( nullptr )
-    , mActionClearCachedAuthConfigs( nullptr )
-    , mActionRemoveAuthConfigs( nullptr )
-    , mActionEraseAuthDatabase( nullptr )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget* parent, bool showUtilities, bool relayMessages )
+  : QWidget( parent )
+  , mRelayMessages( relayMessages )
+  , mConfigModel( nullptr )
+  , mAuthUtilitiesMenu( nullptr )
+  , mActionSetMasterPassword( nullptr )
+  , mActionClearCachedMasterPassword( nullptr )
+  , mActionResetMasterPassword( nullptr )
+  , mActionClearCachedAuthConfigs( nullptr )
+  , mActionRemoveAuthConfigs( nullptr )
+  , mActionEraseAuthDatabase( nullptr )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -231,7 +231,7 @@ void QgsAuthConfigEditor::on_btnAddConfig_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this );
+  QgsAuthConfigEdit* ace = new QgsAuthConfigEdit( this );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -250,7 +250,7 @@ void QgsAuthConfigEditor::on_btnEditConfig_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this, authcfg );
+  QgsAuthConfigEdit* ace = new QgsAuthConfigEdit( this, authcfg );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -279,7 +279,7 @@ void QgsAuthConfigEditor::on_btnRemoveConfig_clicked()
   }
 }
 
-QgsMessageBar * QgsAuthConfigEditor::messageBar()
+QgsMessageBar* QgsAuthConfigEditor::messageBar()
 {
   return mMsgBar;
 }

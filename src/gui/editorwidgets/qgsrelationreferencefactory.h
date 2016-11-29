@@ -84,9 +84,9 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 
     virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
 
-    virtual QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config, const QVariant &cache, const QVariant &value ) const override;
+    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
 
-    virtual QHash<const char *, int> supportedWidgetTypes() override;
+    virtual QHash<const char*, int> supportedWidgetTypes() override;
 
     virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 

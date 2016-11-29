@@ -62,16 +62,16 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+             << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
 
-QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
-    : QgsDockWidget( parent )
-    , mLayer( nullptr )
+QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget* parent )
+  : QgsDockWidget( parent )
+  , mLayer( nullptr )
 {
   setupUi( this );
 
@@ -246,7 +246,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
   }
 }
 
-void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
+void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer* layer )
 {
   QgsVectorLayer* newLayer = dynamic_cast< QgsVectorLayer* >( layer );
   if ( mLayer && mLayer != newLayer )

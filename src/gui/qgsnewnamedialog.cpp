@@ -26,14 +26,14 @@
 QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initial,
                                     const QStringList& extensions, const QStringList& existing,
                                     const QRegExp& regexp, Qt::CaseSensitivity cs,
-                                    QWidget *parent, Qt::WindowFlags flags )
-    : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
-    , mExiting( existing )
-    , mExtensions( extensions )
-    , mCaseSensitivity( cs )
-    , mNamesLabel( nullptr )
-    , mRegexp( regexp )
-    , mOverwriteEnabled( true )
+                                    QWidget* parent, Qt::WindowFlags flags )
+  : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
+  , mExiting( existing )
+  , mExtensions( extensions )
+  , mCaseSensitivity( cs )
+  , mNamesLabel( nullptr )
+  , mRegexp( regexp )
+  , mOverwriteEnabled( true )
 {
   setWindowTitle( tr( "New name" ) );
   QDialog::layout()->setSizeConstraint( QLayout::SetMinimumSize );
@@ -56,7 +56,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   mLineEdit = new QLineEdit( initial, this );
   if ( !regexp.isEmpty() )
   {
-    QRegExpValidator *validator = new QRegExpValidator( regexp, this );
+    QRegExpValidator* validator = new QRegExpValidator( regexp, this );
     mLineEdit->setValidator( validator );
   }
   mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
@@ -82,7 +82,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   nameChanged();
 }
 
-void QgsNewNameDialog::setHintString( const QString &hintString )
+void QgsNewNameDialog::setHintString( const QString& hintString )
 {
   mHintLabel->setText( hintString );
 }

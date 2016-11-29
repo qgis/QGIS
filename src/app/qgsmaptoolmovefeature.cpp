@@ -32,9 +32,9 @@
 
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas , MoveMode mode )
-    : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-    , mRubberBand( nullptr )
-    , mMode( mode )
+  : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
+  , mRubberBand( nullptr )
+  , mMode( mode )
 {
   mToolName = tr( "Move feature" );
   switch ( mode )

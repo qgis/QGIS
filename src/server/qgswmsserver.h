@@ -66,7 +66,7 @@ class QgsWmsServer: public QgsOWSServer
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
     QgsWmsServer(
       const QString& configFilePath
-      , QMap<QString, QString> &parameters
+      , QMap<QString, QString>& parameters
       , QgsWmsConfigParser* cp
       , QgsRequestHandler* rh
       , QgsMapRenderer* renderer
@@ -82,7 +82,7 @@ class QgsWmsServer: public QgsOWSServer
     /** Returns an XML file with the capabilities description (as described in the WMS specs)
         @param version WMS version (1.1.1 or 1.3.0)
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    QDomDocument getCapabilities( const QString &version = "1.3.0", bool fullProjectInformation = false );
+    QDomDocument getCapabilities( const QString& version = "1.3.0", bool fullProjectInformation = false );
 
     QDomDocument getContext();
 
@@ -116,7 +116,10 @@ class QgsWmsServer: public QgsOWSServer
     int getFeatureInfo( QDomDocument& result, const QString& version = "1.3.0" );
 
     //! Sets configuration parser for administration settings. Does not take ownership
-    void setAdminConfigParser( QgsWmsConfigParser* parser ) { mConfigParser = parser; }
+    void setAdminConfigParser( QgsWmsConfigParser* parser )
+    {
+      mConfigParser = parser;
+    }
 
     //! Returns the schemaExtension for WMS 1.3.0 capabilities
     QDomDocument getSchemaExtension();
@@ -235,7 +238,7 @@ class QgsWmsServer: public QgsOWSServer
                            QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                            QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies );
 
-    void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
+    void appendFormats( QDomDocument& doc, QDomElement& elem, const QStringList& formats );
 
     /** Checks WIDTH/HEIGHT values agains MaxWidth and MaxHeight
       @return true if width/height values are okay*/
@@ -290,7 +293,7 @@ class QgsWmsServer: public QgsOWSServer
 
     //! Reads and extracts the different options in the FORMAT_OPTIONS parameter
     void readFormatOptions( QMap<QString, QString>& formatOptions ) const;
-    void readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
+    void readDxfLayerSettings( QList< QPair<QgsVectorLayer*, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
 };
 
 #endif

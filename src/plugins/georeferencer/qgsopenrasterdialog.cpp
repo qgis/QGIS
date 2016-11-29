@@ -23,17 +23,17 @@
 
 #include "qgsopenrasterdialog.h"
 
-QgsOpenRasterDialog::QgsOpenRasterDialog( QWidget *parent ) :
-    QDialog( parent )
+QgsOpenRasterDialog::QgsOpenRasterDialog( QWidget* parent ) :
+  QDialog( parent )
 {
   setupUi( this );
 
-  QPushButton *okPushButton = buttonBox->button( QDialogButtonBox::Ok );
+  QPushButton* okPushButton = buttonBox->button( QDialogButtonBox::Ok );
   okPushButton->setEnabled( false );
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsOpenRasterDialog::getRasterOptions( QString &rasterFileName, QString &modifiedFileName, QString &worldFileName )
+void QgsOpenRasterDialog::getRasterOptions( QString& rasterFileName, QString& modifiedFileName, QString& worldFileName )
 {
   rasterFileName = leRasterFileName->text();
   modifiedFileName = leModifiedRasterFileName->text();
@@ -41,7 +41,7 @@ void QgsOpenRasterDialog::getRasterOptions( QString &rasterFileName, QString &mo
 }
 
 // ------------------------------ protected -------------------------------- //
-void QgsOpenRasterDialog::changeEvent( QEvent *e )
+void QgsOpenRasterDialog::changeEvent( QEvent* e )
 {
   QDialog::changeEvent( e );
   switch ( e->type() )
@@ -135,7 +135,7 @@ void QgsOpenRasterDialog::on_leModifiedRasterFileName_textChanged( const QString
   mWorldFileName = guessWorldFileName( name );
 
   bool enable = ( leModifiedRasterFileName->text().size() != 0 && leRasterFileName->text().size() != 0 );
-  QPushButton *okPushButton = buttonBox->button( QDialogButtonBox::Ok );
+  QPushButton* okPushButton = buttonBox->button( QDialogButtonBox::Ok );
   okPushButton->setEnabled( enable );
 }
 

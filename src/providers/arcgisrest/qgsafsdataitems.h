@@ -26,7 +26,7 @@ class QgsAfsRootItem : public QgsDataCollectionItem
     QgsAfsRootItem( QgsDataItem* parent, const QString& name, const QString& path );
     QVector<QgsDataItem*> createChildren() override;
     QList<QAction*> actions() override;
-    QWidget * paramWidget() override;
+    QWidget* paramWidget() override;
 
   public slots:
     void connectionsChanged();
@@ -40,7 +40,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
   public:
     QgsAfsConnectionItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& url );
     QVector<QgsDataItem*> createChildren() override;
-    bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem* other ) override;
     QList<QAction*> actions() override;
 
   public slots:
@@ -55,7 +55,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
 class QgsAfsLayerItem : public QgsLayerItem
 {
   public:
-    QgsAfsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& title , const QString &authid );
+    QgsAfsLayerItem( QgsDataItem* parent, const QString& name, const QString& url, const QString& title , const QString& authid );
 };
 
 #endif // QGSAFSDATAITEMS_H

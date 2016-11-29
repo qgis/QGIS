@@ -31,11 +31,11 @@ static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extende
 int QgsDb2Provider::sConnectionId = 0;
 
 QgsDb2Provider::QgsDb2Provider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mNumberFeatures( 0 )
-    , mFidColIdx( -1 )
-    , mEnvironment( ENV_LUW )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : QgsVectorDataProvider( uri )
+  , mNumberFeatures( 0 )
+  , mFidColIdx( -1 )
+  , mEnvironment( ENV_LUW )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDebugMsg( "uri: " + uri );
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -143,7 +143,7 @@ QgsDb2Provider::~QgsDb2Provider()
     mDatabase.close();
 }
 
-QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errMsg )
+QSqlDatabase QgsDb2Provider::getDatabase( const QString& connInfo, QString& errMsg )
 {
   QSqlDatabase db;
   QString service;
@@ -705,7 +705,7 @@ bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
   return true;
 }
 
-void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
+void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString& geometryType, int& dim )
 {
   if ( QgsWkbTypes::hasZ( wkbType ) )
     dim = 3;
@@ -730,7 +730,7 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString 
     dim = 0;
 }
 
-bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds& id )
 {
   if ( mFidColName.isEmpty() )
     return false;
@@ -769,7 +769,7 @@ bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
 }
 
 
-bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   QgsDebugMsg( "Entering" );
   if ( attr_map.isEmpty() )
@@ -897,7 +897,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   return true;
 }
 
-bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
+bool QgsDb2Provider::addFeatures( QgsFeatureList& flist )
 {
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
@@ -935,7 +935,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
 // Can't figure out how to resolved "unreferenced" wkbType compile message
 // Don't really do anything with it at this point
 #if 0
-  QgsGeometry *geom = it.geometry();
+  QgsGeometry* geom = it.geometry();
   QgsWkbTypes::Type wkbType = geom->wkbType();
   QgsDebugMsg( QString( "wkbType: %1" ).arg( wkbType ) );
   QgsDebugMsg( QString( "mWkbType: %1" ).arg( mWkbType ) );
@@ -1183,7 +1183,7 @@ QgsVectorDataProvider::Capabilities QgsDb2Provider::capabilities() const
   }
 }
 
-bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
   if ( geometry_map.isEmpty() )
     return true;
@@ -1245,13 +1245,13 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 }
 
 QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QString& uri,
-    const QgsFields &fields,
+    const QgsFields& fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
-    QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString, QVariant> *options )
+    QMap<int, int>* oldToNewAttrIdxMap,
+    QString* errorMessage,
+    const QMap<QString, QVariant>* options )
 {
   Q_UNUSED( options );
 
@@ -1605,7 +1605,7 @@ QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField& field )
   }
   return result;
 }
-bool QgsDb2Provider::convertField( QgsField &field )
+bool QgsDb2Provider::convertField( QgsField& field )
 {
   QString fieldType = QStringLiteral( "VARCHAR" ); //default to string
   int fieldSize = field.length();
@@ -1686,7 +1686,7 @@ QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
   return list;
 }
 
-QGISEXTERN QgsDb2Provider *classFactory( const QString *uri )
+QGISEXTERN QgsDb2Provider* classFactory( const QString* uri )
 {
   return new QgsDb2Provider( *uri );
 }
@@ -1711,12 +1711,12 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN void* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsDb2SourceSelect( parent, fl );
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   Q_UNUSED( thePath );
   QgsDebugMsg( "DB2: Browser Panel; data item detected." );
@@ -1726,13 +1726,13 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFields &fields,
+  const QgsFields& fields,
   QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem &srs,
+  const QgsCoordinateReferenceSystem& srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+  QMap<int, int>* oldToNewAttrIdxMap,
+  QString* errorMessage,
+  const QMap<QString, QVariant>* options )
 {
   return QgsDb2Provider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,

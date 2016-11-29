@@ -29,10 +29,10 @@ QHash<QgsMapCanvas*, QgsMapCanvasTracer*> QgsMapCanvasTracer::sTracers;
 
 
 QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* messageBar )
-    : mCanvas( canvas )
-    , mMessageBar( messageBar )
-    , mLastMessage( nullptr )
-    , mActionEnableTracing( nullptr )
+  : mCanvas( canvas )
+  , mMessageBar( messageBar )
+  , mLastMessage( nullptr )
+  , mActionEnableTracing( nullptr )
 {
   sTracers.insert( canvas, this );
 

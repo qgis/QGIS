@@ -32,7 +32,10 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     //! constructor
     QgsMapToolPan( QgsMapCanvas* canvas );
 
-    virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
+    virtual Flags flags() const override
+    {
+      return QgsMapTool::Transient | QgsMapTool::AllowZoomRect;
+    }
 
     //! Mouse press event
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;

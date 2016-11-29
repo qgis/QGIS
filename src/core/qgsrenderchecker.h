@@ -44,36 +44,57 @@ class CORE_EXPORT QgsRenderChecker
 
     QString controlImagePath() const;
 
-    QString report() { return mReport; }
+    QString report()
+    {
+      return mReport;
+    }
 
     float matchPercent()
     {
       return static_cast<float>( mMismatchCount ) /
              static_cast<float>( mMatchTarget ) * 100;
     }
-    unsigned int mismatchCount() { return mMismatchCount; }
-    unsigned int matchTarget() { return mMatchTarget; }
+    unsigned int mismatchCount()
+    {
+      return mMismatchCount;
+    }
+    unsigned int matchTarget()
+    {
+      return mMatchTarget;
+    }
     //only records time for actual render part
-    int elapsedTime() { return mElapsedTime; }
-    void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; }
+    int elapsedTime()
+    {
+      return mElapsedTime;
+    }
+    void setElapsedTimeTarget( int theTarget )
+    {
+      mElapsedTimeTarget = theTarget;
+    }
 
     /** Base directory name for the control image (with control image path
      * suffixed) the path to the image will be constructed like this:
      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
      */
-    void setControlName( const QString &theName );
+    void setControlName( const QString& theName );
 
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
      */
-    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + '/'; }
+    void setControlPathPrefix( const QString& theName )
+    {
+      mControlPathPrefix = theName + '/';
+    }
 
     void setControlPathSuffix( const QString& theName );
 
     //! Get an md5 hash that uniquely identifies an image
     QString imageToHash( const QString& theImageFile );
 
-    void setRenderedImage( const QString& theImageFileName ) { mRenderedImageFile = theImageFileName; }
+    void setRenderedImage( const QString& theImageFileName )
+    {
+      mRenderedImageFile = theImageFileName;
+    }
 
     /**
      * The path of the rendered image can be retrieved through that method.
@@ -81,7 +102,10 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @return The path to the rendered image
      */
-    QString renderedImage() { return mRenderedImageFile; }
+    QString renderedImage()
+    {
+      return mRenderedImageFile;
+    }
 
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
@@ -92,14 +116,21 @@ class CORE_EXPORT QgsRenderChecker
      * including alpha to be considered correct.
      * @note added in 2.1
      */
-    void setColorTolerance( unsigned int theColorTolerance ) { mColorTolerance = theColorTolerance; }
+    void setColorTolerance( unsigned int theColorTolerance )
+    {
+      mColorTolerance = theColorTolerance;
+    }
 
     /** Sets the largest allowable difference in size between the rendered and the expected image.
      * @param xTolerance x tolerance in pixels
      * @param yTolerance y tolerance in pixels
      * @note added in QGIS 2.12
      */
-    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+    void setSizeTolerance( int xTolerance, int yTolerance )
+    {
+      mMaxSizeDifferenceX = xTolerance;
+      mMaxSizeDifferenceY = yTolerance;
+    }
 
     /**
      * Test using renderer to generate the image to be compared.
@@ -145,7 +176,10 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @return Path to the expected image file
      */
-    QString expectedImageFile() const { return mExpectedImageFile; }
+    QString expectedImageFile() const
+    {
+      return mExpectedImageFile;
+    }
 
     /**
      * Call this to enable internal buffering of dash messages. You may later call
@@ -154,7 +188,10 @@ class CORE_EXPORT QgsRenderChecker
      *
      * @param enable Enable or disable buffering
      */
-    void enableDashBuffering( bool enable ) { mBufferDashMessages = enable; }
+    void enableDashBuffering( bool enable )
+    {
+      mBufferDashMessages = enable;
+    }
 
     /**
      * Get access to buffered dash messages.
@@ -163,7 +200,10 @@ class CORE_EXPORT QgsRenderChecker
      * @return buffered dash messages
      * @note not available in python bindings
      */
-    QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
+    QVector<QgsDartMeasurement> dartMeasurements() const
+    {
+      return mDashMessages;
+    }
 
   protected:
     QString mReport;

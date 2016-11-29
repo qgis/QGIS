@@ -34,9 +34,9 @@
 #include "qgscomposertablebackgroundcolorsdialog.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( nullptr, table )
-    , mComposerTable( table )
-    , mFrame( frame )
+  : QgsComposerItemBaseWidget( nullptr, table )
+  , mComposerTable( table )
+  , mFrame( frame )
 {
   setupUi( this );
   setPanelTitle( tr( "Table properties" ) );
@@ -248,7 +248,7 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
   QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
   if ( ok )
   {
-    QgsComposition *composition = mComposerTable->composition();
+    QgsComposition* composition = mComposerTable->composition();
     if ( composition )
       composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
 
@@ -259,7 +259,7 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( const QColor &newColor )
+void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mComposerTable )
   {
@@ -300,7 +300,7 @@ void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mContentFontColorButton_colorChanged( const QColor &newColor )
+void QgsComposerAttributeTableWidget::on_mContentFontColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mComposerTable )
   {
@@ -865,7 +865,7 @@ void QgsComposerAttributeTableWidget::on_mWrapStringLineEdit_editingFinished()
   }
 }
 
-void QgsComposerAttributeTableWidget::changeLayer( QgsMapLayer *layer )
+void QgsComposerAttributeTableWidget::changeLayer( QgsMapLayer* layer )
 {
   if ( !mComposerTable )
   {
@@ -914,7 +914,7 @@ void QgsComposerAttributeTableWidget::on_mAddFramePushButton_clicked()
   //shift new frame so that it sits 10 units below current frame
   pos.ry() += mFrame->rect().height() + 10;
 
-  QgsComposerFrame * newFrame = mComposerTable->createNewFrame( mFrame, pos, mFrame->rect().size() );
+  QgsComposerFrame* newFrame = mComposerTable->createNewFrame( mFrame, pos, mFrame->rect().size() );
   mComposerTable->recalculateFrameSizes();
 
   //set new frame as selection

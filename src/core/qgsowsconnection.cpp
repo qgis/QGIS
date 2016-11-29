@@ -35,9 +35,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOwsConnection::QgsOwsConnection( const QString & theService, const QString & theConnName )
-    : mConnName( theConnName )
-    , mService( theService )
+QgsOwsConnection::QgsOwsConnection( const QString& theService, const QString& theConnName )
+  : mConnName( theConnName )
+  , mService( theService )
 {
   QgsDebugMsg( "theConnName = " + theConnName );
 
@@ -102,26 +102,26 @@ QgsDataSourceUri QgsOwsConnection::uri() const
   return mUri;
 }
 
-QStringList QgsOwsConnection::connectionList( const QString & theService )
+QStringList QgsOwsConnection::connectionList( const QString& theService )
 {
   QSettings settings;
   settings.beginGroup( "/Qgis/connections-" + theService.toLower() );
   return settings.childGroups();
 }
 
-QString QgsOwsConnection::selectedConnection( const QString & theService )
+QString QgsOwsConnection::selectedConnection( const QString& theService )
 {
   QSettings settings;
   return settings.value( "/Qgis/connections-" + theService.toLower() + "/selected" ).toString();
 }
 
-void QgsOwsConnection::setSelectedConnection( const QString & theService, const QString & name )
+void QgsOwsConnection::setSelectedConnection( const QString& theService, const QString& name )
 {
   QSettings settings;
   settings.setValue( "/Qgis/connections-" + theService.toLower() + "/selected", name );
 }
 
-void QgsOwsConnection::deleteConnection( const QString & theService, const QString & name )
+void QgsOwsConnection::deleteConnection( const QString& theService, const QString& name )
 {
   QSettings settings;
   settings.remove( "/Qgis/connections-" + theService.toLower() + '/' + name );

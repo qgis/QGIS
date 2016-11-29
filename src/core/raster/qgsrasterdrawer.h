@@ -34,7 +34,7 @@ class QgsRasterIterator;
 class CORE_EXPORT QgsRasterDrawer
 {
   public:
-    QgsRasterDrawer( QgsRasterIterator *iterator );
+    QgsRasterDrawer( QgsRasterIterator* iterator );
 
     /** Draws raster data.
      * @param p destination QPainter

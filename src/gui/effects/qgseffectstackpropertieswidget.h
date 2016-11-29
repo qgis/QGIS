@@ -59,7 +59,10 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     /** Returns effect stack attached to the widget
      * @returns QgsEffectStack modified by the widget
      */
-    QgsEffectStack* stack() { return mStack; }
+    QgsEffectStack* stack()
+    {
+      return mStack;
+    }
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
@@ -218,7 +221,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
      */
-    void setPreviewPicture( const QPicture &picture );
+    void setPreviewPicture( const QPicture& picture );
 
   signals:
 

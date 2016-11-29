@@ -30,10 +30,13 @@ class DummyColorScheme : public QgsColorScheme
 
     virtual ~DummyColorScheme() {}
 
-    virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    virtual QString schemeName() const override
+    {
+      return QStringLiteral( "Dummy scheme" );
+    }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
       if ( context == QLatin1String( "testscheme" ) )
@@ -126,7 +129,7 @@ void TestQgsColorSchemeRegistry::addScheme()
   //create an empty registry
   QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
-  QgsColorScheme *recentScheme = new QgsRecentColorScheme();
+  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
   QVERIFY( registry->schemes().length() == 1 );
 }
@@ -157,7 +160,7 @@ void TestQgsColorSchemeRegistry::removeScheme()
   QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add a scheme
-  QgsColorScheme *recentScheme = new QgsRecentColorScheme();
+  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
   QVERIFY( registry->schemes().length() == 1 );
   //remove the scheme
@@ -172,9 +175,9 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
 {
   QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   //add some schemes
-  QgsColorScheme *recentScheme = new QgsRecentColorScheme();
+  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
-  DummyColorScheme *dummyScheme = new DummyColorScheme();
+  DummyColorScheme* dummyScheme = new DummyColorScheme();
   registry->addColorScheme( dummyScheme );
   QVERIFY( registry->schemes().length() == 2 );
   QList< QgsRecentColorScheme* > recentSchemes;

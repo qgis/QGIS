@@ -39,7 +39,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     /** QgsGraduatedHistogramWidget constructor
      * @param parent parent widget
      */
-    QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
+    QgsGraduatedHistogramWidget( QWidget* parent = nullptr );
     ~QgsGraduatedHistogramWidget();
 
     /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     QgsGraduatedHistogramEventFilter* mFilter;
     double mPressedValue;
 
-    void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
+    void findClosestRange( double value, int& closestRangeIndex, int& pixelDistance ) const;
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram* createPlotHistogram( const QString& title, const QColor& color ) const;
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 
   public:
 
-    QgsGraduatedHistogramEventFilter( QwtPlot *plot );
+    QgsGraduatedHistogramEventFilter( QwtPlot* plot );
 
     virtual ~QgsGraduatedHistogramEventFilter() {}
 

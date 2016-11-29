@@ -40,18 +40,21 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
   public:
     explicit QgsAuthCertInfo( const QSslCertificate& cert,
                               bool manageCertTrust = false,
-                              QWidget *parent = nullptr,
+                              QWidget* parent = nullptr,
                               const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfo();
 
-    bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
+    bool trustCacheRebuilt()
+    {
+      return mTrustCacheRebuilt;
+    }
 
   private slots:
     void setupError( const QString& msg );
 
-    void currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
+    void currentCertItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
 
-    void updateCurrentCert( QTreeWidgetItem *item );
+    void updateCurrentCert( QTreeWidgetItem* item );
 
     void on_btnSaveTrust_clicked();
 
@@ -59,7 +62,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void decorateCertTreeItem( const QSslCertificate& cert,
                                QgsAuthCertUtils::CertTrustPolicy trustpolicy,
-                               QTreeWidgetItem * item = nullptr );
+                               QTreeWidgetItem* item = nullptr );
 
   private:
     enum DetailsType
@@ -92,9 +95,9 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void populateCertInfo();
 
-    QTreeWidgetItem *addGroupItem( QTreeWidgetItem *parent, const QString& group );
+    QTreeWidgetItem* addGroupItem( QTreeWidgetItem* parent, const QString& group );
 
-    void addFieldItem( QTreeWidgetItem *parent, const QString& field, const QString& value, FieldWidget wdgt = NoWidget ,
+    void addFieldItem( QTreeWidgetItem* parent, const QString& field, const QString& value, FieldWidget wdgt = NoWidget ,
                        const QColor& color = QColor() );
 
     void populateInfoGeneralSection();
@@ -119,17 +122,17 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
     QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy;
 
-    QTreeWidgetItem *mSecGeneral;
-    QTreeWidgetItem *mSecDetails;
-    QTreeWidgetItem *mSecPemText;
-    QTreeWidgetItem *mGrpSubj;
-    QTreeWidgetItem *mGrpIssu;
-    QTreeWidgetItem *mGrpCert;
-    QTreeWidgetItem *mGrpPkey;
-    QTreeWidgetItem *mGrpExts;
+    QTreeWidgetItem* mSecGeneral;
+    QTreeWidgetItem* mSecDetails;
+    QTreeWidgetItem* mSecPemText;
+    QTreeWidgetItem* mGrpSubj;
+    QTreeWidgetItem* mGrpIssu;
+    QTreeWidgetItem* mGrpCert;
+    QTreeWidgetItem* mGrpPkey;
+    QTreeWidgetItem* mGrpExts;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 //////////////// Embed in dialog ///////////////////
@@ -152,20 +155,26 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
      */
     explicit QgsAuthCertInfoDialog( const QSslCertificate& cert,
                                     bool manageCertTrust,
-                                    QWidget *parent = nullptr,
+                                    QWidget* parent = nullptr,
                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfoDialog();
 
     //! Get access to embedded info widget
-    QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
+    QgsAuthCertInfo* certInfoWidget()
+    {
+      return mCertInfoWdgt;
+    }
 
     /** Whether the trust cache has been rebuilt
      * @note This happens when a trust policy has been adjusted for any cert in the hierarchy
      */
-    bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }
+    bool trustCacheRebuilt()
+    {
+      return mCertInfoWdgt->trustCacheRebuilt();
+    }
 
   private:
-    QgsAuthCertInfo *mCertInfoWdgt;
+    QgsAuthCertInfo* mCertInfoWdgt;
 };
 
 #endif // QGSAUTHCERTIFICATEINFO_H

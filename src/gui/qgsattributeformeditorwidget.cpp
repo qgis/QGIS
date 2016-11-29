@@ -28,14 +28,14 @@
 
 QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper* editorWidget,
     QgsAttributeForm* form )
-    : QWidget( form )
-    , mWidget( editorWidget )
-    , mForm( form )
-    , mMode( DefaultMode )
-    , mMultiEditButton( new QgsMultiEditToolButton() )
-    , mBlockValueUpdate( false )
-    , mIsMixed( false )
-    , mIsChanged( false )
+  : QWidget( form )
+  , mWidget( editorWidget )
+  , mForm( form )
+  , mMode( DefaultMode )
+  , mMultiEditButton( new QgsMultiEditToolButton() )
+  , mBlockValueUpdate( false )
+  , mIsMixed( false )
+  , mIsChanged( false )
 {
   mEditPage = new QWidget();
   QHBoxLayout* l = new QHBoxLayout();
@@ -80,7 +80,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   {
     mWidget->widget()->setObjectName( mWidget->field().name() );
   }
-  connect( mWidget, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( editorWidgetChanged( const QVariant & ) ) );
+  connect( mWidget, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( editorWidgetChanged( const QVariant& ) ) );
   connect( mMultiEditButton, SIGNAL( resetFieldValueTriggered() ), this, SLOT( resetValue() ) );
   connect( mMultiEditButton, SIGNAL( setFieldValueTriggered() ), this, SLOT( setFieldTriggered() ) );
 
@@ -124,7 +124,7 @@ void QgsAttributeFormEditorWidget::setSearchWidgetWrapper( QgsSearchWidgetWrappe
   connect( wrapper, SIGNAL( valueCleared() ), mSearchWidgetToolButton, SLOT( setInactive() ) );
 }
 
-QWidget*QgsAttributeFormEditorWidget::searchWidgetFrame()
+QWidget* QgsAttributeFormEditorWidget::searchWidgetFrame()
 {
   return mSearchFrame;
 }

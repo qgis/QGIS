@@ -25,7 +25,7 @@
 #include "qgisgui.h"
 
 QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   QSettings settings;
   int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;

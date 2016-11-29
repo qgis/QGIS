@@ -23,9 +23,9 @@
 #include <QRegExp>
 
 QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString& function, const QString& pyFormName, QgsAttributeForm* form )
-    : QgsAttributeFormInterface( form )
-    , mPyFunctionName( function )
-    , mPyFormVarName( pyFormName )
+  : QgsAttributeFormInterface( form )
+  , mPyFunctionName( function )
+  , mPyFormVarName( pyFormName )
 {
   static int sLayerCounter = 0;
   mPyLayerVarName = QStringLiteral( "_qgis_layer_%1_%2" ).arg( form->layer()->id() ).arg( sLayerCounter++ );

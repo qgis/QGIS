@@ -43,12 +43,12 @@ class TestQgisAppPython : public QObject
     void evalString();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp* mQgisApp;
     QString mTestDataDir;
 };
 
 TestQgisAppPython::TestQgisAppPython()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }

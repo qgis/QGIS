@@ -50,13 +50,13 @@ static QByteArray fileData_( const QString& path, bool astext = false )
 
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-    QWidget *parent )
-    : QDialog( parent )
-    , mIdentityType( CertIdentity )
-    , mPkiBundle( QgsPkiBundle() )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+    QWidget* parent )
+  : QDialog( parent )
+  , mIdentityType( CertIdentity )
+  , mPkiBundle( QgsPkiBundle() )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -146,7 +146,7 @@ bool QgsAuthImportIdentityDialog::validateBundle()
   mCertBundle = qMakePair( emptycert, emptykey );
   mPkiBundle = QgsPkiBundle();
 
-  QWidget *curpage = stkwBundleType->currentWidget();
+  QWidget* curpage = stkwBundleType->currentWidget();
   if ( curpage == pagePkiPaths )
   {
     return validatePkiPaths();
@@ -165,7 +165,7 @@ void QgsAuthImportIdentityDialog::clearValidation()
   teValidation->setStyleSheet( QLatin1String( "" ) );
 }
 
-void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
+void QgsAuthImportIdentityDialog::writeValidation( const QString& msg,
     QgsAuthImportIdentityDialog::Validity valid,
     bool append )
 {
@@ -198,7 +198,7 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
   teValidation->moveCursor( QTextCursor::Start );
 }
 
-void QgsAuthImportIdentityDialog::on_lePkiPathsKeyPass_textChanged( const QString &pass )
+void QgsAuthImportIdentityDialog::on_lePkiPathsKeyPass_textChanged( const QString& pass )
 {
   Q_UNUSED( pass );
   validateIdentity();
@@ -229,7 +229,7 @@ void QgsAuthImportIdentityDialog::on_btnPkiPathsKey_clicked()
   }
 }
 
-void QgsAuthImportIdentityDialog::on_lePkiPkcs12KeyPass_textChanged( const QString &pass )
+void QgsAuthImportIdentityDialog::on_lePkiPkcs12KeyPass_textChanged( const QString& pass )
 {
   Q_UNUSED( pass );
   validateIdentity();
@@ -462,7 +462,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   return bundlevalid;
 }
 
-void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
+void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget* widget )
 {
   if ( !found )
   {
@@ -476,7 +476,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
   }
 }
 
-QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, const QString &extfilter )
+QString QgsAuthImportIdentityDialog::getOpenFileName( const QString& title, const QString& extfilter )
 {
   QSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QDir::homePath() ).toString();
@@ -493,7 +493,7 @@ QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, cons
   return f;
 }
 
-QPushButton *QgsAuthImportIdentityDialog::okButton()
+QPushButton* QgsAuthImportIdentityDialog::okButton()
 {
   return buttonBox->button( QDialogButtonBox::Ok );
 }

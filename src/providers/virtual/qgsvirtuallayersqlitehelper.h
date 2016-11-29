@@ -21,9 +21,9 @@ extern "C"
 {
 #include <sqlite3.h>
 
-  int qgsvlayerModuleInit( sqlite3 *db,
-                           char **pzErrMsg,
-                           void * unused /*const sqlite3_api_routines *pApi*/ );
+  int qgsvlayerModuleInit( sqlite3* db,
+                           char** pzErrMsg,
+                           void* unused /*const sqlite3_api_routines *pApi*/ );
 
 }
 
@@ -54,40 +54,40 @@ namespace Sqlite
 {
   struct Query
   {
-    Query( sqlite3* db, const QString& q );
-    ~Query();
+      Query( sqlite3* db, const QString& q );
+      ~Query();
 
-    int step();
+      int step();
 
-    Query& bind( const QString& str, int idx );
-    Query& bind( const QString& str );
+      Query& bind( const QString& str, int idx );
+      Query& bind( const QString& str );
 
-    static void exec( sqlite3* db, const QString& sql );
+      static void exec( sqlite3* db, const QString& sql );
 
-    void reset();
+      void reset();
 
-    int columnCount() const;
+      int columnCount() const;
 
-    QString columnName( int i ) const;
+      QString columnName( int i ) const;
 
-    int columnType( int i ) const;
+      int columnType( int i ) const;
 
-    int columnInt( int i ) const;
+      int columnInt( int i ) const;
 
-    qint64 columnInt64( int i ) const;
+      qint64 columnInt64( int i ) const;
 
-    double columnDouble( int i ) const;
+      double columnDouble( int i ) const;
 
-    QString columnText( int i ) const;
+      QString columnText( int i ) const;
 
-    QByteArray columnBlob( int i ) const;
+      QByteArray columnBlob( int i ) const;
 
-    sqlite3_stmt* stmt();
+      sqlite3_stmt* stmt();
 
-  private:
-    sqlite3* db_;
-    sqlite3_stmt* stmt_;
-    int nBind_;
+    private:
+      sqlite3* db_;
+      sqlite3_stmt* stmt_;
+      int nBind_;
   };
 }
 

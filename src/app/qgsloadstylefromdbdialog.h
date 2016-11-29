@@ -26,7 +26,7 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
     QString qmlStyle;
     Q_OBJECT
   public:
-    explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );
+    explicit QgsLoadStyleFromDBDialog( QWidget* parent = nullptr );
 
     ~QgsLoadStyleFromDBDialog();
 

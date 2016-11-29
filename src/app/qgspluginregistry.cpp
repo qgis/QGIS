@@ -34,15 +34,15 @@
 #include "qgsmessagelog.h"
 
 /* typedefs for plugins */
-typedef QgisPlugin *create_ui( QgisInterface * qI );
+typedef QgisPlugin* create_ui( QgisInterface* qI );
 typedef QString name_t();
 typedef QString description_t();
 typedef QString category_t();
 typedef int type_t();
 
 
-QgsPluginRegistry *QgsPluginRegistry::_instance = nullptr;
-QgsPluginRegistry *QgsPluginRegistry::instance()
+QgsPluginRegistry* QgsPluginRegistry::_instance = nullptr;
+QgsPluginRegistry* QgsPluginRegistry::instance()
 {
   if ( !_instance )
   {
@@ -52,8 +52,8 @@ QgsPluginRegistry *QgsPluginRegistry::instance()
 }
 
 QgsPluginRegistry::QgsPluginRegistry()
-    : mPythonUtils( nullptr )
-    , mQgisInterface( nullptr )
+  : mPythonUtils( nullptr )
+  , mQgisInterface( nullptr )
 {
 // constructor does nothing
 }
@@ -97,7 +97,7 @@ QString QgsPluginRegistry::library( const QString& key )
   return QString();
 }
 
-QgisPlugin *QgsPluginRegistry::plugin( const QString& key )
+QgisPlugin* QgsPluginRegistry::plugin( const QString& key )
 {
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
   if ( it == mPlugins.end() )
@@ -327,8 +327,8 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
 
   myError += QObject::tr( "Attempting to resolve the classFactory function\n" );
 
-  type_t *pType = ( type_t * ) cast_to_fptr( myLib.resolve( "type" ) );
-  name_t *pName = ( name_t * ) cast_to_fptr( myLib.resolve( "name" ) );
+  type_t* pType = ( type_t* ) cast_to_fptr( myLib.resolve( "type" ) );
+  name_t* pName = ( name_t* ) cast_to_fptr( myLib.resolve( "name" ) );
 
   switch ( pType() )
   {
@@ -336,10 +336,10 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
     case QgisPlugin::UI:
     {
       // UI only -- doesn't use mapcanvas
-      create_ui *cf = ( create_ui * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
+      create_ui* cf = ( create_ui* ) cast_to_fptr( myLib.resolve( "classFactory" ) );
       if ( cf )
       {
-        QgisPlugin *pl = cf( mQgisInterface );
+        QgisPlugin* pl = cf( mQgisInterface );
         if ( pl )
         {
           pl->initGui();
@@ -349,7 +349,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString& theFullPathName )
           settings.setValue( "/Plugins/" + baseName, true );
           QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
 
-          QObject *o = dynamic_cast<QObject *>( pl );
+          QObject* o = dynamic_cast<QObject*>( pl );
           if ( o )
           {
             QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
@@ -429,7 +429,7 @@ void QgsPluginRegistry::unloadCppPlugin( const QString& theFullPathName )
   settings.setValue( "/Plugins/" + baseName, false );
   if ( isLoaded( baseName ) )
   {
-    QgisPlugin * pluginInstance = plugin( baseName );
+    QgisPlugin* pluginInstance = plugin( baseName );
     if ( pluginInstance )
     {
       pluginInstance->unload();
@@ -566,10 +566,10 @@ bool QgsPluginRegistry::checkCppPlugin( const QString& pluginFullPath )
     return false;
   }
 
-  name_t * myName = ( name_t * ) cast_to_fptr( myLib.resolve( "name" ) );
-  description_t *  myDescription = ( description_t * )  cast_to_fptr( myLib.resolve( "description" ) );
-  category_t *  myCategory = ( category_t * )  cast_to_fptr( myLib.resolve( "category" ) );
-  version_t *  myVersion = ( version_t * ) cast_to_fptr( myLib.resolve( "version" ) );
+  name_t* myName = ( name_t* ) cast_to_fptr( myLib.resolve( "name" ) );
+  description_t*   myDescription = ( description_t* )  cast_to_fptr( myLib.resolve( "description" ) );
+  category_t*   myCategory = ( category_t* )  cast_to_fptr( myLib.resolve( "category" ) );
+  version_t*   myVersion = ( version_t* ) cast_to_fptr( myLib.resolve( "version" ) );
 
   if ( myName && myDescription && myVersion  && myCategory )
     return true;

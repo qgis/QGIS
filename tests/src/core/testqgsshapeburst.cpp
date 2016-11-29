@@ -43,11 +43,11 @@ class TestQgsShapeburst : public QObject
     Q_OBJECT
   public:
     TestQgsShapeburst()
-        : mTestHasError( false )
-        , mpPolysLayer()
-        , mShapeburstFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer()
+      , mShapeburstFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -70,7 +70,7 @@ class TestQgsShapeburst : public QObject
     bool setQml( const QString& theType );
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QgsShapeburstFillSymbolLayer* mShapeburstFill;
     QgsFillSymbol* mFillSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -105,7 +105,7 @@ void TestQgsShapeburst::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   //setup shapeburst fill
   mShapeburstFill = new QgsShapeburstFillSymbolLayer();

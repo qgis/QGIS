@@ -44,7 +44,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * ) override;
+    void render( QPainter* ) override;
     //! Show the dialog box
     void run() override;
 

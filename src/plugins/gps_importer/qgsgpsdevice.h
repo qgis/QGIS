@@ -43,7 +43,7 @@ class QgsGPSDevice : public QgsBabelFormat
   private:
 
     QStringList mWptDlCmd, mWptUlCmd, mRteDlCmd, mRteUlCmd,
-    mTrkDlCmd, mTrkUlCmd;
+                mTrkDlCmd, mTrkUlCmd;
 };
 
 

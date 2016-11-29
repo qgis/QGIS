@@ -70,7 +70,7 @@ namespace pal
 
     public:
       PointSet();
-      PointSet( int nbPoints, double *x, double *y );
+      PointSet( int nbPoints, double* x, double* y );
       virtual ~PointSet();
 
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
@@ -92,12 +92,12 @@ namespace pal
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
-      CHullBox * compute_chull_bbox();
+      CHullBox* compute_chull_bbox();
 
       /** Split a concave shape into several convex shapes.
        */
-      static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
-                                 QLinkedList<PointSet *> &shapes_final,
+      static void splitPolygons( QLinkedList<PointSet*>& shapes_toProcess,
+                                 QLinkedList<PointSet*>& shapes_final,
                                  double xrm, double yrm );
 
       /** Returns the squared minimum distance between the point set geometry and the point (px,py)
@@ -108,11 +108,14 @@ namespace pal
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
        * @returns minimum distance
        */
-      double minDistanceToPoint( double px, double py, double *rx = nullptr, double *ry = nullptr ) const;
+      double minDistanceToPoint( double px, double py, double* rx = nullptr, double* ry = nullptr ) const;
 
-      void getCentroid( double &px, double &py, bool forceInside = false ) const;
+      void getCentroid( double& px, double& py, bool forceInside = false ) const;
 
-      int getGeosType() const { return type; }
+      int getGeosType() const
+      {
+        return type;
+      }
 
       void getBoundingBox( double min[2], double max[2] ) const
       {
@@ -123,9 +126,15 @@ namespace pal
       }
 
       //! Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset.
-      PointSet* getHoleOf() { return holeOf; }
+      PointSet* getHoleOf()
+      {
+        return holeOf;
+      }
 
-      int getNumPoints() const { return nbPoints; }
+      int getNumPoints() const
+      {
+        return nbPoints;
+      }
 
       /** Get a point a set distance along a line geometry.
        * @param d array of distances between points
@@ -134,7 +143,7 @@ namespace pal
        * @param px final x coord on line
        * @param py final y coord on line
       */
-      void getPointByDistance( double *d, double *ad, double dl, double *px, double *py );
+      void getPointByDistance( double* d, double* ad, double dl, double* px, double* py );
 
       /** Returns the point set's GEOS geometry.
       */
@@ -145,14 +154,14 @@ namespace pal
       double length() const;
 
     protected:
-      mutable GEOSGeometry *mGeos;
+      mutable GEOSGeometry* mGeos;
       mutable bool mOwnsGeom;
 
       int nbPoints;
-      double *x;
-      double *y;   // points order is counterclockwise
+      double* x;
+      double* y;   // points order is counterclockwise
 
-      int *cHull;
+      int* cHull;
       int cHullSize;
 
       int type;
@@ -162,7 +171,7 @@ namespace pal
 
       PointSet( double x, double y );
 
-      PointSet( const PointSet &ps );
+      PointSet( const PointSet& ps );
 
       void deleteCoords();
       void createGeosGeom() const;

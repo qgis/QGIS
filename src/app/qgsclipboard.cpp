@@ -38,10 +38,10 @@
 #include "qgsjsonutils.h"
 
 QgsClipboard::QgsClipboard()
-    : QObject()
-    , mFeatureClipboard()
-    , mFeatureFields()
-    , mUseSystemClipboard( false )
+  : QObject()
+  , mFeatureClipboard()
+  , mFeatureFields()
+  , mUseSystemClipboard( false )
 {
   connect( QApplication::clipboard(), SIGNAL( dataChanged() ), this, SLOT( systemClipboardChanged() ) );
 }
@@ -50,7 +50,7 @@ QgsClipboard::~QgsClipboard()
 {
 }
 
-void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
+void QgsClipboard::replaceWithCopyOf( QgsVectorLayer* src )
 {
   if ( !src )
     return;
@@ -67,7 +67,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   emit changed();
 }
 
-void QgsClipboard::replaceWithCopyOf( QgsFeatureStore & featureStore )
+void QgsClipboard::replaceWithCopyOf( QgsFeatureStore& featureStore )
 {
   QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
   mFeatureFields = featureStore.fields();
@@ -154,7 +154,7 @@ void QgsClipboard::setSystemClipboard()
 {
   QString textCopy = generateClipboardText();
 
-  QClipboard *cb = QApplication::clipboard();
+  QClipboard* cb = QApplication::clipboard();
 
   // Copy text into the clipboard
 
@@ -205,7 +205,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
 
 QgsFields QgsClipboard::retrieveFields() const
 {
-  QClipboard *cb = QApplication::clipboard();
+  QClipboard* cb = QApplication::clipboard();
 
 #ifdef Q_OS_LINUX
   QString string = cb->text( QClipboard::Selection );
@@ -216,13 +216,13 @@ QgsFields QgsClipboard::retrieveFields() const
   return QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
 }
 
-QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
+QgsFeatureList QgsClipboard::copyOf( const QgsFields& fields ) const
 {
   QgsDebugMsg( "returning clipboard." );
   if ( !mUseSystemClipboard )
     return mFeatureClipboard;
 
-  QClipboard *cb = QApplication::clipboard();
+  QClipboard* cb = QApplication::clipboard();
 
 #ifdef Q_OS_LINUX
   QString text = cb->text( QClipboard::Selection );
@@ -252,7 +252,7 @@ void QgsClipboard::insert( const QgsFeature& feature )
 
 bool QgsClipboard::isEmpty() const
 {
-  QClipboard *cb = QApplication::clipboard();
+  QClipboard* cb = QApplication::clipboard();
 #ifdef Q_OS_LINUX
   QString text = cb->text( QClipboard::Selection );
 #else
@@ -261,7 +261,7 @@ bool QgsClipboard::isEmpty() const
   return text.isEmpty() && mFeatureClipboard.empty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields &fields ) const
+QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem& destCRS, const QgsFields& fields ) const
 {
   QgsFeatureList featureList = copyOf( fields );
   QgsCoordinateTransform ct( crs(), destCRS );
@@ -285,7 +285,7 @@ QgsCoordinateReferenceSystem QgsClipboard::crs() const
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString& text )
 {
   mUseSystemClipboard = true;
-  QMimeData *mdata = new QMimeData();
+  QMimeData* mdata = new QMimeData();
   mdata->setData( mimeType, data );
   if ( !text.isEmpty() )
   {

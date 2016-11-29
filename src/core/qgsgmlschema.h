@@ -41,13 +41,22 @@ class CORE_EXPORT QgsGmlFeatureClass
     QgsGmlFeatureClass();
     QgsGmlFeatureClass( const QString& name, const QString& path );
 
-    QList<QgsField> & fields() { return  mFields; }
+    QList<QgsField>& fields()
+    {
+      return  mFields;
+    }
 
-    int fieldIndex( const QString & name );
+    int fieldIndex( const QString& name );
 
-    QString path() const { return mPath; }
+    QString path() const
+    {
+      return mPath;
+    }
 
-    QStringList & geometryAttributes() { return mGeometryAttributes; }
+    QStringList& geometryAttributes()
+    {
+      return mGeometryAttributes;
+    }
 
   private:
     /* Feature class name:
@@ -81,26 +90,29 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     ~QgsGmlSchema();
 
     //! Get fields info from XSD
-    bool parseXSD( const QByteArray &xml );
+    bool parseXSD( const QByteArray& xml );
 
     /** Guess GML schema from data if XSD does not exist.
       * Currently only recognizes UMN Mapserver GetFeatureInfo GML response.
       * Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
       * @param data GML data
       * @return true in case of success */
-    bool guessSchema( const QByteArray &data );
+    bool guessSchema( const QByteArray& data );
 
     //! Get list of dot separated paths to feature classes parsed from GML or XSD
     QStringList typeNames() const;
 
     //! Get fields for type/class name parsed from GML or XSD
-    QList<QgsField> fields( const QString & typeName );
+    QList<QgsField> fields( const QString& typeName );
 
     //! Get list of geometry attributes for type/class name
-    QStringList geometryAttributes( const QString & typeName );
+    QStringList geometryAttributes( const QString& typeName );
 
     //! Get error if parseXSD() or guessSchema() failed
-    QgsError error() const { return mError; }
+    QgsError error() const
+    {
+      return mError;
+    }
 
   private:
 
@@ -144,36 +156,42 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QWidget* findMainWindow() const;
 
     //! Get dom elements by path
-    QList<QDomElement> domElements( const QDomElement &element, const QString & path );
+    QList<QDomElement> domElements( const QDomElement& element, const QString& path );
 
     //! Get dom element by path
-    QDomElement domElement( const QDomElement &element, const QString & path );
+    QDomElement domElement( const QDomElement& element, const QString& path );
 
     //! Filter list of elements by attribute value
-    QList<QDomElement> domElements( QList<QDomElement> &elements, const QString & attr, const QString & attrVal );
+    QList<QDomElement> domElements( QList<QDomElement>& elements, const QString& attr, const QString& attrVal );
 
     //! Get dom element by path and attribute value
-    QDomElement domElement( const QDomElement &element, const QString & path, const QString & attr, const QString & attrVal );
+    QDomElement domElement( const QDomElement& element, const QString& path, const QString& attr, const QString& attrVal );
 
     //! Strip namespace from element name
-    QString stripNS( const QString & name );
+    QString stripNS( const QString& name );
 
     /** Find GML base type for complex type of given name
      * @param element input element
      * @param name complex type name
      * @return name of GML base type without NS, e.g. AbstractFeatureType or empty string if not passed on GML type
      */
-    QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString & name );
+    QString xsdComplexTypeGmlBaseType( const QDomElement& element, const QString& name );
 
     //! Get feature class information from complex type recursively
-    bool xsdFeatureClass( const QDomElement &element, const QString & typeName, QgsGmlFeatureClass & featureClass );
+    bool xsdFeatureClass( const QDomElement& element, const QString& typeName, QgsGmlFeatureClass& featureClass );
 
 
     //! Get safely (if empty) top from mode stack
-    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
+    ParseMode modeStackTop()
+    {
+      return mParseModeStack.isEmpty() ? none : mParseModeStack.top();
+    }
 
     //! Safely (if empty) pop from mode stack
-    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
+    ParseMode modeStackPop()
+    {
+      return mParseModeStack.isEmpty() ? none : mParseModeStack.pop();
+    }
 
     //! Keep track about the most important nested elements
     //std::stack<ParseMode> mParseModeStack;

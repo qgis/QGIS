@@ -76,7 +76,7 @@ bool QgsLineString::operator!=( const QgsCurve& other ) const
   return !operator==( other );
 }
 
-QgsLineString *QgsLineString::clone() const
+QgsLineString* QgsLineString::clone() const
 {
   return new QgsLineString( *this );
 }
@@ -392,7 +392,7 @@ void QgsLineString::setMAt( int index, double m )
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::points( QgsPointSequence &pts ) const
+void QgsLineString::points( QgsPointSequence& pts ) const
 {
   pts.clear();
   int nPoints = numPoints();
@@ -402,7 +402,7 @@ void QgsLineString::points( QgsPointSequence &pts ) const
   }
 }
 
-void QgsLineString::setPoints( const QgsPointSequence &points )
+void QgsLineString::setPoints( const QgsPointSequence& points )
 {
   clearCache(); //set bounding box invalid
 

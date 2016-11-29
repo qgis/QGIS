@@ -49,7 +49,7 @@
 #define M_SQRT2 1.41421356237309504880
 #endif
 
-void pal::Util::sort( void** items, int N, bool ( *greater )( void *l, void *r ) )
+void pal::Util::sort( void** items, int N, bool ( *greater )( void* l, void* r ) )
 {
 
   if ( N <= 0 )
@@ -57,7 +57,7 @@ void pal::Util::sort( void** items, int N, bool ( *greater )( void *l, void *r )
 
   unsigned int n = static_cast< unsigned int >( N ), i = n / 2, parent, child;
 
-  void *t = nullptr;
+  void* t = nullptr;
 
   for ( ;; )
   {
@@ -96,12 +96,12 @@ void pal::Util::sort( void** items, int N, bool ( *greater )( void *l, void *r )
   }
 }
 
-QLinkedList<const GEOSGeometry *>* pal::Util::unmulti( const GEOSGeometry *the_geom )
+QLinkedList<const GEOSGeometry*>* pal::Util::unmulti( const GEOSGeometry* the_geom )
 {
-  QLinkedList<const GEOSGeometry*> *queue = new QLinkedList<const GEOSGeometry*>;
-  QLinkedList<const GEOSGeometry*> *final_queue = new QLinkedList<const GEOSGeometry*>;
+  QLinkedList<const GEOSGeometry*>* queue = new QLinkedList<const GEOSGeometry*>;
+  QLinkedList<const GEOSGeometry*>* final_queue = new QLinkedList<const GEOSGeometry*>;
 
-  const GEOSGeometry *geom;
+  const GEOSGeometry* geom;
 
   queue->append( the_geom );
   int nGeom;

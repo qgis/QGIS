@@ -55,7 +55,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform& o 
   d = o.d;
 }
 
-QgsCoordinateTransform& QgsCoordinateTransform::operator=( const QgsCoordinateTransform & o )
+QgsCoordinateTransform& QgsCoordinateTransform::operator=( const QgsCoordinateTransform& o )
 {
   d = o.d;
   return *this;
@@ -89,7 +89,7 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
   return d->mDestCRS;
 }
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const QgsPoint& thePoint, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return thePoint;
@@ -102,7 +102,7 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformD
   {
     transformCoords( 1, &x, &y, &z, direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -119,7 +119,7 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   {
     return transform( QgsPoint( theX, theY ), direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -127,7 +127,7 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle& theRect, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return theRect;
@@ -146,7 +146,7 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, Tra
     transformCoords( 1, &x1, &y1, &z, direction );
     transformCoords( 1, &x2, &y2, &z, direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -176,7 +176,7 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
   {
     transformCoords( 1, &x, &y, &z, direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -212,7 +212,7 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
     y = yd;
     z = zd;
   }
-  catch ( QgsCsException & )
+  catch ( QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -246,7 +246,7 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
   {
     transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -280,7 +280,7 @@ void QgsCoordinateTransform::transformInPlace(
   {
     transformCoords( x.size(), &x[0], &y[0], &z[0], direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -326,7 +326,7 @@ void QgsCoordinateTransform::transformInPlace(
       z[i] = zd[i];
     }
   }
-  catch ( QgsCsException & )
+  catch ( QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -334,7 +334,7 @@ void QgsCoordinateTransform::transformInPlace(
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &rect, TransformDirection direction, const bool handle180Crossover ) const
+QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle& rect, TransformDirection direction, const bool handle180Crossover ) const
 {
   // Calculate the bounding box of a QgsRectangle in the source CRS
   // when projected to the destination CRS (or the inverse).
@@ -402,7 +402,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   {
     transformCoords( nXPoints * nYPoints, x.data(), y.data(), z.data(), direction );
   }
-  catch ( const QgsCsException & )
+  catch ( const QgsCsException& )
   {
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
@@ -448,7 +448,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   return bb_rect;
 }
 
-void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *y, double *z, TransformDirection direction ) const
+void QgsCoordinateTransform::transformCoords( int numPoints, double* x, double* y, double* z, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -518,8 +518,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
-    char *srcdef = pj_get_def( d->mSourceProjection, 0 );
-    char *dstdef = pj_get_def( d->mDestinationProjection, 0 );
+    char* srcdef = pj_get_def( d->mSourceProjection, 0 );
+    char* dstdef = pj_get_def( d->mDestinationProjection, 0 );
 
     QString msg = QObject::tr( "%1 of\n"
                                "%2"
@@ -567,7 +567,7 @@ bool QgsCoordinateTransform::isShortCircuited() const
   return !d->mIsValid || d->mShortCircuit;
 }
 
-bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
+bool QgsCoordinateTransform::readXml( const QDomNode& theNode )
 {
   d.detach();
 
@@ -585,7 +585,7 @@ bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
   return d->initialise();
 }
 
-bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
+bool QgsCoordinateTransform::writeXml( QDomNode& theNode, QDomDocument& theDoc ) const
 {
   QDomElement myNodeElement = theNode.toElement();
   QDomElement myTransformElement = theDoc.createElement( QStringLiteral( "coordinatetransform" ) );
@@ -605,7 +605,7 @@ bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc
   return true;
 }
 
-const char *finder( const char *name )
+const char* finder( const char* name )
 {
   QString proj;
 #ifdef Q_OS_WIN
@@ -709,7 +709,7 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
   QString cOpCode;
   while ( sqlite3_step( stmt ) == SQLITE_ROW )
   {
-    cOpCode = reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) );
+    cOpCode = reinterpret_cast< const char* >( sqlite3_column_text( stmt, 0 ) );
     transforms.push_back( cOpCode.toInt() );
   }
   sqlite3_finalize( stmt );
@@ -721,7 +721,7 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   return QgsCoordinateTransformPrivate::datumTransformString( datumTransform );
 }
 
-bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
+bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString& remarks, QString& scope, bool& preferred, bool& deprecated )
 {
   sqlite3* db;
   int openResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
@@ -752,8 +752,8 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   epsgNr = sqlite3_column_int( stmt, 0 );
   srcCrsId = sqlite3_column_int( stmt, 1 );
   destCrsId = sqlite3_column_int( stmt, 2 );
-  remarks = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 3 ) ) );
-  scope = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 4 ) ) );
+  remarks = QString::fromUtf8( reinterpret_cast< const char* >( sqlite3_column_text( stmt, 3 ) ) );
+  scope = QString::fromUtf8( reinterpret_cast< const char* >( sqlite3_column_text( stmt, 4 ) ) );
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 

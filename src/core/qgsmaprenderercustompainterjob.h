@@ -43,7 +43,10 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual QgsLabelingResults* takeLabelingResults() override;
 
     //! @note not available in python bindings
-    const LayerRenderJobs& jobs() const { return mLayerJobs; }
+    const LayerRenderJobs& jobs() const
+    {
+      return mLayerJobs;
+    }
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.

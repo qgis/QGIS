@@ -28,9 +28,9 @@
 ////////////////
 
 QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent )
-    : QDialog( parent )
-    , mList( list )
-    , mForceOrderingEnabled( false )
+  : QDialog( parent )
+  , mList( list )
+  , mForceOrderingEnabled( false )
 {
   setupUi( this );
 
@@ -97,7 +97,7 @@ void QgsSymbolLevelsDialog::populateTable()
   {
     QgsSymbol* sym = mList.at( row ).second;
     QString label = mList.at( row ).first;
-    QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
+    QTableWidgetItem* itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
     tableLevels->setItem( row, 0, itemLabel );
     for ( int layer = 0; layer < mMaxLayers; layer++ )
@@ -170,7 +170,7 @@ void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
 
 QWidget* SpinBoxDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& ) const
 {
-  QSpinBox *editor = new QSpinBox( parent );
+  QSpinBox* editor = new QSpinBox( parent );
   editor->setMinimum( 0 );
   editor->setMaximum( 999 );
   return editor;
@@ -179,13 +179,13 @@ QWidget* SpinBoxDelegate::createEditor( QWidget* parent, const QStyleOptionViewI
 void SpinBoxDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
   int value = index.model()->data( index, Qt::EditRole ).toInt();
-  QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
+  QSpinBox* spinBox = static_cast<QSpinBox*>( editor );
   spinBox->setValue( value );
 }
 
 void SpinBoxDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
+  QSpinBox* spinBox = static_cast<QSpinBox*>( editor );
   spinBox->interpretText();
   int value = spinBox->value();
 

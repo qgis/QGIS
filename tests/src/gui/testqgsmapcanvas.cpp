@@ -46,7 +46,7 @@ class TestQgsMapCanvas : public QObject
     Q_OBJECT
   public:
     TestQgsMapCanvas()
-        : mCanvas( nullptr )
+      : mCanvas( nullptr )
     {}
 
   private slots:
@@ -136,14 +136,14 @@ void TestQgsMapCanvas::testMagnification()
   // build vector layer
   QString myPointsFileName = testDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
+  QgsVectorLayer* layer = new QgsVectorLayer( myPointFileInfo.filePath(),
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
   QList<QgsMapCanvasLayer> layers;
   layers.append( layer );
   mCanvas->setLayerSet( layers );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
 
   mCanvas->setExtent( layer->extent() );
 
@@ -200,8 +200,8 @@ void TestQgsMapCanvas::testMagnification()
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
 }
 
-void compareExtent( const QgsRectangle &initialExtent,
-                    const QgsRectangle &extent )
+void compareExtent( const QgsRectangle& initialExtent,
+                    const QgsRectangle& extent )
 {
   QGSCOMPARENEAR( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 );
   QGSCOMPARENEAR( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 );
@@ -215,14 +215,14 @@ void TestQgsMapCanvas::testMagnificationExtent()
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   QString myPointsFileName = testDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
+  QgsVectorLayer* layer = new QgsVectorLayer( myPointFileInfo.filePath(),
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
   QList<QgsMapCanvasLayer> layers;
   layers.append( layer );
   mCanvas->setLayerSet( layers );
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
 
   // zoomToFullExtent
   mCanvas->zoomToFullExtent();

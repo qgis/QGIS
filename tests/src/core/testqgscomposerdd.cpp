@@ -37,11 +37,11 @@ class TestQgsComposerDD : public QObject
 
   public:
     TestQgsComposerDD()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
-        , mVectorLayer( 0 )
-        , mAtlasMap( 0 )
-        , mAtlas( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
+      , mVectorLayer( 0 )
+      , mAtlasMap( 0 )
+      , mAtlas( 0 )
     {}
 
   private slots:
@@ -53,8 +53,8 @@ class TestQgsComposerDD : public QObject
     void ddEvaluate(); //test setting/evaluating data defined value
 
   private:
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
+    QgsComposition* mComposition;
+    QgsMapSettings* mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerMap* mAtlasMap;
     QgsAtlasComposition* mAtlas;

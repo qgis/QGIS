@@ -38,7 +38,7 @@ class RgSettingsDlg : public QDialog
 {
     Q_OBJECT
   public:
-    RgSettingsDlg( RgSettings *settings, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    RgSettingsDlg( RgSettings* settings, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~RgSettingsDlg();
 
     QString timeUnitName();
@@ -65,23 +65,23 @@ class RgSettingsDlg : public QDialog
     /**
      * current graph settings object
      */
-    RgSettings *mSettings;
+    RgSettings* mSettings;
 
-    QWidget *mSettingsWidget;
+    QWidget* mSettingsWidget;
 
     /**
      * plugin distance unit
      */
-    QComboBox *mcbPluginsDistanceUnit;
+    QComboBox* mcbPluginsDistanceUnit;
 
     /**
      * plugin time unit
      */
-    QComboBox *mcbPluginsTimeUnit;
+    QComboBox* mcbPluginsTimeUnit;
 
     /**
      * topology tolerance factor
      */
-    QDoubleSpinBox *msbTopologyTolerance;
+    QDoubleSpinBox* msbTopologyTolerance;
 };
 #endif

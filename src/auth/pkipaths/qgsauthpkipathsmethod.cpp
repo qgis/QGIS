@@ -34,11 +34,11 @@
 static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI paths authentication" );
 
-QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::mPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+QMap<QString, QgsPkiConfigBundle*> QgsAuthPkiPathsMethod::mPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle*>();
 
 
 QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
-    : QgsAuthMethod()
+  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -71,8 +71,8 @@ QString QgsAuthPkiPathsMethod::displayDescription() const
   return tr( "PKI paths authentication" );
 }
 
-bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+    const QString& dataprovider )
 {
   Q_UNUSED( dataprovider )
 
@@ -85,7 +85,7 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
 
   QgsDebugMsg( QString( "Update request SSL config: HTTPS connection for authcfg: %1" ).arg( authcfg ) );
 
-  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  QgsPkiConfigBundle* pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
     QgsDebugMsg( QString( "Update request SSL config FAILED for authcfg: %1: PKI bundle invalid" ).arg( authcfg ) );
@@ -105,14 +105,14 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
   return true;
 }
 
-bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+    const QString& dataprovider )
 {
   Q_UNUSED( dataprovider )
 
   QgsDebugMsg( QString( "Update URI items for authcfg: %1" ).arg( authcfg ) );
 
-  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  QgsPkiConfigBundle* pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
     QgsDebugMsg( "Update URI items FAILED: PKI bundle invalid" );
@@ -201,12 +201,12 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   return true;
 }
 
-void QgsAuthPkiPathsMethod::clearCachedConfig( const QString &authcfg )
+void QgsAuthPkiPathsMethod::clearCachedConfig( const QString& authcfg )
 {
   removePkiConfigBundle( authcfg );
 }
 
-void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
+void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig& mconfig )
 {
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
@@ -222,9 +222,9 @@ void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
   // TODO: add updates as method version() increases due to config storage changes
 }
 
-QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &authcfg )
+QgsPkiConfigBundle* QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString& authcfg )
 {
-  QgsPkiConfigBundle * bundle = nullptr;
+  QgsPkiConfigBundle* bundle = nullptr;
 
   // check if it is cached
   if ( mPkiConfigBundleCache.contains( authcfg ) )
@@ -272,17 +272,17 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
   return bundle;
 }
 
-void QgsAuthPkiPathsMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
+void QgsAuthPkiPathsMethod::putPkiConfigBundle( const QString& authcfg, QgsPkiConfigBundle* pkibundle )
 {
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   mPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
-void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
+void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString& authcfg )
 {
   if ( mPkiConfigBundleCache.contains( authcfg ) )
   {
-    QgsPkiConfigBundle * pkibundle = mPkiConfigBundleCache.take( authcfg );
+    QgsPkiConfigBundle* pkibundle = mPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
     pkibundle = nullptr;
     QgsDebugMsg( QString( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );
@@ -297,7 +297,7 @@ void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
 /**
  * Required class factory to return a pointer to a newly created object
  */
-QGISEXTERN QgsAuthPkiPathsMethod *classFactory()
+QGISEXTERN QgsAuthPkiPathsMethod* classFactory()
 {
   return new QgsAuthPkiPathsMethod();
 }
@@ -329,7 +329,7 @@ QGISEXTERN bool isAuthMethod()
 /**
  * Optional class factory to return a pointer to a newly created edit widget
  */
-QGISEXTERN QgsAuthPkiPathsEdit *editWidget( QWidget *parent )
+QGISEXTERN QgsAuthPkiPathsEdit* editWidget( QWidget* parent )
 {
   return new QgsAuthPkiPathsEdit( parent );
 }

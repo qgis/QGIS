@@ -47,15 +47,15 @@ class TestQgsDiagram : public QObject
 
   public:
     TestQgsDiagram()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mPointsLayer( 0 )
+      : mTestHasError( false )
+      , mMapSettings( 0 )
+      , mPointsLayer( 0 )
     {}
 
   private:
     bool mTestHasError;
-    QgsMapSettings *mMapSettings;
-    QgsVectorLayer *mPointsLayer;
+    QgsMapSettings* mMapSettings;
+    QgsVectorLayer* mPointsLayer;
     QString mTestDataDir;
     QString mReport;
 
@@ -147,7 +147,7 @@ class TestQgsDiagram : public QObject
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
-      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
@@ -184,7 +184,7 @@ class TestQgsDiagram : public QObject
       ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
 
-      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );

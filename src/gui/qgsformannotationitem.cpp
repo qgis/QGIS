@@ -37,12 +37,12 @@
 #include <QWidget>
 
 QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas )
-    , mWidgetContainer( nullptr )
-    , mDesignerWidget( nullptr )
-    , mVectorLayer( vlayer )
-    , mHasAssociatedFeature( hasFeature )
-    , mFeature( feature )
+  : QgsAnnotationItem( canvas )
+  , mWidgetContainer( nullptr )
+  , mDesignerWidget( nullptr )
+  , mVectorLayer( vlayer )
+  , mHasAssociatedFeature( hasFeature )
+  , mFeature( feature )
 {
   mWidgetContainer = new QGraphicsProxyWidget( this );
   mWidgetContainer->setData( 0, "AnnotationItem" ); //mark embedded widget as belonging to an annotation item (composer knows it needs to be printed)
@@ -125,12 +125,12 @@ void QgsFormAnnotationItem::setMapPosition( const QgsPoint& pos )
   setFeatureForMapPosition();
 }
 
-void QgsFormAnnotationItem::paint( QPainter * painter )
+void QgsFormAnnotationItem::paint( QPainter* painter )
 {
   Q_UNUSED( painter );
 }
 
-void QgsFormAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+void QgsFormAnnotationItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );

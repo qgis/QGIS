@@ -59,7 +59,10 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     /** Returns the text format used for previewing text in the widget.
      * @see setFormat()
      */
-    QgsTextFormat format() const { return mFormat; }
+    QgsTextFormat format() const
+    {
+      return mFormat;
+    }
 
     /** Sets the scale to use for previewing format sizes in map units.
      * @param scale preview map scale
@@ -72,7 +75,10 @@ class GUI_EXPORT QgsTextPreview : public QLabel
      * @see setScale()
      * @see mapUnits()
      */
-    double scale() const { return mScale; }
+    double scale() const
+    {
+      return mScale;
+    }
 
     /** Sets the map unit type for previewing format sizes in map units.
      * @param unit map units
@@ -85,7 +91,10 @@ class GUI_EXPORT QgsTextPreview : public QLabel
      * @see setMapUnits()
      * @see scale()
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
+    QgsUnitTypes::DistanceUnit mapUnits() const
+    {
+      return mMapUnits;
+    }
 
   private:
     QgsTextFormat mFormat;

@@ -71,21 +71,21 @@
 #include "qgssymbologyconversion.h"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
-  QgsVectorLayer *lyr,
-  QWidget * parent,
+  QgsVectorLayer* lyr,
+  QWidget* parent,
   Qt::WindowFlags fl
 )
-    : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
-    , mLayer( lyr )
-    , mMetadataFilled( false )
-    , mOriginalSubsetSQL( lyr->subsetString() )
-    , mSaveAsMenu( nullptr )
-    , mLoadStyleMenu( nullptr )
-    , mRendererDialog( nullptr )
-    , labelingDialog( nullptr )
-    , mActionDialog( nullptr )
-    , diagramPropertiesDialog( nullptr )
-    , mFieldsPropertiesDialog( nullptr )
+  : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
+  , mLayer( lyr )
+  , mMetadataFilled( false )
+  , mOriginalSubsetSQL( lyr->subsetString() )
+  , mSaveAsMenu( nullptr )
+  , mLoadStyleMenu( nullptr )
+  , mRendererDialog( nullptr )
+  , labelingDialog( nullptr )
+  , mActionDialog( nullptr )
+  , diagramPropertiesDialog( nullptr )
+  , mFieldsPropertiesDialog( nullptr )
 {
   setupUi( this );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -113,10 +113,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
 
   mContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+           << QgsExpressionContextUtils::projectScope()
+           << QgsExpressionContextUtils::atlasScope( nullptr )
+           << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+           << QgsExpressionContextUtils::layerScope( mLayer );
 
   mMapTipExpressionFieldWidget->setLayer( lyr );
   mMapTipExpressionFieldWidget->registerExpressionContextGenerator( this );
@@ -128,7 +128,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( !mLayer )
     return;
 
-  QVBoxLayout *layout;
+  QVBoxLayout* layout;
 
   if ( mLayer->hasGeometryType() )
   {
@@ -147,7 +147,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   // Create the Actions dialog tab
-  QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
+  QVBoxLayout* actionLayout = new QVBoxLayout( actionOptionsFrame );
   actionLayout->setMargin( 0 );
   mActionDialog = new QgsAttributeActionDialog( *mLayer->actions(), actionOptionsFrame );
   mActionDialog->layout()->setMargin( 0 );
@@ -168,8 +168,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
-    QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction * ) ),
-                      this, SLOT( loadStyleMenuTriggered( QAction * ) ) );
+    QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction* ) ),
+                      this, SLOT( loadStyleMenuTriggered( QAction* ) ) );
 
     //for saving
     QString providerName = mLayer->providerType();
@@ -182,8 +182,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
   }
 
-  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
-                    this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
+  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction* ) ),
+                    this, SLOT( saveStyleAsMenuTriggered( QAction* ) ) );
 
   mFieldsPropertiesDialog = new QgsFieldsProperties( mLayer, mFieldsFrame );
   mFieldsPropertiesDialog->layout()->setMargin( 0 );
@@ -254,7 +254,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator* shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
@@ -647,7 +647,7 @@ void QgsVectorLayerProperties::onCancel()
 void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 {
   // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( mLayer, this );
+  QgsQueryBuilder* qb = new QgsQueryBuilder( mLayer, this );
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
@@ -846,9 +846,9 @@ void QgsVectorLayerProperties::saveStyleAs_clicked()
   saveStyleAs( QML );
 }
 
-void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
+void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction* action )
 {
-  QMenu *menu = qobject_cast<QMenu *>( sender() );
+  QMenu* menu = qobject_cast<QMenu*>( sender() );
   if ( !menu )
     return;
 
@@ -958,9 +958,9 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   }
 }
 
-void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
+void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction* action )
 {
-  QMenu *menu = qobject_cast<QMenu *>( sender() );
+  QMenu* menu = qobject_cast<QMenu*>( sender() );
   if ( !menu )
     return;
 
@@ -1218,7 +1218,7 @@ QgsExpressionContext QgsVectorLayerProperties::createExpressionContext() const
   return mContext;
 }
 
-void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
+void QgsVectorLayerProperties::openPanel( QgsPanelWidget* panel )
 {
   QDialog* dlg = new QDialog();
   QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );

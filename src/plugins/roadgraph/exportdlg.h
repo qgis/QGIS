@@ -49,6 +49,6 @@ class RgExportDlg : public QDialog
     void on_buttonBox_helpRequested();
 
   private:
-    QComboBox *mcbLayers;
+    QComboBox* mcbLayers;
 };
 #endif

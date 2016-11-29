@@ -27,11 +27,11 @@ const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
 const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
 
 QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
-    : QWidget( nullptr )
-    , mDirection( d )
-    , mComposition( nullptr )
-    , mLineSnapItem( nullptr )
-    , mScaleMinPixelsWidth( 0 )
+  : QWidget( nullptr )
+  , mDirection( d )
+  , mComposition( nullptr )
+  , mLineSnapItem( nullptr )
+  , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
 
@@ -224,7 +224,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
   drawMarkerPos( &p );
 }
 
-void QgsComposerRuler::drawMarkerPos( QPainter *painter )
+void QgsComposerRuler::drawMarkerPos( QPainter* painter )
 {
   //draw current marker pos in red
   painter->setPen( QColor( Qt::red ) );
@@ -238,7 +238,7 @@ void QgsComposerRuler::drawMarkerPos( QPainter *painter )
   }
 }
 
-void QgsComposerRuler::drawRotatedText( QPainter *painter, QPointF pos, const QString &text )
+void QgsComposerRuler::drawRotatedText( QPainter* painter, QPointF pos, const QString& text )
 {
   painter->save();
   painter->translate( pos.x(), pos.y() );
@@ -247,7 +247,7 @@ void QgsComposerRuler::drawRotatedText( QPainter *painter, QPointF pos, const QS
   painter->restore();
 }
 
-void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, int numDivisions, double rulerScale, double maxPos )
+void QgsComposerRuler::drawSmallDivisions( QPainter* painter, double startPos, int numDivisions, double rulerScale, double maxPos )
 {
   if ( numDivisions == 0 )
     return;
@@ -303,7 +303,7 @@ void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, i
   }
 }
 
-int QgsComposerRuler::optimumScale( double minPixelDiff, int &magnitude, int &multiple )
+int QgsComposerRuler::optimumScale( double minPixelDiff, int& magnitude, int& multiple )
 {
   //find optimal ruler display scale
 

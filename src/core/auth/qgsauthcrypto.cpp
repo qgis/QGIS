@@ -65,7 +65,7 @@ static QCA::SymmetricKey passwordKey_( const QString& pass, const QCA::Initializ
   return QCA::PBKDF2().makeKey( passhash, salt, KEY_GEN_LENGTH, KEY_GEN_ITERATIONS );
 }
 
-void QgsAuthCrypto::passwordKeyHash( const QString& pass, QString *salt, QString *hash, QString *cipheriv )
+void QgsAuthCrypto::passwordKeyHash( const QString& pass, QString* salt, QString* hash, QString* cipheriv )
 {
   if ( QgsAuthCrypto::isDisabled() )
     return;
@@ -92,7 +92,7 @@ void QgsAuthCrypto::passwordKeyHash( const QString& pass, QString *salt, QString
 bool QgsAuthCrypto::verifyPasswordKeyHash( const QString& pass,
     const QString& salt,
     const QString& hash,
-    QString *hashderived )
+    QString* hashderived )
 {
   if ( QgsAuthCrypto::isDisabled() )
     return false;

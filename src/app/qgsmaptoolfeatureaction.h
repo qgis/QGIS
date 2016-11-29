@@ -36,7 +36,10 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 
     ~QgsMapToolFeatureAction();
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    virtual Flags flags() const override
+    {
+      return QgsMapTool::AllowZoomRect;
+    }
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
@@ -52,7 +55,7 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
     virtual void deactivate() override;
 
   private:
-    bool doAction( QgsVectorLayer *layer, int x, int y );
+    bool doAction( QgsVectorLayer* layer, int x, int y );
 };
 
 #endif

@@ -48,9 +48,9 @@ static void _initRendererWidgetFunctions()
 
 
 
-QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas* canvas, QWidget *parent )
-    : QgsMapLayerConfigWidget( layer, canvas, parent )
-    , mRendererWidget( nullptr )
+QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
+  : QgsMapLayerConfigWidget( layer, canvas, parent )
+  , mRendererWidget( nullptr )
 {
   mRasterLayer = qobject_cast<QgsRasterLayer*>( layer );
   if ( !mRasterLayer )
@@ -110,7 +110,7 @@ QgsRendererRasterPropertiesWidget::~QgsRendererRasterPropertiesWidget()
 
 }
 
-void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;
 }
@@ -142,7 +142,7 @@ void QgsRendererRasterPropertiesWidget::apply()
   }
 
   // Hue and saturation controls
-  QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   if ( hueSaturationFilter )
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );
@@ -155,7 +155,7 @@ void QgsRendererRasterPropertiesWidget::apply()
   QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
   if ( resampleFilter )
   {
-    QgsRasterResampler *zoomedInResampler = nullptr;
+    QgsRasterResampler* zoomedInResampler = nullptr;
     QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
     if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
     {
@@ -169,7 +169,7 @@ void QgsRendererRasterPropertiesWidget::apply()
     resampleFilter->setZoomedInResampler( zoomedInResampler );
 
     //raster resampling
-    QgsRasterResampler *zoomedOutResampler = nullptr;
+    QgsRasterResampler* zoomedOutResampler = nullptr;
     QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
     if ( zoomedOutResamplingMethod == tr( "Average" ) )
     {
@@ -315,7 +315,7 @@ void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEna
   emit widgetChanged();
 }
 
-void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
+void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString& rendererName )
 {
   QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget* oldWidget = mRendererWidget;

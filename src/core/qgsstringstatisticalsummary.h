@@ -64,14 +64,20 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * are always calculated (eg count).
      * @see setStatistics
      */
-    Statistics statistics() const { return mStatistics; }
+    Statistics statistics() const
+    {
+      return mStatistics;
+    }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( Statistics stats )
+    {
+      mStatistics = stats;
+    }
 
     /** Resets the calculated values
      */
@@ -135,37 +141,61 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /** Returns the calculated count of values.
      */
-    int count() const { return mCount; }
+    int count() const
+    {
+      return mCount;
+    }
 
     /** Returns the number of distinct string values.
      * @see distinctValues()
      */
-    int countDistinct() const { return mValues.count(); }
+    int countDistinct() const
+    {
+      return mValues.count();
+    }
 
     /** Returns the set of distinct string values.
      * @see countDistinct()
      */
-    QSet< QString > distinctValues() const { return mValues; }
+    QSet< QString > distinctValues() const
+    {
+      return mValues;
+    }
 
     /** Returns the number of missing (null) string values.
      */
-    int countMissing() const { return mCountMissing; }
+    int countMissing() const
+    {
+      return mCountMissing;
+    }
 
     /** Returns the minimum (non-null) string value.
      */
-    QString min() const { return mMin; }
+    QString min() const
+    {
+      return mMin;
+    }
 
     /** Returns the maximum (non-null) string value.
      */
-    QString max() const { return mMax; }
+    QString max() const
+    {
+      return mMax;
+    }
 
     /** Returns the minimum length of strings.
      */
-    int minLength() const { return mMinLength; }
+    int minLength() const
+    {
+      return mMinLength;
+    }
 
     /** Returns the maximum length of strings.
      */
-    int maxLength() const { return mMaxLength; }
+    int maxLength() const
+    {
+      return mMaxLength;
+    }
 
     /** Returns the friendly display name for a statistic
      * @param statistic statistic to return name for

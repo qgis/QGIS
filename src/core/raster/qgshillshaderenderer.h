@@ -44,7 +44,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     QgsHillshadeRenderer( QgsRasterInterface* input, int band, double lightAzimuth, double lightAltitude );
 
-    QgsHillshadeRenderer * clone() const override;
+    QgsHillshadeRenderer* clone() const override;
 
     /**
      * @brief Factory method to create a new renderer
@@ -56,13 +56,16 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     QList<int> usesBands() const override;
 
     /** Returns the band used by the renderer
      */
-    int band() const { return mBand; }
+    int band() const
+    {
+      return mBand;
+    }
 
     /** Sets the band used by the renderer.
      * @see band
@@ -73,49 +76,73 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * Returns the direction of the light over the raster between 0-360.
      * @see setAzimuth()
      */
-    double azimuth() const { return mLightAzimuth; }
+    double azimuth() const
+    {
+      return mLightAzimuth;
+    }
 
     /** Returns the angle of the light source over the raster.
      * @see setAltitude()
      */
-    double altitude()  const { return mLightAngle; }
+    double altitude()  const
+    {
+      return mLightAngle;
+    }
 
     /** Returns the Z scaling factor.
      * @see setZFactor()
      */
-    double zFactor()  const { return mZFactor; }
+    double zFactor()  const
+    {
+      return mZFactor;
+    }
 
     /** Returns true if the renderer is using multi-directional hillshading.
      * @see setMultiDirectional()
      */
-    bool multiDirectional() const { return mMultiDirectional; }
+    bool multiDirectional() const
+    {
+      return mMultiDirectional;
+    }
 
     /**
      * @brief Set the azimuth of the light source.
      * @param azimuth The azimuth of the light source, between 0 and 360.0
      * @see azimuth()
      */
-    void setAzimuth( double azimuth ) { mLightAzimuth = azimuth; }
+    void setAzimuth( double azimuth )
+    {
+      mLightAzimuth = azimuth;
+    }
 
     /**
      * @brief Set the altitude of the light source
      * @param altitude the altitude
      * @see altitude()
      */
-    void setAltitude( double altitude ) { mLightAngle = altitude; }
+    void setAltitude( double altitude )
+    {
+      mLightAngle = altitude;
+    }
 
     /**
      * @brief Set the Z scaling factor of the result image.
      * @param zfactor The z factor
      * @see zFactor()
      */
-    void setZFactor( double zfactor ) { mZFactor = zfactor; }
+    void setZFactor( double zfactor )
+    {
+      mZFactor = zfactor;
+    }
 
     /** Sets whether to render using a multi-directional hillshade algorithm.
      * @param isMultiDirectional set to true to use multi directional rendering
      * @see multiDirectional()
      */
-    void setMultiDirectional( bool isMultiDirectional ) { mMultiDirectional = isMultiDirectional; }
+    void setMultiDirectional( bool isMultiDirectional )
+    {
+      mMultiDirectional = isMultiDirectional;
+    }
 
   private:
     int mBand;

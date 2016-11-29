@@ -19,11 +19,11 @@
 #include <QWidget>
 
 QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer* vl, QWidget* editor, QWidget* parent )
-    : QObject( parent )
-    , mWidget( editor )
-    , mParent( parent )
-    , mLayer( vl )
-    , mInitialized( false )
+  : QObject( parent )
+  , mWidget( editor )
+  , mParent( parent )
+  , mLayer( vl )
+  , mInitialized( false )
 {
 }
 
@@ -47,7 +47,7 @@ void QgsWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
   mConfig = config;
 }
 
-void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
+void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext& context )
 {
   mContext = context;
 }

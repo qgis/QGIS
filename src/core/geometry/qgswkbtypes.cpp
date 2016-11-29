@@ -29,7 +29,7 @@ QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry>* QgsWkbTypes::entries()
   return &entries;
 }
 
-QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
+QgsWkbTypes::Type QgsWkbTypes::parseType( const QString& wktStr )
 {
   QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
 

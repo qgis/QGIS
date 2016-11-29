@@ -18,9 +18,9 @@
 #include <QPainter>
 
 QgsTextPreview::QgsTextPreview( QWidget* parent )
-    : QLabel( parent )
-    , mScale( -1 )
-    , mMapUnits( QgsUnitTypes::DistanceMeters )
+  : QLabel( parent )
+  , mScale( -1 )
+  , mMapUnits( QgsUnitTypes::DistanceMeters )
 {
   // initially use a basic transform with no scale
   QgsMapToPixel newCoordXForm;
@@ -32,7 +32,7 @@ QgsTextPreview::QgsTextPreview( QWidget* parent )
 }
 
 
-void QgsTextPreview::paintEvent( QPaintEvent *e )
+void QgsTextPreview::paintEvent( QPaintEvent* e )
 {
   Q_UNUSED( e );
   QPainter p( this );

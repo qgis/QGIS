@@ -29,17 +29,17 @@
 #include <QDomElement>
 
 QgsComposerLegendItem::QgsComposerLegendItem( QgsComposerLegendStyle::Style s ): QStandardItem()
-    , mStyle( s )
+  , mStyle( s )
 {
 }
 
 QgsComposerLegendItem::QgsComposerLegendItem( const QString& text, QgsComposerLegendStyle::Style s ): QStandardItem( text )
-    , mStyle( s )
+  , mStyle( s )
 {
 }
 
 QgsComposerLegendItem::QgsComposerLegendItem( const QIcon& icon, const QString& text, QgsComposerLegendStyle::Style s ): QStandardItem( icon, text )
-    , mStyle( s )
+  , mStyle( s )
 {
 }
 
@@ -202,12 +202,12 @@ void QgsComposerRasterSymbolItem::readXml( const QDomElement& itemElem, bool xSe
 ////////////////////QgsComposerLayerItem
 
 QgsComposerLayerItem::QgsComposerLayerItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Subgroup )
-    , mShowFeatureCount( false )
+  , mShowFeatureCount( false )
 {
 }
 
 QgsComposerLayerItem::QgsComposerLayerItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Subgroup )
-    , mShowFeatureCount( false )
+  , mShowFeatureCount( false )
 {
 }
 
@@ -389,7 +389,7 @@ void QgsComposerGroupItem::readXml( const QDomElement& itemElem, bool xServerAva
     }
     currentChildItem->readXml( currentElem, xServerAvailable );
 
-    QList<QStandardItem *> itemsList;
+    QList<QStandardItem*> itemsList;
     itemsList << currentChildItem << new QgsComposerStyleItem( currentChildItem );
     appendRow( itemsList );
   }
@@ -399,7 +399,7 @@ QgsComposerStyleItem::QgsComposerStyleItem(): QStandardItem()
 {
 }
 
-QgsComposerStyleItem::QgsComposerStyleItem( QgsComposerLegendItem *item ): QStandardItem()
+QgsComposerStyleItem::QgsComposerStyleItem( QgsComposerLegendItem* item ): QStandardItem()
 {
   setData( QgsComposerLegendStyle::styleLabel( item->style() ), Qt::DisplayRole );
 }

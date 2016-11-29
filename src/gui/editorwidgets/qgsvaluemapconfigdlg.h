@@ -36,10 +36,10 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     virtual QgsEditorWidgetConfig config() override;
     virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
 
-    void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
+    void updateMap( const QMap<QString, QVariant>& map, bool insertNull );
 
   private:
-    void setRow( int row, const QString &value, const QString &description );
+    void setRow( int row, const QString& value, const QString& description );
 
   private slots:
     void vCellChanged( int row, int column );

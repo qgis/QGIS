@@ -30,7 +30,10 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
     QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsVectorFieldSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsVectorFieldSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;

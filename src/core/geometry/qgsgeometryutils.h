@@ -98,7 +98,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param tolerance The tolerance to use
      * @return  Whether the segments intersect
      */
-    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2& inter, double tolerance );
+    static bool segmentIntersection( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& q1, const QgsPointV2& q2, QgsPointV2& inter, double tolerance );
 
     /**
      * @brief Project the point on a segment
@@ -174,15 +174,15 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPointSequence pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
     //! Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
-    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure );
+    static void pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence& points, bool is3D, bool isMeasure );
     //! Returns a WKT coordinate list
-    static QString pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure );
+    static QString pointsToWKT( const QgsPointSequence& points, int precision, bool is3D, bool isMeasure );
     //! Returns a gml::coordinates DOM element
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString& ns );
+    static QDomElement pointsToGML2( const QgsPointSequence& points, QDomDocument& doc, int precision, const QString& ns );
     //! Returns a gml::posList DOM element
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
+    static QDomElement pointsToGML3( const QgsPointSequence& points, QDomDocument& doc, int precision, const QString& ns, bool is3D );
     //! Returns a geoJSON coordinates string
-    static QString pointsToJSON( const QgsPointSequence &points, int precision );
+    static QString pointsToJSON( const QgsPointSequence& points, int precision );
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
      * @param angle angle in radians
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param defaultType default geometry type for childen
      * @returns list of WKT child block strings, eg List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      */
-    static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = "" );
+    static QStringList wktGetChildBlocks( const QString& wkt , const QString& defaultType = "" );
 
     enum componentType
     {

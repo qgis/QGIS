@@ -55,7 +55,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     QgsDebugMsg( "Color table found" );
 
     // load category labels
-    char ** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
+    char** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
     QVector<QString> labels;
     if ( categoryNames )
     {
@@ -260,7 +260,7 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   return extent;
 }
 
-GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
+GDALDatasetH QgsGdalProviderBase::gdalOpen( const char* pszFilename, GDALAccess eAccess )
 {
   // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
@@ -280,7 +280,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
   return hDS;
 }
 
-int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
+int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char* pszMessage, void* pProgressArg )
 {
   Q_UNUSED( dfComplete );
   Q_UNUSED( pszMessage );
@@ -290,7 +290,7 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
 }
 
 
-CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void* pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
 {
   // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )

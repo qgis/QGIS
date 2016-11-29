@@ -90,7 +90,10 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     virtual QgsLayerTreeGroup* clone() const override;
 
     //! Return the check state of the group node
-    Qt::CheckState isVisible() const { return mChecked; }
+    Qt::CheckState isVisible() const
+    {
+      return mChecked;
+    }
     //! Set check state of the group node - will also update children
     void setVisible( Qt::CheckState state );
 

@@ -28,9 +28,9 @@
 #include "qgscrscache.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings& settings, const QgsGeometry& polygon, const LayerFilterExpression& layerFilterExpression )
-    : mSettings( settings )
-    , mLayerFilterExpression( layerFilterExpression )
-    , mOnlyExpressions( false )
+  : mSettings( settings )
+  , mLayerFilterExpression( layerFilterExpression )
+  , mOnlyExpressions( false )
 {
   if ( !polygon.isEmpty() && polygon.type() == QgsWkbTypes::PolygonGeometry )
   {
@@ -39,9 +39,9 @@ QgsMapHitTest::QgsMapHitTest( const QgsMapSettings& settings, const QgsGeometry&
 }
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings& settings, const LayerFilterExpression& layerFilterExpression )
-    : mSettings( settings )
-    , mLayerFilterExpression( layerFilterExpression )
-    , mOnlyExpressions( true )
+  : mSettings( settings )
+  , mLayerFilterExpression( layerFilterExpression )
+  , mOnlyExpressions( true )
 {
 }
 

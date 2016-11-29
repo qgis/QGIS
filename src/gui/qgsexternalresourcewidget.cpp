@@ -27,13 +27,13 @@
 #endif
 
 
-QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
-    : QWidget( parent )
-    , mFileWidgetVisible( true )
-    , mDocumentViewerContent( NoContent )
-    , mDocumentViewerHeight( 0 )
-    , mDocumentViewerWidth( 0 )
-    , mRelativeStorage( QgsFileWidget::Absolute )
+QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget* parent )
+  : QWidget( parent )
+  , mFileWidgetVisible( true )
+  , mDocumentViewerContent( NoContent )
+  , mDocumentViewerHeight( 0 )
+  , mDocumentViewerWidth( 0 )
+  , mRelativeStorage( QgsFileWidget::Absolute )
 
 {
   setBackgroundRole( QPalette::Window );
@@ -79,7 +79,7 @@ void QgsExternalResourceWidget::setDocumentPath( const QVariant& path )
   mFileWidget->setFilePath( path.toString() );
 }
 
-QgsFileWidget*QgsExternalResourceWidget::fileWidget()
+QgsFileWidget* QgsExternalResourceWidget::fileWidget()
 {
   return mFileWidget;
 }

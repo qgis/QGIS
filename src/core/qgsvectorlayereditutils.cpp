@@ -30,7 +30,7 @@
 
 
 QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer* layer )
-    : L( layer )
+  : L( layer )
 {
 }
 
@@ -177,7 +177,7 @@ int QgsVectorLayerEditUtils::addRing( QgsCurve* ring, const QgsFeatureIds& targe
   return addRingReturnCode;
 }
 
-int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
+int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint>& points, QgsFeatureId featureId )
 {
   QgsPointSequence l;
   for ( QList<QgsPoint>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
@@ -187,7 +187,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
   return addPart( l, featureId );
 }
 
-int QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
+int QgsVectorLayerEditUtils::addPart( const QgsPointSequence& points, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
     return 6;
@@ -554,7 +554,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry& geom )
 
   switch ( wkbType )
   {
-      //line
+    //line
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineString:
     {

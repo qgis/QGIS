@@ -78,7 +78,7 @@ Pal::Pal()
   showPartial = true;
 }
 
-void Pal::removeLayer( Layer *layer )
+void Pal::removeLayer( Layer* layer )
 {
   if ( !layer )
     return;
@@ -120,10 +120,10 @@ Layer* Pal::addLayer( QgsAbstractLabelProvider* provider, const QString& layerNa
 
 typedef struct _featCbackCtx
 {
-  Layer *layer;
+  Layer* layer;
   QLinkedList<Feats*>* fFeats;
-  RTree<FeaturePart*, double, 2, double> *obstacles;
-  RTree<LabelPosition*, double, 2, double> *candidates;
+  RTree<FeaturePart*, double, 2, double>* obstacles;
+  RTree<LabelPosition*, double, 2, double>* candidates;
   double bbox_min[2];
   double bbox_max[2];
 } FeatCallBackCtx;
@@ -135,10 +135,10 @@ typedef struct _featCbackCtx
  *
  * Extract a specific shape from indexes
  */
-bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
+bool extractFeatCallback( FeaturePart* ft_ptr, void* ctx )
 {
   double amin[2], amax[2];
-  FeatCallBackCtx *context = reinterpret_cast< FeatCallBackCtx* >( ctx );
+  FeatCallBackCtx* context = reinterpret_cast< FeatCallBackCtx* >( ctx );
 
   // Holes of the feature are obstacles
   for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
@@ -157,7 +157,7 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   if ( ft_ptr->createCandidates( lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates ) )
   {
     // valid features are added to fFeats
-    Feats *ft = new Feats();
+    Feats* ft = new Feats();
     ft->feature = ft_ptr;
     ft->shape = nullptr;
     ft->lPos = lPos;
@@ -175,7 +175,7 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
 
 typedef struct _obstaclebackCtx
 {
-  RTree<FeaturePart*, double, 2, double> *obstacles;
+  RTree<FeaturePart*, double, 2, double>* obstacles;
   int obstacleCount;
 } ObstacleCallBackCtx;
 
@@ -184,10 +184,10 @@ typedef struct _obstaclebackCtx
  *
  * Extract obstacles from indexes
  */
-bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
+bool extractObstaclesCallback( FeaturePart* ft_ptr, void* ctx )
 {
   double amin[2], amax[2];
-  ObstacleCallBackCtx *context = reinterpret_cast< ObstacleCallBackCtx* >( ctx );
+  ObstacleCallBackCtx* context = reinterpret_cast< ObstacleCallBackCtx* >( ctx );
 
   // insert into obstacles
   ft_ptr->getBoundingBox( amin, amax );
@@ -198,14 +198,14 @@ bool extractObstaclesCallback( FeaturePart *ft_ptr, void *ctx )
 
 typedef struct _filterContext
 {
-  RTree<LabelPosition*, double, 2, double> *cdtsIndex;
+  RTree<LabelPosition*, double, 2, double>* cdtsIndex;
   Pal* pal;
 } FilterContext;
 
-bool filteringCallback( FeaturePart *featurePart, void *ctx )
+bool filteringCallback( FeaturePart* featurePart, void* ctx )
 {
 
-  RTree<LabelPosition*, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext* >( ctx ) )->cdtsIndex;
+  RTree<LabelPosition*, double, 2, double>* cdtsIndex = ( reinterpret_cast< FilterContext* >( ctx ) )->cdtsIndex;
   Pal* pal = ( reinterpret_cast< FilterContext* >( ctx ) )->pal;
 
   if ( pal->isCancelled() )
@@ -225,9 +225,9 @@ bool filteringCallback( FeaturePart *featurePart, void *ctx )
 Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, double phi_max )
 {
   // to store obstacles
-  RTree<FeaturePart*, double, 2, double> *obstacles = new RTree<FeaturePart*, double, 2, double>();
+  RTree<FeaturePart*, double, 2, double>* obstacles = new RTree<FeaturePart*, double, 2, double>();
 
-  Problem *prob = new Problem();
+  Problem* prob = new Problem();
 
   int i, j;
 
@@ -248,7 +248,7 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
 
   prob->pal = this;
 
-  QLinkedList<Feats*> *fFeats = new QLinkedList<Feats*>;
+  QLinkedList<Feats*>* fFeats = new QLinkedList<Feats*>;
 
   FeatCallBackCtx context;
   context.fFeats = fFeats;
@@ -325,7 +325,7 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
   prob->featStartId = new int [prob->nbft];
   prob->inactiveCost = new double[prob->nbft];
 
-  Feats *feat;
+  Feats* feat;
 
   // Filtering label positions against obstacles
   amin[0] = amin[1] = -DBL_MAX;
@@ -451,9 +451,9 @@ Problem* Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
 /*
  * BIG MACHINE
  */
-QList<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
+QList<LabelPosition*>* Pal::labeller( double bbox[4], PalStat** stats, bool displayAll )
 {
-  Problem *prob;
+  Problem* prob;
 
   SearchMethod old_searchMethod = searchMethod;
 
@@ -488,7 +488,7 @@ QList<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool disp
   //prob->post_optimization();
 
 
-  QList<LabelPosition*> * solution = prob->getSolution( displayAll );
+  QList<LabelPosition*>* solution = prob->getSolution( displayAll );
 
   if ( stats )
     *stats = prob->getStats();
@@ -503,7 +503,7 @@ QList<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool disp
   return solution;
 }
 
-void Pal::registerCancellationCallback( Pal::FnIsCancelled fnCancelled, void *context )
+void Pal::registerCancellationCallback( Pal::FnIsCancelled fnCancelled, void* context )
 {
   fnIsCancelled = fnCancelled;
   fnIsCancelledContext = context;

@@ -30,9 +30,9 @@
 #include "modeltest.h"
 #endif
 
-QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
-    : QTreeView( parent )
-    , mScheme( scheme )
+QgsColorSchemeList::QgsColorSchemeList( QWidget* parent, QgsColorScheme* scheme, const QString& context, const QColor& baseColor )
+  : QTreeView( parent )
+  , mScheme( scheme )
 {
   mModel = new QgsColorSchemeModel( scheme, context, baseColor, this );
 #ifdef ENABLE_MODELTEST
@@ -58,7 +58,7 @@ QgsColorSchemeList::~QgsColorSchemeList()
 
 }
 
-void QgsColorSchemeList::setScheme( QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
+void QgsColorSchemeList::setScheme( QgsColorScheme* scheme, const QString& context, const QColor& baseColor )
 {
   mScheme = scheme;
   mModel->setScheme( scheme, context, baseColor );
@@ -78,7 +78,7 @@ bool QgsColorSchemeList::saveColorsToScheme()
 void QgsColorSchemeList::removeSelection()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, selectedIndexes() )
   {
     rows << index.row();
   }
@@ -93,7 +93,7 @@ void QgsColorSchemeList::removeSelection()
   }
 }
 
-void QgsColorSchemeList::addColor( const QColor &color, const QString &label, bool allowDuplicate )
+void QgsColorSchemeList::addColor( const QColor& color, const QString& label, bool allowDuplicate )
 {
   mModel->addColor( color, label, allowDuplicate );
 }
@@ -119,7 +119,7 @@ void QgsColorSchemeList::pasteColors()
 void QgsColorSchemeList::copyColors()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, selectedIndexes() )
   {
     rows << index.row();
   }
@@ -195,13 +195,13 @@ void QgsColorSchemeList::showExportColorsDialog()
   }
 }
 
-void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
+void QgsColorSchemeList::keyPressEvent( QKeyEvent* event )
 {
   //listen out for delete/backspace presses and remove selected colors
   if (( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
     QList<int> rows;
-    Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
+    Q_FOREACH ( const QModelIndex& index, selectedIndexes() )
     {
       rows << index.row();
     }
@@ -220,7 +220,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
   QTreeView::keyPressEvent( event );
 }
 
-void QgsColorSchemeList::mousePressEvent( QMouseEvent *event )
+void QgsColorSchemeList::mousePressEvent( QMouseEvent* event )
 {
   if ( event->button() == Qt::LeftButton )
   {
@@ -230,7 +230,7 @@ void QgsColorSchemeList::mousePressEvent( QMouseEvent *event )
   QTreeView::mousePressEvent( event );
 }
 
-void QgsColorSchemeList::mouseReleaseEvent( QMouseEvent *event )
+void QgsColorSchemeList::mouseReleaseEvent( QMouseEvent* event )
 {
   if (( event->button() == Qt::LeftButton ) &&
       ( event->pos() - mDragStartPosition ).manhattanLength() <= QApplication::startDragDistance() )
@@ -249,7 +249,7 @@ void QgsColorSchemeList::mouseReleaseEvent( QMouseEvent *event )
   QTreeView::mouseReleaseEvent( event );
 }
 
-bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
+bool QgsColorSchemeList::importColorsFromGpl( QFile& file )
 {
   QgsNamedColorList importedColors;
   bool ok = false;
@@ -276,7 +276,7 @@ bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
   return true;
 }
 
-bool QgsColorSchemeList::exportColorsToGpl( QFile &file )
+bool QgsColorSchemeList::exportColorsToGpl( QFile& file )
 {
   return QgsSymbolLayerUtils::saveColorsToGpl( file, QString(), mModel->colors() );
 }
@@ -291,7 +291,7 @@ bool QgsColorSchemeList::isDirty() const
   return mModel->isDirty();
 }
 
-QgsColorScheme*QgsColorSchemeList::scheme()
+QgsColorScheme* QgsColorSchemeList::scheme()
 {
   return mScheme;
 }
@@ -300,12 +300,12 @@ QgsColorScheme*QgsColorSchemeList::scheme()
 // QgsColorSchemeModel
 //
 
-QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context, const QColor &baseColor, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mScheme( scheme )
-    , mContext( context )
-    , mBaseColor( baseColor )
-    , mIsDirty( false )
+QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme* scheme, const QString& context, const QColor& baseColor, QObject* parent )
+  : QAbstractItemModel( parent )
+  , mScheme( scheme )
+  , mContext( context )
+  , mBaseColor( baseColor )
+  , mIsDirty( false )
 {
   if ( scheme )
   {
@@ -318,7 +318,7 @@ QgsColorSchemeModel::~QgsColorSchemeModel()
 
 }
 
-QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex& parent ) const
 {
   if ( column < 0 || column >= columnCount() )
   {
@@ -336,7 +336,7 @@ QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &
   return QModelIndex();
 }
 
-QModelIndex QgsColorSchemeModel::parent( const QModelIndex &index ) const
+QModelIndex QgsColorSchemeModel::parent( const QModelIndex& index ) const
 {
   Q_UNUSED( index );
 
@@ -344,7 +344,7 @@ QModelIndex QgsColorSchemeModel::parent( const QModelIndex &index ) const
   return QModelIndex();
 }
 
-int QgsColorSchemeModel::rowCount( const QModelIndex &parent ) const
+int QgsColorSchemeModel::rowCount( const QModelIndex& parent ) const
 {
   if ( !parent.isValid() )
   {
@@ -357,13 +357,13 @@ int QgsColorSchemeModel::rowCount( const QModelIndex &parent ) const
   }
 }
 
-int QgsColorSchemeModel::columnCount( const QModelIndex &parent ) const
+int QgsColorSchemeModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 2;
 }
 
-QVariant QgsColorSchemeModel::data( const QModelIndex &index, int role ) const
+QVariant QgsColorSchemeModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
@@ -391,7 +391,7 @@ QVariant QgsColorSchemeModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex& index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
@@ -414,7 +414,7 @@ Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex &index ) const
   }
 }
 
-bool QgsColorSchemeModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsColorSchemeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   Q_UNUSED( role );
 
@@ -505,7 +505,7 @@ QStringList QgsColorSchemeModel::mimeTypes() const
   return types;
 }
 
-QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList& indexes ) const
 {
   QgsNamedColorList colorList;
 
@@ -522,7 +522,7 @@ QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
   return mimeData;
 }
 
-bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsColorSchemeModel::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
   Q_UNUSED( column );
 
@@ -588,7 +588,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
   return true;
 }
 
-void QgsColorSchemeModel::setScheme( QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
+void QgsColorSchemeModel::setScheme( QgsColorScheme* scheme, const QString& context, const QColor& baseColor )
 {
   mScheme = scheme;
   mContext = context;
@@ -599,7 +599,7 @@ void QgsColorSchemeModel::setScheme( QgsColorScheme *scheme, const QString &cont
   endResetModel();
 }
 
-bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex &parent )
+bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex& parent )
 {
   if ( !mScheme || !mScheme->isEditable() )
   {
@@ -647,7 +647,7 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
   return true;
 }
 
-void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, bool allowDuplicate )
+void QgsColorSchemeModel::addColor( const QColor& color, const QString& label, bool allowDuplicate )
 {
   if ( !mScheme || !mScheme->isEditable() )
   {
@@ -681,14 +681,14 @@ void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, b
 //
 // QgsColorSwatchDelegate
 //
-QgsColorSwatchDelegate::QgsColorSwatchDelegate( QWidget *parent )
-    : QAbstractItemDelegate( parent )
-    , mParent( parent )
+QgsColorSwatchDelegate::QgsColorSwatchDelegate( QWidget* parent )
+  : QAbstractItemDelegate( parent )
+  , mParent( parent )
 {
 
 }
 
-void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsColorSwatchDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   if ( option.state & QStyle::State_Selected )
   {
@@ -744,14 +744,14 @@ const QPixmap& QgsColorSwatchDelegate::transparentBackground() const
   return transpBkgrd;
 }
 
-QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
   return QSize( 30, 32 );
 }
 
-bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
+bool QgsColorSwatchDelegate::editorEvent( QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index )
 {
   Q_UNUSED( option );
   if ( event->type() == QEvent::MouseButtonDblClick )

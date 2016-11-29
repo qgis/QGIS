@@ -20,14 +20,14 @@
 
 
 QgsOSMDatabase::QgsOSMDatabase( const QString& dbFileName )
-    : mDbFileName( dbFileName )
-    , mDatabase( nullptr )
-    , mStmtNode( nullptr )
-    , mStmtNodeTags( nullptr )
-    , mStmtWay( nullptr )
-    , mStmtWayNode( nullptr )
-    , mStmtWayNodePoints( nullptr )
-    , mStmtWayTags( nullptr )
+  : mDbFileName( dbFileName )
+  , mDatabase( nullptr )
+  , mStmtNode( nullptr )
+  , mStmtNodeTags( nullptr )
+  , mStmtWay( nullptr )
+  , mStmtWayNode( nullptr )
+  , mStmtWayNodePoints( nullptr )
+  , mStmtWayTags( nullptr )
 {
 }
 
@@ -338,7 +338,7 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
     sqlCreateTable += QStringLiteral( ", %1 TEXT" ).arg( quotedIdentifier( tagKeys[i] ) );
   sqlCreateTable += ')';
 
-  char *errMsg = nullptr;
+  char* errMsg = nullptr;
   int ret = sqlite3_exec( mDatabase, sqlCreateTable.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
@@ -365,7 +365,7 @@ bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString
 bool QgsOSMDatabase::createSpatialIndex( const QString& tableName )
 {
   QString sqlSpatialIndex = QStringLiteral( "SELECT CreateSpatialIndex(%1, 'geometry')" ).arg( quotedValue( tableName ) );
-  char *errMsg = nullptr;
+  char* errMsg = nullptr;
   int ret = sqlite3_exec( mDatabase, sqlSpatialIndex.toUtf8().constData(), nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
@@ -547,7 +547,7 @@ QString QgsOSMDatabase::quotedValue( QString value )
 
 
 QgsOSMNodeIterator::QgsOSMNodeIterator( sqlite3* handle )
-    : mStmt( nullptr )
+  : mStmt( nullptr )
 {
   const char* sql = "SELECT id,lon,lat FROM nodes";
   if ( sqlite3_prepare_v2( handle, sql, -1, &mStmt, nullptr ) != SQLITE_OK )
@@ -593,7 +593,7 @@ void QgsOSMNodeIterator::close()
 
 
 QgsOSMWayIterator::QgsOSMWayIterator( sqlite3* handle )
-    : mStmt( nullptr )
+  : mStmt( nullptr )
 {
   const char* sql = "SELECT id FROM ways";
   if ( sqlite3_prepare_v2( handle, sql, -1, &mStmt, nullptr ) != SQLITE_OK )

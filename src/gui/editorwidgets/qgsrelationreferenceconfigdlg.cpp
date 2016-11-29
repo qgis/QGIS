@@ -23,8 +23,8 @@
 #include "qgsexpressionbuilderdialog.h"
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
-    , mReferencedLayer( nullptr )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
+  , mReferencedLayer( nullptr )
 {
   setupUi( this );
 

@@ -255,7 +255,7 @@ void QgsOfflineEditing::synchronize()
       QgsVectorLayer* offlineLayer = qobject_cast<QgsVectorLayer*>( layer );
 
       // register this layer with the central layers registry
-      QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << remoteLayer, true );
+      QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << remoteLayer, true );
 
       // copy style
       copySymbology( offlineLayer, remoteLayer );
@@ -338,13 +338,13 @@ void QgsOfflineEditing::synchronize()
   sqlite3_close( db );
 }
 
-void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
+void QgsOfflineEditing::initializeSpatialMetadata( sqlite3* sqlite_handle )
 {
   // attempting to perform self-initialization for a newly created DB
   if ( !sqlite_handle )
     return;
   // checking if this DB is really empty
-  char **results;
+  char** results;
   int rows, columns;
   int ret = sqlite3_get_table( sqlite_handle, "select count(*) from sqlite_master", &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -377,7 +377,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   sqlite3_free_table( results );
 
   // all right, it's empty: proceding to initialize
-  char *errMsg = nullptr;
+  char* errMsg = nullptr;
   ret = sqlite3_exec( sqlite_handle, above41 ? "SELECT InitSpatialMetadata(1)" : "SELECT InitSpatialMetadata()", nullptr, nullptr, &errMsg );
 
   if ( ret != SQLITE_OK )
@@ -394,8 +394,8 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 bool QgsOfflineEditing::createSpatialiteDB( const QString& offlineDbPath )
 {
   int ret;
-  sqlite3 *sqlite_handle;
-  char *errMsg = nullptr;
+  sqlite3* sqlite_handle;
+  char* errMsg = nullptr;
   QFile newDb( offlineDbPath );
   if ( newDb.exists() )
   {
@@ -589,7 +589,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
 
       // register this layer with the central layers registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << newLayer );
+        QList<QgsMapLayer*>() << newLayer );
 
       // copy style
       copySymbology( layer, newLayer );
@@ -1013,7 +1013,7 @@ bool QgsOfflineEditing::isAddedFeature( sqlite3* db, int layerId, QgsFeatureId f
 
 int QgsOfflineEditing::sqlExec( sqlite3* db, const QString& sql )
 {
-  char * errmsg;
+  char* errmsg;
   int rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
   if ( rc != SQLITE_OK )
   {
@@ -1324,7 +1324,7 @@ void QgsOfflineEditing::committedGeometriesChanges( const QString& qgisLayerId, 
 
 void QgsOfflineEditing::startListenFeatureChanges()
 {
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( sender() );
   // enable logging, check if editBuffer is not null
   if ( vLayer->editBuffer() )
   {
@@ -1343,7 +1343,7 @@ void QgsOfflineEditing::startListenFeatureChanges()
 
 void QgsOfflineEditing::stopListenFeatureChanges()
 {
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( sender() );
   // disable logging, check if editBuffer is not null
   if ( vLayer->editBuffer() )
   {
@@ -1365,7 +1365,7 @@ void QgsOfflineEditing::layerAdded( QgsMapLayer* layer )
   // detect offline layer
   if ( layer->customProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, false ).toBool() )
   {
-    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( layer );
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( layer );
     connect( vLayer, SIGNAL( editingStarted() ), this, SLOT( startListenFeatureChanges() ) );
     connect( vLayer, SIGNAL( editingStopped() ), this, SLOT( stopListenFeatureChanges() ) );
   }

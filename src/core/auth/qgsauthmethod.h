@@ -65,18 +65,27 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     virtual QString displayDescription() const = 0;
 
     //! Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
-    int version() const { return mVersion; }
+    int version() const
+    {
+      return mVersion;
+    }
 
     /** Flags that represent the update points (where authentication configurations are expanded)
      * supported by an authentication method.
      * @note These should directly correlate to existing 'update*()' member functions
      */
-    QgsAuthMethod::Expansions supportedExpansions() const { return mExpansions; }
+    QgsAuthMethod::Expansions supportedExpansions() const
+    {
+      return mExpansions;
+    }
 
     /** The data providers that the method supports, allowing for filtering out authcfgs that are not
      * applicable to a given provider, or where the updating code is not currently implemented.
      */
-    QStringList supportedDataProviders() const { return mDataProviders; }
+    QStringList supportedDataProviders() const
+    {
+      return mDataProviders;
+    }
 
     /** Update a network request with authentication components
      * @param request The network request to update
@@ -85,8 +94,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * for custom updater code specific to the provider
      * @return Whether the update succeeded
      */
-    virtual bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                                       const QString &dataprovider = QString() )
+    virtual bool updateNetworkRequest( QNetworkRequest& request, const QString& authcfg,
+                                       const QString& dataprovider = QString() )
     {
       Q_UNUSED( request )
       Q_UNUSED( authcfg )
@@ -101,8 +110,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * for custom updater code specific to the provider
      * @return Whether the update succeeded
      */
-    virtual bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
-                                     const QString &dataprovider = QString() )
+    virtual bool updateNetworkReply( QNetworkReply* reply, const QString& authcfg,
+                                     const QString& dataprovider = QString() )
     {
       Q_UNUSED( reply )
       Q_UNUSED( authcfg )
@@ -117,8 +126,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * for custom updater code specific to the provider
      * @return Whether the update succeeded
      */
-    virtual bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-                                           const QString &dataprovider = QString() )
+    virtual bool updateDataSourceUriItems( QStringList& connectionItems, const QString& authcfg,
+                                           const QString& dataprovider = QString() )
     {
       Q_UNUSED( connectionItems )
       Q_UNUSED( authcfg )
@@ -131,12 +140,12 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * be implemented, to avoid excessive queries on the auth database. Such a cache could be as
      * simple as a QHash or QMap of authcfg -> QgsAuthMethodConfig. See 'Basic' auth method plugin for example.
      */
-    virtual void clearCachedConfig( const QString &authcfg ) = 0;
+    virtual void clearCachedConfig( const QString& authcfg ) = 0;
 
     /** Update an authentication configuration in place
      * @note Useful for updating previously stored authcfgs, when an authentication method has been significantly updated
      */
-    virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;
+    virtual void updateMethodConfig( QgsAuthMethodConfig& mconfig ) = 0;
 
   protected:
 
@@ -145,21 +154,33 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * @note Non-public since this is an abstract base class
      */
     explicit QgsAuthMethod()
-        : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
-        , mDataProviders( QStringList() )
-        , mVersion( 0 )
+      : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
+      , mDataProviders( QStringList() )
+      , mVersion( 0 )
     {}
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
-    static QString authMethodTag() { return QObject::tr( "Authentication method" ); }
+    static QString authMethodTag()
+    {
+      return QObject::tr( "Authentication method" );
+    }
 
     //! Set the version of the auth method (useful for future upgrading)
-    void setVersion( int version ) { mVersion = version; }
+    void setVersion( int version )
+    {
+      mVersion = version;
+    }
 
     //! Set the support expansions (points in providers where the authentication is injected) of the auth method
-    void setExpansions( QgsAuthMethod::Expansions expansions ) { mExpansions = expansions; }
+    void setExpansions( QgsAuthMethod::Expansions expansions )
+    {
+      mExpansions = expansions;
+    }
     //! Set list of data providers this auth method supports
-    void setDataProviders( const QStringList& dataproviders ) { mDataProviders = dataproviders; }
+    void setDataProviders( const QStringList& dataproviders )
+    {
+      mDataProviders = dataproviders;
+    }
 
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;

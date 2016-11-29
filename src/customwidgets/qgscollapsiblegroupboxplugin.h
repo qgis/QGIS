@@ -32,7 +32,7 @@ class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsCollapsibleGroupBoxPlugin( QObject *parent = 0 );
+    explicit QgsCollapsibleGroupBoxPlugin( QObject* parent = 0 );
 
   private:
     bool mInitialized;
@@ -44,9 +44,9 @@ class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public
     QString includeFile() const override;
     QIcon icon() const override;
     bool isContainer() const override;
-    QWidget *createWidget( QWidget *parent ) override;
+    QWidget* createWidget( QWidget* parent ) override;
     bool isInitialized() const override;
-    void initialize( QDesignerFormEditorInterface *core ) override;
+    void initialize( QDesignerFormEditorInterface* core ) override;
     QString toolTip() const override;
     QString whatsThis() const override;
     QString domXml() const override;

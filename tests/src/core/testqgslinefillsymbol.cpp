@@ -45,11 +45,11 @@ class TestQgsLineFillSymbol : public QObject
 
   public:
     TestQgsLineFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mLineFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mLineFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -66,7 +66,7 @@ class TestQgsLineFillSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QgsLinePatternFillSymbolLayer* mLineFill;
     QgsFillSymbol* mFillSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -101,7 +101,7 @@ void TestQgsLineFillSymbol::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   //setup gradient fill
   mLineFill = new QgsLinePatternFillSymbolLayer();

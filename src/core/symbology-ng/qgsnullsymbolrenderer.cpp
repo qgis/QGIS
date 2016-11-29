@@ -21,7 +21,7 @@
 #include <QDomElement>
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
+  : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
 {
 }
 
@@ -29,7 +29,7 @@ QgsNullSymbolRenderer::~QgsNullSymbolRenderer()
 {
 }
 
-QgsSymbol* QgsNullSymbolRenderer::symbolForFeature( QgsFeature& , QgsRenderContext& )
+QgsSymbol* QgsNullSymbolRenderer::symbolForFeature( QgsFeature&, QgsRenderContext& )
 {
   return nullptr;
 }
@@ -39,7 +39,7 @@ QgsSymbol* QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature&, QgsRend
   return nullptr;
 }
 
-bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsNullSymbolRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   //render selected features or features being edited only
   if ( !selected && !drawVertexMarker )
@@ -119,7 +119,7 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsNullSymbolRenderer* QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsNullSymbolRenderer* QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer* renderer )
 {
   Q_UNUSED( renderer );
   return new QgsNullSymbolRenderer();

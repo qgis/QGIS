@@ -65,7 +65,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     ~eVisGenericEventBrowserGui();
 
   protected:
-    void closeEvent( QCloseEvent *event ) override;
+    void closeEvent( QCloseEvent* event ) override;
 
   private:
     //Variables
@@ -152,7 +152,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void setBasePathToDataSource();
 
   private slots:
-    void launchExternalApplication( QTreeWidgetItem *, int );
+    void launchExternalApplication( QTreeWidgetItem*, int );
     void on_buttonboxOptions_clicked( QAbstractButton* );
     void on_chkboxApplyPathRulesToDocs_stateChanged( int );
     void on_cboxEventImagePathField_currentIndexChanged( int );

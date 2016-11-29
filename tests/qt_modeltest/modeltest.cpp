@@ -58,32 +58,32 @@ Q_DECLARE_METATYPE( QModelIndex )
 /*!
     Connect to all of the models signals.  Whenever anything happens recheck everything.
 */
-ModelTest::ModelTest( QAbstractItemModel *_model, QObject *parent ) : QObject( parent ), model( _model ), fetchingMore( false )
+ModelTest::ModelTest( QAbstractItemModel* _model, QObject* parent ) : QObject( parent ), model( _model ), fetchingMore( false )
 {
   Q_ASSERT( model );
 
-  connect( model, SIGNAL( columnsAboutToBeInserted( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( columnsAboutToBeInserted( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( columnsAboutToBeRemoved( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( columnsAboutToBeRemoved( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( columnsInserted( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( columnsInserted( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( columnsRemoved( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( columnsRemoved( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( dataChanged( const QModelIndex &, const QModelIndex & ) ),
+  connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
            this, SLOT( runAllTests() ) );
   connect( model, SIGNAL( headerDataChanged( Qt::Orientation, int, int ) ),
            this, SLOT( runAllTests() ) );
   connect( model, SIGNAL( layoutAboutToBeChanged() ), this, SLOT( runAllTests() ) );
   connect( model, SIGNAL( layoutChanged() ), this, SLOT( runAllTests() ) );
   connect( model, SIGNAL( modelReset() ), this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( rowsAboutToBeInserted( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( rowsAboutToBeInserted( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
-  connect( model, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ),
+  connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
            this, SLOT( runAllTests() ) );
 
   // Special checks for inserting/removing
@@ -92,14 +92,14 @@ ModelTest::ModelTest( QAbstractItemModel *_model, QObject *parent ) : QObject( p
   connect( model, SIGNAL( layoutChanged() ),
            this, SLOT( layoutChanged() ) );
 
-  connect( model, SIGNAL( rowsAboutToBeInserted( const QModelIndex &, int, int ) ),
-           this, SLOT( rowsAboutToBeInserted( const QModelIndex &, int, int ) ) );
-  connect( model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
-           this, SLOT( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ) );
-  connect( model, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ),
-           this, SLOT( rowsInserted( const QModelIndex &, int, int ) ) );
-  connect( model, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ),
-           this, SLOT( rowsRemoved( const QModelIndex &, int, int ) ) );
+  connect( model, SIGNAL( rowsAboutToBeInserted( const QModelIndex&, int, int ) ),
+           this, SLOT( rowsAboutToBeInserted( const QModelIndex&, int, int ) ) );
+  connect( model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ),
+           this, SLOT( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
+  connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
+           this, SLOT( rowsInserted( const QModelIndex&, int, int ) ) );
+  connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+           this, SLOT( rowsRemoved( const QModelIndex&, int, int ) ) );
 
   runAllTests();
 }
@@ -315,7 +315,7 @@ void ModelTest::parent()
     found the basic bugs because it is easier to figure out the problem in
     those tests then this one.
  */
-void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
+void ModelTest::checkChildren( const QModelIndex& parent, int currentDepth )
 {
   // First just try walking back up the tree.
   QModelIndex p = parent;
@@ -384,7 +384,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       if ( model->parent( index ) != parent )
       {
         qDebug() << r << c << currentDepth << model->data( index ).toString()
-        << model->data( parent ).toString();
+                 << model->data( parent ).toString();
         qDebug() << index << parent << model->parent( index );
 //                 And a view that you can even use to show the model.
 //                 QTreeView view;
@@ -495,7 +495,7 @@ void ModelTest::data()
 
     \sa rowsInserted()
  */
-void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int end )
+void ModelTest::rowsAboutToBeInserted( const QModelIndex& parent, int start, int end )
 {
   Q_UNUSED( end );
 //    qDebug() << "rowsAboutToBeInserted" << "start=" << start << "end=" << end << "parent=" << model->data ( parent ).toString()
@@ -514,7 +514,7 @@ void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int
 
     \sa rowsAboutToBeInserted()
  */
-void ModelTest::rowsInserted( const QModelIndex & parent, int start, int end )
+void ModelTest::rowsInserted( const QModelIndex& parent, int start, int end )
 {
   Changing c = insert.pop();
   Q_ASSERT( c.parent == parent );
@@ -562,7 +562,7 @@ void ModelTest::layoutChanged()
 
     \sa rowsRemoved()
  */
-void ModelTest::rowsAboutToBeRemoved( const QModelIndex &parent, int start, int end )
+void ModelTest::rowsAboutToBeRemoved( const QModelIndex& parent, int start, int end )
 {
   qDebug() << "ratbr" << parent << start << end;
   Changing c;
@@ -578,7 +578,7 @@ void ModelTest::rowsAboutToBeRemoved( const QModelIndex &parent, int start, int 
 
     \sa rowsAboutToBeRemoved()
  */
-void ModelTest::rowsRemoved( const QModelIndex & parent, int start, int end )
+void ModelTest::rowsRemoved( const QModelIndex& parent, int start, int end )
 {
   qDebug() << "rr" << parent << start << end;
   Changing c = remove.pop();

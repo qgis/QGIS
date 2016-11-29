@@ -25,10 +25,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 
-QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+QgsPgNewConnection::QgsPgNewConnection( QWidget* parent, const QString& connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
@@ -200,7 +200,7 @@ void QgsPgNewConnection::testConnection()
                        mAuthConfigSelect->configId() );
   }
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
 
   if ( conn )
   {

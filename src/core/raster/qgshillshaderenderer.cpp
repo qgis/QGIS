@@ -24,18 +24,18 @@
 #include "qgsrectangle.h"
 
 
-QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle ):
-    QgsRasterRenderer( input, QStringLiteral( "hillshade" ) )
-    , mBand( band )
-    , mZFactor( 1 )
-    , mLightAngle( lightAngle )
-    , mLightAzimuth( lightAzimuth )
-    , mMultiDirectional( false )
+QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface* input, int band, double lightAzimuth, double lightAngle ):
+  QgsRasterRenderer( input, QStringLiteral( "hillshade" ) )
+  , mBand( band )
+  , mZFactor( 1 )
+  , mLightAngle( lightAngle )
+  , mLightAzimuth( lightAzimuth )
+  , mMultiDirectional( false )
 {
 
 }
 
-QgsHillshadeRenderer *QgsHillshadeRenderer::clone() const
+QgsHillshadeRenderer* QgsHillshadeRenderer::clone() const
 {
   QgsHillshadeRenderer* r = new QgsHillshadeRenderer( nullptr, mBand, mLightAzimuth, mLightAngle );
   r->copyCommonProperties( this );
@@ -45,7 +45,7 @@ QgsHillshadeRenderer *QgsHillshadeRenderer::clone() const
   return r;
 }
 
-QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+QgsRasterRenderer* QgsHillshadeRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
@@ -65,7 +65,7 @@ QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRas
   return r;
 }
 
-void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
+void QgsHillshadeRenderer::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
@@ -83,17 +83,17 @@ void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem 
   parentElem.appendChild( rasterRendererElem );
 }
 
-QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsHillshadeRenderer::block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     QgsDebugMsg( "No input raster!" );
     return outputBlock;
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( mBand, extent, width, height, feedback );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
@@ -102,7 +102,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     return outputBlock;
   }
 
-  QgsRasterBlock *alphaBlock = nullptr;
+  QgsRasterBlock* alphaBlock = nullptr;
 
   if ( mAlphaBand > 0 && mBand != mAlphaBand )
   {

@@ -48,7 +48,10 @@ namespace osg
   class Group;
   class Vec3d;
 }
-namespace osgViewer { class Viewer; }
+namespace osgViewer
+{
+  class Viewer;
+}
 
 namespace osgEarth
 {
@@ -56,8 +59,14 @@ namespace osgEarth
   class GeoExtent;
   class ImageLayer;
   class MapNode;
-  namespace Annotation { class PlaceNode; }
-  namespace QtGui { class ViewerWidget; }
+  namespace Annotation
+  {
+    class PlaceNode;
+  }
+  namespace QtGui
+  {
+    class ViewerWidget;
+  }
   namespace Util
   {
     class FeatureHighlightCallback;
@@ -97,20 +106,38 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     //! get a coordinates vector
     osg::Vec3d getSelectedCoordinates();
     //! emits signal with current mouse coordinates
-    void showCurrentCoordinates( const osgEarth::GeoPoint &geoPoint );
+    void showCurrentCoordinates( const osgEarth::GeoPoint& geoPoint );
     //! get longitude of user right click
-    double getSelectedLon() const { return mSelectedLon; }
+    double getSelectedLon() const
+    {
+      return mSelectedLon;
+    }
     //! get latitude of user right click
-    double getSelectedLat() const { return mSelectedLat; }
+    double getSelectedLat() const
+    {
+      return mSelectedLat;
+    }
     //! get elevation of user right click
-    double getSelectedElevation() { return mSelectedElevation; }
+    double getSelectedElevation()
+    {
+      return mSelectedElevation;
+    }
 
     //! Get the OSG viewer
-    osgViewer::Viewer* osgViewer() { return mOsgViewer; }
+    osgViewer::Viewer* osgViewer()
+    {
+      return mOsgViewer;
+    }
     //! Get OSG map node
-    osgEarth::MapNode* mapNode() { return mMapNode; }
+    osgEarth::MapNode* mapNode()
+    {
+      return mMapNode;
+    }
 
-    QgisInterface* qgisIface() const { return mQGisIface; }
+    QgisInterface* qgisIface() const
+    {
+      return mQGisIface;
+    }
 
   public slots:
     void run();
@@ -119,7 +146,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void syncExtent();
 
   private:
-    QgisInterface *mQGisIface;
+    QgisInterface* mQGisIface;
 
     QAction* mActionToggleGlobe;
     osgEarth::QtGui::ViewerWidget* mViewerWidget;
@@ -153,8 +180,8 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
 
     void setupProxy();
     void addControl( osgEarth::Util::Controls::Control* control, int x, int y, int w, int h, osgEarth::Util::Controls::ControlEventHandler* handler );
-    void addImageControl( const std::string &imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler* handler = 0 );
-    void addModelLayer( QgsVectorLayer* mapLayer , QgsGlobeVectorLayerConfig *layerConfig );
+    void addImageControl( const std::string& imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler* handler = 0 );
+    void addModelLayer( QgsVectorLayer* mapLayer , QgsGlobeVectorLayerConfig* layerConfig );
     void setupControls();
     void applyProjectSettings();
     QgsRectangle getQGISLayerExtent() const;
@@ -166,14 +193,14 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void applySettings();
     void layerChanged( QgsMapLayer* mapLayer = 0 );
     void rebuildQGISLayer();
-    void refreshQGISMapLayer( const QgsRectangle &dirtyRect );
+    void refreshQGISMapLayer( const QgsRectangle& dirtyRect );
     void updateTileStats( int queued, int tot );
 
   signals:
     //! emits current mouse position
-    void xyCoordinates( const QgsPoint & p );
+    void xyCoordinates( const QgsPoint& p );
     //! emits position of right click on globe
-    void newCoordinatesSelected( const QgsPoint & p );
+    void newCoordinatesSelected( const QgsPoint& p );
 };
 
 #endif // QGS_GLOBE_PLUGIN_H

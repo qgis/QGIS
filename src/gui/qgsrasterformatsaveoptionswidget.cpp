@@ -37,13 +37,13 @@ static const QString PYRAMID_JPEG_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVE
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, const QString& format,
     QgsRasterFormatSaveOptionsWidget::Type type, const QString& provider )
-    : QWidget( parent )
-    , mFormat( format )
-    , mProvider( provider )
-    , mRasterLayer( nullptr )
-    , mRasterFileName( QString() )
-    , mPyramids( false )
-    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+  : QWidget( parent )
+  , mFormat( format )
+  , mProvider( provider )
+  , mRasterLayer( nullptr )
+  , mRasterFileName( QString() )
+  , mPyramids( false )
+  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
 
 {
   setupUi( this );
@@ -88,7 +88,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
-  connect( mProfileComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
+  connect( mProfileComboBox, SIGNAL( currentIndexChanged( const QString& ) ),
            this, SLOT( updateOptions() ) );
   connect( mOptionsTable, SIGNAL( cellChanged( int, int ) ), this, SLOT( optionsTableChanged() ) );
   connect( mOptionsHelpButton, SIGNAL( clicked() ), this, SLOT( helpOptions() ) );
@@ -125,14 +125,14 @@ void QgsRasterFormatSaveOptionsWidget::setProvider( const QString& provider )
 // show/hide widgets - we need this function if widget is used in creator
 void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget::Type type )
 {
-  QList< QWidget* > widgets = this->findChildren<QWidget *>();
+  QList< QWidget* > widgets = this->findChildren<QWidget*>();
   if (( type == Table ) || ( type == LineEdit ) )
   {
     // hide all controls, except stacked widget
     Q_FOREACH ( QWidget* widget, widgets )
       widget->setVisible( false );
     mOptionsStackedWidget->setVisible( true );
-    Q_FOREACH ( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    Q_FOREACH ( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget*>() )
       widget->setVisible( true );
 
     // show relevant page
@@ -265,11 +265,11 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   if ( mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) && ! mPyramids )
   {
     // get helpCreationOptionsFormat() function ptr for provider
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+    QLibrary* library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
     if ( library )
     {
-      helpCreationOptionsFormat_t * helpCreationOptionsFormat =
-        ( helpCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "helpCreationOptionsFormat" ) );
+      helpCreationOptionsFormat_t* helpCreationOptionsFormat =
+        ( helpCreationOptionsFormat_t* ) cast_to_fptr( library->resolve( "helpCreationOptionsFormat" ) );
       if ( helpCreationOptionsFormat )
       {
         message = helpCreationOptionsFormat( mFormat );
@@ -295,8 +295,8 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
     message = tr( "No help available" );
 
   // show simple non-modal dialog - should we make the basic xml prettier?
-  QgsDialog *dlg = new QgsDialog( this );
-  QTextEdit *textEdit = new QTextEdit( dlg );
+  QgsDialog* dlg = new QgsDialog( this );
+  QTextEdit* textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
   // message = tr( "Create Options:\n\n%1" ).arg( message );
   textEdit->setText( message );
@@ -361,11 +361,11 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     else
     {
       // get validateCreationOptionsFormat() function ptr for provider
-      QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+      QLibrary* library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
       if ( library )
       {
-        validateCreationOptionsFormat_t * validateCreationOptionsFormat =
-          ( validateCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "validateCreationOptionsFormat" ) );
+        validateCreationOptionsFormat_t* validateCreationOptionsFormat =
+          ( validateCreationOptionsFormat_t* ) cast_to_fptr( library->resolve( "validateCreationOptionsFormat" ) );
         if ( validateCreationOptionsFormat )
         {
           message = validateCreationOptionsFormat( createOptions, mFormat );
@@ -408,7 +408,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
 
 void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
 {
-  QTableWidgetItem *key, *value;
+  QTableWidgetItem* key, *value;
   QString options;
   for ( int i = 0 ; i < mOptionsTable->rowCount(); i++ )
   {
@@ -596,11 +596,11 @@ void QgsRasterFormatSaveOptionsWidget::updateControls()
 }
 
 // map options label left mouse click to optionsToggle()
-bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event )
+bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject* obj, QEvent* event )
 {
   if ( event->type() == QEvent::MouseButtonPress )
   {
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+    QMouseEvent* mouseEvent = static_cast<QMouseEvent*>( event );
     if ( mouseEvent && ( mouseEvent->button() == Qt::RightButton ) )
     {
       QMenu* menu = nullptr;
@@ -628,7 +628,7 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
   return QObject::eventFilter( obj, event );
 }
 
-void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent * event )
+void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent* event )
 {
   Q_UNUSED( event );
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );

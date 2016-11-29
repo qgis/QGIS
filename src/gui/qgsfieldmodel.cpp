@@ -23,15 +23,15 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
-QgsFieldModel::QgsFieldModel( QObject *parent )
-    : QAbstractItemModel( parent )
-    , mLayer( nullptr )
-    , mAllowExpression( false )
-    , mAllowEmpty( false )
+QgsFieldModel::QgsFieldModel( QObject* parent )
+  : QAbstractItemModel( parent )
+  , mLayer( nullptr )
+  , mAllowExpression( false )
+  , mAllowEmpty( false )
 {
 }
 
-QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
+QModelIndex QgsFieldModel::indexFromName( const QString& fieldName )
 {
   QString fldName( fieldName ); // we may need a copy
 
@@ -79,7 +79,7 @@ bool QgsFieldModel::isField( const QString& expression ) const
   return index >= 0;
 }
 
-void QgsFieldModel::setLayer( QgsVectorLayer *layer )
+void QgsFieldModel::setLayer( QgsVectorLayer* layer )
 {
   if ( mLayer )
   {
@@ -214,7 +214,7 @@ void QgsFieldModel::setAllowEmptyFieldName( bool allowEmpty )
 }
 
 
-void QgsFieldModel::setExpression( const QString &expression )
+void QgsFieldModel::setExpression( const QString& expression )
 {
   if ( !mAllowExpression )
     return;
@@ -237,7 +237,7 @@ void QgsFieldModel::removeExpression()
   endResetModel();
 }
 
-QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex& parent ) const
 {
   if ( hasIndex( row, column, parent ) )
   {
@@ -247,13 +247,13 @@ QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent
   return QModelIndex();
 }
 
-QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
+QModelIndex QgsFieldModel::parent( const QModelIndex& child ) const
 {
   Q_UNUSED( child );
   return QModelIndex();
 }
 
-int QgsFieldModel::rowCount( const QModelIndex &parent ) const
+int QgsFieldModel::rowCount( const QModelIndex& parent ) const
 {
   if ( parent.isValid() )
   {
@@ -263,13 +263,13 @@ int QgsFieldModel::rowCount( const QModelIndex &parent ) const
   return ( mAllowEmpty ? 1 : 0 ) + ( mAllowExpression ? mFields.count() + mExpression.count() : mFields.count() );
 }
 
-int QgsFieldModel::columnCount( const QModelIndex &parent ) const
+int QgsFieldModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 1;
 }
 
-QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
+QVariant QgsFieldModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();

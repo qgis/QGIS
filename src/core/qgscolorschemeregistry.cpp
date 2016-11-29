@@ -24,8 +24,8 @@
 //
 // Static calls to enforce singleton behaviour
 //
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::mInstance = nullptr;
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
+QgsColorSchemeRegistry* QgsColorSchemeRegistry::mInstance = nullptr;
+QgsColorSchemeRegistry* QgsColorSchemeRegistry::instance()
 {
   if ( !mInstance )
   {
@@ -94,12 +94,12 @@ void QgsColorSchemeRegistry::addUserSchemes()
   }
 }
 
-void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )
+void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme* scheme )
 {
   mColorSchemeList.append( scheme );
 }
 
-QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
+QList<QgsColorScheme*> QgsColorSchemeRegistry::schemes() const
 {
   QList< QgsColorScheme* > allSchemes;
   QList<QgsColorScheme*>::const_iterator schemeIt;
@@ -110,7 +110,7 @@ QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
   return allSchemes;
 }
 
-QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes( const QgsColorScheme::SchemeFlag flag ) const
+QList<QgsColorScheme*> QgsColorSchemeRegistry::schemes( const QgsColorScheme::SchemeFlag flag ) const
 {
   QList< QgsColorScheme* > matchingSchemes;
   QList<QgsColorScheme*>::const_iterator schemeIt;
@@ -124,7 +124,7 @@ QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes( const QgsColorScheme::S
   return matchingSchemes;
 }
 
-bool QgsColorSchemeRegistry::removeColorScheme( QgsColorScheme *scheme )
+bool QgsColorSchemeRegistry::removeColorScheme( QgsColorScheme* scheme )
 {
   if ( mColorSchemeList.indexOf( scheme ) != -1 )
   {

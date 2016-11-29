@@ -31,9 +31,9 @@
 #include "qgsgrassprovider.h"
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )
-    , mLineRenderer( 0 )
-    , mMarkerRenderer( 0 )
+  : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )
+  , mLineRenderer( 0 )
+  , mMarkerRenderer( 0 )
 {
   QHash<int, QColor> colors;
   //colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
@@ -54,21 +54,21 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   QgsCategoryList categoryList;
 
   // first/last vertex marker to distinguish vertices from nodes
-  QgsMarkerLineSymbolLayer * firstVertexMarkerLine = new QgsMarkerLineSymbolLayer( false );
-  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Cross2, 2 );
+  QgsMarkerLineSymbolLayer* firstVertexMarkerLine = new QgsMarkerLineSymbolLayer( false );
+  QgsSimpleMarkerSymbolLayer* markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Cross2, 2 );
   markerSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setBorderColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setOutlineWidth( 0.5 );
   QgsSymbolLayerList markerLayers;
   markerLayers << markerSymbolLayer;
-  QgsMarkerSymbol * markerSymbol = new QgsMarkerSymbol( markerLayers );
+  QgsMarkerSymbol* markerSymbol = new QgsMarkerSymbol( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
   firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::FirstVertex );
-  QgsMarkerLineSymbolLayer * lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
+  QgsMarkerLineSymbolLayer* lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer*>( firstVertexMarkerLine->clone() );
   lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::LastVertex );
   Q_FOREACH ( int value, colors.keys() )
   {
-    QgsSymbol * symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
+    QgsSymbol* symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
     symbol->setColor( colors.value( value ) );
     symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
     symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
@@ -95,7 +95,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   Q_FOREACH ( int value, colors.keys() )
   {
-    QgsSymbol * symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
+    QgsSymbol* symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
     symbol->setColor( colors.value( value ) );
     categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
   }
@@ -109,12 +109,12 @@ QgsGrassEditRenderer::~QgsGrassEditRenderer()
   delete mLineRenderer;
 }
 
-void QgsGrassEditRenderer::setLineRenderer( QgsFeatureRenderer *renderer )
+void QgsGrassEditRenderer::setLineRenderer( QgsFeatureRenderer* renderer )
 {
   delete mLineRenderer;
   mLineRenderer = renderer;
 }
-void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRenderer *renderer )
+void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRenderer* renderer )
 {
   delete mMarkerRenderer;
   mMarkerRenderer = renderer;
@@ -221,7 +221,7 @@ QDomElement QgsGrassEditRenderer::save( QDomDocument& doc )
 
 QgsFeatureRenderer* QgsGrassEditRenderer::create( QDomElement& element )
 {
-  QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
+  QgsGrassEditRenderer* renderer = new QgsGrassEditRenderer();
 
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
@@ -262,10 +262,10 @@ QgsRendererWidget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, Qg
 }
 
 QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( 0 )
-    , mLineRendererWidget( 0 )
-    , mPointRendererWidget( 0 )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( 0 )
+  , mLineRendererWidget( 0 )
+  , mPointRendererWidget( 0 )
 {
   mRenderer = dynamic_cast<QgsGrassEditRenderer*>( renderer->clone() );
   if ( !mRenderer )

@@ -22,8 +22,8 @@
 #include "qgsdatasourceuri.h"
 
 QgsMssqlTableModel::QgsMssqlTableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
+  : QStandardItemModel()
+  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -41,7 +41,7 @@ QgsMssqlTableModel::~QgsMssqlTableModel()
 {
 }
 
-void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
+void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty& layerProperty )
 {
   QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
                .arg( layerProperty.schemaName,
@@ -53,7 +53,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
                      layerProperty.sql ) );
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem;
+  QStandardItem* schemaItem;
   QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, dbtmSchema );
 
   // there is already an item for this schema
@@ -79,19 +79,19 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
 
   QList<QStandardItem*> childItemList;
 
-  QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
+  QStandardItem* schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
+  QStandardItem* typeItem = new QStandardItem( iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting..." )
       : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
 
-  QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
-  QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
-  QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
+  QStandardItem* tableItem = new QStandardItem( layerProperty.tableName );
+  QStandardItem* geomItem = new QStandardItem( layerProperty.geometryColName );
+  QStandardItem* sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
   QString pkText, pkCol = QLatin1String( "" );
@@ -109,14 +109,14 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
       break;
   }
 
-  QStandardItem *pkItem = new QStandardItem( pkText );
+  QStandardItem* pkItem = new QStandardItem( pkText );
   if ( pkText == tr( "Select..." ) )
     pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
 
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
+  QStandardItem* selItem = new QStandardItem( QLatin1String( "" ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -141,7 +141,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     if ( detailsFromThread )
       flags |= Qt::ItemIsEnabled;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    Q_FOREACH ( QStandardItem* item, childItemList )
     {
       item->setFlags( item->flags() & ~flags );
     }
@@ -152,7 +152,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   ++mTableCount;
 }
 
-void QgsMssqlTableModel::setSql( const QModelIndex &index, const QString &sql )
+void QgsMssqlTableModel::setSql( const QModelIndex& index, const QString& sql )
 {
   if ( !index.isValid() || !index.parent().isValid() )
   {
@@ -240,7 +240,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
       continue;
     }
 
-    QList<QStandardItem *> row;
+    QList<QStandardItem*> row;
     row.reserve( dbtmColumns );
 
     for ( int j = 0; j < dbtmColumns; j++ )
@@ -260,7 +260,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         row[ dbtmSrid ]->setText( tr( "Enter..." ) );
         row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        Q_FOREACH ( QStandardItem *item, row )
+        Q_FOREACH ( QStandardItem* item, row )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }
@@ -281,7 +281,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        Q_FOREACH ( QStandardItem *item, row )
+        Q_FOREACH ( QStandardItem* item, row )
         {
           item->setFlags( item->flags() | flags );
         }
@@ -320,7 +320,7 @@ QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
   return QgsApplication::getThemeIcon( "/mIconLayer.png" );
 }
 
-bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+bool QgsMssqlTableModel::setData( const QModelIndex& idx, const QVariant& value, int role )
 {
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
@@ -340,7 +340,7 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 
     for ( int i = 0; i < dbtmColumns; i++ )
     {
-      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
+      QStandardItem* item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( ok )
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
       else
@@ -351,7 +351,7 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
   return true;
 }
 
-QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
+QString QgsMssqlTableModel::layerURI( const QModelIndex& index, const QString& connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
     return QString::null;
@@ -361,7 +361,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
     // no geometry type selected
     return QString::null;
 
-  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QStandardItem* pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
 
   if ( !pkItem->data( Qt::UserRole + 1 ).toStringList().isEmpty() &&

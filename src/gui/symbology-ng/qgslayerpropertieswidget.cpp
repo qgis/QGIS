@@ -90,10 +90,10 @@ static void _initWidgetFunctions()
 
 
 QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mLayer( layer )
-    , mSymbol( symbol )
-    , mVectorLayer( vl )
+  : QgsPanelWidget( parent )
+  , mLayer( layer )
+  , mSymbol( symbol )
+  , mVectorLayer( vl )
 {
 
   setupUi( this );
@@ -231,13 +231,13 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {

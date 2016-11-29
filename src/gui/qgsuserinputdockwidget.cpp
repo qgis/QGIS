@@ -18,9 +18,9 @@
 #include <QFrame>
 #include <QBoxLayout>
 
-QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
-    : QgsDockWidget( tr( "User Input Panel" ), parent )
-    , mLayoutHorizontal( true )
+QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget* parent )
+  : QgsDockWidget( tr( "User Input Panel" ), parent )
+  , mLayoutHorizontal( true )
 {
   QWidget* w = new QWidget( nullptr );
   mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
@@ -37,7 +37,7 @@ QgsUserInputDockWidget::~QgsUserInputDockWidget()
 {
 }
 
-void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
+void QgsUserInputDockWidget::addUserInputWidget( QWidget* widget )
 {
   QFrame* line = nullptr;
   if ( mWidgetList.count() > 0 )
@@ -57,7 +57,7 @@ void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
   adjustSize();
 }
 
-void QgsUserInputDockWidget::widgetDestroyed( QObject *obj )
+void QgsUserInputDockWidget::widgetDestroyed( QObject* obj )
 {
   if ( obj->isWidgetType() )
   {
@@ -115,7 +115,7 @@ void QgsUserInputDockWidget::updateLayoutDirection()
   adjustSize();
 }
 
-void QgsUserInputDockWidget::paintEvent( QPaintEvent * event )
+void QgsUserInputDockWidget::paintEvent( QPaintEvent* event )
 {
   if ( mWidgetList.count() == 0 )
   {

@@ -47,10 +47,10 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
       * @param label optional label text, or empty string for no label
       */
       GroupedFeature( const QgsFeature& feature, QgsMarkerSymbol* symbol, bool isSelected, const QString& label = QString() )
-          : feature( feature )
-          , symbol( symbol )
-          , isSelected( isSelected )
-          , label( label )
+        : feature( feature )
+        , symbol( symbol )
+        , isSelected( isSelected )
+        , label( label )
       {}
 
       //! Feature
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QgsPointDistanceRenderer( const QString& rendererName, const QString& labelAttributeName = QString() );
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props = QgsStringMap() ) const override;
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual QSet<QString> usedAttributes() const override;
     virtual Capabilities capabilities() override;
@@ -105,7 +105,10 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see setLabelColor()
      * @see setMaxLabelScaleDenominator()
      */
-    void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
+    void setLabelAttributeName( const QString& name )
+    {
+      mLabelAttributeName = name;
+    }
 
     /** Returns the attribute name used for labeling points, or an empty string if no labeling
      * will be done by the renderer.
@@ -114,7 +117,10 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see maxLabelScaleDenominator()
      * @see labelColor()
      */
-    QString labelAttributeName() const { return mLabelAttributeName; }
+    QString labelAttributeName() const
+    {
+      return mLabelAttributeName;
+    }
 
     /** Sets the font used for labeling points.
      * @param font label font
@@ -122,27 +128,39 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see setLabelAttributeName()
      * @see setLabelColor()
      */
-    void setLabelFont( const QFont& font ) { mLabelFont = font; }
+    void setLabelFont( const QFont& font )
+    {
+      mLabelFont = font;
+    }
 
     /** Returns the font used for labeling points.
      * @see setLabelFont()
      * @see labelAttributeName()
      * @see labelColor()
      */
-    QFont labelFont() const { return mLabelFont;}
+    QFont labelFont() const
+    {
+      return mLabelFont;
+    }
 
     /** Sets the maximum scale at which points should be labeled by the renderer.
      * @param denominator maximum scale denominator
      * @see maxLabelScaleDenominator()
      * @see setLabelAttributeName()
      */
-    void setMaxLabelScaleDenominator( double denominator ) { mMaxLabelScaleDenominator = denominator; }
+    void setMaxLabelScaleDenominator( double denominator )
+    {
+      mMaxLabelScaleDenominator = denominator;
+    }
 
     /** Returns the denominator for the maximum scale at which points should be labeled by the renderer.
      * @see setMaxLabelScaleDenominator()
      * @see labelAttributeName()
      */
-    double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
+    double maxLabelScaleDenominator() const
+    {
+      return mMaxLabelScaleDenominator;
+    }
 
     /** Sets the color to use for for labeling points.
      * @param color label color
@@ -150,14 +168,20 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see setLabelAttributeName()
      * @see setLabelFont()
      */
-    void setLabelColor( const QColor& color ) { mLabelColor = color;}
+    void setLabelColor( const QColor& color )
+    {
+      mLabelColor = color;
+    }
 
     /** Returns the color used for for labeling points.
      * @see setLabelColor()
      * @see labelAttributeName()
      * @see labelFont()
      */
-    QColor labelColor() const { return mLabelColor; }
+    QColor labelColor() const
+    {
+      return mLabelColor;
+    }
 
     /** Sets the tolerance distance for grouping points. Units are specified using
      * setToleranceUnit().
@@ -165,14 +189,20 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see tolerance()
      * @see setToleranceUnit()
      */
-    void setTolerance( double distance ) { mTolerance = distance; }
+    void setTolerance( double distance )
+    {
+      mTolerance = distance;
+    }
 
     /** Returns the tolerance distance for grouping points. Units are retrieved using
      * toleranceUnit().
      * @see setTolerance()
      * @see toleranceUnit()
      */
-    double tolerance() const { return mTolerance; }
+    double tolerance() const
+    {
+      return mTolerance;
+    }
 
     /** Sets the units for the tolerance distance.
      * @param unit tolerance distance units
@@ -180,14 +210,20 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see toleranceUnit()
      * @note added in QGIS 2.12
      */
-    void setToleranceUnit( QgsUnitTypes::RenderUnit unit ) { mToleranceUnit = unit; }
+    void setToleranceUnit( QgsUnitTypes::RenderUnit unit )
+    {
+      mToleranceUnit = unit;
+    }
 
     /** Returns the units for the tolerance distance.
      * @see tolerance()
      * @see setToleranceUnit()
      * @note added in QGIS 2.12
      */
-    QgsUnitTypes::RenderUnit toleranceUnit() const { return mToleranceUnit; }
+    QgsUnitTypes::RenderUnit toleranceUnit() const
+    {
+      return mToleranceUnit;
+    }
 
     /** Sets the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
@@ -195,14 +231,20 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see toleranceMapUnitScale()
      * @see setToleranceUnit()
      */
-    void setToleranceMapUnitScale( const QgsMapUnitScale& scale ) { mToleranceMapUnitScale = scale; }
+    void setToleranceMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mToleranceMapUnitScale = scale;
+    }
 
     /** Returns the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
      * @see setToleranceMapUnitScale()
      * @see toleranceUnit()
      */
-    const QgsMapUnitScale& toleranceMapUnitScale() const { return mToleranceMapUnitScale; }
+    const QgsMapUnitScale& toleranceMapUnitScale() const
+    {
+      return mToleranceMapUnitScale;
+    }
 
   protected:
 

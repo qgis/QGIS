@@ -43,17 +43,23 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /** Constructor for QgsMultiEditToolButton.
      * @param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent = nullptr );
+    explicit QgsMultiEditToolButton( QWidget* parent = nullptr );
 
     /** Returns the current displayed state of the button.
      */
-    State state() const { return mState; }
+    State state() const
+    {
+      return mState;
+    }
 
     /** Sets the field associated with this button. This is used to customise the widget menu
      * and tooltips to match the field properties.
      * @param field associated field
      */
-    void setField( const QgsField& field ) { mField = field; }
+    void setField( const QgsField& field )
+    {
+      mField = field;
+    }
 
   public slots:
 
@@ -63,7 +69,11 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
      * @see setIsChanged()
      * @see resetChanges()
      */
-    void setIsMixed( bool mixed ) { mIsMixedValues = mixed; updateState(); }
+    void setIsMixed( bool mixed )
+    {
+      mIsMixedValues = mixed;
+      updateState();
+    }
 
     /** Sets whether the associated field has changed.
      * @param changed whether field has changed
@@ -71,19 +81,32 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
      * @see setIsMixed()
      * @see resetChanges()
      */
-    void setIsChanged( bool changed ) { mIsChanged = changed; updateState(); }
+    void setIsChanged( bool changed )
+    {
+      mIsChanged = changed;
+      updateState();
+    }
 
     /** Resets the changed state for the field.
      * @see setIsMixed()
      * @see setIsChanged()
      * @see changesCommitted()
      */
-    void resetChanges() { mIsChanged = false; updateState(); }
+    void resetChanges()
+    {
+      mIsChanged = false;
+      updateState();
+    }
 
     /** Called when field values have been changed and field now contains all the same values.
      * @see resetChanges()
      */
-    void changesCommitted() { mIsMixedValues = false; mIsChanged = false; updateState(); }
+    void changesCommitted()
+    {
+      mIsMixedValues = false;
+      mIsChanged = false;
+      updateState();
+    }
 
   signals:
 

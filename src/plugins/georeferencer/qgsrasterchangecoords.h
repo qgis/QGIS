@@ -25,12 +25,15 @@ class QgsRasterChangeCoords
 {
   public:
     QgsRasterChangeCoords();
-    void setRaster( const QString &fileRaster );
-    bool hasCrs() const { return mHasCrs; }
-    QVector<QgsPoint> getPixelCoords( const QVector<QgsPoint> &mapCoords );
-    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );
-    QgsPoint toColumnLine( const QgsPoint &pntMap );
-    QgsPoint toXY( const QgsPoint &pntPixel );
+    void setRaster( const QString& fileRaster );
+    bool hasCrs() const
+    {
+      return mHasCrs;
+    }
+    QVector<QgsPoint> getPixelCoords( const QVector<QgsPoint>& mapCoords );
+    QgsRectangle getBoundingBox( const QgsRectangle& rect, bool toPixel );
+    QgsPoint toColumnLine( const QgsPoint& pntMap );
+    QgsPoint toXY( const QgsPoint& pntPixel );
 
   private:
     bool mHasCrs;

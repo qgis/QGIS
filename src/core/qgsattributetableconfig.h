@@ -49,9 +49,9 @@ class CORE_EXPORT QgsAttributeTableConfig
     {
       //! Constructor for ColumnConfig
       ColumnConfig()
-          : type( Field )
-          , hidden( false )
-          , width( -1 )
+        : type( Field )
+        , hidden( false )
+        , width( -1 )
       {}
 
       bool operator== ( const ColumnConfig& other ) const;

@@ -22,10 +22,10 @@
 #include <QTableView>
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsWidgetWrapper( vl, editor, parent )
-    , mValidConstraint( true )
-    , mIsBlockingCommit( false )
-    , mFieldIdx( fieldIdx )
+  : QgsWidgetWrapper( vl, editor, parent )
+  , mValidConstraint( true )
+  , mIsBlockingCommit( false )
+  , mFieldIdx( fieldIdx )
 {
 }
 
@@ -117,7 +117,7 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult cons
   }
 }
 
-void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
+void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature& ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
 {
   bool toEmit( false );
   QgsField field = layer()->fields().at( mFieldIdx );

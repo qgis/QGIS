@@ -126,28 +126,40 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * The current filterModel
      */
-    FilterMode filterMode() { return mFilterMode; }
+    FilterMode filterMode()
+    {
+      return mFilterMode;
+    }
 
     /**
      * Returns the layer this filter acts on.
      *
      * @return Abovementioned layer
      */
-    inline QgsVectorLayer *layer() const { return masterModel()->layer(); }
+    inline QgsVectorLayer* layer() const
+    {
+      return masterModel()->layer();
+    }
 
     /**
      * Returns the layerCache this filter acts on.
      *
      * @return The layer cache
      */
-    inline QgsVectorLayerCache *layerCache() const { return masterModel()->layerCache(); }
+    inline QgsVectorLayerCache* layerCache() const
+    {
+      return masterModel()->layerCache();
+    }
 
     /**
      * Returns the table model this filter is using
      *
      * @return the table model in quesion
      */
-    inline QgsAttributeTableModel *masterModel() const { return mTableModel; }
+    inline QgsAttributeTableModel* masterModel() const
+    {
+      return mTableModel;
+    }
 
     /**
      * Returns the feature id for a given model index.
@@ -162,15 +174,21 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
-    inline QModelIndex mapToMaster( const QModelIndex& proxyIndex ) const { return mapToSource( proxyIndex ); }
+    inline QModelIndex mapToMaster( const QModelIndex& proxyIndex ) const
+    {
+      return mapToSource( proxyIndex );
+    }
 
-    inline QModelIndex mapFromMaster( const QModelIndex& sourceIndex ) const { return mapFromSource( sourceIndex ); }
+    inline QModelIndex mapFromMaster( const QModelIndex& sourceIndex ) const
+    {
+      return mapFromSource( sourceIndex );
+    }
 
     virtual QModelIndex mapToSource( const QModelIndex& proxyIndex ) const override;
 
     virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const override;
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
     /**
      * Sort by the given column using the given order.
@@ -196,7 +214,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     QString sortExpression() const;
 
     //! Returns the map canvas
-    QgsMapCanvas* mapCanvas() const { return mCanvas; }
+    QgsMapCanvas* mapCanvas() const
+    {
+      return mCanvas;
+    }
 
     virtual QVariant data( const QModelIndex& index, int role ) const override;
 
@@ -208,7 +229,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     int actionColumnIndex() const;
 
-    int columnCount( const QModelIndex &parent ) const override;
+    int columnCount( const QModelIndex& parent ) const override;
 
     /**
      * Set the attribute table configuration to control which fields are shown,
@@ -234,7 +255,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param sourceRow row from the source model
      * @param sourceParent parent index in the source model
      */
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const override;
 
     /**
      * Updates the list of currently visible features on the map canvas.
@@ -246,7 +267,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Used by the sorting algorithm. Compares the two model indices. Will also consider the
      * selection state of the feature in case selected features are to be shown on top.
      */
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
 
   public slots:
 

@@ -42,10 +42,10 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restorePosition();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint( const QgsPoint& point );
 
     //! Mose move
-    void mouseMove( const QgsPoint &point );
+    void mouseMove( const QgsPoint& point );
 
     //! Remove last point
     void removeLastPoint();
@@ -57,10 +57,13 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restart();
 
     //! Close event
-    void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent* e ) override;
 
     //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     //! When any external settings change
     void updateSettings();

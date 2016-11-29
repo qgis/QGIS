@@ -41,7 +41,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * @param fl window flags
      * @param color initial color for dialog
      */
-    QgsColorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsColorDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                     const QColor& color = QColor() );
 
     ~QgsColorDialog();
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * @return Selected color on accepted() or initialColor on rejected().
      * @see getLiveColor
      */
-    static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
+    static QColor getColor( const QColor& initialColor, QWidget* parent, const QString& title = QString(),
                             const bool allowAlpha = false );
 
   signals:
@@ -93,14 +93,14 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     /** Emitted when the dialog's color changes
      * @param color current color
      */
-    void currentColorChanged( const QColor &color );
+    void currentColorChanged( const QColor& color );
 
   public slots:
 
     /** Sets the current color for the dialog
      * @param color desired color
      */
-    void setColor( const QColor &color );
+    void setColor( const QColor& color );
 
   protected:
 
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 
     void on_mButtonBox_accepted();
     void on_mButtonBox_rejected();
-    void on_mButtonBox_clicked( QAbstractButton * button );
+    void on_mButtonBox_clicked( QAbstractButton* button );
     void discardColor();
 
   private:

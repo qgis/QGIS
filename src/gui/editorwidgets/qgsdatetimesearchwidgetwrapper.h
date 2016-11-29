@@ -69,7 +69,7 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void setExpression( QString exp ) override;
 
   private slots:
-    void dateTimeChanged( const QDateTime &date );
+    void dateTimeChanged( const QDateTime& date );
 
   private:
     QgsDateTimeEdit* mDateTimeEdit;

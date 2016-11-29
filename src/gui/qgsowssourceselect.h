@@ -57,7 +57,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString& service, QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 
@@ -91,10 +91,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     virtual void on_mLayersTreeWidget_itemSelectionChanged();
 
     //! Set status message to theMessage
-    void showStatusMessage( const QString &theMessage );
+    void showStatusMessage( const QString& theMessage );
 
     //! show whatever error is exposed.
-    void showError( const QString &theTitle, const QString &theFormat, const QString &theError );
+    void showError( const QString& theTitle, const QString& theFormat, const QString& theError );
 
     //! Stores the selected datasource whenerver it is changed
     void on_mConnectionsComboBox_activated( int );
@@ -102,12 +102,15 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Add some default wms servers to the list
     void on_mAddDefaultButton_clicked();
 
-    void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mDialogButtonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
   signals:
-    void addRasterLayer( const QString & rasterLayerPath,
-                         const QString & baseName,
-                         const QString & providerKey );
+    void addRasterLayer( const QString& rasterLayerPath,
+                         const QString& baseName,
+                         const QString& providerKey );
     void connectionsChanged();
 
   protected:
@@ -181,12 +184,12 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! create an item including possible parents
     //! @note not available in python bindings
-    QgsTreeWidgetItem *createItem( int id,
-                                   const QStringList &names,
-                                   QMap<int, QgsTreeWidgetItem *> &items,
-                                   int &layerAndStyleCount,
-                                   const QMap<int, int> &layerParents,
-                                   const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem* createItem( int id,
+                                   const QStringList& names,
+                                   QMap<int, QgsTreeWidgetItem*>& items,
+                                   int& layerAndStyleCount,
+                                   const QMap<int, int>& layerParents,
+                                   const QMap<int, QStringList>& layerParentNames );
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString& authId );
@@ -194,14 +197,14 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
 
-    QPushButton *mAddButton;
+    QPushButton* mAddButton;
 
     QMap<QString, QString> mCrsNames;
 
     void addWmsListRow( const QDomElement& item, int row );
     void addWmsListItem( const QDomElement& el, int row, int column );
 
-    virtual void enableLayersForCrs( QTreeWidgetItem *item );
+    virtual void enableLayersForCrs( QTreeWidgetItem* item );
 
     //! Returns currently selected format
     QString selectedFormat();
@@ -243,7 +246,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
   private slots:
     void on_mSearchButton_clicked();
     void on_mSearchTableWidget_itemSelectionChanged();
-    void on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
+    void on_mTilesetsTableWidget_itemClicked( QTableWidgetItem* item );
     void on_mLayerUpButton_clicked();
     void on_mLayerDownButton_clicked();
     virtual void updateButtons();

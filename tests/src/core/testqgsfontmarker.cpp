@@ -45,11 +45,11 @@ class TestQgsFontMarkerSymbol : public QObject
 
   public:
     TestQgsFontMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mFontMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mFontMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -67,7 +67,7 @@ class TestQgsFontMarkerSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
+    QgsVectorLayer* mpPointsLayer;
     QgsFontMarkerSymbolLayer* mFontMarkerLayer;
     QgsMarkerSymbol* mMarkerSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -98,7 +98,7 @@ void TestQgsFontMarkerSymbol::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //setup symbol
   mFontMarkerLayer = new QgsFontMarkerSymbolLayer();

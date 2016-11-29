@@ -37,12 +37,12 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     virtual ~QgsMapCanvasItem();
 
     //! function to be implemented by derived classes
-    virtual void paint( QPainter * painter ) = 0;
+    virtual void paint( QPainter* painter ) = 0;
 
     //! paint function called by map canvas
-    virtual void paint( QPainter * painter,
-                        const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = nullptr ) override;
+    virtual void paint( QPainter* painter,
+                        const QStyleOptionGraphicsItem* option,
+                        QWidget* widget = nullptr ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();

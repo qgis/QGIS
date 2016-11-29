@@ -67,11 +67,11 @@ static const QString sPluginIcon = QStringLiteral( ":/heatmap/heatmap.png" );
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Heatmap::Heatmap( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mDecay( 1. )
-    , mQGisIface( theQgisInterface )
-    , mQActionPointer( nullptr )
+Heatmap::Heatmap( QgisInterface* theQgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mDecay( 1. )
+  , mQGisIface( theQgisInterface )
+  , mQActionPointer( nullptr )
 {
 }
 
@@ -159,7 +159,7 @@ void Heatmap::run()
   GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset, 1 );
   GDALSetRasterNoDataValue( poBand, NO_DATA );
 
-  float* line = ( float * ) CPLMalloc( sizeof( float ) * columns );
+  float* line = ( float* ) CPLMalloc( sizeof( float ) * columns );
   for ( int i = 0; i < columns ; i++ )
   {
     line[i] = NO_DATA;
@@ -297,7 +297,7 @@ void Heatmap::run()
       yPosition = ((( *pointIt ).y() - myBBox.yMinimum() ) / cellsize ) - myBuffer;
 
       // get the data
-      float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
+      float* dataBuffer = ( float* ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
       if ( GDALRasterIO( poBand, GF_Read, xPosition, yPosition, blockSize, blockSize,
                          dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
       {
@@ -547,7 +547,7 @@ void Heatmap::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new Heatmap( theQgisInterfacePointer );
 }
@@ -588,7 +588,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

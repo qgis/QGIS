@@ -54,10 +54,10 @@ static const QString icon_ = QStringLiteral( ":/icons/spatialquery.png" );
 * @parma mIface Pointer to the QGIS interface object
 */
 QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mDialog( nullptr )
-    , mIface( iface )
-    , mSpatialQueryAction( nullptr )
+  : QgisPlugin( name_, description_, category_, version_, type_ )
+  , mDialog( nullptr )
+  , mIface( iface )
+  , mSpatialQueryAction( nullptr )
 {
 }
 
@@ -139,7 +139,7 @@ void QgsSpatialQueryPlugin::setCurrentTheme( const QString& )
     mSpatialQueryAction->setIcon( getThemeIcon( QStringLiteral( "/spatialquery.png" ) ) );
 }
 
-QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
+QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString& theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + theName ) )
   {

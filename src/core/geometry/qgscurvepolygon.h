@@ -36,8 +36,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon& operator=( const QgsCurvePolygon& p );
     ~QgsCurvePolygon();
 
-    virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
-    virtual int dimension() const override { return 2; }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "CurvePolygon" );
+    }
+    virtual int dimension() const override
+    {
+      return 2;
+    }
     virtual QgsCurvePolygon* clone() const override;
     void clear() override;
 
@@ -111,8 +117,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     double vertexAngle( QgsVertexId vertex ) const override;
 
     virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
-    virtual int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
-    virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
+    virtual int ringCount( int /*part*/ = 0 ) const override
+    {
+      return ( nullptr != mExteriorRing ) + mInteriorRings.size();
+    }
+    virtual int partCount() const override
+    {
+      return ringCount() > 0 ? 1 : 0;
+    }
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
 
     virtual bool addZValue( double zValue = 0 ) override;

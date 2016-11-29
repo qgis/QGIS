@@ -20,7 +20,7 @@
 #include <QPushButton>
 
 QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget* parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 

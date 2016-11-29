@@ -36,8 +36,8 @@ QgsWCSProjectParser::QgsWCSProjectParser(
 #endif
 )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    :
-    mAccessControl( as )
+  :
+  mAccessControl( as )
 #endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
@@ -89,14 +89,14 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
 
   QStringList wcsLayersId = wcsLayers();
 
-  QMap<QString, QgsMapLayer *> layerMap;
+  QMap<QString, QgsMapLayer*> layerMap;
 
-  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement& elem, projectLayerElements )
   {
     QString type = elem.attribute( QStringLiteral( "type" ) );
     if ( type == QLatin1String( "raster" ) )
     {
-      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
+      QgsMapLayer* layer = mProjectParser->createLayerFromElement( elem );
       if ( layer && wcsLayersId.contains( layer->id() ) )
       {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -149,7 +149,7 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
         {
           BBox = t.transformBoundingBox( layer->extent() );
         }
-        catch ( QgsCsException &e )
+        catch ( QgsCsException& e )
         {
           QgsDebugMsg( QString( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
           BBox = layer->extent();
@@ -211,20 +211,20 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
   if ( aCoveName != QLatin1String( "" ) )
   {
     QStringList coveNameSplit = aCoveName.split( QStringLiteral( "," ) );
-    Q_FOREACH ( const QString &str, coveNameSplit )
+    Q_FOREACH ( const QString& str, coveNameSplit )
     {
       coveNameList << str;
     }
   }
 
-  QMap<QString, QgsMapLayer *> layerMap;
+  QMap<QString, QgsMapLayer*> layerMap;
 
-  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement& elem, projectLayerElements )
   {
     QString type = elem.attribute( QStringLiteral( "type" ) );
     if ( type == QLatin1String( "raster" ) )
     {
-      QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( mProjectParser->createLayerFromElement( elem ) );
+      QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mProjectParser->createLayerFromElement( elem ) );
       if ( !rLayer )
         continue;
 
@@ -286,7 +286,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
           QgsRectangle transformedBox = t.transformBoundingBox( BBox );
           BBox = transformedBox;
         }
-        catch ( QgsCsException &e )
+        catch ( QgsCsException& e )
         {
           QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
         }
@@ -433,12 +433,12 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
 
   QStringList wcsLayersId = wcsLayers();
 
-  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement& elem, projectLayerElements )
   {
     QString type = elem.attribute( QStringLiteral( "type" ) );
     if ( type == QLatin1String( "raster" ) )
     {
-      QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem, useCache );
+      QgsMapLayer* mLayer = mProjectParser->createLayerFromElement( elem, useCache );
       QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayer );
       if ( !layer || !wcsLayersId.contains( layer->id() ) )
         return layerList;

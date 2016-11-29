@@ -61,19 +61,31 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     ~QgsComposerScaleBar();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerScaleBar; }
+    virtual int type() const override
+    {
+      return ComposerScaleBar;
+    }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     //getters and setters
-    int numSegments() const {return mNumSegments;}
+    int numSegments() const
+    {
+      return mNumSegments;
+    }
     void setNumSegments( int nSegments );
 
-    int numSegmentsLeft() const {return mNumSegmentsLeft;}
+    int numSegmentsLeft() const
+    {
+      return mNumSegmentsLeft;
+    }
     void setNumSegmentsLeft( int nSegmentsLeft );
 
-    double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
+    double numUnitsPerSegment() const
+    {
+      return mNumUnitsPerSegment;
+    }
     void setNumUnitsPerSegment( double units );
 
     /** Returns the size mode for scale bar segments.
@@ -82,7 +94,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see maxBarWidth
      * @note added in QGIS 2.9
      */
-    SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+    SegmentSizeMode segmentSizeMode() const
+    {
+      return mSegmentSizeMode;
+    }
 
     /** Sets the size mode for scale bar segments.
      * @param mode size mode
@@ -101,7 +116,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see maxBarWidth
      * @note added in QGIS 2.9
      */
-    double minBarWidth() const { return mMinBarWidth; }
+    double minBarWidth() const
+    {
+      return mMinBarWidth;
+    }
 
     /** Sets the minimum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
@@ -122,7 +140,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see minBarWidth
      * @note added in QGIS 2.9
      */
-    double maxBarWidth() const { return mMaxBarWidth; }
+    double maxBarWidth() const
+    {
+      return mMaxBarWidth;
+    }
 
     /** Sets the maximum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
@@ -135,11 +156,23 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      */
     void setMaxBarWidth( double maxWidth );
 
-    double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
-    void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
+    double numMapUnitsPerScaleBarUnit() const
+    {
+      return mNumMapUnitsPerScaleBarUnit;
+    }
+    void setNumMapUnitsPerScaleBarUnit( double d )
+    {
+      mNumMapUnitsPerScaleBarUnit = d;
+    }
 
-    QString unitLabeling() const {return mUnitLabeling;}
-    void setUnitLabeling( const QString& label ) {mUnitLabeling = label;}
+    QString unitLabeling() const
+    {
+      return mUnitLabeling;
+    }
+    void setUnitLabeling( const QString& label )
+    {
+      mUnitLabeling = label;
+    }
 
     QFont font() const;
     void setFont( const QFont& font );
@@ -149,28 +182,40 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setFontColor
      * @see font
      */
-    QColor fontColor() const {return mFontColor;}
+    QColor fontColor() const
+    {
+      return mFontColor;
+    }
 
     /** Sets the color used for drawing text in the scalebar.
      * @param c font color for scalebar.
      * @see fontColor
      * @see setFont
      */
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    void setFontColor( const QColor& c )
+    {
+      mFontColor = c;
+    }
 
     /** Returns the pen used for drawing the scalebar.
      * @returns QPen used for drawing the scalebar outlines.
      * @see setPen
      * @see brush
      */
-    QPen pen() const {return mPen;}
+    QPen pen() const
+    {
+      return mPen;
+    }
 
     /** Sets the pen used for drawing the scalebar.
      * @param pen QPen to use for drawing the scalebar outlines.
      * @see pen
      * @see setBrush
      */
-    void setPen( const QPen& pen ) {mPen = pen;}
+    void setPen( const QPen& pen )
+    {
+      mPen = pen;
+    }
 
     /** Returns the primary brush for the scalebar.
      * @returns QBrush used for filling the scalebar
@@ -178,7 +223,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see brush2
      * @see pen
      */
-    QBrush brush() const {return mBrush;}
+    QBrush brush() const
+    {
+      return mBrush;
+    }
 
     /** Sets primary brush for the scalebar.
      * @param brush QBrush to use for filling the scalebar
@@ -186,7 +234,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setBrush2
      * @see setPen
      */
-    void setBrush( const QBrush& brush ) {mBrush = brush;}
+    void setBrush( const QBrush& brush )
+    {
+      mBrush = brush;
+    }
 
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
@@ -194,7 +245,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setBrush2
      * @see brush
      */
-    QBrush brush2() const {return mBrush2;}
+    QBrush brush2() const
+    {
+      return mBrush2;
+    }
 
     /** Sets secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
@@ -202,28 +256,58 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see brush2
      * @see setBrush
      */
-    void setBrush2( const QBrush& brush ) {mBrush2 = brush;}
+    void setBrush2( const QBrush& brush )
+    {
+      mBrush2 = brush;
+    }
 
-    double height() const {return mHeight;}
-    void setHeight( double h ) {mHeight = h;}
+    double height() const
+    {
+      return mHeight;
+    }
+    void setHeight( double h )
+    {
+      mHeight = h;
+    }
 
     void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const {return mComposerMap;}
+    const QgsComposerMap* composerMap() const
+    {
+      return mComposerMap;
+    }
 
-    double labelBarSpace() const {return mLabelBarSpace;}
-    void setLabelBarSpace( double space ) {mLabelBarSpace = space;}
+    double labelBarSpace() const
+    {
+      return mLabelBarSpace;
+    }
+    void setLabelBarSpace( double space )
+    {
+      mLabelBarSpace = space;
+    }
 
-    double boxContentSpace() const {return mBoxContentSpace;}
+    double boxContentSpace() const
+    {
+      return mBoxContentSpace;
+    }
     void setBoxContentSpace( double space );
 
-    double segmentMillimeters() const {return mSegmentMillimeters;}
+    double segmentMillimeters() const
+    {
+      return mSegmentMillimeters;
+    }
 
     //! Left / Middle/ Right
-    Alignment alignment() const { return mAlignment; }
+    Alignment alignment() const
+    {
+      return mAlignment;
+    }
 
     void setAlignment( Alignment a );
 
-    ScaleBarUnits units() const { return mUnits; }
+    ScaleBarUnits units() const
+    {
+      return mUnits;
+    }
 
     void setUnits( ScaleBarUnits u );
 
@@ -232,7 +316,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @note introduced in 2.3
      * @see setLineJoinStyle
      */
-    Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+    Qt::PenJoinStyle lineJoinStyle() const
+    {
+      return mLineJoinStyle;
+    }
 
     /** Sets join style used when drawing the lines in the scalebar
      * @param style Join style for lines
@@ -247,7 +334,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @note introduced in 2.3
      * @see setLineCapStyle
      */
-    Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+    Qt::PenCapStyle lineCapStyle() const
+    {
+      return mLineCapStyle;
+    }
 
     /** Sets cap style used when drawing the lines in the scalebar
      * @param style Cap style for lines
@@ -288,7 +378,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
@@ -300,7 +390,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void correctXPositionAlignment( double width, double widthAfter );
 
     //overridden to apply minimum size
-    void setSceneRect( const QRectF &rectangle ) override;
+    void setSceneRect( const QRectF& rectangle ) override;
 
   public slots:
     void updateSegmentSize();

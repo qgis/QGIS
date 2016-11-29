@@ -46,19 +46,25 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
 
     virtual QString dump() const override;
 
-    QgsFeatureRenderer *lineRenderer() const { return mLineRenderer; }
-    QgsFeatureRenderer *pointRenderer() const { return mMarkerRenderer; }
+    QgsFeatureRenderer* lineRenderer() const
+    {
+      return mLineRenderer;
+    }
+    QgsFeatureRenderer* pointRenderer() const
+    {
+      return mMarkerRenderer;
+    }
 
-    void setLineRenderer( QgsFeatureRenderer *renderer );
-    void setMarkerRenderer( QgsFeatureRenderer *renderer );
+    void setLineRenderer( QgsFeatureRenderer* renderer );
+    void setMarkerRenderer( QgsFeatureRenderer* renderer );
 
     virtual QDomElement save( QDomDocument& doc ) override;
 
     static QgsFeatureRenderer* create( QDomElement& element );
 
   protected:
-    QgsFeatureRenderer *mLineRenderer;
-    QgsFeatureRenderer *mMarkerRenderer;
+    QgsFeatureRenderer* mLineRenderer;
+    QgsFeatureRenderer* mMarkerRenderer;
 };
 
 class QgsGrassEditRendererWidget : public QgsRendererWidget

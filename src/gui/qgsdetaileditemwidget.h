@@ -25,11 +25,11 @@
  * @see also QgsDetailedItem and QgsDetailedItemData.
  */
 class GUI_EXPORT QgsDetailedItemWidget :
-      public QWidget, private Ui::QgsDetailedItemWidgetBase
+  public QWidget, private Ui::QgsDetailedItemWidgetBase
 {
     Q_OBJECT
   public:
-    QgsDetailedItemWidget( QWidget * parent = nullptr );
+    QgsDetailedItemWidget( QWidget* parent = nullptr );
     ~QgsDetailedItemWidget();
     void setData( const QgsDetailedItemData& theData );
     void setChecked( bool theFlag );

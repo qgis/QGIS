@@ -38,11 +38,23 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
   public:
     explicit QgsOSMXmlImport( const QString& xmlFileName = QString(), const QString& dbFileName = QString() );
 
-    void setInputXmlFileName( const QString& xmlFileName ) { mXmlFileName = xmlFileName; }
-    QString inputXmlFileName() const { return mXmlFileName; }
+    void setInputXmlFileName( const QString& xmlFileName )
+    {
+      mXmlFileName = xmlFileName;
+    }
+    QString inputXmlFileName() const
+    {
+      return mXmlFileName;
+    }
 
-    void setOutputDbFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
-    QString outputDbFileName() const { return mDbFileName; }
+    void setOutputDbFileName( const QString& dbFileName )
+    {
+      mDbFileName = dbFileName;
+    }
+    QString outputDbFileName() const
+    {
+      return mDbFileName;
+    }
 
     /**
      * Run import. This will parse the XML file and store the data in a SQLite database.
@@ -50,8 +62,14 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
      */
     bool import();
 
-    bool hasError() const { return !mError.isEmpty(); }
-    QString errorString() const { return mError; }
+    bool hasError() const
+    {
+      return !mError.isEmpty();
+    }
+    QString errorString() const
+    {
+      return mError;
+    }
 
   signals:
     void progress( int percent );

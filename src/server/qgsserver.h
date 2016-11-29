@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsServer
      * @param val value
      * @note added in 2.14
      */
-    void putenv( const QString &var, const QString &val );
+    void putenv( const QString& var, const QString& val );
 
     /** Handles the request. The output is normally printed trough FCGI printf
      * by the request handler or, in case the server has been invoked from python
@@ -80,7 +80,10 @@ class SERVER_EXPORT QgsServer
 
     //! Returns a pointer to the server interface
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
+    QgsServerInterfaceImpl* serverInterface()
+    {
+      return sServerInterface;
+    }
 #endif
 
   private:
@@ -98,7 +101,7 @@ class SERVER_EXPORT QgsServer
     static QString configPath( const QString& defaultConfigPath,
                                const QMap<QString, QString>& parameters );
     // Mainly for debug
-    static void dummyMessageHandler( QtMsgType type, const char *msg );
+    static void dummyMessageHandler( QtMsgType type, const char* msg );
     // Mainly for debug
     static void printRequestInfos();
     // Mainly for debug
@@ -112,7 +115,7 @@ class SERVER_EXPORT QgsServer
     static QgsRequestHandler* createRequestHandler( const bool captureOutput = false );
 
     // Return the server name
-    static QString &serverName();
+    static QString& serverName();
 
     // Status
     static QString* sConfigFilePath;

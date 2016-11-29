@@ -32,8 +32,8 @@
 #include <QPainter>
 #include <qmath.h>
 
-QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
-    : QgsImageFetcher( provider ), mProvider( provider )
+QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider* provider )
+  : QgsImageFetcher( provider ), mProvider( provider )
 {
   mQuery = new QgsArcGisAsyncQuery( this );
   connect( mQuery, SIGNAL( finished() ), this, SLOT( handleFinished() ) );
@@ -120,8 +120,8 @@ void QgsAmsLegendFetcher::handleFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsProvider::QgsAmsProvider( const QString & uri )
-    : QgsRasterDataProvider( uri ), mValid( false )
+QgsAmsProvider::QgsAmsProvider( const QString& uri )
+  : QgsRasterDataProvider( uri ), mValid( false )
 {
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
@@ -160,7 +160,7 @@ QStringList QgsAmsProvider::subLayerStyles() const
   return styles;
 }
 
-void QgsAmsProvider::setLayerOrder( const QStringList &layers )
+void QgsAmsProvider::setLayerOrder( const QStringList& layers )
 {
   QStringList oldSubLayers = mSubLayers;
   QList<bool> oldSubLayerVisibilities = mSubLayerVisibilities;
@@ -186,7 +186,7 @@ void QgsAmsProvider::setLayerOrder( const QStringList &layers )
   mSubLayerVisibilities.append( oldSubLayerVisibilities );
 }
 
-void QgsAmsProvider::setSubLayerVisibility( const QString &name, bool vis )
+void QgsAmsProvider::setSubLayerVisibility( const QString& name, bool vis )
 {
   for ( int i = 0, n = mSubLayers.size(); i < n; ++i )
   {
@@ -203,7 +203,7 @@ void QgsAmsProvider::reloadData()
   mCachedImage = QImage();
 }
 
-QgsRasterInterface * QgsAmsProvider::clone() const
+QgsRasterInterface* QgsAmsProvider::clone() const
 {
   QgsAmsProvider* provider = new QgsAmsProvider( dataSourceUri() );
   provider->copyBaseSettings( *this );
@@ -238,7 +238,7 @@ QString QgsAmsProvider::metadata()
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
-QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight )
+QImage* QgsAmsProvider::draw( const QgsRectangle& viewExtent, int pixelWidth, int pixelHeight )
 {
   if ( !mCachedImage.isNull() && mCachedImageExtent == viewExtent )
   {
@@ -346,7 +346,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
   return &mCachedImage;
 }
 
-QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, const QgsRectangle * /*visibleExtent*/ )
+QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, const QgsRectangle* /*visibleExtent*/ )
 {
   if ( mLegendFetcher->haveImage() && !forceRefresh )
   {
@@ -374,7 +374,7 @@ QgsImageFetcher* QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
   return new QgsAmsLegendFetcher( this );
 }
 
-QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight, int theDpi )
+QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint& thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle& theExtent, int theWidth, int theHeight, int theDpi )
 {
   // http://resources.arcgis.com/en/help/rest/apiref/identify.html
   QgsDataSourceUri dataSource( dataSourceUri() );
@@ -437,13 +437,13 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
   return QgsRasterIdentifyResult( theFormat, entries );
 }
 
-void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback )
+void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle& viewExtent, int width, int height, void* data, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( feedback );  // TODO: make use of the feedback object
 
   // TODO: optimize to avoid writing to QImage
   // returned image is actually mCachedImage, no need to delete
-  QImage *image = draw( viewExtent, width, height );
+  QImage* image = draw( viewExtent, width, height );
   if ( image->width() != width || image->height() != height )
   {
     QgsDebugMsg( "Unexpected image size for block" );

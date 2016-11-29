@@ -37,8 +37,8 @@ back to QgsVectorLayer.
 #include <QTableWidget>
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager& actions, QWidget* parent )
-    : QWidget( parent )
-    , mLayer( actions.layer() )
+  : QWidget( parent )
+  , mLayer( actions.layer() )
 {
   setupUi( this );
   QHeaderView* header = mAttributeActionTable->horizontalHeader();
@@ -158,7 +158,7 @@ void QgsAttributeActionDialog::moveUp()
   // Swap the selected row with the one above
 
   int row1 = -1, row2 = -1;
-  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
+  QList<QTableWidgetItem*> selection = mAttributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
     row1 = selection.first()->row();
@@ -179,7 +179,7 @@ void QgsAttributeActionDialog::moveDown()
 {
   // Swap the selected row with the one below
   int row1 = -1, row2 = -1;
-  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
+  QList<QTableWidgetItem*> selection = mAttributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
     row1 = selection.first()->row();
@@ -201,7 +201,7 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
   int colCount = mAttributeActionTable->columnCount();
   for ( int col = 0; col < colCount; col++ )
   {
-    QTableWidgetItem *item = mAttributeActionTable->takeItem( row1, col );
+    QTableWidgetItem* item = mAttributeActionTable->takeItem( row1, col );
     mAttributeActionTable->setItem( row1, col, mAttributeActionTable->takeItem( row2, col ) );
     mAttributeActionTable->setItem( row2, col, item );
   }
@@ -244,7 +244,7 @@ QString QgsAttributeActionDialog::textForType( QgsAction::ActionType type )
 
 void QgsAttributeActionDialog::remove()
 {
-  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
+  QList<QTableWidgetItem*> selection = mAttributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
     // Remove the selected row.
@@ -278,7 +278,7 @@ void QgsAttributeActionDialog::insert()
 
 void QgsAttributeActionDialog::updateButtons()
 {
-  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
+  QList<QTableWidgetItem*> selection = mAttributeActionTable->selectedItems();
   bool hasSelection = !selection.isEmpty();
 
   if ( hasSelection )

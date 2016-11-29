@@ -31,10 +31,10 @@
 #include <limits.h>
 
 
-QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapCanvas )
-    : QWidget( parent )
-    , mMapCanvas( mapCanvas )
-    , mJob( nullptr )
+QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget* parent, QgsMapCanvas* mapCanvas )
+  : QWidget( parent )
+  , mMapCanvas( mapCanvas )
+  , mJob( nullptr )
 {
   setAutoFillBackground( true );
   setObjectName( QStringLiteral( "theOverviewCanvas" ) );
@@ -103,7 +103,7 @@ void QgsMapOverviewCanvas::drawExtentRect()
 }
 
 
-void QgsMapOverviewCanvas::mousePressEvent( QMouseEvent * e )
+void QgsMapOverviewCanvas::mousePressEvent( QMouseEvent* e )
 {
 //  if (mPanningWidget->isHidden())
 //    return;
@@ -124,7 +124,7 @@ void QgsMapOverviewCanvas::mousePressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent * e )
+void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent* e )
 {
 //  if (mPanningWidget->isHidden())
 //    return;
@@ -142,7 +142,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent * e )
 }
 
 
-void QgsMapOverviewCanvas::mouseMoveEvent( QMouseEvent * e )
+void QgsMapOverviewCanvas::mouseMoveEvent( QMouseEvent* e )
 {
   // move with panning widget if tracking cursor
   if (( e->buttons() & Qt::LeftButton ) == Qt::LeftButton )
@@ -280,7 +280,7 @@ QStringList QgsMapOverviewCanvas::layerSet() const
 /// @cond PRIVATE
 
 QgsPanningWidget::QgsPanningWidget( QWidget* parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   setObjectName( QStringLiteral( "panningWidget" ) );
   setMinimumSize( 5, 5 );

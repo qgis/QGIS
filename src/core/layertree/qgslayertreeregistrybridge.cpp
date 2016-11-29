@@ -22,14 +22,14 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 
-QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QObject *parent )
-    : QObject( parent )
-    , mRoot( root )
-    , mRegistryRemovingLayers( false )
-    , mEnabled( true )
-    , mNewLayersVisible( true )
-    , mInsertionPointGroup( root )
-    , mInsertionPointIndex( 0 )
+QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject* parent )
+  : QObject( parent )
+  , mRoot( root )
+  , mRegistryRemovingLayers( false )
+  , mEnabled( true )
+  , mNewLayersVisible( true )
+  , mInsertionPointGroup( root )
+  , mInsertionPointIndex( 0 )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( legendLayersAdded( QList<QgsMapLayer*> ) ), this, SLOT( layersAdded( QList<QgsMapLayer*> ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );

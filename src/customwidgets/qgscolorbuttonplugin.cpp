@@ -18,9 +18,9 @@
 #include "qgscolorbutton.h"
 
 
-QgsColorButtonPlugin::QgsColorButtonPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsColorButtonPlugin::QgsColorButtonPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsColorButtonPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsColorButtonPlugin::createWidget( QWidget *parent )
+QWidget* QgsColorButtonPlugin::createWidget( QWidget* parent )
 {
   return new QgsColorButton( parent );
 }
@@ -60,7 +60,7 @@ bool QgsColorButtonPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsColorButtonPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsColorButtonPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

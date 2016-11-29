@@ -26,10 +26,13 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
                                     const QgsPointV2& errorLocation,
                                     QgsFeatureId otherId
                                   )
-        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
-        , mOtherId( otherId )
+      : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
+      , mOtherId( otherId )
     { }
-    QgsFeatureId otherId() const { return mOtherId; }
+    QgsFeatureId otherId() const
+    {
+      return mOtherId;
+    }
 
     bool isEqual( QgsGeometryCheckError* other ) const override
     {
@@ -38,7 +41,10 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
              static_cast<QgsGeometryContainedCheckError*>( other )->otherId() == otherId();
     }
 
-    virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() ); }
+    virtual QString description() const override
+    {
+      return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() );
+    }
 
   private:
     QgsFeatureId mOtherId;
@@ -53,8 +59,14 @@ class QgsGeometryContainedCheck : public QgsGeometryCheck
     void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Within" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    QString errorDescription() const override
+    {
+      return tr( "Within" );
+    }
+    QString errorName() const override
+    {
+      return QStringLiteral( "QgsGeometryContainedCheck" );
+    }
   private:
     enum ResolutionMethod { Delete, NoChange };
 };

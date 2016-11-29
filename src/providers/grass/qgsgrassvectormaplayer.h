@@ -48,11 +48,20 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int field );
+    QgsGrassVectorMapLayer( QgsGrassVectorMap* map, int field );
 
-    int field() const { return mField; }
-    bool isValid() const { return mValid; }
-    QgsGrassVectorMap *map() { return mMap; }
+    int field() const
+    {
+      return mField;
+    }
+    bool isValid() const
+    {
+      return mValid;
+    }
+    QgsGrassVectorMap* map()
+    {
+      return mMap;
+    }
 
     //! Category index index
     int cidxFieldIndex();
@@ -63,26 +72,50 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /** Original fields before editing started + topo field if edited.
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields() */
-    QgsFields & fields() { return mFields; }
+    QgsFields& fields()
+    {
+      return mFields;
+    }
 
     /** Current fields, as modified during editing, it contains cat field, without topo field.
      *  This fields are used by layers which are not editied to reflect current state of editing. */
-    QgsFields & tableFields() { return mTableFields; }
+    QgsFields& tableFields()
+    {
+      return mTableFields;
+    }
 
-    static QStringList fieldNames( QgsFields & fields );
+    static QStringList fieldNames( QgsFields& fields );
 
-    QMap<int, QList<QVariant> > & attributes() { return mAttributes; }
+    QMap<int, QList<QVariant> >& attributes()
+    {
+      return mAttributes;
+    }
 
     /** Get attribute for index corresponding to current fields(),
      * if there is no table, returns cat */
     QVariant attribute( int cat, int index );
 
-    bool hasTable() { return mHasTable; }
-    int keyColumn() { return mKeyColumn; }
-    QString keyColumnName() { return mFieldInfo ? mFieldInfo->key : QString(); }
-    QList< QPair<double, double> > minMax() { return mMinMax; }
+    bool hasTable()
+    {
+      return mHasTable;
+    }
+    int keyColumn()
+    {
+      return mKeyColumn;
+    }
+    QString keyColumnName()
+    {
+      return mFieldInfo ? mFieldInfo->key : QString();
+    }
+    QList< QPair<double, double> > minMax()
+    {
+      return mMinMax;
+    }
 
-    int userCount() { return mUsers; }
+    int userCount()
+    {
+      return mUsers;
+    }
     void addUser();
     void removeUser();
 
@@ -103,61 +136,61 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     /** Execute SQL statement
      *   @param sql */
-    void executeSql( const QString &sql, QString &error );
+    void executeSql( const QString& sql, QString& error );
 
     /** Update attributes
      *   @param cat
      *   @param index ields  index */
-    void changeAttributeValue( int cat, const QgsField &field, const QVariant &value, QString &error );
+    void changeAttributeValue( int cat, const QgsField& field, const QVariant& value, QString& error );
 
     /** Insert new attributes to the table (it does not check if attributes already exists)
      *   @param cat */
-    void insertAttributes( int cat, const QgsFeature &feature, QString &error );
+    void insertAttributes( int cat, const QgsFeature& feature, QString& error );
 
     /** Restore previously deleted table record using data from mAttributes, if exists.
      *  If there the cat is not in mAttributes, nothing is inserted (to keep previous state).
      *   @param cat */
-    void reinsertAttributes( int cat, QString &error );
+    void reinsertAttributes( int cat, QString& error );
 
     /** Update existing record by values from feature.
      *  @param cat
      *  @param nullValues override all values, if false, only non empty values are used for update
      */
-    void updateAttributes( int cat, QgsFeature &feature, QString &error, bool nullValues = false );
+    void updateAttributes( int cat, QgsFeature& feature, QString& error, bool nullValues = false );
 
     /** Delete attributes from the table
      *   @param cat
      */
-    void deleteAttribute( int cat, QString &error );
+    void deleteAttribute( int cat, QString& error );
 
     /** Check if a database row exists
      *   @param cat
      *   @param error set to error if happens
      *   @return true if cat is orphan
      */
-    bool recordExists( int cat, QString &error );
+    bool recordExists( int cat, QString& error );
 
     /** Check if a database row exists and it is orphan (no more lines with that category)
      *   @param cat
      *   @param error set to error if happens
      *   @return true if cat is orphan
      */
-    bool isOrphan( int cat, QString &error );
+    bool isOrphan( int cat, QString& error );
 
     /** Create table and link vector to this table
      * @param fields fields to be created without cat (id) field
      */
-    void createTable( const QgsFields &fields, QString &error );
+    void createTable( const QgsFields& fields, QString& error );
 
     /** Add column to table
      *   @param field
      */
-    void addColumn( const QgsField &field, QString &error );
+    void addColumn( const QgsField& field, QString& error );
 
-    void deleteColumn( const QgsField &field, QString &error );
+    void deleteColumn( const QgsField& field, QString& error );
 
     //! Insert records for all existing categories to the table
-    void insertCats( QString &error );
+    void insertCats( QString& error );
 
     // update fields to real state
     void updateFields();
@@ -166,14 +199,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void printCachedAttributes();
 
   private:
-    QString quotedValue( const QVariant &value );
-    dbDriver * openDriver( QString &error );
-    void addTopoField( QgsFields &fields );
+    QString quotedValue( const QVariant& value );
+    dbDriver* openDriver( QString& error );
+    void addTopoField( QgsFields& fields );
     int mField;
     bool mValid;
-    QgsGrassVectorMap *mMap;
-    struct field_info *mFieldInfo;
-    dbDriver *mDriver;
+    QgsGrassVectorMap* mMap;
+    struct field_info* mFieldInfo;
+    dbDriver* mDriver;
 
     bool mHasTable;
     // index of key column

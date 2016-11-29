@@ -25,11 +25,11 @@
 #include <QObject>
 #include <QSettings>
 
-QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest &request )
-    : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
-    , mRewind( false )
-    , mExpressionCompiled( false )
-    , mFetchGeometry( false )
+QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
+  : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
+  , mRewind( false )
+  , mExpressionCompiled( false )
+  , mFetchGeometry( false )
 {
   mConnection = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mSource->mUri ) );
   if ( !mConnection )
@@ -267,7 +267,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
     if ( mFetchGeometry )
     {
-      QByteArray *ba = static_cast<QByteArray*>( mQry.value( col++ ).data() );
+      QByteArray* ba = static_cast<QByteArray*>( mQry.value( col++ ).data() );
       if ( ba->size() > 0 )
       {
         QgsGeometry g;
@@ -375,7 +375,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
       QVariant v = mQry.value( col );
       if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
       {
-        QByteArray *ba = static_cast<QByteArray*>( v.data() );
+        QByteArray* ba = static_cast<QByteArray*>( v.data() );
         if ( ba->size() > 0 )
         {
           QgsGeometry g;
@@ -501,18 +501,18 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, bool showLog )
 // -----------
 
 QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider* p )
-    : mUri( p->mUri )
-    , mFields( p->mAttributeFields )
-    , mGeometryColumn( p->mGeometryColumn )
-    , mSrid( p->mSrid )
-    , mHasSpatialIndex( p->mHasSpatialIndex )
-    , mDetectedGeomType( p->mDetectedGeomType )
-    , mRequestedGeomType( p->mRequestedGeomType )
-    , mSqlWhereClause( p->mSqlWhereClause )
-    , mPrimaryKeyType( p->mPrimaryKeyType )
-    , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
-    , mQuery( p->mQuery )
-    , mShared( p->mShared )
+  : mUri( p->mUri )
+  , mFields( p->mAttributeFields )
+  , mGeometryColumn( p->mGeometryColumn )
+  , mSrid( p->mSrid )
+  , mHasSpatialIndex( p->mHasSpatialIndex )
+  , mDetectedGeomType( p->mDetectedGeomType )
+  , mRequestedGeomType( p->mRequestedGeomType )
+  , mSqlWhereClause( p->mSqlWhereClause )
+  , mPrimaryKeyType( p->mPrimaryKeyType )
+  , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
+  , mQuery( p->mQuery )
+  , mShared( p->mShared )
 {
 }
 

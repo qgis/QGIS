@@ -30,11 +30,11 @@
 #include <QSettings>
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent, QgsShortcutsManager* manager )
-    : QDialog( parent )
-    , mManager( manager )
-    , mGettingShortcut( false )
-    , mModifiers( 0 )
-    , mKey( 0 )
+  : QDialog( parent )
+  , mManager( manager )
+  , mGettingShortcut( false )
+  , mModifiers( 0 )
+  , mKey( 0 )
 {
   setupUi( this );
 
@@ -82,7 +82,7 @@ void QgsConfigureShortcutsDialog::populateActions()
 {
   QList<QObject*> objects = mManager->listAll();
 
-  QList<QTreeWidgetItem *> items;
+  QList<QTreeWidgetItem*> items;
   items.reserve( objects.count() );
   Q_FOREACH ( QObject* obj, objects )
   {
@@ -285,7 +285,7 @@ QShortcut* QgsConfigureShortcutsDialog::currentShortcut()
   return qobject_cast<QShortcut*>( currentObject() );
 }
 
-void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
   Q_UNUSED( current );
   Q_UNUSED( previous );
@@ -321,7 +321,7 @@ void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTree
   btnResetShortcut->setEnabled( sequence != QKeySequence( shortcut ) );
 }
 
-void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
+void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent* event )
 {
   if ( !mGettingShortcut )
   {
@@ -332,7 +332,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
   int key = event->key();
   switch ( key )
   {
-      // modifiers
+    // modifiers
     case Qt::Key_Meta:
       mModifiers |= Qt::META;
       updateShortcutText();
@@ -350,7 +350,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
       updateShortcutText();
       break;
 
-      // escape aborts the acquisition of shortcut
+    // escape aborts the acquisition of shortcut
     case Qt::Key_Escape:
       setGettingShortcut( false );
       break;
@@ -361,7 +361,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
   }
 }
 
-void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
+void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent* event )
 {
   if ( !mGettingShortcut )
   {
@@ -372,7 +372,7 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
   int key = event->key();
   switch ( key )
   {
-      // modifiers
+    // modifiers
     case Qt::Key_Meta:
       mModifiers &= ~Qt::META;
       updateShortcutText();

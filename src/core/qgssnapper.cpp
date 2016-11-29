@@ -25,8 +25,8 @@
 
 
 QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
-    : mMapSettings( mapSettings )
-    , mSnapMode( SnapWithOneResult )
+  : mMapSettings( mapSettings )
+  , mSnapMode( SnapWithOneResult )
 {
 }
 

@@ -36,12 +36,12 @@
 using namespace pal;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer* layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings* settings, const QString& layerName )
-    : QgsAbstractLabelProvider( layer->id(), providerId )
-    , mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
-    , mLayerGeometryType( layer->geometryType() )
-    , mRenderer( layer->renderer() )
-    , mFields( layer->fields() )
-    , mCrs( layer->crs() )
+  : QgsAbstractLabelProvider( layer->id(), providerId )
+  , mSettings( settings ? *settings : QgsPalLayerSettings::fromLayer( layer ) )
+  , mLayerGeometryType( layer->geometryType() )
+  , mRenderer( layer->renderer() )
+  , mFields( layer->fields() )
+  , mCrs( layer->crs() )
 {
   mName = layerName.isEmpty() ? layer->id() : layerName;
 
@@ -65,14 +65,14 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( const QgsPalLayerSetti
     const QgsCoordinateReferenceSystem& crs,
     QgsAbstractFeatureSource* source,
     bool ownsSource, QgsFeatureRenderer* renderer )
-    : QgsAbstractLabelProvider( layerId )
-    , mSettings( settings )
-    , mLayerGeometryType( QgsWkbTypes::UnknownGeometry )
-    , mRenderer( renderer )
-    , mFields( fields )
-    , mCrs( crs )
-    , mSource( source )
-    , mOwnsSource( ownsSource )
+  : QgsAbstractLabelProvider( layerId )
+  , mSettings( settings )
+  , mLayerGeometryType( QgsWkbTypes::UnknownGeometry )
+  , mRenderer( renderer )
+  , mFields( fields )
+  , mCrs( crs )
+  , mSource( source )
+  , mOwnsSource( ownsSource )
 {
   init();
 }
@@ -230,7 +230,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QSet
 
 
 
-QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderContext &ctx )
+QList<QgsLabelFeature*> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderContext& ctx )
 {
   if ( !mSource )
   {

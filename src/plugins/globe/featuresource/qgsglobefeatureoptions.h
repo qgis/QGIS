@@ -29,7 +29,10 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
     {
       public:
         RefPtr( T* ptr ) : mPtr( ptr ) {}
-        T* ptr() { return mPtr; }
+        T* ptr()
+        {
+          return mPtr;
+        }
 
       private:
         T* mPtr;
@@ -37,7 +40,7 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
 
   public:
     QgsGlobeFeatureOptions( const ConfigOptions& opt = ConfigOptions() )
-        : osgEarth::Features::FeatureSourceOptions( opt )
+      : osgEarth::Features::FeatureSourceOptions( opt )
     {
       // Call the driver declared as "osgearth_feature_qgis"
       setDriver( "qgis" );
@@ -52,11 +55,23 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
       return conf;
     }
 
-    osgEarth::optional<std::string>& layerId() { return mLayerId; }
-    const osgEarth::optional<std::string>& layerId() const { return mLayerId; }
+    osgEarth::optional<std::string>& layerId()
+    {
+      return mLayerId;
+    }
+    const osgEarth::optional<std::string>& layerId() const
+    {
+      return mLayerId;
+    }
 
-    QgsVectorLayer* layer() const { return mLayer; }
-    void setLayer( QgsVectorLayer* layer ) { mLayer = layer; }
+    QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
+    void setLayer( QgsVectorLayer* layer )
+    {
+      mLayer = layer;
+    }
 
   protected:
     void mergeConfig( const osgEarth::Config& conf ) override
@@ -69,7 +84,7 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
     void fromConfig( const osgEarth::Config& conf )
     {
       conf.getIfSet( "layerId", mLayerId );
-      RefPtr< QgsVectorLayer > *layer_ptr = conf.getNonSerializable< RefPtr< QgsVectorLayer > >( "layer" );
+      RefPtr< QgsVectorLayer >* layer_ptr = conf.getNonSerializable< RefPtr< QgsVectorLayer > >( "layer" );
       mLayer = layer_ptr ? layer_ptr->ptr() : 0;
     }
 

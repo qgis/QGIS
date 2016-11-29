@@ -74,7 +74,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     * @param Pointer to the QgisApp object
     * @param Pointer to the QgisIface object.
      */
-    explicit QgsGeorefPlugin( QgisInterface * );
+    explicit QgsGeorefPlugin( QgisInterface* );
     //! Destructor
     virtual ~ QgsGeorefPlugin();
 
@@ -87,7 +87,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     void unload() override;
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( const QString& theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    QIcon getThemeIcon( const QString& theThemeName );
 
     //////////////////////////////////////////////////////////////////////
     //
@@ -104,15 +104,15 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface* mQGisIface;
     //!pointer to the qaction for this plugin
-    QAction * mActionRunGeoref;
+    QAction* mActionRunGeoref;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
-    QgsGeorefPluginGui *mPluginGui;
+    QgsGeorefPluginGui* mPluginGui;
 };
 
 #endif

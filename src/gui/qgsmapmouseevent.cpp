@@ -23,27 +23,30 @@
 /// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
+  bool acceptMatch( const QgsPointLocator::Match& m ) override
+  {
+    return m.hasEdge();
+  }
 };
 /// @endcond
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event )
-    : QMouseEvent( event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )
-    , mSnappingMode( NoSnapping )
-    , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) : QgsPoint() )
-    , mMapPoint( mOriginalMapPoint )
-    , mPixelPoint( event->pos() )
-    , mMapCanvas( mapCanvas )
+  : QMouseEvent( event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )
+  , mSnappingMode( NoSnapping )
+  , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) : QgsPoint() )
+  , mMapPoint( mOriginalMapPoint )
+  , mPixelPoint( event->pos() )
+  , mMapCanvas( mapCanvas )
 {
 }
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
-    : QMouseEvent( type, pos, button, buttons, modifiers )
-    , mSnappingMode( NoSnapping )
-    , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos ) : QgsPoint() )
-    , mMapPoint( mOriginalMapPoint )
-    , mPixelPoint( pos )
-    , mMapCanvas( mapCanvas )
+  : QMouseEvent( type, pos, button, buttons, modifiers )
+  , mSnappingMode( NoSnapping )
+  , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos ) : QgsPoint() )
+  , mMapPoint( mOriginalMapPoint )
+  , mPixelPoint( pos )
+  , mMapCanvas( mapCanvas )
 {
 }
 

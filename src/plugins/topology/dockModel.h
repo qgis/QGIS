@@ -35,7 +35,7 @@ class DockModel: public QAbstractTableModel
      * @param theErrorList reference to the ErrorList where errors will be stored
      * @param parent parent object
      */
-    DockModel( ErrorList& theErrorList, QObject *parent );
+    DockModel( ErrorList& theErrorList, QObject* parent );
 
     /**
      * Returns header data
@@ -50,7 +50,7 @@ class DockModel: public QAbstractTableModel
      * @param index model index
      * @param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    virtual QVariant data( const QModelIndex& index, int role ) const override;
 
     /**
      * Updates data on given index
@@ -58,32 +58,32 @@ class DockModel: public QAbstractTableModel
      * @param value new data value
      * @param role data role
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
     /**
      * Returns item flags for the index
      * @param index model index
      */
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
     /**
      * Returns the number of rows
      * @param parent parent index
      */
-    int rowCount( const QModelIndex &parent ) const override;
+    int rowCount( const QModelIndex& parent ) const override;
 
     /**
      * Returns the number of columns
      * @param parent parent index
      */
-    int columnCount( const QModelIndex &parent ) const override;
+    int columnCount( const QModelIndex& parent ) const override;
 
     /**
      * Reloads the model data between indices
      * @param index1 start index
      * @param index2 end index
      */
-    void reload( const QModelIndex &index1, const QModelIndex &index2 );
+    void reload( const QModelIndex& index1, const QModelIndex& index2 );
 
     /**
      * Resets the model

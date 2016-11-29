@@ -49,10 +49,16 @@ class CORE_EXPORT QgsLegendRenderer
     QSizeF minimumSize();
 
     //! Set the preferred resulting legend size.
-    void setLegendSize( QSizeF s ) { mLegendSize = s; }
+    void setLegendSize( QSizeF s )
+    {
+      mLegendSize = s;
+    }
 
     //! Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size
-    QSizeF legendSize() const { return mLegendSize; }
+    QSizeF legendSize() const
+    {
+      return mLegendSize;
+    }
 
     /** Draw the legend with given painter. It will occupy the area reported in legendSize().
      *  Painter should be scaled beforehand so that units correspond to millimeters.
@@ -74,8 +80,8 @@ class CORE_EXPORT QgsLegendRenderer
     {
       public:
         Nucleon()
-            : item( nullptr )
-            , labelXOffset( 0.0 )
+          : item( nullptr )
+          , labelXOffset( 0.0 )
         {}
         QObject* item;
         // Symbol size size without any space around for symbol item

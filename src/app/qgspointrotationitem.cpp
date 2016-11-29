@@ -18,9 +18,9 @@
 #include <cmath>
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas )
-    , mOrientation( Clockwise )
-    , mRotation( 0.0 )
+  : QgsMapCanvasItem( canvas )
+  , mOrientation( Clockwise )
+  , mRotation( 0.0 )
 {
   //setup font
   mFont.setPointSize( 12 );
@@ -28,9 +28,9 @@ QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas )
 }
 
 QgsPointRotationItem::QgsPointRotationItem()
-    : QgsMapCanvasItem( nullptr )
-    , mOrientation( Clockwise )
-    , mRotation( 0.0 )
+  : QgsMapCanvasItem( nullptr )
+  , mOrientation( Clockwise )
+  , mRotation( 0.0 )
 {
 
 }
@@ -40,7 +40,7 @@ QgsPointRotationItem::~QgsPointRotationItem()
 
 }
 
-void QgsPointRotationItem::paint( QPainter * painter )
+void QgsPointRotationItem::paint( QPainter* painter )
 {
   if ( !painter )
   {

@@ -29,8 +29,8 @@
 #include <QCheckBox>
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, const QString& provider )
-    : QWidget( parent )
-    , mProvider( provider )
+  : QWidget( parent )
+  , mProvider( provider )
 {
   setupUi( this );
 
@@ -75,7 +75,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );
   lePyramidsLevels->setValidator( new QRegExpValidator( QRegExp( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
-  connect( lePyramidsLevels, SIGNAL( textEdited( const QString & ) ),
+  connect( lePyramidsLevels, SIGNAL( textEdited( const QString& ) ),
            this, SLOT( setOverviewList() ) );
 
   // overview list

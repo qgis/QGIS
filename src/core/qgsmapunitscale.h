@@ -39,12 +39,12 @@ class CORE_EXPORT QgsMapUnitScale
      * @param maxScale maximum allowed scale, or 0.0 if no maximum scale set
      */
     QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
-        : minScale( minScale )
-        , maxScale( maxScale )
-        , minSizeMMEnabled( false )
-        , minSizeMM( 0.0 )
-        , maxSizeMMEnabled( false )
-        , maxSizeMM( 0.0 )
+      : minScale( minScale )
+      , maxScale( maxScale )
+      , minSizeMMEnabled( false )
+      , minSizeMM( 0.0 )
+      , maxSizeMMEnabled( false )
+      , maxSizeMM( 0.0 )
     {}
 
     //! The minimum scale, or 0.0 if unset

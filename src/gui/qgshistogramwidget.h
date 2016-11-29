@@ -58,7 +58,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @param layer source vector layer
      * @param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer* layer = nullptr, const QString& fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget* parent = nullptr, QgsVectorLayer* layer = nullptr, const QString& fieldOrExp = QString() );
 
     ~QgsHistogramWidget();
 
@@ -66,14 +66,20 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see setLayer
      * @see sourceFieldExp
      */
-    QgsVectorLayer* layer() { return mVectorLayer; }
+    QgsVectorLayer* layer()
+    {
+      return mVectorLayer;
+    }
 
     /** Returns the source field name or expression used to calculate values displayed
      * in the histogram.
      * @see setSourceFieldExp
      * @see layer
      */
-    QString sourceFieldExp() const { return mSourceFieldExp; }
+    QString sourceFieldExp() const
+    {
+      return mSourceFieldExp;
+    }
 
     /** Sets the pen to use when drawing histogram bars. If set to Qt::NoPen then the
      * pen will be automatically calculated. If ranges have been set using @link setGraduatedRanges @endlink
@@ -82,13 +88,19 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see pen
      * @see setBrush
      */
-    void setPen( const QPen& pen ) { mPen = pen; }
+    void setPen( const QPen& pen )
+    {
+      mPen = pen;
+    }
 
     /** Returns the pen used when drawing histogram bars.
      * @see setPen
      * @see brush
      */
-    QPen pen() const { return mPen; }
+    QPen pen() const
+    {
+      return mPen;
+    }
 
     /** Sets the brush used for drawing histogram bars. If ranges have been set using @link setGraduatedRanges @endlink
      * then the pen and brush will have no effect.
@@ -96,13 +108,19 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see brush
      * @see setPen
      */
-    void setBrush( const QBrush& brush ) { mBrush = brush; }
+    void setBrush( const QBrush& brush )
+    {
+      mBrush = brush;
+    }
 
     /** Returns the brush used when drawing histogram bars.
      * @see setBrush
      * @see pen
      */
-    QBrush brush() const { return mBrush; }
+    QBrush brush() const
+    {
+      return mBrush;
+    }
 
     /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
@@ -116,33 +134,48 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @returns graduated range list
      * @see setGraduatedRanges
      */
-    QgsRangeList graduatedRanges() const { return mRanges; }
+    QgsRangeList graduatedRanges() const
+    {
+      return mRanges;
+    }
 
     /** Returns the title for the histogram's x-axis.
      * @see setXAxisTitle
      * @see yAxisTitle
      */
-    QString xAxisTitle() const { return mXAxisTitle; }
+    QString xAxisTitle() const
+    {
+      return mXAxisTitle;
+    }
 
     /** Sets the title for the histogram's x-axis.
      * @param title x-axis title, or empty string to remove title
      * @see xAxisTitle
      * @see setYAxisTitle
      */
-    void setXAxisTitle( const QString& title ) { mXAxisTitle = title; }
+    void setXAxisTitle( const QString& title )
+    {
+      mXAxisTitle = title;
+    }
 
     /** Returns the title for the histogram's y-axis.
      * @see setYAxisTitle
      * @see xAxisTitle
      */
-    QString yAxisTitle() const { return mYAxisTitle; }
+    QString yAxisTitle() const
+    {
+      return mYAxisTitle;
+    }
 
     /** Sets the title for the histogram's y-axis.
      * @param title y-axis title, or empty string to remove title
      * @see yAxisTitle
      * @see setXAxisTitle
      */
-    void setYAxisTitle( const QString& title ) { mYAxisTitle = title; }
+    void setYAxisTitle( const QString& title )
+    {
+      mYAxisTitle = title;
+    }
 
   public slots:
 
@@ -179,7 +212,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
   private:
 
-    QgsVectorLayer * mVectorLayer;
+    QgsVectorLayer* mVectorLayer;
     QString mSourceFieldExp;
     QList<double> mValues;
     QgsStatisticalSummary mStats;
@@ -196,7 +229,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void clearHistogram();
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QwtPlotHistogram* createPlotHistogram( const QString& title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
+    QwtPlotHistogram* createPlotHistogram( const QString& title, const QBrush& brush, const QPen& pen = Qt::NoPen ) const;
 #else
     HistogramItem* createHistoItem( const QString& title, const QBrush& brush, const QPen& pen = Qt::NoPen ) const;
 #endif

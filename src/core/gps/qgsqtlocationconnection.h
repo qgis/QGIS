@@ -56,7 +56,7 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     /** Called when the position updated.
       * @note not available in python binding
       */
-    void positionUpdated( const QGeoPositionInfo &info );
+    void positionUpdated( const QGeoPositionInfo& info );
 
     /** Called when the number of satellites in view is updated.
       * @note not available in python bindings on android

@@ -35,14 +35,14 @@
 #endif
 
 QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : mInputFile( inputFile )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mCellSizeX( 0.0 )
-    , mCellSizeY( 0.0 )
-    , mInputNodataValue( -1 )
-    , mOutputNodataValue( -1 )
-    , mZFactor( 1.0 )
+  : mInputFile( inputFile )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mCellSizeX( 0.0 )
+  , mCellSizeY( 0.0 )
+  , mInputNodataValue( -1 )
+  , mOutputNodataValue( -1 )
+  , mZFactor( 1.0 )
 {
   mSlopeFilter = new QgsSlopeFilter( inputFile, outputFile, outputFormat );
   mAspectFilter = new QgsAspectFilter( inputFile, outputFile, outputFormat );
@@ -168,13 +168,13 @@ int QgsRelief::processRaster( QProgressDialog* p )
   }
 
   //keep only three scanlines in memory at a time
-  float* scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float* scanLine1 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
+  float* scanLine2 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
+  float* scanLine3 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
 
-  unsigned char* resultRedLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-  unsigned char* resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-  unsigned char* resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char* resultRedLine = ( unsigned char* ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char* resultGreenLine = ( unsigned char* ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char* resultBlueLine = ( unsigned char* ) CPLMalloc( sizeof( unsigned char ) * xSize );
 
   if ( p )
   {
@@ -214,7 +214,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
       CPLFree( scanLine1 );
       scanLine1 = scanLine2;
       scanLine2 = scanLine3;
-      scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+      scanLine3 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
     }
 
     if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
@@ -433,7 +433,7 @@ GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
 
 GDALDriverH QgsRelief::openOutputDriver()
 {
-  char **driverMetadata;
+  char** driverMetadata;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
@@ -463,7 +463,7 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
   int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = nullptr;
+  char** papszOptions = nullptr;
 
   //use PACKBITS compression for tiffs by default
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "PACKBITS" );
@@ -542,7 +542,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
     frequency[i] = 0;
   }
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
+  float* scanLine = ( float* ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
 
   for ( int i = 0; i < nCellsY; ++i )
@@ -629,7 +629,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
     frequency[i] = 0;
   }
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
+  float* scanLine = ( float* ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
 
   for ( int i = 0; i < nCellsY; ++i )

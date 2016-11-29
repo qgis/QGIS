@@ -16,9 +16,9 @@
 #include "qgscomposeritemcombobox.h"
 #include "qgscomposermodel.h"
 
-QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsComposition* composition )
-    : QComboBox( parent )
-    , mProxyModel( nullptr )
+QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget* parent, QgsComposition* composition )
+  : QComboBox( parent )
+  , mProxyModel( nullptr )
 {
   setComposition( composition );
 
@@ -28,7 +28,7 @@ QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsCompositio
   connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
 }
 
-void QgsComposerItemComboBox::setComposition( QgsComposition *composition )
+void QgsComposerItemComboBox::setComposition( QgsComposition* composition )
 {
   delete mProxyModel;
   mProxyModel = new QgsComposerProxyModel( composition, this );

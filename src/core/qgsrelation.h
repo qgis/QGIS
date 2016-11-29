@@ -48,18 +48,27 @@ class CORE_EXPORT QgsRelation
       public:
         //! Default constructor: NULL strings
         FieldPair()
-            : QPair< QString, QString >() {}
+          : QPair< QString, QString >() {}
 
         //! Constructor which takes two fields
         FieldPair( const QString& referencingField, const QString& referencedField )
-            : QPair< QString, QString >( referencingField, referencedField ) {}
+          : QPair< QString, QString >( referencingField, referencedField ) {}
 
         //! Get the name of the referencing (child) field
-        QString referencingField() const { return first; }
+        QString referencingField() const
+        {
+          return first;
+        }
         //! Get the name of the referenced (parent) field
-        QString referencedField() const { return second; }
+        QString referencedField() const
+        {
+          return second;
+        }
 
-        bool operator==( const FieldPair& other ) const { return first == other.first && second == other.second; }
+        bool operator==( const FieldPair& other ) const
+        {
+          return first == other.first && second == other.second;
+        }
     };
 
     /**

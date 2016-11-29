@@ -47,8 +47,8 @@
 
 #include "qgslogger.h"
 
-QgsSettingsTree::QgsSettingsTree( QWidget *parent )
-    : QTreeWidget( parent )
+QgsSettingsTree::QgsSettingsTree( QWidget* parent )
+  : QTreeWidget( parent )
 {
   setItemDelegate( new QgsVariantDelegate( this ) );
 
@@ -74,7 +74,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   connect( &refreshTimer, SIGNAL( timeout() ), this, SLOT( maybeRefresh() ) );
 }
 
-void QgsSettingsTree::setSettingsObject( QSettings *settings )
+void QgsSettingsTree::setSettingsObject( QSettings* settings )
 {
   delete this->settings;
   this->settings = settings;
@@ -160,7 +160,7 @@ void QgsSettingsTree::refresh()
            this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
 }
 
-bool QgsSettingsTree::event( QEvent *event )
+bool QgsSettingsTree::event( QEvent* event )
 {
   if ( event->type() == QEvent::WindowActivate )
   {
@@ -170,7 +170,7 @@ bool QgsSettingsTree::event( QEvent *event )
   return QTreeWidget::event( event );
 }
 
-void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
+void QgsSettingsTree::updateSetting( QTreeWidgetItem* item )
 {
   QString key = itemKey( item );
   if ( key.isNull() )
@@ -181,13 +181,13 @@ void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
     refresh();
 }
 
-void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
+void QgsSettingsTree::updateChildItems( QTreeWidgetItem* parent )
 {
   int dividerIndex = 0;
 
   Q_FOREACH ( const QString& group, settings->childGroups() )
   {
-    QTreeWidgetItem *child;
+    QTreeWidgetItem* child;
     int childIndex = findChild( parent, group, dividerIndex );
     if ( childIndex != -1 )
     {
@@ -211,7 +211,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 
   Q_FOREACH ( const QString& key, settings->childKeys() )
   {
-    QTreeWidgetItem *child;
+    QTreeWidgetItem* child;
     int childIndex = findChild( parent, key, 0 );
 
     if ( childIndex == -1 || childIndex >= dividerIndex )
@@ -252,14 +252,14 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     delete childAt( parent, dividerIndex );
 }
 
-QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
-    QTreeWidgetItem *parent, int index )
+QTreeWidgetItem* QgsSettingsTree::createItem( const QString& text,
+    QTreeWidgetItem* parent, int index )
 {
-  QTreeWidgetItem *after = nullptr;
+  QTreeWidgetItem* after = nullptr;
   if ( index != 0 )
     after = childAt( parent, index - 1 );
 
-  QTreeWidgetItem *item;
+  QTreeWidgetItem* item;
   if ( parent )
     item = new QTreeWidgetItem( parent, after );
   else
@@ -284,13 +284,13 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   return item;
 }
 
-QString QgsSettingsTree::itemKey( QTreeWidgetItem *item )
+QString QgsSettingsTree::itemKey( QTreeWidgetItem* item )
 {
   if ( ! item )
     return QString();
 
   QString key = item->text( 0 );
-  QTreeWidgetItem *ancestor = item->parent();
+  QTreeWidgetItem* ancestor = item->parent();
   while ( ancestor )
   {
     key.prepend( ancestor->text( 0 ) + '/' );
@@ -300,7 +300,7 @@ QString QgsSettingsTree::itemKey( QTreeWidgetItem *item )
   return key;
 }
 
-QTreeWidgetItem *QgsSettingsTree::childAt( QTreeWidgetItem *parent, int index )
+QTreeWidgetItem* QgsSettingsTree::childAt( QTreeWidgetItem* parent, int index )
 {
   if ( parent )
     return parent->child( index );
@@ -308,7 +308,7 @@ QTreeWidgetItem *QgsSettingsTree::childAt( QTreeWidgetItem *parent, int index )
     return topLevelItem( index );
 }
 
-int QgsSettingsTree::childCount( QTreeWidgetItem *parent )
+int QgsSettingsTree::childCount( QTreeWidgetItem* parent )
 {
   if ( parent )
     return parent->childCount();
@@ -316,7 +316,7 @@ int QgsSettingsTree::childCount( QTreeWidgetItem *parent )
     return topLevelItemCount();
 }
 
-int QgsSettingsTree::findChild( QTreeWidgetItem *parent, const QString &text,
+int QgsSettingsTree::findChild( QTreeWidgetItem* parent, const QString& text,
                                 int startIndex )
 {
   for ( int i = startIndex; i < childCount( parent ); ++i )
@@ -327,7 +327,7 @@ int QgsSettingsTree::findChild( QTreeWidgetItem *parent, const QString &text,
   return -1;
 }
 
-void QgsSettingsTree::moveItemForward( QTreeWidgetItem *parent, int oldIndex,
+void QgsSettingsTree::moveItemForward( QTreeWidgetItem* parent, int oldIndex,
                                        int newIndex )
 {
   for ( int i = 0; i < oldIndex - newIndex; ++i )

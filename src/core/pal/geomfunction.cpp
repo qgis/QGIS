@@ -36,7 +36,7 @@
 
 using namespace pal;
 
-void heapsort( int *sid, int *id, const double* const x, int N )
+void heapsort( int* sid, int* id, const double* const x, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   int tx;
@@ -78,7 +78,7 @@ void heapsort( int *sid, int *id, const double* const x, int N )
 }
 
 
-void heapsort2( int *x, double* heap, int N )
+void heapsort2( int* x, double* heap, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   double t;
@@ -134,7 +134,7 @@ bool GeomFunction::isSegIntersects( double x1, double y1, double x2, double y2, 
 
 bool GeomFunction::computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
     double x3, double y3, double x4, double y4,  // 2nd line segment
-    double *x, double *y )
+    double* x, double* y )
 {
 
   double a1, a2, b1, b2, c1, c2;
@@ -162,7 +162,7 @@ bool GeomFunction::computeLineIntersection( double x1, double y1, double x2, dou
   return true;
 }
 
-int GeomFunction::convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull )
+int GeomFunction::convexHullId( int* id, const double* const x, const double* const y, int n, int*& cHull )
 {
   int i;
 
@@ -263,13 +263,13 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
   return top + 1;
 }
 
-int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
+int GeomFunction::reorderPolygon( int nbPoints, double* x, double* y )
 {
   int inc = 0;
-  int *cHull;
+  int* cHull;
   int i;
 
-  int *pts = new int[nbPoints];
+  int* pts = new int[nbPoints];
   for ( i = 0; i < nbPoints; i++ )
     pts[i] = i;
 
@@ -317,13 +317,13 @@ int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
   return 0;
 }
 
-bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha )
+bool GeomFunction::containsCandidate( const GEOSPreparedGeometry* geom, double x, double y, double width, double height, double alpha )
 {
   if ( !geom )
     return false;
 
   GEOSContextHandle_t geosctxt = geosContext();
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
+  GEOSCoordSequence* coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
 
   GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
   GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
@@ -361,7 +361,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
     GEOSGeom_destroy_r( geosctxt, bboxGeos );
     return result;
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException& e )
   {
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;

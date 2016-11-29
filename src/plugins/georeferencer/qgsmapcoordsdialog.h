@@ -30,9 +30,9 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     Q_OBJECT
 
   public:
-    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
-        : QgsMapTool( canvas )
-        , mSnappingMarker( nullptr )
+    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas* canvas )
+      : QgsMapTool( canvas )
+      , mSnappingMarker( nullptr )
     {
     }
 
@@ -42,7 +42,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
       mSnappingMarker = nullptr;
     }
 
-    void canvasMoveEvent( QgsMapMouseEvent *e ) override
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override
     {
       MappedPoint mapped = mapPoint( e );
 
@@ -64,13 +64,13 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
       }
     }
 
-    void canvasPressEvent( QgsMapMouseEvent * e ) override
+    void canvasPressEvent( QgsMapMouseEvent* e ) override
     {
       MappedPoint mapped = mapPoint( e );
       emit canvasClicked( mapped.point, e->button() );
     }
 
-    void canvasReleaseEvent( QgsMapMouseEvent *e ) override
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override
     {
       QgsMapTool::canvasReleaseEvent( e );
       emit mouseReleased();
@@ -96,7 +96,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
       bool snapped;
     };
 
-    MappedPoint mapPoint( QMouseEvent *e )
+    MappedPoint mapPoint( QMouseEvent* e )
     {
       QgsPoint pnt = toMapCoordinates( e->pos() );
       QgsSnappingUtils* snappingUtils = canvas()->snappingUtils();
@@ -116,7 +116,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent = nullptr );
+    QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint& pixelCoords, QWidget* parent = nullptr );
     ~QgsMapCoordsDialog();
 
   private slots:
@@ -124,17 +124,17 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
 
     void setToolEmitPoint( bool isEnable );
 
-    void maybeSetXY( const QgsPoint &, Qt::MouseButton );
+    void maybeSetXY( const QgsPoint&, Qt::MouseButton );
     void updateOK();
     void setPrevTool();
 
   signals:
-    void pointAdded( const QgsPoint &, const QgsPoint & );
+    void pointAdded( const QgsPoint&, const QgsPoint& );
 
   private:
     double dmsToDD( const QString& dms );
 
-    QPushButton *mPointFromCanvasPushButton;
+    QPushButton* mPointFromCanvasPushButton;
 
     QgsGeorefMapToolEmitPoint* mToolEmitPoint;
     QgsMapTool* mPrevMapTool;

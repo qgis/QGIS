@@ -113,7 +113,7 @@ static QByteArray fileData_( const QString& path, bool astext = false )
   return data;
 }
 
-QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath )
+QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString& certspath )
 {
   QList<QSslCertificate> certs;
   bool pem = certspath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
@@ -125,7 +125,7 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath
   return certs;
 }
 
-QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
+QSslCertificate QgsAuthCertUtils::certFromFile( const QString& certpath )
 {
   QSslCertificate cert;
   QList<QSslCertificate> certs( QgsAuthCertUtils::certsFromFile( certpath ) );
@@ -140,9 +140,9 @@ QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
   return cert;
 }
 
-QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
-                                       const QString &keypass,
-                                       QString *algtype )
+QSslKey QgsAuthCertUtils::keyFromFile( const QString& keypath,
+                                       const QString& keypass,
+                                       QString* algtype )
 {
   bool pem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
   QByteArray keydata( fileData_( keypath, pem ) );
@@ -177,7 +177,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
   return clientkey;
 }
 
-QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext )
+QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString& pemtext )
 {
   QList<QSslCertificate> certs;
   certs = QSslCertificate::fromData( pemtext.toLatin1(), QSsl::Pem );
@@ -188,9 +188,9 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext
   return certs;
 }
 
-QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
-    const QString &keypath,
-    const QString &keypass,
+QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString& certpath,
+    const QString& keypath,
+    const QString& keypass,
     bool reencrypt )
 {
   QString certpem;
@@ -213,8 +213,8 @@ QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
   return QStringList() << certpem << keypem << algtype;
 }
 
-QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
-    const QString &bundlepass,
+QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString& bundlepath,
+    const QString& bundlepass,
     bool reencrypt )
 {
   QStringList empty;
@@ -246,7 +246,7 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
   return QStringList() << bundle.certificateChain().primary().toPEM() << bundle.privateKey().toPEM( passarray ) << algtype;
 }
 
-QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArray &pemtext )
+QString QgsAuthCertUtils::pemTextToTempFile( const QString& name, const QByteArray& pemtext )
 {
   QFile pemFile( QDir::tempPath() + QDir::separator() + name );
   QString pemFilePath( pemFile.fileName() );
@@ -292,7 +292,7 @@ QString QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::CaCertSource source
   }
 }
 
-QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate &cert, bool issuer )
+QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate& cert, bool issuer )
 {
   QString name( issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CommonName )
                 : SSL_SUBJECT_INFO( cert, QSslCertificate::CommonName ) );
@@ -321,7 +321,7 @@ QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate &cert, bool is
 }
 
 // private
-void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
+void QgsAuthCertUtils::appendDirSegment_( QStringList& dirname,
     const QString& segment, QString value )
 {
   if ( !value.isEmpty() )
@@ -330,8 +330,8 @@ void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
   }
 }
 
-QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert ,
-    const QCA::Certificate &acert ,
+QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate& qcert ,
+    const QCA::Certificate& acert ,
     bool issuer )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
@@ -395,7 +395,7 @@ QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy tr
   }
 }
 
-QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
+QString QgsAuthCertUtils::getColonDelimited( const QString& txt )
 {
   // 64321c05b0ebab8e2b67ec0d7d9e2b6d4bc3c303
   //   -> 64:32:1c:05:b0:eb:ab:8e:2b:67:ec:0d:7d:9e:2b:6d:4b:c3:c3:03
@@ -418,7 +418,7 @@ QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate& cert, bool forma
   return sha;
 }
 
-QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert )
+QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate& cert )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
     return QCA::Certificate();
@@ -433,7 +433,7 @@ QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert 
   return qcacert;
 }
 
-QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList<QSslCertificate> &certs )
+QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList<QSslCertificate>& certs )
 {
   QCA::CertificateCollection qcacoll;
   if ( QgsAuthManager::instance()->isDisabled() )
@@ -450,7 +450,7 @@ QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList
   return qcacoll;
 }
 
-QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString &path, const QString &pass )
+QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString& path, const QString& pass )
 {
   QCA::SecureArray passarray;
   if ( !pass.isEmpty() )
@@ -601,7 +601,7 @@ QString QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertUsag
   }
 }
 
-QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( const QSslCertificate &cert )
+QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( const QSslCertificate& cert )
 {
   QList<QgsAuthCertUtils::CertUsageType> usages;
 
@@ -676,30 +676,30 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   return usages;
 }
 
-bool QgsAuthCertUtils::certificateIsAuthority( const QSslCertificate &cert )
+bool QgsAuthCertUtils::certificateIsAuthority( const QSslCertificate& cert )
 {
   return QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::CertAuthorityUsage );
 }
 
-bool QgsAuthCertUtils::certificateIsIssuer( const QSslCertificate &cert )
+bool QgsAuthCertUtils::certificateIsIssuer( const QSslCertificate& cert )
 {
   return QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::CertIssuerUsage );
 }
 
-bool QgsAuthCertUtils::certificateIsAuthorityOrIssuer( const QSslCertificate &cert )
+bool QgsAuthCertUtils::certificateIsAuthorityOrIssuer( const QSslCertificate& cert )
 {
   return ( QgsAuthCertUtils::certificateIsAuthority( cert )
            || QgsAuthCertUtils::certificateIsIssuer( cert ) );
 }
 
-bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
+bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate& cert )
 {
   return ( QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsServerUsage )
            || QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsServerEvUsage ) );
 }
 
 #if 0
-bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
+bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate& cert )
 {
   // TODO: There is no difinitive method for strictly enforcing what determines an SSL server cert;
   //       only what it should not be able to do (cert sign, etc.). The logic here may need refined
@@ -813,7 +813,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
 }
 #endif
 
-bool QgsAuthCertUtils::certificateIsSslClient( const QSslCertificate &cert )
+bool QgsAuthCertUtils::certificateIsSslClient( const QSslCertificate& cert )
 {
   return QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsClientUsage );
 }

@@ -49,28 +49,28 @@ class QgsFieldPrivate : public QSharedData
                      int len = 0,
                      int prec = 0,
                      const QString& comment = QString() )
-        : name( name )
-        , type( type )
-        , subType( subType )
-        , typeName( typeName )
-        , length( len )
-        , precision( prec )
-        , comment( comment )
+      : name( name )
+      , type( type )
+      , subType( subType )
+      , typeName( typeName )
+      , length( len )
+      , precision( prec )
+      , comment( comment )
     {
     }
 
     QgsFieldPrivate( const QgsFieldPrivate& other )
-        : QSharedData( other )
-        , name( other.name )
-        , type( other.type )
-        , subType( other.subType )
-        , typeName( other.typeName )
-        , length( other.length )
-        , precision( other.precision )
-        , comment( other.comment )
-        , alias( other.alias )
-        , defaultValueExpression( other.defaultValueExpression )
-        , constraints( other.constraints )
+      : QSharedData( other )
+      , name( other.name )
+      , type( other.type )
+      , subType( other.subType )
+      , typeName( other.typeName )
+      , length( other.length )
+      , precision( other.precision )
+      , comment( other.comment )
+      , alias( other.alias )
+      , defaultValueExpression( other.defaultValueExpression )
+      , constraints( other.constraints )
     {
     }
 

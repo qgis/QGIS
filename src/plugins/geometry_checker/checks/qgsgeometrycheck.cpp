@@ -61,20 +61,20 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck* check,
     const QgsPointV2& errorLocation,
     QgsVertexId vidx,
     const QVariant& value , ValueType valueType )
-    : mCheck( check )
-    , mFeatureId( featureId )
-    , mErrorLocation( errorLocation )
-    , mVidx( vidx )
-    , mValue( value )
-    , mValueType( valueType )
-    , mStatus( StatusPending )
+  : mCheck( check )
+  , mFeatureId( featureId )
+  , mErrorLocation( errorLocation )
+  , mVidx( vidx )
+  , mValue( value )
+  , mValueType( valueType )
+  , mStatus( StatusPending )
 {}
 
 QgsGeometryCheckError::~QgsGeometryCheckError()
 {
 }
 
-QgsAbstractGeometry *QgsGeometryCheckError::geometry()
+QgsAbstractGeometry* QgsGeometryCheckError::geometry()
 {
   QgsFeature f;
   if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.hasGeometry() )
@@ -173,7 +173,7 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature& feature, int part
   mFeaturePool->updateFeature( feature );
 }
 
-void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partIdx, Changes &changes ) const
+void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature& feature, int partIdx, Changes& changes ) const
 {
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry* geom = featureGeom.geometry();
@@ -199,7 +199,7 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partI
   }
 }
 
-void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
+void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature& feature, int partIdx, int ringIdx, Changes& changes ) const
 {
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry* partGeom = QgsGeometryCheckerUtils::getGeomPart( featureGeom.geometry(), partIdx );

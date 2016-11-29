@@ -33,28 +33,55 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = nullptr, QgsContrastEnhancement* greenEnhancement = nullptr,
                                QgsContrastEnhancement* blueEnhancement = nullptr );
     ~QgsMultiBandColorRenderer();
-    QgsMultiBandColorRenderer * clone() const override;
+    QgsMultiBandColorRenderer* clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    int redBand() const { return mRedBand; }
-    void setRedBand( int band ) { mRedBand = band; }
-    int greenBand() const { return mGreenBand; }
-    void setGreenBand( int band ) { mGreenBand = band; }
-    int blueBand() const { return mBlueBand; }
-    void setBlueBand( int band ) { mBlueBand = band; }
+    int redBand() const
+    {
+      return mRedBand;
+    }
+    void setRedBand( int band )
+    {
+      mRedBand = band;
+    }
+    int greenBand() const
+    {
+      return mGreenBand;
+    }
+    void setGreenBand( int band )
+    {
+      mGreenBand = band;
+    }
+    int blueBand() const
+    {
+      return mBlueBand;
+    }
+    void setBlueBand( int band )
+    {
+      mBlueBand = band;
+    }
 
-    const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
+    const QgsContrastEnhancement* redContrastEnhancement() const
+    {
+      return mRedContrastEnhancement;
+    }
     //! Takes ownership
     void setRedContrastEnhancement( QgsContrastEnhancement* ce );
 
-    const QgsContrastEnhancement* greenContrastEnhancement() const { return mGreenContrastEnhancement; }
+    const QgsContrastEnhancement* greenContrastEnhancement() const
+    {
+      return mGreenContrastEnhancement;
+    }
     //! Takes ownership
     void setGreenContrastEnhancement( QgsContrastEnhancement* ce );
 
-    const QgsContrastEnhancement* blueContrastEnhancement() const { return mBlueContrastEnhancement; }
+    const QgsContrastEnhancement* blueContrastEnhancement() const
+    {
+      return mBlueContrastEnhancement;
+    }
     //! Takes ownership
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 

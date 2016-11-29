@@ -70,9 +70,9 @@ static bool _hasCache( sqlite3* db, const QString& connName, int flags = -1 ) //
   if ( flags >= 0 )
     sqlCacheForConn.append( QString( " AND flags = %1" ).arg( flags ) );
 
-  char **results;
+  char** results;
   int rows, columns;
-  char *errMsg = nullptr;
+  char* errMsg = nullptr;
   bool res = sqlite3_get_table( db, sqlCacheForConn.toUtf8(), &results, &rows, &columns, &errMsg ) == SQLITE_OK;
   bool hasCache = ( res && rows == 1 );
   sqlite3_free_table( results );
@@ -211,9 +211,9 @@ bool QgsOracleTableCache::loadFromCache( const QString& connName, CacheFlags fla
   while ( sqlite3_step( stmt ) == SQLITE_ROW )
   {
     QgsOracleLayerProperty layer;
-    layer.ownerName = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) );
-    layer.tableName = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 1 ) );
-    layer.geometryColName = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 2 ) );
+    layer.ownerName = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 0 ) );
+    layer.tableName = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 1 ) );
+    layer.geometryColName = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 2 ) );
     layer.isView = sqlite3_column_int( stmt, 3 );
     layer.sql = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 4 ) );
 
@@ -284,7 +284,7 @@ void _testTableCache()
 
   for ( QVector<QgsOracleLayerProperty>::iterator it = layers.begin(), end = layers.end(); it != end; ++it )
   {
-    QgsOracleLayerProperty &layerProperty = *it;
+    QgsOracleLayerProperty& layerProperty = *it;
     c->retrieveLayerTypes( layerProperty, useEstimated, onlyExisting );
   }
 

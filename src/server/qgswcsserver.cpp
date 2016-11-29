@@ -40,14 +40,14 @@ static const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc
 
 QgsWCSServer::QgsWCSServer(
   const QString& configFilePath
-  , QMap<QString, QString> &parameters
+  , QMap<QString, QString>& parameters
   , QgsWCSProjectParser* pp
   , QgsRequestHandler* rh
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   , const QgsAccessControl* accessControl
 #endif
 )
-    : QgsOWSServer(
+  : QgsOWSServer(
       configFilePath
       , parameters
       , rh
@@ -55,14 +55,14 @@ QgsWCSServer::QgsWCSServer(
       , accessControl
 #endif
     )
-    , mConfigParser(
+  , mConfigParser(
       pp
     )
 {
 }
 
 QgsWCSServer::QgsWCSServer()
-    : QgsOWSServer(
+  : QgsOWSServer(
       QString()
       , QMap<QString, QString>()
       , nullptr
@@ -70,7 +70,7 @@ QgsWCSServer::QgsWCSServer()
       , nullptr
 #endif
     )
-    , mConfigParser( nullptr )
+  , mConfigParser( nullptr )
 {
 }
 
@@ -327,13 +327,25 @@ QByteArray* QgsWCSServer::getCoverage()
     bboxOk = true;
     QString bbString = bbIt.value();
     minx = bbString.section( QStringLiteral( "," ), 0, 0 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+    {
+      bboxOk = false;
+    }
     miny = bbString.section( QStringLiteral( "," ), 1, 1 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+    {
+      bboxOk = false;
+    }
     maxx = bbString.section( QStringLiteral( "," ), 2, 2 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+    {
+      bboxOk = false;
+    }
     maxy = bbString.section( QStringLiteral( "," ), 3, 3 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+    {
+      bboxOk = false;
+    }
   }
   if ( !bboxOk )
   {
@@ -421,7 +433,7 @@ QByteArray* QgsWCSServer::getCoverage()
     // add projector if necessary
     if ( responseCRS != rLayer->crs() )
     {
-      QgsRasterProjector * projector = new QgsRasterProjector;
+      QgsRasterProjector* projector = new QgsRasterProjector;
       projector->setCrs( rLayer->crs(), responseCRS );
       if ( !pipe->insert( 2, projector ) )
       {

@@ -374,12 +374,12 @@ QString QgsPythonUtilsImpl::getTraceback()
   QString errMsg;
   QString result;
 
-  PyObject *modStringIO = nullptr;
-  PyObject *modTB = nullptr;
-  PyObject *obStringIO = nullptr;
-  PyObject *obResult = nullptr;
+  PyObject* modStringIO = nullptr;
+  PyObject* modTB = nullptr;
+  PyObject* obStringIO = nullptr;
+  PyObject* obResult = nullptr;
 
-  PyObject *type, *value, *traceback;
+  PyObject* type, *value, *traceback;
 
   PyErr_Fetch( &type, &value, &traceback );
   PyErr_NormalizeException( &type, &value, &traceback );

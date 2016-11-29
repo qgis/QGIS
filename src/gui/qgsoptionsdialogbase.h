@@ -77,7 +77,10 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
 
     /** Determine if the options list is in icon only mode
      */
-    bool iconOnly() {return mIconOnly;}
+    bool iconOnly()
+    {
+      return mIconOnly;
+    }
 
   protected slots:
     void updateOptionsListVerticalTabs();

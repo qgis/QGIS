@@ -52,7 +52,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
       SUCCESS = 3
     };
 
-    QgsMessageBar( QWidget *parent = nullptr );
+    QgsMessageBar( QWidget* parent = nullptr );
     ~QgsMessageBar();
 
     /**
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      *
      * @param item Item to display
      */
-    void pushItem( QgsMessageBarItem *item );
+    void pushItem( QgsMessageBarItem* item );
 
     /** Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
@@ -70,35 +70,41 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
      * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    QgsMessageBarItem *pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
+    QgsMessageBarItem* pushWidget( QWidget* widget, MessageLevel level = INFO, int duration = 0 );
 
     /** Remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
      *  @param item item to remove
      *  @return true if the widget was removed, false otherwise
      */
-    bool popWidget( QgsMessageBarItem *item );
+    bool popWidget( QgsMessageBarItem* item );
 
     //! make out a widget containing a message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem* createMessage( const QString& text, QWidget* parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem* createMessage( const QString& title, const QString& text, QWidget* parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = nullptr );
+    static QgsMessageBarItem* createMessage( QWidget* widget, QWidget* parent = nullptr );
 
     //! convenience method for pushing a message to the bar
-    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString::null, text, level, duration ); }
+    void pushMessage( const QString& text, MessageLevel level = INFO, int duration = 5 )
+    {
+      return pushMessage( QString::null, text, level, duration );
+    }
     //! convenience method for pushing a message with title to the bar
-    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 5 );
+    void pushMessage( const QString& title, const QString& text, MessageLevel level = INFO, int duration = 5 );
 
-    QgsMessageBarItem *currentItem() { return mCurrentItem; }
+    QgsMessageBarItem* currentItem()
+    {
+      return mCurrentItem;
+    }
 
   signals:
     //! emitted when a message widget is added to the bar
-    void widgetAdded( QgsMessageBarItem *item );
+    void widgetAdded( QgsMessageBarItem* item );
 
     //! emitted when a message widget was removed from the bar
-    void widgetRemoved( QgsMessageBarItem *item );
+    void widgetRemoved( QgsMessageBarItem* item );
 
   public slots:
 
@@ -146,20 +152,20 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void pushCritical( const QString& title, const QString& message );
 
   protected:
-    void mousePressEvent( QMouseEvent * e ) override;
+    void mousePressEvent( QMouseEvent* e ) override;
 
   private:
-    void popItem( QgsMessageBarItem *item );
-    void showItem( QgsMessageBarItem *item );
-    QgsMessageBarItem *mCurrentItem;
-    QList<QgsMessageBarItem *> mItems;
-    QMenu *mCloseMenu;
-    QToolButton *mCloseBtn;
-    QGridLayout *mLayout;
-    QLabel *mItemCount;
-    QAction *mActionCloseAll;
-    QTimer *mCountdownTimer;
-    QProgressBar *mCountProgress;
+    void popItem( QgsMessageBarItem* item );
+    void showItem( QgsMessageBarItem* item );
+    QgsMessageBarItem* mCurrentItem;
+    QList<QgsMessageBarItem*> mItems;
+    QMenu* mCloseMenu;
+    QToolButton* mCloseBtn;
+    QGridLayout* mLayout;
+    QLabel* mItemCount;
+    QAction* mActionCloseAll;
+    QTimer* mCountdownTimer;
+    QProgressBar* mCountProgress;
     QString mCountStyleSheet;
 
   private slots:

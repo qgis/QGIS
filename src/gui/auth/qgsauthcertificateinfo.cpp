@@ -50,25 +50,25 @@ static void removeChildren_( QTreeWidgetItem* item )
 
 QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate& cert,
                                   bool manageCertTrust,
-                                  QWidget *parent ,
+                                  QWidget* parent ,
                                   const QList<QSslCertificate>& connectionCAs )
-    : QWidget( parent )
-    , mConnectionCAs( connectionCAs )
-    , mDefaultItemForeground( QBrush() )
-    , mManageTrust( manageCertTrust )
-    , mTrustCacheRebuilt( false )
-    , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-    , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-    , mSecGeneral( nullptr )
-    , mSecDetails( nullptr )
-    , mSecPemText( nullptr )
-    , mGrpSubj( nullptr )
-    , mGrpIssu( nullptr )
-    , mGrpCert( nullptr )
-    , mGrpPkey( nullptr )
-    , mGrpExts( nullptr )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QWidget( parent )
+  , mConnectionCAs( connectionCAs )
+  , mDefaultItemForeground( QBrush() )
+  , mManageTrust( manageCertTrust )
+  , mTrustCacheRebuilt( false )
+  , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
+  , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
+  , mSecGeneral( nullptr )
+  , mSecDetails( nullptr )
+  , mSecPemText( nullptr )
+  , mGrpSubj( nullptr )
+  , mGrpIssu( nullptr )
+  , mGrpCert( nullptr )
+  , mGrpPkey( nullptr )
+  , mGrpExts( nullptr )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -85,7 +85,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate& cert,
 
     treeHierarchy->setRootIsDecorated( false );
 
-    connect( treeHierarchy, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
+    connect( treeHierarchy, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
              this, SLOT( currentCertItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
     mCaCertsCache = QgsAuthManager::instance()->getCaCertsCache();
@@ -116,7 +116,7 @@ QgsAuthCertInfo::~QgsAuthCertInfo()
 {
 }
 
-void QgsAuthCertInfo::setupError( const QString &msg )
+void QgsAuthCertInfo::setupError( const QString& msg )
 {
   lblError->setVisible( true );
   QString out = tr( "<b>Setup ERROR:</b>\n\n" );
@@ -125,13 +125,13 @@ void QgsAuthCertInfo::setupError( const QString &msg )
   lblError->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet() );
 }
 
-void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
   Q_UNUSED( previous );
   updateCurrentCert( current );
 }
 
-void QgsAuthCertInfo::updateCurrentCert( QTreeWidgetItem *item )
+void QgsAuthCertInfo::updateCurrentCert( QTreeWidgetItem* item )
 {
   if ( !item )
     item = treeHierarchy->currentItem();
@@ -230,8 +230,8 @@ void QgsAuthCertInfo::setCertHierarchy()
   QListIterator<QSslCertificate> it( mQCertChain );
   it.toBack();
   int i = mQCertChain.size();
-  QTreeWidgetItem * item = nullptr;
-  QTreeWidgetItem * previtem = nullptr;
+  QTreeWidgetItem* item = nullptr;
+  QTreeWidgetItem* previtem = nullptr;
   while ( it.hasPrevious() )
   {
     QSslCertificate cert( it.previous() );
@@ -322,7 +322,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   treeDetails->setHeaderLabels( QStringList() << tr( "Field" ) << tr( "Value" ) );
   treeDetails->setColumnWidth( 0, 200 );
 
-  QTreeWidgetItem *headeritem = treeDetails->headerItem();
+  QTreeWidgetItem* headeritem = treeDetails->headerItem();
   headeritem->setTextAlignment( 0, Qt::AlignRight );
   headeritem->setTextAlignment( 1, Qt::AlignLeft );
 
@@ -378,9 +378,9 @@ void QgsAuthCertInfo::populateCertInfo()
   populateInfoPemTextSection();
 }
 
-QTreeWidgetItem * QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const QString &group )
+QTreeWidgetItem* QgsAuthCertInfo::addGroupItem( QTreeWidgetItem* parent, const QString& group )
 {
-  QTreeWidgetItem *grpitem = new QTreeWidgetItem(
+  QTreeWidgetItem* grpitem = new QTreeWidgetItem(
     parent,
     QStringList( group ),
     ( int )DetailsGroup );
@@ -399,13 +399,13 @@ QTreeWidgetItem * QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const 
   return grpitem;
 }
 
-void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &field, const QString &value,
+void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem* parent, const QString& field, const QString& value,
                                     QgsAuthCertInfo::FieldWidget wdgt, const QColor& color )
 {
   if ( value.isEmpty() )
     return;
 
-  QTreeWidgetItem *item = new QTreeWidgetItem(
+  QTreeWidgetItem* item = new QTreeWidgetItem(
     parent,
     QStringList() << field << ( wdgt == NoWidget ? value : QLatin1String( "" ) ),
     ( int )DetailsField );
@@ -428,7 +428,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
   }
   else if ( wdgt == LineEdit )
   {
-    QLineEdit *le = new QLineEdit( value, treeDetails );
+    QLineEdit* le = new QLineEdit( value, treeDetails );
     le->setReadOnly( true );
     le->setAlignment( Qt::AlignLeft );
     le->setCursorPosition( 0 );
@@ -440,7 +440,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
   }
   else if ( wdgt == TextEdit )
   {
-    QPlainTextEdit *pte = new QPlainTextEdit( value, treeDetails );
+    QPlainTextEdit* pte = new QPlainTextEdit( value, treeDetails );
     pte->setReadOnly( true );
     pte->setMinimumHeight( 75 );
     pte->setMaximumHeight( 75 );
@@ -781,7 +781,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   // Extensions
   QStringList basicconst;
   basicconst << tr( "Certificate Authority: %1" ).arg( mCurrentACert.isCA() ? tr( "Yes" ) : tr( "No" ) )
-  << tr( "Chain Path Limit: %1" ).arg( mCurrentACert.pathLimit() );
+             << tr( "Chain Path Limit: %1" ).arg( mCurrentACert.pathLimit() );
   addFieldItem( mGrpExts, tr( "Basic constraints" ),
                 basicconst.join( QStringLiteral( "\n" ) ),
                 TextEdit );
@@ -828,14 +828,14 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
   if ( mCurrentQCert.isNull() )
     return;
 
-  QTreeWidgetItem *item = new QTreeWidgetItem(
+  QTreeWidgetItem* item = new QTreeWidgetItem(
     mSecPemText,
     QStringList( QLatin1String( "" ) ),
     ( int )DetailsField );
 
   item->setFirstColumnSpanned( true );
 
-  QPlainTextEdit *pte = new QPlainTextEdit( mCurrentQCert.toPem(), treeDetails );
+  QPlainTextEdit* pte = new QPlainTextEdit( mCurrentQCert.toPem(), treeDetails );
   pte->setReadOnly( true );
   pte->setMinimumHeight( 150 );
   pte->setMaximumHeight( 150 );
@@ -866,9 +866,9 @@ void QgsAuthCertInfo::currentPolicyIndexChanged( int indx )
   btnSaveTrust->setEnabled( newpolicy != mCurrentTrustPolicy );
 }
 
-void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
+void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate& cert,
     QgsAuthCertUtils::CertTrustPolicy trustpolicy,
-    QTreeWidgetItem * item )
+    QTreeWidgetItem* item )
 {
   if ( !item )
   {
@@ -918,19 +918,19 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
 
 QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate& cert,
     bool manageCertTrust,
-    QWidget *parent ,
+    QWidget* parent ,
     const QList<QSslCertificate>& connectionCAs )
-    : QDialog( parent )
-    , mCertInfoWdgt( nullptr )
+  : QDialog( parent )
+  , mCertInfoWdgt( nullptr )
 {
   setWindowTitle( tr( "Certificate Information" ) );
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setMargin( 6 );
 
   mCertInfoWdgt = new QgsAuthCertInfo( cert, manageCertTrust, this, connectionCAs );
   layout->addWidget( mCertInfoWdgt );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
       Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );

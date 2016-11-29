@@ -46,8 +46,14 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        @return 0 in case of success*/
     int interpolatePoint( double x, double y, double& result ) override;
 
-    void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
-    void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}
+    void setExportTriangulationToFile( bool e )
+    {
+      mExportTriangulationToFile = e;
+    }
+    void setTriangulationFilePath( const QString& filepath )
+    {
+      mTriangulationFilePath = filepath;
+    }
 
   private:
     Triangulation* mTriangulation;

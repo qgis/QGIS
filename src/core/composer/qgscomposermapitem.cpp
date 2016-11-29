@@ -19,12 +19,12 @@
 #include "qgscomposermap.h"
 #include <QUuid>
 
-QgsComposerMapItem::QgsComposerMapItem( const QString &name, QgsComposerMap *map )
-    : QgsComposerObject( map->composition() )
-    , mName( name )
-    , mComposerMap( map )
-    , mUuid( QUuid::createUuid().toString() )
-    , mEnabled( true )
+QgsComposerMapItem::QgsComposerMapItem( const QString& name, QgsComposerMap* map )
+  : QgsComposerObject( map->composition() )
+  , mName( name )
+  , mComposerMap( map )
+  , mUuid( QUuid::createUuid().toString() )
+  , mEnabled( true )
 {
 
 }
@@ -34,7 +34,7 @@ QgsComposerMapItem::~QgsComposerMapItem()
 
 }
 
-bool QgsComposerMapItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerMapItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   Q_UNUSED( doc );
   elem.setAttribute( QStringLiteral( "uuid" ), mUuid );
@@ -43,7 +43,7 @@ bool QgsComposerMapItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
   return true;
 }
 
-bool QgsComposerMapItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsComposerMapItem::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
@@ -52,7 +52,7 @@ bool QgsComposerMapItem::readXml( const QDomElement &itemElem, const QDomDocumen
   return true;
 }
 
-void QgsComposerMapItem::setComposerMap( QgsComposerMap *map )
+void QgsComposerMapItem::setComposerMap( QgsComposerMap* map )
 {
   mComposerMap = map;
 }
@@ -61,8 +61,8 @@ void QgsComposerMapItem::setComposerMap( QgsComposerMap *map )
 // QgsComposerMapItemStack
 //
 
-QgsComposerMapItemStack::QgsComposerMapItemStack( QgsComposerMap *map )
-    : mComposerMap( map )
+QgsComposerMapItemStack::QgsComposerMapItemStack( QgsComposerMap* map )
+  : mComposerMap( map )
 {
 
 }
@@ -72,12 +72,12 @@ QgsComposerMapItemStack::~QgsComposerMapItemStack()
   removeItems();
 }
 
-void QgsComposerMapItemStack::addItem( QgsComposerMapItem *item )
+void QgsComposerMapItemStack::addItem( QgsComposerMapItem* item )
 {
   mItems.append( item );
 }
 
-void QgsComposerMapItemStack::removeItem( const QString &itemId )
+void QgsComposerMapItemStack::removeItem( const QString& itemId )
 {
   for ( int i = mItems.size() - 1; i >= 0; --i )
   {
@@ -89,7 +89,7 @@ void QgsComposerMapItemStack::removeItem( const QString &itemId )
   }
 }
 
-void QgsComposerMapItemStack::moveItemUp( const QString &itemId )
+void QgsComposerMapItemStack::moveItemUp( const QString& itemId )
 {
   QgsComposerMapItem* targetItem = item( itemId );
   if ( !targetItem )
@@ -105,7 +105,7 @@ void QgsComposerMapItemStack::moveItemUp( const QString &itemId )
   mItems.swap( index, index + 1 );
 }
 
-void QgsComposerMapItemStack::moveItemDown( const QString &itemId )
+void QgsComposerMapItemStack::moveItemDown( const QString& itemId )
 {
   QgsComposerMapItem* targetItem = item( itemId );
   if ( !targetItem )
@@ -121,7 +121,7 @@ void QgsComposerMapItemStack::moveItemDown( const QString &itemId )
   mItems.swap( index, index - 1 );
 }
 
-const QgsComposerMapItem *QgsComposerMapItemStack::constItem( const QString &itemId ) const
+const QgsComposerMapItem* QgsComposerMapItemStack::constItem( const QString& itemId ) const
 {
   QList< QgsComposerMapItem* >::const_iterator it = mItems.constBegin();
   for ( ; it != mItems.constEnd(); ++it )
@@ -135,7 +135,7 @@ const QgsComposerMapItem *QgsComposerMapItemStack::constItem( const QString &ite
   return nullptr;
 }
 
-QgsComposerMapItem *QgsComposerMapItemStack::item( const QString &itemId ) const
+QgsComposerMapItem* QgsComposerMapItemStack::item( const QString& itemId ) const
 {
   QList< QgsComposerMapItem* >::const_iterator it = mItems.begin();
   for ( ; it != mItems.end(); ++it )
@@ -149,7 +149,7 @@ QgsComposerMapItem *QgsComposerMapItemStack::item( const QString &itemId ) const
   return nullptr;
 }
 
-QgsComposerMapItem *QgsComposerMapItemStack::item( const int index ) const
+QgsComposerMapItem* QgsComposerMapItemStack::item( const int index ) const
 {
   if ( index < mItems.length() )
   {
@@ -159,12 +159,12 @@ QgsComposerMapItem *QgsComposerMapItemStack::item( const int index ) const
   return nullptr;
 }
 
-QgsComposerMapItem &QgsComposerMapItemStack::operator[]( int idx )
+QgsComposerMapItem& QgsComposerMapItemStack::operator[]( int idx )
 {
   return *mItems[idx];
 }
 
-QList<QgsComposerMapItem *> QgsComposerMapItemStack::asList() const
+QList<QgsComposerMapItem*> QgsComposerMapItemStack::asList() const
 {
   QList< QgsComposerMapItem* > list;
   QList< QgsComposerMapItem* >::const_iterator it = mItems.begin();
@@ -175,7 +175,7 @@ QList<QgsComposerMapItem *> QgsComposerMapItemStack::asList() const
   return list;
 }
 
-bool QgsComposerMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerMapItemStack::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   //write item stack
   QList< QgsComposerMapItem* >::const_iterator itemIt = mItems.constBegin();
@@ -187,7 +187,7 @@ bool QgsComposerMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc ) c
   return true;
 }
 
-void QgsComposerMapItemStack::drawItems( QPainter *painter )
+void QgsComposerMapItemStack::drawItems( QPainter* painter )
 {
   if ( !painter )
   {

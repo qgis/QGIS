@@ -19,7 +19,7 @@
 #include "qgswebviewconfigdlg.h"
 
 QgsWebViewWidgetFactory::QgsWebViewWidgetFactory( const QString& name )
-    :  QgsEditorWidgetFactory( name )
+  :  QgsEditorWidgetFactory( name )
 {
 }
 

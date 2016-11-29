@@ -23,8 +23,8 @@
 #include <QMessageBox>
 
 QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp& ramp, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mRamp( ramp )
+  : QgsPanelWidget( parent )
+  , mRamp( ramp )
 {
   setupUi( this );
   mTreeColors->setScheme( &mRamp );
@@ -110,7 +110,7 @@ void QgsPresetColorRampWidget::newColorChanged( const QColor& color )
 }
 
 QgsPresetColorRampDialog::QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   QVBoxLayout* vLayout = new QVBoxLayout();
   mWidget = new QgsPresetColorRampWidget( ramp );

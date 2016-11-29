@@ -29,11 +29,11 @@
 #include "qgscoordinateutils.h"
 
 
-QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
-    : QWidget( parent )
-    , mDizzyTimer( nullptr )
-    , mMapCanvas( nullptr )
-    , mMousePrecisionDecimalPlaces( 0 )
+QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget* parent )
+  : QWidget( parent )
+  , mDizzyTimer( nullptr )
+  , mMapCanvas( nullptr )
+  , mMousePrecisionDecimalPlaces( 0 )
 {
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
@@ -85,16 +85,16 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   connect( mDizzyTimer, SIGNAL( timeout() ), this, SLOT( dizzy() ) );
 }
 
-void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
+void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas* mapCanvas )
 {
   if ( mMapCanvas )
   {
-    disconnect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ), this, SLOT( showMouseCoordinates( const QgsPoint & ) ) );
+    disconnect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint& ) ), this, SLOT( showMouseCoordinates( const QgsPoint& ) ) );
     disconnect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( showExtent() ) );
   }
 
   mMapCanvas = mapCanvas;
-  connect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ), this, SLOT( showMouseCoordinates( const QgsPoint & ) ) );
+  connect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint& ) ), this, SLOT( showMouseCoordinates( const QgsPoint& ) ) );
   connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( showExtent() ) );
 }
 
@@ -218,7 +218,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->refreshAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint & p )
+void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint& p )
 {
   if ( !mMapCanvas || mToggleExtentsViewButton->isChecked() )
   {

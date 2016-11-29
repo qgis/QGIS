@@ -64,7 +64,10 @@ class CORE_EXPORT QgsColorScheme
     /** Returns the current flags for the color scheme.
      * @returns current flags
      */
-    virtual SchemeFlags flags() const { return ShowInColorDialog; }
+    virtual SchemeFlags flags() const
+    {
+      return ShowInColorDialog;
+    }
 
     /** Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
@@ -76,14 +79,17 @@ class CORE_EXPORT QgsColorScheme
      * to colors related to the base color.
      * @returns a list of QPairs of color and color name
      */
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) = 0;
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) = 0;
 
     /** Returns whether the color scheme is editable
      * @returns true if scheme is editable
      * @see setColors
      */
-    virtual bool isEditable() const { return false; }
+    virtual bool isEditable() const
+    {
+      return false;
+    }
 
     /** Sets the colors for the scheme. This method is only valid for editable color schemes.
      * @param colors list of colors for the scheme
@@ -92,7 +98,7 @@ class CORE_EXPORT QgsColorScheme
      * @returns true if colors were set successfully
      * @see isEditable
      */
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList& colors, const QString& context = QString(), const QColor& baseColor = QColor() );
 
     /** Clones a color scheme
      * @returns copy of color scheme
@@ -115,10 +121,10 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 
     virtual ~QgsGplColorScheme();
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override;
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) override;
 
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
+    virtual bool setColors( const QgsNamedColorList& colors, const QString& context = QString(), const QColor& baseColor = QColor() ) override;
 
   protected:
 
@@ -142,7 +148,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     /** Constructs a new user color scheme, using a specified gpl palette file
      * @param filename filename of gpl palette file stored in the users "palettes" folder
      */
-    QgsUserColorScheme( const QString &filename );
+    QgsUserColorScheme( const QString& filename );
 
     virtual ~QgsUserColorScheme();
 
@@ -150,14 +156,20 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual QgsUserColorScheme* clone() const override;
 
-    virtual bool isEditable() const override { return true; }
+    virtual bool isEditable() const override
+    {
+      return true;
+    }
 
     virtual QgsColorScheme::SchemeFlags flags() const override;
 
     /** Sets the name for the scheme
      * @param name new name
      */
-    void setName( const QString &name ) { mName = name; }
+    void setName( const QString& name )
+    {
+      mName = name;
+    }
 
     /** Erases the associated gpl palette file from the users "palettes" folder
      * @returns true if erase was successful
@@ -193,12 +205,18 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     virtual ~QgsRecentColorScheme();
 
-    virtual QString schemeName() const override { return QObject::tr( "Recent colors" ); }
+    virtual QString schemeName() const override
+    {
+      return QObject::tr( "Recent colors" );
+    }
 
-    virtual SchemeFlags flags() const override { return ShowInAllContexts; }
+    virtual SchemeFlags flags() const override
+    {
+      return ShowInAllContexts;
+    }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override;
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) override;
 
     QgsRecentColorScheme* clone() const override;
 
@@ -229,16 +247,25 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual ~QgsCustomColorScheme();
 
-    virtual QString schemeName() const override { return QObject::tr( "Standard colors" ); }
+    virtual QString schemeName() const override
+    {
+      return QObject::tr( "Standard colors" );
+    }
 
-    virtual SchemeFlags flags() const override { return ShowInAllContexts; }
+    virtual SchemeFlags flags() const override
+    {
+      return ShowInAllContexts;
+    }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override;
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) override;
 
-    virtual bool isEditable() const override { return true; }
+    virtual bool isEditable() const override
+    {
+      return true;
+    }
 
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
+    virtual bool setColors( const QgsNamedColorList& colors, const QString& context = QString(), const QColor& baseColor = QColor() ) override;
 
     QgsCustomColorScheme* clone() const override;
 };
@@ -256,16 +283,25 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual ~QgsProjectColorScheme();
 
-    virtual QString schemeName() const override { return QObject::tr( "Project colors" ); }
+    virtual QString schemeName() const override
+    {
+      return QObject::tr( "Project colors" );
+    }
 
-    virtual SchemeFlags flags() const override { return ShowInAllContexts; }
+    virtual SchemeFlags flags() const override
+    {
+      return ShowInAllContexts;
+    }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override;
+    virtual QgsNamedColorList fetchColors( const QString& context = QString(),
+                                           const QColor& baseColor = QColor() ) override;
 
-    virtual bool isEditable() const override { return true; }
+    virtual bool isEditable() const override
+    {
+      return true;
+    }
 
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
+    virtual bool setColors( const QgsNamedColorList& colors, const QString& context = QString(), const QColor& baseColor = QColor() ) override;
 
     QgsProjectColorScheme* clone() const override;
 };

@@ -40,8 +40,14 @@ class QgsGlobeTileStatistics : public QObject
     Q_OBJECT
   public:
     QgsGlobeTileStatistics();
-    ~QgsGlobeTileStatistics() { s_instance = 0; }
-    static QgsGlobeTileStatistics* instance() { return s_instance; }
+    ~QgsGlobeTileStatistics()
+    {
+      s_instance = 0;
+    }
+    static QgsGlobeTileStatistics* instance()
+    {
+      return s_instance;
+    }
     void updateTileCount( int change );
     void updateQueueTileCount( int change );
   signals:
@@ -60,15 +66,30 @@ class QgsGlobeTileImage : public osg::Image
   public:
     QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsRectangle& tileExtent, int tileSize, int tileLod );
     ~QgsGlobeTileImage();
-    bool requiresUpdateCall() const { return !mUpdatedImage.isNull(); }
-    QgsMapSettings createSettings( int dpi, const QStringList &layerSet ) const;
-    void setUpdatedImage( const QImage& image ) { mUpdatedImage = image; }
-    int dpi() const { return mDpi; }
-    const QgsRectangle& extent() { return mTileExtent; }
+    bool requiresUpdateCall() const
+    {
+      return !mUpdatedImage.isNull();
+    }
+    QgsMapSettings createSettings( int dpi, const QStringList& layerSet ) const;
+    void setUpdatedImage( const QImage& image )
+    {
+      mUpdatedImage = image;
+    }
+    int dpi() const
+    {
+      return mDpi;
+    }
+    const QgsRectangle& extent()
+    {
+      return mTileExtent;
+    }
 
-    void update( osg::NodeVisitor * );
+    void update( osg::NodeVisitor* );
 
-    static bool lodSort( const QgsGlobeTileImage* lhs, const QgsGlobeTileImage* rhs ) { return lhs->mLod > rhs->mLod; }
+    static bool lodSort( const QgsGlobeTileImage* lhs, const QgsGlobeTileImage* rhs )
+    {
+      return lhs->mLod > rhs->mLod;
+    }
 
   private:
     QgsGlobeTileSource* mTileSource;
@@ -86,7 +107,10 @@ class QgsGlobeTileUpdateManager : public QObject
   public:
     QgsGlobeTileUpdateManager( QObject* parent = 0 );
     ~QgsGlobeTileUpdateManager();
-    void updateLayerSet( const QStringList& layerSet ) { mLayerSet = layerSet; }
+    void updateLayerSet( const QStringList& layerSet )
+    {
+      mLayerSet = layerSet;
+    }
     void addTile( QgsGlobeTileImage* tile );
     void removeTile( QgsGlobeTileImage* tile );
 
@@ -110,15 +134,21 @@ class QgsGlobeTileSource : public osgEarth::TileSource
 {
   public:
     QgsGlobeTileSource( const osgEarth::TileSourceOptions& options = osgEarth::TileSourceOptions() );
-    Status initialize( const osgDB::Options *dbOptions ) override;
+    Status initialize( const osgDB::Options* dbOptions ) override;
     osg::Image* createImage( const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress ) override;
-    osg::HeightField* createHeightField( const osgEarth::TileKey &/*key*/, osgEarth::ProgressCallback* /*progress*/ ) override { return 0; }
+    osg::HeightField* createHeightField( const osgEarth::TileKey& /*key*/, osgEarth::ProgressCallback* /*progress*/ ) override
+    {
+      return 0;
+    }
 
-    bool isDynamic() const override { return true; }
+    bool isDynamic() const override
+    {
+      return true;
+    }
 
-    void refresh( const QgsRectangle &dirtyExtent );
+    void refresh( const QgsRectangle& dirtyExtent );
     void setLayerSet( const QStringList& layerSet );
-    const QStringList &layerSet() const;
+    const QStringList& layerSet() const;
 
   private:
     friend class QgsGlobeTileImage;

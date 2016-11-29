@@ -39,32 +39,59 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem& operator=( const QgsLegendSymbolItem& other );
 
     //! Return associated symbol. May be null.
-    QgsSymbol* symbol() const { return mSymbol; }
+    QgsSymbol* symbol() const
+    {
+      return mSymbol;
+    }
     //! Return text label
-    QString label() const { return mLabel; }
+    QString label() const
+    {
+      return mLabel;
+    }
     //! Return unique identifier of the rule for identification of the item within renderer
-    QString ruleKey() const { return mKey; }
+    QString ruleKey() const
+    {
+      return mKey;
+    }
     //! Return whether the item is user-checkable - whether renderer supports enabling/disabling it
-    bool isCheckable() const { return mCheckable; }
+    bool isCheckable() const
+    {
+      return mCheckable;
+    }
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
-    QgsSymbol* legacyRuleKey() const { return mOriginalSymbolPointer; }
+    QgsSymbol* legacyRuleKey() const
+    {
+      return mOriginalSymbolPointer;
+    }
 
     //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
     //! Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
     //! Value <= 0 means the range is unbounded on this side
-    int scaleMinDenom() const { return mScaleMinDenom; }
+    int scaleMinDenom() const
+    {
+      return mScaleMinDenom;
+    }
     //! Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
     //! Value <= 0 means the range is unbounded on this side
-    int scaleMaxDenom() const { return mScaleMaxDenom; }
+    int scaleMaxDenom() const
+    {
+      return mScaleMaxDenom;
+    }
 
     //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
-    int level() const { return mLevel; }
+    int level() const
+    {
+      return mLevel;
+    }
 
     //! Key of the parent legend node. For legends with tree hierarchy
     //! @note added in 2.8
-    QString parentRuleKey() const { return mParentKey; }
+    QString parentRuleKey() const
+    {
+      return mParentKey;
+    }
 
     //! Set symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbol* s );

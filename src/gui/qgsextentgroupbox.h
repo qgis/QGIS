@@ -52,14 +52,26 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Setup original extent - should be called as part of initialization
     void setOriginalExtent( const QgsRectangle& originalExtent, const QgsCoordinateReferenceSystem& originalCrs );
 
-    QgsRectangle originalExtent() const { return mOriginalExtent; }
-    const QgsCoordinateReferenceSystem& originalCrs() const { return mOriginalCrs; }
+    QgsRectangle originalExtent() const
+    {
+      return mOriginalExtent;
+    }
+    const QgsCoordinateReferenceSystem& originalCrs() const
+    {
+      return mOriginalCrs;
+    }
 
     //! Setup current extent - should be called as part of initialization (or whenever current extent changes)
     void setCurrentExtent( const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs );
 
-    QgsRectangle currentExtent() const { return mCurrentExtent; }
-    const QgsCoordinateReferenceSystem& currentCrs() const { return mCurrentCrs; }
+    QgsRectangle currentExtent() const
+    {
+      return mCurrentExtent;
+    }
+    const QgsCoordinateReferenceSystem& currentCrs() const
+    {
+      return mCurrentCrs;
+    }
 
     //! Set the output CRS - may need to be used for transformation from original/current extent.
     //! Should be called as part of initialization and whenever the the output CRS is changed
@@ -68,7 +80,10 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Get the resulting extent - in output CRS coordinates
     QgsRectangle outputExtent() const;
 
-    ExtentState extentState() const { return mExtentState; }
+    ExtentState extentState() const
+    {
+      return mExtentState;
+    }
 
     //! Set base part of title of the group box (will be appended with extent state)
     //! @note added in 2.12
@@ -93,10 +108,22 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
   protected slots:
 
-    void on_mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
+    void on_mXMinLineEdit_textEdited( const QString& )
+    {
+      setOutputExtentFromLineEdit();
+    }
+    void on_mXMaxLineEdit_textEdited( const QString& )
+    {
+      setOutputExtentFromLineEdit();
+    }
+    void on_mYMinLineEdit_textEdited( const QString& )
+    {
+      setOutputExtentFromLineEdit();
+    }
+    void on_mYMaxLineEdit_textEdited( const QString& )
+    {
+      setOutputExtentFromLineEdit();
+    }
 
     void groupBoxClicked();
 

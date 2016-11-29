@@ -43,17 +43,29 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
     /** Constructor for QgsVectorLayerUndoCommand
      * @param buffer associated edit buffer
      */
-    QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer )
-        : QUndoCommand()
-        , mBuffer( buffer )
+    QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer* buffer )
+      : QUndoCommand()
+      , mBuffer( buffer )
     {}
 
     //! Returns the layer associated with the undo command
-    inline QgsVectorLayer *layer() { return mBuffer->L; }
-    inline QgsGeometryCache *cache() { return mBuffer->L->cache(); }
+    inline QgsVectorLayer* layer()
+    {
+      return mBuffer->L;
+    }
+    inline QgsGeometryCache* cache()
+    {
+      return mBuffer->L->cache();
+    }
 
-    virtual int id() const override { return -1; }
-    virtual bool mergeWith( const QUndoCommand * ) override { return false; }
+    virtual int id() const override
+    {
+      return -1;
+    }
+    virtual bool mergeWith( const QUndoCommand* ) override
+    {
+      return false;
+    }
 
   protected:
     //! Associated edit buffer
@@ -121,13 +133,13 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
      * @param fid feature ID of feature to modify geometry of
      * @param newGeom new geometry for feature
      */
-    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry &newGeom );
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry& newGeom );
     ~QgsVectorLayerUndoCommandChangeGeometry();
 
     virtual void undo() override;
     virtual void redo() override;
     virtual int id() const override;
-    virtual bool mergeWith( const QUndoCommand * ) override;
+    virtual bool mergeWith( const QUndoCommand* ) override;
 
   private:
     QgsFeatureId mFid;
@@ -152,7 +164,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLay
      * @param newValue new value of attribute
      * @param oldValue previous value of attribute
      */
-    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant& newValue, const QVariant& oldValue );
     virtual void undo() override;
     virtual void redo() override;
 

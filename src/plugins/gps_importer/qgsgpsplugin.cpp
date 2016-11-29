@@ -62,11 +62,11 @@ static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace )
-    : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mQGisInterface( theQgisInterFace )
-    , mQActionPointer( nullptr )
-    , mCreateGPXAction( nullptr )
+QgsGPSPlugin::QgsGPSPlugin( QgisInterface* theQgisInterFace )
+  : QgisPlugin( name_, description_, category_, version_, type_ )
+  , mQGisInterface( theQgisInterFace )
+  , mQActionPointer( nullptr )
+  , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }
@@ -130,13 +130,13 @@ void QgsGPSPlugin::run()
   {
     if ( iter.value()->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( iter.value() );
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( iter.value() );
       if ( vLayer->providerType() == QLatin1String( "gpx" ) )
         gpxLayers.push_back( vLayer );
     }
   }
 
-  QgsGPSPluginGui *myPluginGui =
+  QgsGPSPluginGui* myPluginGui =
     new QgsGPSPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->mainWindow(),
                          QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
@@ -346,7 +346,7 @@ void QgsGPSPlugin::convertGPSFile( const QString& inputFileName,
   // try to start the gpsbabel process
   QStringList babelArgs;
   babelArgs << mBabelPath << QStringLiteral( "-i" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-f" ) << QStringLiteral( "\"%1\"" ).arg( inputFileName )
-  << convertStrings << QStringLiteral( "-o" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-F" ) << QStringLiteral( "\"%1\"" ).arg( outputFileName );
+            << convertStrings << QStringLiteral( "-o" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-F" ) << QStringLiteral( "\"%1\"" ).arg( outputFileName );
   QgsDebugMsg( QString( "Conversion command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
@@ -713,7 +713,7 @@ void QgsGPSPlugin::setCurrentTheme( const QString& theThemeName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new QgsGPSPlugin( theQgisInterfacePointer );
 }
@@ -755,7 +755,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

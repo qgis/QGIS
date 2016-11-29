@@ -37,8 +37,8 @@
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
-    , mCheckGeometryType( true )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
+  , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
 }
@@ -47,9 +47,9 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 {
 }
 
-bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
+bool QgsMapToolAddFeature::addFeature( QgsVectorLayer* vlayer, QgsFeature* f, bool showModal )
 {
-  QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
+  QgsFeatureAction* action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
   bool res = action->addFeature( QgsAttributeMap(), showModal );
   if ( showModal )
     delete action;
@@ -58,7 +58,7 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bo
 
 void QgsMapToolAddFeature::activate()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
   {
     QgsFeature f;
@@ -126,7 +126,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       QgsDebugMsg( "savePoint = " + savePoint.toString() );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       Q_UNUSED( cse );
       emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );

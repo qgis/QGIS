@@ -92,8 +92,8 @@ namespace pal
       int nbLayers;
 
       QStringList layersName;
-      int *layersNbObjects; // [nbLayers]
-      int *layersNbLabelledObjects; // [nbLayers]
+      int* layersNbObjects; // [nbLayers]
+      int* layersNbLabelledObjects; // [nbLayers]
 
       PalStat();
       PalStat( const PalStat& other );

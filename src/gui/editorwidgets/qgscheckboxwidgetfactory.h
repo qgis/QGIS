@@ -35,7 +35,7 @@ class GUI_EXPORT QgsCheckboxWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
     QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
     void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    QHash<const char *, int> supportedWidgetTypes() override;
+    QHash<const char*, int> supportedWidgetTypes() override;
     unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
 

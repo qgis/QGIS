@@ -53,7 +53,7 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void comboBoxIndexChanged( int idx );
 
   private:
-    QComboBox * mComboBox;
+    QComboBox* mComboBox;
 };
 
 #endif // QGSVALUEMAPSEARCHWIDGETWRAPPER_H

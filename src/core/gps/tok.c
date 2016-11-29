@@ -44,10 +44,10 @@
 /**
  * \brief Calculate control sum of binary buffer
  */
-int nmea_calc_crc( const char *buff, int buff_sz )
+int nmea_calc_crc( const char* buff, int buff_sz )
 {
   int chsum = 0,
-              it;
+      it;
 
   for ( it = 0; it < buff_sz; ++it )
     chsum ^= ( int )buff[it];
@@ -58,9 +58,9 @@ int nmea_calc_crc( const char *buff, int buff_sz )
 /**
  * \brief Convert string to number
  */
-int nmea_atoi( const char *str, size_t str_sz, int radix )
+int nmea_atoi( const char* str, size_t str_sz, int radix )
 {
-  char *tmp_ptr;
+  char* tmp_ptr;
   char buff[NMEA_CONVSTR_BUF];
   int res = 0;
 
@@ -77,15 +77,15 @@ int nmea_atoi( const char *str, size_t str_sz, int radix )
 /**
  * \brief Convert string to fraction number
  */
-double nmea_atof( const char *str, int str_sz )
+double nmea_atof( const char* str, int str_sz )
 {
-  char *tmp_ptr;
+  char* tmp_ptr;
   char buff[NMEA_CONVSTR_BUF];
   double res = 0;
 
   if ( str_sz < NMEA_CONVSTR_BUF )
   {
-    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+    const char* oldlocale = setlocale( LC_NUMERIC, NULL );
 
     memcpy( &buff[0], str, str_sz );
     buff[str_sz] = '\0';
@@ -100,7 +100,7 @@ double nmea_atof( const char *str, int str_sz )
 /**
  * \brief Formating string (like standard printf) with CRC tail (*CRC)
  */
-int nmea_printf( char *buff, int buff_sz, const char *format, ... )
+int nmea_printf( char* buff, int buff_sz, const char* format, ... )
 {
   int retval, add = 0;
   va_list arg_ptr;
@@ -135,19 +135,19 @@ int nmea_printf( char *buff, int buff_sz, const char *format, ... )
 /**
  * \brief Analyse string (specificate for NMEA sentences)
  */
-int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
+int nmea_scanf( const char* buff, int buff_sz, const char* format, ... )
 {
-  const char *beg_tok;
-  const char *end_buf = buff + buff_sz;
+  const char* beg_tok;
+  const char* end_buf = buff + buff_sz;
 
   va_list arg_ptr;
   int tok_type = NMEA_TOKS_COMPARE;
   int width = 0;
-  const char *beg_fmt = 0;
+  const char* beg_fmt = 0;
   int snum = 0, unum = 0;
 
   int tok_count = 0;
-  void *parg_target;
+  void* parg_target;
 
   va_start( arg_ptr, format );
 
@@ -165,7 +165,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         width = 0;
         beg_fmt = format;
         tok_type = NMEA_TOKS_WIDTH;
-        //intentional fall-through
+      //intentional fall-through
       case NMEA_TOKS_WIDTH:
         if ( isdigit( *format ) )
           break;
@@ -189,7 +189,7 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         }
         else
         {
-          if ( !format[1] || ( 0 == ( buff = ( char * )memchr( buff, format[1], end_buf - buff ) ) ) )
+          if ( !format[1] || ( 0 == ( buff = ( char* )memchr( buff, format[1], end_buf - buff ) ) ) )
             buff = end_buf;
         }
 
@@ -206,17 +206,17 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         {
           case 'c':
           case 'C':
-            parg_target = ( void * )va_arg( arg_ptr, char * );
+            parg_target = ( void* )va_arg( arg_ptr, char* );
             if ( width && 0 != ( parg_target ) )
-              *(( char * )parg_target ) = *beg_tok;
+              *(( char* )parg_target ) = *beg_tok;
             break;
           case 's':
           case 'S':
-            parg_target = ( void * )va_arg( arg_ptr, char * );
+            parg_target = ( void* )va_arg( arg_ptr, char* );
             if ( width && 0 != ( parg_target ) )
             {
               memcpy( parg_target, beg_tok, width );
-              (( char * )parg_target )[width] = '\0';
+              (( char* )parg_target )[width] = '\0';
             }
             break;
           case 'f':
@@ -224,15 +224,15 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
           case 'G':
           case 'e':
           case 'E':
-            parg_target = ( void * )va_arg( arg_ptr, double * );
+            parg_target = ( void* )va_arg( arg_ptr, double* );
             if ( width && 0 != ( parg_target ) )
-              *(( double * )parg_target ) = nmea_atof( beg_tok, width );
+              *(( double* )parg_target ) = nmea_atof( beg_tok, width );
             break;
         };
 
         if ( parg_target )
           break;
-        if ( 0 == ( parg_target = ( void * )va_arg( arg_ptr, int * ) ) )
+        if ( 0 == ( parg_target = ( void* )va_arg( arg_ptr, int* ) ) )
           break;
         if ( !width )
           break;

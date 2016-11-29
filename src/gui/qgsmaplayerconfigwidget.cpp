@@ -15,10 +15,10 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspanelwidget.h"
 
-QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsPanelWidget( parent )
-    , mLayer( layer )
-    , mMapCanvas( canvas )
+QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
+  : QgsPanelWidget( parent )
+  , mLayer( layer )
+  , mMapCanvas( canvas )
 {
 
 }

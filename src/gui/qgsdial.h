@@ -27,12 +27,12 @@ class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT
   public:
-    QgsDial( QWidget *parent = nullptr );
+    QgsDial( QWidget* parent = nullptr );
 
-    void setMinimum( const QVariant &min );
-    void setMaximum( const QVariant &max );
-    void setSingleStep( const QVariant &step );
-    void setValue( const QVariant &value );
+    void setMinimum( const QVariant& min );
+    void setMaximum( const QVariant& max );
+    void setSingleStep( const QVariant& step );
+    void setValue( const QVariant& value );
     QVariant variantValue() const;
 
   signals:
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsDial : public QDial
     void valueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent * event ) override;
+    virtual void paintEvent( QPaintEvent* event ) override;
 
   private:
     void update();

@@ -63,7 +63,7 @@ void QgsInterpolationPlugin::showInterpolationDialog()
   dialog.exec();
 }
 
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new QgsInterpolationPlugin( theQgisInterfacePointer );
 }

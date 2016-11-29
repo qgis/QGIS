@@ -32,7 +32,7 @@ class CORE_EXPORT QgsWebView : public QWebView
 
   public:
     explicit QgsWebView( QWidget* parent = nullptr )
-        : QWebView( parent )
+      : QWebView( parent )
     {
       QDesktopWidget desktop;
       // Apply zoom factor for HiDPI screens
@@ -60,12 +60,12 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
 /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
-    explicit QgsWebView( QWidget *parent = 0 )
-        : QTextBrowser( parent )
-        , mSettings( new QWebSettings() )
-        , mPage( new QWebPage( this ) )
+    explicit QgsWebView( QWidget* parent = 0 )
+      : QTextBrowser( parent )
+      , mSettings( new QWebSettings() )
+      , mPage( new QWebPage( this ) )
     {
-      connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
+      connect( this, SIGNAL( anchorClicked( const QUrl& ) ), this, SIGNAL( linkClicked( const QUrl& ) ) );
       connect( this, SIGNAL( pageLoadFinished( bool ) ), mPage, SIGNAL( loadFinished( bool ) ) );
     }
 
@@ -116,13 +116,13 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     }
 
   signals:
-    void linkClicked( const QUrl &link );
+    void linkClicked( const QUrl& link );
 
     void pageLoadFinished( bool ok );
 
   private:
-    QWebSettings *mSettings;
-    QWebPage *mPage;
+    QWebSettings* mSettings;
+    QWebPage* mPage;
 
 /// @endcond
 };

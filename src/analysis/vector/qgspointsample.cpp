@@ -23,13 +23,13 @@
 
 
 QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute ): mInputLayer( inputLayer ),
-    mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
+  mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
 {
 }
 
 QgsPointSample::QgsPointSample()
-    : mInputLayer( nullptr )
-    , mNCreatedPoints( 0 )
+  : mInputLayer( nullptr )
+  , mNCreatedPoints( 0 )
 {
 }
 

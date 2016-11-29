@@ -36,10 +36,22 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
                                  float* x12, float* x22, float* x32,
                                  float* x13, float* x23, float* x33 ) override;
 
-    float lightAzimuth() const { return mLightAzimuth; }
-    void setLightAzimuth( float azimuth ) { mLightAzimuth = azimuth; }
-    float lightAngle() const { return mLightAngle; }
-    void setLightAngle( float angle ) { mLightAngle = angle; }
+    float lightAzimuth() const
+    {
+      return mLightAzimuth;
+    }
+    void setLightAzimuth( float azimuth )
+    {
+      mLightAzimuth = azimuth;
+    }
+    float lightAngle() const
+    {
+      return mLightAngle;
+    }
+    void setLightAngle( float angle )
+    {
+      mLightAngle = angle;
+    }
 
   private:
     float mLightAzimuth;

@@ -32,12 +32,15 @@ class MngProgressBar
      * \brief Constructor for a MngProgressBar.
      * \param pb Pointer to the MngProgressBar object.
      */
-    explicit MngProgressBar( QProgressBar *pb );
+    explicit MngProgressBar( QProgressBar* pb );
 
     /**
      * \brief Destructor
      */
-    ~MngProgressBar() { mPb->reset(); }
+    ~MngProgressBar()
+    {
+      mPb->reset();
+    }
 
     /**
      * \brief Sets the progress bar's minimum and maximum values to minimum and maximum respectively
@@ -59,7 +62,7 @@ class MngProgressBar
     void step( int step );
 
   private:
-    QProgressBar * mPb;
+    QProgressBar* mPb;
 
 };
 

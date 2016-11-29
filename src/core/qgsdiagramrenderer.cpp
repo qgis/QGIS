@@ -27,41 +27,41 @@
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings::QgsDiagramLayerSettings()
-    : placement( AroundPoint )
-    , placementFlags( OnLine )
-    , priority( 5 )
-    , zIndex( 0.0 )
-    , obstacle( false )
-    , dist( 0.0 )
-    , renderer( nullptr )
-    , xPosColumn( -1 )
-    , yPosColumn( -1 )
-    , showColumn( -1 )
-    , showAll( true )
+  : placement( AroundPoint )
+  , placementFlags( OnLine )
+  , priority( 5 )
+  , zIndex( 0.0 )
+  , obstacle( false )
+  , dist( 0.0 )
+  , renderer( nullptr )
+  , xPosColumn( -1 )
+  , yPosColumn( -1 )
+  , showColumn( -1 )
+  , showAll( true )
 {
 }
 Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings& rh )
-    : placement( rh.placement )
-    , placementFlags( rh.placementFlags )
-    , priority( rh.priority )
-    , zIndex( rh.zIndex )
-    , obstacle( rh.obstacle )
-    , dist( rh.dist )
-    , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , xPosColumn( rh.xPosColumn )
-    , yPosColumn( rh.yPosColumn )
-    , showColumn( rh.showColumn )
-    , showAll( rh.showAll )
-    , mCt( rh.mCt )
+  : placement( rh.placement )
+  , placementFlags( rh.placementFlags )
+  , priority( rh.priority )
+  , zIndex( rh.zIndex )
+  , obstacle( rh.obstacle )
+  , dist( rh.dist )
+  , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
+  , xPosColumn( rh.xPosColumn )
+  , yPosColumn( rh.yPosColumn )
+  , showColumn( rh.showColumn )
+  , showAll( rh.showAll )
+  , mCt( rh.mCt )
 {
 }
 Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated xform member
-QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings & rh )
+QgsDiagramLayerSettings& QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings& rh )
 {
   placement = rh.placement;
   placementFlags = rh.placementFlags;
@@ -86,7 +86,7 @@ QgsDiagramLayerSettings::~QgsDiagramLayerSettings()
 }
 Q_NOWARN_DEPRECATED_POP
 
-void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer *diagramRenderer )
+void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer* diagramRenderer )
 {
   if ( diagramRenderer == renderer )
     return;
@@ -134,7 +134,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& do
   layerElem.appendChild( diagramLayerElem );
 }
 
-QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context, const QgsFields& fieldsParameter ) const
+QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext& context, const QgsFields& fieldsParameter ) const
 {
   QSet< QString > referenced;
   if ( renderer )
@@ -377,10 +377,10 @@ void QgsDiagramSettings::writeXml( QDomElement& rendererElem, QDomDocument& doc,
 }
 
 QgsDiagramRenderer::QgsDiagramRenderer()
-    : mDiagram( nullptr )
-    , mShowAttributeLegend( true )
-    , mShowSizeLegend( false )
-    , mSizeLegendSymbol( QgsMarkerSymbol::createSimple( QgsStringMap() ) )
+  : mDiagram( nullptr )
+  , mShowAttributeLegend( true )
+  , mShowSizeLegend( false )
+  , mSizeLegendSymbol( QgsMarkerSymbol::createSimple( QgsStringMap() ) )
 {
 }
 
@@ -396,14 +396,14 @@ void QgsDiagramRenderer::setDiagram( QgsDiagram* d )
 }
 
 QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer& other )
-    : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
-    , mShowAttributeLegend( other.mShowAttributeLegend )
-    , mShowSizeLegend( other.mShowSizeLegend )
-    , mSizeLegendSymbol( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr )
+  : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
+  , mShowAttributeLegend( other.mShowAttributeLegend )
+  , mShowSizeLegend( other.mShowSizeLegend )
+  , mSizeLegendSymbol( other.mSizeLegendSymbol.data() ? other.mSizeLegendSymbol->clone() : nullptr )
 {
 }
 
-QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer & other )
+QgsDiagramRenderer& QgsDiagramRenderer::operator=( const QgsDiagramRenderer& other )
 {
   mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
   mShowAttributeLegend = other.mShowAttributeLegend;
@@ -446,7 +446,7 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature& feature, const QgsRen
   return size;
 }
 
-QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields &fields ) const
+QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext& context, const QgsFields& fields ) const
 {
   Q_UNUSED( fields );
 
@@ -557,7 +557,7 @@ bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsFeature&, const
   return true;
 }
 
-QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const
+QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsFeature& feature, const QgsRenderContext& c ) const
 {
   return mDiagram->diagramSize( feature.attributes(), c, mSettings );
 }
@@ -623,7 +623,7 @@ QList<QString> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
   return mSettings.categoryAttributes;
 }
 
-QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext &context, const QgsFields& fields ) const
+QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext& context, const QgsFields& fields ) const
 {
   QSet< QString > referenced = QgsDiagramRenderer::referencedFields( context, fields );
   if ( mInterpolationSettings.classificationAttributeIsExpression )
@@ -695,7 +695,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement& layerElem, Q
 
 QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerTreeLayer* nodeLayer ) const
 {
-  QList< QgsLayerTreeModelLegendNode * > list;
+  QList< QgsLayerTreeModelLegendNode* > list;
   list.reserve( categoryLabels.size() );
   for ( int i = 0 ; i < categoryLabels.size(); ++i )
   {
@@ -708,7 +708,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerT
 
 QList< QgsLayerTreeModelLegendNode* > QgsDiagramRenderer::legendItems( QgsLayerTreeLayer* ) const
 {
-  return QList< QgsLayerTreeModelLegendNode * >();
+  return QList< QgsLayerTreeModelLegendNode* >();
 }
 
 QList< QgsLayerTreeModelLegendNode* > QgsSingleCategoryDiagramRenderer::legendItems( QgsLayerTreeLayer* nodeLayer ) const
@@ -733,7 +733,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
       QgsLegendSymbolItem si( mSizeLegendSymbol.data(), QString::number( v ), QString() );
-      QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( si.symbol() );
+      QgsMarkerSymbol* s = static_cast<QgsMarkerSymbol*>( si.symbol() );
       s->setSize( size );
       s->setSizeUnit( mSettings.sizeType );
       s->setSizeMapUnitScale( mSettings.sizeScale );

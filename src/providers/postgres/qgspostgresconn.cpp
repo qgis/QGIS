@@ -48,7 +48,7 @@ QgsPostgresResult::~QgsPostgresResult()
   mRes = nullptr;
 }
 
-QgsPostgresResult &QgsPostgresResult::operator=( PGresult * theRes )
+QgsPostgresResult& QgsPostgresResult::operator=( PGresult* theRes )
 {
   if ( mRes )
     ::PQclear( mRes );
@@ -56,7 +56,7 @@ QgsPostgresResult &QgsPostgresResult::operator=( PGresult * theRes )
   return *this;
 }
 
-QgsPostgresResult &QgsPostgresResult::operator=( const QgsPostgresResult & src )
+QgsPostgresResult& QgsPostgresResult::operator=( const QgsPostgresResult& src )
 {
   if ( mRes )
     ::PQclear( mRes );
@@ -137,13 +137,13 @@ Oid QgsPostgresResult::PQoidValue()
 }
 
 
-QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
-QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
+QMap<QString, QgsPostgresConn*> QgsPostgresConn::sConnectionsRO;
+QMap<QString, QgsPostgresConn*> QgsPostgresConn::sConnectionsRW;
 const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
 
-QgsPostgresConn *QgsPostgresConn::connectDb( const QString& conninfo, bool readonly, bool shared, bool transaction )
+QgsPostgresConn* QgsPostgresConn::connectDb( const QString& conninfo, bool readonly, bool shared, bool transaction )
 {
-  QMap<QString, QgsPostgresConn *> &connections =
+  QMap<QString, QgsPostgresConn*>& connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
 
   if ( shared )
@@ -160,7 +160,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString& conninfo, bool reado
     }
   }
 
-  QgsPostgresConn *conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
+  QgsPostgresConn* conn = new QgsPostgresConn( conninfo, readonly, shared, transaction );
 
   if ( conn->mRef == 0 )
   {
@@ -176,7 +176,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString& conninfo, bool reado
   return conn;
 }
 
-static void noticeProcessor( void *arg, const char *message )
+static void noticeProcessor( void* arg, const char* message )
 {
   Q_UNUSED( arg );
   QString msg( QString::fromUtf8( message ) );
@@ -185,24 +185,24 @@ static void noticeProcessor( void *arg, const char *message )
 }
 
 QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool shared, bool transaction )
-    : mRef( 1 )
-    , mOpenCursors( 0 )
-    , mConnInfo( conninfo )
-    , mGeosAvailable( false )
-    , mTopologyAvailable( false )
-    , mGotPostgisVersion( false )
-    , mPostgresqlVersion( 0 )
-    , mPostgisVersionMajor( 0 )
-    , mPostgisVersionMinor( 0 )
-    , mGistAvailable( false )
-    , mProjAvailable( false )
-    , mPointcloudAvailable( false )
-    , mUseWkbHex( false )
-    , mReadOnly( readOnly )
-    , mSwapEndian( false )
-    , mNextCursorId( 0 )
-    , mShared( shared )
-    , mTransaction( transaction )
+  : mRef( 1 )
+  , mOpenCursors( 0 )
+  , mConnInfo( conninfo )
+  , mGeosAvailable( false )
+  , mTopologyAvailable( false )
+  , mGotPostgisVersion( false )
+  , mPostgresqlVersion( 0 )
+  , mPostgisVersionMajor( 0 )
+  , mPostgisVersionMinor( 0 )
+  , mGistAvailable( false )
+  , mProjAvailable( false )
+  , mPointcloudAvailable( false )
+  , mUseWkbHex( false )
+  , mReadOnly( readOnly )
+  , mSwapEndian( false )
+  , mNextCursorId( 0 )
+  , mShared( shared )
+  , mTransaction( transaction )
 {
   QgsDebugMsg( QString( "New PostgreSQL connection for " ) + conninfo );
 
@@ -331,7 +331,7 @@ void QgsPostgresConn::unref()
 
   if ( mShared )
   {
-    QMap<QString, QgsPostgresConn *>& connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
+    QMap<QString, QgsPostgresConn*>& connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
     QString key = connections.key( this, QString::null );
 
@@ -753,7 +753,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return true;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString& schema )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty>& layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString& schema )
 {
   // Get the list of supported tables
   if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema ) )
@@ -769,7 +769,7 @@ bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers
   return true;
 }
 
-bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
+bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty>& schemas )
 {
   schemas.clear();
   QgsPostgresResult result;
@@ -1003,7 +1003,7 @@ QString QgsPostgresConn::quotedValue( const QVariant& value )
   }
 }
 
-PGresult *QgsPostgresConn::PQexec( const QString& query, bool logError )
+PGresult* QgsPostgresConn::PQexec( const QString& query, bool logError )
 {
   if ( PQstatus() != CONNECTION_OK )
   {
@@ -1023,7 +1023,7 @@ PGresult *QgsPostgresConn::PQexec( const QString& query, bool logError )
   }
 
   QgsDebugMsgLevel( QString( "Executing SQL: %1" ).arg( query ), 3 );
-  PGresult *res = ::PQexec( mConn, query.toUtf8() );
+  PGresult* res = ::PQexec( mConn, query.toUtf8() );
 
   if ( res )
   {
@@ -1145,19 +1145,19 @@ bool QgsPostgresConn::PQexecNR( const QString& query, bool retry )
   return false;
 }
 
-PGresult *QgsPostgresConn::PQgetResult()
+PGresult* QgsPostgresConn::PQgetResult()
 {
   return ::PQgetResult( mConn );
 }
 
-PGresult *QgsPostgresConn::PQprepare( const QString& stmtName, const QString& query, int nParams, const Oid *paramTypes )
+PGresult* QgsPostgresConn::PQprepare( const QString& stmtName, const QString& query, int nParams, const Oid* paramTypes )
 {
   return ::PQprepare( mConn, stmtName.toUtf8(), query.toUtf8(), nParams, paramTypes );
 }
 
-PGresult *QgsPostgresConn::PQexecPrepared( const QString& stmtName, const QStringList &params )
+PGresult* QgsPostgresConn::PQexecPrepared( const QString& stmtName, const QStringList& params )
 {
-  const char **param = new const char *[ params.size()];
+  const char** param = new const char* [ params.size()];
   QList<QByteArray> qparam;
 
   qparam.reserve( params.size() );
@@ -1171,7 +1171,7 @@ PGresult *QgsPostgresConn::PQexecPrepared( const QString& stmtName, const QStrin
       param[i] = qparam[i];
   }
 
-  PGresult *res = ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 );
+  PGresult* res = ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 );
 
   delete [] param;
 
@@ -1240,10 +1240,10 @@ bool QgsPostgresConn::rollback()
   }
 }
 
-qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, int col )
+qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult& queryResult, int row, int col )
 {
   quint64 oid;
-  char *p = PQgetvalue( queryResult.result(), row, col );
+  char* p = PQgetvalue( queryResult.result(), row, col );
   size_t s = PQgetlength( queryResult.result(), row, col );
 
 #ifdef QGISDEBUG
@@ -1252,7 +1252,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
     QString buf;
     for ( size_t i = 0; i < s; i++ )
     {
-      buf += QStringLiteral( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
+      buf += QStringLiteral( "%1 " ).arg( *( unsigned char* )( p + i ), 0, 16, QLatin1Char( ' ' ) );
     }
 
     QgsDebugMsg( QString( "int in hex:%1" ).arg( buf ) );
@@ -1262,7 +1262,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   switch ( s )
   {
     case 2:
-      oid = *( quint16 * )p;
+      oid = *( quint16* )p;
       if ( mSwapEndian )
         oid = ntohs( oid );
       /* cast to signed 16bit
@@ -1272,8 +1272,8 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
 
     case 6:
     {
-      quint64 block  = *( quint32 * ) p;
-      quint64 offset = *( quint16 * )( p + sizeof( quint32 ) );
+      quint64 block  = *( quint32* ) p;
+      quint64 offset = *( quint16* )( p + sizeof( quint32 ) );
 
       if ( mSwapEndian )
       {
@@ -1287,8 +1287,8 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
 
     case 8:
     {
-      quint32 oid0 = *( quint32 * ) p;
-      quint32 oid1 = *( quint32 * )( p + sizeof( quint32 ) );
+      quint32 oid0 = *( quint32* ) p;
+      quint32 oid1 = *( quint32* )( p + sizeof( quint32 ) );
 
       if ( mSwapEndian )
       {
@@ -1312,7 +1312,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       //intentional fall-through
       FALLTHROUGH;
     case 4:
-      oid = *( quint32 * )p;
+      oid = *( quint32* )p;
       if ( mSwapEndian )
         oid = ntohl( oid );
       /* cast to signed 32bit
@@ -1324,9 +1324,9 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   return oid;
 }
 
-QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
+QString QgsPostgresConn::fieldExpression( const QgsField& fld, QString expr )
 {
-  const QString &type = fld.typeName();
+  const QString& type = fld.typeName();
   expr = expr.arg( quotedIdentifier( fld.name() ) );
   if ( type == QLatin1String( "money" ) )
   {
@@ -1394,7 +1394,7 @@ void QgsPostgresConn::deduceEndian()
   closeCursor( QStringLiteral( "oidcursor" ) );
 }
 
-void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata )
+void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty& layerProperty, bool useEstimatedMetadata )
 {
   QString table;
 
@@ -1828,7 +1828,7 @@ void QgsPostgresConn::deleteConnection( const QString& theConnName )
 
 bool QgsPostgresConn::cancel()
 {
-  PGcancel *c = ::PQgetCancel( mConn );
+  PGcancel* c = ::PQgetCancel( mConn );
   if ( !c )
   {
     QgsMessageLog::logMessage( tr( "Query could not be canceled [%1]" ).arg( tr( "PQgetCancel failed" ) ),

@@ -45,11 +45,11 @@ class TestQgsEllipseMarkerSymbol : public QObject
 
   public:
     TestQgsEllipseMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mEllipseMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mEllipseMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -69,7 +69,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
+    QgsVectorLayer* mpPointsLayer;
     QgsEllipseSymbolLayer* mEllipseMarkerLayer;
     QgsMarkerSymbol* mMarkerSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -100,7 +100,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //setup symbol
   mEllipseMarkerLayer = new QgsEllipseSymbolLayer();

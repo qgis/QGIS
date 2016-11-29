@@ -199,13 +199,13 @@ class QgsGPSData
     TrackIterator addTrack( const QgsTrack& trk );
 
     //! This function removes the waypoints whose IDs are in the list.
-    void removeWaypoints( const QgsFeatureIds & ids );
+    void removeWaypoints( const QgsFeatureIds& ids );
 
     //! This function removes the routes whose IDs are in the list.
-    void removeRoutes( const QgsFeatureIds & ids );
+    void removeRoutes( const QgsFeatureIds& ids );
 
     //! This function removes the tracks whose IDs are in the list.
-    void removeTracks( const QgsFeatureIds & ids );
+    void removeTracks( const QgsFeatureIds& ids );
 
     /** This function will write the contents of this GPSData object as XML to
         the given text stream. */
@@ -257,11 +257,11 @@ class QgsGPXHandler
 {
   public:
     explicit QgsGPXHandler( QgsGPSData& data )
-        : mData( data )
-        , mObj( nullptr )
-        , mString( nullptr )
-        , mDouble( nullptr )
-        , mInt( nullptr )
+      : mData( data )
+      , mObj( nullptr )
+      , mString( nullptr )
+      , mDouble( nullptr )
+      , mInt( nullptr )
     { }
 
     /** This function is called when expat encounters a new start element in

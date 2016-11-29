@@ -29,7 +29,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvectordataprovider.h>
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget* parent, QgsLayerTreeView* tv )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 
@@ -40,7 +40,7 @@ QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget* parent, Qgs
     if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
     {
       // display layer name and store its pointer
-      QListWidgetItem *item = new QListWidgetItem();
+      QListWidgetItem* item = new QListWidgetItem();
       item->setText( l->layer()->name() );
       item->setData( Qt::UserRole, QVariant::fromValue( static_cast<void*>( l->layer() ) ) );
       mLayers->insertItem( mLayers->count(), item );

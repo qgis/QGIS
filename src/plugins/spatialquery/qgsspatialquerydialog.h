@@ -40,16 +40,16 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
      * QGIS when it attempts to instantiate the plugin.
      * @param iface Pointer to the QgisInterface object.
      */
-    QgsSpatialQueryDialog( QWidget *parent = nullptr, QgisInterface* iface = nullptr );
+    QgsSpatialQueryDialog( QWidget* parent = nullptr, QgisInterface* iface = nullptr );
     //! Destructor
     ~QgsSpatialQueryDialog();
 
     //! Verify is possible execute the query
-    static bool hasPossibleQuery( QString &msg );
+    static bool hasPossibleQuery( QString& msg );
 
   private slots:
     //! Slots for signs of Dialog
-    void on_bbMain_clicked( QAbstractButton * button );
+    void on_bbMain_clicked( QAbstractButton* button );
     void on_pbCreateLayerItems_clicked();
     void on_pbCreateLayerSelected_clicked();
     void on_cbTargetLayer_currentIndexChanged( int index );
@@ -57,7 +57,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     void on_cbTypeItems_currentIndexChanged( int index );
     void on_cbResultFor_currentIndexChanged();
     void on_cbOperation_currentIndexChanged();
-    void on_lwFeatures_currentItemChanged( QListWidgetItem * item );
+    void on_lwFeatures_currentItemChanged( QListWidgetItem* item );
     void on_ckbUsingSelectedTarget_toggled();
     void on_ckbLogProcessing_clicked( bool checked );
     void on_ckbZoomItem_clicked( bool checked );
@@ -91,11 +91,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Run Query
     void runQuery();
     //! Show result of query
-    void showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd );
+    void showResultQuery( QDateTime* datetimeStart, QDateTime* datetimeEnd );
     //! Get string subset with selected FID
-    QString getSubsetFIDs( const QgsFeatureIds *fids, const QString& fieldFID );
+    QString getSubsetFIDs( const QgsFeatureIds* fids, const QString& fieldFID );
     //! Verify can create layer subset
-    TypeVerifyCreateSubset verifyCreateSubset( QString &msg, QString &fieldFID );
+    TypeVerifyCreateSubset verifyCreateSubset( QString& msg, QString& fieldFID );
     //! Add layer target with subset
     bool addLayerSubset( const QString& name, const QString& subset );
     //! Get Description Layer to show result
@@ -109,7 +109,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! reject - override
     void reject() override;
     //! Get Vector layer from combobox
-    QgsVectorLayer * getLayerFromCombobox( bool isTarget, int index );
+    QgsVectorLayer* getLayerFromCombobox( bool isTarget, int index );
     //! Get Icon for vector layer
     QIcon getIconTypeGeometry( QgsWkbTypes::GeometryType geomType );
     //! Add layer in combobox (text, data and  tooltips)
@@ -131,11 +131,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Set selected GUI (lbStatusSelected and pbCreateLayerSelected)
     void setSelectedGui();
     //! Make action when change item in List feature
-    void changeLwFeature( QgsVectorLayer *lyr, QgsFeatureId fid );
+    void changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId fid );
     //! Zoom mapcanvas to current feature in listbox target
-    void zoomFeature( QgsVectorLayer *lyr, QgsFeatureId fid );
+    void zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid );
     //! Show rubber from feature
-    void showRubberFeature( QgsVectorLayer *lyr, QgsFeatureId id );
+    void showRubberFeature( QgsVectorLayer* lyr, QgsFeatureId id );
 
     //! Pointer to Interface QGIS
     QgisInterface* mIface;
@@ -150,7 +150,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Stores ID's invalid of reference layer
     QgsFeatureIds mFeatureInvalidReference;
     //! Map for Id name of vector layers (use in signal_qgis_layerWillBeRemoved)
-    QMap<QString, QgsVectorLayer *> mMapIdVectorLayers;
+    QMap<QString, QgsVectorLayer*> mMapIdVectorLayers;
     //! Rubber band for features result
     QgsRubberSelectId* mRubberSelectId;
     //! Text for source selected

@@ -27,7 +27,7 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     Q_OBJECT
 
   public:
-    explicit QgsPixmapLabel( QWidget *parent = nullptr );
+    explicit QgsPixmapLabel( QWidget* parent = nullptr );
 
     /**
      * Calculates the height for the given width.
@@ -45,8 +45,8 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     virtual QSize sizeHint() const override;
 
   public slots:
-    void setPixmap( const QPixmap & );
-    void resizeEvent( QResizeEvent * ) override;
+    void setPixmap( const QPixmap& );
+    void resizeEvent( QResizeEvent* ) override;
   private:
     QPixmap mPixmap;
 };

@@ -28,12 +28,12 @@
 #include <QMouseEvent>
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas )
-    : QgsMapToolPointSymbol( canvas )
-    , mCurrentMouseAzimut( 0.0 )
-    , mCurrentRotationFeature( 0.0 )
-    , mRotating( false )
-    , mRotationItem( nullptr )
-    , mCtrlPressed( false )
+  : QgsMapToolPointSymbol( canvas )
+  , mCurrentMouseAzimut( 0.0 )
+  , mCurrentRotationFeature( 0.0 )
+  , mRotating( false )
+  , mRotationItem( nullptr )
+  , mCtrlPressed( false )
 {}
 
 QgsMapToolRotatePointSymbols::~QgsMapToolRotatePointSymbols()
@@ -49,7 +49,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
   }
 
   //a vector layer
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( ml );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( ml );
   if ( !vLayer )
   {
     return false;
@@ -73,7 +73,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent* e )
   QgsMapToolPointSymbol::canvasPressEvent( e );
 }
 
-void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint )
+void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint )
 {
   //find out initial arrow direction
   QVariant attrVal = feature.attribute( mCurrentRotationAttributes.toList().at( 0 ) );

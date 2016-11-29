@@ -29,8 +29,8 @@
 //standard includes
 
 RgLineVectorLayerSettings::RgLineVectorLayerSettings()
-    : mDefaultDirection( QgsVectorLayerDirector::Direction::DirectionBoth )
-    , mDefaultSpeed( 40 )
+  : mDefaultDirection( QgsVectorLayerDirector::Direction::DirectionBoth )
+  , mDefaultSpeed( 40 )
 {
 }
 
@@ -56,7 +56,7 @@ bool RgLineVectorLayerSettings::test()
   return true;
 } // RgLineVectorLayerSettings::test()
 
-void RgLineVectorLayerSettings::read( const QgsProject *project )
+void RgLineVectorLayerSettings::read( const QgsProject* project )
 {
   mDefaultDirection = static_cast<QgsVectorLayerDirector::Direction>( project->readNumEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultDirection" ) ) );
   mDirection = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/directionField" ) );
@@ -71,7 +71,7 @@ void RgLineVectorLayerSettings::read( const QgsProject *project )
   mSpeedUnitName = project->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/speedUnitName" ) );
 } // RgLineVectorLayerSettings::read( const QgsProject *project )
 
-void RgLineVectorLayerSettings::write( QgsProject *project )
+void RgLineVectorLayerSettings::write( QgsProject* project )
 {
   project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/defaultDirection" ), mDefaultDirection );
   project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/directionField" ),   mDirection );
@@ -86,12 +86,12 @@ void RgLineVectorLayerSettings::write( QgsProject *project )
   project->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/speedUnitName" ),    mSpeedUnitName );
 } // RgLineVectorLayerSettings::write( QgsProject *project )
 
-QWidget* RgLineVectorLayerSettings::getGui( QWidget *parent )
+QWidget* RgLineVectorLayerSettings::getGui( QWidget* parent )
 {
   return new RgLineVectorLayerSettingsWidget( this, parent );
 }
 
-void RgLineVectorLayerSettings::setFromGui( QWidget *myGui )
+void RgLineVectorLayerSettings::setFromGui( QWidget* myGui )
 {
   RgLineVectorLayerSettingsWidget* w = dynamic_cast<RgLineVectorLayerSettingsWidget*>( myGui );
   if ( !w )

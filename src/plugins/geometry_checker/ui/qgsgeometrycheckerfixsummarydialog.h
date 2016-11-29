@@ -41,7 +41,7 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
       }
     };
 
-    QgsGeometryCheckerFixSummaryDialog( QgisInterface *iface, QgsVectorLayer *layer, const Statistics& stats, const QStringList& messages, QWidget* parent = nullptr );
+    QgsGeometryCheckerFixSummaryDialog( QgisInterface* iface, QgsVectorLayer* layer, const Statistics& stats, const QStringList& messages, QWidget* parent = nullptr );
 
   signals:
     void errorSelected( QgsGeometryCheckError* error );
@@ -55,7 +55,7 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
     void setupTable( QTableWidget* table );
 
   private slots:
-    void onTableSelectionChanged( const QItemSelection &newSel, const QItemSelection &oldSel );
+    void onTableSelectionChanged( const QItemSelection& newSel, const QItemSelection& oldSel );
 };
 
 #endif // QGS_GEOMETRY_CHECKER_FIX_SUMMARY_DIALOG_H

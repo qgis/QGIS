@@ -27,9 +27,9 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
                               const QgsFeatureIds& neighbors,
                               double area,
                               const QgsRectangle& gapAreaBBox )
-        : QgsGeometryCheckError( check, FEATUREID_NULL, geometry->centroid(), QgsVertexId(), area, ValueArea )
-        , mNeighbors( neighbors )
-        , mGapAreaBBox( gapAreaBBox )
+      : QgsGeometryCheckError( check, FEATUREID_NULL, geometry->centroid(), QgsVertexId(), area, ValueArea )
+      , mNeighbors( neighbors )
+      , mGapAreaBBox( gapAreaBBox )
     {
       mGeometry = geometry;
     }
@@ -38,8 +38,14 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       delete mGeometry;
     }
 
-    QgsAbstractGeometry* geometry() override { return mGeometry->clone(); }
-    const QgsFeatureIds& neighbors() const { return mNeighbors; }
+    QgsAbstractGeometry* geometry() override
+    {
+      return mGeometry->clone();
+    }
+    const QgsFeatureIds& neighbors() const
+    {
+      return mNeighbors;
+    }
 
     bool isEqual( QgsGeometryCheckError* other ) const override
     {
@@ -47,7 +53,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), QgsGeometryCheckPrecision::reducedTolerance() ) && err->neighbors() == neighbors();
     }
 
-    bool closeMatch( QgsGeometryCheckError *other ) const override
+    bool closeMatch( QgsGeometryCheckError* other ) const override
     {
       QgsGeometryGapCheckError* err = dynamic_cast<QgsGeometryGapCheckError*>( other );
       return err && err->neighbors() == neighbors();
@@ -86,21 +92,27 @@ class QgsGeometryGapCheck : public QgsGeometryCheck
 
   public:
     QgsGeometryGapCheck( QgsFeaturePool* featurePool, double threshold )
-        : QgsGeometryCheck( LayerCheck, featurePool )
-        , mThreshold( threshold )
+      : QgsGeometryCheck( LayerCheck, featurePool )
+      , mThreshold( threshold )
     {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Gap" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryGapCheck" ); }
+    QString errorDescription() const override
+    {
+      return tr( "Gap" );
+    }
+    QString errorName() const override
+    {
+      return QStringLiteral( "QgsGeometryGapCheck" );
+    }
 
   private:
     enum ResolutionMethod { MergeLongestEdge, NoChange };
 
     double mThreshold;
 
-    bool mergeWithNeighbor( QgsGeometryGapCheckError *err, Changes &changes , QString &errMsg ) const;
+    bool mergeWithNeighbor( QgsGeometryGapCheckError* err, Changes& changes , QString& errMsg ) const;
 };
 
 #endif // QGS_GEOMETRY_GAP_CHECK_H

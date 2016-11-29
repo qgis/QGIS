@@ -39,7 +39,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
 
   public slots:
-    void setLayer( QgsMapLayer *layer );
+    void setLayer( QgsMapLayer* layer );
     void setDockMode( bool enabled );
     //! save config to layer
     void writeSettingsToLayer();

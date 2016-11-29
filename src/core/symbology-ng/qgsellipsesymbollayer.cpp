@@ -28,17 +28,17 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
-    : QgsMarkerSymbolLayer()
-    , mSymbolName( QStringLiteral( "circle" ) )
-    , mSymbolWidth( 4 )
-    , mSymbolWidthUnit( QgsUnitTypes::RenderMillimeters )
-    , mSymbolHeight( 3 )
-    , mSymbolHeightUnit( QgsUnitTypes::RenderMillimeters )
-    , mOutlineColor( Qt::black )
-    , mOutlineStyle( Qt::SolidLine )
-    , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
-    , mOutlineWidth( 0 )
-    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
+  : QgsMarkerSymbolLayer()
+  , mSymbolName( QStringLiteral( "circle" ) )
+  , mSymbolWidth( 4 )
+  , mSymbolWidthUnit( QgsUnitTypes::RenderMillimeters )
+  , mSymbolHeight( 3 )
+  , mSymbolHeightUnit( QgsUnitTypes::RenderMillimeters )
+  , mOutlineColor( Qt::black )
+  , mOutlineStyle( Qt::SolidLine )
+  , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
+  , mOutlineWidth( 0 )
+  , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = Qt::white;
   mPen.setColor( mOutlineColor );
@@ -355,7 +355,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mBrush.setColor( mColor );
 }
 
-void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )
+void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext& )
 {
 }
 
@@ -389,7 +389,7 @@ QgsEllipseSymbolLayer* QgsEllipseSymbolLayer::clone() const
   return m;
 }
 
-void QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsEllipseSymbolLayer::toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
   if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
@@ -402,7 +402,7 @@ void QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
   writeSldMarker( doc, symbolizerElem, props );
 }
 
-void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument& doc, QDomElement& element, const QgsStringMap& props ) const
 {
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
@@ -459,7 +459,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   graphicElem.appendChild( factorElem );
 }
 
-QgsSymbolLayer* QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer* QgsEllipseSymbolLayer::createFromSld( QDomElement& element )
 {
   QgsDebugMsg( "Entered." );
 
@@ -498,7 +498,7 @@ QgsSymbolLayer* QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
       angle = d;
   }
 
-  QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
+  QgsEllipseSymbolLayer* m = new QgsEllipseSymbolLayer();
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );
@@ -652,7 +652,7 @@ QgsUnitTypes::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
   return unit;
 }
 
-void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   QgsMarkerSymbolLayer::setMapUnitScale( scale );
   mSymbolWidthMapUnitScale = scale;
@@ -726,7 +726,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext& con
   return symbolBounds;
 }
 
-bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext &context, QPointF shift ) const
+bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, QgsSymbolRenderContext& context, QPointF shift ) const
 {
   //width
   double symbolWidth = mSymbolWidth;
@@ -857,9 +857,9 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
   {
     QgsPointSequence p;
     p << QgsPointV2( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-    << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
-    << QgsPointV2( t.map( QPointF( halfWidth, halfHeight ) ) )
-    << QgsPointV2( t.map( QPointF( -halfWidth, halfHeight ) ) );
+      << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
+      << QgsPointV2( t.map( QPointF( halfWidth, halfHeight ) ) )
+      << QgsPointV2( t.map( QPointF( -halfWidth, halfHeight ) ) );
     p << p[0];
 
     if ( mBrush.style() != Qt::NoBrush )
@@ -884,8 +884,8 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
   {
     QgsPointSequence p;
     p << QgsPointV2( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-    << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
-    << QgsPointV2( t.map( QPointF( 0, halfHeight ) ) );
+      << QgsPointV2( t.map( QPointF( halfWidth, -halfHeight ) ) )
+      << QgsPointV2( t.map( QPointF( 0, halfHeight ) ) );
     p << p[0];
     if ( mBrush.style() != Qt::NoBrush )
       e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );

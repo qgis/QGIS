@@ -23,8 +23,8 @@
 #include <QPushButton>
 
 QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2* table, QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
-    , mComposerTable( table )
+  : QDialog( parent, flags )
+  , mComposerTable( table )
 {
   setupUi( this );
 

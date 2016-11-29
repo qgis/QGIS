@@ -123,7 +123,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @returns encoded string
      * @see decodeSldUom()
      */
-    static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
+    static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double* scaleFactor );
 
     /** Decodes a SLD unit of measure string to a render unit.
      * @param str string to decode
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @returns matching render unit
      * @see encodeSldUom()
      */
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double *scaleFactor );
+    static QgsUnitTypes::RenderUnit decodeSldUom( const QString& str, double* scaleFactor );
 
     static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     static QgsSymbol::ScaleMethod decodeScaleMethod( const QString& str );
@@ -236,65 +236,65 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString symbolProperties( QgsSymbol* symbol );
 
-    static bool createSymbolLayerListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
+    static bool createSymbolLayerListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList& layers );
 
-    static QgsSymbolLayer* createFillLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer* createLineLayerFromSld( QDomElement &element );
-    static QgsSymbolLayer* createMarkerLayerFromSld( QDomElement &element );
+    static QgsSymbolLayer* createFillLayerFromSld( QDomElement& element );
+    static QgsSymbolLayer* createLineLayerFromSld( QDomElement& element );
+    static QgsSymbolLayer* createMarkerLayerFromSld( QDomElement& element );
 
-    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
-    static bool hasExternalGraphic( QDomElement &element );
-    static bool hasWellKnownMark( QDomElement &element );
+    static bool convertPolygonSymbolizerToPointMarker( QDomElement& element, QgsSymbolLayerList& layerList );
+    static bool hasExternalGraphic( QDomElement& element );
+    static bool hasWellKnownMark( QDomElement& element );
 
-    static bool needFontMarker( QDomElement &element );
-    static bool needSvgMarker( QDomElement &element );
-    static bool needEllipseMarker( QDomElement &element );
-    static bool needMarkerLine( QDomElement &element );
-    static bool needLinePatternFill( QDomElement &element );
-    static bool needPointPatternFill( QDomElement &element );
-    static bool needSvgFill( QDomElement &element );
+    static bool needFontMarker( QDomElement& element );
+    static bool needSvgMarker( QDomElement& element );
+    static bool needEllipseMarker( QDomElement& element );
+    static bool needMarkerLine( QDomElement& element );
+    static bool needLinePatternFill( QDomElement& element );
+    static bool needPointPatternFill( QDomElement& element );
+    static bool needSvgFill( QDomElement& element );
 
-    static void fillToSld( QDomDocument &doc, QDomElement &element,
+    static void fillToSld( QDomDocument& doc, QDomElement& element,
                            Qt::BrushStyle brushStyle, const QColor& color = QColor() );
-    static bool fillFromSld( QDomElement &element,
-                             Qt::BrushStyle &brushStyle, QColor &color );
+    static bool fillFromSld( QDomElement& element,
+                             Qt::BrushStyle& brushStyle, QColor& color );
 
     //! @note not available in python bindings
-    static void lineToSld( QDomDocument &doc, QDomElement &element,
+    static void lineToSld( QDomDocument& doc, QDomElement& element,
                            Qt::PenStyle penStyle, const QColor& color, double width = -1,
-                           const Qt::PenJoinStyle *penJoinStyle = nullptr, const Qt::PenCapStyle *penCapStyle = nullptr,
-                           const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0 );
-    static bool lineFromSld( QDomElement &element,
-                             Qt::PenStyle &penStyle, QColor &color, double &width,
-                             Qt::PenJoinStyle *penJoinStyle = nullptr, Qt::PenCapStyle *penCapStyle = nullptr,
-                             QVector<qreal> *customDashPattern = nullptr, double *dashOffset = nullptr );
+                           const Qt::PenJoinStyle* penJoinStyle = nullptr, const Qt::PenCapStyle* penCapStyle = nullptr,
+                           const QVector<qreal>* customDashPattern = nullptr, double dashOffset = 0.0 );
+    static bool lineFromSld( QDomElement& element,
+                             Qt::PenStyle& penStyle, QColor& color, double& width,
+                             Qt::PenJoinStyle* penJoinStyle = nullptr, Qt::PenCapStyle* penCapStyle = nullptr,
+                             QVector<qreal>* customDashPattern = nullptr, double* dashOffset = nullptr );
 
-    static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
+    static void externalGraphicToSld( QDomDocument& doc, QDomElement& element,
                                       const QString& path, const QString& mime,
                                       const QColor& color, double size = -1 );
-    static bool externalGraphicFromSld( QDomElement &element,
-                                        QString &path, QString &mime,
-                                        QColor &color, double &size );
+    static bool externalGraphicFromSld( QDomElement& element,
+                                        QString& path, QString& mime,
+                                        QColor& color, double& size );
 
-    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+    static void wellKnownMarkerToSld( QDomDocument& doc, QDomElement& element,
                                       const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
 
     //! @note available in python as wellKnownMarkerFromSld2
-    static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
-                                        double &borderWidth, double &size );
+    static bool wellKnownMarkerFromSld( QDomElement& element,
+                                        QString& name, QColor& color, QColor& borderColor, Qt::PenStyle& borderStyle,
+                                        double& borderWidth, double& size );
 
-    static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                     const QString& path, const QString& format, int *markIndex = nullptr,
+    static void externalMarkerToSld( QDomDocument& doc, QDomElement& element,
+                                     const QString& path, const QString& format, int* markIndex = nullptr,
                                      const QColor& color = QColor(), double size = -1 );
-    static bool externalMarkerFromSld( QDomElement &element,
-                                       QString &path, QString &format, int &markIndex,
-                                       QColor &color, double &size );
+    static bool externalMarkerFromSld( QDomElement& element,
+                                       QString& path, QString& format, int& markIndex,
+                                       QColor& color, double& size );
 
 
-    static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString& label,
-                                const QFont &font, const QColor& color = QColor(), double size = -1 );
+    static void labelTextToSld( QDomDocument& doc, QDomElement& element, const QString& label,
+                                const QFont& font, const QColor& color = QColor(), double size = -1 );
 
     //! Create ogr feature style string for pen
     static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
@@ -307,20 +307,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
 
-    static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString& rotationFunc );
-    static bool rotationFromSldElement( QDomElement &element, QString &rotationFunc );
+    static void createRotationElement( QDomDocument& doc, QDomElement& element, const QString& rotationFunc );
+    static bool rotationFromSldElement( QDomElement& element, QString& rotationFunc );
 
-    static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString& alphaFunc );
-    static bool opacityFromSldElement( QDomElement &element, QString &alphaFunc );
+    static void createOpacityElement( QDomDocument& doc, QDomElement& element, const QString& alphaFunc );
+    static bool opacityFromSldElement( QDomElement& element, QString& alphaFunc );
 
-    static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
-    static bool displacementFromSldElement( QDomElement &element, QPointF &offset );
+    static void createDisplacementElement( QDomDocument& doc, QDomElement& element, QPointF offset );
+    static bool displacementFromSldElement( QDomElement& element, QPointF& offset );
 
-    static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString& path, const QString& format );
-    static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
+    static void createOnlineResourceElement( QDomDocument& doc, QDomElement& element, const QString& path, const QString& format );
+    static bool onlineResourceFromSldElement( QDomElement& element, QString& path, QString& format );
 
-    static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString& geomFunc );
-    static bool geometryFromSldElement( QDomElement &element, QString &geomFunc );
+    static void createGeometryElement( QDomDocument& doc, QDomElement& element, const QString& geomFunc );
+    static bool geometryFromSldElement( QDomElement& element, QString& geomFunc );
 
     /**
      * Creates a OGC Expression element based on the provided function expression
@@ -329,15 +329,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param function The expression to be encoded
      * @return
      */
-    static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString& function );
-    static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString& function );
-    static bool functionFromSldElement( QDomElement &element, QString &function );
+    static bool createExpressionElement( QDomDocument& doc, QDomElement& element, const QString& function );
+    static bool createFunctionElement( QDomDocument& doc, QDomElement& element, const QString& function );
+    static bool functionFromSldElement( QDomElement& element, QString& function );
 
-    static QDomElement createSvgParameterElement( QDomDocument &doc, const QString& name, const QString& value );
-    static QgsStringMap getSvgParameterList( QDomElement &element );
+    static QDomElement createSvgParameterElement( QDomDocument& doc, const QString& name, const QString& value );
+    static QgsStringMap getSvgParameterList( QDomElement& element );
 
-    static QDomElement createVendorOptionElement( QDomDocument &doc, const QString& name, const QString& value );
-    static QgsStringMap getVendorOptionList( QDomElement &element );
+    static QDomElement createVendorOptionElement( QDomDocument& doc, const QString& name, const QString& value );
+    static QgsStringMap getVendorOptionList( QDomElement& element );
 
     static QgsStringMap parseProperties( QDomElement& element );
     static void saveProperties( QgsStringMap props, QDomDocument& doc, QDomElement& element );
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @see colorFromMimeData
      * @note added in 2.5
      */
-    static QMimeData *colorToMimeData( const QColor &color );
+    static QMimeData* colorToMimeData( const QColor& color );
 
     /**
      * Attempts to parse mime data as a color
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * invalid color
      * @note added in 2.5
      */
-    static QColor colorFromMimeData( const QMimeData *data, bool& hasAlpha );
+    static QColor colorFromMimeData( const QMimeData* data, bool& hasAlpha );
 
     /**
      * Attempts to parse mime data as a list of named colors
@@ -406,7 +406,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @returns list of parsed colors
      * @note added in 2.5
      */
-    static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
+    static QgsNamedColorList colorListFromMimeData( const QMimeData* data );
 
     /**
      * Creates mime data from a list of named colors
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @returns true if export was successful
      * @see importColorsFromGpl
      */
-    static bool saveColorsToGpl( QFile &file, const QString& paletteName, const QgsNamedColorList& colors );
+    static bool saveColorsToGpl( QFile& file, const QString& paletteName, const QgsNamedColorList& colors );
 
     /**
      * Imports colors from a gpl GIMP palette file
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @returns list of imported colors
      * @see saveColorsToGpl
      */
-    static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString& name );
+    static QgsNamedColorList importColorsFromGpl( QFile& file, bool& ok, QString& name );
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
@@ -456,7 +456,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @returns parsed color
      * @note added in 2.3
      */
-    static QColor parseColorWithAlpha( const QString& colorStr, bool &containsAlpha, bool strictEval = false );
+    static QColor parseColorWithAlpha( const QString& colorStr, bool& containsAlpha, bool strictEval = false );
 
     /** Returns the line width scale factor depending on the unit and the paint device.
      * Consider using convertToPainterUnits() instead, as convertToPainterUnits() respects the size limits specified by the scale
@@ -478,7 +478,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @see lineWidthScaleFactor()
      * @see convertToMapUnits()
      */
-    static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double convertToPainterUnits( const QgsRenderContext& c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Converts a size from the specied units to map units. The conversion respects the limits
      * specified by the optional scale parameter.
@@ -490,7 +490,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @see convertFromMapUnits()
      * @see convertToPainterUnits()
      */
-    static double convertToMapUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+    static double convertToMapUnits( const QgsRenderContext& c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
     /** Converts a size from map units to the specied units.
      * @param context render context
@@ -548,7 +548,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QPointF polygonPointOnSurface( const QPolygonF& points );
 
     //! Calculate whether a point is within of a QPolygonF
-    static bool pointInPolygon( const QPolygonF &points, QPointF point );
+    static bool pointInPolygon( const QPolygonF& points, QPointF point );
 
     /** Return a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * that cannot do SVG at all
      * @note added in 3.0
      */
-    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
+    static void parametricSvgToSld( QDomDocument& doc, QDomElement& graphicElem,
                                     const QString& path,
                                     const QColor& fillColor, double size, const QColor& outlineColor, double outlineWidth );
 

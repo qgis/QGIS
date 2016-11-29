@@ -76,7 +76,7 @@ class QgsHttpTransaction : public QObject
 
         @return true in case of success
      */
-    bool getSynchronously( QByteArray &respondedContent, int redirections = 0, const QByteArray* postData = nullptr );
+    bool getSynchronously( QByteArray& respondedContent, int redirections = 0, const QByteArray* postData = nullptr );
 
     QString responseContentType();
 
@@ -93,12 +93,18 @@ class QgsHttpTransaction : public QObject
     static bool applyProxySettings( QHttp& http, const QString& url );
 
     //! Set the credentials (username and password)
-    void setCredentials( const QString& username, const QString &password );
+    void setCredentials( const QString& username, const QString& password );
 
     //! Returns the network timeout in msec
-    int networkTimeout() const { return mNetworkTimeoutMsec;}
+    int networkTimeout() const
+    {
+      return mNetworkTimeoutMsec;
+    }
     //! Sets the network timeout in milliseconds
-    void setNetworkTimeout( int msec ) { mNetworkTimeoutMsec = msec;}
+    void setNetworkTimeout( int msec )
+    {
+      mNetworkTimeoutMsec = msec;
+    }
 
 
   public slots:
@@ -198,7 +204,7 @@ class QgsHttpTransaction : public QObject
     /**
      * Indicates the associated QTimer object - used to detect network timeouts
      */
-    QTimer * mWatchdogTimer;
+    QTimer* mWatchdogTimer;
 
     /**
      * The error message associated with the last HTTP error.

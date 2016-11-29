@@ -39,7 +39,7 @@ email                : jef at norbit dot de
 #include <QStringList>
 
 //! Used to create an editor for when the user tries to change the contents of a cell
-QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget* QgsOracleSourceSelectDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
 
@@ -54,7 +54,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
 
   if ( index.column() == QgsOracleTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
-    QComboBox *cb = new QComboBox( parent );
+    QComboBox* cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
                 QList<QgsWkbTypes::Type>()
                 << QgsWkbTypes::Point
@@ -89,7 +89,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
 
     if ( values.size() > 0 )
     {
-      QComboBox *cb = new QComboBox( parent );
+      QComboBox* cb = new QComboBox( parent );
       cb->addItems( values );
       return cb;
     }
@@ -97,7 +97,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
 
   if ( index.column() == QgsOracleTableModel::dbtmSrid )
   {
-    QLineEdit *le = new QLineEdit( parent );
+    QLineEdit* le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
     return le;
   }
@@ -105,11 +105,11 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   return 0;
 }
 
-void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsOracleSourceSelectDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
   QString value( index.data( Qt::DisplayRole ).toString() );
 
-  QComboBox *cb = qobject_cast<QComboBox* >( editor );
+  QComboBox* cb = qobject_cast<QComboBox* >( editor );
   if ( cb )
   {
     if ( index.column() == QgsOracleTableModel::dbtmType )
@@ -119,7 +119,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
       cb->setCurrentIndex( cb->findText( value ) );
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit*>( editor );
+  QLineEdit* le = qobject_cast<QLineEdit*>( editor );
   if ( le )
   {
     bool ok;
@@ -131,9 +131,9 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
   }
 }
 
-void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsOracleSourceSelectDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QComboBox *cb = qobject_cast<QComboBox *>( editor );
+  QComboBox* cb = qobject_cast<QComboBox*>( editor );
   if ( cb )
   {
     if ( index.column() == QgsOracleTableModel::dbtmType )
@@ -152,7 +152,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
     }
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+  QLineEdit* le = qobject_cast<QLineEdit*>( editor );
   if ( le )
   {
     QString value( le->text() );
@@ -166,12 +166,12 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   }
 }
 
-QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( 0 )
-    , mIsConnected( false )
+QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( 0 )
+  , mIsConnected( false )
 {
   setupUi( this );
 
@@ -260,7 +260,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 // Slot for adding a new connection
 void QgsOracleSourceSelect::on_btnNew_clicked()
 {
-  QgsOracleNewConnection *nc = new QgsOracleNewConnection( this );
+  QgsOracleNewConnection* nc = new QgsOracleNewConnection( this );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -307,7 +307,7 @@ void QgsOracleSourceSelect::on_btnLoad_clicked()
 // Slot for editing a connection
 void QgsOracleSourceSelect::on_btnEdit_clicked()
 {
-  QgsOracleNewConnection *nc = new QgsOracleNewConnection( this, cmbConnections->currentText() );
+  QgsOracleNewConnection* nc = new QgsOracleNewConnection( this, cmbConnections->currentText() );
   if ( nc->exec() )
   {
     if ( nc->connName() != nc->originalConnName() )
@@ -322,7 +322,7 @@ void QgsOracleSourceSelect::on_btnEdit_clicked()
 //! End Autoconnected SLOTS *
 
 // Remember which database is selected
-void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString& text )
 {
   // Remember which database was selected.
   QgsOracleConn::setSelectedConnection( text );
@@ -350,12 +350,12 @@ void QgsOracleSourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
-void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex& index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex& index )
 {
   QSettings settings;
   if ( settings.value( "/qgis/addOracleDC", false ).toBool() )
@@ -376,7 +376,7 @@ void QgsOracleSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
 }
 
-void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString& text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -388,7 +388,7 @@ void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & tex
   }
 }
 
-void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString& text )
 {
   if ( text == tr( "All" ) )
   {
@@ -424,7 +424,7 @@ void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const 
   }
 }
 
-void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -588,7 +588,7 @@ QStringList QgsOracleSourceSelect::selectedTables()
   return mSelectedTables;
 }
 
-void QgsOracleSourceSelect::setSql( const QModelIndex &index )
+void QgsOracleSourceSelect::setSql( const QModelIndex& index )
 {
   if ( !index.parent().isValid() )
   {
@@ -606,7 +606,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, "oracle" );
+  QgsVectorLayer* vlayer = new QgsVectorLayer( uri, tableName, "oracle" );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
@@ -614,7 +614,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
   }
 
   // create a query builder object
-  QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
+  QgsQueryBuilder* gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
     mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
@@ -677,7 +677,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
   finishList();
 }
 
-void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( deselected )
   mAddButton->setEnabled( !selected.isEmpty() );

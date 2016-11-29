@@ -52,7 +52,7 @@ class CORE_EXPORT QgsConditionalLayerStyles
 
     /** Write field ui properties specific state from Dom node.
      */
-    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode& node, QDomDocument& doc ) const;
 
   private:
     QHash<QString, QgsConditionalStyles> mFieldStyles;
@@ -91,32 +91,52 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Set the name of the style.  Names are optional but handy for display
      * @param value The name given to the style
      */
-    void setName( const QString& value ) { mName = value; mValid = true; }
+    void setName( const QString& value )
+    {
+      mName = value;
+      mValid = true;
+    }
 
     /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
      * @param value The QgsExpression style rule to use for this style
      */
-    void setRule( const QString& value ) { mRule = value; mValid = true; }
+    void setRule( const QString& value )
+    {
+      mRule = value;
+      mValid = true;
+    }
 
     /**
      * @brief Set the background color for the style
      * @param value QColor for background color
      */
-    void setBackgroundColor( const QColor& value ) { mBackColor = value; mValid = true; }
+    void setBackgroundColor( const QColor& value )
+    {
+      mBackColor = value;
+      mValid = true;
+    }
 
     /**
      * @brief Set the text color for the style
      * @param value QColor for text color
      */
-    void setTextColor( const QColor& value ) { mTextColor = value; mValid = true; }
+    void setTextColor( const QColor& value )
+    {
+      mTextColor = value;
+      mValid = true;
+    }
 
     /**
      * @brief Set the font for the the style
      * @param value QFont to be used for text
      */
-    void setFont( const QFont& value ) { mFont = value; mValid = true; }
+    void setFont( const QFont& value )
+    {
+      mFont = value;
+      mValid = true;
+    }
 
     /**
      * @brief Set the icon for the style. Icons are generated from symbols
@@ -134,25 +154,37 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief The name of the style.
      * @return The name of the style. Names are optional so might be empty.
      */
-    QString name() const { return mName; }
+    QString name() const
+    {
+      return mName;
+    }
 
     /**
      * @brief The icon set for style generated from the set symbol
      * @return A QPixmap that was set for the icon using the symbol
      */
-    QPixmap icon() const { return mIcon; }
+    QPixmap icon() const
+    {
+      return mIcon;
+    }
 
     /**
      * @brief The symbol used to generate the icon for the style
      * @return The QgsSymbol used for the icon
      */
-    QgsSymbol* symbol() const { return mSymbol.data(); }
+    QgsSymbol* symbol() const
+    {
+      return mSymbol.data();
+    }
 
     /**
      * @brief The text color set for style
      * @return QColor for text color
      */
-    QColor textColor() const { return mTextColor; }
+    QColor textColor() const
+    {
+      return mTextColor;
+    }
 
     /**
      * @brief Check if the text color is valid for render.
@@ -165,7 +197,10 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief The background color for style
      * @return QColor for background color
      */
-    QColor backgroundColor() const { return mBackColor; }
+    QColor backgroundColor() const
+    {
+      return mBackColor;
+    }
 
     /**
      * @brief Check if the background color is valid for render.
@@ -178,21 +213,30 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief The font for the style
      * @return QFont for the style
      */
-    QFont font() const { return mFont; }
+    QFont font() const
+    {
+      return mFont;
+    }
 
     /**
      * @brief The condition rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * @return QString of the current set rule
      */
-    QString rule() const { return mRule; }
+    QString rule() const
+    {
+      return mRule;
+    }
 
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
      * @return True if the rule is valid.
      */
-    bool isValid() const { return mValid; }
+    bool isValid() const
+    {
+      return mValid;
+    }
 
     /**
      * @brief Find and return the matching styles for the value and feature.
@@ -226,7 +270,7 @@ class CORE_EXPORT QgsConditionalStyle
 
     /** Write vector conditional style specific state from layer Dom node.
      */
-    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
+    bool writeXml( QDomNode& node, QDomDocument& doc ) const;
 
 
   private:

@@ -66,12 +66,12 @@ class TopologyRule
                            const QList<QgsWkbTypes::GeometryType>& layer1SupportedTypes0 = QList<QgsWkbTypes::GeometryType>(),
                            const QList<QgsWkbTypes::GeometryType>& layer2SupportedTypes0 = QList<QgsWkbTypes::GeometryType>()
                          )
-        : f( f0 )
-        , useSecondLayer( useSecondLayer0 )
-        , useTolerance( useTolerance0 )
-        , useSpatialIndex( useSpatialIndex0 )
-        , layer1SupportedTypes( layer1SupportedTypes0 )
-        , layer2SupportedTypes( layer2SupportedTypes0 )
+      : f( f0 )
+      , useSecondLayer( useSecondLayer0 )
+      , useTolerance( useTolerance0 )
+      , useSpatialIndex( useSpatialIndex0 )
+      , layer1SupportedTypes( layer1SupportedTypes0 )
+      , layer2SupportedTypes( layer2SupportedTypes0 )
     {}
 };
 
@@ -109,7 +109,10 @@ class topolTest: public QObject
     /**
      * Returns copy of the test map
      */
-    QMap<QString, TopologyRule> testMap() { return mTopologyRuleMap; }
+    QMap<QString, TopologyRule> testMap()
+    {
+      return mTopologyRuleMap;
+    }
 
     /**
      * Runs the test and returns all found errors

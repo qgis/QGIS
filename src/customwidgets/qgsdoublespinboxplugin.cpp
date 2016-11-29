@@ -18,9 +18,9 @@
 #include "qgsdoublespinbox.h"
 
 
-QgsDoubleSpinBoxPlugin::QgsDoubleSpinBoxPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsDoubleSpinBoxPlugin::QgsDoubleSpinBoxPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsDoubleSpinBoxPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsDoubleSpinBoxPlugin::createWidget( QWidget *parent )
+QWidget* QgsDoubleSpinBoxPlugin::createWidget( QWidget* parent )
 {
   return new QgsDoubleSpinBox( parent );
 }
@@ -60,7 +60,7 @@ bool QgsDoubleSpinBoxPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsDoubleSpinBoxPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsDoubleSpinBoxPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

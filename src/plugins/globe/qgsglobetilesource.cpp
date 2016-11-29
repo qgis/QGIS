@@ -51,11 +51,11 @@ void QgsGlobeTileStatistics::updateQueueTileCount( int num )
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsRectangle& tileExtent, int tileSize , int tileLod )
-    : osg::Image()
-    , mTileSource( tileSource )
-    , mTileExtent( tileExtent )
-    , mTileSize( tileSize )
-    , mLod( tileLod )
+  : osg::Image()
+  , mTileSource( tileSource )
+  , mTileExtent( tileExtent )
+  , mTileSize( tileSize )
+  , mLod( tileLod )
 {
   mTileSource->addTile( this );
 #ifdef GLOBE_SHOW_TILE_STATS
@@ -94,7 +94,7 @@ QgsGlobeTileImage::~QgsGlobeTileImage()
 #endif
 }
 
-QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &layerSet ) const
+QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList& layerSet ) const
 {
   QgsMapSettings settings;
   settings.setBackgroundColor( QColor( Qt::transparent ) );
@@ -113,7 +113,7 @@ QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &l
   return settings;
 }
 
-void QgsGlobeTileImage::update( osg::NodeVisitor * )
+void QgsGlobeTileImage::update( osg::NodeVisitor* )
 {
   if ( !mUpdatedImage.isNull() )
   {
@@ -130,7 +130,7 @@ void QgsGlobeTileImage::update( osg::NodeVisitor * )
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsGlobeTileUpdateManager::QgsGlobeTileUpdateManager( QObject* parent )
-    : QObject( parent ), mCurrentTile( 0 ), mRenderer( 0 )
+  : QObject( parent ), mCurrentTile( 0 ), mRenderer( 0 )
 {
   connect( this, SIGNAL( startRendering() ), this, SLOT( start() ) );
   connect( this, SIGNAL( cancelRendering() ), this, SLOT( cancel() ) );
@@ -149,7 +149,7 @@ QgsGlobeTileUpdateManager::~QgsGlobeTileUpdateManager()
   }
 }
 
-void QgsGlobeTileUpdateManager::addTile( QgsGlobeTileImage *tile )
+void QgsGlobeTileUpdateManager::addTile( QgsGlobeTileImage* tile )
 {
   if ( !mTileQueue.contains( tile ) )
   {
@@ -162,7 +162,7 @@ void QgsGlobeTileUpdateManager::addTile( QgsGlobeTileImage *tile )
   emit startRendering();
 }
 
-void QgsGlobeTileUpdateManager::removeTile( QgsGlobeTileImage *tile )
+void QgsGlobeTileUpdateManager::removeTile( QgsGlobeTileImage* tile )
 {
   if ( mCurrentTile == tile )
   {
@@ -215,7 +215,7 @@ void QgsGlobeTileUpdateManager::renderingFinished()
 ///////////////////////////////////////////////////////////////////////////////
 
 QgsGlobeTileSource::QgsGlobeTileSource( const osgEarth::TileSourceOptions& options )
-    : TileSource( options )
+  : TileSource( options )
 {
   osgEarth::GeoExtent geoextent( osgEarth::SpatialReference::get( "wgs84" ), -180., -90., 180., 90. );
   osgEarth::DataExtentList extents;
@@ -262,7 +262,7 @@ void QgsGlobeTileSource::refresh( const QgsRectangle& dirtyExtent )
   mTileListLock.unlock();
 }
 
-void QgsGlobeTileSource::setLayerSet( const QStringList &layerSet )
+void QgsGlobeTileSource::setLayerSet( const QStringList& layerSet )
 {
   mLayerSet = layerSet;
 }

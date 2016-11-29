@@ -42,7 +42,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     explicit QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = nullptr );
 
   private slots:
-    void dateTimeChanged( const QDateTime &dateTime );
+    void dateTimeChanged( const QDateTime& dateTime );
 
   private:
     QDateTimeEdit* mQDateTimeEdit;
@@ -52,13 +52,13 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
-    QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    QWidget* createWidget( QWidget* parent ) override;
+    void initWidget( QWidget* editor ) override;
     bool valid() const override;
     virtual void showIndeterminateState() override;
 
   public slots:
-    void setValue( const QVariant &value ) override;
+    void setValue( const QVariant& value ) override;
     void setEnabled( bool enabled ) override;
 };
 

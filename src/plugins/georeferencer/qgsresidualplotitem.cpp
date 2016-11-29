@@ -210,7 +210,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
   }
 }
 
-bool QgsResidualPlotItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsResidualPlotItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );

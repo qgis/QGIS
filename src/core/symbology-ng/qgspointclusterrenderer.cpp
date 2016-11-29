@@ -29,7 +29,7 @@
 #endif
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()
-    : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
+  : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
 {
   mClusterSymbol.reset( new QgsMarkerSymbol() );
   mClusterSymbol->setSize( 4 );

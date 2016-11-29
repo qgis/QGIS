@@ -30,9 +30,9 @@
 
 //QgsComposerItemBaseWidget
 
-QgsComposerConfigObject::QgsComposerConfigObject( QWidget* parent, QgsComposerObject *composerObject )
-    : QObject( parent )
-    , mComposerObject( composerObject )
+QgsComposerConfigObject::QgsComposerConfigObject( QWidget* parent, QgsComposerObject* composerObject )
+  : QObject( parent )
+  , mComposerObject( composerObject )
 {
   connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
            this, SLOT( updateDataDefinedButtons() ) );
@@ -74,7 +74,7 @@ void QgsComposerConfigObject::updateDataDefinedButtons()
   }
 }
 
-void QgsComposerConfigObject::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p )
+void QgsComposerConfigObject::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty p )
 {
   if ( !mComposerObject )
   {
@@ -142,14 +142,14 @@ void QgsComposerItemWidget::updateVariables()
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
-    : QWidget( parent )
-    , mItem( item )
-    , mConfigObject( new QgsComposerConfigObject( this, item ) )
-    , mFreezeXPosSpin( false )
-    , mFreezeYPosSpin( false )
-    , mFreezeWidthSpin( false )
-    , mFreezeHeightSpin( false )
-    , mFreezePageSpin( false )
+  : QWidget( parent )
+  , mItem( item )
+  , mConfigObject( new QgsComposerConfigObject( this, item ) )
+  , mFreezeXPosSpin( false )
+  , mFreezeYPosSpin( false )
+  , mFreezeWidthSpin( false )
+  , mFreezeHeightSpin( false )
+  , mFreezePageSpin( false )
 {
 
   setupUi( this );
@@ -235,7 +235,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( mItem );
   if ( cm )
   {
     cm->cache();
@@ -355,7 +355,7 @@ void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( mItem );
   if ( cm )
   {
     cm->cache();
@@ -779,8 +779,8 @@ void QgsComposerItemWidget::on_mExcludeFromPrintsCheckBox_toggled( bool checked 
 }
 
 QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject )
-    : QgsPanelWidget( parent )
-    , mConfigObject( new QgsComposerConfigObject( this, composerObject ) )
+  : QgsPanelWidget( parent )
+  , mConfigObject( new QgsComposerConfigObject( this, composerObject ) )
 {
 
 }

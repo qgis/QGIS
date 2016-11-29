@@ -39,7 +39,7 @@ class TestVectorLayerJoinBuffer : public QObject
 
   public:
     TestVectorLayerJoinBuffer()
-        : mLayers( QMap<QPair<QString, QString>, QgsVectorLayer*>() )
+      : mLayers( QMap<QPair<QString, QString>, QgsVectorLayer*>() )
     {}
 
   private slots:

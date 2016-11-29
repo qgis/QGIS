@@ -31,9 +31,9 @@
 #include <QMouseEvent>
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mCurrentMoveAction( QgsAnnotationItem::NoAction )
-    , mLastMousePosition( 0, 0 )
+  : QgsMapTool( canvas )
+  , mCurrentMoveAction( QgsAnnotationItem::NoAction )
+  , mLastMousePosition( 0, 0 )
 {
   mCursor = QCursor( Qt::ArrowCursor );
 }
@@ -42,13 +42,13 @@ QgsMapToolAnnotation::~QgsMapToolAnnotation()
 {
 }
 
-QgsAnnotationItem* QgsMapToolAnnotation::createItem( QMouseEvent *e )
+QgsAnnotationItem* QgsMapToolAnnotation::createItem( QMouseEvent* e )
 {
   Q_UNUSED( e );
   return nullptr;
 }
 
-QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
+QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem* item )
 {
   if ( !item )
   {
@@ -265,8 +265,8 @@ QgsAnnotationItem* QgsMapToolAnnotation::itemAtPos( QPointF pos )
     return nullptr;
   }
 
-  QList<QGraphicsItem *> graphicItems = mCanvas->items( pos.toPoint() );
-  QList<QGraphicsItem *>::iterator gIt = graphicItems.begin();
+  QList<QGraphicsItem*> graphicItems = mCanvas->items( pos.toPoint() );
+  QList<QGraphicsItem*>::iterator gIt = graphicItems.begin();
   for ( ; gIt != graphicItems.end(); ++gIt )
   {
     QgsAnnotationItem* annotationItem = dynamic_cast<QgsAnnotationItem*>( *gIt );
@@ -284,8 +284,8 @@ QgsAnnotationItem* QgsMapToolAnnotation::selectedItem()
   {
     return nullptr;
   }
-  QList<QGraphicsItem *> gItemList = mCanvas->scene()->selectedItems();
-  QList<QGraphicsItem *>::iterator it = gItemList.begin();
+  QList<QGraphicsItem*> gItemList = mCanvas->scene()->selectedItems();
+  QList<QGraphicsItem*>::iterator it = gItemList.begin();
   for ( ; it != gItemList.end(); ++it )
   {
     QgsAnnotationItem* aItem = dynamic_cast<QgsAnnotationItem*>( *it );
@@ -305,8 +305,8 @@ QList<QgsAnnotationItem*> QgsMapToolAnnotation::annotationItems()
     return annotationItemList;
   }
 
-  QList<QGraphicsItem *>  itemList = mCanvas->scene()->items();
-  QList<QGraphicsItem *>::iterator it = itemList.begin();
+  QList<QGraphicsItem*>  itemList = mCanvas->scene()->items();
+  QList<QGraphicsItem*>::iterator it = itemList.begin();
   for ( ; it != itemList.end(); ++it )
   {
     QgsAnnotationItem* aItem = dynamic_cast<QgsAnnotationItem*>( *it );

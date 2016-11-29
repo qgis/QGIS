@@ -80,11 +80,14 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
       double snapTolerance;
       SnapMode mode;
       explicit ProcessFeatureWrapper( QgsGeometrySnapper* _instance, double snapTolerance, SnapMode mode )
-          : instance( _instance )
-          , snapTolerance( snapTolerance )
-          , mode( mode )
+        : instance( _instance )
+        , snapTolerance( snapTolerance )
+        , mode( mode )
       {}
-      void operator()( QgsFeature& feature ) { return instance->processFeature( feature, snapTolerance, mode ); }
+      void operator()( QgsFeature& feature )
+      {
+        return instance->processFeature( feature, snapTolerance, mode );
+      }
     };
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
@@ -108,10 +111,13 @@ class QgsSnapIndex
     struct CoordIdx
     {
       CoordIdx( const QgsAbstractGeometry* _geom, QgsVertexId _vidx )
-          : geom( _geom )
-          , vidx( _vidx )
+        : geom( _geom )
+        , vidx( _vidx )
       {}
-      QgsPointV2 point() const { return geom->vertexAt( vidx ); }
+      QgsPointV2 point() const
+      {
+        return geom->vertexAt( vidx );
+      }
 
       const QgsAbstractGeometry* geom;
       QgsVertexId vidx;
@@ -134,7 +140,7 @@ class QgsSnapIndex
     {
       public:
         explicit PointSnapItem( const CoordIdx* _idx );
-        QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const override;
+        QgsPointV2 getSnapPoint( const QgsPointV2& /*p*/ ) const override;
         const CoordIdx* idx;
     };
 
@@ -142,18 +148,18 @@ class QgsSnapIndex
     {
       public:
         SegmentSnapItem( const CoordIdx* _idxFrom, const CoordIdx* _idxTo );
-        QgsPointV2 getSnapPoint( const QgsPointV2 &p ) const override;
+        QgsPointV2 getSnapPoint( const QgsPointV2& p ) const override;
         bool getIntersection( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& inter ) const;
-        bool getProjection( const QgsPointV2 &p, QgsPointV2 &pProj );
+        bool getProjection( const QgsPointV2& p, QgsPointV2& pProj );
         const CoordIdx* idxFrom;
         const CoordIdx* idxTo;
     };
 
     QgsSnapIndex( const QgsPointV2& origin, double cellSize );
     ~QgsSnapIndex();
-    void addGeometry( const QgsAbstractGeometry *geom );
+    void addGeometry( const QgsAbstractGeometry* geom );
     QgsPointV2 getClosestSnapToPoint( const QgsPointV2& p, const QgsPointV2& q );
-    SnapItem *getSnapItem( const QgsPointV2& pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr ) const;
+    SnapItem* getSnapItem( const QgsPointV2& pos, double tol, PointSnapItem** pSnapPoint = nullptr, SegmentSnapItem** pSnapSegment = nullptr ) const;
 
   private:
     typedef QList<SnapItem*> Cell;
@@ -164,7 +170,7 @@ class QgsSnapIndex
       public:
         GridRow() : mColStartIdx( 0 ) {}
         ~GridRow();
-        const Cell *getCell( int col ) const;
+        const Cell* getCell( int col ) const;
         Cell& getCreateCell( int col );
         QList<SnapItem*> getSnapItems( int colStart, int colEnd ) const;
 
@@ -183,7 +189,7 @@ class QgsSnapIndex
     void addPoint( const CoordIdx* idx );
     void addSegment( const CoordIdx* idxFrom, const CoordIdx* idxTo );
     const Cell* getCell( int col, int row ) const;
-    Cell &getCreateCell( int col, int row );
+    Cell& getCreateCell( int col, int row );
 
     QgsSnapIndex( const QgsSnapIndex& rh );
     QgsSnapIndex& operator=( const QgsSnapIndex& rh );

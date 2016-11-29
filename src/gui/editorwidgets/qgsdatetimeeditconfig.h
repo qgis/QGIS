@@ -40,7 +40,7 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
     // QgsEditorConfigWidget interface
   public:
     QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig &config ) override;
+    void setConfig( const QgsEditorWidgetConfig& config ) override;
 
     /**
      * Get the default format in fonction of the type

@@ -65,7 +65,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * @return Capture mode
      */
-    CaptureMode mode() const { return mCaptureMode; }
+    CaptureMode mode() const
+    {
+      return mCaptureMode;
+    }
 
     /**
      * Set capture mode. This should correspond to the layer on which the digitizing
@@ -73,7 +76,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * @param mode Capture Mode
      */
-    void setMode( CaptureMode mode ) { mCaptureMode = mode; }
+    void setMode( CaptureMode mode )
+    {
+      mCaptureMode = mode;
+    }
 
     /**
      * Registers this maptool with the cad dock widget
@@ -85,7 +91,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     virtual void deactivate() override;
 
-    QgsAdvancedDigitizingDockWidget* cadDockWidget() const { return mCadDockWidget; }
+    QgsAdvancedDigitizingDockWidget* cadDockWidget() const
+    {
+      return mCadDockWidget;
+    }
 
 
   protected:
@@ -98,7 +107,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * @param e Mouse events prepared by the cad system
      */
-    virtual void cadCanvasPressEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent* e )
+    {
+      Q_UNUSED( e )
+    }
 
 
     /**
@@ -109,7 +121,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * @param e Mouse events prepared by the cad system
      */
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e )
+    {
+      Q_UNUSED( e )
+    }
 
 
     /**
@@ -120,7 +135,10 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * @param e Mouse events prepared by the cad system
      */
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) { Q_UNUSED( e ) }
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e )
+    {
+      Q_UNUSED( e )
+    }
 
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;

@@ -31,10 +31,10 @@
 #include "qgsdb2provider.h"
 #include "qgscontexthelp.h"
 
-QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+QgsDb2NewConnection::QgsDb2NewConnection( QWidget* parent, const QString& connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 

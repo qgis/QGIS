@@ -42,12 +42,12 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
   mUseSrcNoDataValue[bandNo-1] = use;
 }
 
-QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const& theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ), 4 );
   QgsDebugMsgLevel( QString( "theExtent = %1" ).arg( theExtent.toString() ), 4 );
 
-  QgsRasterBlock *block;
+  QgsRasterBlock* block;
   if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
   {
     block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, sourceNoDataValue( theBandNo ) );
@@ -144,7 +144,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     QgsDebugMsgLevel( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
     QgsDebugMsgLevel( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
 
-    QgsRasterBlock *tmpBlock;
+    QgsRasterBlock* tmpBlock;
     if ( sourceHasNoDataValue( theBandNo ) && useSourceNoDataValue( theBandNo ) )
     {
       tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, sourceNoDataValue( theBandNo ) );
@@ -184,8 +184,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
         qgssize tmpIndex = static_cast< qgssize >( tmpRow ) * static_cast< qgssize >( tmpWidth ) + tmpCol;
         qgssize index = row * static_cast< qgssize >( theWidth ) + col;
 
-        char *tmpBits = tmpBlock->bits( tmpIndex );
-        char *bits = block->bits( index );
+        char* tmpBits = tmpBlock->bits( tmpIndex );
+        char* bits = block->bits( index );
         if ( !tmpBits )
         {
           QgsDebugMsg( QString( "Cannot get input block data tmpRow = %1 tmpCol = %2 tmpIndex = %3." ).arg( tmpRow ).arg( tmpCol ).arg( tmpIndex ) );
@@ -215,15 +215,15 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
-    : QgsRasterInterface( nullptr )
-    , mDpi( -1 )
+  : QgsRasterInterface( nullptr )
+  , mDpi( -1 )
 {
 }
 
-QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
-    : QgsDataProvider( uri )
-    , QgsRasterInterface( nullptr )
-    , mDpi( -1 )
+QgsRasterDataProvider::QgsRasterDataProvider( QString const& uri )
+  : QgsDataProvider( uri )
+  , QgsRasterInterface( nullptr )
+  , mDpi( -1 )
 {
 }
 
@@ -233,7 +233,7 @@ QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
 /////////////////////////////////////////////////////////
 // convenience function for building metadata() HTML table cells
 // convenience function for creating a string list from a C style string list
-QStringList QgsRasterDataProvider::cStringList2Q_( char ** stringList )
+QStringList QgsRasterDataProvider::cStringList2Q_( char** stringList )
 {
   QStringList strings;
 
@@ -247,13 +247,13 @@ QStringList QgsRasterDataProvider::cStringList2Q_( char ** stringList )
 
 } // cStringList2Q_
 
-QString QgsRasterDataProvider::makeTableCell( QString const & value )
+QString QgsRasterDataProvider::makeTableCell( QString const& value )
 {
   return "<p>\n" + value + "</p>\n";
 } // makeTableCell_
 
 // convenience function for building metadata() HTML table cells
-QString QgsRasterDataProvider::makeTableCells( QStringList const & values )
+QString QgsRasterDataProvider::makeTableCells( QStringList const& values )
 {
   QString s( QStringLiteral( "<tr>" ) );
 
@@ -276,7 +276,7 @@ QString QgsRasterDataProvider::metadata()
 }
 
 // Default implementation for values
-QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight , int /*theDpi*/ )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint& thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle& theExtent, int theWidth, int theHeight , int /*theDpi*/ )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   QMap<int, QVariant> results;
@@ -324,7 +324,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
 
   for ( int i = 1; i <= bandCount(); i++ )
   {
-    QgsRasterBlock * myBlock = block( i, pixelExtent, 1, 1 );
+    QgsRasterBlock* myBlock = block( i, pixelExtent, 1, 1 );
 
     if ( myBlock )
     {
@@ -346,13 +346,13 @@ QString QgsRasterDataProvider::lastErrorFormat()
   return QStringLiteral( "text/plain" );
 }
 
-typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
+typedef QList<QPair<QString, QString> >* pyramidResamplingMethods_t();
 QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( const QString& providerKey )
 {
-  pyramidResamplingMethods_t *pPyramidResamplingMethods = reinterpret_cast< pyramidResamplingMethods_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) ) );
+  pyramidResamplingMethods_t* pPyramidResamplingMethods = reinterpret_cast< pyramidResamplingMethods_t* >( cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) ) );
   if ( pPyramidResamplingMethods )
   {
-    QList<QPair<QString, QString> > *methods = pPyramidResamplingMethods();
+    QList<QPair<QString, QString> >* methods = pPyramidResamplingMethods();
     if ( !methods )
     {
       QgsDebugMsg( "provider pyramidResamplingMethods returned no methods" );
@@ -420,22 +420,22 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
   }
 }
 
-typedef QgsRasterDataProvider * createFunction_t( const QString&,
+typedef QgsRasterDataProvider* createFunction_t( const QString&,
     const QString&, int,
     Qgis::DataType,
     int, int, double*,
     const QgsCoordinateReferenceSystem&,
     QStringList );
 
-QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey,
-    const QString &uri,
+QgsRasterDataProvider* QgsRasterDataProvider::create( const QString& providerKey,
+    const QString& uri,
     const QString& format, int nBands,
     Qgis::DataType type,
     int width, int height, double* geoTransform,
     const QgsCoordinateReferenceSystem& crs,
     const QStringList& createOptions )
 {
-  createFunction_t *createFn = reinterpret_cast< createFunction_t* >( cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey, "create" ) ) );
+  createFunction_t* createFn = reinterpret_cast< createFunction_t* >( cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey, "create" ) ) );
   if ( !createFn )
   {
     QgsDebugMsg( "Cannot resolve 'create' function in " + providerKey + " provider" );

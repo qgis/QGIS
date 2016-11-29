@@ -67,7 +67,10 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 
     /** Returns the compiled expression string for use by the provider.
      */
-    virtual QString result() { return mResult; }
+    virtual QString result()
+    {
+      return mResult;
+    }
 
   protected:
 
@@ -84,7 +87,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * @param ok wil be set to true if value can be compiled
      * @see quotedIdentifier()
      */
-    virtual QString quotedValue( const QVariant& value, bool &ok );
+    virtual QString quotedValue( const QVariant& value, bool& ok );
 
     /** Compiles an expression node and returns the result of the compilation.
      * @param node expression node to compile

@@ -23,9 +23,9 @@
 #include "qgslogger.h"
 
 
-QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget* parent )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
   populateIdentityComboBox();
@@ -54,7 +54,7 @@ QgsStringMap QgsAuthIdentCertEdit::configMap() const
   return config;
 }
 
-void QgsAuthIdentCertEdit::loadConfig( const QgsStringMap &configmap )
+void QgsAuthIdentCertEdit::loadConfig( const QgsStringMap& configmap )
 {
   clearConfig();
 

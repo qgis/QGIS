@@ -115,7 +115,7 @@ class CORE_EXPORT Qgis
 
   private:
     // String representation of unit types (set in qgis.cpp)
-    static const char *qgisUnitTypes[];
+    static const char* qgisUnitTypes[];
 
 };
 
@@ -141,8 +141,8 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
      * @param object QObject to block signals from
      */
     explicit QgsSignalBlocker( Object* object )
-        : mObject( object )
-        , mPreviousState( object->blockSignals( true ) )
+      : mObject( object )
+      , mPreviousState( object->blockSignals( true ) )
     {}
 
     ~QgsSignalBlocker()
@@ -151,7 +151,10 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
     }
 
     //! Returns pointer to blocked QObject
-    Object* operator->() { return mObject; }
+    Object* operator->()
+    {
+      return mObject;
+    }
 
   private:
 
@@ -269,7 +272,7 @@ CORE_EXPORT QString qgsVsiPrefix( const QString& path );
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     @param size size in bytes
  */
-void CORE_EXPORT *qgsMalloc( size_t size );
+void CORE_EXPORT* qgsMalloc( size_t size );
 
 /** Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
@@ -277,12 +280,12 @@ void CORE_EXPORT *qgsMalloc( size_t size );
     @param nmemb number of elements
     @param size size of element in bytes
  */
-void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
+void CORE_EXPORT* qgsCalloc( size_t nmemb, size_t size );
 
 /** Frees the memory space  pointed  to  by  ptr. Works like C free().
     @param ptr pointer to memory space
  */
-void CORE_EXPORT qgsFree( void *ptr );
+void CORE_EXPORT qgsFree( void* ptr );
 
 /** Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt

@@ -64,23 +64,44 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     ~QgsRasterMatrix();
 
     //! Returns true if matrix is 1x1 (=scalar number)
-    bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
-    double number() const { return mData[0]; }
+    bool isNumber() const
+    {
+      return ( mColumns == 1 && mRows == 1 );
+    }
+    double number() const
+    {
+      return mData[0];
+    }
 
     //! Returns data array (but not ownership)
     //! @note not available in python bindings
-    double* data() { return mData; }
+    double* data()
+    {
+      return mData;
+    }
     //! Returns data and ownership. Sets data and nrows, ncols of this matrix to 0
     //! @note not available in python bindings
     double* takeData();
 
     void setData( int cols, int rows, double* data, double nodataValue );
 
-    int nColumns() const { return mColumns; }
-    int nRows() const { return mRows; }
+    int nColumns() const
+    {
+      return mColumns;
+    }
+    int nRows() const
+    {
+      return mRows;
+    }
 
-    double nodataValue() const { return mNodataValue; }
-    void setNodataValue( double d ) { mNodataValue = d; }
+    double nodataValue() const
+    {
+      return mNodataValue;
+    }
+    void setNodataValue( double d )
+    {
+      mNodataValue = d;
+    }
 
     QgsRasterMatrix& operator=( const QgsRasterMatrix& m );
     //! Adds another matrix to this one

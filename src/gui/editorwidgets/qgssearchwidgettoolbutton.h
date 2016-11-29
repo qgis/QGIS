@@ -35,7 +35,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     /** Constructor for QgsSearchWidgetToolButton.
      * @param parent parent object
      */
-    explicit QgsSearchWidgetToolButton( QWidget *parent = nullptr );
+    explicit QgsSearchWidgetToolButton( QWidget* parent = nullptr );
 
     /** Sets the available filter flags to show in the widget. Any active flags
      * (see activeFlags()) which are not present in the new available filter
@@ -58,7 +58,10 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * @see setAvailableFlags()
      * @see activeFlags()
      */
-    QgsSearchWidgetWrapper::FilterFlags availableFlags() const { return mAvailableFilterFlags; }
+    QgsSearchWidgetWrapper::FilterFlags availableFlags() const
+    {
+      return mAvailableFilterFlags;
+    }
 
     /** Sets the current active filter flags for the widget. Any flags
      * which are not present in the available filter flags (see availableFlags())
@@ -85,7 +88,10 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * @see toggleFlag()
      * @see availableFlags()
      */
-    QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
+    QgsSearchWidgetWrapper::FilterFlags activeFlags() const
+    {
+      return mFilterFlags;
+    }
 
     /** Returns true if the widget is set to be included in the search.
      * @see setInactive()

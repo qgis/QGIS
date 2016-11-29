@@ -51,16 +51,16 @@ class CORE_EXPORT QgsDxfExport
     };
 
     QgsDxfExport();
-    QgsDxfExport( const QgsDxfExport &dxfExport );
+    QgsDxfExport( const QgsDxfExport& dxfExport );
     ~QgsDxfExport();
-    QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
+    QgsDxfExport& operator=( const QgsDxfExport& dxfExport );
 
     /**
      * Add layers to export
      * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
      * @see setLayerTitleAsName
      */
-    void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
+    void addLayers( const QList< QPair<QgsVectorLayer*, int > >& layers );
 
     /**
      * Export to a dxf file in the given encoding
@@ -68,33 +68,45 @@ class CORE_EXPORT QgsDxfExport
      * @param codec encoding
      * @returns 0 on success, 1 on invalid device, 2 when devices is not writable
      */
-    int writeToFile( QIODevice *d, const QString& codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    int writeToFile( QIODevice* d, const QString& codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     /**
      * Set reference scale for output
      * @param d scale denominator
      */
-    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
+    void setSymbologyScaleDenominator( double d )
+    {
+      mSymbologyScaleDenominator = d;
+    }
 
     /**
      * Retrieve reference scale for output
      * @returns reference scale
      * @see setSymbologyScaleDenominator
      */
-    double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
+    double symbologyScaleDenominator() const
+    {
+      return mSymbologyScaleDenominator;
+    }
 
     /**
      * Set map units
      * @param u unit
      */
-    void setMapUnits( QgsUnitTypes::DistanceUnit u ) { mMapUnits = u; }
+    void setMapUnits( QgsUnitTypes::DistanceUnit u )
+    {
+      mMapUnits = u;
+    }
 
     /**
      * Retrieve map units
      * @returns unit
      * @see setMapUnits
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
+    QgsUnitTypes::DistanceUnit mapUnits() const
+    {
+      return mMapUnits;
+    }
 
     /**
      * Set destination CRS
@@ -114,27 +126,39 @@ class CORE_EXPORT QgsDxfExport
      * Set symbology export mode
      * @param e the mode
      */
-    void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
+    void setSymbologyExport( SymbologyExport e )
+    {
+      mSymbologyExport = e;
+    }
 
     /**
      * Get symbology export mode
      * @returns mode
      * @see setSymbologyExport
      */
-    SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    SymbologyExport symbologyExport() const
+    {
+      return mSymbologyExport;
+    }
 
     /**
      * Set extent of area to export
      * @param r area to export
      */
-    void setExtent( const QgsRectangle &r ) { mExtent = r; }
+    void setExtent( const QgsRectangle& r )
+    {
+      mExtent = r;
+    }
 
     /**
      * Get extent of area to export
      * @returns area to export
      * @see setExtent
      */
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle extent() const
+    {
+      return mExtent;
+    }
 
     /**
      * Enable use of title (where set) instead of layer name,
@@ -142,14 +166,20 @@ class CORE_EXPORT QgsDxfExport
      * @param layerTitleAsName flag
      * @see addLayers
      */
-    void setLayerTitleAsName( bool layerTitleAsName ) { mLayerTitleAsName = layerTitleAsName; }
+    void setLayerTitleAsName( bool layerTitleAsName )
+    {
+      mLayerTitleAsName = layerTitleAsName;
+    }
 
     /**
      * Retrieve wether layer title (where set) instead of name shall be use
      * @returns flag
      * @see setLayerTitleAsName
      */
-    bool layerTitleAsName() { return mLayerTitleAsName; }
+    bool layerTitleAsName()
+    {
+      return mLayerTitleAsName;
+    }
 
     /**
      * Get DXF palette index of nearest entry for given color
@@ -163,7 +193,7 @@ class CORE_EXPORT QgsDxfExport
      * @param f feature of layer
      * @returns layer name for feature
      */
-    QString layerName( const QString &id, const QgsFeature &f ) const;
+    QString layerName( const QString& id, const QgsFeature& f ) const;
 
     /**
      * Get name for layer respecting the use layer title as layer name mode
@@ -171,7 +201,7 @@ class CORE_EXPORT QgsDxfExport
      * @returns name of layer
      * @see setLayerTitleAsName
      */
-    QString layerName( QgsVectorLayer *vl ) const;
+    QString layerName( QgsVectorLayer* vl ) const;
 
     /**
      * Write a tuple of group code and integer value
@@ -194,7 +224,7 @@ class CORE_EXPORT QgsDxfExport
      * @param code group code
      * @param s string value
      */
-    void writeGroup( int code, const QString &s );
+    void writeGroup( int code, const QString& s );
 
     /**
      * Write a group code with a point
@@ -203,7 +233,7 @@ class CORE_EXPORT QgsDxfExport
      * @note available in python bindings as writeGroupPointV2
      * @note added in 2.15
      */
-    void writeGroup( int code, const QgsPointV2 &p );
+    void writeGroup( int code, const QgsPointV2& p );
 
     /**
      * Write a group code with color value
@@ -237,7 +267,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a string value
      * @param s string value
      */
-    void writeString( const QString &s );
+    void writeString( const QString& s );
 
     /**
      * Write a tuple of group code and a handle
@@ -257,7 +287,7 @@ class CORE_EXPORT QgsDxfExport
      * @note not available in Python bindings
      * @note added in 2.15
      */
-    void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    void writePolyline( const QgsPointSequence& line, const QString& layer, const QString& lineStyleName, const QColor& color, double width = -1 );
 
     /**
      * Draw dxf filled polygon (HATCH)
@@ -268,45 +298,45 @@ class CORE_EXPORT QgsDxfExport
      * @note not available in Python bindings
      * @note added in 2.15
      */
-    void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
+    void writePolygon( const QgsRingSequence& polygon, const QString& layer, const QString& hatchPattern, const QColor& color );
 
     //! Write line (as a polyline)
     //! @note added in 2.15
-    void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    void writeLine( const QgsPointV2& pt1, const QgsPointV2& pt2, const QString& layer, const QString& lineStyleName, const QColor& color, double width = -1 );
 
     //! Write point
     //! @note available in Python bindings as writePointV2
     //! @note added in 2.15
-    void writePoint( const QString &layer, const QColor& color, const QgsPointV2 &pt );
+    void writePoint( const QString& layer, const QColor& color, const QgsPointV2& pt );
 
     //! Write filled circle (as hatch)
     //! @note available in Python bindings as writePointV2
     //! @note added in 2.15
-    void writeFilledCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius );
+    void writeFilledCircle( const QString& layer, const QColor& color, const QgsPointV2& pt, double radius );
 
     //! Write circle (as polyline)
     //! @note available in Python bindings as writeCircleV2
     //! @note added in 2.15
-    void writeCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width );
+    void writeCircle( const QString& layer, const QColor& color, const QgsPointV2& pt, double radius, const QString& lineStyleName, double width );
 
     //! Write text (TEXT)
     //! @note available in Python bindings as writeTextV2
     //! @note added in 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor& color );
+    void writeText( const QString& layer, const QString& text, const QgsPointV2& pt, double size, double angle, const QColor& color );
 
     //! Write mtext (MTEXT)
     //! @note available in Python bindings as writeMTextV2
     //! @note added in 2.15
-    void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
+    void writeMText( const QString& layer, const QString& text, const QgsPointV2& pt, double width, double angle, const QColor& color );
 
     //! Calculates a scaling factor to convert from map units to a specified symbol unit.
     static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     //! Return cleaned layer name for use in DXF
-    static QString dxfLayerName( const QString &name );
+    static QString dxfLayerName( const QString& name );
 
     //! return DXF encoding for Qt encoding
-    static QString dxfEncoding( const QString &name );
+    static QString dxfEncoding( const QString& name );
 
     //! return list of available DXF encodings
     static QStringList encodings();
@@ -318,14 +348,14 @@ class CORE_EXPORT QgsDxfExport
      * @param settings label settings
      * @note not available in Python bindings
      */
-    void drawLabel( const QString &layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
+    void drawLabel( const QString& layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings& settings );
 
     /** Register name of layer for feature
      * @param layerId id of layer
      * @param fid id of feature
      * @param layer dxf layer of feature
      */
-    void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
+    void registerDxfLayer( const QString& layerId, QgsFeatureId fid, const QString& layer );
 
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;
@@ -341,7 +371,7 @@ class CORE_EXPORT QgsDxfExport
     QTextStream mTextStream;
 
     static int mDxfColors[][3];
-    static const char *mDxfEncodings[][2];
+    static const char* mDxfEncodings[][2];
 
     int mSymbolLayerCounter; //internal counter
     int mNextHandleId;
@@ -355,22 +385,22 @@ class CORE_EXPORT QgsDxfExport
     void writeTables();
     void writeBlocks();
     void writeEntities();
-    void writeEntitiesSymbolLevels( QgsVectorLayer *layer );
+    void writeEntitiesSymbolLevels( QgsVectorLayer* layer );
     void writeEndFile();
 
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor& color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
+    void writePoint( const QgsPointV2& pt, const QString& layer, const QColor& color, QgsSymbolRenderContext& ctx, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol, double angle );
     void writeDefaultLinetypes();
-    void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
-    void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
+    void writeSymbolLayerLinetype( const QgsSymbolLayer* symbolLayer );
+    void writeLinetype( const QString& styleName, const QVector<qreal>& pattern, QgsUnitTypes::RenderUnit u );
 
-    void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform& ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
+    void addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateTransform& ct, const QString& layer, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol );
 
     //returns dxf palette index from symbol layer color
-    static QColor colorFromSymbolLayer( const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx );
-    QString lineStyleFromSymbolLayer( const QgsSymbolLayer *symbolLayer );
+    static QColor colorFromSymbolLayer( const QgsSymbolLayer* symbolLayer, QgsSymbolRenderContext& ctx );
+    QString lineStyleFromSymbolLayer( const QgsSymbolLayer* symbolLayer );
 
     //functions for dxf palette
     static int color_distance( QRgb p1, int index );
@@ -379,15 +409,15 @@ class CORE_EXPORT QgsDxfExport
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
 
-    QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers( QgsRenderContext& context );
-    static int nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbol*> > &symbolLayers );
-    static bool hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
+    QList< QPair< QgsSymbolLayer*, QgsSymbol* > > symbolLayers( QgsRenderContext& context );
+    static int nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbol*> >& symbolLayers );
+    static bool hasDataDefinedProperties( const QgsSymbolLayer* sl, const QgsSymbol* symbol );
     double dashSize() const;
     double dotSize() const;
     double dashSeparatorSize() const;
     double sizeToMapUnits( double s ) const;
     static QString lineNameFromPenStyle( Qt::PenStyle style );
-    bool layerIsScaleBasedVisible( const QgsMapLayer *layer ) const;
+    bool layerIsScaleBasedVisible( const QgsMapLayer* layer ) const;
 
     QHash<QString, int> mBlockHandles;
     QString mBlockHandle;

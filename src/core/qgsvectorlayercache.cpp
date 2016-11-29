@@ -20,9 +20,9 @@
 #include "qgscachedfeatureiterator.h"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent )
-    : QObject( parent )
-    , mLayer( layer )
-    , mFullCache( false )
+  : QObject( parent )
+  , mLayer( layer )
+  , mFullCache( false )
 {
   mCache.setMaxCost( cacheSize );
 
@@ -270,10 +270,10 @@ void QgsVectorLayerCache::invalidate()
   emit invalidated();
 }
 
-bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator& it )
+bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest& featureRequest, QgsFeatureIterator& it )
 {
   // check first for available indices
-  Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+  Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
   {
     if ( idx->getCacheIterator( it, featureRequest ) )
     {
@@ -318,7 +318,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
   return false;
 }
 
-QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
+QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest& featureRequest )
 {
   QgsFeatureIterator it;
   bool requiresWriterIt = true; // If a not yet cached, but cachable request is made, this stays true.

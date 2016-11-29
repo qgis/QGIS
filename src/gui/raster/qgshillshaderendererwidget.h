@@ -39,14 +39,17 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      * @param layer The layer attached for this widget.
      * @param extent The current extent.
      */
-    QgsHillshadeRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsHillshadeRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent = QgsRectangle() );
 
     ~QgsHillshadeRendererWidget();
 
     /**
       * Factory method to create the renderer for this type.
       */
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsHillshadeRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle& theExtent )
+    {
+      return new QgsHillshadeRendererWidget( layer, theExtent );
+    }
 
     /**
      * @brief The renderer for the widget.

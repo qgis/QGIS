@@ -88,28 +88,28 @@ double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 double Qgis::SCALE_PRECISION = 0.9999999999;
 
 
-double qgsPermissiveToDouble( QString string, bool &ok )
+double qgsPermissiveToDouble( QString string, bool& ok )
 {
   //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
   return QLocale::system().toDouble( string, &ok );
 }
 
-int qgsPermissiveToInt( QString string, bool &ok )
+int qgsPermissiveToInt( QString string, bool& ok )
 {
   //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
   return QLocale::system().toInt( string, &ok );
 }
 
-void *qgsMalloc( size_t size )
+void* qgsMalloc( size_t size )
 {
   if ( size == 0 || long( size ) < 0 )
   {
     QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
     return nullptr;
   }
-  void *p = malloc( size );
+  void* p = malloc( size );
   if ( !p )
   {
     QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
@@ -117,14 +117,14 @@ void *qgsMalloc( size_t size )
   return p;
 }
 
-void *qgsCalloc( size_t nmemb, size_t size )
+void* qgsCalloc( size_t nmemb, size_t size )
 {
   if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
   {
     QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
     return nullptr;
   }
-  void *p = qgsMalloc( nmemb * size );
+  void* p = qgsMalloc( nmemb * size );
   if ( p )
   {
     memset( p, 0, nmemb * size );
@@ -132,7 +132,7 @@ void *qgsCalloc( size_t nmemb, size_t size )
   return p;
 }
 
-void qgsFree( void *ptr )
+void qgsFree( void* ptr )
 {
   free( ptr );
 }
@@ -172,8 +172,8 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 
     case QVariant::List:
     {
-      const QList<QVariant> &lhsl = lhs.toList();
-      const QList<QVariant> &rhsl = rhs.toList();
+      const QList<QVariant>& lhsl = lhs.toList();
+      const QList<QVariant>& rhsl = rhs.toList();
 
       int i, n = qMin( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
@@ -187,8 +187,8 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 
     case QVariant::StringList:
     {
-      const QStringList &lhsl = lhs.toStringList();
-      const QStringList &rhsl = rhs.toStringList();
+      const QStringList& lhsl = lhs.toStringList();
+      const QStringList& rhsl = rhs.toStringList();
 
       int i, n = qMin( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )

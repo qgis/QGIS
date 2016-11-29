@@ -312,10 +312,16 @@ class CORE_EXPORT QgsStyle : public QObject
     bool save( QString filename = QString() );
 
     //! Returns last error from load/save operation
-    QString errorString() { return mErrorString; }
+    QString errorString()
+    {
+      return mErrorString;
+    }
 
     //! Returns current file name of the style
-    QString fileName() { return mFileName; }
+    QString fileName()
+    {
+      return mFileName;
+    }
 
     /** Returns the names of the symbols which have a matching 'substring' in its defintion
      *

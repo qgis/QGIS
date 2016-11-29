@@ -21,8 +21,8 @@
 
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
-    : QgsLabelFeature( id, geometry, size )
-    , mFontMetrics( NULL )
+  : QgsLabelFeature( id, geometry, size )
+  , mFontMetrics( NULL )
 {
   mDefinedFont = QFont();
 }

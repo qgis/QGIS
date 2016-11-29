@@ -33,7 +33,7 @@ QGISEXTERN QStringList wildcards();
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
                                   QString name, QString path, QString uri, LayerType layerType )
-    : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
+  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
   mToolTip = uri;
   setState( Populated ); // children are not expected
@@ -176,7 +176,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 // ----
 
 QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
 }
 
@@ -213,7 +213,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::File | QgsDataProvider::Dir;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
     return nullptr;
@@ -346,7 +346,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
     // add the item
     // TODO: how to handle collections?
-    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
+    QgsLayerItem* item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
     if ( item )
       return item;
   }

@@ -246,7 +246,7 @@ class CORE_EXPORT QgsOgcUtils
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element
        @return boolean for success*/
-    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
+    static bool readGMLCoordinates( QgsPolyline& coords, const QDomElement& elem );
 
     /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
        and extracts the coordinates as points
@@ -254,35 +254,35 @@ class CORE_EXPORT QgsOgcUtils
        @param elem the \verbatim <gml:pos> \endverbatim or
                     \verbatim <gml:posList> \endverbatim element
        @return boolean for success*/
-    static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
+    static bool readGMLPositions( QgsPolyline& coords, const QDomElement& elem );
 
 
     /** Create a GML coordinates element from a point list.
       @param points list of data points
       @param doc the GML document
       @return QDomElement */
-    static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument& doc );
+    static QDomElement createGMLCoordinates( const QgsPolyline& points, QDomDocument& doc );
 
     /** Create a GML pos or posList element from a point list.
       @param points list of data points
       @param doc the GML document
       @return QDomElement */
-    static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument& doc );
+    static QDomElement createGMLPositions( const QgsPolyline& points, QDomDocument& doc );
 
     //! handle a generic sub-expression
-    static QgsExpression::Node* nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::Node* nodeFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handle a generic binary operator
-    static QgsExpression::NodeBinaryOperator* nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeBinaryOperator* nodeBinaryOperatorFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles various spatial operation tags (\verbatim <Intersects> \endverbatim, \verbatim <Touches> \endverbatim etc.)
     static QgsExpression::NodeFunction* nodeSpatialOperatorFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handle \verbatim <Not> \endverbatim tag
-    static QgsExpression::NodeUnaryOperator* nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeUnaryOperator* nodeNotFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles \verbatim <Function> \endverbatim tag
-    static QgsExpression::NodeFunction* nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeFunction* nodeFunctionFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles \verbatim <Literal> \endverbatim tag
-    static QgsExpression::Node* nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::Node* nodeLiteralFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles \verbatim <PropertyName> \endverbatim tag
-    static QgsExpression::NodeColumnRef* nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeColumnRef* nodeColumnRefFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles \verbatim <PropertyIsBetween> \endverbatim tag
     static QgsExpression::Node* nodeIsBetweenFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles \verbatim <PropertyIsNull> \endverbatim tag
@@ -309,10 +309,16 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionNodeToOgcFilter( const QgsExpression::Node* node );
 
     //! Return whether the gml: namespace is used
-    bool GMLNamespaceUsed() const { return mGMLUsed; }
+    bool GMLNamespaceUsed() const
+    {
+      return mGMLUsed;
+    }
 
     //! Return the error message.
-    const QString& errorMessage() const { return mErrorMessage; }
+    const QString& errorMessage() const
+    {
+      return mErrorMessage;
+    }
 
   private:
     QDomDocument& mDoc;
@@ -355,10 +361,16 @@ class QgsOgcUtilsSQLStatementToFilter
     QDomElement toOgcFilter( const QgsSQLStatement::Node* node );
 
     //! Return whether the gml: namespace is used
-    bool GMLNamespaceUsed() const { return mGMLUsed; }
+    bool GMLNamespaceUsed() const
+    {
+      return mGMLUsed;
+    }
 
     //! Return the error message.
-    const QString& errorMessage() const { return mErrorMessage; }
+    const QString& errorMessage() const
+    {
+      return mErrorMessage;
+    }
 
   private:
     QDomDocument& mDoc;

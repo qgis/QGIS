@@ -47,16 +47,28 @@ class CORE_EXPORT QgsStringReplacement
                           bool wholeWordOnly = false );
 
     //! Returns the string matched by this object
-    QString match() const { return mMatch; }
+    QString match() const
+    {
+      return mMatch;
+    }
 
     //! Returns the string to replace matches with
-    QString replacement() const { return mReplacement; }
+    QString replacement() const
+    {
+      return mReplacement;
+    }
 
     //! Returns true if match is case sensitive
-    bool caseSensitive() const { return mCaseSensitive; }
+    bool caseSensitive() const
+    {
+      return mCaseSensitive;
+    }
 
     //! Returns true if match only applies to whole words, or false if partial word matches are permitted
-    bool wholeWordOnly() const { return mWholeWordOnly; }
+    bool wholeWordOnly() const
+    {
+      return mWholeWordOnly;
+    }
 
     /** Processes a given input string, applying any valid replacements which should be made.
      * @param input input string
@@ -111,13 +123,16 @@ class CORE_EXPORT QgsStringReplacementCollection
      * @param replacements initial list of string replacements
      */
     QgsStringReplacementCollection( const QList< QgsStringReplacement >& replacements = QList< QgsStringReplacement >() )
-        : mReplacements( replacements )
+      : mReplacements( replacements )
     {}
 
     /** Returns the list of string replacements in this collection.
      * @see setReplacements()
      */
-    QList< QgsStringReplacement > replacements() const { return mReplacements; }
+    QList< QgsStringReplacement > replacements() const
+    {
+      return mReplacements;
+    }
 
     /** Sets the list of string replacements in this collection.
      * @param replacements list of string replacements to apply. Replacements are applied in the
@@ -192,7 +207,7 @@ class CORE_EXPORT QgsStringUtils
      * @param caseSensitive set to true for case sensitive comparison
      * @returns edit distance. Lower distances indicate more similar strings.
      */
-    static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
+    static int levenshteinDistance( const QString& string1, const QString& string2, bool caseSensitive = false );
 
     /** Returns the longest common substring between two strings. This substring is the longest
      * string that is a substring of the two input strings. Eg, the longest common substring
@@ -202,7 +217,7 @@ class CORE_EXPORT QgsStringUtils
      * @param caseSensitive set to true for case sensitive comparison
      * @returns longest common substring
      */
-    static QString longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive = false );
+    static QString longestCommonSubstring( const QString& string1, const QString& string2, bool caseSensitive = false );
 
     /** Returns the Hamming distance between two strings. This equates to the number of characters at
      * corresponding positions within the input strings where the characters are different. The input
@@ -212,14 +227,14 @@ class CORE_EXPORT QgsStringUtils
      * @param caseSensitive set to true for case sensitive comparison
      * @returns Hamming distance between strings, or -1 if strings are different lengths.
      */
-    static int hammingDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
+    static int hammingDistance( const QString& string1, const QString& string2, bool caseSensitive = false );
 
     /** Returns the Soundex representation of a string. Soundex is a phonetic matching algorithm,
      * so strings with similar sounds should be represented by the same Soundex code.
      * @param string input string
      * @returns 4 letter Soundex code
      */
-    static QString soundex( const QString &string );
+    static QString soundex( const QString& string );
 
     /** Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a ...>
      * links.

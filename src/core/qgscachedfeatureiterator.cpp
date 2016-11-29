@@ -16,9 +16,9 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
 
-QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
-    : QgsAbstractFeatureIterator( featureRequest )
-    , mVectorLayerCache( vlCache )
+QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest )
+  : QgsAbstractFeatureIterator( featureRequest )
+  , mVectorLayerCache( vlCache )
 {
   switch ( featureRequest.filterType() )
   {
@@ -70,9 +70,9 @@ bool QgsCachedFeatureIterator::close()
   return true;
 }
 
-QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
-    : QgsAbstractFeatureIterator( featureRequest )
-    , mVectorLayerCache( vlCache )
+QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest )
+  : QgsAbstractFeatureIterator( featureRequest )
+  , mVectorLayerCache( vlCache )
 {
   mFeatIt = vlCache->layer()->getFeatures( featureRequest );
 }

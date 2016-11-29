@@ -52,8 +52,8 @@ class QgsGrassModuleOptions
 
     //! Constructor
     QgsGrassModuleOptions(
-      QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface, bool direct );
+      QgsGrassTools* tools, QgsGrassModule* module,
+      QgisInterface* iface, bool direct );
 
     //! Destructor
     virtual ~QgsGrassModuleOptions();
@@ -64,58 +64,93 @@ class QgsGrassModuleOptions
     //! Check if output exists
     // return empty list
     // return list of existing output maps
-    virtual QStringList checkOutput() { return QStringList() ; }
+    virtual QStringList checkOutput()
+    {
+      return QStringList() ;
+    }
 
     //! Freeze output maps used in QGIS
     // freeze / thaw output layers
-    virtual void freezeOutput( bool freeze = true ) { Q_UNUSED( freeze ) }
+    virtual void freezeOutput( bool freeze = true )
+    {
+      Q_UNUSED( freeze )
+    }
 
     //! Check if option is ready
     //  Returns empty string or error message
-    virtual QStringList ready() { return QStringList() ; }
+    virtual QStringList ready()
+    {
+      return QStringList() ;
+    }
 
     //! Get list of current output maps
     virtual QStringList output( int type )
-    { Q_UNUSED( type ); return QStringList(); }
+    {
+      Q_UNUSED( type );
+      return QStringList();
+    }
 
     //! Has any output
     virtual bool hasOutput( int type )
-    { Q_UNUSED( type ); return true; }
+    {
+      Q_UNUSED( type );
+      return true;
+    }
 
     //! Has raster input or output
-    virtual bool usesRegion() { return false; }
+    virtual bool usesRegion()
+    {
+      return false;
+    }
 
     //! One or more input maps were switched on to be used as region
-    virtual bool requestsRegion() { return false; }
+    virtual bool requestsRegion()
+    {
+      return false;
+    }
 
     //! Check region
     // return empty list
     // return list of input maps (both raster and vector) outside region
-    virtual QStringList checkRegion() { return QStringList() ; }
+    virtual QStringList checkRegion()
+    {
+      return QStringList() ;
+    }
 
     //! Get region covering all input maps
     // \param all true all input maps
     // \param all false only the mas which were switched on
-    virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all )
-    { Q_UNUSED( window ); Q_UNUSED( crs ); Q_UNUSED( all ); return false; }
+    virtual bool inputRegion( struct Cell_head* window, QgsCoordinateReferenceSystem& crs, bool all )
+    {
+      Q_UNUSED( window );
+      Q_UNUSED( crs );
+      Q_UNUSED( all );
+      return false;
+    }
 
     // ! Flag names
-    virtual QStringList flagNames() { return QStringList() ; }
+    virtual QStringList flagNames()
+    {
+      return QStringList() ;
+    }
 
-    QStringList errors() { return mErrors; }
+    QStringList errors()
+    {
+      return mErrors;
+    }
 
   protected:
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface* mIface;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas* mCanvas;
 
     //! Pointer to GRASS Tools
-    QgsGrassTools *mTools;
+    QgsGrassTools* mTools;
 
     //! Pointer to GRASS module
-    QgsGrassModule *mModule;
+    QgsGrassModule* mModule;
 
     //! Parent widget
     //QWidget *mParent;
@@ -124,7 +159,7 @@ class QgsGrassModuleOptions
     QString mAppDir;
 
     //! Region mode select box
-    QComboBox * mRegionModeComboBox;
+    QComboBox* mRegionModeComboBox;
 
     //! Direct mode
     bool mDirect;
@@ -144,10 +179,10 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
   public:
     //! Constructor
     QgsGrassModuleStandardOptions(
-      QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface,
+      QgsGrassTools* tools, QgsGrassModule* module,
+      QgisInterface* iface,
       QString xname, QDomElement confDocElem,
-      bool direct, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+      bool direct, QWidget* parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModuleStandardOptions();
@@ -156,10 +191,10 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QStringList arguments() override;
 
     // ! Get item by ID
-    QgsGrassModuleParam *item( QString id );
+    QgsGrassModuleParam* item( QString id );
 
     // ! Get item by key
-    QgsGrassModuleParam *itemByKey( QString key );
+    QgsGrassModuleParam* itemByKey( QString key );
 
     // Reimplemented methods from QgsGrassModuleOptions
     QStringList checkOutput() override;
@@ -171,8 +206,11 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QStringList checkRegion() override;
     bool usesRegion() override;
     bool requestsRegion() override;
-    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) override;
-    QStringList flagNames() override { return mFlagNames; }
+    bool inputRegion( struct Cell_head* window, QgsCoordinateReferenceSystem& crs, bool all ) override;
+    QStringList flagNames() override
+    {
+      return mFlagNames;
+    }
 
   public slots:
     // ! Show/hide advanced options
@@ -183,16 +221,16 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     /** Read and parse module options (--interface-description).
      * @param errors - list to which possible errors are added
      */
-    QDomDocument readInterfaceDescription( const QString & xname, QStringList & errors );
+    QDomDocument readInterfaceDescription( const QString& xname, QStringList& errors );
 
     /** Get region for currently selected map. It will show warning dialog if region could not be read.
      * @return true if region was successfully read
      */
-    bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
+    bool getCurrentMapRegion( QgsGrassModuleInput* param, struct Cell_head* window );
 
     // List of providers used by layers in QgsMapLayerRegistry
-    QList<QgsGrassProvider *> grassProviders();
-    QList<QgsGrassRasterProvider *> grassRasterProviders();
+    QList<QgsGrassProvider*> grassProviders();
+    QList<QgsGrassRasterProvider*> grassRasterProviders();
 
     //! Name of module executable
     QString mXName;

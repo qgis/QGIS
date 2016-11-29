@@ -46,11 +46,11 @@ class TestQgsDataItem : public QObject
   private:
     QgsDirectoryItem* mDirItem;
     QString mScanItemsSetting;
-    bool isValidDirItem( QgsDirectoryItem *item );
+    bool isValidDirItem( QgsDirectoryItem* item );
 };
 
 TestQgsDataItem::TestQgsDataItem()
-    : mDirItem( nullptr )
+  : mDirItem( nullptr )
 {
 
 }
@@ -88,7 +88,7 @@ void TestQgsDataItem::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-bool TestQgsDataItem::isValidDirItem( QgsDirectoryItem *item )
+bool TestQgsDataItem::isValidDirItem( QgsDirectoryItem* item )
 {
   return ( item && item->hasChildren() );
 }

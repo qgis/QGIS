@@ -33,13 +33,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
     const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
     QWidget* parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mRasterLayer( rasterLayer )
-    , mDataProvider( sourceProvider )
-    , mCurrentExtent( currentExtent )
-    , mLayerCrs( layerCrs )
-    , mCurrentCrs( currentCrs )
-    , mResolutionState( OriginalResolution )
+  : QDialog( parent, f )
+  , mRasterLayer( rasterLayer )
+  , mDataProvider( sourceProvider )
+  , mCurrentExtent( currentExtent )
+  , mLayerCrs( layerCrs )
+  , mCurrentCrs( currentCrs )
+  , mResolutionState( OriginalResolution )
 {
   setupUi( this );
   mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
@@ -224,7 +224,7 @@ void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& 
 }
 
 
-void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString & text )
+void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString& text )
 {
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == QLatin1String( "gdal" ) )
@@ -539,7 +539,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
   for ( int i = 0; i < 2; i++ )
   {
     double value = i == 0 ? min : max;
-    QLineEdit *lineEdit = new QLineEdit();
+    QLineEdit* lineEdit = new QLineEdit();
     lineEdit->setFrame( false );
     lineEdit->setContentsMargins( 1, 1, 1, 1 );
     QString valueString;
@@ -566,17 +566,17 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
     adjustNoDataCellWidth( mNoDataTableWidget->rowCount() - 1, i );
 
-    connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( noDataCellTextEdited( const QString & ) ) );
+    connect( lineEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( noDataCellTextEdited( const QString& ) ) );
   }
   mNoDataTableWidget->resizeColumnsToContents();
   mNoDataTableWidget->resizeRowsToContents();
 }
 
-void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString & text )
+void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString& text )
 {
   Q_UNUSED( text );
 
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
+  QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( sender() );
   if ( !lineEdit ) return;
   int row = -1;
   int column = -1;
@@ -597,7 +597,7 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString & text )
 
   if ( column == 0 )
   {
-    QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, 1 ) );
+    QLineEdit* toLineEdit = dynamic_cast<QLineEdit*>( mNoDataTableWidget->cellWidget( row, 1 ) );
     if ( !toLineEdit ) return;
     bool toChanged = mNoDataToEdited.value( row );
     QgsDebugMsg( QString( "toChanged = %1" ).arg( toChanged ) );
@@ -690,7 +690,7 @@ void QgsRasterLayerSaveAsDialog::setNoDataToEdited( int row )
 
 double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
 {
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
+  QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( mNoDataTableWidget->cellWidget( row, column ) );
   if ( !lineEdit || lineEdit->text().isEmpty() )
   {
     std::numeric_limits<double>::quiet_NaN();
@@ -700,7 +700,7 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
 
 void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
 {
-  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
+  QLineEdit* lineEdit = dynamic_cast<QLineEdit*>( mNoDataTableWidget->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
   int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );

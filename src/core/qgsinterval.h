@@ -62,90 +62,145 @@ class CORE_EXPORT QgsInterval
     /** Returns the interval duration in years (based on an average year length)
      * @see setYears()
      */
-    double years() const { return mSeconds / YEARS; }
+    double years() const
+    {
+      return mSeconds / YEARS;
+    }
 
     /** Sets the interval duration in years.
      * @param years duration in years (based on average year length)
      * @see years()
      */
-    void setYears( double years ) { mSeconds = years * YEARS; mValid = true; }
+    void setYears( double years )
+    {
+      mSeconds = years * YEARS;
+      mValid = true;
+    }
 
     /** Returns the interval duration in months (based on a 30 day month).
      * @see setMonths()
      */
-    double months() const { return mSeconds / MONTHS; }
+    double months() const
+    {
+      return mSeconds / MONTHS;
+    }
 
     /** Sets the interval duration in months.
      * @param months duration in months (based on a 30 day month)
      * @see months()
      */
-    void setMonths( double months ) { mSeconds = months * MONTHS; mValid = true; }
+    void setMonths( double months )
+    {
+      mSeconds = months * MONTHS;
+      mValid = true;
+    }
 
     /** Returns the interval duration in weeks.
      * @see setWeeks()
      */
-    double weeks() const { return mSeconds / WEEKS; }
+    double weeks() const
+    {
+      return mSeconds / WEEKS;
+    }
 
     /** Sets the interval duration in weeks.
      * @param weeks duration in weeks
      * @see weeks()
      */
-    void setWeeks( double weeks ) { mSeconds = weeks * WEEKS; mValid = true; }
+    void setWeeks( double weeks )
+    {
+      mSeconds = weeks * WEEKS;
+      mValid = true;
+    }
 
     /** Returns the interval duration in days.
      * @see setDays()
      */
-    double days() const { return mSeconds / DAY; }
+    double days() const
+    {
+      return mSeconds / DAY;
+    }
 
     /** Sets the interval duration in days.
      * @param days duration in days
      * @see days()
      */
-    void setDays( double days ) { mSeconds = days * DAY; mValid = true; }
+    void setDays( double days )
+    {
+      mSeconds = days * DAY;
+      mValid = true;
+    }
 
     /** Returns the interval duration in hours.
      * @see setHours()
      */
-    double hours() const { return mSeconds / HOUR; }
+    double hours() const
+    {
+      return mSeconds / HOUR;
+    }
 
     /** Sets the interval duration in hours.
      * @param hours duration in hours
      * @see hours()
      */
-    void setHours( double hours ) { mSeconds = hours * HOUR; mValid = true; }
+    void setHours( double hours )
+    {
+      mSeconds = hours * HOUR;
+      mValid = true;
+    }
 
     /** Returns the interval duration in minutes.
      * @see setMinutes()
      */
-    double minutes() const { return mSeconds / MINUTE; }
+    double minutes() const
+    {
+      return mSeconds / MINUTE;
+    }
 
     /** Sets the interval duration in minutes.
      * @param minutes duration in minutes
      * @see minutes()
      */
-    void setMinutes( double minutes ) { mSeconds = minutes * MINUTE; mValid = true; }
+    void setMinutes( double minutes )
+    {
+      mSeconds = minutes * MINUTE;
+      mValid = true;
+    }
 
     /** Returns the interval duration in seconds.
      * @see setSeconds()
      */
-    double seconds() const { return mSeconds; }
+    double seconds() const
+    {
+      return mSeconds;
+    }
 
     /** Sets the interval duration in seconds.
      * @param seconds duration in seconds
      * @see seconds()
      */
-    void setSeconds( double seconds ) { mSeconds = seconds; mValid = true; }
+    void setSeconds( double seconds )
+    {
+      mSeconds = seconds;
+      mValid = true;
+    }
 
     /** Returns true if the interval is valid.
      * @see setValid()
      */
-    bool isValid() const { return mValid; }
+    bool isValid() const
+    {
+      return mValid;
+    }
 
     /** Sets whether the interval is valid.
      * @param valid set to true to set the interval as valid.
      * @see isValid()
      */
-    void setValid( bool valid ) { mValid = valid; }
+    void setValid( bool valid )
+    {
+      mValid = valid;
+    }
 
     bool operator==( QgsInterval other ) const;
 

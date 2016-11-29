@@ -33,8 +33,8 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 
 
 QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mRamp( ramp )
+  : QgsPanelWidget( parent )
+  , mRamp( ramp )
 {
 
   setupUi( this );
@@ -119,7 +119,7 @@ void QgsColorBrewerColorRampWidget::setColors()
 }
 
 QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   QVBoxLayout* vLayout = new QVBoxLayout();
   mWidget = new QgsColorBrewerColorRampWidget( ramp );

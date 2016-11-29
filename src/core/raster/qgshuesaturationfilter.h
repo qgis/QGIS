@@ -38,10 +38,10 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
       GrayscaleAverage
     };
 
-    QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
+    QgsHueSaturationFilter( QgsRasterInterface* input = nullptr );
     ~QgsHueSaturationFilter();
 
-    QgsHueSaturationFilter * clone() const override;
+    QgsHueSaturationFilter* clone() const override;
 
     int bandCount() const override;
 
@@ -49,20 +49,44 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void setSaturation( int saturation );
-    int saturation() const { return mSaturation; }
+    int saturation() const
+    {
+      return mSaturation;
+    }
 
-    void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
-    QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
+    void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode )
+    {
+      mGrayscaleMode = grayscaleMode;
+    }
+    QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const
+    {
+      return mGrayscaleMode;
+    }
 
-    void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
-    bool colorizeOn() const { return mColorizeOn; }
+    void setColorizeOn( bool colorizeOn )
+    {
+      mColorizeOn = colorizeOn;
+    }
+    bool colorizeOn() const
+    {
+      return mColorizeOn;
+    }
     void setColorizeColor( const QColor& colorizeColor );
-    QColor colorizeColor() const { return mColorizeColor; }
-    void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
-    int colorizeStrength() const { return mColorizeStrength; }
+    QColor colorizeColor() const
+    {
+      return mColorizeColor;
+    }
+    void setColorizeStrength( int colorizeStrength )
+    {
+      mColorizeStrength = colorizeStrength;
+    }
+    int colorizeStrength() const
+    {
+      return mColorizeStrength;
+    }
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 
@@ -71,9 +95,9 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
   private:
     //! Process a change in saturation and update resultant HSL & RGB values
-    void processSaturation( int &r, int &g, int &b, int &h, int &s, int &l );
+    void processSaturation( int& r, int& g, int& b, int& h, int& s, int& l );
     //! Process a colorization and update resultant HSL & RGB values
-    void processColorization( int &r, int &g, int &b, int &h, int &s, int &l );
+    void processColorization( int& r, int& g, int& b, int& h, int& s, int& l );
 
     //! Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)
     int mSaturation;

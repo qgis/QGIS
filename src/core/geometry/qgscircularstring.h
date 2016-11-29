@@ -36,8 +36,14 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;
 
-    virtual QString geometryType() const override { return QStringLiteral( "CircularString" ); }
-    virtual int dimension() const override { return 1; }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "CircularString" );
+    }
+    virtual int dimension() const override
+    {
+      return 1;
+    }
     virtual QgsCircularString* clone() const override;
     virtual void clear() override;
 
@@ -59,11 +65,11 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     /**
      * @copydoc QgsCurve::points()
      */
-    void points( QgsPointSequence &pts ) const override;
+    void points( QgsPointSequence& pts ) const override;
 
     /** Sets the circular string's points
      */
-    void setPoints( const QgsPointSequence &points );
+    void setPoints( const QgsPointSequence& points );
 
     /**
      * @copydoc QgsAbstractGeometry::length()
@@ -116,7 +122,10 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     /**
      * @copydoc QgsAbstractGeometry::hasCurvedSegments()
      */
-    bool hasCurvedSegments() const override { return true; }
+    bool hasCurvedSegments() const override
+    {
+      return true;
+    }
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
@@ -145,7 +154,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QVector<double> mM;
 
     //helper methods for curveToLine
-    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequence &points, double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QgsPointSequence& points, double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
     int segmentSide( const QgsPointV2& pt1, const QgsPointV2& pt3, const QgsPointV2& pt2 ) const;
     double interpolateArc( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) const;
     static void arcTo( QPainterPath& path, QPointF pt1, QPointF pt2, QPointF pt3 );

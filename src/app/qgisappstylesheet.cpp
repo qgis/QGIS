@@ -29,8 +29,8 @@
  * @brief Adjustable stylesheet for the Qgis application
  */
 
-QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
-    : QObject( parent )
+QgisAppStyleSheet::QgisAppStyleSheet( QObject* parent )
+  : QObject( parent )
 {
   setActiveValues();
 }
@@ -76,7 +76,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
-    QFont *tempFont = new QFont( fontFamily );
+    QFont* tempFont = new QFont( fontFamily );
     if ( tempFont->family() != fontFamily )
     {
       // missing from system, drop back to default
@@ -104,11 +104,17 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   // QgisApp-wide font
   QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
   QgsDebugMsg( QString( "fontPointSize: %1" ).arg( fontSize ) );
-  if ( fontSize.isEmpty() ) { return; }
+  if ( fontSize.isEmpty() )
+  {
+    return;
+  }
 
   QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
-  if ( fontFamily.isEmpty() ) { return; }
+  if ( fontFamily.isEmpty() )
+  {
+    return;
+  }
 
   ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 

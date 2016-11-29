@@ -42,12 +42,12 @@
 #endif
 
 
-QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, const QString& fieldOrExp )
-    : QWidget( parent )
-    , mVectorLayer( layer )
-    , mSourceFieldExp( fieldOrExp )
-    , mXAxisTitle( QObject::tr( "Value" ) )
-    , mYAxisTitle( QObject::tr( "Count" ) )
+QgsHistogramWidget::QgsHistogramWidget( QWidget* parent, QgsVectorLayer* layer, const QString& fieldOrExp )
+  : QWidget( parent )
+  , mVectorLayer( layer )
+  , mSourceFieldExp( fieldOrExp )
+  , mXAxisTitle( QObject::tr( "Value" ) )
+  , mYAxisTitle( QObject::tr( "Count" ) )
 {
   setupUi( this );
 
@@ -95,7 +95,7 @@ static bool _rangesByLower( const QgsRendererRange& a, const QgsRendererRange& b
   return a.lowerValue() < b.lowerValue() ? -1 : 0;
 }
 
-void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
+void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList& ranges )
 {
   mRanges = ranges;
   qSort( mRanges.begin(), mRanges.end(), _rangesByLower );
@@ -145,7 +145,7 @@ void QgsHistogramWidget::refresh()
   drawHistogram();
 }
 
-void QgsHistogramWidget::setLayer( QgsVectorLayer *layer )
+void QgsHistogramWidget::setLayer( QgsVectorLayer* layer )
 {
   if ( layer == mVectorLayer )
     return;
@@ -166,7 +166,7 @@ void QgsHistogramWidget::clearHistogram()
   mBinsSpinBox->setEnabled( false );
 }
 
-void QgsHistogramWidget::setSourceFieldExp( const QString &fieldOrExp )
+void QgsHistogramWidget::setSourceFieldExp( const QString& fieldOrExp )
 {
   if ( fieldOrExp == mSourceFieldExp )
     return;
@@ -201,7 +201,7 @@ void QgsHistogramWidget::drawHistogram()
   mpPlot->setAxisAutoScale( QwtPlot::xBottom );
 
   // add a grid
-  QwtPlotGrid * grid = new QwtPlotGrid();
+  QwtPlotGrid* grid = new QwtPlotGrid();
   grid->enableX( false );
   grid->setPen( mGridPen );
   grid->attach( mpPlot );
@@ -215,13 +215,13 @@ void QgsHistogramWidget::drawHistogram()
 
   //draw histogram
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  QwtPlotHistogram *plotHistogram = nullptr;
+  QwtPlotHistogram* plotHistogram = nullptr;
   plotHistogram = createPlotHistogram( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
                                        !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
                                        !mRanges.isEmpty() ? Qt::NoPen : mPen );
   QVector<QwtIntervalSample> dataHisto;
 #else
-  HistogramItem *plotHistogramItem = nullptr;
+  HistogramItem* plotHistogramItem = nullptr;
   plotHistogramItem = createHistoItem( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
                                        !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
                                        !mRanges.isEmpty() ? Qt::NoPen : mPen );
@@ -359,7 +359,7 @@ QwtPlotHistogram* QgsHistogramWidget::createPlotHistogram( const QString& title,
   return histogram;
 }
 #else
-HistogramItem * QgsHistogramWidget::createHistoItem( const QString& title, const QBrush& brush, const QPen& pen ) const
+HistogramItem* QgsHistogramWidget::createHistoItem( const QString& title, const QBrush& brush, const QPen& pen ) const
 {
   HistogramItem* item = new HistogramItem( title );
   item->setColor( brush.color() );

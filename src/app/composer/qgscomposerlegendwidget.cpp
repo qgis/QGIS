@@ -60,8 +60,8 @@ static int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode* legendNode )
 
 
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
-    : QgsComposerItemBaseWidget( nullptr, legend )
-    , mLegend( legend )
+  : QgsComposerItemBaseWidget( nullptr, legend )
+  , mLegend( legend )
 {
   setupUi( this );
   setPanelTitle( tr( "Legend properties" ) );
@@ -105,8 +105,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
 
   setGuiElements();
 
-  connect( mItemTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
-           this, SLOT( selectedChanged( const QModelIndex &, const QModelIndex & ) ) );
+  connect( mItemTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
+           this, SLOT( selectedChanged( const QModelIndex&, const QModelIndex& ) ) );
 }
 
 QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr ), mLegend( nullptr )
@@ -164,7 +164,7 @@ void QgsComposerLegendWidget::setGuiElements()
   on_mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
 }
 
-void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )
+void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString& text )
 {
   if ( mLegend )
   {
@@ -556,8 +556,8 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
   // do not allow editing of model if auto update is on - we would modify project's layer tree
   QList<QWidget*> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-  << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
-  << mExpressionFilterButton;
+          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
+          << mExpressionFilterButton;
   Q_FOREACH ( QWidget* w, widgets )
     w->setEnabled( state != Qt::Checked );
 
@@ -695,7 +695,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   mLegend->beginCommand( QStringLiteral( "Legend item removed" ) );
 
   QList<QPersistentModelIndex> indexes;
-  Q_FOREACH ( const QModelIndex &index, selectionModel->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& index, selectionModel->selectedIndexes() )
     indexes << index;
 
   // first try to remove legend nodes
@@ -924,7 +924,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mTitleSpaceBottomSpinBox->blockSignals( b );
 }
 
-void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, const QModelIndex & previous )
+void QgsComposerLegendWidget::selectedChanged( const QModelIndex& current, const QModelIndex& previous )
 {
   Q_UNUSED( current );
   Q_UNUSED( previous );
@@ -978,7 +978,7 @@ void QgsComposerLegendWidget::updateFilterLegendByAtlasButton()
   mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
 }
 
-void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex &idx )
+void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex& idx )
 {
   if ( !mLegend || !idx.isValid() )
   {
@@ -1044,8 +1044,8 @@ void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex 
 //
 
 QgsComposerLegendMenuProvider::QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w )
-    : mView( view )
-    , mWidget( w )
+  : mView( view )
+  , mWidget( w )
 {}
 
 QMenu* QgsComposerLegendMenuProvider::createContextMenu()

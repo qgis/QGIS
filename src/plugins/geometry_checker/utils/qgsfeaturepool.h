@@ -32,21 +32,33 @@ class QgsFeaturePool
   public:
     QgsFeaturePool( QgsVectorLayer* layer, bool selectedOnly = false );
     bool get( QgsFeatureId id, QgsFeature& feature );
-    void addFeature( QgsFeature &feature );
-    void updateFeature( QgsFeature &feature );
-    void deleteFeature( QgsFeature &feature );
+    void addFeature( QgsFeature& feature );
+    void updateFeature( QgsFeature& feature );
+    void deleteFeature( QgsFeature& feature );
     QgsFeatureIds getIntersects( const QgsRectangle& rect );
-    QgsVectorLayer* getLayer() const { return mLayer; }
-    const QgsFeatureIds& getFeatureIds() const { return mFeatureIds; }
-    bool getSelectedOnly() const { return mSelectedOnly; }
-    void clearLayer() { mLayer = nullptr; }
+    QgsVectorLayer* getLayer() const
+    {
+      return mLayer;
+    }
+    const QgsFeatureIds& getFeatureIds() const
+    {
+      return mFeatureIds;
+    }
+    bool getSelectedOnly() const
+    {
+      return mSelectedOnly;
+    }
+    void clearLayer()
+    {
+      mLayer = nullptr;
+    }
 
   private:
     struct MapEntry
     {
       MapEntry( QgsFeature* _feature, QLinkedList<QgsFeatureId>::iterator _ageIt )
-          : feature( _feature )
-          , ageIt( _ageIt )
+        : feature( _feature )
+        , ageIt( _ageIt )
       {}
       QgsFeature* feature;
       QLinkedList<QgsFeatureId>::iterator ageIt;
@@ -62,7 +74,7 @@ class QgsFeaturePool
     QgsSpatialIndex mIndex;
     bool mSelectedOnly;
 
-    bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double& ( *comparator )( const double&, const double& ), double init );
+    bool getTouchingWithSharedEdge( QgsFeature& feature, QgsFeatureId& touchingId, const double& ( *comparator )( const double&, const double& ), double init );
 };
 
 #endif // QGS_FEATUREPOOL_H

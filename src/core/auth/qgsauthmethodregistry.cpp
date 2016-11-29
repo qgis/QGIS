@@ -35,7 +35,7 @@ typedef QString description_t();
 typedef bool    isauthmethod_t();
 
 
-QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString& pluginPath )
+QgsAuthMethodRegistry* QgsAuthMethodRegistry::instance( const QString& pluginPath )
 {
   static QgsAuthMethodRegistry* sInstance( new QgsAuthMethodRegistry( pluginPath ) );
   return sInstance;
@@ -47,7 +47,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
   // are an auth method shared lib
   // check all libs in the current plugin directory and get name and descriptions
 #if 0
-  char **argv = qApp->argv();
+  char** argv = qApp->argv();
   QString appDir = argv[0];
   int bin = appDir.findRev( "/bin", -1, false );
   QString baseDir = appDir.left( bin );
@@ -107,7 +107,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     }
 
     // get the description and the key for the auth method plugin
-    isauthmethod_t *isAuthMethod = reinterpret_cast< isauthmethod_t * >( cast_to_fptr( myLib.resolve( "isAuthMethod" ) ) );
+    isauthmethod_t* isAuthMethod = reinterpret_cast< isauthmethod_t* >( cast_to_fptr( myLib.resolve( "isAuthMethod" ) ) );
     if ( !isAuthMethod )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no isAuthMethod method)" ).arg( myLib.fileName() ) );
@@ -122,14 +122,14 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString& pluginPath )
     }
 
     // looks like an auth method plugin. get the key and description
-    description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
+    description_t* pDesc = reinterpret_cast< description_t* >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
-    methodkey_t *pKey = reinterpret_cast< methodkey_t * >( cast_to_fptr( myLib.resolve( "authMethodKey" ) ) );
+    methodkey_t* pKey = reinterpret_cast< methodkey_t* >( cast_to_fptr( myLib.resolve( "authMethodKey" ) ) );
     if ( !pKey )
     {
       QgsDebugMsg( QString( "Checking %1: ...invalid (no authMethodKey method)" ).arg( myLib.fileName() ) );
@@ -174,8 +174,8 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
   very reason.  So there needs to be a convenient way to find an auth method
   without accidentally adding a null meta data item to the metadata map.
 */
-static QgsAuthMethodMetadata * findMetadata_( QgsAuthMethodRegistry::AuthMethods const & metaData,
-    QString const & authMethodKey )
+static QgsAuthMethodMetadata* findMetadata_( QgsAuthMethodRegistry::AuthMethods const& metaData,
+    QString const& authMethodKey )
 {
   QgsAuthMethodRegistry::AuthMethods::const_iterator i =
     metaData.find( authMethodKey );
@@ -189,9 +189,9 @@ static QgsAuthMethodMetadata * findMetadata_( QgsAuthMethodRegistry::AuthMethods
 } // findMetadata_
 
 
-QString QgsAuthMethodRegistry::library( const QString &authMethodKey ) const
+QString QgsAuthMethodRegistry::library( const QString& authMethodKey ) const
 {
-  QgsAuthMethodMetadata * md = findMetadata_( mAuthMethods, authMethodKey );
+  QgsAuthMethodMetadata* md = findMetadata_( mAuthMethods, authMethodKey );
 
   if ( md )
   {
@@ -246,31 +246,31 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
   return list;
 }
 
-const QDir &QgsAuthMethodRegistry::libraryDirectory() const
+const QDir& QgsAuthMethodRegistry::libraryDirectory() const
 {
   return mLibraryDirectory;
 }
 
-void QgsAuthMethodRegistry::setLibraryDirectory( const QDir &path )
+void QgsAuthMethodRegistry::setLibraryDirectory( const QDir& path )
 {
   mLibraryDirectory = path;
 }
 
 
 // typedef for the QgsDataProvider class factory
-typedef QgsAuthMethod * classFactoryFunction_t();
+typedef QgsAuthMethod* classFactoryFunction_t();
 
-QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
+QgsAuthMethod* QgsAuthMethodRegistry::authMethod( const QString& authMethodKey )
 {
   // load the plugin
   QString lib = library( authMethodKey );
 
 #ifdef TESTAUTHMETHODLIB
-  const char *cLib = lib.toUtf8();
+  const char* cLib = lib.toUtf8();
 
   // test code to help debug auth method plugin loading problems
   //  void *handle = dlopen(cLib, RTLD_LAZY);
-  void *handle = dlopen( cOgrLib, RTLD_LAZY | RTLD_GLOBAL );
+  void* handle = dlopen( cOgrLib, RTLD_LAZY | RTLD_GLOBAL );
   if ( !handle )
   {
     QgsLogger::warning( "Error in dlopen" );
@@ -292,14 +292,14 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
     return nullptr;
   }
 
-  classFactoryFunction_t *classFactory = reinterpret_cast< classFactoryFunction_t * >( cast_to_fptr( myLib.resolve( "classFactory" ) ) );
+  classFactoryFunction_t* classFactory = reinterpret_cast< classFactoryFunction_t* >( cast_to_fptr( myLib.resolve( "classFactory" ) ) );
   if ( !classFactory )
   {
     QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
     return nullptr;
   }
 
-  QgsAuthMethod *authMethod = classFactory();
+  QgsAuthMethod* authMethod = classFactory();
   if ( !authMethod )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the auth method plugin %1" ).arg( lib ) );
@@ -311,12 +311,12 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
   return authMethod;
 }
 
-typedef QWidget * editFactoryFunction_t( QWidget * parent );
+typedef QWidget* editFactoryFunction_t( QWidget* parent );
 
-QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
+QWidget* QgsAuthMethodRegistry::editWidget( const QString& authMethodKey, QWidget* parent )
 {
-  editFactoryFunction_t * editFactory =
-    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, "editWidget" ) ) );
+  editFactoryFunction_t* editFactory =
+    reinterpret_cast< editFactoryFunction_t* >( cast_to_fptr( function( authMethodKey, "editWidget" ) ) );
 
   if ( !editFactory )
     return nullptr;
@@ -325,8 +325,8 @@ QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidge
 }
 
 #if QT_VERSION >= 0x050000
-QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
-    QString const & functionName )
+QFunctionPointer QgsAuthMethodRegistry::function( QString const& authMethodKey,
+    QString const& functionName )
 {
   QLibrary myLib( library( authMethodKey ) );
 
@@ -343,8 +343,8 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
   }
 }
 #else
-void *QgsAuthMethodRegistry::function( QString const & authMethodKey,
-                                       QString const & functionName )
+void* QgsAuthMethodRegistry::function( QString const& authMethodKey,
+                                       QString const& functionName )
 {
   QLibrary myLib( library( authMethodKey ) );
 
@@ -362,9 +362,9 @@ void *QgsAuthMethodRegistry::function( QString const & authMethodKey,
 }
 #endif
 
-QLibrary *QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey ) const
+QLibrary* QgsAuthMethodRegistry::authMethodLibrary( const QString& authMethodKey ) const
 {
-  QLibrary *myLib = new QLibrary( library( authMethodKey ) );
+  QLibrary* myLib = new QLibrary( library( authMethodKey ) );
 
   QgsDebugMsg( "Library name is " + myLib->fileName() );
 
@@ -388,7 +388,7 @@ QStringList QgsAuthMethodRegistry::authMethodList() const
   return lst;
 }
 
-const QgsAuthMethodMetadata *QgsAuthMethodRegistry::authMethodMetadata( const QString &authMethodKey ) const
+const QgsAuthMethodMetadata* QgsAuthMethodRegistry::authMethodMetadata( const QString& authMethodKey ) const
 {
   return findMetadata_( mAuthMethods, authMethodKey );
 }

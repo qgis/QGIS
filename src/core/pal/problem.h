@@ -48,7 +48,7 @@ namespace pal
   class Sol
   {
     public:
-      int *s;
+      int* s;
       double cost;
   };
 
@@ -73,12 +73,12 @@ namespace pal
     /**
      * wrap bw sub feat and main feat
      */
-    int *sub;
+    int* sub;
 
     /**
      * sub solution
      */
-    int *sol;
+    int* sol;
 
     /**
      * first feat in sub part
@@ -90,8 +90,8 @@ namespace pal
   {
     int degree;
     double delta;
-    int *feat;
-    int *label;
+    int* feat;
+    int* label;
   } Chain;
 
   /**
@@ -116,15 +116,27 @@ namespace pal
        * @param position label candidate position. Ownership is transferred to Problem.
        * @note added in QGIS 2.12
        */
-      void addCandidatePosition( LabelPosition* position ) { mLabelPositions.append( position ); }
+      void addCandidatePosition( LabelPosition* position )
+      {
+        mLabelPositions.append( position );
+      }
 
       /////////////////
       // problem inspection functions
-      int getNumFeatures() { return nbft; }
+      int getNumFeatures()
+      {
+        return nbft;
+      }
       // features counted 0...n-1
-      int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
+      int getFeatureCandidateCount( int i )
+      {
+        return featNbLp[i];
+      }
       // both features and candidates counted 0..n-1
-      LabelPosition* getFeatureCandidate( int fi, int ci ) { return mLabelPositions.at( featStartId[fi] + ci ); }
+      LabelPosition* getFeatureCandidate( int fi, int ci )
+      {
+        return mLabelPositions.at( featStartId[fi] + ci );
+      }
       /////////////////
 
 
@@ -140,33 +152,33 @@ namespace pal
        */
       void chain_search();
 
-      QList<LabelPosition*> * getSolution( bool returnInactive );
+      QList<LabelPosition*>* getSolution( bool returnInactive );
 
-      PalStat * getStats();
+      PalStat* getStats();
 
       /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
 
-      SubPart *subPart( int r, int featseed, int *isIn );
+      SubPart* subPart( int r, int featseed, int* isIn );
 
       void initialization();
 
-      double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
-      double compute_subsolution_cost( SubPart *part, int *s, int * nbOverlap );
+      double compute_feature_cost( SubPart* part, int feat_id, int label_id, int* nbOverlap );
+      double compute_subsolution_cost( SubPart* part, int* s, int* nbOverlap );
 
       /**
        *  POPMUSIC, chain
        */
-      double popmusic_chain( SubPart *part );
+      double popmusic_chain( SubPart* part );
 
-      double popmusic_tabu( SubPart *part );
+      double popmusic_tabu( SubPart* part );
 
       /**
        *
        * POPMUSIC, Tabu search with  chain'
        *
        */
-      double popmusic_tabu_chain( SubPart *part );
+      double popmusic_tabu_chain( SubPart* part );
 
       /**
        * \brief Basic initial solution : every feature to -1
@@ -217,32 +229,32 @@ namespace pal
        */
       double bbox[4];
 
-      double *labelPositionCost;
-      int *nbOlap;
+      double* labelPositionCost;
+      int* nbOlap;
 
       QList< LabelPosition* > mLabelPositions;
 
-      RTree<LabelPosition*, double, 2, double> *candidates;  // index all candidates
-      RTree<LabelPosition*, double, 2, double> *candidates_sol; // index active candidates
-      RTree<LabelPosition*, double, 2, double> *candidates_subsol; // idem for subparts
+      RTree<LabelPosition*, double, 2, double>* candidates;  // index all candidates
+      RTree<LabelPosition*, double, 2, double>* candidates_sol; // index active candidates
+      RTree<LabelPosition*, double, 2, double>* candidates_subsol; // idem for subparts
 
       //int *feat;        // [nblp]
-      int *featStartId; // [nbft]
-      int *featNbLp;    // [nbft]
-      double *inactiveCost; //
+      int* featStartId; // [nbft]
+      int* featNbLp;    // [nbft]
+      double* inactiveCost; //
 
-      Sol *sol;         // [nbft]
+      Sol* sol;         // [nbft]
       int nbActive;
 
       double nbOverlap;
 
-      int *featWrap;
+      int* featWrap;
 
-      Chain *chain( SubPart *part, int seed );
+      Chain* chain( SubPart* part, int seed );
 
-      Chain *chain( int seed );
+      Chain* chain( int seed );
 
-      Pal *pal;
+      Pal* pal;
 
       void solution_cost();
       void check_solution();

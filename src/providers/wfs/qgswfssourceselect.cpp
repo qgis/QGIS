@@ -49,9 +49,9 @@ enum
 };
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mCapabilities( nullptr )
-    , mSQLComposerDialog( nullptr )
+  : QDialog( parent, fl )
+  , mCapabilities( nullptr )
+  , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
 
@@ -375,7 +375,8 @@ void QgsWFSSourceSelect::addLayer()
   //create layers that user selected from this WFS source
   QModelIndexList list = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < list.size(); i++ )
-  { //add a wfs layer to the map
+  {
+    //add a wfs layer to the map
     QModelIndex idx = mModelProxy->mapToSource( list[i] );
     if ( !idx.isValid() )
     {
@@ -421,10 +422,10 @@ QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject* parent,
     const QgsWFSDataSourceURI& uri,
     const QString& allSql,
     const QgsWfsCapabilities::Capabilities& caps )
-    : QObject( parent )
-    , mURI( uri )
-    , mAllSql( allSql )
-    , mCaps( caps )
+  : QObject( parent )
+  , mURI( uri )
+  , mAllSql( allSql )
+  , mCaps( caps )
 {
 }
 
@@ -464,10 +465,10 @@ class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::
 QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog* dialog,
     const QgsWFSDataSourceURI& uri,
     const QgsWfsCapabilities::Capabilities& caps )
-    : QObject( dialog )
-    , mDialog( dialog )
-    , mURI( uri )
-    , mCaps( caps )
+  : QObject( dialog )
+  , mDialog( dialog )
+  , mURI( uri )
+  , mCaps( caps )
 {
 }
 
@@ -556,7 +557,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
 
   QList< QgsSQLComposerDialog::PairNameTitle > tablenames;
   tablenames << QgsSQLComposerDialog::PairNameTitle(
-    QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName] );
+               QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName] );
   if ( bSupportJoins )
   {
     for ( int i = 0; i < mModel->rowCount(); i++ )
@@ -570,7 +571,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
           displayedIterTypename = unprefixedIterTypename;
 
         tablenames << QgsSQLComposerDialog::PairNameTitle(
-          QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename] );
+                     QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename] );
       }
     }
   }
@@ -752,7 +753,7 @@ void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex& index )
   buildQuery( index );
 }
 
-void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous )
+void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex& current, const QModelIndex& previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
@@ -777,7 +778,7 @@ void QgsWFSSourceSelect::filterChanged( const QString& text )
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   QVariant indexData;
   indexData = index.data( Qt::DisplayRole );

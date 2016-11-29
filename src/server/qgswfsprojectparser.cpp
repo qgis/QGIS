@@ -31,8 +31,8 @@ QgsWfsProjectParser::QgsWfsProjectParser(
 #endif
 )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    :
-    mAccessControl( ac )
+  :
+  mAccessControl( ac )
 #endif
 {
   mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
@@ -71,9 +71,9 @@ void QgsWfsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
   QSet<QString> wfstInsertLayersId = wfstInsertLayers();
   QSet<QString> wfstDeleteLayersId = wfstDeleteLayers();
 
-  QMap<QString, QgsMapLayer *> layerMap;
+  QMap<QString, QgsMapLayer*> layerMap;
 
-  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement& elem, projectLayerElements )
   {
     QString type = elem.attribute( QStringLiteral( "type" ) );
     if ( type == QLatin1String( "vector" ) )
@@ -83,7 +83,7 @@ void QgsWfsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
       {
         continue;
       }
-      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
+      QgsMapLayer* layer = mProjectParser->createLayerFromElement( elem );
       if ( !layer )
       {
         continue;
@@ -332,7 +332,7 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
   if ( aTypeName != QLatin1String( "" ) )
   {
     QStringList typeNameSplit = aTypeName.split( QStringLiteral( "," ) );
-    Q_FOREACH ( const QString &str, typeNameSplit )
+    Q_FOREACH ( const QString& str, typeNameSplit )
     {
       if ( str.contains( QLatin1String( ":" ) ) )
         typeNameList << str.section( QStringLiteral( ":" ), 1, 1 );
@@ -341,12 +341,12 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
     }
   }
 
-  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement& elem, projectLayerElements )
   {
     QString type = elem.attribute( QStringLiteral( "type" ) );
     if ( type == QLatin1String( "vector" ) )
     {
-      QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
+      QgsMapLayer* mLayer = mProjectParser->createLayerFromElement( elem );
       QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;
@@ -551,7 +551,7 @@ QList<QgsMapLayer*> QgsWfsProjectParser::mapLayerFromTypeName( const QString& aT
   if ( aTypeName != QLatin1String( "" ) )
   {
     QStringList typeNameSplit = aTypeName.split( QStringLiteral( "," ) );
-    Q_FOREACH ( const QString &str, typeNameSplit )
+    Q_FOREACH ( const QString& str, typeNameSplit )
     {
       if ( str.contains( QLatin1String( ":" ) ) )
         typeNameList << str.section( QStringLiteral( ":" ), 1, 1 );
@@ -560,12 +560,12 @@ QList<QgsMapLayer*> QgsWfsProjectParser::mapLayerFromTypeName( const QString& aT
     }
   }
 
-  Q_FOREACH ( const QDomElement &elem, projectLayerElements )
+  Q_FOREACH ( const QDomElement& elem, projectLayerElements )
   {
     QString type = elem.attribute( QStringLiteral( "type" ) );
     if ( type == QLatin1String( "vector" ) )
     {
-      QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
+      QgsMapLayer* mLayer = mProjectParser->createLayerFromElement( elem );
       QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;

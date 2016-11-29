@@ -19,7 +19,7 @@
 #include "qgsuniquevaluesconfigdlg.h"
 
 QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

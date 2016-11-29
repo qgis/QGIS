@@ -37,12 +37,15 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     ~QgsSLConnectionItem();
 
     QVector<QgsDataItem*> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    virtual bool equal( const QgsDataItem* other ) override;
 
     virtual QList<QAction*> actions() override;
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    virtual bool acceptDrop() override
+    {
+      return true;
+    }
+    virtual bool handleDrop( const QMimeData* data, Qt::DropAction action ) override;
 
   public slots:
     void editConnection();
@@ -61,7 +64,7 @@ class QgsSLRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren() override;
 
-    virtual QWidget * paramWidget() override;
+    virtual QWidget* paramWidget() override;
 
     virtual QList<QAction*> actions() override;
 

@@ -120,14 +120,14 @@ void tst_ModelTest::treeWidgetModel()
 
   ModelTest t1( widget.model() );
 
-  QTreeWidgetItem *root = new QTreeWidgetItem( &widget, QStringList( "root" ) );
+  QTreeWidgetItem* root = new QTreeWidgetItem( &widget, QStringList( "root" ) );
   for ( int i = 0; i < 20; ++i )
   {
     new QTreeWidgetItem( root, QStringList( QString::number( i ) ) );
   }
-  QTreeWidgetItem *remove = root->child( 2 );
+  QTreeWidgetItem* remove = root->child( 2 );
   root->removeChild( remove );
-  QTreeWidgetItem *parent = new QTreeWidgetItem( &widget, QStringList( "parent" ) );
+  QTreeWidgetItem* parent = new QTreeWidgetItem( &widget, QStringList( "parent" ) );
   new QTreeWidgetItem( parent, QStringList( "child" ) );
   widget.setItemHidden( parent, true );
 
@@ -157,14 +157,14 @@ void tst_ModelTest::standardItemModel()
 
 void tst_ModelTest::testInsertThroughProxy()
 {
-  DynamicTreeModel *model = new DynamicTreeModel( this );
+  DynamicTreeModel* model = new DynamicTreeModel( this );
 
-  QSortFilterProxyModel *proxy = new QSortFilterProxyModel( this );
+  QSortFilterProxyModel* proxy = new QSortFilterProxyModel( this );
   proxy->setSourceModel( model );
 
   new ModelTest( proxy, this );
 
-  ModelInsertCommand *insertCommand = new ModelInsertCommand( model, this );
+  ModelInsertCommand* insertCommand = new ModelInsertCommand( model, this );
   insertCommand->setNumCols( 4 );
   insertCommand->setStartRow( 0 );
   insertCommand->setEndRow( 9 );
@@ -178,7 +178,7 @@ void tst_ModelTest::testInsertThroughProxy()
   insertCommand->setEndRow( 9 );
   insertCommand->doCommand();
 
-  ModelMoveCommand *moveCommand = new ModelMoveCommand( model, this );
+  ModelMoveCommand* moveCommand = new ModelMoveCommand( model, this );
   moveCommand->setNumCols( 4 );
   moveCommand->setStartRow( 0 );
   moveCommand->setEndRow( 0 );
@@ -194,7 +194,7 @@ class AccessibleProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-    explicit AccessibleProxyModel( QObject *parent = 0 ) : QSortFilterProxyModel( parent ) {}
+    explicit AccessibleProxyModel( QObject* parent = 0 ) : QSortFilterProxyModel( parent ) {}
 
     QModelIndexList persistent()
     {
@@ -206,8 +206,8 @@ class ObservingObject : public QObject
 {
     Q_OBJECT
   public:
-    ObservingObject( AccessibleProxyModel  *proxy, QObject *parent = 0 )
-        : QObject( parent ),
+    ObservingObject( AccessibleProxyModel*  proxy, QObject* parent = 0 )
+      : QObject( parent ),
         m_proxy( proxy )
     {
       connect( m_proxy, SIGNAL( layoutAboutToBeChanged() ), SLOT( storePersistent() ) );
@@ -216,7 +216,7 @@ class ObservingObject : public QObject
 
   public slots:
 
-    void storePersistent( const QModelIndex &parent )
+    void storePersistent( const QModelIndex& parent )
     {
       for ( int row = 0; row < m_proxy->rowCount( parent ); ++row )
       {
@@ -233,7 +233,7 @@ class ObservingObject : public QObject
 
     void storePersistent()
     {
-      foreach ( const QModelIndex &idx, m_persistentProxyIndexes )
+      foreach ( const QModelIndex& idx, m_persistentProxyIndexes )
         Q_ASSERT( idx.isValid() ); // This is called from layoutAboutToBeChanged. Persistent indexes should be valid
 
       Q_ASSERT( m_proxy->persistent().isEmpty() );
@@ -259,18 +259,18 @@ class ObservingObject : public QObject
     }
 
   private:
-    AccessibleProxyModel  *m_proxy;
+    AccessibleProxyModel*  m_proxy;
     QList<QPersistentModelIndex> m_persistentSourceIndexes;
     QList<QPersistentModelIndex> m_persistentProxyIndexes;
 };
 
 void tst_ModelTest::moveSourceItems()
 {
-  DynamicTreeModel *model = new DynamicTreeModel( this );
-  AccessibleProxyModel *proxy = new AccessibleProxyModel( this );
+  DynamicTreeModel* model = new DynamicTreeModel( this );
+  AccessibleProxyModel* proxy = new AccessibleProxyModel( this );
   proxy->setSourceModel( model );
 
-  ModelInsertCommand *insertCommand = new ModelInsertCommand( model, this );
+  ModelInsertCommand* insertCommand = new ModelInsertCommand( model, this );
   insertCommand->setStartRow( 0 );
   insertCommand->setEndRow( 2 );
   insertCommand->doCommand();
@@ -283,7 +283,7 @@ void tst_ModelTest::moveSourceItems()
 
   ObservingObject observer( proxy );
 
-  ModelMoveCommand *moveCommand = new ModelMoveCommand( model, this );
+  ModelMoveCommand* moveCommand = new ModelMoveCommand( model, this );
   moveCommand->setStartRow( 0 );
   moveCommand->setEndRow( 0 );
   moveCommand->setDestAncestors( QList<int>() << 1 );
@@ -293,22 +293,22 @@ void tst_ModelTest::moveSourceItems()
 
 void tst_ModelTest::testResetThroughProxy()
 {
-  DynamicTreeModel *model = new DynamicTreeModel( this );
+  DynamicTreeModel* model = new DynamicTreeModel( this );
 
-  ModelInsertCommand *insertCommand = new ModelInsertCommand( model, this );
+  ModelInsertCommand* insertCommand = new ModelInsertCommand( model, this );
   insertCommand->setStartRow( 0 );
   insertCommand->setEndRow( 2 );
   insertCommand->doCommand();
 
   QPersistentModelIndex persistent = model->index( 0, 0 );
 
-  AccessibleProxyModel *proxy = new AccessibleProxyModel( this );
+  AccessibleProxyModel* proxy = new AccessibleProxyModel( this );
   proxy->setSourceModel( model );
 
   ObservingObject observer( proxy );
   observer.storePersistent();
 
-  ModelResetCommand *resetCommand = new ModelResetCommand( model, this );
+  ModelResetCommand* resetCommand = new ModelResetCommand( model, this );
   resetCommand->setNumCols( 0 );
   resetCommand->doCommand();
 }

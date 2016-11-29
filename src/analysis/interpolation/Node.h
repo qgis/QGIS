@@ -44,8 +44,8 @@ class ANALYSIS_EXPORT Node
 };
 
 inline Node::Node()
-    : mPoint( nullptr )
-    , mNext( nullptr )
+  : mPoint( nullptr )
+  , mNext( nullptr )
 {
 
 }

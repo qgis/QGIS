@@ -80,7 +80,7 @@ static CPLErr rescalePreWarpChunkProcessor( void* pKern, void* pArg )
 
   for ( int nBand = 0; nBand < kern->nBands; ++nBand )
   {
-    float* bandData = ( float * ) kern->papabySrcImage[nBand];
+    float* bandData = ( float* ) kern->papabySrcImage[nBand];
     for ( int nLine = 0; nLine < kern->nSrcYSize; ++nLine )
     {
       for ( int nPixel = 0; nPixel < kern->nSrcXSize; ++nPixel )
@@ -101,7 +101,7 @@ static CPLErr rescalePostWarpChunkProcessor( void* pKern, void* pArg )
 
   for ( int nBand = 0; nBand < kern->nBands; ++nBand )
   {
-    float* bandData = ( float * ) kern->papabyDstImage[nBand];
+    float* bandData = ( float* ) kern->papabyDstImage[nBand];
     for ( int nLine = 0; nLine < kern->nDstYSize; ++nLine )
     {
       for ( int nPixel = 0; nPixel < kern->nDstXSize; ++nPixel )
@@ -117,7 +117,7 @@ static CPLErr rescalePostWarpChunkProcessor( void* pKern, void* pArg )
 
 
 QgsAlignRaster::QgsAlignRaster()
-    : mProgressHandler( nullptr )
+  : mProgressHandler( nullptr )
 {
   // parameters
   mCellSizeX = mCellSizeY = 0;
@@ -468,8 +468,8 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   psWarpOptions->hDstDS = hDstDS;
 
   psWarpOptions->nBandCount = GDALGetRasterCount( hSrcDS );
-  psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
-  psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
+  psWarpOptions->panSrcBands = ( int* ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
+  psWarpOptions->panDstBands = ( int* ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
   for ( int i = 0; i < psWarpOptions->nBandCount; ++i )
   {
     psWarpOptions->panSrcBands[i] = i + 1;
@@ -555,9 +555,9 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
 
 
 QgsAlignRaster::RasterInfo::RasterInfo( const QString& layerpath )
-    : mXSize( 0 )
-    , mYSize( 0 )
-    , mBandCnt( 0 )
+  : mXSize( 0 )
+  , mYSize( 0 )
+  , mBandCnt( 0 )
 {
   mDataset = GDALOpen( layerpath.toLocal8Bit().constData(), GA_ReadOnly );
   if ( !mDataset )
@@ -624,7 +624,7 @@ double QgsAlignRaster::RasterInfo::identify( double mx, double my )
   int px = int(( mx - mGeoTransform[0] ) / mGeoTransform[1] );
   int py = int(( my - mGeoTransform[3] ) / mGeoTransform[5] );
 
-  float* pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
+  float* pafScanline = ( float* ) CPLMalloc( sizeof( float ) );
   CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
                              pafScanline, 1, 1, GDT_Float32, 0, 0 );
   double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();

@@ -32,13 +32,13 @@ class CORE_EXPORT QgsLayerDefinition
 {
   public:
     //! Loads the QLR at path into QGIS.  New layers are added to rootGroup and the map layer registry
-    static bool loadLayerDefinition( const QString & path, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    static bool loadLayerDefinition( const QString& path, QgsLayerTreeGroup* rootGroup, QString& errorMessage );
     //! Loads the QLR from the XML document.  New layers are added to rootGroup and the map layer registry
-    static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString& errorMessage );
     //! Export the selected layer tree nodes to a QLR file
-    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
+    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString& errorMessage );
     //! Export the selected layer tree nodes to a QLR-XML document
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString& errorMessage, const QString& relativeBasePath = QString::null );
 
     /**
      * \ingroup core
@@ -59,16 +59,28 @@ class CORE_EXPORT QgsLayerDefinition
         DependencySorter( const QString& fileName );
 
         //! Get the layer nodes in an order where they can be loaded incrementally without dependency break
-        QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
+        QVector<QDomNode> sortedLayerNodes() const
+        {
+          return mSortedLayerNodes;
+        }
 
         //! Get the layer IDs in an order where they can be loaded incrementally without dependency break
-        QStringList sortedLayerIds() const { return mSortedLayerIds; }
+        QStringList sortedLayerIds() const
+        {
+          return mSortedLayerIds;
+        }
 
         //! Whether some cyclic dependency has been detected
-        bool hasCycle() const { return mHasCycle; }
+        bool hasCycle() const
+        {
+          return mHasCycle;
+        }
 
         //! Whether some dependency is missing
-        bool hasMissingDependency() const { return mHasMissingDependency; }
+        bool hasMissingDependency() const
+        {
+          return mHasMissingDependency;
+        }
 
       private:
         QVector<QDomNode> mSortedLayerNodes;

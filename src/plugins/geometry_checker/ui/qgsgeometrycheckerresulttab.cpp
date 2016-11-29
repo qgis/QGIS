@@ -37,12 +37,12 @@
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
-QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget* tabWidget, QWidget* parent )
-    : QWidget( parent )
-    , mTabWidget( tabWidget )
-    , mIface( iface )
-    , mChecker( checker )
-    , mFeaturePool( featurePool )
+QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool* featurePool, QTabWidget* tabWidget, QWidget* parent )
+  : QWidget( parent )
+  , mTabWidget( tabWidget )
+  , mIface( iface )
+  , mChecker( checker )
+  , mFeaturePool( featurePool )
 {
   ui.setupUi( this );
   mErrorCount = 0;
@@ -108,7 +108,7 @@ void QgsGeometryCheckerResultTab::finalize()
   }
 }
 
-void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
+void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError* error )
 {
   bool sortingWasEnabled = ui.tableWidgetErrors->isSortingEnabled();
   if ( sortingWasEnabled )
@@ -151,7 +151,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
     ui.tableWidgetErrors->setSortingEnabled( true );
 }
 
-void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, bool statusChanged )
+void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError* error, bool statusChanged )
 {
   if ( !mErrorMap.contains( error ) )
   {
@@ -401,7 +401,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   mIface->mapCanvas()->refresh();
 }
 
-void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )
+void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection& newSel, const QItemSelection& /*oldSel*/ )
 {
   QModelIndex idx = ui.tableWidgetErrors->currentIndex();
   if ( idx.isValid() && !ui.tableWidgetErrors->isRowHidden( idx.row() )  && ui.tableWidgetErrors->selectionModel()->selectedIndexes().contains( idx ) )
@@ -592,7 +592,7 @@ void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
   QSettings().setValue( sSettingsGroup + errorType, id );
 }
 
-void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
+void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList& ids )
 {
   if ( mFeaturePool->getLayer() && ids.contains( mFeaturePool->getLayer()->id() ) && isEnabled() )
   {

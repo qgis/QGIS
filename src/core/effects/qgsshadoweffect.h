@@ -45,28 +45,40 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * values indicating greater blur strength.
      * @see blurLevel
      */
-    void setBlurLevel( const int level ) { mBlurLevel = level; }
+    void setBlurLevel( const int level )
+    {
+      mBlurLevel = level;
+    }
 
     /** Returns the blur level (strength) for the shadow.
      * @returns blur level. Value will be between 0 and 16, with larger
      * values indicating greater blur strength.
      * @see setBlurLevel
      */
-    int blurLevel() const { return mBlurLevel; }
+    int blurLevel() const
+    {
+      return mBlurLevel;
+    }
 
     /** Sets the angle for offsetting the shadow.
      * @param angle offset angle in degrees clockwise from North
      * @see offsetAngle
      * @see setOffsetDistance
      */
-    void setOffsetAngle( const int angle ) { mOffsetAngle = angle; }
+    void setOffsetAngle( const int angle )
+    {
+      mOffsetAngle = angle;
+    }
 
     /** Returns the angle used for offsetting the shadow.
      * @returns offset angle in degrees clockwise from North
      * @see setOffsetAngle
      * @see offsetDistance
      */
-    int offsetAngle() const { return mOffsetAngle; }
+    int offsetAngle() const
+    {
+      return mOffsetAngle;
+    }
 
     /** Sets the distance for offsetting the shadow.
      * @param distance offset distance. Units are specified via @link setOffsetUnit @endlink
@@ -74,7 +86,10 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see setOffsetUnit
      * @see setOffsetMapUnitScale
      */
-    void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
+    void setOffsetDistance( const double distance )
+    {
+      mOffsetDist = distance;
+    }
 
     /** Returns the distance used for offsetting the shadow.
      * @returns offset distance. Distance units are retrieved via @link offsetUnit @endlink
@@ -82,7 +97,10 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see offsetUnit
      * @see offsetMapUnitScale
      */
-    double offsetDistance() const { return mOffsetDist; }
+    double offsetDistance() const
+    {
+      return mOffsetDist;
+    }
 
     /** Sets the units used for the shadow offset distance.
      * @param unit units for offset distance
@@ -90,7 +108,10 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see setOffsetDistance
      * @see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit )
+    {
+      mOffsetUnit = unit;
+    }
 
     /** Returns the units used for the shadow offset distance.
      * @returns units for offset distance
@@ -98,7 +119,10 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see offsetDistance
      * @see offsetMapUnitScale
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    QgsUnitTypes::RenderUnit offsetUnit() const
+    {
+      return mOffsetUnit;
+    }
 
     /** Sets the map unit scale used for the shadow offset distance.
      * @param scale map unit scale for offset distance
@@ -106,7 +130,10 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see setOffsetDistance
      * @see setOffsetUnit
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale )
+    {
+      mOffsetMapUnitScale = scale;
+    }
 
     /** Returns the map unit scale used for the shadow offset distance.
      * @returns map unit scale for offset distance
@@ -114,47 +141,68 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see offsetDistance
      * @see offsetUnit
      */
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+    const QgsMapUnitScale& offsetMapUnitScale() const
+    {
+      return mOffsetMapUnitScale;
+    }
 
     /** Sets the color for the shadow.
      * @param color shadow color
      * @see color
      */
-    void setColor( const QColor& color ) { mColor = color; }
+    void setColor( const QColor& color )
+    {
+      mColor = color;
+    }
 
     /** Returns the color used for the shadow.
      * @returns shadow color
      * @see setColor
      */
-    QColor color() const { return mColor; }
+    QColor color() const
+    {
+      return mColor;
+    }
 
     /** Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setTransparency( const double transparency )
+    {
+      mTransparency = transparency;
+    }
 
     /** Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
-    double transparency() const { return mTransparency; }
+    double transparency() const
+    {
+      return mTransparency;
+    }
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */
-    void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
+    void setBlendMode( const QPainter::CompositionMode mode )
+    {
+      mBlendMode = mode;
+    }
 
     /** Returns the blend mode for the effect
      * @returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    QPainter::CompositionMode blendMode() const
+    {
+      return mBlendMode;
+    }
 
   protected:
 
@@ -200,12 +248,18 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
     QgsDropShadowEffect();
     virtual ~QgsDropShadowEffect();
 
-    virtual QString type() const override { return QStringLiteral( "dropShadow" ); }
+    virtual QString type() const override
+    {
+      return QStringLiteral( "dropShadow" );
+    }
     virtual QgsDropShadowEffect* clone() const override;
 
   protected:
 
-    virtual bool exteriorShadow() const override { return true; }
+    virtual bool exteriorShadow() const override
+    {
+      return true;
+    }
 
 };
 
@@ -230,12 +284,18 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
     QgsInnerShadowEffect();
     virtual ~QgsInnerShadowEffect();
 
-    virtual QString type() const override { return QStringLiteral( "innerShadow" ); }
+    virtual QString type() const override
+    {
+      return QStringLiteral( "innerShadow" );
+    }
     virtual QgsInnerShadowEffect* clone() const override;
 
   protected:
 
-    virtual bool exteriorShadow() const override { return false; }
+    virtual bool exteriorShadow() const override
+    {
+      return false;
+    }
 
 };
 

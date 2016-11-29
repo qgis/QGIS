@@ -18,9 +18,9 @@
 #include "qgsscalewidget.h"
 
 
-QgsScaleWidgetPlugin::QgsScaleWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsScaleWidgetPlugin::QgsScaleWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsScaleWidgetPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsScaleWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsScaleWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsScaleWidget( parent );
 }
@@ -60,7 +60,7 @@ bool QgsScaleWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsScaleWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsScaleWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

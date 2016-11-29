@@ -26,7 +26,7 @@
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
     QColor* colorArray, int nColors, const QVector<QString>& labels ):
-    QgsRasterRenderer( input, QStringLiteral( "paletted" ) ), mBand( bandNumber ), mNColors( nColors ), mLabels( labels )
+  QgsRasterRenderer( input, QStringLiteral( "paletted" ) ), mBand( bandNumber ), mNColors( nColors ), mLabels( labels )
 {
   mColors = new QRgb[nColors];
   for ( int i = 0; i < nColors; ++i )
@@ -37,7 +37,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input,
 }
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels ):
-    QgsRasterRenderer( input, QStringLiteral( "paletted" ) ), mBand( bandNumber ), mColors( colorArray ), mNColors( nColors ), mLabels( labels )
+  QgsRasterRenderer( input, QStringLiteral( "paletted" ) ), mBand( bandNumber ), mColors( colorArray ), mNColors( nColors ), mLabels( labels )
 {
 }
 
@@ -48,7 +48,7 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
 
 QgsPalettedRasterRenderer* QgsPalettedRasterRenderer::clone() const
 {
-  QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( nullptr, mBand, rgbArray(), mNColors );
+  QgsPalettedRasterRenderer* renderer = new QgsPalettedRasterRenderer( nullptr, mBand, rgbArray(), mNColors );
   renderer->copyCommonProperties( this );
 
   renderer->mLabels = mLabels;
@@ -151,15 +151,15 @@ void QgsPalettedRasterRenderer::setLabel( int idx, const QString& label )
   mLabels[idx] = label;
 }
 
-QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput || mNColors == 0 )
   {
     return outputBlock;
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( bandNo, extent, width, height, feedback );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
@@ -172,7 +172,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
 
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
-  QgsRasterBlock *alphaBlock = nullptr;
+  QgsRasterBlock* alphaBlock = nullptr;
 
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {

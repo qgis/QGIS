@@ -17,7 +17,7 @@
 #include "Point3D.h"
 #include "qgslogger.h"
 
-Point3D& Point3D::operator=( const Point3D & p )
+Point3D& Point3D::operator=( const Point3D& p )
 {
   mX = p.mX;
   mY = p.mY;

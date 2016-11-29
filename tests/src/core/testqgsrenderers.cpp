@@ -39,11 +39,11 @@ class TestQgsRenderers : public QObject
 
   public:
     TestQgsRenderers()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
+      : mTestHasError( false )
+      , mMapSettings( 0 )
+      , mpPointsLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mpPolysLayer( 0 )
     {}
     ~TestQgsRenderers()
     {
@@ -64,10 +64,10 @@ class TestQgsRenderers : public QObject
     bool mTestHasError;
     bool setQml( const QString& theType ); //uniquevalue / continuous / single /
     bool imageCheck( const QString& theType ); //as above
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapSettings* mMapSettings;
+    QgsMapLayer* mpPointsLayer;
+    QgsMapLayer* mpLinesLayer;
+    QgsMapLayer* mpPolysLayer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -97,7 +97,7 @@ void TestQgsRenderers::initTestCase()
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -108,7 +108,7 @@ void TestQgsRenderers::initTestCase()
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
 
   //
@@ -120,7 +120,7 @@ void TestQgsRenderers::initTestCase()
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer );
+    QList<QgsMapLayer*>() << mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

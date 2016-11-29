@@ -32,7 +32,7 @@ class QgsImageWarper
     Q_DECLARE_TR_FUNCTIONS( QgsImageWarper )
 
   public:
-    explicit QgsImageWarper( QWidget *theParent );
+    explicit QgsImageWarper( QWidget* theParent );
 
     enum ResamplingMethod
     {
@@ -53,7 +53,7 @@ class QgsImageWarper
      */
     int warpFile( const QString& input,
                   const QString& output,
-                  const QgsGeorefTransform &georefTransform,
+                  const QgsGeorefTransform& georefTransform,
                   ResamplingMethod resampling,
                   bool useZeroAsTrans,
                   const QString& compression,
@@ -63,14 +63,14 @@ class QgsImageWarper
     struct TransformChain
     {
       GDALTransformerFunc GDALTransformer;
-      void *              GDALTransformerArg;
+      void*               GDALTransformerArg;
       double              adfGeotransform[6];
       double              adfInvGeotransform[6];
     };
 
     //! \sa addGeoToPixelTransform
-    static int GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-                                    double *x, double *y, double *z, int *panSuccess );
+    static int GeoToPixelTransform( void* pTransformerArg, int bDstToSrc, int nPointCount,
+                                    double* x, double* y, double* z, int* panSuccess );
 
     /**
      * \brief Appends a transform from geocoordinates to pixel/line coordinates to the given GDAL transformer.
@@ -80,20 +80,20 @@ class QgsImageWarper
      * \sa destroyGeoToPixelTransform
      * \returns Argument to use with the static GDAL callback \ref GeoToPixelTransform
      */
-    void *addGeoToPixelTransform( GDALTransformerFunc GDALTransformer, void *GDALTransformerArg, double *padfGeotransform ) const;
-    void destroyGeoToPixelTransform( void *GeoToPixelTransfomArg ) const;
+    void* addGeoToPixelTransform( GDALTransformerFunc GDALTransformer, void* GDALTransformerArg, double* padfGeotransform ) const;
+    void destroyGeoToPixelTransform( void* GeoToPixelTransfomArg ) const;
 
-    bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
-                                 const GDALTransformerFunc& pfnTransform, GDALDatasetH &hSrcDS,
-                                 GDALWarpOptions *&psWarpOptions );
+    bool openSrcDSAndGetWarpOpt( const QString& input, ResamplingMethod resampling,
+                                 const GDALTransformerFunc& pfnTransform, GDALDatasetH& hSrcDS,
+                                 GDALWarpOptions*& psWarpOptions );
 
-    bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS, uint resX, uint resY,
-                                   double *adfGeoTransform, bool useZeroAsTrans, const QString& compression, const QgsCoordinateReferenceSystem& crs );
+    bool createDestinationDataset( const QString& outputName, GDALDatasetH hSrcDS, GDALDatasetH& hDstDS, uint resX, uint resY,
+                                   double* adfGeoTransform, bool useZeroAsTrans, const QString& compression, const QgsCoordinateReferenceSystem& crs );
 
-    QWidget *mParent;
-    void      *createWarpProgressArg( QProgressDialog *progressDialog ) const;
+    QWidget* mParent;
+    void*      createWarpProgressArg( QProgressDialog* progressDialog ) const;
     //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
-    static int CPL_STDCALL updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg );
+    static int CPL_STDCALL updateWarpProgress( double dfComplete, const char* pszMessage, void* pProgressArg );
 
     static bool mWarpCanceled;
 

@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param rotation the rotation in degrees to be applied to the rectangle
      * @returns largest scaled version of the rectangle possible
      */
-    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
+    static QRectF largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, const double rotation );
 
     /** Returns the size in mm corresponding to a font point size
      * @param pointSize font size in points
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param boundsBefore QRectF of bounds before resize
      * @param boundsAfter QRectF of bounds after resize
      */
-    static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
+    static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
 
     /** Returns a scaled position given a before and after range
      * @param position initial position within before range to scale
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param ok will be true if string could be decoded
      * @returns decoded paper orientation
      */
-    static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool &ok );
+    static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool& ok );
 
     /** Decodes a string representing a preset page size
      * @param presetString string to decode
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param height double for decoded paper height
      * @returns true if string could be decoded successfully
      */
-    static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
+    static bool decodePresetPaperSize( const QString& presetString, double& width, double& height );
 
     /** Reads all data defined properties from xml
      * @param itemElem dom element containing data defined properties
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
      */
-    static void readDataDefinedPropertyMap( const QDomElement &itemElem,
+    static void readDataDefinedPropertyMap( const QDomElement& itemElem,
                                             QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
                                             QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
                                           );
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsComposerUtils
      * @note this method was added in version 2.5
      * @see readDataDefinedPropertyMap
      */
-    static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
+    static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement& ddElem,
                                          QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
     /** Writes data defined properties to xml
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsComposerUtils
      * @note this method was added in version 2.5
      * @see readDataDefinedPropertyMap
      */
-    static void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
+    static void writeDataDefinedPropertyMap( QDomElement& itemElem, QDomDocument& doc,
         const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
         const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 

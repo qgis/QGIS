@@ -1,4 +1,11 @@
-SET(ASTYLE_SRCS astyle_main.cpp ASBeautifier.cpp ASFormatter.cpp ASEnhancer.cpp ASResource.cpp)
+SET(ASTYLE_SRCS
+  astyle_main.cpp
+  ASBeautifier.cpp
+  ASEnhancer.cpp
+  ASFormatter.cpp
+  ASLocalizer.cpp
+  ASResource.cpp
+)
 # No warnings for astyle build
 IF(NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(${ASTYLE_SRCS} PROPERTIES COMPILE_FLAGS -w)

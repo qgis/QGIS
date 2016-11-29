@@ -37,10 +37,10 @@
 #include <climits>
 #include <cfloat>
 
-QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-    : QDialog()
-    , mLayer( vl )
-    , mFieldIdx( fieldIdx )
+QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer* vl, int fieldIdx )
+  : QDialog()
+  , mLayer( vl )
+  , mFieldIdx( fieldIdx )
 {
   setupUi( this );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
@@ -221,7 +221,7 @@ bool QgsAttributeTypeDialog::labelOnTop() const
   return labelOnTopCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )
+void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString& desc )
 {
   leConstraintExpressionDescription->setText( desc );
 }
@@ -266,7 +266,7 @@ bool QgsAttributeTypeDialog::uniqueEnforced() const
   return mCheckBoxEnforceUnique->isChecked();
 }
 
-void QgsAttributeTypeDialog::setConstraintExpression( const QString &str )
+void QgsAttributeTypeDialog::setConstraintExpression( const QString& str )
 {
   constraintExpressionWidget->setField( str );
 }
@@ -351,7 +351,7 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
 
   QString previewText = val.toString();
 
-  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( editorWidgetType() );
+  QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( editorWidgetType() );
   if ( factory )
   {
     previewText = factory->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );

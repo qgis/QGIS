@@ -32,10 +32,13 @@ class QgsGeometryCheckerResultTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget* parent = nullptr );
+    QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool* featurePool, QTabWidget* tabWidget, QWidget* parent = nullptr );
     ~QgsGeometryCheckerResultTab();
     void finalize();
-    bool isCloseable() const { return mCloseable; }
+    bool isCloseable() const
+    {
+      return mCloseable;
+    }
 
     static QString sSettingsGroup;
 
@@ -54,7 +57,7 @@ class QgsGeometryCheckerResultTab : public QWidget
 
     QgsGeometryCheckerFixSummaryDialog::Statistics mStatistics;
 
-    bool exportErrorsDo( const QString &file );
+    bool exportErrorsDo( const QString& file );
     void fixErrors( bool prompt );
     void setRowStatus( int row, const QColor& color, const QString& message, bool selectable );
 
@@ -66,12 +69,21 @@ class QgsGeometryCheckerResultTab : public QWidget
     void highlightErrors( bool current = false );
     void onSelectionChanged( const QItemSelection& newSel, const QItemSelection& /*oldSel*/ );
     void openAttributeTable();
-    void fixErrorsWithDefault() { fixErrors( false ); }
-    void fixErrorsWithPrompt() { fixErrors( true ); }
+    void fixErrorsWithDefault()
+    {
+      fixErrors( false );
+    }
+    void fixErrorsWithPrompt()
+    {
+      fixErrors( true );
+    }
     void setDefaultResolutionMethods();
     void storeDefaultResolutionMethod( int ) const;
-    void checkRemovedLayer( const QStringList &ids );
-    void clearAttribTableDialog() { mAttribTableDialog = nullptr; }
+    void checkRemovedLayer( const QStringList& ids );
+    void clearAttribTableDialog()
+    {
+      mAttribTableDialog = nullptr;
+    }
 };
 
 #endif // QGS_GEOMETRY_CHECKER_RESULT_TAB_H

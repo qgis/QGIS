@@ -162,7 +162,7 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
     testFont.setPointSize( defaultSize );
 
     // prefer a style that mostly matches the passed-in font
-    Q_FOREACH ( const QString &style, fontDB.styles( f.family() ) )
+    Q_FOREACH ( const QString& style, fontDB.styles( f.family() ) )
     {
       styledfont = fontDB.font( f.family(), style, defaultSize );
       styledfont = styledfont.resolve( f );
@@ -176,7 +176,7 @@ bool QgsFontUtils::updateFontViaStyle( QFont& f, const QString& fontstyle, bool 
     // fallback to first style found that works
     if ( !foundmatch )
     {
-      Q_FOREACH ( const QString &style, fontDB.styles( f.family() ) )
+      Q_FOREACH ( const QString& style, fontDB.styles( f.family() ) )
       {
         styledfont = fontDB.font( f.family(), style, defaultSize );
         if ( QApplication::font() != styledfont )

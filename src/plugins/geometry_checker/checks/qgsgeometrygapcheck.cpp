@@ -19,7 +19,7 @@
 #include "../utils/qgsfeaturepool.h"
 
 
-void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter , const QgsFeatureIds& ids ) const
 {
   Q_ASSERT( mFeaturePool->getLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
   if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -135,7 +135,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
   delete diffGeom;
 }
 
-void QgsGeometryGapCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryGapCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes& changes ) const
 {
   if ( method == NoChange )
   {
@@ -159,7 +159,7 @@ void QgsGeometryGapCheck::fixError( QgsGeometryCheckError* error, int method, in
   }
 }
 
-bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError* err, Changes &changes, QString& errMsg ) const
+bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError* err, Changes& changes, QString& errMsg ) const
 {
   double maxVal = 0.;
   QgsFeature mergeFeature;

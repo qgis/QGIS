@@ -22,7 +22,7 @@
 #include "qgscolordialog.h"
 #include <QColorDialog>
 
-QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
+QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 
@@ -70,7 +70,7 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
   return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors, labels );
 }
 
-void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
   if ( column == 1 && item ) //change item color
   {
@@ -108,7 +108,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
   else
   {
     //read default palette settings from layer
-    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
+    QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
     if ( provider )
     {
       QList<QgsColorRampShader::ColorRampItem> itemList = provider->colorTable( mBandComboBox->currentData().toInt() );

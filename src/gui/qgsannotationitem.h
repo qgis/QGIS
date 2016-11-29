@@ -67,41 +67,80 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
 
     //setters and getters
     void setMapPositionFixed( bool fixed );
-    bool hasFixedMapPosition() const override { return mMapPositionFixed; }
+    bool hasFixedMapPosition() const override
+    {
+      return mMapPositionFixed;
+    }
 
     virtual void setMapPosition( const QgsPoint& pos );
-    QgsPoint mapPosition() const override { return mMapPosition; }
+    QgsPoint mapPosition() const override
+    {
+      return mMapPosition;
+    }
 
     virtual QPointF relativePosition() const override;
 
     virtual double scaleFactor() const override;
 
-    virtual bool showItem() const override { return isVisible(); }
+    virtual bool showItem() const override
+    {
+      return isVisible();
+    }
 
     /** Sets the CRS of the map position.
       @param crs the CRS to set */
     virtual void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
     //! Returns the CRS of the map position.
-    QgsCoordinateReferenceSystem mapPositionCrs() const override { return mMapPositionCrs; }
+    QgsCoordinateReferenceSystem mapPositionCrs() const override
+    {
+      return mMapPositionCrs;
+    }
 
     void setFrameSize( QSizeF size );
-    QSizeF frameSize() const { return mFrameSize; }
+    QSizeF frameSize() const
+    {
+      return mFrameSize;
+    }
 
     void setOffsetFromReferencePoint( QPointF offset );
-    QPointF offsetFromReferencePoint() const { return mOffsetFromReferencePoint; }
+    QPointF offsetFromReferencePoint() const
+    {
+      return mOffsetFromReferencePoint;
+    }
 
     //! Set symbol that is drawn on map position. Takes ownership
     void setMarkerSymbol( QgsMarkerSymbol* symbol );
-    const QgsMarkerSymbol* markerSymbol() const {return mMarkerSymbol;}
+    const QgsMarkerSymbol* markerSymbol() const
+    {
+      return mMarkerSymbol;
+    }
 
-    void setFrameBorderWidth( double w ) { mFrameBorderWidth = w; }
-    double frameBorderWidth() const { return mFrameBorderWidth; }
+    void setFrameBorderWidth( double w )
+    {
+      mFrameBorderWidth = w;
+    }
+    double frameBorderWidth() const
+    {
+      return mFrameBorderWidth;
+    }
 
-    void setFrameColor( const QColor& c ) { mFrameColor = c; }
-    QColor frameColor() const { return mFrameColor; }
+    void setFrameColor( const QColor& c )
+    {
+      mFrameColor = c;
+    }
+    QColor frameColor() const
+    {
+      return mFrameColor;
+    }
 
-    void setFrameBackgroundColor( const QColor& c ) { mFrameBackgroundColor = c; }
-    QColor frameBackgroundColor() const { return mFrameBackgroundColor; }
+    void setFrameBackgroundColor( const QColor& c )
+    {
+      mFrameBackgroundColor = c;
+    }
+    QColor frameBackgroundColor() const
+    {
+      return mFrameBackgroundColor;
+    }
 
     /**
      * Serialize to XML. The doc is used to generate new nodes.
@@ -129,7 +168,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
 
     virtual void setItemData( int role, const QVariant& value ) override;
 
-    virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr ) override;
 
     void paint( QPainter* painter ) override;
 

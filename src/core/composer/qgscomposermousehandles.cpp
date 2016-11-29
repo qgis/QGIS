@@ -30,20 +30,20 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 
-QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
-    : QObject( nullptr )
-    , QGraphicsRectItem( nullptr )
-    , mComposition( composition )
-    , mGraphicsView( nullptr )
-    , mCurrentMouseMoveAction( NoAction )
-    , mBeginHandleWidth( 0 )
-    , mBeginHandleHeight( 0 )
-    , mResizeMoveX( 0 )
-    , mResizeMoveY( 0 )
-    , mIsDragging( false )
-    , mIsResizing( false )
-    , mHAlignSnapItem( nullptr )
-    , mVAlignSnapItem( nullptr )
+QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition* composition )
+  : QObject( nullptr )
+  , QGraphicsRectItem( nullptr )
+  , mComposition( composition )
+  , mGraphicsView( nullptr )
+  , mCurrentMouseMoveAction( NoAction )
+  , mBeginHandleWidth( 0 )
+  , mBeginHandleHeight( 0 )
+  , mResizeMoveX( 0 )
+  , mResizeMoveY( 0 )
+  , mIsDragging( false )
+  , mIsResizing( false )
+  , mHAlignSnapItem( nullptr )
+  , mVAlignSnapItem( nullptr )
 {
   //listen for selection changes, and update handles accordingly
   QObject::connect( mComposition, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
@@ -207,11 +207,11 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
 void QgsComposerMouseHandles::selectionChanged()
 {
   //listen out for selected items' size and rotation changed signals
-  QList<QGraphicsItem *> itemList = composition()->items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  QList<QGraphicsItem*> itemList = composition()->items();
+  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    QgsComposerItem* item = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsComposerItem* item = dynamic_cast<QgsComposerItem*>( *itemIt );
     if ( item )
     {
       if ( item->selected() )
@@ -312,7 +312,7 @@ QRectF QgsComposerMouseHandles::selectionBounds() const
   return bounds;
 }
 
-bool QgsComposerMouseHandles::selectionRotation( double & rotation ) const
+bool QgsComposerMouseHandles::selectionRotation( double& rotation ) const
 {
   //check if all selected items have same rotation
   QList<QgsComposerItem*> selectedItems = mComposition->selectedComposerItems( false );
@@ -521,7 +521,7 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
 
   //find out if cursor position is over a selected item
   QPointF scenePoint = mapToScene( itemCoordPos );
-  QList<QGraphicsItem *> itemsAtCursorPos = mComposition->items( scenePoint );
+  QList<QGraphicsItem*> itemsAtCursorPos = mComposition->items( scenePoint );
   if ( itemsAtCursorPos.isEmpty() )
   {
     //no items at cursor position
@@ -530,7 +530,7 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForPosi
   QList<QGraphicsItem*>::iterator itemIter = itemsAtCursorPos.begin();
   for ( ; itemIter != itemsAtCursorPos.end(); ++itemIter )
   {
-    QgsComposerItem* item = dynamic_cast<QgsComposerItem *>(( *itemIter ) );
+    QgsComposerItem* item = dynamic_cast<QgsComposerItem*>(( *itemIter ) );
     if ( item && item->selected() )
     {
       //cursor is over a selected composer item
@@ -549,12 +549,12 @@ QgsComposerMouseHandles::MouseAction QgsComposerMouseHandles::mouseActionForScen
   return mouseActionForPosition( itemPos );
 }
 
-void QgsComposerMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
+void QgsComposerMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent* event )
 {
   setViewportCursor( cursorForPosition( event->pos() ) );
 }
 
-void QgsComposerMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
+void QgsComposerMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent* event )
 {
   Q_UNUSED( event );
   setViewportCursor( Qt::ArrowCursor );
@@ -748,7 +748,7 @@ void QgsComposerMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent* event )
 
 }
 
-void QgsComposerMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
+void QgsComposerMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event )
 {
   Q_UNUSED( event );
 }
@@ -760,21 +760,21 @@ QSizeF QgsComposerMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
 
   switch ( mCurrentMouseMoveAction )
   {
-      //vertical resize
+    //vertical resize
     case QgsComposerMouseHandles::ResizeUp:
       return QSizeF( 0, sceneMousePos.y() );
 
     case QgsComposerMouseHandles::ResizeDown:
       return QSizeF( 0, sceneMousePos.y() - rect().height() );
 
-      //horizontal resize
+    //horizontal resize
     case QgsComposerMouseHandles::ResizeLeft:
       return QSizeF( sceneMousePos.x(), 0 );
 
     case QgsComposerMouseHandles::ResizeRight:
       return QSizeF( sceneMousePos.x() - rect().width(), 0 );
 
-      //diagonal resize
+    //diagonal resize
     case QgsComposerMouseHandles::ResizeLeftUp:
       return QSizeF( sceneMousePos.x(), sceneMousePos.y() );
 
@@ -887,7 +887,7 @@ void QgsComposerMouseHandles::resizeMouseMove( QPointF currentPosition, bool loc
 
   switch ( mCurrentMouseMoveAction )
   {
-      //vertical resize
+    //vertical resize
     case QgsComposerMouseHandles::ResizeUp:
     {
       if ( ratio )
@@ -1304,11 +1304,11 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
 
   if ( mComposition->smartGuidesEnabled() )
   {
-    QList<QGraphicsItem *> itemList = mComposition->items();
-    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    QList<QGraphicsItem*> itemList = mComposition->items();
+    QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
     for ( ; itemIt != itemList.end(); ++itemIt )
     {
-      const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+      const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem*>( *itemIt );
       //don't snap to selected items, since they're the ones that will be snapping to something else
       //also ignore group members - only snap to bounds of group itself
       //also ignore hidden items
@@ -1317,7 +1317,7 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
         continue;
       }
       QRectF itemRect;
-      if ( dynamic_cast<const QgsPaperItem *>( *itemIt ) )
+      if ( dynamic_cast<const QgsPaperItem*>( *itemIt ) )
       {
         //if snapping to paper use the paper item's rect rather then the bounding rect,
         //since we want to snap to the page edge and not any outlines drawn around the page

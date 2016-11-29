@@ -40,12 +40,12 @@ class TestQgsComposerTableV2 : public QObject
 
   public:
     TestQgsComposerTableV2()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
-        , mVectorLayer( 0 )
-        , mComposerAttributeTable( 0 )
-        , mFrame1( 0 )
-        , mFrame2( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
+      , mVectorLayer( 0 )
+      , mComposerAttributeTable( 0 )
+      , mFrame1( 0 )
+      , mFrame2( 0 )
     {}
 
   private slots:
@@ -80,7 +80,7 @@ class TestQgsComposerTableV2 : public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
@@ -88,7 +88,7 @@ class TestQgsComposerTableV2 : public QObject
     QString mReport;
 
     //compares rows in mComposerAttributeTable to expected rows
-    void compareTable( QList<QStringList> &expectedRows );
+    void compareTable( QList<QStringList>& expectedRows );
 };
 
 void TestQgsComposerTableV2::initTestCase()
@@ -177,7 +177,7 @@ void TestQgsComposerTableV2::attributeTableHeadings()
   }
 }
 
-void TestQgsComposerTableV2::compareTable( QList<QStringList> &expectedRows )
+void TestQgsComposerTableV2::compareTable( QList<QStringList>& expectedRows )
 {
   //retrieve rows and check
   QgsComposerTableContents tableContents;

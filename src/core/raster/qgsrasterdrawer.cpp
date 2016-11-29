@@ -52,7 +52,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // We know that the output data type of last pipe filter is QImage data
 
-  QgsRasterBlock *block;
+  QgsRasterBlock* block;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
   while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
@@ -68,7 +68,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
     // Because of bug in Acrobat Reader we must use "white" transparent color instead
     // of "black" for PDF. See #9101.
-    QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
+    QPrinter* printer = dynamic_cast<QPrinter*>( p->device() );
     if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
     {
       QgsDebugMsgLevel( "PdfFormat", 4 );

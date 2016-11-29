@@ -37,7 +37,7 @@ void ParametricLine::calcSecDer( float t, Vector3D* v )
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
 }
 
-void ParametricLine::calcPoint( float t, Point3D *p )
+void ParametricLine::calcPoint( float t, Point3D* p )
 {
   Q_UNUSED( t );
   Q_UNUSED( p );

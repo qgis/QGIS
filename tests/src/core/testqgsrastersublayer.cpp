@@ -62,14 +62,14 @@ class TestQgsRasterSubLayer : public QObject
   private:
     QString mTestDataDir;
     QString mFileName;
-    QgsRasterLayer * mpRasterLayer;
+    QgsRasterLayer* mpRasterLayer;
     QString mReport;
     bool mHasNetCDF;
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-    : mpRasterLayer( nullptr )
-    , mHasNetCDF( false )
+  : mpRasterLayer( nullptr )
+  , mHasNetCDF( false )
 {
 
 }
@@ -161,7 +161,7 @@ void TestQgsRasterSubLayer::checkStats()
     QString sublayerUri = mpRasterLayer->subLayers().value( 0 );
     mReport += "sublayer: " + sublayerUri + "<br>\n";
 
-    QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, QStringLiteral( "Sublayer 1" ) );
+    QgsRasterLayer* sublayer = new QgsRasterLayer( sublayerUri, QStringLiteral( "Sublayer 1" ) );
 
     QgsRasterBandStats myStatistics = sublayer->dataProvider()->bandStatistics( 1,
                                       QgsRasterBandStats::Min | QgsRasterBandStats::Max );

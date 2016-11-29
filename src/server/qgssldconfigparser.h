@@ -35,7 +35,10 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters );
     virtual ~QgsSLDConfigParser();
 
-    void setFallbackParser( QgsWmsConfigParser* p ) { mFallbackParser = p; }
+    void setFallbackParser( QgsWmsConfigParser* p )
+    {
+      mFallbackParser = p;
+    }
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -119,7 +122,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     //! Creates a composition from the project file (probably delegated to the fallback parser)
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml*>& htmlFrameList ) const override;
 
     //! Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
@@ -148,7 +151,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     //! Output units (pixel or mm)
     QgsMapRenderer::OutputUnits mOutputUnits;
 
-    QgsWmsConfigParser *mFallbackParser;
+    QgsWmsConfigParser* mFallbackParser;
 
     QFont mLegendLayerFont;
 
@@ -203,7 +206,10 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
     //! Reads attributes "epsg" or "proj" from layer element and sets specified CRS if present
     void setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const;
 
-    bool useLayerIds() const override { return false; }
+    bool useLayerIds() const override
+    {
+      return false;
+    }
 };
 
 #endif // QGSSLDCONFIGPARSER_H

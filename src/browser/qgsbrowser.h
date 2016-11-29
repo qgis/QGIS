@@ -30,7 +30,7 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 {
     Q_OBJECT
   public:
-    QgsBrowser( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsBrowser( QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
     ~QgsBrowser();
 
     // Expand to given path
@@ -57,8 +57,8 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     void refresh( const QModelIndex& index = QModelIndex() );
 
   protected:
-    void keyPressEvent( QKeyEvent * e ) override;
-    void keyReleaseEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent* e ) override;
+    void keyReleaseEvent( QKeyEvent* e ) override;
 
     bool layerClicked( QgsLayerItem* ptr );
 
@@ -73,9 +73,9 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     bool mDirtyMetadata, mDirtyPreview, mDirtyAttributes;
 
     QgsBrowserModel* mModel;
-    QgsMapLayer *mLayer;
+    QgsMapLayer* mLayer;
     QModelIndex mIndex;
-    QWidget *mParamWidget;
+    QWidget* mParamWidget;
     // last (selected) tab for each
     QMap<QString, int> mLastTab;
     QgsAttributeTableFilterModel* mAttributeTableFilterModel;

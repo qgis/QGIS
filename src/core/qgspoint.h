@@ -118,8 +118,8 @@ class CORE_EXPORT QgsPoint
   public:
     /// Default constructor
     QgsPoint()
-        : m_x( 0.0 )
-        , m_y( 0.0 )
+      : m_x( 0.0 )
+      , m_y( 0.0 )
     {}
 
     //! Create a point from another point
@@ -130,8 +130,8 @@ class CORE_EXPORT QgsPoint
      * @param y y coordinate
      */
     QgsPoint( double x, double y )
-        : m_x( x )
-        , m_y( y )
+      : m_x( x )
+      , m_y( y )
     {}
 
     /** Create a point from a QPointF
@@ -139,8 +139,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPointF point )
-        : m_x( point.x() )
-        , m_y( point.y() )
+      : m_x( point.x() )
+      , m_y( point.y() )
     {}
 
     /** Create a point from a QPoint
@@ -148,8 +148,8 @@ class CORE_EXPORT QgsPoint
      * @note added in QGIS 2.7
      */
     QgsPoint( QPoint point )
-        : m_x( point.x() )
-        , m_y( point.y() )
+      : m_x( point.x() )
+      , m_y( point.y() )
     {}
 
     ~QgsPoint()
@@ -280,13 +280,13 @@ class CORE_EXPORT QgsPoint
      * @returns true if points are equal within specified tolerance
      * @note added in QGIS 2.9
      */
-    bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool compare( const QgsPoint& other, double epsilon = 4 * DBL_EPSILON ) const;
 
     //! equality operator
-    bool operator==( const QgsPoint &other );
+    bool operator==( const QgsPoint& other );
 
     //! Inequality operator
-    bool operator!=( const QgsPoint &other ) const;
+    bool operator!=( const QgsPoint& other ) const;
 
     //! Multiply x and y by the given value
     void multiply( double scalar );
@@ -298,34 +298,67 @@ class CORE_EXPORT QgsPoint
     int onSegment( const QgsPoint& a, const QgsPoint& b ) const;
 
     //! Assignment
-    QgsPoint & operator=( const QgsPoint &other );
+    QgsPoint& operator=( const QgsPoint& other );
 
     //! Calculates the vector obtained by subtracting a point from this point
-    QgsVector operator-( const QgsPoint& p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
+    QgsVector operator-( const QgsPoint& p ) const
+    {
+      return QgsVector( m_x - p.m_x, m_y - p.m_y );
+    }
 
     //! Adds a vector to this point in place
-    QgsPoint &operator+=( QgsVector v ) { *this = *this + v; return *this; }
+    QgsPoint& operator+=( QgsVector v )
+    {
+      *this = *this + v;
+      return *this;
+    }
 
     //! Subtracts a vector from this point in place
-    QgsPoint &operator-=( QgsVector v ) { *this = *this - v; return *this; }
+    QgsPoint& operator-=( QgsVector v )
+    {
+      *this = *this - v;
+      return *this;
+    }
 
     //! Adds a vector to this point
-    QgsPoint operator+( QgsVector v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }
+    QgsPoint operator+( QgsVector v ) const
+    {
+      return QgsPoint( m_x + v.x(), m_y + v.y() );
+    }
 
     //! Subtracts a vector from this point
-    QgsPoint operator-( QgsVector v ) const { return QgsPoint( m_x - v.x(), m_y - v.y() ); }
+    QgsPoint operator-( QgsVector v ) const
+    {
+      return QgsPoint( m_x - v.x(), m_y - v.y() );
+    }
 
     //! Multiplies the coordinates in this point by a scalar quantity
-    QgsPoint operator*( double scalar ) const { return QgsPoint( m_x * scalar, m_y * scalar ); }
+    QgsPoint operator*( double scalar ) const
+    {
+      return QgsPoint( m_x * scalar, m_y * scalar );
+    }
 
     //! Divides the coordinates in this point by a scalar quantity
-    QgsPoint operator/( double scalar ) const { return QgsPoint( m_x / scalar, m_y / scalar ); }
+    QgsPoint operator/( double scalar ) const
+    {
+      return QgsPoint( m_x / scalar, m_y / scalar );
+    }
 
     //! Multiplies the coordinates in this point by a scalar quantity in place
-    QgsPoint &operator*=( double scalar ) { m_x *= scalar; m_y *= scalar; return *this; }
+    QgsPoint& operator*=( double scalar )
+    {
+      m_x *= scalar;
+      m_y *= scalar;
+      return *this;
+    }
 
     //! Divides the coordinates in this point by a scalar quantity in place
-    QgsPoint &operator/=( double scalar ) { m_x /= scalar; m_y /= scalar; return *this; }
+    QgsPoint& operator/=( double scalar )
+    {
+      m_x /= scalar;
+      m_y /= scalar;
+      return *this;
+    }
 
   private:
 
@@ -340,15 +373,19 @@ class CORE_EXPORT QgsPoint
 }; // class QgsPoint
 
 
-inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
+inline bool operator==( const QgsPoint& p1, const QgsPoint& p2 )
 {
   if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
-    { return true; }
+  {
+    return true;
+  }
   else
-    { return false; }
+  {
+    return false;
+  }
 }
 
-inline std::ostream& operator << ( std::ostream& os, const QgsPoint &p )
+inline std::ostream& operator << ( std::ostream& os, const QgsPoint& p )
 {
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();

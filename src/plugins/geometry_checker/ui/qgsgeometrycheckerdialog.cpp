@@ -22,8 +22,8 @@
 #include <QVBoxLayout>
 #include <QSettings>
 
-QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
-    : QDialog( parent )
+QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface* iface, QWidget* parent )
+  : QDialog( parent )
 {
   mIface = iface;
 
@@ -54,7 +54,7 @@ QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()
   s.setValue( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ), saveGeometry() );
 }
 
-void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool )
+void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker* checker, QgsFeaturePool* featurePool )
 {
   delete mTabWidget->widget( 1 );
   mTabWidget->removeTab( 1 );

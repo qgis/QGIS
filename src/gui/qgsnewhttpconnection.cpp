@@ -24,11 +24,11 @@
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mBaseKey( baseKey )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+  QWidget* parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mBaseKey( baseKey )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
@@ -188,13 +188,13 @@ QgsNewHttpConnection::~QgsNewHttpConnection()
 {
 }
 
-void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )
+void QgsNewHttpConnection::on_txtName_textChanged( const QString& text )
 {
   Q_UNUSED( text );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
 }
 
-void QgsNewHttpConnection::on_txtUrl_textChanged( const QString &text )
+void QgsNewHttpConnection::on_txtUrl_textChanged( const QString& text )
 {
   Q_UNUSED( text );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
@@ -235,7 +235,7 @@ void QgsNewHttpConnection::accept()
   }
 
   QUrl url( txtUrl->text().trimmed() );
-  const QList< QPair<QByteArray, QByteArray> > &items = url.encodedQueryItems();
+  const QList< QPair<QByteArray, QByteArray> >& items = url.encodedQueryItems();
   QHash< QString, QPair<QByteArray, QByteArray> > params;
   for ( QList< QPair<QByteArray, QByteArray> >::const_iterator it = items.constBegin(); it != items.constEnd(); ++it )
   {

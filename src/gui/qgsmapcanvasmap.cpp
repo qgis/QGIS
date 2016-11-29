@@ -23,7 +23,7 @@
 /// @cond PRIVATE
 
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas )
+  : QgsMapCanvasItem( canvas )
 {
   setZValue( -10 );
 }

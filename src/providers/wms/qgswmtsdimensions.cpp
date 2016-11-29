@@ -21,8 +21,8 @@
 #include <QSettings>
 #include <QComboBox>
 
-QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer& layer, QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -33,14 +33,14 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
 
   for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
-    const QgsWmtsDimension &d = layer.dimensions[ dims[i] ];
+    const QgsWmtsDimension& d = layer.dimensions[ dims[i] ];
 
     mDimensions->setItem( i, 0, new QTableWidgetItem( d.identifier ) );
     mDimensions->setItem( i, 1, new QTableWidgetItem( d.title ) );
     mDimensions->setItem( i, 2, new QTableWidgetItem( d.abstract ) );
     mDimensions->setItem( i, 3, new QTableWidgetItem( d.defaultValue ) );
 
-    QComboBox *cb = new QComboBox( mDimensions );
+    QComboBox* cb = new QComboBox( mDimensions );
     cb->addItems( d.values );
     int idx = cb->findText( d.defaultValue );
     cb->setCurrentIndex( idx < 0 ? 0 : idx );
@@ -59,13 +59,13 @@ QgsWmtsDimensions::~QgsWmtsDimensions()
   settings.setValue( QStringLiteral( "/Windows/WmtsDimensions/geometry" ), saveGeometry() );
 }
 
-void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )
+void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString>& selected )
 {
   selected.clear();
 
   for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
-    QComboBox *cb = qobject_cast< QComboBox * >( mDimensions->cellWidget( i, 4 ) );
+    QComboBox* cb = qobject_cast< QComboBox* >( mDimensions->cellWidget( i, 4 ) );
     Q_ASSERT( cb );
     selected.insert( mDimensions->item( i, 0 )->text(), cb->currentText() );
   }

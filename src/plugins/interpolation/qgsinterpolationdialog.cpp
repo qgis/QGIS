@@ -45,7 +45,7 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
 
   for ( ; layer_it != mapLayers.end(); ++layer_it )
   {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( layer_it.value() );
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer_it.value() );
     if ( vl )
     {
       mInputLayerComboBox->insertItem( 0, vl->name() );
@@ -164,7 +164,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     }
 
     //type (point/structure line/ breakline)
-    QComboBox* itemCombo = qobject_cast<QComboBox *>( mLayersTreeWidget->itemWidget( mLayersTreeWidget->topLevelItem( i ), 2 ) );
+    QComboBox* itemCombo = qobject_cast<QComboBox*>( mLayersTreeWidget->itemWidget( mLayersTreeWidget->topLevelItem( i ), 2 ) );
     if ( itemCombo )
     {
       QString typeString = itemCombo->currentText();
@@ -345,14 +345,14 @@ QgsVectorLayer* QgsInterpolationDialog::vectorLayerFromName( const QString& name
   {
     if ( layer_it.value()->name() == name )
     {
-      return qobject_cast<QgsVectorLayer *>( layer_it.value() );
+      return qobject_cast<QgsVectorLayer*>( layer_it.value() );
     }
   }
 
   return nullptr;
 }
 
-void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged( const QString &text )
+void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged( const QString& text )
 {
   delete mInterpolatorDialog;
   if ( text == tr( "Inverse Distance Weighting (IDW)" ) )

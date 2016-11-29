@@ -24,18 +24,18 @@
 #include "qgslogger.h"
 
 
-QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
+QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget* parent,
     QgsAuthCertUtils::CertTrustPolicy policy,
     QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
-    : QComboBox( parent )
+  : QComboBox( parent )
 {
   QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
   policies << qMakePair( QgsAuthCertUtils::DefaultTrust,
                          defaultTrustText( defaultpolicy ) )
-  << qMakePair( QgsAuthCertUtils::Trusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-  << qMakePair( QgsAuthCertUtils::Untrusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+           << qMakePair( QgsAuthCertUtils::Trusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+           << qMakePair( QgsAuthCertUtils::Untrusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {

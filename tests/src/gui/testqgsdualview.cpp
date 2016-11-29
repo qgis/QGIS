@@ -32,9 +32,9 @@ class TestQgsDualView : public QObject
     Q_OBJECT
   public:
     TestQgsDualView()
-        : mCanvas( 0 )
-        , mPointsLayer( 0 )
-        , mDualView( 0 )
+      : mCanvas( 0 )
+      , mPointsLayer( 0 )
+      , mDualView( 0 )
     {}
 
   private slots:
@@ -150,22 +150,22 @@ void TestQgsDualView::testSort()
 
   QStringList classes;
   classes << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" );
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" );
 
   for ( int i = 0; i < classes.length(); ++i )
   {
@@ -175,22 +175,22 @@ void TestQgsDualView::testSort()
 
   QStringList headings;
   headings << QStringLiteral( "0" )
-  <<  QStringLiteral( "0" )
-  <<  QStringLiteral( "12" )
-  <<  QStringLiteral( "34" )
-  <<  QStringLiteral( "80" )
-  <<  QStringLiteral( "85" )
-  <<  QStringLiteral( "90" )
-  <<  QStringLiteral( "90" )
-  <<  QStringLiteral( "95" )
-  <<  QStringLiteral( "100" )
-  <<  QStringLiteral( "140" )
-  <<  QStringLiteral( "160" )
-  <<  QStringLiteral( "180" )
-  <<  QStringLiteral( "240" )
-  <<  QStringLiteral( "270" )
-  <<  QStringLiteral( "300" )
-  <<  QStringLiteral( "340" );
+           <<  QStringLiteral( "0" )
+           <<  QStringLiteral( "12" )
+           <<  QStringLiteral( "34" )
+           <<  QStringLiteral( "80" )
+           <<  QStringLiteral( "85" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "95" )
+           <<  QStringLiteral( "100" )
+           <<  QStringLiteral( "140" )
+           <<  QStringLiteral( "160" )
+           <<  QStringLiteral( "180" )
+           <<  QStringLiteral( "240" )
+           <<  QStringLiteral( "270" )
+           <<  QStringLiteral( "300" )
+           <<  QStringLiteral( "340" );
 
   mDualView->setSortExpression( QStringLiteral( "Heading" ) );
 

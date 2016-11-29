@@ -44,7 +44,9 @@ class CORE_EXPORT QgsRunProcess: public QObject
     // If capture is true, the standard output and error from the process
     // will be sent to QgsMessageOuptut - usually a dialog box.
     static QgsRunProcess* create( const QString& action, bool capture )
-    { return new QgsRunProcess( action, capture ); }
+    {
+      return new QgsRunProcess( action, capture );
+    }
 
   public slots:
     void stdoutAvailable();

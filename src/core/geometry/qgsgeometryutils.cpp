@@ -30,7 +30,7 @@ QList<QgsLineString*> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeo
   if ( !geom )
     return linestrings;
 
-  QList< const QgsAbstractGeometry * > geometries;
+  QList< const QgsAbstractGeometry* > geometries;
   geometries << geom;
   while ( ! geometries.isEmpty() )
   {
@@ -91,7 +91,7 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometry& geom, con
   return minDistPoint;
 }
 
-double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id )
+double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry& geom, QgsVertexId id )
 {
   double currentDist = 0;
   QgsVertexId vertexId;
@@ -177,14 +177,14 @@ void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometry& geom, QgsVer
     return; //error, no such feature
   }
 
-  const QgsRingSequence &part = coords.at( atVertex.part );
+  const QgsRingSequence& part = coords.at( atVertex.part );
 
   //get ring
   if ( part.size() <= atVertex.ring )
   {
     return; //error, no such ring
   }
-  const QgsPointSequence &ring = part.at( atVertex.ring );
+  const QgsPointSequence& ring = part.at( atVertex.ring );
   if ( ring.size() <= atVertex.vertex )
   {
     return;
@@ -301,7 +301,7 @@ bool QgsGeometryUtils::lineIntersection( const QgsPointV2& p1, QgsVector v, cons
   return true;
 }
 
-bool QgsGeometryUtils::segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance )
+bool QgsGeometryUtils::segmentIntersection( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& q1, const QgsPointV2& q2, QgsPointV2& inter, double tolerance )
 {
   QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
   QgsVector w( q2.x() - q1.x(), q2.y() - q1.y() );
@@ -329,7 +329,7 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPointV2 &p1, const QgsPoint
   return true;
 }
 
-QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
+QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry* geom, int part, int ring, double tolerance )
 {
   QList<SelfIntersection> intersections;
 
@@ -607,7 +607,7 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPointV2& tangentPoint,
   }
 }
 
-QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure )
+QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure )
 {
   int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
@@ -674,7 +674,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   return points;
 }
 
-void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence &points, bool is3D, bool isMeasure )
+void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence& points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
   Q_FOREACH ( const QgsPointV2& point, points )
@@ -691,7 +691,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence &poin
   }
 }
 
-QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure )
+QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence& points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = QStringLiteral( "(" );
   Q_FOREACH ( const QgsPointV2& p, points )
@@ -710,7 +710,7 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
   return wkt;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument& doc, int precision, const QString &ns )
+QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence& points, QDomDocument& doc, int precision, const QString& ns )
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
@@ -726,7 +726,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   return elemCoordinates;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument& doc, int precision, const QString &ns, bool is3D )
+QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence& points, QDomDocument& doc, int precision, const QString& ns, bool is3D )
 {
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
   elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
@@ -745,7 +745,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
   return elemPosList;
 }
 
-QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int precision )
+QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence& points, int precision )
 {
   QString json = QStringLiteral( "[ " );
   Q_FOREACH ( const QgsPointV2& p, points )
@@ -774,7 +774,7 @@ double QgsGeometryUtils::normalizedAngle( double angle )
   return clippedAngle;
 }
 
-QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt )
+QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString& wkt )
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
 
@@ -783,7 +783,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
   return qMakePair( wkbType, contents );
 }
 
-QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QString& defaultType )
+QStringList QgsGeometryUtils::wktGetChildBlocks( const QString& wkt, const QString& defaultType )
 {
   int level = 0;
   QString block;

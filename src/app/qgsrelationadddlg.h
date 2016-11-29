@@ -25,7 +25,7 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
     Q_OBJECT
 
   public:
-    explicit QgsRelationAddDlg( QWidget *parent = nullptr );
+    explicit QgsRelationAddDlg( QWidget* parent = nullptr );
 
     QString referencingLayerId();
     QString referencedLayerId();

@@ -18,7 +18,7 @@
 #include "qgsexpressioncontext.h"
 
 QgsActionScopeRegistry::QgsActionScopeRegistry( QObject* parent )
-    : QObject( parent )
+  : QObject( parent )
 {
   // Register some default action scopes:
 

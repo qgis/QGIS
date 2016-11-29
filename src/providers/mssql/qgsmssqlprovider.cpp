@@ -54,11 +54,11 @@ static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial 
 int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mNumberFeatures( 0 )
-    , mFidColIdx( -1 )
-    , mCrs()
-    , mWkbType( QgsWkbTypes::Unknown )
+  : QgsVectorDataProvider( uri )
+  , mNumberFeatures( 0 )
+  , mFidColIdx( -1 )
+  , mCrs()
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
 
@@ -588,7 +588,7 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+void QgsMssqlProvider::uniqueValues( int index, QList<QVariant>& uniqueValues, int limit ) const
 {
   uniqueValues.clear();
 
@@ -798,7 +798,7 @@ bool QgsMssqlProvider::isValid() const
   return mValid;
 }
 
-bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
+bool QgsMssqlProvider::addFeatures( QgsFeatureList& flist )
 {
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -1003,7 +1003,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
   return true;
 }
 
-bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
+bool QgsMssqlProvider::addAttributes( const QList<QgsField>& attributes )
 {
   QString statement;
 
@@ -1051,7 +1051,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   return true;
 }
 
-bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
+bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
   QString statement;
 
@@ -1087,7 +1087,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 }
 
 
-bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   if ( attr_map.isEmpty() )
     return true;
@@ -1213,7 +1213,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
   return true;
 }
 
-bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
   if ( geometry_map.isEmpty() )
     return true;
@@ -1288,7 +1288,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
   return true;
 }
 
-bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds& id )
 {
   if ( mFidColName.isEmpty() )
     return false;
@@ -1510,7 +1510,7 @@ QStringList QgsMssqlProvider::subLayers() const
   return mTables;
 }
 
-bool QgsMssqlProvider::convertField( QgsField &field )
+bool QgsMssqlProvider::convertField( QgsField& field )
 {
   QString fieldType = QStringLiteral( "nvarchar(max)" ); //default to string
   int fieldSize = field.length();
@@ -1572,7 +1572,7 @@ bool QgsMssqlProvider::convertField( QgsField &field )
   return true;
 }
 
-void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
+void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString& geometryType, int& dim )
 {
   if ( QgsWkbTypes::hasZ( wkbType ) )
     dim = 3;
@@ -1637,13 +1637,13 @@ QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString& geometryType, int
 
 
 QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QString& uri,
-    const QgsFields &fields,
+    const QgsFields& fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem& srs,
     bool overwrite,
-    QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString, QVariant> *options )
+    QMap<int, int>* oldToNewAttrIdxMap,
+    QString* errorMessage,
+    const QMap<QString, QVariant>* options )
 {
   Q_UNUSED( options );
 
@@ -1827,7 +1827,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri() );
+  QgsMssqlProvider* provider = new QgsMssqlProvider( dsUri.uri() );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -1894,7 +1894,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
  * Class factory to return a pointer to a newly created
  * QgsMssqlProvider object
  */
-QGISEXTERN QgsMssqlProvider *classFactory( const QString *uri )
+QGISEXTERN QgsMssqlProvider* classFactory( const QString* uri )
 {
   return new QgsMssqlProvider( *uri );
 }
@@ -1923,7 +1923,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN void* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsMssqlSourceSelect( parent, fl );
 }
@@ -1933,7 +1933,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   Q_UNUSED( thePath );
   return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
@@ -1941,13 +1941,13 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFields &fields,
+  const QgsFields& fields,
   QgsWkbTypes::Type wkbType,
-  const QgsCoordinateReferenceSystem &srs,
+  const QgsCoordinateReferenceSystem& srs,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdxMap,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options )
+  QMap<int, int>* oldToNewAttrIdxMap,
+  QString* errorMessage,
+  const QMap<QString, QVariant>* options )
 {
   return QgsMssqlProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
@@ -2160,8 +2160,8 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
   return QString();
 }
 
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString& errCause )
+QGISEXTERN int listStyles( const QString& uri, QStringList& ids, QStringList& names,
+                           QStringList& descriptions, QString& errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database

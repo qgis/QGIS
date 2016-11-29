@@ -23,8 +23,8 @@
 #include "qgsdatadefined.h"
 
 QgsComposerObject::QgsComposerObject( QgsComposition* composition )
-    : QObject( nullptr )
-    , mComposition( composition )
+  : QObject( nullptr )
+  , mComposition( composition )
 {
 
   // data defined strings
@@ -52,7 +52,7 @@ QgsComposerObject::~QgsComposerObject()
   qDeleteAll( mDataDefinedProperties );
 }
 
-bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerObject::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {
@@ -68,7 +68,7 @@ bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
   return true;
 }
 
-bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsComposerObject::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -85,7 +85,7 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
   return true;
 }
 
-QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property ) const
+QgsDataDefined* QgsComposerObject::dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property ) const
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
@@ -104,7 +104,7 @@ QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject:
   return nullptr;
 }
 
-void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field )
+void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const bool active, const bool useExpression, const QString& expression, const QString& field )
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
@@ -138,7 +138,7 @@ void QgsComposerObject::repaint()
   //nothing to do in base class for now
 }
 
-void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property, const QgsExpressionContext *context )
+void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property, const QgsExpressionContext* context )
 {
   Q_UNUSED( property );
   Q_UNUSED( context );
@@ -146,7 +146,7 @@ void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty pr
   //nothing to do in base class for now
 }
 
-bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context ) const
+bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant& expressionValue, const QgsExpressionContext& context ) const
 {
   if ( !mComposition )
   {

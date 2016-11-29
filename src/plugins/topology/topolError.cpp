@@ -127,9 +127,9 @@ bool TopolError::fixDeleteSecond()
 }
 
 TopolError::TopolError( const QgsRectangle& theBoundingBox, const QgsGeometry& theConflict, const QList<FeatureLayer>& theFeaturePairs )
-    : mBoundingBox( theBoundingBox )
-    , mConflict( theConflict )
-    , mFeaturePairs( theFeaturePairs )
+  : mBoundingBox( theBoundingBox )
+  , mConflict( theConflict )
+  , mFeaturePairs( theFeaturePairs )
 {
   mFixMap[ QObject::tr( "Select automatic fix" )] = &TopolError::fixDummy;
 }

@@ -28,7 +28,7 @@
 
 
 QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>( source, ownSource, request )
+  : QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>( source, ownSource, request )
 {
   mClosed = false;
   mQuery = nullptr;
@@ -444,14 +444,14 @@ bool QgsDb2FeatureIterator::close()
 ///////////////
 
 QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider* p )
-    : mFields( p->mAttributeFields )
-    , mFidColName( p->mFidColName )
-    , mGeometryColName( p->mGeometryColName )
-    , mGeometryColType( p->mGeometryColType )
-    , mSchemaName( p->mSchemaName )
-    , mTableName( p->mTableName )
-    , mConnInfo( p->mConnInfo )
-    , mSqlWhereClause( p->mSqlWhereClause )
+  : mFields( p->mAttributeFields )
+  , mFidColName( p->mFidColName )
+  , mGeometryColName( p->mGeometryColName )
+  , mGeometryColType( p->mGeometryColType )
+  , mSchemaName( p->mSchemaName )
+  , mTableName( p->mTableName )
+  , mConnInfo( p->mConnInfo )
+  , mSqlWhereClause( p->mSqlWhereClause )
 {
   mSRId = p->mSRId;
 }

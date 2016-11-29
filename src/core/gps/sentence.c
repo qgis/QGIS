@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-void nmea_zero_GPGGA( nmeaGPGGA *pack )
+void nmea_zero_GPGGA( nmeaGPGGA* pack )
 {
   memset( pack, 0, sizeof( nmeaGPGGA ) );
   nmea_time_now( &pack->utc );
@@ -38,19 +38,19 @@ void nmea_zero_GPGGA( nmeaGPGGA *pack )
   pack->diff_units = 'M';
 }
 
-void nmea_zero_GPGSA( nmeaGPGSA *pack )
+void nmea_zero_GPGSA( nmeaGPGSA* pack )
 {
   memset( pack, 0, sizeof( nmeaGPGSA ) );
   pack->fix_mode = 'A';
   pack->fix_type = NMEA_FIX_BAD;
 }
 
-void nmea_zero_GPGSV( nmeaGPGSV *pack )
+void nmea_zero_GPGSV( nmeaGPGSV* pack )
 {
   memset( pack, 0, sizeof( nmeaGPGSV ) );
 }
 
-void nmea_zero_GPRMC( nmeaGPRMC *pack )
+void nmea_zero_GPRMC( nmeaGPRMC* pack )
 {
   memset( pack, 0, sizeof( nmeaGPRMC ) );
   nmea_time_now( &pack->utc );
@@ -60,7 +60,7 @@ void nmea_zero_GPRMC( nmeaGPRMC *pack )
   pack->declin_ew = 'E';
 }
 
-void nmea_zero_GPVTG( nmeaGPVTG *pack )
+void nmea_zero_GPVTG( nmeaGPVTG* pack )
 {
   memset( pack, 0, sizeof( nmeaGPVTG ) );
   pack->dir_t = 'T';

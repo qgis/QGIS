@@ -35,9 +35,9 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
   public:
     QgsSymbolLayerWidget( QWidget* parent, const QgsVectorLayer* vl = nullptr )
-        : QWidget( parent )
-        , mVectorLayer( vl )
-        , mMapCanvas( nullptr )
+      : QWidget( parent )
+      , mVectorLayer( vl )
+      , mMapCanvas( nullptr )
     {}
     virtual ~QgsSymbolLayerWidget() {}
 
@@ -60,7 +60,10 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    const QgsVectorLayer* vectorLayer() const
+    {
+      return mVectorLayer;
+    }
 
   protected:
     void registerDataDefinedButton( QgsDataDefinedButton* button, const QString& propertyName, QgsDataDefinedButton::DataType type, const QString& description );
@@ -113,7 +116,10 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
     ~QgsSimpleLineSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleLineSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsSimpleLineSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -164,7 +170,10 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsSimpleMarkerSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleMarkerSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsSimpleMarkerSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -214,7 +223,10 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
   public:
     QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSimpleFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsSimpleFillSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -263,7 +275,10 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     /** Creates a new QgsFilledMarkerSymbolLayerWidget.
      * @param vl associated vector layer
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsFilledMarkerSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsFilledMarkerSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -305,7 +320,10 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
   public:
     QgsGradientFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsGradientFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsGradientFillSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -344,7 +362,10 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
   public:
     QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsShapeburstFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsShapeburstFillSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -383,7 +404,10 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
   public:
     QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsMarkerLineSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsMarkerLineSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -423,7 +447,10 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsSvgMarkerSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSvgMarkerSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsSvgMarkerSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -481,7 +508,10 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
   public:
     QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsRasterFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsRasterFillSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -521,7 +551,10 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
   public:
     QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsSVGFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsSVGFillSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -541,7 +574,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
   private slots:
     void on_mBrowseToolButton_clicked();
     void on_mTextureWidthSpinBox_valueChanged( double d );
-    void on_mSVGLineEdit_textEdited( const QString & text );
+    void on_mSVGLineEdit_textEdited( const QString& text );
     void on_mSVGLineEdit_editingFinished();
     void setFile( const QModelIndex& item );
     void populateIcons( const QModelIndex& item );
@@ -569,7 +602,10 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidg
   public:
 
     QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsLinePatternFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsLinePatternFillSymbolLayerWidget( vl );
+    }
 
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
     virtual QgsSymbolLayer* symbolLayer() override;
@@ -600,7 +636,10 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
 
   public:
     QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsPointPatternFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsPointPatternFillSymbolLayerWidget( vl );
+    }
 
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
     virtual QgsSymbolLayer* symbolLayer() override;
@@ -638,7 +677,10 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
     ~QgsFontMarkerSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsFontMarkerSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsFontMarkerSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -694,7 +736,10 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
   public:
     QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsCentroidFillSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsCentroidFillSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
@@ -727,7 +772,10 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
     /**
      * Will be registered as factory
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsGeometryGeneratorSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl )
+    {
+      return new QgsGeometryGeneratorSymbolLayerWidget( vl );
+    }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;

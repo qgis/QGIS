@@ -57,11 +57,11 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QgsGrassRasterValue();
     ~QgsGrassRasterValue();
 
-    void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
+    void set( const QString& gisdbase, const QString& location, const QString& mapset, const QString& map );
     void stop();
     // returns raster value, NaN for no data
     // ok is set to true if ok or false on error
-    double value( double x, double y, bool *ok );
+    double value( double x, double y, bool* ok );
   private:
     QgsGrassRasterValue( const QgsGrassRasterValue& other );
     QgsGrassRasterValue& operator=( const QgsGrassRasterValue& other );
@@ -72,7 +72,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QString mMapset;        // map mapset
     QString mMapName;       // map name
     QTemporaryFile mGisrcFile;
-    QProcess *mProcess;
+    QProcess* mProcess;
 };
 
 /**
@@ -97,16 +97,16 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsGrassRasterProvider( QString const & uri = 0 );
+    explicit QgsGrassRasterProvider( QString const& uri = 0 );
 
     //! Destructor
     ~QgsGrassRasterProvider();
 
-    QgsRasterInterface * clone() const override;
+    QgsRasterInterface* clone() const override;
 
     /** \brief   Renders the layer as an image
      */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
+    QImage* draw( QgsRectangle  const& viewExtent, int pixelWidth, int pixelHeight ) override;
 
     /** Return a provider name
      *
@@ -146,7 +146,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     bool isValid() const override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint& thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle& theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -189,12 +189,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     int xSize() const override;
     int ySize() const override;
 
-    void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    void readBlock( int bandNo, int xBlock, int yBlock, void* data ) override;
+    void readBlock( int bandNo, QgsRectangle  const& viewExtent, int width, int height, void* data, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     QgsRasterBandStats bandStatistics( int theBandNo,
                                        int theStats = QgsRasterBandStats::All,
-                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       const QgsRectangle& theExtent = QgsRectangle(),
                                        int theSampleSize = 0 ) override;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
@@ -214,10 +214,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     void thaw();
 
   private:
-    void setLastError( const QString &error );
+    void setLastError( const QString& error );
     void clearLastError();
     // append error if it is not empty
-    void appendIfError( const QString &error );
+    void appendIfError( const QString& error );
 
     /**
      * Flag indicating if the layer data source is a valid layer

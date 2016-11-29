@@ -45,13 +45,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     //! Creates a map layer action which can run on any layer
     //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatiblity reasons.
-    QgsMapLayerAction( const QString& name, QObject *parent, Targets targets = AllActions, const QIcon& icon = QIcon() );
+    QgsMapLayerAction( const QString& name, QObject* parent, Targets targets = AllActions, const QIcon& icon = QIcon() );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString& name, QObject *parent, QgsMapLayer* layer, Targets targets = AllActions, const QIcon& icon = QIcon() );
+    QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer* layer, Targets targets = AllActions, const QIcon& icon = QIcon() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString& name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon& icon = QIcon() );
+    QgsMapLayerAction( const QString& name, QObject* parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon& icon = QIcon() );
 
     ~QgsMapLayerAction();
 
@@ -68,9 +68,15 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void triggerForLayer( QgsMapLayer* layer );
 
     //! Define the targets of the action
-    void setTargets( Targets targets ) {mTargets = targets;}
+    void setTargets( Targets targets )
+    {
+      mTargets = targets;
+    }
     //! Return availibity of action
-    const Targets& targets() const {return mTargets;}
+    const Targets& targets() const
+    {
+      return mTargets;
+    }
 
   signals:
     //! Triggered when action has been run for a specific list of features
@@ -109,27 +115,27 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 
   public:
     //! Returns the instance pointer, creating the object on the first call
-    static QgsMapLayerActionRegistry * instance();
+    static QgsMapLayerActionRegistry* instance();
 
     ~QgsMapLayerActionRegistry();
 
     //! Adds a map layer action to the registry
-    void addMapLayerAction( QgsMapLayerAction * action );
+    void addMapLayerAction( QgsMapLayerAction* action );
 
     //! Returns the map layer actions which can run on the specified layer
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
+    QList<QgsMapLayerAction*> mapLayerActions( QgsMapLayer* layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
 
     //! Removes a map layer action from the registry
-    bool removeMapLayerAction( QgsMapLayerAction *action );
+    bool removeMapLayerAction( QgsMapLayerAction* action );
 
     //! Sets the default action for a layer
     void setDefaultActionForLayer( QgsMapLayer* layer, QgsMapLayerAction* action );
     //! Returns the default action for a layer
-    QgsMapLayerAction * defaultActionForLayer( QgsMapLayer* layer );
+    QgsMapLayerAction* defaultActionForLayer( QgsMapLayer* layer );
 
   protected:
     //! protected constructor
-    QgsMapLayerActionRegistry( QObject * parent = nullptr );
+    QgsMapLayerActionRegistry( QObject* parent = nullptr );
 
     QList< QgsMapLayerAction* > mMapLayerActionList;
 
@@ -139,7 +145,7 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 
   private:
 
-    static QgsMapLayerActionRegistry *mInstance;
+    static QgsMapLayerActionRegistry* mInstance;
 
     QMap< QgsMapLayer*, QgsMapLayerAction* > mDefaultLayerActionMap;
 

@@ -51,7 +51,7 @@
 using namespace pal;
 
 FeaturePart::FeaturePart( QgsLabelFeature* feat, const GEOSGeometry* geom )
-    : mLF( feat )
+  : mLF( feat )
 {
   // we'll remove const, but we won't modify that geometry
   mGeos = const_cast<GEOSGeometry*>( geom );
@@ -68,8 +68,8 @@ FeaturePart::FeaturePart( QgsLabelFeature* feat, const GEOSGeometry* geom )
 }
 
 FeaturePart::FeaturePart( const FeaturePart& other )
-    : PointSet( other )
-    , mLF( other.mLF )
+  : PointSet( other )
+  , mLF( other.mLF )
 {
   Q_FOREACH ( const FeaturePart* hole, other.mHoles )
   {
@@ -88,7 +88,7 @@ FeaturePart::~FeaturePart()
 
 void FeaturePart::extractCoords( const GEOSGeometry* geom )
 {
-  const GEOSCoordSequence *coordSeq;
+  const GEOSCoordSequence* coordSeq;
   GEOSContextHandle_t geosctxt = geosContext();
 
   type = GEOSGeomTypeId_r( geosctxt, geom );
@@ -586,7 +586,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
   return candidates.count();
 }
 
-int FeaturePart::createCandidatesAlongLine( QList< LabelPosition* >& lPos, PointSet *mapShape )
+int FeaturePart::createCandidatesAlongLine( QList< LabelPosition* >& lPos, PointSet* mapShape )
 {
   //prefer to label along straightish segments:
   int candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape );
@@ -610,10 +610,10 @@ int FeaturePart::createCandidatesAlongLineNearStraightSegments( QList<LabelPosit
 
   // first scan through the whole line and look for segments where the angle at a node is greater than 45 degrees - these form a "hard break" which labels shouldn't cross over
   QVector< int > extremeAngleNodes;
-  PointSet * line = mapShape;
+  PointSet* line = mapShape;
   int numberNodes = line->nbPoints;
-  double *x = line->x;
-  double *y = line->y;
+  double* x = line->x;
+  double* y = line->y;
 
   // closed line? if so, we need to handle the final node angle
   bool closedLine = qgsDoubleNear( x[0], x[ numberNodes - 1] ) && qgsDoubleNear( y[0], y[numberNodes - 1 ] );
@@ -835,10 +835,10 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition*>& l
 
   QList<LabelPosition*> positions;
 
-  PointSet * line = mapShape;
+  PointSet* line = mapShape;
   int nbPoints = line->nbPoints;
-  double *x = line->x;
-  double *y = line->y;
+  double* x = line->x;
+  double* y = line->y;
 
   double* segmentLengths = new double[nbPoints-1]; // segments lengths distance bw pt[i] && pt[i+1]
   double* distanceToSegment = new double[nbPoints]; // absolute distance bw pt[0] and pt[i] along the line
@@ -1312,7 +1312,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
  *
  */
 
-int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, PointSet *mapShape )
+int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, PointSet* mapShape )
 {
   int i;
   int j;
@@ -1345,13 +1345,13 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
     double beta;
     double diago = sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
-    CHullBox **boxes = new CHullBox*[shapes_final.size()];
+    CHullBox** boxes = new CHullBox*[shapes_final.size()];
     j = 0;
 
     // Compute bounding box foreach finalShape
     while ( !shapes_final.isEmpty() )
     {
-      PointSet *shape = shapes_final.takeFirst();
+      PointSet* shape = shapes_final.takeFirst();
       boxes[j] = shape->compute_chull_bbox();
 
       if ( shape->parent )
@@ -1374,7 +1374,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
     {
       for ( bbid = 0; bbid < j; bbid++ )
       {
-        CHullBox *box = boxes[bbid];
+        CHullBox* box = boxes[bbid];
 
         if (( box->length * box->width ) > ( xmax - xmin ) *( ymax - ymin ) *5 )
         {
@@ -1520,7 +1520,7 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition*>& lPos, Point
 
 int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
                                    double bboxMin[2], double bboxMax[2],
-                                   PointSet *mapShape, RTree<LabelPosition*, double, 2, double>* candidates )
+                                   PointSet* mapShape, RTree<LabelPosition*, double, 2, double>* candidates )
 {
   double bbox[4];
 
@@ -1622,7 +1622,7 @@ void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition* >& lPos, double
       if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
         return; // failed to calculate length
     }
-    catch ( GEOSException &e )
+    catch ( GEOSException& e )
     {
       QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
       return;
@@ -1641,7 +1641,7 @@ void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition* >& lPos, double
       if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
         return;
     }
-    catch ( GEOSException &e )
+    catch ( GEOSException& e )
     {
       QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
       return;
@@ -1671,7 +1671,7 @@ bool FeaturePart::isConnected( FeaturePart* p2 )
   {
     return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException& e )
   {
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
@@ -1713,7 +1713,7 @@ bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
     extractCoords( mGeos );
     return true;
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException& e )
   {
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;

@@ -83,7 +83,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
   return size;
 }
 
-double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const
 {
   if ( qgsDoubleNear( is.upperValue, is.lowerValue ) )
     return s.minimumSize; // invalid value range => zero size

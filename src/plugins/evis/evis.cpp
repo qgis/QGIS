@@ -82,12 +82,12 @@ static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 
 
 
-eVis::eVis( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mDatabaseConnectionActionPointer( nullptr )
-    , mEventIdToolActionPointer( nullptr )
-    , mEventBrowserActionPointer( nullptr )
+eVis::eVis( QgisInterface* theQgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( theQgisInterface )
+  , mDatabaseConnectionActionPointer( nullptr )
+  , mEventIdToolActionPointer( nullptr )
+  , mEventBrowserActionPointer( nullptr )
 {
   mIdTool = nullptr;
 }
@@ -141,7 +141,7 @@ void eVis::help()
 
 void eVis::launchDatabaseConnection()
 {
-  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  eVisDatabaseConnectionGui* myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   connect( myPluginGui, SIGNAL( drawVectorLayer( QString, QString, QString ) ), this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
@@ -163,7 +163,7 @@ void eVis::launchEventIdTool()
 
 void eVis::launchEventBrowser()
 {
-  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
+  eVisGenericEventBrowserGui* myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 }
 
@@ -215,7 +215,7 @@ void eVis::drawVectorLayer( const QString& thePathNameQString, const QString& th
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new eVis( theQgisInterfacePointer );
 }
@@ -257,7 +257,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

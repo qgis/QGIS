@@ -63,7 +63,7 @@ QString* QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
 QgsMapRenderer* QgsServer::sMapRenderer = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-QgsServerInterfaceImpl*QgsServer::sServerInterface = nullptr;
+QgsServerInterfaceImpl* QgsServer::sServerInterface = nullptr;
 bool QgsServer::sInitPython = true;
 #endif
 // Initialization must run once for all servers
@@ -110,8 +110,8 @@ QFileInfo QgsServer::defaultAdminSLD()
 void QgsServer::setupNetworkAccessManager()
 {
   QSettings settings;
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-  QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
+  QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
+  QNetworkDiskCache* cache = new QNetworkDiskCache( nullptr );
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
@@ -242,7 +242,7 @@ void QgsServer::printRequestInfos()
   }
 }
 
-void QgsServer::dummyMessageHandler( QtMsgType type, const char *msg )
+void QgsServer::dummyMessageHandler( QtMsgType type, const char* msg )
 {
 #if 0 //def QGSMSDEBUG
   QString output;
@@ -420,7 +420,7 @@ bool QgsServer::init( )
   return true;
 }
 
-void QgsServer::putenv( const QString &var, const QString &val )
+void QgsServer::putenv( const QString& var, const QString& val )
 {
 #ifdef _MSC_VER
   _putenv_s( var.toStdString().c_str(), val.toStdString().c_str() );

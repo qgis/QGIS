@@ -53,29 +53,29 @@
 
 //standard includes
 
-RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin *thePlugin )
-    : QgsDockWidget( theParent )
-    , mPlugin( thePlugin )
+RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin* thePlugin )
+  : QgsDockWidget( theParent )
+  , mPlugin( thePlugin )
 {
   setWindowTitle( tr( "Shortest path" ) );
   setObjectName( QStringLiteral( "ShortestPathDock" ) );
   setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
-  QWidget *myWidget = new QWidget( this );
+  QWidget* myWidget = new QWidget( this );
   setWidget( myWidget );
 
-  QVBoxLayout *v = new QVBoxLayout( myWidget );
+  QVBoxLayout* v = new QVBoxLayout( myWidget );
   v->setMargin( 0 );
   v->setContentsMargins( 0, 0, 0, 0 );
-  QHBoxLayout *h = nullptr;
-  QLabel *l = nullptr;
+  QHBoxLayout* h = nullptr;
+  QLabel* l = nullptr;
 
   l = new QLabel( tr( "Start" ), myWidget );
   v->addWidget( l );
   h = new QHBoxLayout();
   mFrontPointLineEdit = new QLineEdit( myWidget );
   mFrontPointLineEdit->setReadOnly( true );
-  QToolButton *selectFrontPoint = new QToolButton( myWidget );
+  QToolButton* selectFrontPoint = new QToolButton( myWidget );
   selectFrontPoint->setCheckable( true );
   selectFrontPoint->setIcon( QPixmap( ":/roadgraph/coordinate_capture.png" ) );
   h->addWidget( mFrontPointLineEdit );
@@ -87,7 +87,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h = new QHBoxLayout();
   mBackPointLineEdit = new QLineEdit( myWidget );
   mBackPointLineEdit->setReadOnly( true );
-  QToolButton *selectBackPoint = new QToolButton( myWidget );
+  QToolButton* selectBackPoint = new QToolButton( myWidget );
   selectBackPoint->setCheckable( true );
   selectBackPoint->setIcon( QPixmap( ":/roadgraph/coordinate_capture.png" ) );
   h->addWidget( mBackPointLineEdit );
@@ -122,7 +122,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h = new QHBoxLayout();
   mCalculate = new QPushButton( tr( "Calculate" ), myWidget );
   h->addWidget( mCalculate );
-  QPushButton *pbExport = new QPushButton( tr( "Export" ), myWidget );
+  QPushButton* pbExport = new QPushButton( tr( "Export" ), myWidget );
   h->addWidget( pbExport );
 
   connect( pbExport, SIGNAL( clicked( bool ) ), this, SLOT( exportPath() ) );
@@ -132,7 +132,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   v->addLayout( h );
 
   h = new QHBoxLayout();
-  QPushButton *helpButton = new QPushButton( tr( "Help" ), this );
+  QPushButton* helpButton = new QPushButton( tr( "Help" ), this );
   helpButton->setIcon( style()->standardIcon( QStyle::SP_DialogHelpButton ) );
   h->addWidget( helpButton );
   v->addLayout( h );
@@ -242,7 +242,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     mPlugin->iface()->mapCanvas()->mapSettings().hasCrsTransformEnabled(),
     mPlugin->topologyToleranceFactor() );
   {
-    const QgsGraphDirector *director = mPlugin->director();
+    const QgsGraphDirector* director = mPlugin->director();
     if ( !director )
     {
       QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector menu, Road Graph, Settings option to configure it." ) );
@@ -275,7 +275,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     return nullptr;
   }
 
-  QgsGraph *graph = builder.graph();
+  QgsGraph* graph = builder.graph();
 
   int startVertexIdx = graph->findVertex( p1 );
   if ( startVertexIdx < 0 )
@@ -324,7 +324,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
 void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
-  QgsGraph *path = getPath( p1, p2 );
+  QgsGraph* path = getPath( p1, p2 );
   if ( !path )
     return;
 
@@ -387,12 +387,12 @@ void RgShortestPathWidget::exportPath()
   if ( !dlg.exec() )
     return;
 
-  QgsVectorLayer *vl = dlg.mapLayer();
+  QgsVectorLayer* vl = dlg.mapLayer();
   if ( !vl )
     return;
 
   QgsPoint p1, p2;
-  QgsGraph *path = getPath( p1, p2 );
+  QgsGraph* path = getPath( p1, p2 );
   if ( !path )
     return;
 

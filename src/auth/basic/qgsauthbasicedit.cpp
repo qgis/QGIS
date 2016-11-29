@@ -18,9 +18,9 @@
 #include "ui_qgsauthbasicedit.h"
 
 
-QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget* parent )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
 }
@@ -50,7 +50,7 @@ QgsStringMap QgsAuthBasicEdit::configMap() const
   return config;
 }
 
-void QgsAuthBasicEdit::loadConfig( const QgsStringMap &configmap )
+void QgsAuthBasicEdit::loadConfig( const QgsStringMap& configmap )
 {
   clearConfig();
 
@@ -75,7 +75,7 @@ void QgsAuthBasicEdit::clearConfig()
   chkPasswordShow->setChecked( false );
 }
 
-void QgsAuthBasicEdit::on_leUsername_textChanged( const QString &txt )
+void QgsAuthBasicEdit::on_leUsername_textChanged( const QString& txt )
 {
   Q_UNUSED( txt );
   validateConfig();

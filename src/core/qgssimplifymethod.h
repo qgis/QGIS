@@ -38,22 +38,37 @@ class CORE_EXPORT QgsSimplifyMethod
     //! Sets the simplification type
     void setMethodType( MethodType methodType );
     //! Gets the simplification type
-    inline MethodType methodType() const { return mMethodType; }
+    inline MethodType methodType() const
+    {
+      return mMethodType;
+    }
 
     //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     void setTolerance( double tolerance );
     //! Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
-    inline double tolerance() const { return mTolerance; }
+    inline double tolerance() const
+    {
+      return mTolerance;
+    }
 
     //! Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
-    void setThreshold( float threshold ) { mThreshold = threshold; }
+    void setThreshold( float threshold )
+    {
+      mThreshold = threshold;
+    }
     //! Gets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
-    inline float threshold() const { return mThreshold; }
+    inline float threshold() const
+    {
+      return mThreshold;
+    }
 
     //! Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization );
     //! Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
-    inline bool forceLocalOptimization() const { return mForceLocalOptimization; }
+    inline bool forceLocalOptimization() const
+    {
+      return mForceLocalOptimization;
+    }
 
     //! Creates a geometry simplifier according to specified method
     static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );

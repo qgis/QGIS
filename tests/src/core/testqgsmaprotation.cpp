@@ -41,10 +41,10 @@ class TestQgsMapRotation : public QObject
     Q_OBJECT
   public:
     TestQgsMapRotation()
-        : mRasterLayer( 0 )
-        , mPointsLayer( 0 )
-        , mLinesLayer( 0 )
-        , mMapSettings( 0 )
+      : mRasterLayer( 0 )
+      , mPointsLayer( 0 )
+      , mLinesLayer( 0 )
+      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -66,10 +66,10 @@ class TestQgsMapRotation : public QObject
     bool render( const QString& theFileName );
 
     QString mTestDataDir;
-    QgsRasterLayer * mRasterLayer;
+    QgsRasterLayer* mRasterLayer;
     QgsVectorLayer* mPointsLayer;
     QgsVectorLayer* mLinesLayer;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 };
 
@@ -82,7 +82,7 @@ void TestQgsMapRotation::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  QList<QgsMapLayer *> mapLayers;
+  QList<QgsMapLayer*> mapLayers;
 
   //create a raster layer that will be used in all tests...
   QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );

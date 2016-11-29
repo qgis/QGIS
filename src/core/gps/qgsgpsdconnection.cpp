@@ -21,10 +21,10 @@
 #include <QTcpSocket>
 
 QgsGpsdConnection::QgsGpsdConnection( const QString& host, qint16 port, const QString& device )
-    : QgsNMEAConnection( new QTcpSocket() )
-    , mDevice( device )
+  : QgsNMEAConnection( new QTcpSocket() )
+  , mDevice( device )
 {
-  QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
+  QTcpSocket* socket = qobject_cast< QTcpSocket* >( mSource );
 
   QObject::connect( socket, SIGNAL( connected() ), this, SLOT( connected() ) );
   QObject::connect( socket, SIGNAL( error( QAbstractSocket::SocketError ) ), this, SLOT( error( QAbstractSocket::SocketError ) ) );
@@ -39,14 +39,14 @@ QgsGpsdConnection::~QgsGpsdConnection()
 void QgsGpsdConnection::connected()
 {
   QgsDebugMsg( "connected!" );
-  QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
+  QTcpSocket* socket = qobject_cast< QTcpSocket* >( mSource );
   socket->write( QStringLiteral( "?WATCH={\"enable\":true,\"nmea\":true,\"raw\":true%1};" ).arg( mDevice.isEmpty() ? mDevice : QStringLiteral( ",\"device\":%1" ).arg( mDevice ) ).toUtf8() );
 }
 
 void QgsGpsdConnection::error( QAbstractSocket::SocketError socketError )
 {
 #ifdef QGISDEBUG
-  QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
+  QTcpSocket* socket = qobject_cast< QTcpSocket* >( mSource );
   QgsDebugMsg( QString( "error: %1 %2" ).arg( socketError ).arg( socket->errorString() ) );
 #else
   Q_UNUSED( socketError );

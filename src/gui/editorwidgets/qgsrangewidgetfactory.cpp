@@ -20,7 +20,7 @@
 #include <QDial>
 
 QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

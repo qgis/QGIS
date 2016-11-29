@@ -25,10 +25,10 @@
 
 
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLineEdit( nullptr )
-    , mLabel( nullptr )
-    , mQgsWidget( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mLineEdit( nullptr )
+  , mLabel( nullptr )
+  , mQgsWidget( nullptr )
 {
 }
 

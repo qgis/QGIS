@@ -42,7 +42,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
      * @param canvas The canvas object used to calculate the max and min values from the extent.
      * @param parent Parent object
      */
-    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -55,7 +55,10 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     /**
      * Return the active render widget. Can be null.
      */
-    QgsRasterRendererWidget* currentRenderWidget() { return mRendererWidget; }
+    QgsRasterRendererWidget* currentRenderWidget()
+    {
+      return mRendererWidget;
+    }
 
   public slots:
     //! called when user changes renderer type
@@ -68,7 +71,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
      * @brief Sync the widget to the given layer.
      * @param layer The layer to use for the widget
      */
-    void syncToLayer( QgsRasterLayer *layer );
+    void syncToLayer( QgsRasterLayer* layer );
 
   private slots:
     //! Slot to reset all color rendering options to default

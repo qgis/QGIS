@@ -49,13 +49,19 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * @returns unique string
      * @see visibleName
      */
-    QString name() const { return mName; }
+    QString name() const
+    {
+      return mName;
+    }
 
     /** Returns the user visible string representing the paint effect class
      * @returns friendly user visible string
      * @see name
      */
-    QString visibleName() const { return mVisibleName; }
+    QString visibleName() const
+    {
+      return mVisibleName;
+    }
 
     /** Create a paint effect of this class given an encoded map of properties.
      * @param map properties string map
@@ -67,7 +73,10 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * if there's no GUI for the paint effect class.
      * @returns configuration widget
      */
-    virtual QgsPaintEffectWidget* createWidget() { return nullptr; }
+    virtual QgsPaintEffectWidget* createWidget()
+    {
+      return nullptr;
+    }
 
   protected:
     QString mName;
@@ -75,8 +84,8 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
 
 };
 
-typedef QgsPaintEffect*( *QgsPaintEffectCreateFunc )( const QgsStringMap& );
-typedef QgsPaintEffectWidget*( *QgsPaintEffectWidgetFunc )();
+typedef QgsPaintEffect* ( *QgsPaintEffectCreateFunc )( const QgsStringMap& );
+typedef QgsPaintEffectWidget* ( *QgsPaintEffectWidgetFunc )();
 
 /** \ingroup core
  * \class QgsPaintEffectMetadata
@@ -99,30 +108,39 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
     QgsPaintEffectMetadata( const QString& name, const QString& visibleName,
                             QgsPaintEffectCreateFunc pfCreate,
                             QgsPaintEffectWidgetFunc pfWidget = nullptr )
-        : QgsPaintEffectAbstractMetadata( name, visibleName )
-        , mCreateFunc( pfCreate )
-        , mWidgetFunc( pfWidget )
+      : QgsPaintEffectAbstractMetadata( name, visibleName )
+      , mCreateFunc( pfCreate )
+      , mWidgetFunc( pfWidget )
     {}
 
     /** Returns the paint effect creation function for the paint effect class
      * @returns creation function
      * @note not available in python bindings
      */
-    QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; }
+    QgsPaintEffectCreateFunc createFunction() const
+    {
+      return mCreateFunc;
+    }
 
     /** Returns the paint effect properties widget creation function for the paint effect class
      * @returns widget creation function
      * @note not available in python bindings
      * @see setWidgetFunction
      */
-    QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsPaintEffectWidgetFunc widgetFunction() const
+    {
+      return mWidgetFunc;
+    }
 
     /** Sets the paint effect properties widget creation function for the paint effect class
      * @param f widget creation function
      * @note not available in python bindings
      * @see widgetFunction
      */
-    void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; }
+    void setWidgetFunction( QgsPaintEffectWidgetFunc f )
+    {
+      mWidgetFunc = f;
+    }
 
     /** Creates a new paint effect of the metadata's effect class
      * @param map string map of effect properties
@@ -130,14 +148,20 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * @note not available in python bindings
      * @see createWidget
      */
-    virtual QgsPaintEffect* createPaintEffect( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    virtual QgsPaintEffect* createPaintEffect( const QgsStringMap& map ) override
+    {
+      return mCreateFunc ? mCreateFunc( map ) : nullptr;
+    }
 
     /** Creates a new paint effect properties widget for the metadata's effect class
      * @returns effect properties widget
      * @note not available in python bindings
      * @see createWidget
      */
-    virtual QgsPaintEffectWidget* createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
+    virtual QgsPaintEffectWidget* createWidget() override
+    {
+      return mWidgetFunc ? mWidgetFunc() : nullptr;
+    }
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;

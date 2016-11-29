@@ -164,7 +164,7 @@ void QgsGPSDetector::advance()
     }
     else
     {
-      QextSerialPort *serial = new QextSerialPort( mPortList.at( mPortIndex ).first, QextSerialPort::EventDriven );
+      QextSerialPort* serial = new QextSerialPort( mPortList.at( mPortIndex ).first, QextSerialPort::EventDriven );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
       serial->setFlowControl( FLOW_OFF );
@@ -183,8 +183,8 @@ void QgsGPSDetector::advance()
     }
   }
 
-  connect( mConn, SIGNAL( stateChanged( const QgsGPSInformation & ) ), this, SLOT( detected( const QgsGPSInformation & ) ) );
-  connect( mConn, SIGNAL( destroyed( QObject * ) ), this, SLOT( connDestroyed( QObject * ) ) );
+  connect( mConn, SIGNAL( stateChanged( const QgsGPSInformation& ) ), this, SLOT( detected( const QgsGPSInformation& ) ) );
+  connect( mConn, SIGNAL( destroyed( QObject* ) ), this, SLOT( connDestroyed( QObject* ) ) );
 
   // leave 2s to pickup a valid string
   QTimer::singleShot( 2000, this, SLOT( advance() ) );
@@ -202,14 +202,14 @@ void QgsGPSDetector::detected( const QgsGPSInformation& info )
   else if ( mConn->status() == QgsGPSConnection::GPSDataReceived )
   {
     // signal detection
-    QgsGPSConnection *conn = mConn;
+    QgsGPSConnection* conn = mConn;
     mConn = nullptr;
     emit detected( conn );
     deleteLater();
   }
 }
 
-void QgsGPSDetector::connDestroyed( QObject *obj )
+void QgsGPSDetector::connDestroyed( QObject* obj )
 {
   if ( obj == mConn )
   {

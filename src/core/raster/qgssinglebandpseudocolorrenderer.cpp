@@ -25,12 +25,12 @@
 #include <QImage>
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader ):
-    QgsRasterRenderer( input, QStringLiteral( "singlebandpseudocolor" ) )
-    , mShader( shader )
-    , mBand( band )
-    , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
-    , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
-    , mClassificationMinMaxOrigin( QgsRasterRenderer::MinMaxUnknown )
+  QgsRasterRenderer( input, QStringLiteral( "singlebandpseudocolor" ) )
+  , mShader( shader )
+  , mBand( band )
+  , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
+  , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
+  , mClassificationMinMaxOrigin( QgsRasterRenderer::MinMaxUnknown )
 {
 }
 
@@ -50,7 +50,7 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 
 QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() const
 {
-  QgsRasterShader *shader = nullptr;
+  QgsRasterShader* shader = nullptr;
 
   if ( mShader )
   {
@@ -61,7 +61,7 @@ QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() cons
 
     if ( origColorRampShader )
     {
-      QgsColorRampShader * colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
+      QgsColorRampShader* colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
 
       colorRampShader->setColorRampName( origColorRampShader->colorRampName() );
       colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
@@ -70,7 +70,7 @@ QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() cons
       shader->setRasterShaderFunction( colorRampShader );
     }
   }
-  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( nullptr, mBand, shader );
+  QgsSingleBandPseudoColorRenderer* renderer = new QgsSingleBandPseudoColorRenderer( nullptr, mBand, shader );
   renderer->copyCommonProperties( this );
 
   return renderer;
@@ -109,18 +109,18 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
   return r;
 }
 
-QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput || !mShader )
   {
     return outputBlock;
   }
 
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( mBand, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
@@ -131,7 +131,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
 
-  QgsRasterBlock *alphaBlock = nullptr;
+  QgsRasterBlock* alphaBlock = nullptr;
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
     alphaBlock = mInput->block( mAlphaBand, extent, width, height, feedback );

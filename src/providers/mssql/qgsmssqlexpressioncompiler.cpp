@@ -16,8 +16,8 @@
 #include "qgsmssqlexpressioncompiler.h"
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields,
-                                QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch )
+  : QgsSqlExpressionCompiler( source->mFields,
+                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch )
 {
 
 }
@@ -26,7 +26,7 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 {
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
+    const QgsExpression::NodeBinaryOperator* bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
     QString op1, op2;
 
     Result result1 = compileNode( bin->opLeft(), op1 );

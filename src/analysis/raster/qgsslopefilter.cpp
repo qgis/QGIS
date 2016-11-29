@@ -18,7 +18,7 @@
 #include "qgsslopefilter.h"
 
 QgsSlopeFilter::QgsSlopeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
+  : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
 {
 
 }

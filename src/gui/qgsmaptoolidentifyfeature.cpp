@@ -20,14 +20,14 @@
 #include "qgsmapcanvas.h"
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl )
-    : QgsMapToolIdentify( canvas )
-    , mCanvas( canvas )
-    , mLayer( vl )
+  : QgsMapToolIdentify( canvas )
+  , mCanvas( canvas )
+  , mLayer( vl )
 {
   mToolName = tr( "Identify feature" );
 
   // set cursor
-  QPixmap cursorPixmap = QPixmap(( const char ** ) cross_hair_cursor );
+  QPixmap cursorPixmap = QPixmap(( const char** ) cross_hair_cursor );
   mCursor = QCursor( cursorPixmap, 1, 1 );
 }
 

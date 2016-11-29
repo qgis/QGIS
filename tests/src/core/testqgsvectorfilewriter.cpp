@@ -93,7 +93,7 @@ class TestQgsVectorFileWriter: public QObject
 };
 
 TestQgsVectorFileWriter::TestQgsVectorFileWriter()
-    : mError( QgsVectorFileWriter::NoError )
+  : mError( QgsVectorFileWriter::NoError )
 {
 
 }
@@ -397,7 +397,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
 void TestQgsVectorFileWriter::regression1141()
 {
 #if defined(linux)
-  const char *cs = nl_langinfo( CODESET );
+  const char* cs = nl_langinfo( CODESET );
   QgsDebugMsg( QString( "CODESET:%1" ).arg( cs ? cs : "unset" ) );
   if ( !cs || strcmp( cs, "UTF-8" ) != 0 )
   {

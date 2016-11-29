@@ -22,8 +22,8 @@
 #include "qgscoloreffect.h"
 
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName )
-    : mName( name )
-    , mVisibleName( visibleName )
+  : mName( name )
+  , mVisibleName( visibleName )
 {
 
 }
@@ -62,7 +62,7 @@ QgsPaintEffectRegistry* QgsPaintEffectRegistry::instance()
   return &sInstance;
 }
 
-QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QString &name ) const
+QgsPaintEffectAbstractMetadata* QgsPaintEffectRegistry::effectMetadata( const QString& name ) const
 {
   if ( mMetadata.contains( name ) )
     return mMetadata.value( name );
@@ -70,7 +70,7 @@ QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QS
     return nullptr;
 }
 
-bool QgsPaintEffectRegistry::addEffectType( QgsPaintEffectAbstractMetadata *metadata )
+bool QgsPaintEffectRegistry::addEffectType( QgsPaintEffectAbstractMetadata* metadata )
 {
   if ( !metadata || mMetadata.contains( metadata->name() ) )
     return false;
@@ -79,7 +79,7 @@ bool QgsPaintEffectRegistry::addEffectType( QgsPaintEffectAbstractMetadata *meta
   return true;
 }
 
-QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QString &name, const QgsStringMap &properties ) const
+QgsPaintEffect* QgsPaintEffectRegistry::createEffect( const QString& name, const QgsStringMap& properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
@@ -88,7 +88,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QString &name, const
   return effect;
 }
 
-QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element ) const
+QgsPaintEffect* QgsPaintEffectRegistry::createEffect( const QDomElement& element ) const
 {
   if ( element.isNull() )
   {

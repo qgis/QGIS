@@ -28,7 +28,7 @@
 QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
     const QString& caption, const QString& directory,
     const QString& filter, const QString& encoding )
-    : QFileDialog( parent, caption, directory, filter )
+  : QFileDialog( parent, caption, directory, filter )
 {
   mCancelAll       = false;
   mCancelAllButton = nullptr;

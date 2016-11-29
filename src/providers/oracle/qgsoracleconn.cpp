@@ -27,11 +27,11 @@
 #include <QSqlError>
 #include <QDateTime>
 
-QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
+QMap<QString, QgsOracleConn*> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 
-QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
+QgsOracleConn* QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
 {
   QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
@@ -41,7 +41,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
     return sConnections[conninfo];
   }
 
-  QgsOracleConn *conn = new QgsOracleConn( uri );
+  QgsOracleConn* conn = new QgsOracleConn( uri );
 
   if ( conn->mRef == 0 )
   {
@@ -55,9 +55,9 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri& uri )
 }
 
 QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
-    : mRef( 1 )
-    , mCurrentUser( QString::null )
-    , mHasSpatial( -1 )
+  : mRef( 1 )
+  , mCurrentUser( QString::null )
+  , mHasSpatial( -1 )
 {
   QgsDebugMsg( QString( "New Oracle connection for " ) + uri.connectionInfo() );
 
@@ -140,7 +140,7 @@ QgsOracleConn::~QgsOracleConn()
     mDatabase.close();
 }
 
-QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
+QString QgsOracleConn::toPoolName( const QgsDataSourceUri& uri )
 {
   QString conninfo = uri.connectionInfo();
   if ( uri.hasParam( "dbworkspace" ) )
@@ -172,7 +172,7 @@ void QgsOracleConn::disconnect()
   deleteLater();
 }
 
-bool QgsOracleConn::exec( QSqlQuery &qry, QString sql )
+bool QgsOracleConn::exec( QSqlQuery& qry, QString sql )
 {
   QgsDebugMsgLevel( QString( "SQL: %1" ).arg( sql ), 4 );
 
@@ -219,7 +219,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
 
   QString
   prefix( userTablesOnly ? "user" : "all" ),
-  owner( userTablesOnly ? "user AS owner" : "c.owner" );
+          owner( userTablesOnly ? "user AS owner" : "c.owner" );
 
   sql = QString( "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
                  " FROM %3_%4 c"
@@ -270,7 +270,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
   return true;
 }
 
-bool QgsOracleConn::supportedLayers( QVector<QgsOracleLayerProperty> &layers, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables )
+bool QgsOracleConn::supportedLayers( QVector<QgsOracleLayerProperty>& layers, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables )
 {
   // Get the list of supported tables
   if ( !tableInfo( geometryTablesOnly, userTablesOnly, allowGeometrylessTables ) )
@@ -293,7 +293,7 @@ QString QgsOracleConn::quotedIdentifier( QString ident )
   return ident;
 }
 
-QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
+QString QgsOracleConn::quotedValue( const QVariant& value, QVariant::Type type )
 {
   if ( value.isNull() )
     return "NULL";
@@ -345,10 +345,10 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
   return v.prepend( "'" ).append( "'" );
 }
 
-QString QgsOracleConn::fieldExpression( const QgsField &fld )
+QString QgsOracleConn::fieldExpression( const QgsField& fld )
 {
 #if 0
-  const QString &type = fld.typeName();
+  const QString& type = fld.typeName();
   if ( type == "money" )
   {
     return QString( "cash_out(%1)" ).arg( quotedIdentifier( fld.name() ) );
@@ -380,7 +380,7 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 #endif
 }
 
-void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
+void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty& layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
   QgsDebugMsgLevel( "entering: " + layerProperty.toString(), 3 );
 

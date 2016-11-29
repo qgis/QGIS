@@ -23,54 +23,54 @@
 #include <QLabel>
 #include <QTextEdit>
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( QLatin1String( "" ) )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+QgsMessageBarItem::QgsMessageBarItem( const QString& text, QgsMessageBar::MessageLevel level, int duration, QWidget* parent )
+  : QWidget( parent )
+  , mTitle( QLatin1String( "" ) )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( nullptr )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+QgsMessageBarItem::QgsMessageBarItem( const QString& title, const QString& text, QgsMessageBar::MessageLevel level, int duration, QWidget* parent )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( nullptr )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+QgsMessageBarItem::QgsMessageBarItem( const QString& title, const QString& text, QWidget* widget, QgsMessageBar::MessageLevel level, int duration, QWidget* parent )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( QLatin1String( "" ) )
-    , mText( QLatin1String( "" ) )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+QgsMessageBarItem::QgsMessageBarItem( QWidget* widget, QgsMessageBar::MessageLevel level, int duration, QWidget* parent )
+  : QWidget( parent )
+  , mTitle( QLatin1String( "" ) )
+  , mText( QLatin1String( "" ) )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
@@ -162,7 +162,7 @@ void QgsMessageBarItem::writeContent()
   // WIDGET
   if ( mWidget )
   {
-    QLayoutItem *item = mLayout->itemAt( 2 );
+    QLayoutItem* item = mLayout->itemAt( 2 );
     if ( !item || item->widget() != mWidget )
     {
       mLayout->addWidget( mWidget );
@@ -200,14 +200,14 @@ QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString& title )
+QgsMessageBarItem* QgsMessageBarItem::setTitle( const QString& title )
 {
   mTitle = title;
   writeContent();
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
+QgsMessageBarItem* QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
 {
   mLevel = level;
   writeContent();
@@ -215,11 +215,11 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
+QgsMessageBarItem* QgsMessageBarItem::setWidget( QWidget* widget )
 {
   if ( mWidget )
   {
-    QLayoutItem *item;
+    QLayoutItem* item;
     item = mLayout->itemAt( 2 );
     if ( item->widget() == mWidget )
     {
@@ -231,7 +231,7 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setIcon( const QIcon &icon )
+QgsMessageBarItem* QgsMessageBarItem::setIcon( const QIcon& icon )
 {
   mUserIcon = icon;
   return this;

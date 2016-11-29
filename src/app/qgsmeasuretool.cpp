@@ -33,15 +33,15 @@
 #include <QSettings>
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
-    : QgsMapTool( canvas )
-    , mWrongProjectProjection( false )
+  : QgsMapTool( canvas )
+  , mWrongProjectProjection( false )
 {
   mMeasureArea = measureArea;
 
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry );
 
-  QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
+  QPixmap myCrossHairQPixmap = QPixmap(( const char** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
   mDone = true;
@@ -148,7 +148,7 @@ void QgsMeasureTool::updateSettings()
         mRubberBand->addPoint( point, false );
         mRubberBandPoints->addPoint( point, false );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         QgsMessageLog::logMessage( QStringLiteral( "Transform error caught at the MeasureTool: %1" ).arg( cse.what() ) );
       }
@@ -262,7 +262,7 @@ void QgsMeasureTool::keyPressEvent( QKeyEvent* e )
 }
 
 
-void QgsMeasureTool::addPoint( const QgsPoint &point )
+void QgsMeasureTool::addPoint( const QgsPoint& point )
 {
   QgsDebugMsg( "point=" + point.toString() );
 

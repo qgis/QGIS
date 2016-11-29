@@ -75,21 +75,21 @@ class QgsGPXProvider : public QgsVectorDataProvider
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList& flist ) override;
 
     /**
      * Deletes a feature
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds& id ) override;
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override;
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
@@ -132,7 +132,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
                      CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
-                 };
+                   };
 
   private:
 

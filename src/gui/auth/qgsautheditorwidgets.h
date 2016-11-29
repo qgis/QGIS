@@ -34,7 +34,7 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
      * Construct a dialog for viewing available authentication method plugins
      * @param parent Parent widget
      */
-    explicit QgsAuthMethodPlugins( QWidget *parent = nullptr );
+    explicit QgsAuthMethodPlugins( QWidget* parent = nullptr );
 
     ~QgsAuthMethodPlugins();
 
@@ -44,8 +44,8 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
   private:
     void setupTable();
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
      * Construct a widget to contain various authentication editors
      * @param parent Parent widget
      */
-    explicit QgsAuthEditorWidgets( QWidget *parent = nullptr );
+    explicit QgsAuthEditorWidgets( QWidget* parent = nullptr );
 
     ~QgsAuthEditorWidgets();
 
@@ -94,16 +94,16 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
   private:
     void setupUtilitiesMenu();
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar* messageBar();
     int messageTimeout();
 
-    QMenu *mAuthUtilitiesMenu;
-    QAction *mActionSetMasterPassword;
-    QAction *mActionClearCachedMasterPassword;
-    QAction *mActionResetMasterPassword;
-    QAction *mActionClearCachedAuthConfigs;
-    QAction *mActionRemoveAuthConfigs;
-    QAction *mActionEraseAuthDatabase;
+    QMenu* mAuthUtilitiesMenu;
+    QAction* mActionSetMasterPassword;
+    QAction* mActionClearCachedMasterPassword;
+    QAction* mActionResetMasterPassword;
+    QAction* mActionClearCachedAuthConfigs;
+    QAction* mActionRemoveAuthConfigs;
+    QAction* mActionEraseAuthDatabase;
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

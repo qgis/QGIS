@@ -47,7 +47,10 @@ class CORE_EXPORT QgsAbstractLabelProvider
     virtual ~QgsAbstractLabelProvider() {}
 
     //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngine)
-    void setEngine( const QgsLabelingEngine* engine ) { mEngine = engine; }
+    void setEngine( const QgsLabelingEngine* engine )
+    {
+      mEngine = engine;
+    }
 
     enum Flag
     {
@@ -66,36 +69,66 @@ class CORE_EXPORT QgsAbstractLabelProvider
     virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const = 0;
 
     //! Return list of child providers - useful if the provider needs to put labels into more layers with different configuration
-    virtual QList<QgsAbstractLabelProvider*> subProviders() { return QList<QgsAbstractLabelProvider*>(); }
+    virtual QList<QgsAbstractLabelProvider*> subProviders()
+    {
+      return QList<QgsAbstractLabelProvider*>();
+    }
 
     //! Name of the layer (for statistics, debugging etc.) - does not need to be unique
-    QString name() const { return mName; }
+    QString name() const
+    {
+      return mName;
+    }
 
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
-    QString layerId() const { return mLayerId; }
+    QString layerId() const
+    {
+      return mLayerId;
+    }
 
     //! Returns provider ID - useful in case there is more than one label provider within a layer
     //! (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
     //! layer ID is sufficient for identification of provider's configuration.
-    QString providerId() const { return mProviderId; }
+    QString providerId() const
+    {
+      return mProviderId;
+    }
 
     //! Flags associated with the provider
-    Flags flags() const { return mFlags; }
+    Flags flags() const
+    {
+      return mFlags;
+    }
 
     //! What placement strategy to use for the labels
-    QgsPalLayerSettings::Placement placement() const { return mPlacement; }
+    QgsPalLayerSettings::Placement placement() const
+    {
+      return mPlacement;
+    }
 
     //! For layers with linestring geometries - extra placement flags (or-ed combination of QgsPalLayerSettings::LinePlacementFlags)
-    unsigned int linePlacementFlags() const { return mLinePlacementFlags; }
+    unsigned int linePlacementFlags() const
+    {
+      return mLinePlacementFlags;
+    }
 
     //! Default priority of labels (may be overridden by individual labels)
-    double priority() const { return mPriority; }
+    double priority() const
+    {
+      return mPriority;
+    }
 
     //! How the feature geometries will work as obstacles
-    QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
+    QgsPalLayerSettings::ObstacleType obstacleType() const
+    {
+      return mObstacleType;
+    }
 
     //! How to handle labels that would be upside down
-    QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
+    QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const
+    {
+      return mUpsidedownLabels;
+    }
 
   protected:
     //! Associated labeling engine
@@ -176,9 +209,15 @@ class CORE_EXPORT QgsLabelingEngine
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Associate map settings instance
-    void setMapSettings( const QgsMapSettings& mapSettings ) { mMapSettings = mapSettings; }
+    void setMapSettings( const QgsMapSettings& mapSettings )
+    {
+      mMapSettings = mapSettings;
+    }
     //! Get associated map settings
-    const QgsMapSettings& mapSettings() const { return mMapSettings; }
+    const QgsMapSettings& mapSettings() const
+    {
+      return mMapSettings;
+    }
 
     //! Add provider of label features. Takes ownership of the provider
     void addProvider( QgsAbstractLabelProvider* provider );
@@ -193,26 +232,58 @@ class CORE_EXPORT QgsLabelingEngine
     QgsLabelingResults* takeResults();
 
     //! For internal use by the providers
-    QgsLabelingResults* results() const { return mResults; }
+    QgsLabelingResults* results() const
+    {
+      return mResults;
+    }
 
     //! Set flags of the labeling engine
-    void setFlags( Flags flags ) { mFlags = flags; }
+    void setFlags( Flags flags )
+    {
+      mFlags = flags;
+    }
     //! Get flags of the labeling engine
-    Flags flags() const { return mFlags; }
+    Flags flags() const
+    {
+      return mFlags;
+    }
     //! Test whether a particular flag is enabled
-    bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
+    bool testFlag( Flag f ) const
+    {
+      return mFlags.testFlag( f );
+    }
     //! Set whether a particual flag is enabled
-    void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
+    void setFlag( Flag f, bool enabled = true )
+    {
+      if ( enabled ) mFlags |= f;
+      else mFlags &= ~f;
+    }
 
     //! Get number of candidate positions that will be generated for each label feature (default to 8)
-    void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon ) { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
+    void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon )
+    {
+      candPoint = mCandPoint;
+      candLine = mCandLine;
+      candPolygon = mCandPolygon;
+    }
     //! Set number of candidate positions that will be generated for each label feature
-    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
+    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon )
+    {
+      mCandPoint = candPoint;
+      mCandLine = candLine;
+      mCandPolygon = candPolygon;
+    }
 
     //! Set which search method to use for removal collisions between labels
-    void setSearchMethod( QgsPalLabeling::Search s ) { mSearchMethod = s; }
+    void setSearchMethod( QgsPalLabeling::Search s )
+    {
+      mSearchMethod = s;
+    }
     //! Which search method to use for removal collisions between labels
-    QgsPalLabeling::Search searchMethod() const { return mSearchMethod; }
+    QgsPalLabeling::Search searchMethod() const
+    {
+      return mSearchMethod;
+    }
 
     //! Read configuration of the labeling engine from the current project file
     void readSettingsFromProject();

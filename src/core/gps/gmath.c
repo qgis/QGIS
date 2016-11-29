@@ -36,14 +36,18 @@
  * \brief Convert degree to radian
  */
 double nmea_degree2radian( double val )
-{ return ( val * NMEA_PI180 ); }
+{
+  return ( val * NMEA_PI180 );
+}
 
 /**
  * \fn nmea_radian2degree
  * \brief Convert radian to degree
  */
 double nmea_radian2degree( double val )
-{ return ( val / NMEA_PI180 ); }
+{
+  return ( val / NMEA_PI180 );
+}
 
 /**
  * \brief Convert NDEG (NMEA degree) to fractional degree
@@ -72,14 +76,18 @@ double nmea_degree2ndeg( double val )
  * \brief Convert NDEG (NMEA degree) to radian
  */
 double nmea_ndeg2radian( double val )
-{ return nmea_degree2radian( nmea_ndeg2degree( val ) ); }
+{
+  return nmea_degree2radian( nmea_ndeg2degree( val ) );
+}
 
 /**
  * \fn nmea_radian2ndeg
  * \brief Convert radian to NDEG (NMEA degree)
  */
 double nmea_radian2ndeg( double val )
-{ return nmea_degree2ndeg( nmea_radian2degree( val ) ); }
+{
+  return nmea_degree2ndeg( nmea_radian2degree( val ) );
+}
 
 /**
  * \brief Calculate PDOP (Position Dilution Of Precision) factor
@@ -90,18 +98,22 @@ double nmea_calc_pdop( double hdop, double vdop )
 }
 
 double nmea_dop2meters( double dop )
-{ return ( dop * NMEA_DOP_FACTOR ); }
+{
+  return ( dop * NMEA_DOP_FACTOR );
+}
 
 double nmea_meters2dop( double meters )
-{ return ( meters / NMEA_DOP_FACTOR ); }
+{
+  return ( meters / NMEA_DOP_FACTOR );
+}
 
 /**
  * \brief Calculate distance between two points
  * \return Distance in meters
  */
 double nmea_distance(
-  const nmeaPOS *from_pos,    //!< From position in radians
-  const nmeaPOS *to_pos       //!< To position in radians
+  const nmeaPOS* from_pos,    //!< From position in radians
+  const nmeaPOS* to_pos       //!< To position in radians
 )
 {
   double dist = (( double )NMEA_EARTHRADIUS_M ) * acos(
@@ -119,10 +131,10 @@ double nmea_distance(
  * \return Distance in meters
  */
 double nmea_distance_ellipsoid(
-  const nmeaPOS *from_pos,    //!< From position in radians
-  const nmeaPOS *to_pos,      //!< To position in radians
-  double *from_azimuth,       //!< (O) azimuth at "from" position in radians
-  double *to_azimuth          //!< (O) azimuth at "to" position in radians
+  const nmeaPOS* from_pos,    //!< From position in radians
+  const nmeaPOS* to_pos,      //!< To position in radians
+  double* from_azimuth,       //!< (O) azimuth at "from" position in radians
+  double* to_azimuth          //!< (O) azimuth at "to" position in radians
 )
 {
   /* All variables */
@@ -137,7 +149,8 @@ double nmea_distance_ellipsoid(
   NMEA_ASSERT( to_pos != 0 );
 
   if (( from_pos->lat == to_pos->lat ) && ( from_pos->lon == to_pos->lon ) )
-  { /* Identical points */
+  {
+    /* Identical points */
     if ( from_azimuth != 0 )
       *from_azimuth = 0;
     if ( to_azimuth != 0 )
@@ -177,7 +190,8 @@ double nmea_distance_ellipsoid(
   remaining_steps = 20;
 
   while (( delta_lambda > 1e-12 ) && ( remaining_steps > 0 ) )
-  { /* Iterate */
+  {
+    /* Iterate */
     /* Variables */
     double tmp1, tmp2, sin_alpha, cos_alpha, C, lambda_prev;
 
@@ -233,8 +247,8 @@ double nmea_distance_ellipsoid(
  * \brief Horizontal move of point position
  */
 int nmea_move_horz(
-  const nmeaPOS *start_pos,   //!< Start position in radians
-  nmeaPOS *end_pos,           //!< Result position in radians
+  const nmeaPOS* start_pos,   //!< Start position in radians
+  nmeaPOS* end_pos,           //!< Result position in radians
   double azimuth,             //!< Azimuth (degree) [0, 359]
   double distance             //!< Distance (km)
 )
@@ -267,11 +281,11 @@ int nmea_move_horz(
  * http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
  */
 int nmea_move_horz_ellipsoid(
-  const nmeaPOS *start_pos,   //!< Start position in radians
-  nmeaPOS *end_pos,           //!< (O) Result position in radians
+  const nmeaPOS* start_pos,   //!< Start position in radians
+  nmeaPOS* end_pos,           //!< (O) Result position in radians
   double azimuth,             //!< Azimuth in radians
   double distance,            //!< Distance (km)
-  double *end_azimuth         //!< (O) Azimuth at end position in radians
+  double* end_azimuth         //!< (O) Azimuth at end position in radians
 )
 {
   /* Variables */
@@ -287,7 +301,8 @@ int nmea_move_horz_ellipsoid(
   NMEA_ASSERT( end_pos != 0 );
 
   if ( fabs( distance ) < 1e-12 )
-  { /* No move */
+  {
+    /* No move */
     *end_pos = *start_pos;
     if ( end_azimuth != 0 ) *end_azimuth = azimuth;
     return !( NMEA_POSIX( isnan )( end_pos->lat ) || NMEA_POSIX( isnan )( end_pos->lon ) );
@@ -328,7 +343,8 @@ int nmea_move_horz_ellipsoid(
   remaining_steps = 20;
 
   while (( fabs( sigma - sigma_prev ) > 1e-12 ) && ( remaining_steps > 0 ) )
-  { /* Iterate */
+  {
+    /* Iterate */
     cos_2_sigmam = cos( 2 * sigma1 + sigma );
     sqr_cos_2_sigmam = cos_2_sigmam * cos_2_sigmam;
     sin_sigma = sin( sigma );
@@ -375,7 +391,7 @@ int nmea_move_horz_ellipsoid(
 /**
  * \brief Convert position from INFO to radians position
  */
-void nmea_info2pos( const nmeaINFO *info, nmeaPOS *pos )
+void nmea_info2pos( const nmeaINFO* info, nmeaPOS* pos )
 {
   pos->lat = nmea_ndeg2radian( info->lat );
   pos->lon = nmea_ndeg2radian( info->lon );
@@ -384,7 +400,7 @@ void nmea_info2pos( const nmeaINFO *info, nmeaPOS *pos )
 /**
  * \brief Convert radians position to INFOs position
  */
-void nmea_pos2info( const nmeaPOS *pos, nmeaINFO *info )
+void nmea_pos2info( const nmeaPOS* pos, nmeaINFO* info )
 {
   info->lat = nmea_radian2ndeg( pos->lat );
   info->lon = nmea_radian2ndeg( pos->lon );

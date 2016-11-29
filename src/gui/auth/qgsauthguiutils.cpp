@@ -47,22 +47,22 @@ QColor QgsAuthGuiUtils::yellowColor()
   return QColor( 255, 255, 125 );
 }
 
-QString QgsAuthGuiUtils::greenTextStyleSheet( const QString &selector )
+QString QgsAuthGuiUtils::greenTextStyleSheet( const QString& selector )
 {
   return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::greenColor().name() );
 }
 
-QString QgsAuthGuiUtils::orangeTextStyleSheet( const QString &selector )
+QString QgsAuthGuiUtils::orangeTextStyleSheet( const QString& selector )
 {
   return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::orangeColor().name() );
 }
 
-QString QgsAuthGuiUtils::redTextStyleSheet( const QString &selector )
+QString QgsAuthGuiUtils::redTextStyleSheet( const QString& selector )
 {
   return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::redColor().name() );
 }
 
-bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar, int timeout )
+bool QgsAuthGuiUtils::isDisabled( QgsMessageBar* msgbar, int timeout )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -74,7 +74,7 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar, int timeout )
   return false;
 }
 
-void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar *msgbar, int timeout )
+void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar* msgbar, int timeout )
 {
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
@@ -89,7 +89,7 @@ void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar *msgbar, int timeout )
   ( void )QgsAuthManager::instance()->setMasterPassword( true );
 }
 
-void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout )
+void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar* msgbar, int timeout )
 {
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
@@ -111,7 +111,7 @@ void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int time
   msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, level, timeout );
 }
 
-void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, QWidget *parent )
+void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar* msgbar, int timeout, QWidget* parent )
 {
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
@@ -155,7 +155,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
   msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, level, timeout );
 }
 
-void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, int timeout )
+void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar* msgbar, int timeout )
 {
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
@@ -165,7 +165,7 @@ void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, i
   msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, QgsMessageBar::INFO, timeout );
 }
 
-void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout, QWidget *parent )
+void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar* msgbar, int timeout, QWidget* parent )
 {
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
@@ -192,7 +192,7 @@ void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, int ti
   msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, level, timeout );
 }
 
-void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout, QWidget *parent )
+void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar* msgbar, int timeout, QWidget* parent )
 {
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
@@ -201,8 +201,8 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
                                        parent,
                                        QObject::tr( "Erase Database" ),
                                        QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                                                    "Operation can NOT be undone!\n\n"
-                                                    "(Current database will be backed up and new one created.)" ),
+                                           "Operation can NOT be undone!\n\n"
+                                           "(Current database will be backed up and new one created.)" ),
                                        QMessageBox::Ok | QMessageBox::Cancel,
                                        QMessageBox::Cancel );
 
@@ -235,7 +235,7 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
   msgbar->pushMessage( QObject::tr( "RESTART QGIS" ), msg, level, timeout );
 }
 
-void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
+void QgsAuthGuiUtils::fileFound( bool found, QWidget* widget )
 {
   if ( !found )
   {
@@ -249,7 +249,7 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
   }
 }
 
-QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter )
+QString QgsAuthGuiUtils::getOpenFileName( QWidget* parent, const QString& title, const QString& extfilter )
 {
   QSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthOpenFileDir" ), QDir::homePath() ).toString();

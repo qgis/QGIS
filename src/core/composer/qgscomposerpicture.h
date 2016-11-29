@@ -60,11 +60,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       TrueNorth, //!< Align to true north
     };
 
-    QgsComposerPicture( QgsComposition *composition );
+    QgsComposerPicture( QgsComposition* composition );
     ~QgsComposerPicture();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerPicture; }
+    virtual int type() const override
+    {
+      return ComposerPicture;
+    }
 
     //! Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
@@ -97,7 +100,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
@@ -111,7 +114,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see setPictureRotation
      * @see rotationMap
      */
-    double pictureRotation() const { return mPictureRotation; }
+    double pictureRotation() const
+    {
+      return mPictureRotation;
+    }
 
     /** Sets the map object for rotation (by id). A value of -1 disables the map
      * rotation.  If this is set then the picture will be rotated by the same
@@ -137,7 +143,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see rotationMap
      * @see setRotationMap
      */
-    bool useRotationMap() const { return mRotationMap; }
+    bool useRotationMap() const
+    {
+      return mRotationMap;
+    }
 
     /**
      * Returns the mode used to align the picture to a map's North.
@@ -145,7 +154,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see northOffset()
      * @note added in QGIS 2.18
      */
-    NorthMode northMode() const { return mNorthMode; }
+    NorthMode northMode() const
+    {
+      return mNorthMode;
+    }
 
     /**
      * Sets the mode used to align the picture to a map's North.
@@ -161,7 +173,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see northMode()
      * @note added in QGIS 2.18
      */
-    double northOffset() const { return mNorthOffset; }
+    double northOffset() const
+    {
+      return mNorthOffset;
+    }
 
     /**
      * Sets the offset added to the picture's rotation from a map's North.
@@ -177,7 +192,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note added in 2.3
      * @see setResizeMode
      */
-    ResizeMode resizeMode() const { return mResizeMode; }
+    ResizeMode resizeMode() const
+    {
+      return mResizeMode;
+    }
 
     /** Sets the picture's anchor point, which controls how it is placed
      * within the picture item's frame.
@@ -193,14 +211,20 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note added in 2.3
      * @see setPictureAnchor
      */
-    ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
+    ItemPositionMode pictureAnchor() const
+    {
+      return mPictureAnchor;
+    }
 
     /** Returns the fill color used for parameterized SVG files.
      * @see setSvgFillColor()
      * @see svgBorderColor()
      * @note added in QGIS 2.14.1
      */
-    QColor svgFillColor() const { return mSvgFillColor; }
+    QColor svgFillColor() const
+    {
+      return mSvgFillColor;
+    }
 
     /** Sets the fill color used for parameterized SVG files.
      * @param color fill color.
@@ -217,7 +241,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see svgFillColor()
      * @note added in QGIS 2.14.1
      */
-    QColor svgBorderColor() const { return mSvgBorderColor; }
+    QColor svgBorderColor() const
+    {
+      return mSvgBorderColor;
+    }
 
     /** Sets the border color used for parameterized SVG files.
      * @param color border color.
@@ -234,7 +261,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see svgBorderColor()
      * @note added in QGIS 2.14.1
      */
-    double svgBorderWidth() const { return mSvgBorderWidth; }
+    double svgBorderWidth() const
+    {
+      return mSvgBorderWidth;
+    }
 
     /** Sets the border width used for parameterized SVG files.
      * @param width border width in mm
@@ -250,7 +280,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @returns picture mode
      * @note added in 2.3
      */
-    Mode mode() const { return mMode; }
+    Mode mode() const
+    {
+      return mMode;
+    }
 
   public slots:
 
@@ -281,7 +314,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     void recalculateSize();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   signals:
     //! Is emitted on picture rotation change
@@ -333,7 +366,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     bool mLoadingSvg;
 
     //! Loads an image file into the picture item and redraws the item
-    void loadPicture( const QString &path );
+    void loadPicture( const QString& path );
 
     //! Sets up the picture item and connects to relevant signals
     void init();
@@ -341,15 +374,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Returns part of a raster image which will be shown, given current picture
      * anchor settings
      */
-    QRect clippedImageRect( double &boundRectWidthMM, double &boundRectHeightMM, QSize imageRectPixels );
+    QRect clippedImageRect( double& boundRectWidthMM, double& boundRectHeightMM, QSize imageRectPixels );
 
     /** Loads a remote picture for the item
      */
-    void loadRemotePicture( const QString &url );
+    void loadRemotePicture( const QString& url );
 
     /** Loads a local picture for the item
      */
-    void loadLocalPicture( const QString &path );
+    void loadLocalPicture( const QString& path );
 
   private slots:
 

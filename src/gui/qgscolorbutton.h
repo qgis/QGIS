@@ -62,7 +62,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param registry a color scheme registry for color swatch grids to show in the drop down menu. If not
      * specified, the button will use the global color scheme registry
      */
-    QgsColorButton( QWidget *parent = nullptr, const QString& cdt = "", QgsColorSchemeRegistry* registry = nullptr );
+    QgsColorButton( QWidget* parent = nullptr, const QString& cdt = "", QgsColorSchemeRegistry* registry = nullptr );
 
     virtual ~QgsColorButton();
 
@@ -86,7 +86,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns true if alpha modification is allowed
      * @see setAllowAlpha
      */
-    bool allowAlpha() const { return mAllowAlpha; }
+    bool allowAlpha() const
+    {
+      return mAllowAlpha;
+    }
 
     /** Set the title for the color chooser dialog window.
      * @param title Title for the color chooser dialog
@@ -104,14 +107,20 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns true if the button will be accepted immediately when the dialog's color changes
      * @see setAcceptLiveUpdates
      */
-    bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
+    bool acceptLiveUpdates() const
+    {
+      return mAcceptLiveUpdates;
+    }
 
     /** Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
      * that are not undoable on QColorDialog cancel.
      * @param accept set to true to enable live updates
      * @see acceptLiveUpdates
      */
-    void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
+    void setAcceptLiveUpdates( const bool accept )
+    {
+      mAcceptLiveUpdates = accept;
+    }
 
     /** Sets whether the drop down menu should be shown for the button. The default behaviour is to
      * show the menu.
@@ -124,7 +133,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns true if drop down menu is shown
      * @see setShowMenu
      */
-    bool showMenu() const { return menu() ? true : false; }
+    bool showMenu() const
+    {
+      return menu() ? true : false;
+    }
 
     /** Sets the behaviour for when the button is clicked. The default behaviour is to show
      * a color picker dialog.
@@ -137,7 +149,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns behaviour when button is clicked
      * @see setBehaviour
      */
-    Behaviour behaviour() const { return mBehaviour; }
+    Behaviour behaviour() const
+    {
+      return mBehaviour;
+    }
 
     /** Sets the default color for the button, which is shown in the button's drop down menu for the
      * "default color" option.
@@ -153,7 +168,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * option is disabled.
      * @see setDefaultColor
      */
-    QColor defaultColor() const { return mDefaultColor; }
+    QColor defaultColor() const
+    {
+      return mDefaultColor;
+    }
 
     /** Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
@@ -163,7 +181,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
-    void setShowNoColor( const bool showNoColorOption ) { mShowNoColorOption = showNoColorOption; }
+    void setShowNoColor( const bool showNoColorOption )
+    {
+      mShowNoColorOption = showNoColorOption;
+    }
 
     /** Returns whether the "no color" option is shown in the button's drop down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
@@ -173,7 +194,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
-    bool showNoColor() const { return mShowNoColorOption; }
+    bool showNoColor() const
+    {
+      return mShowNoColorOption;
+    }
 
     /** Sets the string to use for the "no color" option in the button's drop down menu.
      * @param noColorString string to use for the "no color" menu option
@@ -182,7 +206,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
-    void setNoColorString( const QString& noColorString ) { mNoColorString = noColorString; }
+    void setNoColorString( const QString& noColorString )
+    {
+      mNoColorString = noColorString;
+    }
 
     /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
      * @param showNull set to true to show a null option
@@ -213,7 +240,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog (see setColorDialogOptions)
      */
-    QString noColorString() const { return mNoColorString; }
+    QString noColorString() const
+    {
+      return mNoColorString;
+    }
 
     /** Sets the context string for the color button. The context string is passed to all color swatch
      * grids shown in the button's drop down menu, to allow them to customise their display colors
@@ -221,7 +251,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param context context string for the color button's color swatch grids
      * @see context
      */
-    void setContext( const QString& context ) { mContext = context; }
+    void setContext( const QString& context )
+    {
+      mContext = context;
+    }
 
     /** Returns the context string for the color button. The context string is passed to all color swatch
      * grids shown in the button's drop down menu, to allow them to customise their display colors
@@ -229,7 +262,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @returns context string for the color button's color swatch grids
      * @see setContext
      */
-    QString context() const { return mContext; }
+    QString context() const
+    {
+      return mContext;
+    }
 
     /** Sets the color scheme registry for the button, which controls the color swatch grids
      * that are shown in the button's drop down menu.
@@ -237,7 +273,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * swatch grids from the button's drop down menu.
      * @see colorSchemeRegistry
      */
-    void setColorSchemeRegistry( QgsColorSchemeRegistry* registry ) { mColorSchemeRegistry = registry; }
+    void setColorSchemeRegistry( QgsColorSchemeRegistry* registry )
+    {
+      mColorSchemeRegistry = registry;
+    }
 
     /** Returns the color scheme registry for the button, which controls the color swatch grids
      * that are shown in the button's drop down menu.
@@ -245,7 +284,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * swatch grids are hidden from the button's drop down menu.
      * @see setColorSchemeRegistry
      */
-    QgsColorSchemeRegistry* colorSchemeRegistry() { return mColorSchemeRegistry; }
+    QgsColorSchemeRegistry* colorSchemeRegistry()
+    {
+      return mColorSchemeRegistry;
+    }
 
   public slots:
 
@@ -254,7 +296,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param color new color for the button
      * @see color
      */
-    void setColor( const QColor &color );
+    void setColor( const QColor& color );
 
     /** Sets the background pixmap for the button based upon color and transparency.
      * Call directly to update background after adding/removing QColorDialog::ShowAlphaChannel option
@@ -263,7 +305,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param color Color for button background. If no color is specified, the button's current
      * color will be used
      */
-    void setButtonBackground( const QColor &color = QColor() );
+    void setButtonBackground( const QColor& color = QColor() );
 
     /** Copies the current color to the clipboard
      * @see pasteColor
@@ -307,21 +349,21 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * In case the new color is the same no signal is emitted, to avoid infinite loops.
      * @param color New color
      */
-    void colorChanged( const QColor &color );
+    void colorChanged( const QColor& color );
 
     /** Emitted when the button is clicked, if the button's behaviour is set to SignalOnly
      * @param color button color
      * @see setBehaviour
      * @see behaviour
      */
-    void colorClicked( const QColor &color );
+    void colorClicked( const QColor& color );
 
   protected:
 
-    bool event( QEvent *e ) override;
+    bool event( QEvent* e ) override;
     void changeEvent( QEvent* e ) override;
     void showEvent( QShowEvent* e ) override;
-    void resizeEvent( QResizeEvent *event ) override;
+    void resizeEvent( QResizeEvent* event ) override;
 
     /** Returns a checkboard pattern pixmap for use as a background to transparent colors
      */
@@ -335,32 +377,32 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Reimplemented to allow dragging colors from button
      */
-    void mouseMoveEvent( QMouseEvent *e ) override;
+    void mouseMoveEvent( QMouseEvent* e ) override;
 
     /**
      * Reimplemented to allow color picking
      */
-    void mouseReleaseEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent* e ) override;
 
     /**
      * Reimplemented to allow cancelling color pick via keypress, and sample via space bar press
      */
-    void keyPressEvent( QKeyEvent *e ) override;
+    void keyPressEvent( QKeyEvent* e ) override;
 
     /**
      * Reimplemented to accept dragged colors
      */
-    void dragEnterEvent( QDragEnterEvent * e ) override;
+    void dragEnterEvent( QDragEnterEvent* e ) override;
 
     /**
      * Reimplemented to reset button appearance after drag leave
      */
-    void dragLeaveEvent( QDragLeaveEvent *e ) override;
+    void dragLeaveEvent( QDragLeaveEvent* e ) override;
 
     /**
      * Reimplemented to accept dropped colors
      */
-    void dropEvent( QDropEvent *e ) override;
+    void dropEvent( QDropEvent* e ) override;
 
   private:
 
@@ -394,7 +436,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param resultColor QColor to store evaluated color
      * @see createColorMimeData
      */
-    bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
+    bool colorFromMimeData( const QMimeData* mimeData, QColor& resultColor );
 
     /** Ends a color picking operation
      * @param eventPos global position of pixel to sample color from
@@ -408,7 +450,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * @param showChecks set to true to display a checkboard pattern behind
      * transparent colors
      */
-    QPixmap createMenuIcon( const QColor &color, const bool showChecks = true );
+    QPixmap createMenuIcon( const QColor& color, const bool showChecks = true );
 
   private slots:
 

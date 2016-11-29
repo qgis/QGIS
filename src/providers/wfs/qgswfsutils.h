@@ -60,7 +60,7 @@ class QgsWFSUtils
     static QString getBaseCacheDirectory( bool createIfNotExisting );
 
     //! Remove (recursively) a directory.
-    static bool removeDir( const QString &dirName );
+    static bool removeDir( const QString& dirName );
 };
 
 //! For internal use of QgsWFSUtils

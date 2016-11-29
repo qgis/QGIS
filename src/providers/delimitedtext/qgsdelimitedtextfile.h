@@ -119,7 +119,10 @@ class QgsDelimitedTextFile : public QObject
     /** Return the file encoding
      *  @return encoding The file encoding
      */
-    QString encoding() { return mEncoding; }
+    QString encoding()
+    {
+      return mEncoding;
+    }
 
     /** Decode the parser settings from a url as a string
      *  @param url  The url from which the delimiter and delimiterType items are read
@@ -129,7 +132,7 @@ class QgsDelimitedTextFile : public QObject
     /** Decode the parser settings from a url
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
-    bool setFromUrl( const QUrl &url );
+    bool setFromUrl( const QUrl& url );
 
     /** Encode the parser settings into a QUrl
      *  @return url  The url into which the delimiter and delimiterType items are set
@@ -214,7 +217,10 @@ class QgsDelimitedTextFile : public QObject
     /** Return the maximum number of fields that will be read
      *  @return maxFields The maximum number of fields that will be read
      */
-    int maxFields() { return mMaxFields; }
+    int maxFields()
+    {
+      return mMaxFields;
+    }
 
     /** Set the field names
      *  Field names are set from QStringList.  Names may be modified
@@ -222,7 +228,7 @@ class QgsDelimitedTextFile : public QObject
      *  with default field name (field_##)
      *  @param names  A list of proposed field names
      */
-    void setFieldNames( const QStringList &names );
+    void setFieldNames( const QStringList& names );
 
     /** Return the field names read from the header, or default names
      *  field_## if none defined.  Will open and read the head of the file
@@ -232,7 +238,7 @@ class QgsDelimitedTextFile : public QObject
      *  with more fields are loaded.
      *  @return names  A list of field names in the file
      */
-    QStringList &fieldNames();
+    QStringList& fieldNames();
 
     /** Return the index of a names field
      *  @param name    The name of the field to find.  This will also accept an
@@ -249,7 +255,7 @@ class QgsDelimitedTextFile : public QObject
      *                 file, RecordEmpty if no data on the next line, and
      *                 RecordInvalid if the record is ill-formatted.
      */
-    Status nextRecord( QStringList &fields );
+    Status nextRecord( QStringList& fields );
 
     /** Return the line number of the start of the last record read
      *  @return linenumber  The line number of the start of the record
@@ -269,7 +275,10 @@ class QgsDelimitedTextFile : public QObject
      *  serves as a record count.
      *  @return maxRecordNumber The maximum record number
      */
-    long recordCount() { return mMaxRecordNumber; }
+    long recordCount()
+    {
+      return mMaxRecordNumber;
+    }
 
     /** Reset the file to reread from the beginning
      */
@@ -336,15 +345,15 @@ class QgsDelimitedTextFile : public QObject
     void resetDefinition();
 
     //! Parse reqular expression delimited fields
-    Status parseRegexp( QString &buffer, QStringList &fields );
+    Status parseRegexp( QString& buffer, QStringList& fields );
     //! Parse quote delimited fields, where quote and escape are different
-    Status parseQuoted( QString &buffer, QStringList &fields );
+    Status parseQuoted( QString& buffer, QStringList& fields );
 
     /** Return the next line from the data file.  If skipBlank is true then
      * blank lines will be skipped - this is for compatibility with previous
      * delimited text parser implementation.
      */
-    Status nextLine( QString &buffer, bool skipBlank = false );
+    Status nextLine( QString& buffer, bool skipBlank = false );
 
     /** Set the next line to read from the file.
      */
@@ -353,17 +362,17 @@ class QgsDelimitedTextFile : public QObject
     /** Utility routine to add a field to a record, accounting for trimming
      *  and discarding, and maximum field count
      */
-    void appendField( QStringList &record, QString field, bool quoted = false );
+    void appendField( QStringList& record, QString field, bool quoted = false );
 
     // Pointer to the currently selected parser
-    Status( QgsDelimitedTextFile::*mParser )( QString &buffer, QStringList &fields );
+    Status( QgsDelimitedTextFile::*mParser )( QString& buffer, QStringList& fields );
 
     QString mFileName;
     QString mEncoding;
-    QFile *mFile;
-    QTextStream *mStream;
+    QFile* mFile;
+    QTextStream* mStream;
     bool mUseWatcher;
-    QFileSystemWatcher *mWatcher;
+    QFileSystemWatcher* mWatcher;
 
     // Parameters common to parsers
     bool mDefinitionValid;

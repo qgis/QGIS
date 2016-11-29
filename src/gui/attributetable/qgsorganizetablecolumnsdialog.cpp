@@ -41,7 +41,7 @@
 
 
 QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
+  : QDialog( parent, flags )
 {
   setupUi( this );
 

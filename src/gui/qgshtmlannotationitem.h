@@ -35,10 +35,10 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
     ~QgsHtmlAnnotationItem();
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter* painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr ) override;
 
     QSizeF minimumFrameSize() const override;
 
@@ -46,12 +46,18 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     void setMapPosition( const QgsPoint& pos ) override;
 
     void setHTMLPage( const QString& htmlFile );
-    QString htmlPage() const { return mHtmlFile; }
+    QString htmlPage() const
+    {
+      return mHtmlFile;
+    }
 
     void writeXml( QDomDocument& doc ) const override;
     void readXml( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer* vectorLayer() const
+    {
+      return mVectorLayer;
+    }
 
   private slots:
     //! Sets a feature for the current map position and updates the dialog
@@ -74,7 +80,7 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     QString mHtmlFile;
     QString mHtmlSource;
 
-    QString replaceText( QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
+    QString replaceText( QString displayText, QgsVectorLayer* layer, QgsFeature& feat );
 };
 
 #endif // QGSHTMLANNOTATIONITEM_H

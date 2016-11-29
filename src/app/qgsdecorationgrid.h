@@ -60,56 +60,134 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     };
 
     //! Sets coordinate grid style.
-    void setGridStyle( GridStyle style ) {mGridStyle = style;}
-    GridStyle gridStyle() const { return mGridStyle; }
+    void setGridStyle( GridStyle style )
+    {
+      mGridStyle = style;
+    }
+    GridStyle gridStyle() const
+    {
+      return mGridStyle;
+    }
 
     //! Sets coordinate interval in x-direction for composergrid.
-    void setGridIntervalX( double interval ) { mGridIntervalX = interval;}
-    double gridIntervalX() const { return mGridIntervalX; }
+    void setGridIntervalX( double interval )
+    {
+      mGridIntervalX = interval;
+    }
+    double gridIntervalX() const
+    {
+      return mGridIntervalX;
+    }
 
     //! Sets coordinate interval in y-direction for composergrid.
-    void setGridIntervalY( double interval ) { mGridIntervalY = interval;}
-    double gridIntervalY() const { return mGridIntervalY; }
+    void setGridIntervalY( double interval )
+    {
+      mGridIntervalY = interval;
+    }
+    double gridIntervalY() const
+    {
+      return mGridIntervalY;
+    }
 
     //! Sets x-coordinate offset for composer grid
-    void setGridOffsetX( double offset ) { mGridOffsetX = offset; }
-    double gridOffsetX() const { return mGridOffsetX; }
+    void setGridOffsetX( double offset )
+    {
+      mGridOffsetX = offset;
+    }
+    double gridOffsetX() const
+    {
+      return mGridOffsetX;
+    }
 
     //! Sets y-coordinate offset for composer grid
-    void setGridOffsetY( double offset ) { mGridOffsetY = offset; }
-    double gridOffsetY() const { return mGridOffsetY; }
+    void setGridOffsetY( double offset )
+    {
+      mGridOffsetY = offset;
+    }
+    double gridOffsetY() const
+    {
+      return mGridOffsetY;
+    }
 
     //! Sets the pen to draw composer grid
-    void setGridPen( const QPen& p ) { mGridPen = p; }
-    QPen gridPen() const { return mGridPen; }
+    void setGridPen( const QPen& p )
+    {
+      mGridPen = p;
+    }
+    QPen gridPen() const
+    {
+      return mGridPen;
+    }
     //! Sets with of grid pen
-    void setGridPenWidth( double w ) { mGridPen.setWidthF( w ); }
+    void setGridPenWidth( double w )
+    {
+      mGridPen.setWidthF( w );
+    }
     //! Sets the color of the grid pen
-    void setGridPenColor( const QColor& c ) {  mGridPen.setColor( c ); }
+    void setGridPenColor( const QColor& c )
+    {
+      mGridPen.setColor( c );
+    }
 
     //! Sets font for grid annotations
-    void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
-    QFont gridAnnotationFont() const { return mGridAnnotationFont; }
+    void setGridAnnotationFont( const QFont& f )
+    {
+      mGridAnnotationFont = f;
+    }
+    QFont gridAnnotationFont() const
+    {
+      return mGridAnnotationFont;
+    }
 
     //! Sets coordinate precision for grid annotations
-    void setGridAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
-    int gridAnnotationPrecision() const {return mGridAnnotationPrecision;}
+    void setGridAnnotationPrecision( int p )
+    {
+      mGridAnnotationPrecision = p;
+    }
+    int gridAnnotationPrecision() const
+    {
+      return mGridAnnotationPrecision;
+    }
 
     //! Sets flag if grid annotation should be shown
-    void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
-    bool showGridAnnotation() const {return mShowGridAnnotation;}
+    void setShowGridAnnotation( bool show )
+    {
+      mShowGridAnnotation = show;
+    }
+    bool showGridAnnotation() const
+    {
+      return mShowGridAnnotation;
+    }
 
     //! Sets position of grid annotations. Possibilities are inside or outside of the map frame
-    void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
-    GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
+    void setGridAnnotationPosition( GridAnnotationPosition p )
+    {
+      mGridAnnotationPosition = p;
+    }
+    GridAnnotationPosition gridAnnotationPosition() const
+    {
+      return mGridAnnotationPosition;
+    }
 
     //! Sets distance between map frame and annotations
-    void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
-    double annotationFrameDistance() const {return mAnnotationFrameDistance;}
+    void setAnnotationFrameDistance( double d )
+    {
+      mAnnotationFrameDistance = d;
+    }
+    double annotationFrameDistance() const
+    {
+      return mAnnotationFrameDistance;
+    }
 
     //! Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
-    GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
+    void setGridAnnotationDirection( GridAnnotationDirection d )
+    {
+      mGridAnnotationDirection = d;
+    }
+    GridAnnotationDirection gridAnnotationDirection() const
+    {
+      return mGridAnnotationDirection;
+    }
 
     //! Sets length of the cros segments (if grid style is cross)
     /* void setCrossLength( double l ) {mCrossLength = l;} */
@@ -117,15 +195,27 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     //! Set symbol that is used to draw grid lines. Takes ownership
     void setLineSymbol( QgsLineSymbol* symbol );
-    const QgsLineSymbol* lineSymbol() const { return mLineSymbol; }
+    const QgsLineSymbol* lineSymbol() const
+    {
+      return mLineSymbol;
+    }
 
     //! Set symbol that is used to draw markers. Takes ownership
     void setMarkerSymbol( QgsMarkerSymbol* symbol );
-    const QgsMarkerSymbol* markerSymbol() const { return mMarkerSymbol; }
+    const QgsMarkerSymbol* markerSymbol() const
+    {
+      return mMarkerSymbol;
+    }
 
     //! Sets map unit type
-    void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
-    QgsUnitTypes::DistanceUnit mapUnits() { return mMapUnits; }
+    void setMapUnits( QgsUnitTypes::DistanceUnit t )
+    {
+      mMapUnits = t;
+    }
+    QgsUnitTypes::DistanceUnit mapUnits()
+    {
+      return mMapUnits;
+    }
 
     //! Set mapUnits value
     void setDirty( bool dirty = true );
@@ -145,7 +235,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * ) override;
+    void render( QPainter* ) override;
     //! Show the dialog box
     void run() override;
 

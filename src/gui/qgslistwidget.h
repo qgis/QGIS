@@ -32,7 +32,7 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    explicit QgsListModel( QVariant::Type subType, QObject *parent = 0 );
+    explicit QgsListModel( QVariant::Type subType, QObject* parent = 0 );
     void setList( const QVariantList& list );
     QVariantList list() const;
     bool valid() const;
@@ -41,10 +41,10 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
     int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool insertRows( int position, int rows, const QModelIndex & parent =  QModelIndex() ) override;
-    bool removeRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    bool insertRows( int position, int rows, const QModelIndex& parent =  QModelIndex() ) override;
+    bool removeRows( int position, int rows, const QModelIndex& parent =  QModelIndex() ) override;
 
   private:
     QVariantList mLines;
@@ -77,13 +77,19 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
      * Get the edit value.
      * @return the QVariantList
      */
-    QVariantList list() const { return mModel.list(); }
+    QVariantList list() const
+    {
+      return mModel.list();
+    }
 
     /**
      * Check the content is valid
      * @return true if valid
      */
-    bool valid() const { return mModel.valid(); }
+    bool valid() const
+    {
+      return mModel.valid();
+    }
 
   private:
     QgsListModel mModel;

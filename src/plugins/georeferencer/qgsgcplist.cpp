@@ -19,29 +19,29 @@
 #include "qgsgcplist.h"
 
 QgsGCPList::QgsGCPList()
-    : QList<QgsGeorefDataPoint *>()
+  : QList<QgsGeorefDataPoint *>()
 {
 }
 
-QgsGCPList::QgsGCPList( const QgsGCPList &list )
-    : QList<QgsGeorefDataPoint *>()
+QgsGCPList::QgsGCPList( const QgsGCPList& list )
+  : QList<QgsGeorefDataPoint *>()
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();
   for ( ; it != list.constEnd(); ++it )
   {
-    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint( **it );
+    QgsGeorefDataPoint* pt = new QgsGeorefDataPoint( **it );
     append( pt );
   }
 }
 
-void QgsGCPList::createGCPVectors( QVector<QgsPoint> &mapCoords, QVector<QgsPoint> &pixelCoords )
+void QgsGCPList::createGCPVectors( QVector<QgsPoint>& mapCoords, QVector<QgsPoint>& pixelCoords )
 {
   mapCoords   = QVector<QgsPoint>( size() );
   pixelCoords = QVector<QgsPoint>( size() );
   for ( int i = 0, j = 0; i < sizeAll(); i++ )
   {
-    QgsGeorefDataPoint *pt = at( i );
+    QgsGeorefDataPoint* pt = at( i );
     if ( pt->isEnabled() )
     {
       mapCoords[j] = pt->mapCoords();
@@ -53,7 +53,7 @@ void QgsGCPList::createGCPVectors( QVector<QgsPoint> &mapCoords, QVector<QgsPoin
 
 int QgsGCPList::size() const
 {
-  if ( QList<QgsGeorefDataPoint *>::isEmpty() )
+  if ( QList<QgsGeorefDataPoint*>::isEmpty() )
     return 0;
 
   int s = 0;
@@ -69,16 +69,16 @@ int QgsGCPList::size() const
 
 int QgsGCPList::sizeAll() const
 {
-  return QList<QgsGeorefDataPoint *>::size();
+  return QList<QgsGeorefDataPoint*>::size();
 }
 
-QgsGCPList &QgsGCPList::operator =( const QgsGCPList & list )
+QgsGCPList& QgsGCPList::operator =( const QgsGCPList& list )
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();
   for ( ; it != list.constEnd(); ++it )
   {
-    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint( **it );
+    QgsGeorefDataPoint* pt = new QgsGeorefDataPoint( **it );
     append( pt );
   }
   return *this;

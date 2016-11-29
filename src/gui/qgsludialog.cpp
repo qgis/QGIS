@@ -18,8 +18,8 @@
 #include "qgsludialog.h"
 
 
-QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsLUDialog::QgsLUDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 }

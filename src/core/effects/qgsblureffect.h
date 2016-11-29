@@ -50,7 +50,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     QgsBlurEffect();
     virtual ~QgsBlurEffect();
 
-    virtual QString type() const override { return QStringLiteral( "blur" ); }
+    virtual QString type() const override
+    {
+      return QStringLiteral( "blur" );
+    }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
     virtual QgsBlurEffect* clone() const override;
@@ -61,7 +64,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      * @see blurLevel
      * @see blurMethod
      */
-    void setBlurLevel( const int level ) { mBlurLevel = level; }
+    void setBlurLevel( const int level )
+    {
+      mBlurLevel = level;
+    }
 
     /** Returns the blur level (strength)
      * @returns blur level. Depending on the current @link blurMethod @endlink, this parameter
@@ -69,47 +75,68 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      * @see setBlurLevel
      * @see blurMethod
      */
-    int blurLevel() const { return mBlurLevel; }
+    int blurLevel() const
+    {
+      return mBlurLevel;
+    }
 
     /** Sets the blur method (algorithm) to use for performing the blur.
      * @param method blur method
      * @see blurMethod
      */
-    void setBlurMethod( const BlurMethod method ) { mBlurMethod = method; }
+    void setBlurMethod( const BlurMethod method )
+    {
+      mBlurMethod = method;
+    }
 
     /** Returns the blur method (algorithm) used for performing the blur.
      * @returns blur method
      * @see setBlurMethod
      */
-    BlurMethod blurMethod() const { return mBlurMethod; }
+    BlurMethod blurMethod() const
+    {
+      return mBlurMethod;
+    }
 
     /** Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setTransparency( const double transparency )
+    {
+      mTransparency = transparency;
+    }
 
     /** Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
-    double transparency() const { return mTransparency; }
+    double transparency() const
+    {
+      return mTransparency;
+    }
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */
-    void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
+    void setBlendMode( const QPainter::CompositionMode mode )
+    {
+      mBlendMode = mode;
+    }
 
     /** Returns the blend mode for the effect
      * @returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    QPainter::CompositionMode blendMode() const
+    {
+      return mBlendMode;
+    }
 
   protected:
 
@@ -123,9 +150,9 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     double mTransparency;
     QPainter::CompositionMode mBlendMode;
 
-    void drawStackBlur( QgsRenderContext &context );
-    void drawGaussianBlur( QgsRenderContext &context );
-    void drawBlurredImage( QgsRenderContext& context, QImage &image );
+    void drawStackBlur( QgsRenderContext& context );
+    void drawGaussianBlur( QgsRenderContext& context );
+    void drawBlurredImage( QgsRenderContext& context, QImage& image );
 };
 
 #endif // QGSBLUREFFECT_H

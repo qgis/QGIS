@@ -38,19 +38,19 @@
 #include <cmath>
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mComposerMap( nullptr )
-    , mNumUnitsPerSegment( 0 )
-    , mSegmentSizeMode( SegmentSizeFixed )
-    , mMinBarWidth( 50 )
-    , mMaxBarWidth( 150 )
-    , mFontColor( QColor( 0, 0, 0 ) )
-    , mStyle( nullptr )
-    , mSegmentMillimeters( 0.0 )
-    , mAlignment( Left )
-    , mUnits( MapUnits )
-    , mLineJoinStyle( Qt::MiterJoin )
-    , mLineCapStyle( Qt::SquareCap )
+  : QgsComposerItem( composition )
+  , mComposerMap( nullptr )
+  , mNumUnitsPerSegment( 0 )
+  , mSegmentSizeMode( SegmentSizeFixed )
+  , mMinBarWidth( 50 )
+  , mMaxBarWidth( 150 )
+  , mFontColor( QColor( 0, 0, 0 ) )
+  , mStyle( nullptr )
+  , mSegmentMillimeters( 0.0 )
+  , mAlignment( Left )
+  , mUnits( MapUnits )
+  , mLineJoinStyle( Qt::MiterJoin )
+  , mLineCapStyle( Qt::SquareCap )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -661,7 +661,7 @@ void QgsComposerScaleBar::setFont( const QFont& font )
   emit itemChanged();
 }
 
-bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {

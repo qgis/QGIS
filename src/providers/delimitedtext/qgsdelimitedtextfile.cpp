@@ -31,29 +31,29 @@
 
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url )
-    : mFileName( QString() )
-    , mEncoding( QStringLiteral( "UTF-8" ) )
-    , mFile( nullptr )
-    , mStream( nullptr )
-    , mUseWatcher( false )
-    , mWatcher( nullptr )
-    , mDefinitionValid( false )
-    , mUseHeader( true )
-    , mDiscardEmptyFields( false )
-    , mTrimFields( false )
-    , mSkipLines( 0 )
-    , mMaxFields( 0 )
-    , mMaxNameLength( 200 ) // Don't want field names to be too unweildy!
-    , mAnchoredRegexp( false )
-    , mLineNumber( -1 )
-    , mRecordLineNumber( -1 )
-    , mRecordNumber( -1 )
-    , mHoldCurrentRecord( false )
-    , mMaxRecordNumber( -1 )
-    , mMaxFieldCount( 0 )
-    , mDefaultFieldName( QStringLiteral( "field_%1" ) )
+  : mFileName( QString() )
+  , mEncoding( QStringLiteral( "UTF-8" ) )
+  , mFile( nullptr )
+  , mStream( nullptr )
+  , mUseWatcher( false )
+  , mWatcher( nullptr )
+  , mDefinitionValid( false )
+  , mUseHeader( true )
+  , mDiscardEmptyFields( false )
+  , mTrimFields( false )
+  , mSkipLines( 0 )
+  , mMaxFields( 0 )
+  , mMaxNameLength( 200 ) // Don't want field names to be too unweildy!
+  , mAnchoredRegexp( false )
+  , mLineNumber( -1 )
+  , mRecordLineNumber( -1 )
+  , mRecordNumber( -1 )
+  , mHoldCurrentRecord( false )
+  , mMaxRecordNumber( -1 )
+  , mMaxFieldCount( 0 )
+  , mDefaultFieldName( QStringLiteral( "field_%1" ) )
     // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
-    , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
+  , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
 {
   // The default type is CSV
   setTypeCSV();
@@ -107,7 +107,7 @@ bool QgsDelimitedTextFile::open()
       mStream = new QTextStream( mFile );
       if ( ! mEncoding.isEmpty() )
       {
-        QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toLatin1() );
+        QTextCodec* codec =  QTextCodec::codecForName( mEncoding.toLatin1() );
         mStream->setCodec( codec );
       }
       if ( mUseWatcher )
@@ -143,7 +143,7 @@ bool QgsDelimitedTextFile::setFromUrl( const QString& url )
 }
 
 // Extract the provider definition from the url
-bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
+bool QgsDelimitedTextFile::setFromUrl( const QUrl& url )
 {
   // Close any existing definition
   resetDefinition();
@@ -418,7 +418,7 @@ void QgsDelimitedTextFile::setDiscardEmptyFields( bool discardEmptyFields )
 }
 
 
-void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
+void QgsDelimitedTextFile::setFieldNames( const QStringList& names )
 {
   mFieldNames.clear();
   Q_FOREACH ( QString name, names )
@@ -467,7 +467,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
 }
 
 
-QStringList &QgsDelimitedTextFile::fieldNames()
+QStringList& QgsDelimitedTextFile::fieldNames()
 {
   // If not yet opened then reset file to read column headers
   //
@@ -512,7 +512,7 @@ bool QgsDelimitedTextFile::setNextRecordId( long nextRecordId )
   return setNextLineNumber( nextRecordId );
 }
 
-QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &record )
+QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList& record )
 {
 
   record.clear();
@@ -578,7 +578,7 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   return result;
 }
 
-QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bool skipBlank )
+QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString& buffer, bool skipBlank )
 {
   if ( ! mStream )
   {
@@ -617,7 +617,7 @@ bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
 
 }
 
-void QgsDelimitedTextFile::appendField( QStringList &record, QString field, bool quoted )
+void QgsDelimitedTextFile::appendField( QStringList& record, QString field, bool quoted )
 {
   if ( mMaxFields > 0 && record.size() >= mMaxFields ) return;
   if ( quoted )
@@ -636,7 +636,7 @@ void QgsDelimitedTextFile::appendField( QStringList &record, QString field, bool
   }
 }
 
-QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer, QStringList &fields )
+QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString& buffer, QStringList& fields )
 {
 
   // If match is anchored, then only interested in records which actually match
@@ -692,7 +692,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   return RecordOk;
 }
 
-QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer, QStringList &fields )
+QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString& buffer, QStringList& fields )
 {
   Status status = RecordOk;
   QString field;        // String in which to accumulate next field

@@ -121,7 +121,7 @@ namespace pal
        *
        * @param layer layer to remove
        */
-      void removeLayer( Layer *layer );
+      void removeLayer( Layer* layer );
 
       /**
        * \brief the labeling machine
@@ -133,7 +133,7 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      QList<LabelPosition*> *labeller( double bbox[4], PalStat **stats, bool displayAll );
+      QList<LabelPosition*>* labeller( double bbox[4], PalStat** stats, bool displayAll );
 
       typedef bool ( *FnIsCancelled )( void* ctx );
 
@@ -141,7 +141,10 @@ namespace pal
       void registerCancellationCallback( FnIsCancelled fnCancelled, void* context );
 
       //! Check whether the job has been cancelled
-      inline bool isCancelled() { return fnIsCancelled ? fnIsCancelled( fnIsCancelledContext ) : false; }
+      inline bool isCancelled()
+      {
+        return fnIsCancelled ? fnIsCancelled( fnIsCancelledContext ) : false;
+      }
 
       Problem* extractProblem( double bbox[4] );
 

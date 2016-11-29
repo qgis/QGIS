@@ -72,10 +72,10 @@ class CORE_EXPORT QgsVectorLayerImport
                                     const QString& providerKey,
                                     const QgsCoordinateReferenceSystem& destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage = nullptr,
+                                    QString* errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = nullptr,
-                                    QProgressDialog *progress = nullptr
+                                    QMap<QString, QVariant>* options = nullptr,
+                                    QProgressDialog* progress = nullptr
                                   );
 
     /** Constructor for QgsVectorLayerImport.
@@ -89,14 +89,14 @@ class CORE_EXPORT QgsVectorLayerImport
      * @param options optional provider dataset options
      * @param progress optional progress dialog to show progress of export
      */
-    QgsVectorLayerImport( const QString &uri,
-                          const QString &provider,
-                          const QgsFields &fields,
+    QgsVectorLayerImport( const QString& uri,
+                          const QString& provider,
+                          const QgsFields& fields,
                           QgsWkbTypes::Type geometryType,
                           const QgsCoordinateReferenceSystem& crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = nullptr,
-                          QProgressDialog *progress = nullptr
+                          const QMap<QString, QVariant>* options = nullptr,
+                          QProgressDialog* progress = nullptr
                         );
 
     //! Checks whether there were any errors
@@ -105,7 +105,10 @@ class CORE_EXPORT QgsVectorLayerImport
     //! Retrieves error message
     QString errorMessage();
 
-    int errorCount() const { return mErrorCount; }
+    int errorCount() const
+    {
+      return mErrorCount;
+    }
 
     //! Add feature to the new created layer
     bool addFeature( QgsFeature& feature );
@@ -126,14 +129,14 @@ class CORE_EXPORT QgsVectorLayerImport
 
     int mErrorCount;
 
-    QgsVectorDataProvider *mProvider;
+    QgsVectorDataProvider* mProvider;
 
     //! Map attribute indexes to new field indexes
     QMap<int, int> mOldToNewAttrIdx;
     int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
-    QProgressDialog *mProgress;
+    QProgressDialog* mProgress;
 
   private:
 

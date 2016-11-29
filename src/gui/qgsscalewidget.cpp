@@ -19,10 +19,10 @@
 #include "qgsscalewidget.h"
 #include "qgsmapcanvas.h"
 
-QgsScaleWidget::QgsScaleWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
-    , mShowCurrentScaleButton( false )
+QgsScaleWidget::QgsScaleWidget( QWidget* parent )
+  : QWidget( parent )
+  , mCanvas( nullptr )
+  , mShowCurrentScaleButton( false )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );

@@ -30,8 +30,8 @@
 
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget* parent )
-    : QWidget( parent )
-    , mBridge( bridge )
+  : QWidget( parent )
+  , mBridge( bridge )
 {
   mModel = new CustomLayerOrderModel( bridge, this );
 
@@ -95,8 +95,8 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 ///@cond PRIVATE
 
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent )
-    : QAbstractListModel( parent )
-    , mBridge( bridge )
+  : QAbstractListModel( parent )
+  , mBridge( bridge )
 {
 }
 
@@ -167,7 +167,7 @@ QStringList CustomLayerOrderModel::mimeTypes() const
   return types;
 }
 
-QMimeData*CustomLayerOrderModel::mimeData( const QModelIndexList& indexes ) const
+QMimeData* CustomLayerOrderModel::mimeData( const QModelIndexList& indexes ) const
 {
   QStringList lst;
   Q_FOREACH ( const QModelIndex& index, indexes )

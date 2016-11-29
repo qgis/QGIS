@@ -18,9 +18,9 @@
 
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
-                                        QgsGPSDevice* > & devices )
-    : QDialog( nullptr, QgisGui::ModalDialogFlags )
-    , mDevices( devices )
+                                        QgsGPSDevice* >& devices )
+  : QDialog( nullptr, QgisGui::ModalDialogFlags )
+  , mDevices( devices )
 {
   setupUi( this );
   setAttribute( Qt::WA_DeleteOnClose );
@@ -129,7 +129,7 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString& selection )
 }
 
 
-void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
+void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem* current )
 {
   if ( lbDeviceList->count() > 0 )
   {

@@ -47,11 +47,11 @@ class TestStyle : public QObject
 
     QString mReport;
 
-    QgsStyle *mStyle;
+    QgsStyle* mStyle;
     QString mTestDataDir;
 
-    bool testValidColor( QgsColorRamp *ramp, double value, const QColor& expected );
-    bool imageCheck( QgsMapSettings &ms, const QString &testName );
+    bool testValidColor( QgsColorRamp* ramp, double value, const QColor& expected );
+    bool imageCheck( QgsMapSettings& ms, const QString& testName );
 
   private slots:
 
@@ -71,7 +71,7 @@ class TestStyle : public QObject
 };
 
 TestStyle::TestStyle()
-    : mStyle( nullptr )
+  : mStyle( nullptr )
 {
 
 }
@@ -134,7 +134,7 @@ bool TestStyle::imageCheck( QgsMapSettings& ms, const QString& testName )
   return result;
 }
 
-bool TestStyle::testValidColor( QgsColorRamp *ramp, double value, const QColor& expected )
+bool TestStyle::testValidColor( QgsColorRamp* ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
   //use int color components when testing (builds some fuzziness into test)

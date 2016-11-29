@@ -36,9 +36,9 @@
 
 ///@cond PRIVATE
 QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject* parent )
-    : QThread( parent )
-    , mCancelled( false )
-    , mTimerThreshold( 0 )
+  : QThread( parent )
+  , mCancelled( false )
+  , mTimerThreshold( 0 )
 {
 }
 
@@ -154,8 +154,8 @@ void QgsSvgSelectorLoader::loadImages( const QString& path )
 //
 
 QgsSvgGroupLoader::QgsSvgGroupLoader( QObject* parent )
-    : QThread( parent )
-    , mCancelled( false )
+  : QThread( parent )
+  , mCancelled( false )
 {
 
 }
@@ -211,8 +211,8 @@ void QgsSvgGroupLoader::loadGroup( const QString& parentPath )
 //
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent )
-    : QAbstractListModel( parent )
-    , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+  : QAbstractListModel( parent )
+  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
 {
   mSvgLoader->setPath( QString() );
   connect( mSvgLoader, SIGNAL( foundSvgs( QStringList ) ), this, SLOT( addSvgs( QStringList ) ) );
@@ -220,8 +220,8 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent )
 }
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, const QString& path )
-    : QAbstractListModel( parent )
-    , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+  : QAbstractListModel( parent )
+  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
 {
   mSvgLoader->setPath( path );
   connect( mSvgLoader, SIGNAL( foundSvgs( QStringList ) ), this, SLOT( addSvgs( QStringList ) ) );
@@ -241,7 +241,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString& entry ) const
   double outlineWidth, fillOpacity, outlineOpacity;
   bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+       hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
   QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
       outlineParam, hasDefaultOutlineColor, outline,
@@ -300,18 +300,18 @@ void QgsSvgSelectorListModel::addSvgs( const QStringList& svgs )
 //--- QgsSvgSelectorGroupsModel
 
 QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject* parent )
-    : QStandardItemModel( parent )
-    , mLoader( new QgsSvgGroupLoader( this ) )
+  : QStandardItemModel( parent )
+  , mLoader( new QgsSvgGroupLoader( this ) )
 {
   QStringList svgPaths = QgsApplication::svgPaths();
-  QStandardItem *parentItem = invisibleRootItem();
+  QStandardItem* parentItem = invisibleRootItem();
   QStringList parentPaths;
   parentPaths.reserve( svgPaths.size() );
 
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths.at( i ) );
-    QStandardItem *baseGroup;
+    QStandardItem* baseGroup;
 
     if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
     {
@@ -366,7 +366,7 @@ void QgsSvgSelectorGroupsModel::addPath( const QString& parentPath, const QStrin
 //-- QgsSvgSelectorWidget
 
 QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget* parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
@@ -538,10 +538,10 @@ void QgsSvgSelectorWidget::populateList()
 
 //-- QgsSvgSelectorDialog
 
-QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
+QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget* parent, Qt::WindowFlags fl,
     QDialogButtonBox::StandardButtons buttons,
     Qt::Orientation orientation )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
   Q_UNUSED( orientation );

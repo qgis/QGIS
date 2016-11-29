@@ -106,9 +106,9 @@ void TestQgsTracer::testSimple()
 {
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-  << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-  << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-  << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):
@@ -215,9 +215,9 @@ void TestQgsTracer::testLayerUpdates()
   // same shape as in testSimple()
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-  << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-  << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-  << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   QgsVectorLayer* vl = make_layer( wkts );
 
@@ -279,9 +279,9 @@ void TestQgsTracer::testExtent()
   // same shape as in testSimple()
   QStringList wkts;
   wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-  << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-  << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-  << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   QgsVectorLayer* vl = make_layer( wkts );
 

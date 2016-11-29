@@ -51,7 +51,7 @@
 * @param fl - Window flags
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -84,7 +84,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInt
 * @param fl - Window flags
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -119,7 +119,7 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
   //Clean up, disconnect the highlighting routine and refesh the canvase to clear highlighting symbol
   if ( mCanvas )
   {
-    disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+    disconnect( mCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( renderSymbol( QPainter* ) ) );
     mCanvas->refresh();
   }
 
@@ -139,7 +139,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
   //setup gui
   setWindowTitle( tr( "Generic Event Browser" ) );
 
-  connect( treeEventData, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ), this, SLOT( launchExternalApplication( QTreeWidgetItem *, int ) ) );
+  connect( treeEventData, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( launchExternalApplication( QTreeWidgetItem*, int ) ) );
 
   mHighlightSymbol.load( QStringLiteral( ":/evis/eVisHighlightSymbol.png" ) );
   mPointerSymbol.load( QStringLiteral( ":/evis/eVisPointerSymbol.png" ) );
@@ -252,7 +252,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
   }
 
   //Connect rendering routine for highlighting symbols and load symbols
-  connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+  connect( mCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( renderSymbol( QPainter* ) ) );
 
   mDataProvider = mVectorLayer->dataProvider();
 
@@ -413,7 +413,7 @@ void eVisGenericEventBrowserGui::initOptionsTab()
 
 }
 
-void eVisGenericEventBrowserGui::closeEvent( QCloseEvent *event )
+void eVisGenericEventBrowserGui::closeEvent( QCloseEvent* event )
 {
   if ( mBrowserInitialized )
   {
@@ -726,7 +726,7 @@ void eVisGenericEventBrowserGui::setBasePathToDataSource()
  * @param theItem - The tree widget item click
  * @param theColumn - The column that was clicked
  */
-void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem * theItem, int theColumn )
+void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem* theItem, int theColumn )
 {
   // At this point there is only attribute data with no children, ignore clicks on field name
   if ( 1 == theColumn )
@@ -751,7 +751,7 @@ void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem * th
 
     if ( myIterator != tableFileTypeAssociations->rowCount() )
     {
-      QProcess *myProcess = new QProcess();
+      QProcess* myProcess = new QProcess();
       QString myApplication = tableFileTypeAssociations->item( myIterator, 1 )->text();
       QString myDocument = theItem->text( theColumn );
       if ( startsWithExtension )

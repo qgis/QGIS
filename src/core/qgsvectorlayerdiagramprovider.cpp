@@ -33,26 +33,26 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider(
   const QgsCoordinateReferenceSystem& crs,
   QgsAbstractFeatureSource* source,
   bool ownsSource )
-    : QgsAbstractLabelProvider( layerId )
-    , mSettings( *diagSettings )
-    , mDiagRenderer( diagRenderer->clone() )
-    , mFields( fields )
-    , mLayerCrs( crs )
-    , mSource( source )
-    , mOwnsSource( ownsSource )
+  : QgsAbstractLabelProvider( layerId )
+  , mSettings( *diagSettings )
+  , mDiagRenderer( diagRenderer->clone() )
+  , mFields( fields )
+  , mLayerCrs( crs )
+  , mSource( source )
+  , mOwnsSource( ownsSource )
 {
   init();
 }
 
 
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
-    : QgsAbstractLabelProvider( layer->id() )
-    , mSettings( *layer->diagramLayerSettings() )
-    , mDiagRenderer( layer->diagramRenderer()->clone() )
-    , mFields( layer->fields() )
-    , mLayerCrs( layer->crs() )
-    , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : nullptr )
-    , mOwnsSource( ownFeatureLoop )
+  : QgsAbstractLabelProvider( layer->id() )
+  , mSettings( *layer->diagramLayerSettings() )
+  , mDiagRenderer( layer->diagramRenderer()->clone() )
+  , mFields( layer->fields() )
+  , mLayerCrs( layer->crs() )
+  , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : nullptr )
+  , mOwnsSource( ownFeatureLoop )
 {
   init();
 }
@@ -78,7 +78,7 @@ QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 }
 
 
-QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext &context )
+QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext& context )
 {
   if ( !mSource )
   {
@@ -191,7 +191,7 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, QgsRen
 }
 
 
-QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext &context, QgsGeometry* obstacleGeometry )
+QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
 {
   const QgsMapSettings& mapSettings = mEngine->mapSettings();
 

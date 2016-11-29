@@ -40,21 +40,24 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     //! Function to set the selected scale from double
     void setScale( double scale );
     //! Function to read the min scale
-    double minScale() const { return mMinScale; }
+    double minScale() const
+    {
+      return mMinScale;
+    }
 
     //! Helper function to convert a double to scale string
     // Performs rounding, so an exact representation is not to
     // be expected.
     static QString toString( double scale );
     //! Helper function to convert a scale string to double
-    static double toDouble( const QString& scaleString, bool *ok = nullptr );
+    static double toDouble( const QString& scaleString, bool* ok = nullptr );
 
   signals:
     //! Signal is emitted when *user* has finished editing/selecting a new scale.
     void scaleChanged( double scale );
 
   public slots:
-    void updateScales( const QStringList &scales = QStringList() );
+    void updateScales( const QStringList& scales = QStringList() );
 
     /**
      * Set the minimum allowed scale.

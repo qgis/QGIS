@@ -28,9 +28,9 @@ QgsShortcutsManager* QgsShortcutsManager::instance()
   return mInstance;
 }
 
-QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString& settingsRoot )
-    : QObject( parent )
-    , mSettingsPath( settingsRoot )
+QgsShortcutsManager::QgsShortcutsManager( QObject* parent, const QString& settingsRoot )
+  : QObject( parent )
+  , mSettingsPath( settingsRoot )
 {
 }
 

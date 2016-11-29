@@ -25,7 +25,7 @@
 #include <QPainter>
 
 QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
-    : QgsComposerItem( c )
+  : QgsComposerItem( c )
 {
   setZValue( 90 );
   show();
@@ -114,7 +114,7 @@ void QgsComposerItemGroup::itemDestroyed()
   mItems.remove( static_cast<QgsComposerItem*>( sender() ) );
 }
 
-void QgsComposerItemGroup::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+void QgsComposerItemGroup::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );
@@ -174,7 +174,7 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
   }
 }
 
-bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement group = doc.createElement( QStringLiteral( "ComposerItemGroup" ) );
 
@@ -201,7 +201,7 @@ bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocum
     _readXml( composerItemElem, doc );
   }
 
-  QList<QGraphicsItem *> items = mComposition->items();
+  QList<QGraphicsItem*> items = mComposition->items();
 
   QDomNodeList elementNodes = itemElem.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
   for ( int i = 0; i < elementNodes.count(); ++i )
@@ -212,9 +212,9 @@ bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocum
 
     QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
 
-    for ( QList<QGraphicsItem *>::iterator it = items.begin(); it != items.end(); ++it )
+    for ( QList<QGraphicsItem*>::iterator it = items.begin(); it != items.end(); ++it )
     {
-      QgsComposerItem *item = dynamic_cast<QgsComposerItem *>( *it );
+      QgsComposerItem* item = dynamic_cast<QgsComposerItem*>( *it );
       if ( item && ( item->mUuid == uuid || item->mTemplateUuid == uuid ) )
       {
         addItem( item );

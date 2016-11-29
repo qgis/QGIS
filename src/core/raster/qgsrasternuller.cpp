@@ -19,7 +19,7 @@
 #include "qgsrasternuller.h"
 
 QgsRasterNuller::QgsRasterNuller( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
+  : QgsRasterInterface( input )
 {
 }
 
@@ -30,7 +30,7 @@ QgsRasterNuller::~QgsRasterNuller()
 QgsRasterNuller* QgsRasterNuller::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  QgsRasterNuller * nuller = new QgsRasterNuller( nullptr );
+  QgsRasterNuller* nuller = new QgsRasterNuller( nullptr );
   nuller->mNoData = mNoData;
   nuller->mOutputNoData = mOutputNoData;
   nuller->mHasOutputNoData = mHasOutputNoData;
@@ -69,7 +69,7 @@ Qgis::DataType QgsRasterNuller::dataType( int bandNo ) const
   return Qgis::UnknownDataType;
 }
 
-QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsRasterNuller::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !mInput )
@@ -77,7 +77,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return new QgsRasterBlock();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( bandNo, extent, width, height, feedback );
   if ( !inputBlock )
   {
     return new QgsRasterBlock();
@@ -89,7 +89,7 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return inputBlock;
   }
 
-  QgsRasterBlock *outputBlock = nullptr;
+  QgsRasterBlock* outputBlock = nullptr;
 
   if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )
   {

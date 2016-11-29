@@ -67,32 +67,32 @@
 #include "qgsgeorefplugingui.h"
 #include "qgsmessagebar.h"
 
-QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
-    : QgsDockWidget( title, parent, flags )
+QgsGeorefDockWidget::QgsGeorefDockWidget( const QString& title, QWidget* parent, Qt::WindowFlags flags )
+  : QgsDockWidget( title, parent, flags )
 {
   setObjectName( QStringLiteral( "GeorefDockWidget" ) ); // set object name so the position can be saved
 }
 
 QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WindowFlags fl )
-    : QMainWindow( parent, fl )
-    , mMousePrecisionDecimalPlaces( 0 )
-    , mTransformParam( QgsGeorefTransform::InvalidTransform )
-    , mIface( theQgisInterface )
-    , mLayer( nullptr )
-    , mAgainAddRaster( false )
-    , mMovingPoint( nullptr )
-    , mMovingPointQgis( nullptr )
-    , mMapCoordsDialog( nullptr )
-    , mUseZeroForTrans( false )
-    , mLoadInQgis( false )
-    , mDock( nullptr )
+  : QMainWindow( parent, fl )
+  , mMousePrecisionDecimalPlaces( 0 )
+  , mTransformParam( QgsGeorefTransform::InvalidTransform )
+  , mIface( theQgisInterface )
+  , mLayer( nullptr )
+  , mAgainAddRaster( false )
+  , mMovingPoint( nullptr )
+  , mMovingPointQgis( nullptr )
+  , mMapCoordsDialog( nullptr )
+  , mUseZeroForTrans( false )
+  , mLoadInQgis( false )
+  , mDock( nullptr )
 {
   setupUi( this );
 
   QSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/Window/geometry" ) ).toByteArray() );
 
-  QWidget *centralWidget = this->centralWidget();
+  QWidget* centralWidget = this->centralWidget();
   mCentralLayout = new QGridLayout( centralWidget );
   centralWidget->setLayout( mCentralLayout );
   mCentralLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -166,7 +166,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
 }
 
 // ----------------------------- protected --------------------------------- //
-void QgsGeorefPluginGui::closeEvent( QCloseEvent *e )
+void QgsGeorefPluginGui::closeEvent( QCloseEvent* e )
 {
   switch ( checkNeedGCPSave() )
   {
@@ -543,7 +543,7 @@ void QgsGeorefPluginGui::selectPoint( QPoint p )
 {
   // Get Map Sender
   bool isMapPlugin = sender() == mToolMovePoint;
-  QgsGeorefDataPoint *&mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
+  QgsGeorefDataPoint*& mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
 
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
@@ -559,7 +559,7 @@ void QgsGeorefPluginGui::movePoint( QPoint p )
 {
   // Get Map Sender
   bool isMapPlugin = sender() == mToolMovePoint;
-  QgsGeorefDataPoint *mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
+  QgsGeorefDataPoint* mvPoint = isMapPlugin ? mMovingPoint : mMovingPointQgis;
 
   if ( mvPoint )
   {
@@ -583,13 +583,13 @@ void QgsGeorefPluginGui::releasePoint( QPoint p )
   }
 }
 
-void QgsGeorefPluginGui::showCoordDialog( const QgsPoint &pixelCoords )
+void QgsGeorefPluginGui::showCoordDialog( const QgsPoint& pixelCoords )
 {
   if ( mLayer && !mMapCoordsDialog )
   {
     mMapCoordsDialog = new QgsMapCoordsDialog( mIface->mapCanvas(), pixelCoords, this );
-    connect( mMapCoordsDialog, SIGNAL( pointAdded( const QgsPoint &, const QgsPoint & ) ),
-             this, SLOT( addPoint( const QgsPoint &, const QgsPoint & ) ) );
+    connect( mMapCoordsDialog, SIGNAL( pointAdded( const QgsPoint&, const QgsPoint& ) ),
+             this, SLOT( addPoint( const QgsPoint&, const QgsPoint& ) ) );
     mMapCoordsDialog->show();
   }
 }
@@ -778,7 +778,7 @@ void QgsGeorefPluginGui::extentsChangedQGisCanvas()
 }
 
 // Canvas info slots (copy/pasted from QGIS :) )
-void QgsGeorefPluginGui::showMouseCoords( const QgsPoint &p )
+void QgsGeorefPluginGui::showMouseCoords( const QgsPoint& p )
 {
   mCoordsLabel->setText( p.toString( mMousePrecisionDecimalPlaces ) );
   // Set minimum necessary width
@@ -927,7 +927,7 @@ void QgsGeorefPluginGui::createActions()
 
 void QgsGeorefPluginGui::createActionGroups()
 {
-  QActionGroup *mapToolGroup = new QActionGroup( this );
+  QActionGroup* mapToolGroup = new QActionGroup( this );
   mActionPan->setCheckable( true );
   mapToolGroup->addAction( mActionPan );
   mActionZoomIn->setCheckable( true );
@@ -965,32 +965,32 @@ void QgsGeorefPluginGui::createMapCanvas()
 
   mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas );
   mToolAddPoint->setAction( mActionAddPoint );
-  connect( mToolAddPoint, SIGNAL( showCoordDialog( const QgsPoint & ) ),
-           this, SLOT( showCoordDialog( const QgsPoint & ) ) );
+  connect( mToolAddPoint, SIGNAL( showCoordDialog( const QgsPoint& ) ),
+           this, SLOT( showCoordDialog( const QgsPoint& ) ) );
 
   mToolDeletePoint = new QgsGeorefToolDeletePoint( mCanvas );
   mToolDeletePoint->setAction( mActionDeletePoint );
-  connect( mToolDeletePoint, SIGNAL( deleteDataPoint( const QPoint & ) ),
+  connect( mToolDeletePoint, SIGNAL( deleteDataPoint( const QPoint& ) ),
            this, SLOT( deleteDataPoint( const QPoint& ) ) );
 
   mToolMovePoint = new QgsGeorefToolMovePoint( mCanvas );
   mToolMovePoint->setAction( mActionMoveGCPPoint );
-  connect( mToolMovePoint, SIGNAL( pointPressed( const QPoint & ) ),
-           this, SLOT( selectPoint( const QPoint & ) ) );
-  connect( mToolMovePoint, SIGNAL( pointMoved( const QPoint & ) ),
-           this, SLOT( movePoint( const QPoint & ) ) );
-  connect( mToolMovePoint, SIGNAL( pointReleased( const QPoint & ) ),
-           this, SLOT( releasePoint( const QPoint & ) ) );
+  connect( mToolMovePoint, SIGNAL( pointPressed( const QPoint& ) ),
+           this, SLOT( selectPoint( const QPoint& ) ) );
+  connect( mToolMovePoint, SIGNAL( pointMoved( const QPoint& ) ),
+           this, SLOT( movePoint( const QPoint& ) ) );
+  connect( mToolMovePoint, SIGNAL( pointReleased( const QPoint& ) ),
+           this, SLOT( releasePoint( const QPoint& ) ) );
 
   // Point in Qgis Map
   mToolMovePointQgis = new QgsGeorefToolMovePoint( mIface->mapCanvas() );
   mToolMovePointQgis->setAction( mActionMoveGCPPoint );
-  connect( mToolMovePointQgis, SIGNAL( pointPressed( const QPoint & ) ),
-           this, SLOT( selectPoint( const QPoint & ) ) );
-  connect( mToolMovePointQgis, SIGNAL( pointMoved( const QPoint & ) ),
-           this, SLOT( movePoint( const QPoint & ) ) );
-  connect( mToolMovePointQgis, SIGNAL( pointReleased( const QPoint & ) ),
-           this, SLOT( releasePoint( const QPoint & ) ) );
+  connect( mToolMovePointQgis, SIGNAL( pointPressed( const QPoint& ) ),
+           this, SLOT( selectPoint( const QPoint& ) ) );
+  connect( mToolMovePointQgis, SIGNAL( pointMoved( const QPoint& ) ),
+           this, SLOT( movePoint( const QPoint& ) ) );
+  connect( mToolMovePointQgis, SIGNAL( pointReleased( const QPoint& ) ),
+           this, SLOT( releasePoint( const QPoint& ) ) );
 
   QSettings s;
   double zoomFactor = s.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
@@ -1165,7 +1165,7 @@ void QgsGeorefPluginGui::addRaster( const QString& file )
 
   // so layer is not added to legend
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mLayer, false, false );
+    QList<QgsMapLayer*>() << mLayer, false, false );
 
   // add layer to map canvas
   QList<QgsMapCanvasLayer> layers;
@@ -1283,14 +1283,14 @@ void QgsGeorefPluginGui::saveGCPs()
   {
     QTextStream points( &pointFile );
     points << "mapX,mapY,pixelX,pixelY,enable" << endl;
-    Q_FOREACH ( QgsGeorefDataPoint *pt, mPoints )
+    Q_FOREACH ( QgsGeorefDataPoint* pt, mPoints )
     {
       points << QStringLiteral( "%1,%2,%3,%4,%5" )
-      .arg( qgsDoubleToString( pt->mapCoords().x() ),
-            qgsDoubleToString( pt->mapCoords().y() ),
-            qgsDoubleToString( pt->pixelCoords().x() ),
-            qgsDoubleToString( pt->pixelCoords().y() ) )
-      .arg( pt->isEnabled() ) << endl;
+             .arg( qgsDoubleToString( pt->mapCoords().x() ),
+                   qgsDoubleToString( pt->mapCoords().y() ),
+                   qgsDoubleToString( pt->pixelCoords().x() ),
+                   qgsDoubleToString( pt->pixelCoords().y() ) )
+             .arg( pt->isEnabled() ) << endl;
     }
 
     mInitialPoints = mPoints;
@@ -1440,11 +1440,11 @@ bool QgsGeorefPluginGui::writeWorldFile( const QgsPoint& origin, double pixelXSi
 
   QTextStream stream( &file );
   stream << qgsDoubleToString( pixelXSize ) << endl
-  << rotationX << endl
-  << rotationY << endl
-  << qgsDoubleToString( -pixelYSize ) << endl
-  << qgsDoubleToString( origin.x() ) << endl
-  << qgsDoubleToString( origin.y() ) << endl;
+         << rotationX << endl
+         << rotationY << endl
+         << qgsDoubleToString( -pixelYSize ) << endl
+         << qgsDoubleToString( origin.x() ) << endl
+         << qgsDoubleToString( origin.y() ) << endl;
   return true;
 }
 
@@ -1502,7 +1502,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
     return false;
   }
 
-  QgsRasterLayer *rlayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
+  QgsRasterLayer* rlayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
   if ( !rlayer )
   {
     return false;
@@ -1615,7 +1615,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   titleLabel->setFrameEnabled( false );
 
   //composer map
-  QgsRasterLayer *rLayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
+  QgsRasterLayer* rLayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
   if ( !rLayer )
   {
     return false;
@@ -1683,11 +1683,11 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
 
     QgsComposerTableColumns columns;
     columns << new QgsComposerTableColumn( tr( "Translation x" ) )
-    << new QgsComposerTableColumn( tr( "Translation y" ) )
-    << new QgsComposerTableColumn( tr( "Scale x" ) )
-    << new QgsComposerTableColumn( tr( "Scale y" ) )
-    << new QgsComposerTableColumn( tr( "Rotation [degrees]" ) )
-    << new QgsComposerTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
+            << new QgsComposerTableColumn( tr( "Translation y" ) )
+            << new QgsComposerTableColumn( tr( "Scale x" ) )
+            << new QgsComposerTableColumn( tr( "Scale y" ) )
+            << new QgsComposerTableColumn( tr( "Rotation [degrees]" ) )
+            << new QgsComposerTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
 
     parameterTable->setColumns( columns );
     QStringList row;
@@ -1726,14 +1726,14 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   gcpTable->setHeaderMode( QgsComposerTableV2::AllFrames );
   QgsComposerTableColumns columns;
   columns << new QgsComposerTableColumn( tr( "ID" ) )
-  << new QgsComposerTableColumn( tr( "Enabled" ) )
-  << new QgsComposerTableColumn( tr( "Pixel X" ) )
-  << new QgsComposerTableColumn( tr( "Pixel Y" ) )
-  << new QgsComposerTableColumn( tr( "Map X" ) )
-  << new QgsComposerTableColumn( tr( "Map Y" ) )
-  << new QgsComposerTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
-  << new QgsComposerTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
-  << new QgsComposerTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+          << new QgsComposerTableColumn( tr( "Enabled" ) )
+          << new QgsComposerTableColumn( tr( "Pixel X" ) )
+          << new QgsComposerTableColumn( tr( "Pixel Y" ) )
+          << new QgsComposerTableColumn( tr( "Map X" ) )
+          << new QgsComposerTableColumn( tr( "Map Y" ) )
+          << new QgsComposerTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+          << new QgsComposerTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+          << new QgsComposerTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
 
   gcpTable->setColumns( columns );
 
@@ -1755,7 +1755,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
       currentGCPStrings << tr( "no" );
     }
     currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 3 )
-    <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
+                      <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTableContents << currentGCPStrings ;
   }
 
@@ -1824,21 +1824,21 @@ void QgsGeorefPluginGui::showGDALScript( const QStringList& commands )
   QString script = commands.join( QStringLiteral( "\n" ) ) + '\n';
 
   // create window to show gdal script
-  QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ),
+  QDialogButtonBox* bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  QPushButton* pbnCopyInClipBoard = new QPushButton( getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ),
       tr( "Copy to Clipboard" ), bbxGdalScript );
   bbxGdalScript->addButton( pbnCopyInClipBoard, QDialogButtonBox::AcceptRole );
 
-  QPlainTextEdit *pteScript = new QPlainTextEdit();
+  QPlainTextEdit* pteScript = new QPlainTextEdit();
   pteScript->setReadOnly( true );
   pteScript->setWordWrapMode( QTextOption::NoWrap );
   pteScript->setPlainText( tr( "%1" ).arg( script ) );
 
-  QVBoxLayout *layout = new QVBoxLayout();
+  QVBoxLayout* layout = new QVBoxLayout();
   layout->addWidget( pteScript );
   layout->addWidget( bbxGdalScript );
 
-  QDialog *dlgShowGdalScrip = new QDialog( this );
+  QDialog* dlgShowGdalScrip = new QDialog( this );
   dlgShowGdalScrip->setWindowTitle( tr( "GDAL script" ) );
   dlgShowGdalScrip->setLayout( layout );
 
@@ -1861,10 +1861,10 @@ QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
     gdalCommand << QStringLiteral( "-co TFW=YES" );
   }
 
-  Q_FOREACH ( QgsGeorefDataPoint *pt, mPoints )
+  Q_FOREACH ( QgsGeorefDataPoint* pt, mPoints )
   {
     gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
-    .arg( pt->mapCoords().x() ).arg( pt->mapCoords().y() );
+                .arg( pt->mapCoords().x() ).arg( pt->mapCoords().y() );
   }
 
   QFileInfo rasterFileInfo( mRasterFileName );
@@ -1979,8 +1979,8 @@ bool QgsGeorefPluginGui::updateGeorefTransform()
 
 // Samples the given rectangle at numSamples per edge.
 // Returns an axis aligned bounding box which contains the transformed samples.
-QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangle &canvasExtent,
-    QgsGeorefTransform &t,
+QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangle& canvasExtent,
+    QgsGeorefTransform& t,
     bool rasterToWorld, uint numSamples )
 {
   double minX, minY;
@@ -2083,7 +2083,7 @@ int QgsGeorefPluginGui::polynomialOrder( QgsGeorefTransform::TransformParametris
   }
 }
 
-QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
+QString QgsGeorefPluginGui::guessWorldFileName( const QString& rasterFileName )
 {
   QString worldFileName = QLatin1String( "" );
   int point = rasterFileName.lastIndexOf( '.' );
@@ -2095,7 +2095,7 @@ QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didnt want to make plugins on qgsapplication [TS]
-QIcon QgsGeorefPluginGui::getThemeIcon( const QString &theName )
+QIcon QgsGeorefPluginGui::getThemeIcon( const QString& theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )
   {
@@ -2139,7 +2139,7 @@ bool QgsGeorefPluginGui::checkFileExisting( const QString& fileName, const QStri
   return true;
 }
 
-bool QgsGeorefPluginGui::equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 )
+bool QgsGeorefPluginGui::equalGCPlists( const QgsGCPList& list1, const QgsGCPList& list2 )
 {
   if ( list1.count() != list2.count() )
     return false;
@@ -2148,8 +2148,8 @@ bool QgsGeorefPluginGui::equalGCPlists( const QgsGCPList &list1, const QgsGCPLis
   int j = 0;
   for ( int i = 0; i < count; ++i, ++j )
   {
-    QgsGeorefDataPoint *p1 = list1.at( i );
-    QgsGeorefDataPoint *p2 = list2.at( j );
+    QgsGeorefDataPoint* p1 = list1.at( i );
+    QgsGeorefDataPoint* p2 = list2.at( j );
     if ( p1->pixelCoords() != p2->pixelCoords() )
       return false;
 

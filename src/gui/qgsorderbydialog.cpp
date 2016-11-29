@@ -24,8 +24,8 @@
 #include <QKeyEvent>
 
 QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 

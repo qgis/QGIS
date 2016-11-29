@@ -58,14 +58,14 @@ class DynamicTreeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    explicit DynamicTreeModel( QObject *parent = 0 );
+    explicit DynamicTreeModel( QObject* parent = 0 );
 
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &index ) const;
-    int rowCount( const QModelIndex &index = QModelIndex() ) const;
-    int columnCount( const QModelIndex &index = QModelIndex() ) const;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const;
+    QModelIndex parent( const QModelIndex& index ) const;
+    int rowCount( const QModelIndex& index = QModelIndex() ) const;
+    int columnCount( const QModelIndex& index = QModelIndex() ) const;
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
 
     void clear();
 
@@ -82,7 +82,10 @@ class DynamicTreeModel : public QAbstractItemModel
     QHash<qint64, QString> m_items;
     QHash<qint64, QList<QList<qint64> > > m_childItems;
     qint64 nextId;
-    qint64 newId() { return nextId++; }
+    qint64 newId()
+    {
+      return nextId++;
+    }
 
     QModelIndex m_nextParentIndex;
     // int m_nextRow;
@@ -102,19 +105,31 @@ class ModelChangeCommand : public QObject
     Q_OBJECT
   public:
 
-    ModelChangeCommand( DynamicTreeModel *model, QObject *parent = 0 );
+    ModelChangeCommand( DynamicTreeModel* model, QObject* parent = 0 );
 
     virtual ~ModelChangeCommand() {}
 
-    void setAncestorRowNumbers( QList<int> rowNumbers ) { m_rowNumbers = rowNumbers; }
+    void setAncestorRowNumbers( QList<int> rowNumbers )
+    {
+      m_rowNumbers = rowNumbers;
+    }
 
     QModelIndex findIndex( QList<int> rows );
 
-    void setStartRow( int row ) { m_startRow = row; }
+    void setStartRow( int row )
+    {
+      m_startRow = row;
+    }
 
-    void setEndRow( int row ) { m_endRow = row; }
+    void setEndRow( int row )
+    {
+      m_endRow = row;
+    }
 
-    void setNumCols( int cols ) { m_numCols = cols; }
+    void setNumCols( int cols )
+    {
+      m_numCols = cols;
+    }
 
     virtual void doCommand() = 0;
 
@@ -135,7 +150,7 @@ class ModelInsertCommand : public ModelChangeCommand
 
   public:
 
-    ModelInsertCommand( DynamicTreeModel *model, QObject *parent = 0 );
+    ModelInsertCommand( DynamicTreeModel* model, QObject* parent = 0 );
     virtual ~ModelInsertCommand() {}
 
     virtual void doCommand();
@@ -146,19 +161,25 @@ class ModelMoveCommand : public ModelChangeCommand
 {
     Q_OBJECT
   public:
-    ModelMoveCommand( DynamicTreeModel *model, QObject *parent );
+    ModelMoveCommand( DynamicTreeModel* model, QObject* parent );
 
     virtual ~ModelMoveCommand() {}
 
-    virtual bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow );
+    virtual bool emitPreSignal( const QModelIndex& srcParent, int srcStart, int srcEnd, const QModelIndex& destParent, int destRow );
 
     virtual void doCommand();
 
     virtual void emitPostSignal();
 
-    void setDestAncestors( QList<int> rows ) { m_destRowNumbers = rows; }
+    void setDestAncestors( QList<int> rows )
+    {
+      m_destRowNumbers = rows;
+    }
 
-    void setDestRow( int row ) { m_destRow = row; }
+    void setDestRow( int row )
+    {
+      m_destRow = row;
+    }
 
   protected:
     QList<int> m_destRowNumbers;
@@ -176,7 +197,7 @@ class ModelResetCommand : public ModelMoveCommand
 
     virtual ~ModelResetCommand();
 
-    virtual bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow );
+    virtual bool emitPreSignal( const QModelIndex& srcParent, int srcStart, int srcEnd, const QModelIndex& destParent, int destRow );
     virtual void emitPostSignal();
 
 };
@@ -192,7 +213,7 @@ class ModelResetCommandFixed : public ModelMoveCommand
 
     virtual ~ModelResetCommandFixed();
 
-    virtual bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow );
+    virtual bool emitPreSignal( const QModelIndex& srcParent, int srcStart, int srcEnd, const QModelIndex& destParent, int destRow );
     virtual void emitPostSignal();
 
 };

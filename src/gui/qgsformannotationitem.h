@@ -33,10 +33,10 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = nullptr, bool hasFeature = false, int feature = 0 );
     ~QgsFormAnnotationItem();
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter* painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr ) override;
 
     QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
@@ -46,12 +46,18 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     void setMapPosition( const QgsPoint& pos ) override;
 
     void setDesignerForm( const QString& uiFile );
-    QString designerForm() const { return mDesignerForm; }
+    QString designerForm() const
+    {
+      return mDesignerForm;
+    }
 
     void writeXml( QDomDocument& doc ) const override;
     void readXml( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer* vectorLayer() const
+    {
+      return mVectorLayer;
+    }
 
   private slots:
     //! Sets a feature for the current map position and updates the dialog

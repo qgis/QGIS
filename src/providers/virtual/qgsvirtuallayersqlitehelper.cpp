@@ -53,7 +53,7 @@ QgsScopedSqlite::QgsScopedSqlite( QgsScopedSqlite& other )
   other.db_ = nullptr;
 }
 
-QgsScopedSqlite& QgsScopedSqlite::operator=( QgsScopedSqlite & other )
+QgsScopedSqlite& QgsScopedSqlite::operator=( QgsScopedSqlite& other )
 {
   reset( other.release() );
   return *this;
@@ -64,7 +64,10 @@ QgsScopedSqlite::~QgsScopedSqlite()
   close_();
 }
 
-sqlite3* QgsScopedSqlite::get() const { return db_; }
+sqlite3* QgsScopedSqlite::get() const
+{
+  return db_;
+}
 
 sqlite3* QgsScopedSqlite::release()
 {
@@ -88,9 +91,9 @@ void QgsScopedSqlite::close_()
 namespace Sqlite
 {
   Query::Query( sqlite3* db, const QString& q )
-      : db_( db )
-      , stmt_( nullptr )
-      , nBind_( 1 )
+    : db_( db )
+    , stmt_( nullptr )
+    , nBind_( 1 )
   {
     QByteArray ba( q.toUtf8() );
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
@@ -106,7 +109,10 @@ namespace Sqlite
     sqlite3_finalize( stmt_ );
   }
 
-  int Query::step() { return sqlite3_step( stmt_ ); }
+  int Query::step()
+  {
+    return sqlite3_step( stmt_ );
+  }
 
   Query& Query::bind( const QString& str, int idx )
   {
@@ -126,7 +132,7 @@ namespace Sqlite
 
   void Query::exec( sqlite3* db, const QString& sql )
   {
-    char *errMsg = nullptr;
+    char* errMsg = nullptr;
     int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
@@ -190,6 +196,9 @@ namespace Sqlite
     return QByteArray::fromRawData( data, size );
   }
 
-  sqlite3_stmt* Query::stmt() { return stmt_; }
+  sqlite3_stmt* Query::stmt()
+  {
+    return stmt_;
+  }
 
 }

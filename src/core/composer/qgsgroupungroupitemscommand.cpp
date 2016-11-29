@@ -24,7 +24,7 @@
 #include "qgslogger.h"
 
 QgsGroupUngroupItemsCommand::QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup* item, QgsComposition* c, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mGroup( item ), mComposition( c ), mState( s ), mFirstRun( true )
+  QUndoCommand( text, parent ), mGroup( item ), mComposition( c ), mState( s ), mFirstRun( true )
 {
   mItems = mGroup->items();
 }

@@ -19,7 +19,7 @@
 #include "qgsdummyconfigdlg.h"
 
 QgsColorWidgetFactory::QgsColorWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

@@ -52,12 +52,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * @brief QgsMapLayerModel creates a model to display layers in widgets.
      */
-    explicit QgsMapLayerModel( QObject *parent = nullptr );
+    explicit QgsMapLayerModel( QObject* parent = nullptr );
 
     /**
      * @brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      */
-    explicit QgsMapLayerModel( const QList<QgsMapLayer*>& layers, QObject *parent = nullptr );
+    explicit QgsMapLayerModel( const QList<QgsMapLayer*>& layers, QObject* parent = nullptr );
 
     /**
      * @brief setItemsCheckable defines if layers should be selectable in the widget
@@ -81,7 +81,10 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @see setAllowEmptyLayer()
      * @note added in QGIS 3.0
      */
-    bool allowEmptyLayer() const { return mAllowEmpty; }
+    bool allowEmptyLayer() const
+    {
+      return mAllowEmpty;
+    }
 
     /**
      * Sets whether the CRS of layers is also included in the model's display role.
@@ -95,14 +98,20 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @see setShowCrs()
      * @note added in QGIS 3.0
      */
-    bool showCrs() const { return mShowCrs; }
+    bool showCrs() const
+    {
+      return mShowCrs;
+    }
 
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer*> layersChecked( Qt::CheckState checkState = Qt::Checked );
     //! returns if the items can be checked or not
-    bool itemsCheckable() const { return mItemCheckable; }
+    bool itemsCheckable() const
+    {
+      return mItemCheckable;
+    }
 
     /**
      * @brief indexFromLayer returns the model index for a given layer
@@ -123,7 +132,10 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @see setAdditionalItems()
      * @note added in QGIS 3.0
      */
-    QStringList additionalItems() const { return mAdditionalItems; }
+    QStringList additionalItems() const
+    {
+      return mAdditionalItems;
+    }
 
   protected slots:
     void removeLayers( const QStringList& layerIds );
@@ -136,11 +148,11 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     // QAbstractItemModel interface
   public:
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex& child ) const override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns strings for all roles supported by this model.
@@ -149,8 +161,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     QHash<int, QByteArray> roleNames() const override;
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
   private:
 

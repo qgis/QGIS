@@ -51,23 +51,47 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     void clear();
 
-    QgsLayerTreeGroup* rootGroup() const { return mRoot; }
-    QgsMapCanvas* mapCanvas() const { return mCanvas; }
+    QgsLayerTreeGroup* rootGroup() const
+    {
+      return mRoot;
+    }
+    QgsMapCanvas* mapCanvas() const
+    {
+      return mCanvas;
+    }
 
-    bool hasCustomLayerOrder() const { return mHasCustomLayerOrder; }
-    QStringList customLayerOrder() const { return mCustomLayerOrder; }
+    bool hasCustomLayerOrder() const
+    {
+      return mHasCustomLayerOrder;
+    }
+    QStringList customLayerOrder() const
+    {
+      return mCustomLayerOrder;
+    }
 
     QStringList defaultLayerOrder() const;
 
     //! if enabled, will automatically set full canvas extent and destination CRS + map units
     //! when first layer(s) are added
-    void setAutoSetupOnFirstLayer( bool enabled ) { mAutoSetupOnFirstLayer = enabled; }
-    bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
+    void setAutoSetupOnFirstLayer( bool enabled )
+    {
+      mAutoSetupOnFirstLayer = enabled;
+    }
+    bool autoSetupOnFirstLayer() const
+    {
+      return mAutoSetupOnFirstLayer;
+    }
 
     //! if enabled, will automatically turn on on-the-fly reprojection of layers if a layer
     //! with different source CRS is added
-    void setAutoEnableCrsTransform( bool enabled ) { mAutoEnableCrsTransform = enabled; }
-    bool autoEnableCrsTransform() const { return mAutoEnableCrsTransform; }
+    void setAutoEnableCrsTransform( bool enabled )
+    {
+      mAutoEnableCrsTransform = enabled;
+    }
+    bool autoEnableCrsTransform() const
+    {
+      return mAutoEnableCrsTransform;
+    }
 
   public slots:
     void setHasCustomLayerOrder( bool state );

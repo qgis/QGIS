@@ -126,7 +126,7 @@ QgsSQLStatement::QgsSQLStatement( const QgsSQLStatement& other )
   mStatement = other.mStatement;
 }
 
-QgsSQLStatement& QgsSQLStatement::operator=( const QgsSQLStatement & other )
+QgsSQLStatement& QgsSQLStatement::operator=( const QgsSQLStatement& other )
 {
   if ( &other != this )
   {
@@ -143,9 +143,15 @@ QgsSQLStatement::~QgsSQLStatement()
   delete mRootNode;
 }
 
-bool QgsSQLStatement::hasParserError() const { return !mParserErrorString.isNull(); }
+bool QgsSQLStatement::hasParserError() const
+{
+  return !mParserErrorString.isNull();
+}
 
-QString QgsSQLStatement::parserErrorString() const { return mParserErrorString; }
+QString QgsSQLStatement::parserErrorString() const
+{
+  return mParserErrorString;
+}
 
 void QgsSQLStatement::acceptVisitor( QgsSQLStatement::Visitor& v ) const
 {
@@ -279,7 +285,7 @@ QString QgsSQLStatement::NodeUnaryOperator::dump() const
   return QStringLiteral( "%1 %2" ).arg( UnaryOperatorText[mOp], mOperand->dump() );
 }
 
-QgsSQLStatement::Node*QgsSQLStatement::NodeUnaryOperator::clone() const
+QgsSQLStatement::Node* QgsSQLStatement::NodeUnaryOperator::clone() const
 {
   return new NodeUnaryOperator( mOp, mOperand->clone() );
 }
@@ -368,9 +374,9 @@ bool QgsSQLStatement::NodeBinaryOperator::leftAssociative() const
 
 QString QgsSQLStatement::NodeBinaryOperator::dump() const
 {
-  QgsSQLStatement::NodeBinaryOperator *lOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpLeft );
-  QgsSQLStatement::NodeBinaryOperator *rOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator *>( mOpRight );
-  QgsSQLStatement::NodeUnaryOperator *ruOp = dynamic_cast<QgsSQLStatement::NodeUnaryOperator *>( mOpRight );
+  QgsSQLStatement::NodeBinaryOperator* lOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator*>( mOpLeft );
+  QgsSQLStatement::NodeBinaryOperator* rOp = dynamic_cast<QgsSQLStatement::NodeBinaryOperator*>( mOpRight );
+  QgsSQLStatement::NodeUnaryOperator* ruOp = dynamic_cast<QgsSQLStatement::NodeUnaryOperator*>( mOpRight );
 
   QString rdump( mOpRight->dump() );
 

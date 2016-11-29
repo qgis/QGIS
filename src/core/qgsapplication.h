@@ -42,7 +42,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
-    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
+    QgsApplication( int& argc, char** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
     virtual ~QgsApplication();
 
     /**
@@ -61,13 +61,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent * event ) override;
+    virtual bool event( QEvent* event ) override;
 
     //! Catch exceptions when sending event to receiver.
-    virtual bool notify( QObject * receiver, QEvent * event ) override;
+    virtual bool notify( QObject* receiver, QEvent* event ) override;
 
     //! Set the FileOpen event receiver
-    static void setFileOpenEventReceiver( QObject * receiver );
+    static void setFileOpenEventReceiver( QObject* receiver );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName( const QString &theThemeName );
+    static void setThemeName( const QString& theThemeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @param themeName The name of the theme.
      * @note using an invalid theme name will reset to default
      */
-    static void setUITheme( const QString &themeName );
+    static void setUITheme( const QString& themeName );
 
     /**
      * @brief All themes found in ~/.qgis3/themes folder.
@@ -169,7 +169,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
-    static QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
+    static QMap<QString, QString> systemEnvVars()
+    {
+      return ABISYM( mSystemEnvVars );
+    }
 
     //! Returns the path to the application prefix directory.
     static QString prefixPath();
@@ -192,11 +195,11 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QIcon getThemeIcon( const QString &theName );
+    static QIcon getThemeIcon( const QString& theName );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QPixmap getThemePixmap( const QString &theName );
+    static QPixmap getThemePixmap( const QString& theName );
 
     //! Returns the path to user's style.
     static QString userStylePath();
@@ -244,13 +247,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );
+    static void setPrefixPath( const QString& thePrefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath( const QString &thePluginPath );
+    static void setPluginPath( const QString& thePluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath( const QString &thePkgDataPath );
+    static void setPkgDataPath( const QString& thePkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
@@ -325,14 +328,26 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
     //! Indicates whether running from build directory (not installed)
-    static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
+    static bool isRunningFromBuildDir()
+    {
+      return ABISYM( mRunningFromBuildDir );
+    }
 #ifdef _MSC_VER
-    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
+    static QString cfgIntDir()
+    {
+      return ABISYM( mCfgIntDir );
+    }
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
-    static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
+    static QString buildSourcePath()
+    {
+      return ABISYM( mBuildSourcePath );
+    }
     //! Returns path to the build output directory. Valid only when running from build directory
-    static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
+    static QString buildOutputPath()
+    {
+      return ABISYM( mBuildOutputPath );
+    }
 
     /** Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
@@ -349,7 +364,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
      */
-    static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
+    static QStringList skippedGdalDrivers()
+    {
+      return ABISYM( mGdalSkipList );
+    }
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -359,7 +377,10 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /** Get maximum concurrent thread count
      * @note added in 2.4 */
-    static int maxThreads() { return ABISYM( mMaxThreads ); }
+    static int maxThreads()
+    {
+      return ABISYM( mMaxThreads );
+    }
 
     /** Set maximum concurrent thread count
      * @note must be between 1 and \#cores, -1 means use all available cores
@@ -368,7 +389,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
-    bool x11EventFilter( XEvent * event )
+    bool x11EventFilter( XEvent* event )
     {
       Q_UNUSED( event );
       return 0;
@@ -400,7 +421,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   signals:
     //! @note not available in python bindings
-    void preNotify( QObject * receiver, QEvent * event, bool * done );
+    void preNotify( QObject* receiver, QEvent* event, bool* done );
 
     /** Emitted whenever any global, application-wide settings are changed.
      * @note added in QGIS 3.0

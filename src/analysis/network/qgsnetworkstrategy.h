@@ -46,12 +46,15 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
      * This method called by QgsGraphDirector.
      * \return list of required attributes
      */
-    virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
+    virtual QgsAttributeList requiredAttributes() const
+    {
+      return QgsAttributeList();
+    }
 
     /**
      * Returns edge cost
      */
-    virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
+    virtual QVariant cost( double distance, const QgsFeature& f ) const = 0;
 };
 
 #endif // QGSNETWORKSTRATERGY_H

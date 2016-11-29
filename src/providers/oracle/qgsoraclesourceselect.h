@@ -40,9 +40,9 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
-        : QItemDelegate( parent )
-        , mConn( nullptr )
+    explicit QgsOracleSourceSelectDelegate( QObject* parent = nullptr )
+      : QItemDelegate( parent )
+      , mConn( nullptr )
     {}
 
     ~QgsOracleSourceSelectDelegate()
@@ -50,14 +50,21 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
       setConn( nullptr );
     }
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
+    void setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const;
+    void setEditorData( QWidget* editor, const QModelIndex& index ) const;
 
-    void setConnectionInfo( const QgsDataSourceUri& connInfo ) { mConnInfo = connInfo; }
+    void setConnectionInfo( const QgsDataSourceUri& connInfo )
+    {
+      mConnInfo = connInfo;
+    }
 
   protected:
-    void setConn( QgsOracleConn *conn ) const { if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn ); mConn = conn; }
+    void setConn( QgsOracleConn* conn ) const
+    {
+      if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn );
+      mConn = conn;
+    }
 
     QgsOracleConn* conn() const
     {
@@ -69,7 +76,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
   private:
     QgsDataSourceUri mConnInfo;
     //! lazily initialized connection (to detect possible primary keys)
-    mutable QgsOracleConn *mConn;
+    mutable QgsOracleConn* mConn;
 };
 
 
@@ -86,7 +93,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOracleSourceSelect( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box
@@ -95,7 +102,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList selectedTables();
 
   signals:
-    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
+    void addDatabaseLayers( QStringList const& layerPathList, QString const& providerKey );
     void connectionsChanged();
     void progress( int, int );
     void progressMessage( QString );
@@ -121,20 +128,23 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString & text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
-    void on_cmbConnections_currentIndexChanged( const QString &text );
+    void on_mSearchTableEdit_textChanged( const QString& text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString& text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString& text );
+    void on_cmbConnections_currentIndexChanged( const QString& text );
     void setSql( const QModelIndex& index );
     //! Store the selected database
     void setLayerType( QgsOracleLayerProperty layerProperty );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
-    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
-    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    void on_mTablesTreeView_clicked( const QModelIndex& index );
+    void on_mTablesTreeView_doubleClicked( const QModelIndex& index );
+    void treeWidgetSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     void columnThreadFinished();
 
@@ -163,7 +173,7 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsOracleColumnTypeThread *mColumnTypeThread;
+    QgsOracleColumnTypeThread* mColumnTypeThread;
     QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons
@@ -172,10 +182,10 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Model that acts as datasource for mTableTreeWidget
     QgsOracleTableModel mTableModel;
     QgsDbFilterProxyModel mProxyModel;
-    QgsOracleSourceSelectDelegate *mTablesTreeDelegate;
+    QgsOracleSourceSelectDelegate* mTablesTreeDelegate;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton* mBuildQueryButton;
+    QPushButton* mAddButton;
 
     void finishList();
     bool mIsConnected;

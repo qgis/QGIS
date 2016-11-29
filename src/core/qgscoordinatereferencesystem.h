@@ -39,9 +39,9 @@ typedef struct sqlite3 sqlite3;
 #include "qgsunittypes.h"
 
 #ifdef DEBUG
-typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
+typedef struct OGRSpatialReferenceHS* OGRSpatialReferenceH;
 #else
-typedef void *OGRSpatialReferenceH;
+typedef void* OGRSpatialReferenceH;
 #endif
 
 class QgsCoordinateReferenceSystem;
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return True on success else false
      * @see fromWkt()
      */
-    bool createFromWkt( const QString &theWkt );
+    bool createFromWkt( const QString& theWkt );
 
     /** Sets this CRS by lookup of internal QGIS CRS ID in the CRS database.
      *
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return True on success else false
      * @see fromProj4()
      */
-    bool createFromProj4( const QString &theProjString );
+    bool createFromProj4( const QString& theProjString );
 
     /** Set up this CRS from a string definition.
      *
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theDefinition A String containing a coordinate reference system definition.
      * @return True on success else false
      */
-    bool createFromString( const QString &theDefinition );
+    bool createFromString( const QString& theDefinition );
 
     /** Set up this CRS from various text formats.
      *
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return True on success else false
      */
     // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
-    bool createFromUserInput( const QString &theDefinition );
+    bool createFromUserInput( const QString& theDefinition );
 
     /** Make sure that ESRI WKT import is done properly.
      * This is required for proper shapefile CRS import when using gdal>= 1.9.
@@ -426,26 +426,26 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      *  Internally it will use authid() for comparison.
      */
-    bool operator==( const QgsCoordinateReferenceSystem &theSrs ) const;
+    bool operator==( const QgsCoordinateReferenceSystem& theSrs ) const;
 
     /** Overloaded != operator used to compare to CRS's.
      *
      *  Returns opposite bool value to operator ==
      */
-    bool operator!=( const QgsCoordinateReferenceSystem &theSrs ) const;
+    bool operator!=( const QgsCoordinateReferenceSystem& theSrs ) const;
 
     /** Restores state from the given DOM node.
      * @param theNode The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXml( const QDomNode & theNode );
+    bool readXml( const QDomNode& theNode );
 
     /** Stores state to the given Dom node in the given document.
      * @param theNode The node in which state will be restored
      * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure
      */
-    bool writeXml( QDomNode & theNode, QDomDocument & theDoc ) const;
+    bool writeXml( QDomNode& theNode, QDomDocument& theDoc ) const;
 
 
     /** Sets custom function to force valid CRS
@@ -658,7 +658,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Open SQLite db and show message if cannot be opened
     //! @return the same code as sqlite3_open
-    static int openDb( const QString& path, sqlite3 **db, bool readonly = true );
+    static int openDb( const QString& path, sqlite3** db, bool readonly = true );
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
@@ -673,8 +673,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! using first CRS entry where expression = 'value'
     bool loadFromDb( const QString& db, const QString& expression, const QString& value );
 
-    static bool loadIds( QHash<int, QString> &wkts );
-    static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
+    static bool loadIds( QHash<int, QString>& wkts );
+    static bool loadWkts( QHash<int, QString>& wkts, const char* filename );
     //! Update datum shift definitions from GDAL data. Used by syncDb()
     static bool syncDatumTransform( const QString& dbPath );
 
@@ -704,7 +704,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
 
 //! Output stream operator
-inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenceSystem &r )
+inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenceSystem& r )
 {
   QString mySummary( QStringLiteral( "\n\tSpatial Reference System:" ) );
   mySummary += QLatin1String( "\n\t\tDescription : " );

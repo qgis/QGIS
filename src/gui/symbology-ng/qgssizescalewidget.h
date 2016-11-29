@@ -38,18 +38,21 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     Q_OBJECT
 
   public:
-    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsSymbol * symbol );
+    QgsSizeScaleWidget( const QgsVectorLayer* layer, const QgsSymbol* symbol );
 
     QgsDataDefined dataDefined() const override;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* layer() const { return mLayer; }
+    const QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
 
   protected:
 
-    virtual void showEvent( QShowEvent * ) override;
+    virtual void showEvent( QShowEvent* ) override;
 
   private slots:
     void computeFromLayerTriggered();
@@ -78,7 +81,7 @@ class ItemDelegate : public QItemDelegate
   public:
     explicit ItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
 
-    QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
+    QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex& index ) const override
     {
       return mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
     }

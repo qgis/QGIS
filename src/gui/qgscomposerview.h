@@ -121,7 +121,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Inverts current selection
     void selectInvert();
 
-    QgsComposerView::Tool currentTool() const {return mCurrentTool;}
+    QgsComposerView::Tool currentTool() const
+    {
+      return mCurrentTool;
+    }
     void setCurrentTool( QgsComposerView::Tool t );
 
     /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
@@ -135,14 +138,26 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Returns the composer main window
     QMainWindow* composerWindow();
 
-    void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
-    bool paintingEnabled() const { return mPaintingEnabled; }
+    void setPaintingEnabled( bool enabled )
+    {
+      mPaintingEnabled = enabled;
+    }
+    bool paintingEnabled() const
+    {
+      return mPaintingEnabled;
+    }
 
     //! Update rulers with current scene rect
     void updateRulers();
 
-    void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
-    void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
+    void setHorizontalRuler( QgsComposerRuler* r )
+    {
+      mHorizontalRuler = r;
+    }
+    void setVerticalRuler( QgsComposerRuler* r )
+    {
+      mVerticalRuler = r;
+    }
 
     //! Set zoom level, where a zoom level of 1.0 corresponds to 100%
     void setZoomLevel( double zoomLevel );
@@ -175,8 +190,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void mouseMoveEvent( QMouseEvent* ) override;
     void mouseDoubleClickEvent( QMouseEvent* e ) override;
 
-    void keyPressEvent( QKeyEvent * e ) override;
-    void keyReleaseEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent* e ) override;
+    void keyReleaseEvent( QKeyEvent* e ) override;
 
     void wheelEvent( QWheelEvent* event ) override;
 
@@ -224,7 +239,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void addPolygonNode( QPointF scenePoint );
     void movePolygonNode( QPointF scenePoint );
     void displayNodes( const bool display = true );
-    void setSelectedNode( QgsComposerNodesItem *shape, const int index );
+    void setSelectedNode( QgsComposerNodesItem* shape, const int index );
     void unselectNode();
 
     float mMoveContentSearchRadius;
@@ -253,20 +268,20 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QCursor defaultCursorForTool( Tool currentTool );
 
     //! Zoom composition from a mouse wheel event
-    void wheelZoom( QWheelEvent * event );
+    void wheelZoom( QWheelEvent* event );
     //! Redraws the rectangular rubber band
-    void updateRubberBandRect( QPointF & pos, const bool constrainSquare = false, const bool fromCenter = false );
+    void updateRubberBandRect( QPointF& pos, const bool constrainSquare = false, const bool fromCenter = false );
     //! Redraws the linear rubber band
     void updateRubberBandLine( QPointF pos, const bool constrainAngles = false );
     //! Removes the rubber band and cleans up
     void removeRubberBand();
 
     //! Starts a marquee selection
-    void startMarqueeSelect( QPointF & scenePoint );
+    void startMarqueeSelect( QPointF& scenePoint );
     //! Finalises a marquee selection
     void endMarqueeSelect( QMouseEvent* e );
     //! Starts a zoom in marquee
-    void startMarqueeZoom( QPointF & scenePoint );
+    void startMarqueeZoom( QPointF& scenePoint );
     //! Finalises a marquee zoom
     void endMarqueeZoom( QMouseEvent* e );
 

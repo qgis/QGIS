@@ -17,7 +17,7 @@
 #include "qgssqlexpressioncompiler.h"
 
 QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields )
+  : QgsSqlExpressionCompiler( source->mFields )
 {
 }
 
@@ -25,7 +25,7 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
 {
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
+    const QgsExpression::NodeBinaryOperator* bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
 
     switch ( bin->op() )
     {

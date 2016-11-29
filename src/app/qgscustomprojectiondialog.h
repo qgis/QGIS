@@ -33,7 +33,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 {
     Q_OBJECT
   public:
-    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsCustomProjectionDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsCustomProjectionDialog();
 
   public slots:
@@ -41,9 +41,12 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     void on_pbnAdd_clicked();
     void on_pbnRemove_clicked();
     void on_pbnCopyCRS_clicked();
-    void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void on_leNameList_currentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* prev );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
     void on_buttonBox_accepted();
 
   private:

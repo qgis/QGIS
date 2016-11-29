@@ -47,14 +47,14 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
 
   public:
     //! Constructor
-    QgsGrassRegion( QgisInterface *iface,
-                    QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsGrassRegion( QgisInterface* iface,
+                    QWidget* parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassRegion();
 
   public slots:
-    void buttonClicked( QAbstractButton *button );
+    void buttonClicked( QAbstractButton* button );
 
     void mapsetChanged();
 
@@ -86,18 +86,18 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
 
     void on_mDrawButton_clicked();
 
-    void canvasMapToolSet( QgsMapTool *tool );
+    void canvasMapToolSet( QgsMapTool* tool );
   private:
     //! Pointer to plugin
     //QgsGrassPlugin *mPlugin;
 
     //! Pointer to QGIS interface
-    QgisInterface *mInterface;
+    QgisInterface* mInterface;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas* mCanvas;
 
-    QButtonGroup *mRadioGroup;
+    QButtonGroup* mRadioGroup;
 
     //! Current new region
     struct Cell_head mWindow;
@@ -138,13 +138,13 @@ class QgsGrassRegionEdit : public QgsMapTool
     ~QgsGrassRegionEdit();
 
     //! mouse pressed in map canvas
-    void canvasPressEvent( QgsMapMouseEvent * ) override;
+    void canvasPressEvent( QgsMapMouseEvent* ) override;
 
     //! mouse movement in map canvas
-    void canvasMoveEvent( QgsMapMouseEvent * ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* ) override;
 
     //! mouse released
-    void canvasReleaseEvent( QgsMapMouseEvent * ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent* ) override;
 
 
     //! called when map tool is about to get inactive
@@ -155,11 +155,11 @@ class QgsGrassRegionEdit : public QgsMapTool
 
     //! refresh the rectangle displayed in canvas
     void setRegion( const QgsPoint&, const QgsPoint& );
-    void setSrcRegion( const QgsRectangle &rect );
+    void setSrcRegion( const QgsRectangle& rect );
 
-    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform& coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
+    static void drawRegion( QgsMapCanvas* canvas, QgsRubberBand* rubberBand, const QgsRectangle& rect, const QgsCoordinateTransform& coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
     void calcSrcRegion();
-    static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
+    static void transform( QgsMapCanvas* canvas, QVector<QgsPoint>& points, const QgsCoordinateTransform& coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
 
   signals:
     void captureStarted();

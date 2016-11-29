@@ -57,7 +57,7 @@ class QgsSpatialQuery
      * \brief Constructor for a Spatial query.
      * \param pb Pointer to the MngProgressBar object.
      */
-    explicit QgsSpatialQuery( MngProgressBar *pb );
+    explicit QgsSpatialQuery( MngProgressBar* pb );
 
     /**
      * \brief Destructor
@@ -83,9 +83,9 @@ class QgsSpatialQuery
      * \param lyrTarget          Pointer to Target Layer
      * \param lyrReference       Pointer to Reference Layer
      */
-    void runQuery( QgsFeatureIds &qsetIndexResult,
-                   QgsFeatureIds &qsetIndexInvalidTarget,
-                   QgsFeatureIds &qsetIndexInvalidReference,
+    void runQuery( QgsFeatureIds& qsetIndexResult,
+                   QgsFeatureIds& qsetIndexInvalidTarget,
+                   QgsFeatureIds& qsetIndexInvalidReference,
                    int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
@@ -94,7 +94,7 @@ class QgsSpatialQuery
      * \param lyrReference       Pointer to Reference Layer
      * \returns QMap<QString, int> Nome inteligível and Topologic Relation
      */
-    static QMap<QString, int> * getTypesOperations( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
+    static QMap<QString, int>* getTypesOperations( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
      * \brief Gets the topologic dimension
@@ -110,25 +110,25 @@ class QgsSpatialQuery
      * \param layerTarget       Target Layer
      * \param layerReference    Reference Layer
      */
-    void setQuery( QgsVectorLayer *layerTarget, QgsVectorLayer *layerReference );
+    void setQuery( QgsVectorLayer* layerTarget, QgsVectorLayer* layerReference );
 
     /**
      * \brief Verify has valid Geometry in feature
      * \param QgsFeature       Feature
      */
-    bool hasValidGeometry( QgsFeature &feature );
+    bool hasValidGeometry( QgsFeature& feature );
 
     /**
      * \brief Build the Spatial Index
      */
-    void setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidReference );
+    void setSpatialIndexReference( QgsFeatureIds& qsetIndexInvalidReference );
 
     /**
      * \brief Execute query
      * \param qsetIndexResult    Reference to QSet contains the result query
      * \param relation           Enum Topologic Relation
      */
-    void execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &qsetIndexInvalidTarget, int relation );
+    void execQuery( QgsFeatureIds& qsetIndexResult, QgsFeatureIds& qsetIndexInvalidTarget, int relation );
 
     /**
      * \brief Populate index Result
@@ -137,7 +137,7 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+    void populateIndexResult( QgsFeatureIds& qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
                               bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry&, QString* ) const );
 
     /**
@@ -147,16 +147,16 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
+    void populateIndexResultDisjoint( QgsFeatureIds& qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
                                       bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry&, QString* ) const );
 
-    MngProgressBar *mPb;
+    MngProgressBar* mPb;
     bool mUseReferenceSelection;
     bool mUseTargetSelection;
 
-    QgsReaderFeatures * mReaderFeaturesTarget;
-    QgsVectorLayer * mLayerTarget;
-    QgsVectorLayer * mLayerReference;
+    QgsReaderFeatures* mReaderFeaturesTarget;
+    QgsVectorLayer* mLayerTarget;
+    QgsVectorLayer* mLayerReference;
     QgsSpatialIndex  mIndexReference;
 
     QgsSpatialQuery( const QgsSpatialQuery& rh );

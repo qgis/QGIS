@@ -20,7 +20,7 @@
 #include <QDomDocument>
 
 QgsPostRequestHandler::QgsPostRequestHandler( const bool captureOutput )
-    : QgsHttpRequestHandler( captureOutput )
+  : QgsHttpRequestHandler( captureOutput )
 {
 }
 

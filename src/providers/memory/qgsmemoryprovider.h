@@ -67,14 +67,14 @@ class QgsMemoryProvider : public QgsVectorDataProvider
       * Adds a list of features
       * @return true in case of success and false in case of failure
       */
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList& flist ) override;
 
     /**
       * Deletes a feature
       * @param id list containing feature ids to delete
       * @return true in case of success and false in case of failure
       */
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds& id ) override;
 
 
     /**
@@ -82,7 +82,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * @param attributes map with attribute name as key and type as value
      * @return true in case of success and false in case of failure
      */
-    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
+    virtual bool addAttributes( const QList<QgsField>& attributes ) override;
 
     virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
 
@@ -98,7 +98,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override;
 
     /**
      * Changes geometries of existing features
@@ -106,14 +106,17 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      *                       the second map parameter being the new geometries themselves
      * @return               true in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( const QgsGeometryMap & geometry_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap& geometry_map ) override;
 
     QString subsetString() const override;
 
     //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     /**
      * Creates a spatial index

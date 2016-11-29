@@ -31,8 +31,8 @@ QgsRendererWidget* QgsPointClusterRendererWidget::create( QgsVectorLayer* layer,
 }
 
 QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
   {
@@ -212,7 +212,7 @@ void QgsPointClusterRendererWidget::updateCenterSymbolFromWidget()
   emit widgetChanged();
 }
 
-void QgsPointClusterRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsPointClusterRendererWidget::cleanUpSymbolSelector( QgsPanelWidget* container )
 {
   if ( container )
   {

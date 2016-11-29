@@ -72,7 +72,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     bool readFeature( OGRFeatureH fet, QgsFeature& feature ) const;
 
     //! Get an attribute associated with a feature
-    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex ) const;
+    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature& f, int attindex ) const;
 
     bool mFeatureFetched;
 

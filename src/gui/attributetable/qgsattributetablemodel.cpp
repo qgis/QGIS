@@ -37,17 +37,17 @@
 
 #include <limits>
 
-QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
-    : QAbstractTableModel( parent )
-    , mLayerCache( layerCache )
-    , mFieldCount( 0 )
-    , mSortCacheExpression( QLatin1String( "" ) )
-    , mSortFieldIndex( -1 )
-    , mExtraColumns( 0 )
+QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache* layerCache, QObject* parent )
+  : QAbstractTableModel( parent )
+  , mLayerCache( layerCache )
+  , mFieldCount( 0 )
+  , mSortCacheExpression( QLatin1String( "" ) )
+  , mSortFieldIndex( -1 )
+  , mExtraColumns( 0 )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layerCache->layer() );
+                     << QgsExpressionContextUtils::projectScope()
+                     << QgsExpressionContextUtils::layerScope( layerCache->layer() );
 
   if ( layerCache->layer()->geometryType() == QgsWkbTypes::NullGeometry )
   {
@@ -149,7 +149,7 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds& fids )
     resetModel();
 }
 
-bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
+bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex& parent )
 {
   if ( row < 0 || count < 1 )
     return false;
@@ -265,7 +265,7 @@ void QgsAttributeTableModel::layerDeleted()
   mWidgetConfigs.clear();
 }
 
-void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant& value )
 {
   QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
 
@@ -423,7 +423,7 @@ void QgsAttributeTableModel::loadLayer()
   endResetModel();
 }
 
-void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
+void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString& fieldName )
 {
   if ( fieldName.isNull() )
   {
@@ -517,13 +517,13 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
   return mAttributes.indexOf( idx );
 }
 
-int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
+int QgsAttributeTableModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return mRowIdMap.size();
 }
 
-int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
+int QgsAttributeTableModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return qMax( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
@@ -569,7 +569,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
   }
 }
 
-QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
+QVariant QgsAttributeTableModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() ||
        ( role != Qt::TextAlignmentRole
@@ -674,7 +674,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   return QVariant();
 }
 
-bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsAttributeTableModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   Q_UNUSED( value )
 
@@ -711,7 +711,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   return true;
 }
 
-Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
@@ -730,26 +730,26 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
-void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
+void QgsAttributeTableModel::reload( const QModelIndex& index1, const QModelIndex& index2 )
 {
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
 
 
-void QgsAttributeTableModel::executeAction( const QUuid& action, const QModelIndex &idx ) const
+void QgsAttributeTableModel::executeAction( const QUuid& action, const QModelIndex& idx ) const
 {
   QgsFeature f = feature( idx );
   layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );
 }
 
-void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const
+void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex& idx ) const
 {
   QgsFeature f = feature( idx );
   action->triggerForFeature( layer(), &f );
 }
 
-QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
+QgsFeature QgsAttributeTableModel::feature( const QModelIndex& idx ) const
 {
   QgsFeature f;
   f.initAttributes( mAttributes.size() );

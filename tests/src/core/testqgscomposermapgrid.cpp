@@ -60,14 +60,14 @@ class TestQgsComposerMapGrid : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 };
 
 TestQgsComposerMapGrid::TestQgsComposerMapGrid()
-    : mComposition( 0 )
-    , mComposerMap( 0 )
-    , mMapSettings( 0 )
+  : mComposition( 0 )
+  , mComposerMap( 0 )
+  , mMapSettings( 0 )
 {
 }
 

@@ -42,10 +42,10 @@ class CORE_EXPORT QgsLabelFeature
       /** Default constructor, all margins are set to 0.0
        */
       VisualMargin()
-          : left( 0.0 )
-          , right( 0.0 )
-          , top( 0.0 )
-          , bottom( 0.0 )
+        : left( 0.0 )
+        , right( 0.0 )
+        , top( 0.0 )
+        , bottom( 0.0 )
       {}
 
       /** Constructor allowing margins to be specified
@@ -55,10 +55,10 @@ class CORE_EXPORT QgsLabelFeature
        * @param left left margin
        */
       VisualMargin( double top, double right, double bottom, double left )
-          : left( left )
-          , right( right )
-          , top( top )
-          , bottom( bottom )
+        : left( left )
+        , right( right )
+        , top( top )
+        , bottom( bottom )
       {}
 
       //! Left margin
@@ -86,10 +86,16 @@ class CORE_EXPORT QgsLabelFeature
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
-    QgsFeatureId id() const { return mId; }
+    QgsFeatureId id() const
+    {
+      return mId;
+    }
 
     //! Get access to the associated geometry
-    GEOSGeometry* geometry() const { return mGeometry; }
+    GEOSGeometry* geometry() const
+    {
+      return mGeometry;
+    }
 
     /** Sets the label's obstacle geometry, if different to the feature geometry.
      * This can be used to override the shape of the feature for obstacle detection, eg to
@@ -105,7 +111,10 @@ class CORE_EXPORT QgsLabelFeature
      * @note added in QGIS 2.14
      * @see setObstacleGeometry()
      */
-    GEOSGeometry* obstacleGeometry() const { return mObstacleGeometry; }
+    GEOSGeometry* obstacleGeometry() const
+    {
+      return mObstacleGeometry;
+    }
 
     /** Sets the label's permissible zone geometry. If set, the feature's label MUST be fully contained
      * within this zone, and the feature will not be labeled if no candidates can be generated which
@@ -124,17 +133,26 @@ class CORE_EXPORT QgsLabelFeature
      * @see setPermissibleZone()
      * @see permissibleZonePrepared()
      */
-    QgsGeometry permissibleZone() const { return mPermissibleZone; }
+    QgsGeometry permissibleZone() const
+    {
+      return mPermissibleZone;
+    }
 
     /** Returns a GEOS prepared geometry representing the label's permissibleZone().
      * @see permissibleZone()
      * @note added in QGIS 3.0
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
-    const GEOSPreparedGeometry* permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared; }
+    const GEOSPreparedGeometry* permissibleZonePrepared() const
+    {
+      return mPermissibleZoneGeosPrepared;
+    }
 
     //! Size of the label (in map units)
-    QSizeF size() const { return mSize; }
+    QSizeF size() const
+    {
+      return mSize;
+    }
 
     /** Sets the visual margin for the label feature. The visual margin represents a margin
      * within the label which should not be considered when calculating the positions of candidates
@@ -145,19 +163,28 @@ class CORE_EXPORT QgsLabelFeature
      * @param margin visual margins for label
      * @see visualMargin()
      */
-    void setVisualMargin( const VisualMargin& margin ) { mVisualMargin = margin; }
+    void setVisualMargin( const VisualMargin& margin )
+    {
+      mVisualMargin = margin;
+    }
 
     /** Returns the visual margin for the label feature.
      * @see setVisualMargin() for details
      */
-    const VisualMargin& visualMargin() const { return mVisualMargin; }
+    const VisualMargin& visualMargin() const
+    {
+      return mVisualMargin;
+    }
 
     /** Sets the size of the rendered symbol associated with this feature. This size is taken into
      * account in certain label placement modes to avoid placing labels over the rendered
      * symbol for this feature.
      * @see symbolSize()
      */
-    void setSymbolSize( QSizeF size ) { mSymbolSize = size; }
+    void setSymbolSize( QSizeF size )
+    {
+      mSymbolSize = size;
+    }
 
     /** Returns the size of the rendered symbol associated with this feature, if applicable.
      * This size is taken into account in certain label placement modes to avoid placing labels over
@@ -165,14 +192,20 @@ class CORE_EXPORT QgsLabelFeature
      * with a point feature.
      * @see symbolSize()
      */
-    const QSizeF& symbolSize() const { return mSymbolSize; }
+    const QSizeF& symbolSize() const
+    {
+      return mSymbolSize;
+    }
 
     /** Returns the feature's labeling priority.
      * @returns feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Returns -1.0 if feature will use the layer's default priority.
      * @see setPriority
      */
-    double priority() const { return mPriority; }
+    double priority() const
+    {
+      return mPriority;
+    }
 
     /** Sets the priority for labeling the feature.
      * @param priority feature's priority, as a value between 0 (highest priority)
@@ -180,14 +213,20 @@ class CORE_EXPORT QgsLabelFeature
      * for this feature.
      * @see priority
      */
-    void setPriority( double priority ) { mPriority = priority; }
+    void setPriority( double priority )
+    {
+      mPriority = priority;
+    }
 
     /** Returns the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
      * @see setZIndex()
      * @note added in QGIS 2.14
      */
-    double zIndex() const { return mZIndex; }
+    double zIndex() const
+    {
+      return mZIndex;
+    }
 
     /** Sets the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
@@ -195,116 +234,200 @@ class CORE_EXPORT QgsLabelFeature
      * @see zIndex()
      * @note added in QGIS 2.14
      */
-    void setZIndex( double zIndex ) { mZIndex = zIndex; }
+    void setZIndex( double zIndex )
+    {
+      mZIndex = zIndex;
+    }
 
     //! Whether the label should use a fixed position instead of being automatically placed
-    bool hasFixedPosition() const { return mHasFixedPosition; }
+    bool hasFixedPosition() const
+    {
+      return mHasFixedPosition;
+    }
     //! Set whether the label should use a fixed position instead of being automatically placed
-    void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
+    void setHasFixedPosition( bool enabled )
+    {
+      mHasFixedPosition = enabled;
+    }
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
-    QgsPoint fixedPosition() const { return mFixedPosition; }
+    QgsPoint fixedPosition() const
+    {
+      return mFixedPosition;
+    }
     //! Set coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
-    void setFixedPosition( const QgsPoint& point ) { mFixedPosition = point; }
+    void setFixedPosition( const QgsPoint& point )
+    {
+      mFixedPosition = point;
+    }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
-    bool hasFixedAngle() const { return mHasFixedAngle; }
+    bool hasFixedAngle() const
+    {
+      return mHasFixedAngle;
+    }
     //! Set whether the label should use a fixed angle instead of using angle from automatic placement
-    void setHasFixedAngle( bool enabled ) { mHasFixedAngle = enabled; }
+    void setHasFixedAngle( bool enabled )
+    {
+      mHasFixedAngle = enabled;
+    }
     //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
-    double fixedAngle() const { return mFixedAngle; }
+    double fixedAngle() const
+    {
+      return mFixedAngle;
+    }
     //! Set angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
-    void setFixedAngle( double angle ) { mFixedAngle = angle; }
+    void setFixedAngle( double angle )
+    {
+      mFixedAngle = angle;
+    }
 
     /** Returns whether the quadrant for the label is fixed.
      * Applies to "around point" placement strategy.
      * @see setFixedQuadrant
      * @see quadOffset
      */
-    bool hasFixedQuadrant() const { return mHasFixedQuadrant; }
+    bool hasFixedQuadrant() const
+    {
+      return mHasFixedQuadrant;
+    }
 
     /** Sets whether the quadrant for the label must be respected. This can be used
      * to fix the quadrant for specific features when using an "around point" placement.
      * @see fixedQuadrant
      * @see quadOffset
      */
-    void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }
+    void setHasFixedQuadrant( bool enabled )
+    {
+      mHasFixedQuadrant = enabled;
+    }
     //! Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
     //! Determines which side of the point to use.
     //! For X coordinate, values -1, 0, 1 mean left, center, right.
     //! For Y coordinate, values -1, 0, 1 mean above, center, below.
-    QPointF quadOffset() const { return mQuadOffset; }
+    QPointF quadOffset() const
+    {
+      return mQuadOffset;
+    }
     //! Set which side of the point to use
     //! @see quadOffset
-    void setQuadOffset( QPointF quadOffset ) { mQuadOffset = quadOffset; }
+    void setQuadOffset( QPointF quadOffset )
+    {
+      mQuadOffset = quadOffset;
+    }
     //! Applies only to "offset from point" placement strategy.
     //! What offset (in map units) to use from the point
-    QgsPoint positionOffset() const { return mPositionOffset; }
+    QgsPoint positionOffset() const
+    {
+      return mPositionOffset;
+    }
     //! Applies only to "offset from point" placement strategy.
     //! Set what offset (in map units) to use from the point
-    void setPositionOffset( const QgsPoint& offset ) { mPositionOffset = offset; }
+    void setPositionOffset( const QgsPoint& offset )
+    {
+      mPositionOffset = offset;
+    }
 
     /** Returns the offset type, which determines how offsets and distance to label
      * behaves. Support depends on which placement mode is used for generating
      * label candidates.
      * @see setOffsetType()
      */
-    QgsPalLayerSettings::OffsetType offsetType() const { return mOffsetType; }
+    QgsPalLayerSettings::OffsetType offsetType() const
+    {
+      return mOffsetType;
+    }
 
     /** Sets the offset type, which determines how offsets and distance to label
      * behaves. Support depends on which placement mode is used for generating
      * label candidates.
      * @see offsetType()
      */
-    void setOffsetType( QgsPalLayerSettings::OffsetType type ) { mOffsetType = type; }
+    void setOffsetType( QgsPalLayerSettings::OffsetType type )
+    {
+      mOffsetType = type;
+    }
 
     //! Applies to "around point" placement strategy or linestring features.
     //! Distance of the label from the feature (in map units)
-    double distLabel() const { return mDistLabel; }
+    double distLabel() const
+    {
+      return mDistLabel;
+    }
     //! Applies to "around point" placement strategy or linestring features.
     //! Set distance of the label from the feature (in map units)
-    void setDistLabel( double dist ) { mDistLabel = dist; }
+    void setDistLabel( double dist )
+    {
+      mDistLabel = dist;
+    }
 
     /** Returns the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
      * @see setPredefinedPositionOrder()
      */
-    QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
+    QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder() const
+    {
+      return mPredefinedPositionOrder;
+    }
 
     /** Sets the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
      * @see predefinedPositionOrder()
      */
-    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition >& order ) { mPredefinedPositionOrder = order; }
+    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition >& order )
+    {
+      mPredefinedPositionOrder = order;
+    }
 
     //! Applies only to linestring features - after what distance (in map units)
     //! the labels should be repeated (0 = no repetitions)
-    double repeatDistance() const { return mRepeatDistance; }
+    double repeatDistance() const
+    {
+      return mRepeatDistance;
+    }
     //! Applies only to linestring features - set after what distance (in map units)
     //! the labels should be repeated (0 = no repetitions)
-    void setRepeatDistance( double dist ) { mRepeatDistance = dist; }
+    void setRepeatDistance( double dist )
+    {
+      mRepeatDistance = dist;
+    }
 
     //! Whether label should be always shown (sets very high label priority)
-    bool alwaysShow() const { return mAlwaysShow; }
+    bool alwaysShow() const
+    {
+      return mAlwaysShow;
+    }
     //! Set whether label should be always shown (sets very high label priority)
-    void setAlwaysShow( bool enabled ) { mAlwaysShow = enabled; }
+    void setAlwaysShow( bool enabled )
+    {
+      mAlwaysShow = enabled;
+    }
 
     /** Returns whether the feature will act as an obstacle for labels.
      * @returns true if feature is an obstacle
      * @see setIsObstacle
      */
-    bool isObstacle() const { return mIsObstacle; }
+    bool isObstacle() const
+    {
+      return mIsObstacle;
+    }
 
     /** Sets whether the feature will act as an obstacle for labels.
      * @param enabled whether feature will act as an obstacle
      * @see isObstacle
      */
-    void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
+    void setIsObstacle( bool enabled )
+    {
+      mIsObstacle = enabled;
+    }
 
     /** Returns the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
      * @see setObstacleFactor
      */
-    double obstacleFactor() const { return mObstacleFactor; }
+    double obstacleFactor() const
+    {
+      return mObstacleFactor;
+    }
 
     /** Sets the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
@@ -313,26 +436,47 @@ class CORE_EXPORT QgsLabelFeature
      * are more likely to cover this feature (where required)
      * @see obstacleFactor
      */
-    void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
+    void setObstacleFactor( double factor )
+    {
+      mObstacleFactor = factor;
+    }
 
     /** Text of the label
      *
      * Used also if "merge connected lines to avoid duplicate labels" is enabled
      * to identify which features may be merged.
      */
-    QString labelText() const { return mLabelText; }
+    QString labelText() const
+    {
+      return mLabelText;
+    }
     //! Set text of the label
-    void setLabelText( const QString& text ) { mLabelText = text; }
+    void setLabelText( const QString& text )
+    {
+      mLabelText = text;
+    }
 
     //! Get additional infor required for curved label placement. Returns null if not set
-    pal::LabelInfo* curvedLabelInfo() const { return mInfo; }
+    pal::LabelInfo* curvedLabelInfo() const
+    {
+      return mInfo;
+    }
     //! takes ownership of the instance
-    void setCurvedLabelInfo( pal::LabelInfo* info ) { mInfo = info; }
+    void setCurvedLabelInfo( pal::LabelInfo* info )
+    {
+      mInfo = info;
+    }
 
     //! Get PAL layer of the label feature. Should be only used internally in PAL
-    pal::Layer* layer() const { return mLayer; }
+    pal::Layer* layer() const
+    {
+      return mLayer;
+    }
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
-    void setLayer( pal::Layer* layer ) { mLayer = layer; }
+    void setLayer( pal::Layer* layer )
+    {
+      mLayer = layer;
+    }
 
     //! Return provider of this instance
     QgsAbstractLabelProvider* provider() const;

@@ -63,19 +63,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param layerCache  A layer cache to use as backend
      * @param parent      The parent QObject (owner)
      */
-    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = nullptr );
+    QgsAttributeTableModel( QgsVectorLayerCache* layerCache, QObject* parent = nullptr );
 
     /**
      * Returns the number of rows
      * @param parent parent index
      */
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
 
     /**
      * Returns the number of columns
      * @param parent parent index
      */
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
 
     /**
      * Returns header data
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param index model index
      * @param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    virtual QVariant data( const QModelIndex& index, int role ) const override;
 
     /**
      * Updates data on given index
@@ -98,32 +98,35 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param value new data value
      * @param role data role
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
     /**
      * Returns item flags for the index
      * @param index model index
      */
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
     /**
      * Reloads the model data between indices
      * @param index1 start index
      * @param index2 end index
      */
-    void reload( const QModelIndex &index1, const QModelIndex &index2 );
+    void reload( const QModelIndex& index1, const QModelIndex& index2 );
 
     /**
      * Remove rows
      */
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
 
     /**
      * Resets the model
      *
      * Alias to loadLayer()
      */
-    inline void resetModel() { loadLayer(); }
+    inline void resetModel()
+    {
+      loadLayer();
+    }
 
     /**
      * Maps feature id to table row
@@ -161,28 +164,34 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
+    inline QgsVectorLayer* layer() const
+    {
+      return mLayerCache ? mLayerCache->layer() : nullptr;
+    }
 
     /**
      * Returns the layer cache this model uses as backend.
      */
-    inline QgsVectorLayerCache* layerCache() const { return mLayerCache; }
+    inline QgsVectorLayerCache* layerCache() const
+    {
+      return mLayerCache;
+    }
 
     /**
      * Execute an action
      */
-    void executeAction( const QUuid& action, const QModelIndex &idx ) const;
+    void executeAction( const QUuid& action, const QModelIndex& idx ) const;
 
     /**
      * Execute a QgsMapLayerAction
      */
-    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const;
+    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex& idx ) const;
 
     /**
      * Return the feature attributes at given model index
      * @return feature attributes at given model index
      */
-    QgsFeature feature( const QModelIndex &idx ) const;
+    QgsFeature feature( const QModelIndex& idx ) const;
 
     /**
      * Caches the entire data for one column. This should be called prior to sorting,
@@ -227,7 +236,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * @param context The context
      */
-    void setEditorContext( const QgsAttributeEditorContext& context ) { mEditorContext = context; }
+    void setEditorContext( const QgsAttributeEditorContext& context )
+    {
+      mEditorContext = context;
+    }
 
     /**
      * Returns the context in which this table is shown.
@@ -235,7 +247,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * @return The context
      */
-    const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+    const QgsAttributeEditorContext& editorContext() const
+    {
+      return mEditorContext;
+    }
 
     /**
      * Empty extra columns to announce from this model.
@@ -271,7 +286,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void modelChanged();
 
     //! @note not available in python bindings
-    void progress( int i, bool &cancel );
+    void progress( int i, bool& cancel );
     void finished();
 
   private slots:
@@ -301,7 +316,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param idx attribute index
      * @param value new value
      */
-    virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant& value );
 
     /**
      * Launched when eatures have been deleted
@@ -321,7 +336,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void layerDeleted();
 
   protected:
-    QgsVectorLayerCache *mLayerCache;
+    QgsVectorLayerCache* mLayerCache;
     int mFieldCount;
 
     mutable QgsFeature mFeat;

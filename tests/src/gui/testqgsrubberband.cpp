@@ -32,9 +32,9 @@ class TestQgsRubberband : public QObject
     Q_OBJECT
   public:
     TestQgsRubberband()
-        : mCanvas( 0 )
-        , mPolygonLayer( 0 )
-        , mRubberband( 0 )
+      : mCanvas( 0 )
+      , mPolygonLayer( 0 )
+      , mRubberband( 0 )
     {}
 
   private slots:

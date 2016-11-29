@@ -41,11 +41,11 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
     Q_OBJECT
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent = nullptr );
 
     QVariant data( const QModelIndex& index, int role ) const override;
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
 };
 
 
@@ -61,7 +61,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     ~QgsComposerLegend();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerLegend; }
+    virtual int type() const override
+    {
+      return ComposerLegend;
+    }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
@@ -90,7 +93,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**
      * Returns the legend model
      */
-    QgsLegendModelV2* model() { return mLegendModel; }
+    QgsLegendModelV2* model()
+    {
+      return mLegendModel;
+    }
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -102,7 +108,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setLegendFilterByMapEnabled( bool enabled );
     //! Find out whether legend items are filtered to show just the ones visible in the associated map
     //! @note added in 2.6
-    bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
+    bool legendFilterByMapEnabled() const
+    {
+      return mLegendFilterByMap;
+    }
 
     //! Update() overloading. Use it rather than update()
     //! @note added in 2.12
@@ -137,7 +146,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     //! Returns reference to modifiable style
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+    QgsComposerLegendStyle& rstyle( QgsComposerLegendStyle::Style s );
     //! Returns style
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
     void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
@@ -239,7 +248,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setRasterBorderWidth( double width );
 
     void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const { return mComposerMap;}
+    const QgsComposerMap* composerMap() const
+    {
+      return mComposerMap;
+    }
 
     //! Updates the model and all legend entries
     void updateLegend();
@@ -248,7 +260,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag

@@ -28,7 +28,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 {
     Q_OBJECT
   public:
-    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDatumTransformDialog();
 
     //! @note added in 2.4
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 
   public slots:
     void on_mHideDeprecatedCheckBox_stateChanged( int state );
-    void on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
+    void on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* );
 
   private:
     QgsDatumTransformDialog();
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
     void load();
 
-    const QList< QList< int > > &mDt;
+    const QList< QList< int > >& mDt;
     QString mLayerName;
     QString mSrcCRSauthId, mDestCRSauthId;
 };

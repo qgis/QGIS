@@ -32,10 +32,10 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
     Q_OBJECT
 
   public:
-    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = nullptr );
+    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget* parent = nullptr );
     ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
-    void setBold( QStandardItem *item );
+    void setBold( QStandardItem* item );
 
   signals:
     //! tag with tagName has been selected
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
      * @brief build group tree
      * @param parent
      */
-    void buildTagTree( QStandardItem *&parent );
+    void buildTagTree( QStandardItem*& parent );
     QgsStyle* mStyle;
 
 };

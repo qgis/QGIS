@@ -64,7 +64,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCo
   return sizeForValue( val, s, is );
 }
 
-double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const
 {
   QSizeF size = sizeForValue( value, s, is );
   return qMax( size.width(), size.height() );

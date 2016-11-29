@@ -341,7 +341,7 @@ QString QgsStringUtils::soundex( const QString& string )
   return tmp;
 }
 
-QString QgsStringUtils::insertLinks( const QString& string, bool *foundLinks )
+QString QgsStringUtils::insertLinks( const QString& string, bool* foundLinks )
 {
   QString converted = string;
 
@@ -383,10 +383,10 @@ QString QgsStringUtils::insertLinks( const QString& string, bool *foundLinks )
 }
 
 QgsStringReplacement::QgsStringReplacement( const QString& match, const QString& replacement, bool caseSensitive, bool wholeWordOnly )
-    : mMatch( match )
-    , mReplacement( replacement )
-    , mCaseSensitive( caseSensitive )
-    , mWholeWordOnly( wholeWordOnly )
+  : mMatch( match )
+  , mReplacement( replacement )
+  , mCaseSensitive( caseSensitive )
+  , mWholeWordOnly( wholeWordOnly )
 {
   if ( mWholeWordOnly )
     mRx = QRegExp( QString( "\\b%1\\b" ).arg( mMatch ),
@@ -453,7 +453,7 @@ void QgsStringReplacementCollection::readXml( const QDomElement& elem )
 {
   mReplacements.clear();
   QDomNodeList nodelist = elem.elementsByTagName( QStringLiteral( "replacement" ) );
-  for ( int i = 0;i < nodelist.count(); i++ )
+  for ( int i = 0; i < nodelist.count(); i++ )
   {
     QDomElement replacementElem = nodelist.at( i ).toElement();
     QDomNamedNodeMap nodeMap = replacementElem.attributes();

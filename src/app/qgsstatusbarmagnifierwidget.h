@@ -65,9 +65,9 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
 
 
   private:
-    QHBoxLayout *mLayout;
-    QLabel *mLabel;
-    QgsDoubleSpinBox *mSpinBox;
+    QHBoxLayout* mLayout;
+    QLabel* mLabel;
+    QgsDoubleSpinBox* mSpinBox;
 };
 
 #endif

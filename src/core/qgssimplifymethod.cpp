@@ -19,10 +19,10 @@
 #include "qgsmaptopixelgeometrysimplifier.h"
 
 QgsSimplifyMethod::QgsSimplifyMethod()
-    : mMethodType( QgsSimplifyMethod::NoSimplification )
-    , mTolerance( 1 )
-    , mThreshold( 1 )
-    , mForceLocalOptimization( true )
+  : mMethodType( QgsSimplifyMethod::NoSimplification )
+  , mTolerance( 1 )
+  , mThreshold( 1 )
+  , mForceLocalOptimization( true )
 {
 }
 

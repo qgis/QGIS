@@ -68,7 +68,10 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+    const QgsVectorLayer* vectorLayer() const
+    {
+      return mLayer;
+    }
 
     /**
      * This method should be called whenever the renderer is actually set on the layer.
@@ -96,7 +99,10 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
-    virtual QList<QgsSymbol*> selectedSymbols() { return QList<QgsSymbol*>(); }
+    virtual QList<QgsSymbol*> selectedSymbols()
+    {
+      return QList<QgsSymbol*>();
+    }
     virtual void refreshSymbolView() {}
 
   protected slots:
@@ -154,7 +160,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      * @param layer must not be null
      * @param label value label
      */
-    QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
+    QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer* layer, const QString& label );
     virtual ~QgsDataDefinedValueDialog() {}
 
     /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
@@ -173,7 +179,10 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+    const QgsVectorLayer* vectorLayer() const
+    {
+      return mLayer;
+    }
 
   public slots:
     void dataDefinedChanged();
@@ -209,8 +218,8 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
-        : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer* layer )
+      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( tr( "Symbol size" ) );
       if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
@@ -218,9 +227,12 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsDataDefined symbolDataDefined( const QgsSymbol* symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->size(); }
+    double value( const QgsSymbol* symbol ) const override
+    {
+      return static_cast<const QgsMarkerSymbol*>( symbol )->size();
+    }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };
@@ -232,16 +244,19 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
-        : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer* layer )
+      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
     {
       init( tr( "Symbol rotation" ) );
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsDataDefined symbolDataDefined( const QgsSymbol* symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->angle(); }
+    double value( const QgsSymbol* symbol ) const override
+    {
+      return static_cast<const QgsMarkerSymbol*>( symbol )->angle();
+    }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };
@@ -253,16 +268,19 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
-        : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer* layer )
+      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
     {
       init( tr( "Symbol width" ) );
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsDataDefined symbolDataDefined( const QgsSymbol* symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbol*>( symbol )->width(); }
+    double value( const QgsSymbol* symbol ) const override
+    {
+      return static_cast<const QgsLineSymbol*>( symbol )->width();
+    }
 
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };

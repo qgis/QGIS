@@ -22,11 +22,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgsrasterdataprovider.h"
 
-QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mFilters( All )
-    , mExceptList( QList<QgsMapLayer*>() )
-    , mModel( new QgsMapLayerModel( parent ) )
+QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject* parent )
+  : QSortFilterProxyModel( parent )
+  , mFilters( All )
+  , mExceptList( QList<QgsMapLayer*>() )
+  , mModel( new QgsMapLayerModel( parent ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
@@ -35,7 +35,7 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   sort( 0 );
 }
 
-QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
+QgsMapLayerProxyModel* QgsMapLayerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
   invalidateFilter();
@@ -80,7 +80,7 @@ void QgsMapLayerProxyModel::setExcludedProviders( const QStringList& providers )
   invalidateFilter();
 }
 
-bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
   if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mExcludedProviders.isEmpty() )
     return true;
@@ -140,7 +140,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   return false;
 }
 
-bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+bool QgsMapLayerProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
   // empty row is always first
   if ( sourceModel()->data( left, QgsMapLayerModel::EmptyRole ).toBool() )

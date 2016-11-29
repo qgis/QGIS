@@ -22,8 +22,8 @@
 #include <QPushButton>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
 
@@ -165,7 +165,7 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 // Called when the widget has been resized.
 //
 
-void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *theResizeEvent )
+void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent* theResizeEvent )
 {
   Q_UNUSED( theResizeEvent );
   rotatePixmap( sliderRotation->value() );

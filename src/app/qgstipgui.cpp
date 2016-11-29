@@ -24,11 +24,11 @@
 #include <qgstipfactory.h>
 
 #ifdef Q_OS_MACX
-QgsTipGui::QgsTipGui( QWidget *parent )
-    : QDialog( parent, Qt::WindowSystemMenuHint )  // Dialog with close button only
+QgsTipGui::QgsTipGui( QWidget* parent )
+  : QDialog( parent, Qt::WindowSystemMenuHint )  // Dialog with close button only
 #else
 QgsTipGui::QgsTipGui( QWidget *parent )
-    : QDialog( parent )  // Normal dialog in non Mac-OS
+  : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
@@ -48,7 +48,7 @@ void QgsTipGui::init()
 
   showTip( myTip );
 
-  QPushButton *pb;
+  QPushButton* pb;
   pb = new QPushButton( tr( "&Previous" ) );
   connect( pb, SIGNAL( clicked() ), this, SLOT( prevClicked() ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );

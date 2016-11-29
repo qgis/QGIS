@@ -85,14 +85,22 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * @see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    virtual void select( const QModelIndex &index, SelectionFlags command ) override { Q_UNUSED( index ); Q_UNUSED( command ); }
+    virtual void select( const QModelIndex& index, SelectionFlags command ) override
+    {
+      Q_UNUSED( index );
+      Q_UNUSED( command );
+    }
 
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
      * @see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    virtual void select( const QItemSelection &selection, SelectionFlags command ) override { Q_UNUSED( selection ); Q_UNUSED( command ); }
+    virtual void select( const QItemSelection& selection, SelectionFlags command ) override
+    {
+      Q_UNUSED( selection );
+      Q_UNUSED( command );
+    }
 
     /**
      * Select features on this table. Is to be used in favor of the stock select methods.
@@ -100,7 +108,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection& selection, SelectionFlags command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 

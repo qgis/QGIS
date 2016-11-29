@@ -40,24 +40,24 @@ class QgsDataDefinedPrivate : public QSharedData
                            bool useExpression = false,
                            const QString& expressionString = QString(),
                            const QString& field = QString() )
-        : expression( nullptr )
-        , active( active )
-        , useExpression( useExpression )
-        , expressionString( expressionString )
-        , field( field )
-        , expressionPrepared( false )
+      : expression( nullptr )
+      , active( active )
+      , useExpression( useExpression )
+      , expressionString( expressionString )
+      , field( field )
+      , expressionPrepared( false )
     {
     }
 
     QgsDataDefinedPrivate( const QgsDataDefinedPrivate& other )
-        : QSharedData( other )
-        , expression( nullptr )
-        , active( other.active )
-        , useExpression( other.useExpression )
-        , expressionString( other.expressionString )
-        , field( other.field )
-        , expressionPrepared( false )
-        , exprRefColumns( other.exprRefColumns )
+      : QSharedData( other )
+      , expression( nullptr )
+      , active( other.active )
+      , useExpression( other.useExpression )
+      , expressionString( other.expressionString )
+      , field( other.field )
+      , expressionPrepared( false )
+      , exprRefColumns( other.exprRefColumns )
     {
     }
 

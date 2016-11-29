@@ -47,8 +47,8 @@ class CORE_EXPORT QgsEditFormConfig
     {
       GroupData() {}
       GroupData( const QString& name, const QList<QString>& fields )
-          : mName( name )
-          , mFields( fields )
+        : mName( name )
+        , mFields( fields )
       {}
       QString mName;
       QList<QString> mFields;
@@ -58,9 +58,9 @@ class CORE_EXPORT QgsEditFormConfig
     {
       TabData() {}
       TabData( const QString& name, const QList<QString>& fields, const QList<GroupData>& groups )
-          : mName( name )
-          , mFields( fields )
-          , mGroups( groups )
+        : mName( name )
+        , mFields( fields )
+        , mGroups( groups )
       {}
       QString mName;
       QList<QString> mFields;
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Deserialize drag and drop designer elements.
      */
-    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent );
+    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement& elem, QgsAttributeEditorElement* parent );
 
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer

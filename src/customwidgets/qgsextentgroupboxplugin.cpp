@@ -18,9 +18,9 @@
 #include "qgsextentgroupboxplugin.h"
 
 
-QgsExtentGroupBoxPlugin::QgsExtentGroupBoxPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsExtentGroupBoxPlugin::QgsExtentGroupBoxPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsExtentGroupBoxPlugin::isContainer() const
   return true;
 }
 
-QWidget *QgsExtentGroupBoxPlugin::createWidget( QWidget *parent )
+QWidget* QgsExtentGroupBoxPlugin::createWidget( QWidget* parent )
 {
   return new QgsExtentGroupBox( parent );
 }
@@ -60,7 +60,7 @@ bool QgsExtentGroupBoxPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsExtentGroupBoxPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsExtentGroupBoxPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

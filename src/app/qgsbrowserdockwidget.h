@@ -49,7 +49,10 @@ class QgsBrowserPropertiesWidget : public QWidget
   public:
     explicit QgsBrowserPropertiesWidget( QWidget* parent = nullptr );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = nullptr );
-    virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
+    virtual void setItem( QgsDataItem* item )
+    {
+      Q_UNUSED( item )
+    }
     //! Set content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget* widget );
 
@@ -58,7 +61,10 @@ class QgsBrowserPropertiesWidget : public QWidget
      * @param condensedMode set to true to enable condensed mode
      * @note added in QGIS 2.10
      */
-    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
+    virtual void setCondensedMode( bool condensedMode )
+    {
+      Q_UNUSED( condensedMode );
+    }
 };
 
 class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserLayerPropertiesBase
@@ -71,7 +77,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     virtual void setCondensedMode( bool condensedMode ) override;
 
   private:
-    QgsBrowserPropertiesWrapLabel *mUriLabel;
+    QgsBrowserPropertiesWrapLabel* mUriLabel;
 };
 
 class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , private Ui::QgsBrowserDirectoryPropertiesBase
@@ -83,7 +89,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
     void setItem( QgsDataItem* item ) override;
   private:
     QgsDirectoryParamWidget* mDirectoryWidget;
-    QgsBrowserPropertiesWrapLabel *mPathLabel;
+    QgsBrowserPropertiesWrapLabel* mPathLabel;
 };
 
 class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserPropertiesDialogBase
@@ -104,7 +110,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = nullptr );
+    explicit QgsBrowserDockWidget( const QString& name, QWidget* parent = nullptr );
     ~QgsBrowserDockWidget();
     void addFavoriteDirectory( const QString& favDir );
 
@@ -120,7 +126,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
     void showFilterWidget( bool visible );
     void enablePropertiesWidget( bool enable );
-    void setFilterSyntax( QAction * );
+    void setFilterSyntax( QAction* );
     void setCaseSensitive( bool caseSensitive );
     void setFilter();
 
@@ -131,18 +137,21 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void hideItem();
     void toggleFastScan();
 
-    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
     void splitterMoved();
 
   protected:
     void refreshModel( const QModelIndex& index );
-    void showEvent( QShowEvent * event ) override;
-    void addLayer( QgsLayerItem *layerItem );
+    void showEvent( QShowEvent* event ) override;
+    void addLayer( QgsLayerItem* layerItem );
     void clearPropertiesWidget();
     void setPropertiesWidget();
 
     int selectedItemsCount();
-    QString settingsSection() { return objectName().toLower(); }
+    QString settingsSection()
+    {
+      return objectName().toLower();
+    }
 
     QgsDockBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
@@ -183,13 +192,13 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
+    explicit QgsBrowserTreeFilterProxyModel( QObject* parent );
 
     void setBrowserModel( QgsBrowserModel* model );
 
-    void setFilterSyntax( const QString & syntax );
+    void setFilterSyntax( const QString& syntax );
 
-    void setFilter( const QString & filter );
+    void setFilter( const QString& filter );
 
     void setCaseSensitive( bool caseSensitive );
 
@@ -203,19 +212,19 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     QString mPatternSyntax;
     Qt::CaseSensitivity mCaseSensitivity;
 
-    bool filterAcceptsString( const QString & value ) const;
+    bool filterAcceptsString( const QString& value ) const;
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const override;
 
     // returns true if at least one ancestor is accepted by filter
-    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+    bool filterAcceptsAncestor( const QModelIndex& sourceIndex ) const;
 
     // returns true if at least one descendant s accepted by filter
-    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+    bool filterAcceptsDescendant( const QModelIndex& sourceIndex ) const;
 
     // filter accepts item name
-    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+    bool filterAcceptsItem( const QModelIndex& sourceIndex ) const;
 };
 
 

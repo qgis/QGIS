@@ -42,7 +42,7 @@ class TestQgs25DRenderer : public QObject
     Q_OBJECT
   public:
     TestQgs25DRenderer()
-        : mpPolysLayer( nullptr )
+      : mpPolysLayer( nullptr )
     {}
 
   private slots:
@@ -57,7 +57,7 @@ class TestQgs25DRenderer : public QObject
   private:
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer* mpPolysLayer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -92,7 +92,7 @@ void TestQgs25DRenderer::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer*>() << mpPolysLayer );
 
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
   mReport += QLatin1String( "<h1>25D Renderer Tests</h1>\n" );

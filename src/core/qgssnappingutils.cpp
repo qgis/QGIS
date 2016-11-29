@@ -22,11 +22,11 @@
 #include "qgslogger.h"
 
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
-    : QObject( parent )
-    , mCurrentLayer( nullptr )
-    , mStrategy( IndexHybrid )
-    , mHybridPerLayerFeatureLimit( 50000 )
-    , mIsIndexing( false )
+  : QObject( parent )
+  , mCurrentLayer( nullptr )
+  , mStrategy( IndexHybrid )
+  , mHybridPerLayerFeatureLimit( 50000 )
+  , mIsIndexing( false )
 {
 }
 

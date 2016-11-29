@@ -53,16 +53,16 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
   public:
     //! Constructor
-    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWCSSourceSelect( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsWCSSourceSelect();
 
   public slots:
 
   signals:
-    void addRasterLayer( QString const & rasterLayerPath,
-                         QString const & baseName,
-                         QString const & providerKey );
+    void addRasterLayer( QString const& rasterLayerPath,
+                         QString const& baseName,
+                         QString const& providerKey );
 
   private:
     QgsWcsCapabilities mCapabilities;
@@ -73,7 +73,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     void populateLayerList() override;
     void addClicked() override;
     void on_mLayersTreeWidget_itemSelectionChanged() override;
-    void enableLayersForCrs( QTreeWidgetItem *item ) override;
+    void enableLayersForCrs( QTreeWidgetItem* item ) override;
     void updateButtons() override;
     QList<QgsOWSSourceSelect::SupportedFormat> providerFormats() override;
     QStringList selectedLayersFormats() override;

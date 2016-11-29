@@ -21,14 +21,14 @@
 
 
 QgsOSMXmlImport::QgsOSMXmlImport( const QString& xmlFilename, const QString& dbFilename )
-    : mXmlFileName( xmlFilename )
-    , mDbFileName( dbFilename )
-    , mDatabase( nullptr )
-    , mStmtInsertNode( nullptr )
-    , mStmtInsertNodeTag( nullptr )
-    , mStmtInsertWay( nullptr )
-    , mStmtInsertWayNode( nullptr )
-    , mStmtInsertWayTag( nullptr )
+  : mXmlFileName( xmlFilename )
+  , mDbFileName( dbFilename )
+  , mDatabase( nullptr )
+  , mStmtInsertNode( nullptr )
+  , mStmtInsertNodeTag( nullptr )
+  , mStmtInsertWay( nullptr )
+  , mStmtInsertWayNode( nullptr )
+  , mStmtInsertWayTag( nullptr )
 {
 
 }
@@ -131,7 +131,7 @@ bool QgsOSMXmlImport::createIndexes()
 
 bool QgsOSMXmlImport::createDatabase()
 {
-  char **results;
+  char** results;
   int rows, columns;
   if ( QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr ) != SQLITE_OK )
     return false;

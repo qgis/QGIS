@@ -27,12 +27,12 @@
   for tracking the mouse while drawing polylines or polygons.
 */
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geometryType )
-    : QgsMapCanvasItem( mapCanvas )
-    , mIconSize( 5 )
-    , mIconType( ICON_CIRCLE )
-    , mGeometryType( geometryType )
-    , mTranslationOffsetX( 0.0 )
-    , mTranslationOffsetY( 0.0 )
+  : QgsMapCanvasItem( mapCanvas )
+  , mIconSize( 5 )
+  , mIconType( ICON_CIRCLE )
+  , mGeometryType( geometryType )
+  , mTranslationOffsetX( 0.0 )
+  , mTranslationOffsetY( 0.0 )
 {
   reset( geometryType );
   QColor color( Qt::lightGray );
@@ -44,12 +44,12 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType
 }
 
 QgsRubberBand::QgsRubberBand()
-    : QgsMapCanvasItem( nullptr )
-    , mIconSize( 5 )
-    , mIconType( ICON_CIRCLE )
-    , mGeometryType( QgsWkbTypes::PolygonGeometry )
-    , mTranslationOffsetX( 0.0 )
-    , mTranslationOffsetY( 0.0 )
+  : QgsMapCanvasItem( nullptr )
+  , mIconSize( 5 )
+  , mIconType( ICON_CIRCLE )
+  , mGeometryType( QgsWkbTypes::PolygonGeometry )
+  , mTranslationOffsetX( 0.0 )
+  , mTranslationOffsetY( 0.0 )
 {
 }
 
@@ -60,7 +60,7 @@ QgsRubberBand::~QgsRubberBand()
 /*!
   Set the outline and fill color.
   */
-void QgsRubberBand::setColor( const QColor & color )
+void QgsRubberBand::setColor( const QColor& color )
 {
   setBorderColor( color );
   setFillColor( color );
@@ -69,7 +69,7 @@ void QgsRubberBand::setColor( const QColor & color )
 /*!
   Set the fill color.
   */
-void QgsRubberBand::setFillColor( const QColor & color )
+void QgsRubberBand::setFillColor( const QColor& color )
 {
   QColor fillColor( color.red(), color.green(), color.blue(), color.alpha() );
   mBrush.setColor( fillColor );
@@ -78,7 +78,7 @@ void QgsRubberBand::setFillColor( const QColor & color )
 /*!
   Set the outline
   */
-void QgsRubberBand::setBorderColor( const QColor & color )
+void QgsRubberBand::setBorderColor( const QColor& color )
 {
   QColor penColor( color.red(), color.green(), color.blue(), color.alpha() );
   mPen.setColor( penColor );
@@ -127,7 +127,7 @@ void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
 /*!
   Add a point to the shape being created.
   */
-void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, int geometryIndex )
+void QgsRubberBand::addPoint( const QgsPoint& p, bool doUpdate /* = true */, int geometryIndex )
 {
   if ( geometryIndex < 0 )
   {
@@ -218,7 +218,7 @@ void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/
 /*!
   Update the line between the last added point and the mouse position.
   */
-void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
+void QgsRubberBand::movePoint( const QgsPoint& p, int geometryIndex )
 {
   if ( mPoints.size() < geometryIndex + 1 )
   {
@@ -539,7 +539,7 @@ void QgsRubberBand::updateRect()
   for ( int i = 0; i < mPoints.size(); ++i )
   {
     QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin(),
-                                         itE = mPoints.at( i ).constEnd();
+                                    itE = mPoints.at( i ).constEnd();
     for ( ; it != itE; ++it )
     {
       QgsPoint p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
@@ -609,7 +609,7 @@ int QgsRubberBand::numberOfVertices() const
   return count;
 }
 
-const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
+const QgsPoint* QgsRubberBand::getPoint( int i, int j ) const
 {
   if ( i < mPoints.size() && j < mPoints[i].size() )
     return &mPoints[i][j];
@@ -674,7 +674,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
   return geom;
 }
 
-QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPoint> & points )
+QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPoint>& points )
 {
   QgsPolyline polyline;
   QList<QgsPoint>::const_iterator iter = points.constBegin();

@@ -227,7 +227,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
   // get the wkb representation
   int memorySize = OGR_G_WkbSize( geom );
-  unsigned char *wkb = new unsigned char[memorySize];
+  unsigned char* wkb = new unsigned char[memorySize];
   OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
   QgsGeometry g;

@@ -44,12 +44,16 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         bool direct;
         Description(): direct( true ) {}
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
-        Description( const Description & desc ) { label = desc.label; direct =  desc.direct; }
+        Description( const Description& desc )
+        {
+          label = desc.label;
+          direct =  desc.direct;
+        }
     };
 
     //! Constructor
-    QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                    bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    QgsGrassModule( QgsGrassTools* tools, QString moduleName, QgisInterface* iface,
+                    bool direct, QWidget* parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModule();
@@ -68,10 +72,13 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     static QPixmap pixmap( QString path, int height );
 
     //! Returns pointer to QGIS interface
-    QgisInterface *qgisIface();
+    QgisInterface* qgisIface();
 
     // ! Options widget
-    QgsGrassModuleOptions *options() { return mOptions; }
+    QgsGrassModuleOptions* options()
+    {
+      return mOptions;
+    }
 
     // ! Get executable + arguments. Executable is returned as first string.
     // On Window if the module is script the executable will be path to shell
@@ -82,15 +89,21 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     static QProcessEnvironment processEnvironment( bool direct );
 
     //! Returns true if module is direct
-    bool isDirect() { return mDirect; }
+    bool isDirect()
+    {
+      return mDirect;
+    }
 
     //! Get name of library path environment variable
     static QString libraryPathVariable();
 
     //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
-    static void setDirectLibraryPath( QProcessEnvironment & environment );
+    static void setDirectLibraryPath( QProcessEnvironment& environment );
 
-    QStringList errors() { return mErrors; }
+    QStringList errors()
+    {
+      return mErrors;
+    }
 
   signals:
     // ! emitted when the module started
@@ -101,15 +114,24 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 
   public slots:
     //! Run the module with current options
-    void on_mRunButton_clicked() { run(); }
+    void on_mRunButton_clicked()
+    {
+      run();
+    }
     void run();
 
     //! Close the module tab
-    void on_mCloseButton_clicked() { close(); }
+    void on_mCloseButton_clicked()
+    {
+      close();
+    }
     void close();
 
     //! Show output in map view
-    void on_mViewButton_clicked() { viewOutput(); }
+    void on_mViewButton_clicked()
+    {
+      viewOutput();
+    }
     void viewOutput();
 
     //! Running process finished
@@ -132,13 +154,13 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     void setProgress( int percent, bool force = false );
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface* mIface;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas* mCanvas;
 
     //! Pointer to GRASS Tools
-    QgsGrassTools *mTools;
+    QgsGrassTools* mTools;
 
     //! Module definition file path (.qgm file)
     //QString mPath;
@@ -159,7 +181,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     QString mAppDir;
 
     //! Pointer to options widget
-    QgsGrassModuleOptions *mOptions;
+    QgsGrassModuleOptions* mOptions;
 
     //! Last raster output
     QStringList mOutputRaster;

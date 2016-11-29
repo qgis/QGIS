@@ -75,7 +75,7 @@ namespace QgsMapToolSelectUtils
     @note added in QGIS 2.16
     @see selectSingleFeature()
   */
-  void selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent * e );
+  void selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e );
 
   /**
     Selects a single feature from within currently selected layer.
@@ -87,7 +87,7 @@ namespace QgsMapToolSelectUtils
     operations (add, subtract, contains)
     @see selectMultipleFeatures()
   */
-  void selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent * e );
+  void selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer

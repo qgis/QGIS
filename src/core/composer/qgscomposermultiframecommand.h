@@ -38,13 +38,22 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     void savePreviousState();
     void saveAfterState();
 
-    QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
-    QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
+    QDomDocument previousState() const
+    {
+      return mPreviousState.cloneNode().toDocument();
+    }
+    QDomDocument afterState() const
+    {
+      return mAfterState.cloneNode().toDocument();
+    }
 
     //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
-    const QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
+    const QgsComposerMultiFrame* multiFrame() const
+    {
+      return mMultiFrame;
+    }
 
   protected:
     QgsComposerMultiFrame* mMultiFrame;
@@ -88,8 +97,11 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
     QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
     ~QgsComposerMultiFrameMergeCommand();
 
-    bool mergeWith( const QUndoCommand * command ) override;
-    int id() const override { return static_cast< int >( mContext ); }
+    bool mergeWith( const QUndoCommand* command ) override;
+    int id() const override
+    {
+      return static_cast< int >( mContext );
+    }
 
   private:
     Context mContext;

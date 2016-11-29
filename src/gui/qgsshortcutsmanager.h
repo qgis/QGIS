@@ -43,7 +43,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * as the default value to store settings alongside built in QGIS shortcuts, but care must be
      * taken to not register actions which conflict with the built in QGIS actions.
      */
-    QgsShortcutsManager( QObject *parent = nullptr, const QString& settingsRoot = "/shortcuts/" );
+    QgsShortcutsManager( QObject* parent = nullptr, const QString& settingsRoot = "/shortcuts/" );
 
     /** Automatically registers all QActions and QShortcuts which are children of the
      * passed object.
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * @see unregisterAction()
      * @see registerAllChildActions()
      */
-    bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
+    bool registerAction( QAction* action, const QString& defaultShortcut = QString() );
 
     /** Registers a QShortcut with the manager so the shortcut can be configured in GUI.
     * @param shortcut QShortcut to register. The shortcut must have a unique QObject::objectName() for
@@ -214,7 +214,10 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     QShortcut* shortcutByName( const QString& name ) const;
 
     //! Returns the root settings path used to store shortcut customisation.
-    QString settingsPath() const { return mSettingsPath; }
+    QString settingsPath() const
+    {
+      return mSettingsPath;
+    }
 
   private slots:
 

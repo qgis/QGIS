@@ -31,8 +31,11 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     Q_OBJECT
 
   public:
-    QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsPalettedRendererWidget( layer, theExtent ); }
+    QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent = QgsRectangle() );
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle& theExtent )
+    {
+      return new QgsPalettedRendererWidget( layer, theExtent );
+    }
     ~QgsPalettedRendererWidget();
 
     QgsRasterRenderer* renderer() override;
@@ -40,7 +43,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void setFromRenderer( const QgsRasterRenderer* r );
 
   private slots:
-    void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
 };
 
 #endif // QGSPALETTEDRENDERERWIDGET_H

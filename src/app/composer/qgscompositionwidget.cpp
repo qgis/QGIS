@@ -138,8 +138,8 @@ QgsPanelWidget( parent )
 }
 
 QgsCompositionWidget::QgsCompositionWidget()
-    : QgsPanelWidget( nullptr )
-    , mComposition( nullptr )
+  : QgsPanelWidget( nullptr )
+  , mComposition( nullptr )
 {
   setupUi( this );
 }
@@ -210,8 +210,8 @@ void QgsCompositionWidget::updateVariables()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::compositionScope( mComposition );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::compositionScope( mComposition );
   mVariableEditor->setContext( &context );
   mVariableEditor->setEditableScopeIndex( 2 );
 }
@@ -227,7 +227,7 @@ void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* d
   mComposition->setDataDefinedProperty( property, map.value( QStringLiteral( "active" ) ).toInt(), map.value( QStringLiteral( "useexpr" ) ).toInt(), map.value( QStringLiteral( "expression" ) ), map.value( QStringLiteral( "field" ) ) );
 }
 
-QgsComposerObject::DataDefinedProperty QgsCompositionWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+QgsComposerObject::DataDefinedProperty QgsCompositionWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
 {
   if ( widget == mPaperSizeDDBtn )
   {
@@ -294,32 +294,32 @@ void QgsCompositionWidget::createPaperEntries()
 
   formats
   // ISO formats
-  << QgsCompositionPaper( tr( "A5 (148x210 mm)" ), 148, 210 )
-  << QgsCompositionPaper( tr( "A4 (210x297 mm)" ), 210, 297 )
-  << QgsCompositionPaper( tr( "A3 (297x420 mm)" ), 297, 420 )
-  << QgsCompositionPaper( tr( "A2 (420x594 mm)" ), 420, 594 )
-  << QgsCompositionPaper( tr( "A1 (594x841 mm)" ), 594, 841 )
-  << QgsCompositionPaper( tr( "A0 (841x1189 mm)" ), 841, 1189 )
-  << QgsCompositionPaper( tr( "B5 (176 x 250 mm)" ), 176, 250 )
-  << QgsCompositionPaper( tr( "B4 (250 x 353 mm)" ), 250, 353 )
-  << QgsCompositionPaper( tr( "B3 (353 x 500 mm)" ), 353, 500 )
-  << QgsCompositionPaper( tr( "B2 (500 x 707 mm)" ), 500, 707 )
-  << QgsCompositionPaper( tr( "B1 (707 x 1000 mm)" ), 707, 1000 )
-  << QgsCompositionPaper( tr( "B0 (1000 x 1414 mm)" ), 1000, 1414 )
-  // North american formats
-  << QgsCompositionPaper( tr( "Legal (8.5x14 in)" ), 215.9, 355.6 )
-  << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 in)" ), 215.9, 279.4 )
-  << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 in)" ), 279.4, 431.8 )
-  << QgsCompositionPaper( tr( "ANSI C (17x22 in)" ), 431.8, 558.8 )
-  << QgsCompositionPaper( tr( "ANSI D (22x34 in)" ), 558.8, 863.6 )
-  << QgsCompositionPaper( tr( "ANSI E (34x44 in)" ), 863.6, 1117.6 )
-  << QgsCompositionPaper( tr( "Arch A (9x12 in)" ), 228.6, 304.8 )
-  << QgsCompositionPaper( tr( "Arch B (12x18 in)" ), 304.8, 457.2 )
-  << QgsCompositionPaper( tr( "Arch C (18x24 in)" ), 457.2, 609.6 )
-  << QgsCompositionPaper( tr( "Arch D (24x36 in)" ), 609.6, 914.4 )
-  << QgsCompositionPaper( tr( "Arch E (36x48 in)" ), 914.4, 1219.2 )
-  << QgsCompositionPaper( tr( "Arch E1 (30x42 in)" ), 762, 1066.8 )
-  ;
+      << QgsCompositionPaper( tr( "A5 (148x210 mm)" ), 148, 210 )
+      << QgsCompositionPaper( tr( "A4 (210x297 mm)" ), 210, 297 )
+      << QgsCompositionPaper( tr( "A3 (297x420 mm)" ), 297, 420 )
+      << QgsCompositionPaper( tr( "A2 (420x594 mm)" ), 420, 594 )
+      << QgsCompositionPaper( tr( "A1 (594x841 mm)" ), 594, 841 )
+      << QgsCompositionPaper( tr( "A0 (841x1189 mm)" ), 841, 1189 )
+      << QgsCompositionPaper( tr( "B5 (176 x 250 mm)" ), 176, 250 )
+      << QgsCompositionPaper( tr( "B4 (250 x 353 mm)" ), 250, 353 )
+      << QgsCompositionPaper( tr( "B3 (353 x 500 mm)" ), 353, 500 )
+      << QgsCompositionPaper( tr( "B2 (500 x 707 mm)" ), 500, 707 )
+      << QgsCompositionPaper( tr( "B1 (707 x 1000 mm)" ), 707, 1000 )
+      << QgsCompositionPaper( tr( "B0 (1000 x 1414 mm)" ), 1000, 1414 )
+      // North american formats
+      << QgsCompositionPaper( tr( "Legal (8.5x14 in)" ), 215.9, 355.6 )
+      << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 in)" ), 215.9, 279.4 )
+      << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 in)" ), 279.4, 431.8 )
+      << QgsCompositionPaper( tr( "ANSI C (17x22 in)" ), 431.8, 558.8 )
+      << QgsCompositionPaper( tr( "ANSI D (22x34 in)" ), 558.8, 863.6 )
+      << QgsCompositionPaper( tr( "ANSI E (34x44 in)" ), 863.6, 1117.6 )
+      << QgsCompositionPaper( tr( "Arch A (9x12 in)" ), 228.6, 304.8 )
+      << QgsCompositionPaper( tr( "Arch B (12x18 in)" ), 304.8, 457.2 )
+      << QgsCompositionPaper( tr( "Arch C (18x24 in)" ), 457.2, 609.6 )
+      << QgsCompositionPaper( tr( "Arch D (24x36 in)" ), 609.6, 914.4 )
+      << QgsCompositionPaper( tr( "Arch E (36x48 in)" ), 914.4, 1219.2 )
+      << QgsCompositionPaper( tr( "Arch E1 (30x42 in)" ), 762, 1066.8 )
+      ;
   mPaperSizeComboBox->addItem( tr( "Custom" ) );
 
   for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); ++it )
@@ -437,7 +437,7 @@ void QgsCompositionWidget::adjustOrientation()
   emit pageOrientationChanged( mPaperOrientationComboBox->currentText() );
 }
 
-void QgsCompositionWidget::setSize( QDoubleSpinBox *spin, double v )
+void QgsCompositionWidget::setSize( QDoubleSpinBox* spin, double v )
 {
   if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
@@ -451,7 +451,7 @@ void QgsCompositionWidget::setSize( QDoubleSpinBox *spin, double v )
   }
 }
 
-double QgsCompositionWidget::size( QDoubleSpinBox *spin )
+double QgsCompositionWidget::size( QDoubleSpinBox* spin )
 {
   double size = spin->value();
 

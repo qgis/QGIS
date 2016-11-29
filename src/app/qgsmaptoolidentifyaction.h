@@ -41,7 +41,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
-    QgsMapToolIdentifyAction( QgsMapCanvas * canvas );
+    QgsMapToolIdentifyAction( QgsMapCanvas* canvas );
 
     ~QgsMapToolIdentifyAction();
 
@@ -59,13 +59,13 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     virtual void deactivate() override;
 
   public slots:
-    void handleCopyToClipboard( QgsFeatureStore & );
+    void handleCopyToClipboard( QgsFeatureStore& );
     void handleChangedRasterResults( QList<IdentifyResult>& results );
 
   signals:
     void identifyProgress( int, int );
     void identifyMessage( const QString& );
-    void copyToClipboard( QgsFeatureStore & );
+    void copyToClipboard( QgsFeatureStore& );
 
   private slots:
     void showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
@@ -74,7 +74,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
 
-    QgsIdentifyResultsDialog *resultsDialog();
+    QgsIdentifyResultsDialog* resultsDialog();
 
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;

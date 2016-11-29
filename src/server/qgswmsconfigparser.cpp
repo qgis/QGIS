@@ -177,7 +177,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
           styleName = wmsStyleList.at( i );
         }
 
-        foreach ( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
+        foreach ( QgsMapLayer* layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
         {
           if ( layer )
           {
@@ -238,7 +238,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
   }
 
 //replace label text
-  Q_FOREACH ( QgsComposerLabel *currentLabel, composerLabels )
+  Q_FOREACH ( QgsComposerLabel* currentLabel, composerLabels )
   {
     QString title = parameterMap.value( currentLabel->id().toUpper() );
 
@@ -258,10 +258,10 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
   }
 
 //replace html url
-  Q_FOREACH ( const QgsComposerHtml *currentHtml, composerHtmls )
+  Q_FOREACH ( const QgsComposerHtml* currentHtml, composerHtmls )
   {
-    QgsComposerHtml * html = const_cast<QgsComposerHtml *>( currentHtml );
-    QgsComposerFrame *htmlFrame = html->frame( 0 );
+    QgsComposerHtml* html = const_cast<QgsComposerHtml*>( currentHtml );
+    QgsComposerFrame* htmlFrame = html->frame( 0 );
     QString htmlId = htmlFrame->id();
     QString url = parameterMap.value( htmlId.toUpper() );
 
@@ -292,7 +292,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix )
 {
   QStringList highlightLayers, geomSplit, symbolSplit, labelSplit, labelFontSplit, labelSizeSplit,
-  labelWeightSplit, labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit;
+              labelWeightSplit, labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit;
   highlightParameters( parameterMap, parameterPrefix, geomSplit, symbolSplit, labelSplit, labelFontSplit, labelSizeSplit, labelWeightSplit,
                        labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit );
 
@@ -344,7 +344,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     layer->setRenderer( renderer.take() );
     layerSet.prepend( layer.data()->id() );
     highlightLayers.append( layer.data()->id() );
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );
+    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer.take() );
   }
   return highlightLayers;
 }

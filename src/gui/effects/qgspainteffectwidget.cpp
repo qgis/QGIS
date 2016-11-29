@@ -29,16 +29,16 @@
 // draw source
 //
 
-QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget* parent )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
   initGui();
 }
 
 
-void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect || effect->type() != QLatin1String( "drawSource" ) )
     return;
@@ -117,9 +117,9 @@ void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
 // blur
 //
 
-QgsBlurWidget::QgsBlurWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+QgsBlurWidget::QgsBlurWidget( QWidget* parent )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -130,7 +130,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 }
 
 
-void QgsBlurWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsBlurWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect || effect->type() != QLatin1String( "blur" ) )
     return;
@@ -244,9 +244,9 @@ void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
 // Drop Shadow
 //
 
-QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget* parent )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -259,7 +259,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   initGui();
 }
 
-void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect || ( effect->type() != QLatin1String( "dropShadow" ) && effect->type() != QLatin1String( "innerShadow" ) ) )
     return;
@@ -358,7 +358,7 @@ void QgsShadowEffectWidget::on_mShadowTranspSpnBx_valueChanged( double value )
   emit changed();
 }
 
-void QgsShadowEffectWidget::on_mShadowColorBtn_colorChanged( const QColor &color )
+void QgsShadowEffectWidget::on_mShadowColorBtn_colorChanged( const QColor& color )
 {
   if ( !mEffect )
     return;
@@ -409,9 +409,9 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 // glow
 //
 
-QgsGlowWidget::QgsGlowWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+QgsGlowWidget::QgsGlowWidget( QWidget* parent )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -432,7 +432,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   initGui();
 }
 
-void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsGlowWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect || ( effect->type() != QLatin1String( "outerGlow" ) && effect->type() != QLatin1String( "innerGlow" ) ) )
     return;
@@ -542,7 +542,7 @@ void QgsGlowWidget::on_mTranspSpnBx_valueChanged( double value )
   emit changed();
 }
 
-void QgsGlowWidget::on_mColorBtn_colorChanged( const QColor &color )
+void QgsGlowWidget::on_mColorBtn_colorChanged( const QColor& color )
 {
   if ( !mEffect )
     return;
@@ -606,9 +606,9 @@ void QgsGlowWidget::applyColorRamp()
 // transform
 //
 
-QgsTransformWidget::QgsTransformWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+QgsTransformWidget::QgsTransformWidget( QWidget* parent )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -624,7 +624,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
 }
 
 
-void QgsTransformWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsTransformWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect || effect->type() != QLatin1String( "transform" ) )
     return;
@@ -783,9 +783,9 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 // color effect
 //
 
-QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+QgsColorEffectWidget::QgsColorEffectWidget( QWidget* parent )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -802,7 +802,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   initGui();
 }
 
-void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
+void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect* effect )
 {
   if ( !effect || effect->type() != QLatin1String( "color" ) )
     return;
@@ -945,7 +945,7 @@ void QgsColorEffectWidget::on_mColorizeCheck_stateChanged( int state )
   emit changed();
 }
 
-void QgsColorEffectWidget::on_mColorizeColorButton_colorChanged( const QColor &color )
+void QgsColorEffectWidget::on_mColorizeColorButton_colorChanged( const QColor& color )
 {
   if ( !mEffect )
     return;

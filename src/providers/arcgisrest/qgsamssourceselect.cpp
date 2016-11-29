@@ -26,7 +26,7 @@
 
 
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
-    : QgsSourceSelectDialog( QStringLiteral( "ArcGisMapServer" ), QgsSourceSelectDialog::MapService, parent, fl )
+  : QgsSourceSelectDialog( QStringLiteral( "ArcGisMapServer" ), QgsSourceSelectDialog::MapService, parent, fl )
 {
   if ( embeddedMode )
   {
@@ -38,7 +38,7 @@ QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   btnSave->hide();
 }
 
-bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
+bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection& connection )
 {
   QString errorTitle, errorMessage;
   QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), errorTitle, errorMessage );

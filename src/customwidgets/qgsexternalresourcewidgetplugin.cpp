@@ -18,9 +18,9 @@
 #include "qgsexternalresourcewidget.h"
 
 
-QgsExternalResourceWidgetPlugin::QgsExternalResourceWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsExternalResourceWidgetPlugin::QgsExternalResourceWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -49,7 +49,7 @@ bool QgsExternalResourceWidgetPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsExternalResourceWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsExternalResourceWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsExternalResourceWidget( parent );
 }
@@ -59,7 +59,7 @@ bool QgsExternalResourceWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsExternalResourceWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsExternalResourceWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

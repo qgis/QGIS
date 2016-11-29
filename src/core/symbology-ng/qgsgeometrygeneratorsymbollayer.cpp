@@ -50,13 +50,13 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap& pro
 }
 
 QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString& expression )
-    : QgsSymbolLayer( QgsSymbol::Hybrid )
-    , mExpression( new QgsExpression( expression ) )
-    , mFillSymbol( nullptr )
-    , mLineSymbol( nullptr )
-    , mMarkerSymbol( nullptr )
-    , mSymbol( nullptr )
-    , mSymbolType( QgsSymbol::Marker )
+  : QgsSymbolLayer( QgsSymbol::Hybrid )
+  , mExpression( new QgsExpression( expression ) )
+  , mFillSymbol( nullptr )
+  , mLineSymbol( nullptr )
+  , mMarkerSymbol( nullptr )
+  , mSymbol( nullptr )
+  , mSymbolType( QgsSymbol::Marker )
 {
 
 }

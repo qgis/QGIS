@@ -29,19 +29,19 @@ class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
     Q_OBJECT
 
   public:
-    static void showTileScale( QMainWindow *mainWindow );
+    static void showTileScale( QMainWindow* mainWindow );
 
   public slots:
-    void layerChanged( QgsMapLayer *layer );
+    void layerChanged( QgsMapLayer* layer );
     void scaleChanged( double );
     void on_mSlider_valueChanged( int );
     void scaleEnabled( bool );
 
   private:
-    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsTileScaleWidget( QgsMapCanvas* mapCanvas, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsTileScaleWidget();
 
-    QgsMapCanvas *mMapCanvas;
+    QgsMapCanvas* mMapCanvas;
     QList<double> mResolutions;
 };
 

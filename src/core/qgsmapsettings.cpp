@@ -31,24 +31,24 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 
 QgsMapSettings::QgsMapSettings()
-    : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
-    , mSize( QSize( 0, 0 ) )
-    , mExtent()
-    , mRotation( 0.0 )
-    , mMagnificationFactor( 1.0 )
-    , mProjectionsEnabled( false )
-    , mDestCRS( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) )  // WGS 84
-    , mDatumTransformStore( mDestCRS )
-    , mBackgroundColor( Qt::white )
-    , mSelectionColor( Qt::yellow )
-    , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
-    , mImageFormat( QImage::Format_ARGB32_Premultiplied )
-    , mSegmentationTolerance( M_PI_2 / 90 )
-    , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
-    , mValid( false )
-    , mVisibleExtent()
-    , mMapUnitsPerPixel( 1 )
-    , mScale( 1 )
+  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+  , mSize( QSize( 0, 0 ) )
+  , mExtent()
+  , mRotation( 0.0 )
+  , mMagnificationFactor( 1.0 )
+  , mProjectionsEnabled( false )
+  , mDestCRS( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) )  // WGS 84
+  , mDatumTransformStore( mDestCRS )
+  , mBackgroundColor( Qt::white )
+  , mSelectionColor( Qt::yellow )
+  , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
+  , mImageFormat( QImage::Format_ARGB32_Premultiplied )
+  , mSegmentationTolerance( M_PI_2 / 90 )
+  , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
+  , mValid( false )
+  , mVisibleExtent()
+  , mMapUnitsPerPixel( 1 )
+  , mScale( 1 )
 {
   updateDerived();
 
@@ -173,7 +173,7 @@ void QgsMapSettings::updateDerived()
 
   // calculate the actual extent of the mapCanvas
   double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-                 dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
+         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
@@ -370,13 +370,13 @@ double QgsMapSettings::scale() const
 }
 
 
-QgsCoordinateTransform QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
+QgsCoordinateTransform QgsMapSettings::layerTransform( QgsMapLayer* layer ) const
 {
   return mDatumTransformStore.transformation( layer );
 }
 
 
-double QgsMapSettings::layerToMapUnits( QgsMapLayer *theLayer, const QgsRectangle& referenceExtent ) const
+double QgsMapSettings::layerToMapUnits( QgsMapLayer* theLayer, const QgsRectangle& referenceExtent ) const
 {
   QgsRectangle extent = referenceExtent.isEmpty() ? theLayer->extent() : referenceExtent;
   QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
@@ -404,7 +404,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
         extent = ct.transformBoundingBox( extent );
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
@@ -431,7 +431,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, Q
         extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
       }
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
@@ -453,7 +453,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
       if ( ct.isValid() )
         point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
@@ -476,7 +476,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRe
       if ( ct.isValid() )
         rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
@@ -499,7 +499,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
       if ( ct.isValid() )
         point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
@@ -522,7 +522,7 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
       if ( ct.isValid() )
         rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
     }
@@ -548,7 +548,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
   while ( it != mLayers.end() )
   {
-    QgsMapLayer * lyr = registry->mapLayer( *it );
+    QgsMapLayer* lyr = registry->mapLayer( *it );
     if ( !lyr )
     {
       QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );

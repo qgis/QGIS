@@ -33,7 +33,7 @@ class CUSTOMWIDGETS_EXPORT QgsFieldComboBoxPlugin : public QObject, public QDesi
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFieldComboBoxPlugin( QObject *parent = 0 );
+    explicit QgsFieldComboBoxPlugin( QObject* parent = 0 );
 
   private:
     bool mInitialized;
@@ -45,9 +45,9 @@ class CUSTOMWIDGETS_EXPORT QgsFieldComboBoxPlugin : public QObject, public QDesi
     QString includeFile() const override;
     QIcon icon() const override;
     bool isContainer() const override;
-    QWidget *createWidget( QWidget *parent ) override;
+    QWidget* createWidget( QWidget* parent ) override;
     bool isInitialized() const override;
-    void initialize( QDesignerFormEditorInterface *core ) override;
+    void initialize( QDesignerFormEditorInterface* core ) override;
     QString toolTip() const override;
     QString whatsThis() const override;
     QString domXml() const override;

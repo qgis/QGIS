@@ -19,7 +19,7 @@
 
 #include "qgsscaleutils.h"
 
-bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage )
+bool QgsScaleUtils::saveScaleList( const QString& fileName, const QStringList& scales, QString& errorMessage )
 {
   QDomDocument doc;
   QDomElement root = doc.createElement( QStringLiteral( "qgsScales" ) );
@@ -45,7 +45,7 @@ bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &s
   return true;
 }
 
-bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales, QString &errorMessage )
+bool QgsScaleUtils::loadScaleList( const QString& fileName, QStringList& scales, QString& errorMessage )
 {
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )

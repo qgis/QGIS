@@ -45,7 +45,7 @@ void QgsComposerLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsComposerLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const
+void QgsComposerLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() ) return;
 

@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
          * @param vlCache  The cache to inform when the feature has been removed from the cache.
          */
         QgsCachedFeature( const QgsFeature& feat, QgsVectorLayerCache* vlCache )
-            : mCache( vlCache )
+          : mCache( vlCache )
         {
           mFeature = new QgsFeature( feat );
         }
@@ -70,7 +70,10 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
           delete mFeature;
         }
 
-        inline const QgsFeature* feature() { return mFeature; }
+        inline const QgsFeature* feature()
+        {
+          return mFeature;
+        }
 
       private:
         QgsFeature* mFeature;
@@ -143,7 +146,10 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @see setFullCache()
      * @note added in QGIS 3.0
      */
-    bool hasFullCache() const { return mFullCache; }
+    bool hasFullCache() const
+    {
+      return mFullCache;
+    }
 
     /**
      * @brief
@@ -153,7 +159,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @param cacheIndex  The cache index to add.
      */
-    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex );
+    void addCacheIndex( QgsAbstractCacheIndex* cacheIndex );
 
     /**
      * Query this VectorLayerCache for features.
@@ -213,7 +219,10 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @note added in QGIS 3.0
      * @see isFidCached()
      */
-    QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }
+    QgsFeatureIds cachedFeatureIds() const
+    {
+      return mCache.keys().toSet();
+    }
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
@@ -222,7 +231,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param skipCache Will query the layer regardless if the feature is in the cache already
      * @return true in case of success
      */
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+    bool featureAtId( QgsFeatureId featureId, QgsFeature& feature, bool skipCache = false );
 
     /**
      * Removes the feature identified by fid from the cache if present.
@@ -299,7 +308,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
      *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
      */
-    void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
+    void attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
 
     /**
      * Is emitted, when a new feature has been added to the layer and this cache.

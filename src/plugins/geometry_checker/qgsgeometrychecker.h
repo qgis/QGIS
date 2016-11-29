@@ -38,13 +38,22 @@ class QgsGeometryChecker : public QObject
     QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool* featurePool );
     ~QgsGeometryChecker();
     QFuture<void> execute( int* totalSteps = nullptr );
-    bool fixError( QgsGeometryCheckError *error, int method );
+    bool fixError( QgsGeometryCheckError* error, int method );
     QgsMapLayer* getLayer() const;
-    const QList<QgsGeometryCheck*> getChecks() const { return mChecks; }
-    const QStringList& getMessages() const { return mMessages; }
+    const QList<QgsGeometryCheck*> getChecks() const
+    {
+      return mChecks;
+    }
+    const QStringList& getMessages() const
+    {
+      return mMessages;
+    }
 
   public slots:
-    void setMergeAttributeIndex( int mergeAttributeIndex ) { mMergeAttributeIndex = mergeAttributeIndex; }
+    void setMergeAttributeIndex( int mergeAttributeIndex )
+    {
+      mMergeAttributeIndex = mergeAttributeIndex;
+    }
 
   signals:
     void errorAdded( QgsGeometryCheckError* error );
@@ -56,7 +65,10 @@ class QgsGeometryChecker : public QObject
     {
       public:
         explicit RunCheckWrapper( QgsGeometryChecker* instance ) : mInstance( instance ) {}
-        void operator()( const QgsGeometryCheck* check ) { mInstance->runCheck( check ); }
+        void operator()( const QgsGeometryCheck* check )
+        {
+          mInstance->runCheck( check );
+        }
       private:
         QgsGeometryChecker* mInstance;
     };

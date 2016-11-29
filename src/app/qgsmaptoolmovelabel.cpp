@@ -23,9 +23,9 @@
 #include <QMouseEvent>
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas )
-    : QgsMapToolLabel( canvas )
-    , mClickOffsetX( 0 )
-    , mClickOffsetY( 0 )
+  : QgsMapToolLabel( canvas )
+  , mClickOffsetX( 0 )
+  , mClickOffsetY( 0 )
 {
   mToolName = tr( "Move label" );
 }

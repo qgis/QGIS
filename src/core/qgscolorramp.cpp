@@ -44,10 +44,10 @@ static QColor _interpolate( const QColor& c1, const QColor& c2, const double val
 
 QgsGradientColorRamp::QgsGradientColorRamp( const QColor& color1, const QColor& color2,
     bool discrete, const QgsGradientStopsList& stops )
-    : mColor1( color1 )
-    , mColor2( color2 )
-    , mDiscrete( discrete )
-    , mStops( stops )
+  : mColor1( color1 )
+  , mColor2( color2 )
+  , mDiscrete( discrete )
+  , mStops( stops )
 {
 }
 
@@ -235,12 +235,12 @@ void QgsGradientColorRamp::convertToDiscrete( bool discrete )
   mDiscrete = discrete;
 }
 
-bool stopLessThan( const QgsGradientStop &s1, const QgsGradientStop &s2 )
+bool stopLessThan( const QgsGradientStop& s1, const QgsGradientStop& s2 )
 {
   return s1.offset < s2.offset;
 }
 
-void QgsGradientColorRamp::setStops( const QgsGradientStopsList &stops )
+void QgsGradientColorRamp::setStops( const QgsGradientStopsList& stops )
 {
   mStops = stops;
 
@@ -279,10 +279,10 @@ void QgsGradientColorRamp::addStopsToGradient( QGradient* gradient, double alpha
 
 QgsLimitedRandomColorRamp::QgsLimitedRandomColorRamp( int count, int hueMin, int hueMax,
     int satMin, int satMax, int valMin, int valMax )
-    : mCount( count )
-    , mHueMin( hueMin ), mHueMax( hueMax )
-    , mSatMin( satMin ), mSatMax( satMax )
-    , mValMin( valMin ), mValMax( valMax )
+  : mCount( count )
+  , mHueMin( hueMin ), mHueMax( hueMax )
+  , mSatMin( satMin ), mSatMax( satMax )
+  , mValMin( valMin ), mValMax( valMax )
 {
   updateColors();
 }
@@ -384,7 +384,7 @@ void QgsLimitedRandomColorRamp::updateColors()
 /////////////
 
 QgsRandomColorRamp::QgsRandomColorRamp()
-    : mTotalColorCount( 0 )
+  : mTotalColorCount( 0 )
 {
 }
 
@@ -474,8 +474,8 @@ QgsStringMap QgsRandomColorRamp::properties() const
 ////////////
 
 QgsColorBrewerColorRamp::QgsColorBrewerColorRamp( const QString& schemeName, int colors )
-    : mSchemeName( schemeName )
-    , mColors( colors )
+  : mSchemeName( schemeName )
+  , mColors( colors )
 {
   loadPalette();
 }
@@ -544,9 +544,9 @@ QgsStringMap QgsColorBrewerColorRamp::properties() const
 
 QgsCptCityColorRamp::QgsCptCityColorRamp( const QString& schemeName, const QString& variantName,
     bool doLoadFile )
-    : QgsGradientColorRamp()
-    , mSchemeName( schemeName ), mVariantName( variantName )
-    , mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
+  : QgsGradientColorRamp()
+  , mSchemeName( schemeName ), mVariantName( variantName )
+  , mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
 {
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -556,9 +556,9 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString& schemeName, const QStri
 
 QgsCptCityColorRamp::QgsCptCityColorRamp( const QString& schemeName, const QStringList& variantList,
     const QString& variantName, bool doLoadFile )
-    : QgsGradientColorRamp()
-    , mSchemeName( schemeName ), mVariantName( variantName )
-    , mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
+  : QgsGradientColorRamp()
+  , mSchemeName( schemeName ), mVariantName( variantName )
+  , mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
 {
   mVariantList = variantList;
 
@@ -756,7 +756,7 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor>& colors 
 }
 
 QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList& colors )
-    : mColors( colors )
+  : mColors( colors )
 {
   // need at least one color
   if ( mColors.isEmpty() )
@@ -834,7 +834,7 @@ int QgsPresetSchemeColorRamp::count() const
   return mColors.count();
 }
 
-QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString& , const QColor& )
+QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString&, const QColor& )
 {
   return mColors;
 }

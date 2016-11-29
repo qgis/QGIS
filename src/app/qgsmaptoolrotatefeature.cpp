@@ -38,8 +38,8 @@
 
 #define PI 3.14159265
 
-QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *parent )
-    : QWidget( parent )
+QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget* parent )
+  : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -108,11 +108,11 @@ void QgsAngleMagnetWidget::setMagnet( int magnet )
 }
 
 
-bool QgsAngleMagnetWidget::eventFilter( QObject *obj, QEvent *ev )
+bool QgsAngleMagnetWidget::eventFilter( QObject* obj, QEvent* ev )
 {
   if ( obj == mAngleSpinBox && ev->type() == QEvent::KeyPress )
   {
-    QKeyEvent *event = static_cast<QKeyEvent *>( ev );
+    QKeyEvent* event = static_cast<QKeyEvent*>( ev );
     if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
     {
       emit angleEditingFinished( angle() );
@@ -129,13 +129,13 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 }
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mRubberBand( nullptr )
-    , mRotation( 0 )
-    , mRotationOffset( 0 )
-    , mAnchorPoint( nullptr )
-    , mRotationActive( false )
-    , mRotationWidget( nullptr )
+  : QgsMapToolEdit( canvas )
+  , mRubberBand( nullptr )
+  , mRotation( 0 )
+  , mRotationOffset( 0 )
+  , mAnchorPoint( nullptr )
+  , mRotationActive( false )
+  , mRotationWidget( nullptr )
 {
 }
 

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   protected:
-    QWidget*createWidget( QWidget* parent ) override;
+    QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
     bool valid() const override;
 

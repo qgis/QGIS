@@ -41,7 +41,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget *parent = nullptr );
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget* parent = nullptr );
 
   signals:
 
@@ -69,13 +69,13 @@ class CustomLayerOrderModel : public QAbstractListModel
   public:
     CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge* bridge, QObject* parent = nullptr );
 
-    int rowCount( const QModelIndex & ) const override;
+    int rowCount( const QModelIndex& ) const override;
 
-    QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex& index, int role ) const override;
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role ) override;
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
     Qt::DropActions supportedDropActions() const override;
 
@@ -83,13 +83,16 @@ class CustomLayerOrderModel : public QAbstractListModel
 
     QMimeData* mimeData( const QModelIndexList& indexes ) const override;
 
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
 
     bool removeRows( int row, int count, const QModelIndex& parent ) override;
 
     void refreshModel( const QStringList& order );
 
-    QStringList order() const { return mOrder; }
+    QStringList order() const
+    {
+      return mOrder;
+    }
 
     void updateLayerVisibility( const QString& layerId );
 

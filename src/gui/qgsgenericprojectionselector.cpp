@@ -25,9 +25,9 @@
  * \class QgsGenericProjectionSelector
  * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
-QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
+QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget* parent,
     Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

@@ -34,7 +34,10 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     ~QgsDataItemProviderRegistry();
 
     //! Get list of available providers
-    QList<QgsDataItemProvider*> providers() const { return mProviders; }
+    QList<QgsDataItemProvider*> providers() const
+    {
+      return mProviders;
+    }
 
     //! Add a provider implementation. Takes ownership of the object.
     void addProvider( QgsDataItemProvider* provider );

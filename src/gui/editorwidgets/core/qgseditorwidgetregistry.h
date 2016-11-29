@@ -176,7 +176,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @param plugin The plugin (ownership is transfered)
      */
-    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin ) { mAutoConf.registerPlugin( plugin ); }
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin )
+    {
+      mAutoConf.registerPlugin( plugin );
+    }
 
   protected:
     QgsEditorWidgetRegistry();

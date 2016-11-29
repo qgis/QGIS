@@ -93,7 +93,7 @@ class CORE_EXPORT QgsFontUtils
      * @note added in QGIS 2.10
      * @see setFromXmlElement
      */
-    static QDomElement toXmlElement( const QFont& font, QDomDocument &document, const QString &elementName );
+    static QDomElement toXmlElement( const QFont& font, QDomDocument& document, const QString& elementName );
 
     /** Sets the properties of a font to match the properties stored in an XML element. Calling
      * this will overwrite the current properties of the font.

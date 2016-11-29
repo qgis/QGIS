@@ -26,7 +26,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     Q_OBJECT
 
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent = nullptr );
+    QgsSmartGroupCondition( int id,  QWidget* parent = nullptr );
 
     //! returns the constraint key
     QString constraint();
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
   protected:
     QgsStyle* mStyle;
     // layout of the mConditionsBox
-    QGridLayout *mLayout;
+    QGridLayout* mLayout;
     // counter for the number of conditions
     int mCondCount;
     // map tracking the condition widget and the ids

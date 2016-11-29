@@ -47,11 +47,11 @@
 QT_BEGIN_NAMESPACE
 
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-    : QSqlDriverPlugin()
+  : QSqlDriverPlugin()
 {
 }
 
-QSqlDriver* QOCISpatialDriverPlugin::create( const QString &name )
+QSqlDriver* QOCISpatialDriverPlugin::create( const QString& name )
 {
   if ( name == QLatin1String( "QOCISPATIAL" ) || name == QLatin1String( "QOCISPATIAL8" ) )
   {

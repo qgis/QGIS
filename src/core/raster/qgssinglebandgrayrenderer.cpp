@@ -24,7 +24,7 @@
 #include <QColor>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
-    QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
+  QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
 {
 }
 
@@ -35,7 +35,7 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
 
 QgsSingleBandGrayRenderer* QgsSingleBandGrayRenderer::clone() const
 {
-  QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( nullptr, mGrayBand );
+  QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( nullptr, mGrayBand );
   renderer->copyCommonProperties( this );
 
   renderer->setGradient( mGradient );
@@ -79,18 +79,18 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
   mContrastEnhancement = ce;
 }
 
-QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     return outputBlock;
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mGrayBand, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( mGrayBand, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
@@ -98,7 +98,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock;
   }
 
-  QgsRasterBlock *alphaBlock = nullptr;
+  QgsRasterBlock* alphaBlock = nullptr;
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {

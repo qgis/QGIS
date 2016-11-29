@@ -45,9 +45,9 @@ static void _setStandardTestFont( QgsLegendSettings& settings, const QString& st
 {
   QList< QgsComposerLegendStyle::Style> styles;
   styles << QgsComposerLegendStyle::Title
-  << QgsComposerLegendStyle::Group
-  << QgsComposerLegendStyle::Subgroup
-  << QgsComposerLegendStyle::SymbolLabel;
+         << QgsComposerLegendStyle::Group
+         << QgsComposerLegendStyle::Subgroup
+         << QgsComposerLegendStyle::SymbolLabel;
   Q_FOREACH ( QgsComposerLegendStyle::Style st, styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
@@ -76,7 +76,7 @@ static void _renderLegend( const QString& testName, QgsLayerTreeModel* legendMod
   img.save( _fileNameForTest( testName ) );
 }
 
-static bool _verifyImage( const QString& testName, QString &report )
+static bool _verifyImage( const QString& testName, QString& report )
 {
   QgsRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "legend" ) );
@@ -96,11 +96,11 @@ class TestQgsLegendRenderer : public QObject
 
   public:
     TestQgsLegendRenderer()
-        : mRoot( 0 )
-        , mVL1( 0 )
-        , mVL2( 0 )
-        , mVL3( 0 )
-        , mRL( 0 )
+      : mRoot( 0 )
+      , mVL1( 0 )
+      , mVL2( 0 )
+      , mVL3( 0 )
+      , mRL( 0 )
     {}
 
   private slots:
@@ -403,7 +403,7 @@ void TestQgsLegendRenderer::testFilterByMap()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
@@ -573,7 +573,7 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
@@ -610,7 +610,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
@@ -649,7 +649,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"cat1\"" ) << QStringLiteral( "\"cat2\"" );
   ds.categoryLabels = QStringList() << QStringLiteral( "cat 1" ) << QStringLiteral( "cat 2" );
 
-  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
   dr->setLowerValue( 0.0 );
   dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
   dr->setUpperValue( 10 );
@@ -689,7 +689,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   ds.categoryLabels = QStringList() << QStringLiteral( "cat 1" ) << QStringLiteral( "cat 2" );
   ds.scaleByArea = false;
 
-  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
   dr->setLowerValue( 0.0 );
   dr->setLowerSize( QSizeF( 1, 1 ) );
   dr->setUpperValue( 10 );

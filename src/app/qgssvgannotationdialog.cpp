@@ -22,8 +22,8 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget* parent, Qt::WindowFlags f ):
+  QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );

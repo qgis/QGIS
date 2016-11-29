@@ -20,25 +20,25 @@
 #include <qmath.h>
 
 QgsRasterMatrix::QgsRasterMatrix()
-    : mColumns( 0 )
-    , mRows( 0 )
-    , mData( nullptr )
-    , mNodataValue( -1 )
+  : mColumns( 0 )
+  , mRows( 0 )
+  , mData( nullptr )
+  , mNodataValue( -1 )
 {
 }
 
 QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double* data, double nodataValue )
-    : mColumns( nCols )
-    , mRows( nRows )
-    , mData( data )
-    , mNodataValue( nodataValue )
+  : mColumns( nCols )
+  , mRows( nRows )
+  , mData( data )
+  , mNodataValue( nodataValue )
 {
 }
 
 QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix& m )
-    : mColumns( 0 )
-    , mRows( 0 )
-    , mData( nullptr )
+  : mColumns( 0 )
+  , mRows( 0 )
+  , mData( nullptr )
 {
   operator=( m );
 }
@@ -48,7 +48,7 @@ QgsRasterMatrix::~QgsRasterMatrix()
   delete[] mData;
 }
 
-QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix & m )
+QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix& m )
 {
   delete[] mData;
   mColumns = m.nColumns();

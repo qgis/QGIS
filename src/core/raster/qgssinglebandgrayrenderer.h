@@ -37,20 +37,35 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsSingleBandGrayRenderer * clone() const override;
+    QgsSingleBandGrayRenderer* clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    int grayBand() const { return mGrayBand; }
-    void setGrayBand( int band ) { mGrayBand = band; }
-    const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
+    int grayBand() const
+    {
+      return mGrayBand;
+    }
+    void setGrayBand( int band )
+    {
+      mGrayBand = band;
+    }
+    const QgsContrastEnhancement* contrastEnhancement() const
+    {
+      return mContrastEnhancement;
+    }
     //! Takes ownership
     void setContrastEnhancement( QgsContrastEnhancement* ce );
 
-    void setGradient( Gradient theGradient ) { mGradient = theGradient; }
-    Gradient gradient() const { return mGradient; }
+    void setGradient( Gradient theGradient )
+    {
+      mGradient = theGradient;
+    }
+    Gradient gradient() const
+    {
+      return mGradient;
+    }
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 

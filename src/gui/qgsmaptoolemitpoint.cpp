@@ -20,7 +20,7 @@
 
 
 QgsMapToolEmitPoint::QgsMapToolEmitPoint( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+  : QgsMapTool( canvas )
 {
 }
 

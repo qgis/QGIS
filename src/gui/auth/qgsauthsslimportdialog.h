@@ -85,7 +85,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
      * Construct dialog for importing certificates
      * @param parent
      */
-    QgsAuthSslImportDialog( QWidget *parent = nullptr );
+    QgsAuthSslImportDialog( QWidget* parent = nullptr );
     ~QgsAuthSslImportDialog();
 
   public slots:
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     void socketError( QAbstractSocket::SocketError err );
     void socketReadyRead();
     void destroySocket();
-    void sslErrors( const QList<QSslError> &errors );
+    void sslErrors( const QList<QSslError>& errors );
     void showCertificateInfo();
 
     void widgetReadyToSaveChanged( bool cansave );
@@ -118,20 +118,20 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
   private:
     void loadCertFromFile();
 
-    void appendString( const QString &line );
+    void appendString( const QString& line );
 
     QPushButton* saveButton();
     QPushButton* closeButton();
     QString getOpenFileName( const QString& title, const QString& extfilter );
 
-    QSslSocket *mSocket;
+    QSslSocket* mSocket;
     bool mExecErrorsDialog;
-    QTimer *mTimer;
+    QTimer* mTimer;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout* mAuthNotifyLayout;
+    QLabel* mAuthNotify;
 };
 
 #endif // QGSAUTHSSLIMPORTDIALOG_H

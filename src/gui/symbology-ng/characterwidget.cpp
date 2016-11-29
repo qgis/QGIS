@@ -54,8 +54,8 @@
 #include "characterwidget.h"
 
 //! [0]
-CharacterWidget::CharacterWidget( QWidget *parent )
-    : QWidget( parent )
+CharacterWidget::CharacterWidget( QWidget* parent )
+  : QWidget( parent )
 {
   squareSize = 24;
   columns = 16;
@@ -65,7 +65,7 @@ CharacterWidget::CharacterWidget( QWidget *parent )
 //! [0]
 
 //! [1]
-void CharacterWidget::updateFont( const QFont &font )
+void CharacterWidget::updateFont( const QFont& font )
 {
   displayFont.setFamily( font.family() );
   squareSize = qMax( 24, QFontMetrics( displayFont ).xHeight() * 3 );
@@ -84,7 +84,7 @@ void CharacterWidget::updateSize( double fontSize )
 }
 //! [2]
 
-void CharacterWidget::updateStyle( const QString &fontStyle )
+void CharacterWidget::updateStyle( const QString& fontStyle )
 {
   QFontDatabase fontDatabase;
   const QFont::StyleStrategy oldStrategy = displayFont.styleStrategy();
@@ -128,7 +128,7 @@ QSize CharacterWidget::sizeHint() const
 //! [3]
 
 //! [4]
-void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
+void CharacterWidget::mouseMoveEvent( QMouseEvent* event )
 {
   QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   uint key = ( widgetPosition.y() / squareSize ) * columns + widgetPosition.x() / squareSize;
@@ -142,7 +142,7 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
 //! [4]
 
 //! [5]
-void CharacterWidget::mousePressEvent( QMouseEvent *event )
+void CharacterWidget::mousePressEvent( QMouseEvent* event )
 {
   if ( event->button() == Qt::LeftButton )
   {
@@ -157,7 +157,7 @@ void CharacterWidget::mousePressEvent( QMouseEvent *event )
 //! [5]
 
 //! [6]
-void CharacterWidget::paintEvent( QPaintEvent *event )
+void CharacterWidget::paintEvent( QPaintEvent* event )
 {
   QPainter painter( this );
   painter.fillRect( event->rect(), QBrush( Qt::white ) );

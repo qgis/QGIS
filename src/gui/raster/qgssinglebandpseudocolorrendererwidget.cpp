@@ -33,10 +33,10 @@
 #include <QSettings>
 #include <QTextStream>
 
-QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
-    : QgsRasterRendererWidget( layer, extent )
-    , mMinMaxWidget( nullptr )
-    , mMinMaxOrigin( 0 )
+QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent )
+  : QgsRasterRendererWidget( layer, extent )
+  , mMinMaxWidget( nullptr )
+  , mMinMaxOrigin( 0 )
 {
   QSettings settings;
 
@@ -71,7 +71,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mMinMaxWidget->setExtent( extent );
   mMinMaxWidget->setMapCanvas( mCanvas );
 
-  QHBoxLayout *layout = new QHBoxLayout();
+  QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   mMinMaxContainerWidget->setLayout( layout );
   layout->addWidget( mMinMaxWidget );
@@ -156,7 +156,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   rasterShader->setRasterShaderFunction( colorRampShader );
 
   int bandNumber = mBandComboBox->currentData().toInt();
-  QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
+  QgsSingleBandPseudoColorRenderer* renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
 
   renderer->setClassificationMin( lineEditValue( mMinLineEdit ) );
   renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );
@@ -397,7 +397,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
       return; // < 2 classes is not useful, shouldn't happen, but if it happens save it from crashing
 
     if ( mClassificationModeComboBox->currentData().toInt() == Quantile )
-    { // Quantile
+    {
+      // Quantile
       int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
       //QgsRasterHistogram rasterHistogram = mRasterLayer->dataProvider()->histogram( bandNr );
 
@@ -897,7 +898,7 @@ void QgsSingleBandPseudoColorRendererWidget::showMinMaxOrigin()
   mMinMaxOriginLabel->setText( QgsRasterRenderer::minMaxOriginLabel( mMinMaxOrigin ) );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * theLineEdit, double theValue )
+void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit* theLineEdit, double theValue )
 {
   QString s;
   if ( !qIsNaN( theValue ) )
@@ -907,7 +908,7 @@ void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * theLi
   theLineEdit->setText( s );
 }
 
-double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit * theLineEdit ) const
+double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit* theLineEdit ) const
 {
   if ( theLineEdit->text().isEmpty() )
   {

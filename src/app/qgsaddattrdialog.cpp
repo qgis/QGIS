@@ -22,9 +22,9 @@
 
 #include <QMessageBox>
 
-QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer* vlayer, QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
 {
   setupUi( this );
 
@@ -32,7 +32,7 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     return;
 
   //fill data types into the combo box
-  const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
+  const QList< QgsVectorDataProvider::NativeType >& typelist = vlayer->dataProvider()->nativeTypes();
 
   for ( int i = 0; i < typelist.size(); i++ )
   {

@@ -32,22 +32,22 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
     Q_OBJECT
 
   public:
-    explicit QgsLongLongValidator( QObject *parent )
-        : QValidator( parent )
-        , b( std::numeric_limits<qint64>::min() )
-        , t( std::numeric_limits<qint64>::max() )
+    explicit QgsLongLongValidator( QObject* parent )
+      : QValidator( parent )
+      , b( std::numeric_limits<qint64>::min() )
+      , t( std::numeric_limits<qint64>::max() )
     {}
 
-    QgsLongLongValidator( qint64 bottom, qint64 top, QObject *parent )
-        : QValidator( parent )
-        , b( bottom )
-        , t( top )
+    QgsLongLongValidator( qint64 bottom, qint64 top, QObject* parent )
+      : QValidator( parent )
+      , b( bottom )
+      , t( top )
     {}
 
     ~QgsLongLongValidator()
     {}
 
-    QValidator::State validate( QString &input, int& ) const override
+    QValidator::State validate( QString& input, int& ) const override
     {
       if ( input.isEmpty() )
         return Intermediate;
@@ -82,8 +82,14 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       }
     }
 
-    void setBottom( qint64 bottom ) { b = bottom; }
-    void setTop( qint64 top ) { t = top; }
+    void setBottom( qint64 bottom )
+    {
+      b = bottom;
+    }
+    void setTop( qint64 top )
+    {
+      t = top;
+    }
 
     virtual void setRange( qint64 bottom, qint64 top )
     {
@@ -91,8 +97,14 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       t = top;
     }
 
-    qint64 bottom() const { return b; }
-    qint64 top() const { return t; }
+    qint64 bottom() const
+    {
+      return b;
+    }
+    qint64 top() const
+    {
+      return t;
+    }
 
   private:
     Q_DISABLE_COPY( QgsLongLongValidator )

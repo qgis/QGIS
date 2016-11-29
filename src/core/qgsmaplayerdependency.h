@@ -49,19 +49,28 @@ class CORE_EXPORT QgsMapLayerDependency
 
     //! Standard constructor
     QgsMapLayerDependency( const QString& layerId, Type type = DataDependency, Origin origin = FromUser ) :
-        mType( type ),
-        mOrigin( origin ),
-        mLayerId( layerId )
+      mType( type ),
+      mOrigin( origin ),
+      mLayerId( layerId )
     {}
 
     //! Return the dependency type
-    Type type() const { return mType; }
+    Type type() const
+    {
+      return mType;
+    }
 
     //! Return the dependency origin
-    Origin origin() const { return mOrigin; }
+    Origin origin() const
+    {
+      return mOrigin;
+    }
 
     //! Return the ID of the layer this dependency depends on
-    QString layerId() const { return mLayerId; }
+    QString layerId() const
+    {
+      return mLayerId;
+    }
 
     //! Comparison operator
     bool operator==( const QgsMapLayerDependency& other ) const

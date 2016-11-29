@@ -21,9 +21,9 @@
 #include "qgslogger.h"
 
 QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf )
-    : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
-    , mPaintDevice( dxfDevice )
-    , mDxf( dxf )
+  : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
+  , mPaintDevice( dxfDevice )
+  , mDxf( dxf )
 {
 }
 
@@ -66,14 +66,14 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
     mBrush = state.brush();
 }
 
-void QgsDxfPaintEngine::setRing( QgsPointSequence &polyline, const QPointF *points, int pointCount )
+void QgsDxfPaintEngine::setRing( QgsPointSequence& polyline, const QPointF* points, int pointCount )
 {
   polyline.clear();
   for ( int i = 0; i < pointCount; ++i )
     polyline.append( toDxfCoordinates( points[i] ) );
 }
 
-void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode )
+void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode )
 {
   Q_UNUSED( mode );
   if ( !mDxf || !mPaintDevice )

@@ -63,13 +63,13 @@ class QgsOracleProvider : public QgsVectorDataProvider
     //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFields &fields,
+      const QgsFields& fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem *srs,
+      const QgsCoordinateReferenceSystem* srs,
       bool overwrite,
-      QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QMap<int, int>* oldToNewAttrIdxMap,
+      QString* errorMessage = 0,
+      const QMap<QString, QVariant>* options = 0
     );
 
     /**
@@ -78,12 +78,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    explicit QgsOracleProvider( QString const &uri = "" );
+    explicit QgsOracleProvider( QString const& uri = "" );
 
     //! Destructor
     virtual ~QgsOracleProvider();
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
     /**
       * Returns the permanent storage type for this layer as a friendly name.
@@ -173,13 +173,16 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual void uniqueValues( int index, QList<QVariant>& uniqueValues, int limit = -1 ) const override;
 
     /** Returns true if layer is valid
      */
     bool isValid() const override;
 
-    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QgsAttributeList pkAttributeIndexes() const override
+    {
+      return mPrimaryKeyAttrs;
+    }
 
     //! Returns the default value for field specified by @c fieldName
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
@@ -189,22 +192,22 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     /** Adds a list of features
       @return true in case of success and false in case of failure*/
-    bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList& flist ) override;
 
     /** Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
-    bool deleteFeatures( const QgsFeatureIds & id ) override;
+    bool deleteFeatures( const QgsFeatureIds& id ) override;
 
     /** Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes( const QList<QgsField> &attributes ) override;
+    bool addAttributes( const QList<QgsField>& attributes ) override;
 
     /** Deletes existing attributes
       @param ids ids of attributes to delete
       @return true in case of success and false in case of failure*/
-    bool deleteAttributes( const QgsAttributeIds &ids ) override;
+    bool deleteAttributes( const QgsAttributeIds& ids ) override;
 
     /** Renames existing attributes
       @param renamedAttributes attributes to rename
@@ -215,7 +218,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap& attr_map ) override;
 
     /**
        Changes geometries of existing features
@@ -223,7 +226,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeGeometryValues( const QgsGeometryMap& geometry_map ) override;
 
     /** Tries to create an spatial index file for faster access if only a subset of the features is required
      @return true in case of success*/
@@ -238,7 +241,10 @@ class QgsOracleProvider : public QgsVectorDataProvider
     //! Mutator for sql where clause used to limit dataset size
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     //! Returns a bitmask containing the supported capabilities
     QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -275,19 +281,22 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**
      * Query the provider for features specified in request.
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
 
-    static bool exec( QSqlQuery &qry, QString sql );
+    static bool exec( QSqlQuery& qry, QString sql );
 
     /**
      * It returns true. Saving style to db is supported by this provider
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDBSupported() const override
+    {
+      return true;
+    }
 
     /**
      * Switch to oracle workspace
      */
-    void setWorkspace( const QString &workspace );
+    void setWorkspace( const QString& workspace );
 
     /**
      * Retrieve oracle workspace name
@@ -297,9 +306,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
   private:
     QString whereClause( QgsFeatureId featureId ) const;
     QString pkParamWhereClause() const;
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
-    void appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry ) const;
-    void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
+    QString paramValue( QString fieldvalue, const QString& defaultValue ) const;
+    void appendGeomParam( const QgsGeometry& geom, QSqlQuery& qry ) const;
+    void appendPkParams( QgsFeatureId fid, QSqlQuery& qry ) const;
 
     bool hasSufficientPermsAndCapabilities();
 
@@ -310,7 +319,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool loadFields();
 
     //! Convert a QgsField to work with Oracle
-    static bool convertField( QgsField &field );
+    static bool convertField( QgsField& field );
 
     QgsFields mAttributeFields;  //! List of fields
     QVariantList mDefaultValues; //! List of default values
@@ -381,35 +390,35 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     struct OracleException
     {
-      OracleException( QString msg, const QSqlQuery &q )
+        OracleException( QString msg, const QSqlQuery& q )
           : mWhat( tr( "Oracle error: %1\nSQL: %2\nError: %3" )
                    .arg( msg )
                    .arg( q.lastError().text() )
                    .arg( q.lastQuery() )
                  )
-      {}
+        {}
 
-      OracleException( QString msg, const QSqlDatabase &q )
+        OracleException( QString msg, const QSqlDatabase& q )
           : mWhat( tr( "Oracle error: %1\nError: %2" )
                    .arg( msg )
                    .arg( q.lastError().text() )
                  )
-      {}
+        {}
 
-      OracleException( const OracleException &e )
+        OracleException( const OracleException& e )
           : mWhat( e.errorMessage() )
-      {}
+        {}
 
-      ~OracleException()
-      {}
+        ~OracleException()
+        {}
 
-      QString errorMessage() const
-      {
-        return mWhat;
-      }
+        QString errorMessage() const
+        {
+          return mWhat;
+        }
 
-    private:
-      QString mWhat;
+      private:
+        QString mWhat;
     };
 
     // A function that determines if the given schema.table.column
@@ -418,12 +427,18 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident ) { return QgsOracleConn::quotedIdentifier( ident ); }
-    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid ) { return QgsOracleConn::quotedValue( value, type ); }
+    static QString quotedIdentifier( QString ident )
+    {
+      return QgsOracleConn::quotedIdentifier( ident );
+    }
+    static QString quotedValue( const QVariant& value, QVariant::Type type = QVariant::Invalid )
+    {
+      return QgsOracleConn::quotedValue( value, type );
+    }
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsOracleConn *mConnection;
+    QgsOracleConn* mConnection;
 
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column
@@ -464,7 +479,7 @@ class QgsOracleSharedData
     QgsOracleSharedData();
 
     // FID lookups
-    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QgsFeatureId lookupFid( const QVariant& v ); // lookup existing mapping or add a new one
     QVariant removeFid( QgsFeatureId fid );
     void insertFid( QgsFeatureId fid, const QVariant& k );
     QVariant lookupKey( QgsFeatureId featureId );

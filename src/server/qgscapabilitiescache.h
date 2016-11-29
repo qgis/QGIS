@@ -58,7 +58,7 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
 
   private slots:
     //! Removes changed entry from this cache
-    void removeChangedEntry( const QString &path );
+    void removeChangedEntry( const QString& path );
 };
 
 #endif // QGSCAPABILITIESCACHE_H

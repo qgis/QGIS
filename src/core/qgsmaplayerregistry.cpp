@@ -22,14 +22,14 @@
 //
 // Static calls to enforce singleton behaviour
 //
-QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
+QgsMapLayerRegistry* QgsMapLayerRegistry::instance()
 {
   static QgsMapLayerRegistry sInstance;
   return &sInstance;
 }
 
-QgsMapLayerRegistry::QgsMapLayerRegistry( QObject *parent )
-    : QObject( parent )
+QgsMapLayerRegistry::QgsMapLayerRegistry( QObject* parent )
+  : QObject( parent )
 {}
 
 QgsMapLayerRegistry::~QgsMapLayerRegistry()
@@ -42,14 +42,14 @@ int QgsMapLayerRegistry::count() const
   return mMapLayers.size();
 }
 
-QgsMapLayer * QgsMapLayerRegistry::mapLayer( const QString& theLayerId ) const
+QgsMapLayer* QgsMapLayerRegistry::mapLayer( const QString& theLayerId ) const
 {
   return mMapLayers.value( theLayerId );
 }
 
-QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( const QString& layerName ) const
+QList<QgsMapLayer*> QgsMapLayerRegistry::mapLayersByName( const QString& layerName ) const
 {
-  QList<QgsMapLayer *> myResultList;
+  QList<QgsMapLayer*> myResultList;
   Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
   {
     if ( layer->name() == layerName )
@@ -60,12 +60,12 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( const QString& layerN
   return myResultList;
 }
 
-QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
-  const QList<QgsMapLayer *>& theMapLayers,
+QList<QgsMapLayer*> QgsMapLayerRegistry::addMapLayers(
+  const QList<QgsMapLayer*>& theMapLayers,
   bool addToLegend,
   bool takeOwnership )
 {
-  QList<QgsMapLayer *> myResultList;
+  QList<QgsMapLayer*> myResultList;
   Q_FOREACH ( QgsMapLayer* myLayer, theMapLayers )
   {
     if ( !myLayer || !myLayer->isValid() )
@@ -96,12 +96,12 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   return myResultList;
 }
 
-QgsMapLayer *
+QgsMapLayer*
 QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
                                   bool addToLegend,
                                   bool takeOwnership )
 {
-  QList<QgsMapLayer *> addedLayers;
+  QList<QgsMapLayer*> addedLayers;
   addedLayers = addMapLayers( QList<QgsMapLayer*>() << theMapLayer, addToLegend, takeOwnership );
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
 }
@@ -109,7 +109,7 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
 void QgsMapLayerRegistry::removeMapLayers( const QStringList& theLayerIds )
 {
   QList<QgsMapLayer*> layers;
-  Q_FOREACH ( const QString &myId, theLayerIds )
+  Q_FOREACH ( const QString& myId, theLayerIds )
   {
     layers << mMapLayers.value( myId );
   }
@@ -203,7 +203,7 @@ QMap<QString, QgsMapLayer*> QgsMapLayerRegistry::mapLayers() const
 
 
 #if 0
-void QgsMapLayerRegistry::connectNotify( const char * signal )
+void QgsMapLayerRegistry::connectNotify( const char* signal )
 {
   Q_UNUSED( signal );
   //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));

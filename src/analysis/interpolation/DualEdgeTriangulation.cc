@@ -658,7 +658,9 @@ bool DualEdgeTriangulation::calcNormal( double x, double y, Vector3D* result )
   if ( result && mTriangleInterpolator )
   {
     if ( !mTriangleInterpolator->calcNormVec( x, y, result ) )
-      {return false;}
+    {
+      return false;
+    }
     return true;
   }
   else
@@ -673,7 +675,9 @@ bool DualEdgeTriangulation::calcPoint( double x, double y, Point3D* result )
   if ( result && mTriangleInterpolator )
   {
     if ( !mTriangleInterpolator->calcPoint( x, y, result ) )
-      {return false;}
+    {
+      return false;
+    }
     return true;
   }
   else
@@ -767,7 +771,9 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
     for ( unsigned int i = 0; i < mHalfEdge.count() - 1; i++ )
     {
       if ( mHalfEdge[i]->getPoint() == -1 || mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() == -1 )
-        {continue;}
+      {
+        continue;
+      }
 
       //check, if the edge belongs to a flat triangle, remove this later
       if ( !control2[i] )
@@ -796,7 +802,9 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
       }//end of the section, which has to be removed later
 
       if ( control[i] )//check, if edge has already been drawn
-        {continue;}
+      {
+        continue;
+      }
 
       //draw the edge;
       if ( halfEdgeBBoxTest( i, xlowleft, lowerborder, xupright, yupright ) )//only draw the halfedge if its bounding box intersects the painted area
@@ -830,7 +838,9 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
     for ( unsigned int i = 0; i < mHalfEdge.count() - 1; i++ )
     {
       if ( mHalfEdge[i]->getPoint() == -1 || mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() == -1 )
-        {continue;}
+      {
+        continue;
+      }
 
       //check, if the edge belongs to a flat triangle, remove this section later
       if ( !control2[i] )
@@ -860,7 +870,9 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
 
 
       if ( control[i] )//check, if edge has already been drawn
-        {continue;}
+      {
+        continue;
+      }
 
       //draw the edge
       if ( halfEdgeBBoxTest( i, xlowleft, ylowleft, rightborder, yupright ) )//only draw the edge if its bounding box intersects with the painted area
@@ -1500,7 +1512,9 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
       leftPolygon.append( theedge );
     }
     if ( leftiter == crossedEdges.constBegin() )
-      {break;}
+    {
+      break;
+    }
     --leftiter;
   }
 
@@ -3113,7 +3127,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     return false;
   }
 
-  bool *alreadyVisitedEdges = new bool[mHalfEdge.size()];
+  bool* alreadyVisitedEdges = new bool[mHalfEdge.size()];
   if ( !alreadyVisitedEdges )
   {
     QgsDebugMsg( "out of memory" );
@@ -3266,7 +3280,7 @@ bool DualEdgeTriangulation::edgeOnConvexHull( int edge )
   return ( mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint() == -1 || mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint() == -1 );
 }
 
-void DualEdgeTriangulation::evaluateInfluenceRegion( Point3D* point, int edge, QSet<int> &set )
+void DualEdgeTriangulation::evaluateInfluenceRegion( Point3D* point, int edge, QSet<int>& set )
 {
   if ( set.find( edge ) == set.end() )
   {

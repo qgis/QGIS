@@ -34,11 +34,11 @@ class APP_EXPORT QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid& actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString& name, QgsFeature& f, QgsVectorLayer* vl, const QUuid& actionId = QString(), int defaultAttr = -1, QObject* parent = nullptr );
 
   public slots:
     void execute();
-    bool viewFeatureForm( QgsHighlight *h = nullptr );
+    bool viewFeatureForm( QgsHighlight* h = nullptr );
     bool editFeature( bool showModal = true );
 
     /**
@@ -56,7 +56,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     void onFeatureSaved( const QgsFeature& feature );
 
   private:
-    QgsAttributeDialog *newDialog( bool cloneFeature );
+    QgsAttributeDialog* newDialog( bool cloneFeature );
 
     QgsVectorLayer* mLayer;
     QgsFeature* mFeature;
@@ -65,7 +65,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
     bool mFeatureSaved;
 
-    static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
+    static QHash<QgsVectorLayer*, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

@@ -30,7 +30,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-nmeaPROPERTY * nmea_property()
+nmeaPROPERTY* nmea_property()
 {
   static nmeaPROPERTY prop =
   {
@@ -40,7 +40,7 @@ nmeaPROPERTY * nmea_property()
   return &prop;
 }
 
-void nmea_trace( const char *str, ... )
+void nmea_trace( const char* str, ... )
 {
   int size;
   va_list arg_list;
@@ -58,14 +58,14 @@ void nmea_trace( const char *str, ... )
   }
 }
 
-void nmea_trace_buff( const char *buff, int buff_size )
+void nmea_trace_buff( const char* buff, int buff_size )
 {
   nmeaTraceFunc func = nmea_property()->trace_func;
   if ( func && buff_size )
     ( *func )( buff, buff_size );
 }
 
-void nmea_error( const char *str, ... )
+void nmea_error( const char* str, ... )
 {
   int size;
   va_list arg_list;

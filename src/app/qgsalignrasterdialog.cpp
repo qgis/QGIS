@@ -58,21 +58,21 @@ static QString _rasterLayerName( const QString& filename )
 //! Helper class to report progress
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
-  explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
-  virtual bool progress( double complete ) override
-  {
-    mPb->setValue(( int ) qRound( complete * 100 ) );
-    qApp->processEvents(); // to actually show the progress in GUI
-    return true;
-  }
+    explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
+    virtual bool progress( double complete ) override
+    {
+      mPb->setValue(( int ) qRound( complete * 100 ) );
+      qApp->processEvents(); // to actually show the progress in GUI
+      return true;
+    }
 
-protected:
-  QProgressBar* mPb;
+  protected:
+    QProgressBar* mPb;
 };
 
 
-QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
-    : QDialog( parent )
+QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget* parent )
+  : QDialog( parent )
 {
   setupUi( this );
 

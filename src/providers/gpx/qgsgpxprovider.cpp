@@ -50,8 +50,8 @@ const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
                                        "url", "url name"
                                      };
 QVariant::Type QgsGPXProvider::attrType[] = { QVariant::String, QVariant::Double, QVariant::String, QVariant::Int,
-    QVariant::String, QVariant::String, QVariant::String,
-    QVariant::String, QVariant::String
+                                              QVariant::String, QVariant::String, QVariant::String,
+                                              QVariant::String, QVariant::String
                                             };
 QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
 {
@@ -68,10 +68,10 @@ const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 
 QgsGPXProvider::QgsGPXProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , data( nullptr )
-    , mFeatureType( WaypointType )
-    , mValid( false ) // assume that it won't work
+  : QgsVectorDataProvider( uri )
+  , data( nullptr )
+  , mFeatureType( WaypointType )
+  , mValid( false ) // assume that it won't work
 {
   // we always use UTF-8
   setEncoding( QStringLiteral( "utf8" ) );
@@ -190,7 +190,7 @@ QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request
 }
 
 
-bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
+bool QgsGPXProvider::addFeatures( QgsFeatureList& flist )
 {
 
   // add all the features
@@ -381,7 +381,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
 }
 
 
-bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds& id )
 {
   if ( mFeatureType == WaypointType )
     data->removeWaypoints( id );
@@ -400,7 +400,7 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
 }
 
 
-bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   QgsChangedAttributesMap::const_iterator aIter = attr_map.begin();
   if ( mFeatureType == WaypointType )
@@ -550,7 +550,7 @@ QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
  * Class factory to return a pointer to a newly created
  * QgsGPXProvider object
  */
-QGISEXTERN QgsGPXProvider * classFactory( const QString *uri )
+QGISEXTERN QgsGPXProvider* classFactory( const QString* uri )
 {
   return new QgsGPXProvider( *uri );
 }

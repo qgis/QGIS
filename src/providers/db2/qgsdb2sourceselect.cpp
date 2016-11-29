@@ -42,19 +42,19 @@
 #include <QtSql/QSqlError>
 
 //! Used to create an editor for when the user tries to change the contents of a cell
-QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget* QgsDb2SourceSelectDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
   if ( index.column() == QgsDb2TableModel::dbtmSql )
   {
-    QLineEdit *le = new QLineEdit( parent );
+    QLineEdit* le = new QLineEdit( parent );
     le->setText( index.data( Qt::DisplayRole ).toString() );
     return le;
   }
 
   if ( index.column() == QgsDb2TableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
-    QComboBox *cb = new QComboBox( parent );
+    QComboBox* cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
                 QList<QgsWkbTypes::Type>()
                 << QgsWkbTypes::Point
@@ -77,7 +77,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
 
     if ( values.size() > 0 )
     {
-      QComboBox *cb = new QComboBox( parent );
+      QComboBox* cb = new QComboBox( parent );
       cb->addItems( values );
       cb->setCurrentIndex( cb->findText( index.data( Qt::DisplayRole ).toString() ) );
       return cb;
@@ -86,7 +86,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
 
   if ( index.column() == QgsDb2TableModel::dbtmSrid )
   {
-    QLineEdit *le = new QLineEdit( parent );
+    QLineEdit* le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
     le->insert( index.data( Qt::DisplayRole ).toString() );
     return le;
@@ -95,9 +95,9 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
   return 0;
 }
 
-void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsDb2SourceSelectDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QComboBox *cb = qobject_cast<QComboBox *>( editor );
+  QComboBox* cb = qobject_cast<QComboBox*>( editor );
   if ( cb )
   {
     if ( index.column() == QgsDb2TableModel::dbtmType )
@@ -115,17 +115,17 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
     }
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+  QLineEdit* le = qobject_cast<QLineEdit*>( editor );
   if ( le )
     model->setData( index, le->text() );
 }
 
-QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( NULL )
-    , mUseEstimatedMetadata( false )
+QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget* parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( NULL )
+  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -212,7 +212,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 // Slot for adding a new connection
 void QgsDb2SourceSelect::on_btnNew_clicked()
 {
-  QgsDb2NewConnection *nc = new QgsDb2NewConnection( this );
+  QgsDb2NewConnection* nc = new QgsDb2NewConnection( this );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -276,7 +276,7 @@ void QgsDb2SourceSelect::on_btnLoad_clicked()
 // Slot for editing a connection
 void QgsDb2SourceSelect::on_btnEdit_clicked()
 {
-  QgsDb2NewConnection *nc = new QgsDb2NewConnection( this, cmbConnections->currentText() );
+  QgsDb2NewConnection* nc = new QgsDb2NewConnection( this, cmbConnections->currentText() );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -309,12 +309,12 @@ void QgsDb2SourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
-void QgsDb2SourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsDb2SourceSelect::on_mTablesTreeView_clicked( const QModelIndex& index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex& index )
 {
   QSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() )
@@ -335,7 +335,7 @@ void QgsDb2SourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsDb2SourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsDb2SourceSelect::on_mSearchTableEdit_textChanged( const QString& text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -347,7 +347,7 @@ void QgsDb2SourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
   }
 }
 
-void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString& text )
 {
   if ( text == tr( "All" ) )
   {
@@ -383,7 +383,7 @@ void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QSt
   }
 }
 
-void QgsDb2SourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsDb2SourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -582,7 +582,7 @@ QString QgsDb2SourceSelect::connectionInfo()
   return mConnInfo;
 }
 
-void QgsDb2SourceSelect::setSql( const QModelIndex &index )
+void QgsDb2SourceSelect::setSql( const QModelIndex& index )
 {
   if ( !index.parent().isValid() )
   {
@@ -593,7 +593,7 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::dbtmTable ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
+  QgsVectorLayer* vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ) );
 
   if ( !vlayer->isValid() )
   {
@@ -602,7 +602,7 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   }
 
   // create a query builder object
-  QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
+  QgsQueryBuilder* gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
     mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
@@ -661,7 +661,7 @@ void QgsDb2SourceSelect::setSearchExpression( const QString& regexp )
   Q_UNUSED( regexp );
 }
 
-void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( deselected )
   mAddButton->setEnabled( !selected.isEmpty() );
@@ -669,10 +669,10 @@ void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selec
 
 
 QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata )
-    : QThread()
-    , mConnectionName( connectionName )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mStopped( false )
+  : QThread()
+  , mConnectionName( connectionName )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsDb2LayerProperty>( "QgsDb2LayerProperty" );
 }
@@ -695,7 +695,7 @@ void QgsDb2GeomColumnTypeThread::run()
         end = layerProperties.end();
         it != end; ++it )
   {
-    QgsDb2LayerProperty &layerProperty = *it;
+    QgsDb2LayerProperty& layerProperty = *it;
 
     if ( !mStopped )
     {

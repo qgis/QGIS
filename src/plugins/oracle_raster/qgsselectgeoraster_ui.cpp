@@ -34,8 +34,8 @@
 QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
     QgisInterface* iface,
     Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mIface( iface )
+  : QDialog( parent, fl )
+  , mIface( iface )
 {
   setupUi( this );
 
@@ -108,7 +108,7 @@ void QgsOracleSelectGeoraster::populateConnectionList()
 
 void QgsOracleSelectGeoraster::on_btnNew_clicked()
 {
-  QgsOracleConnect *oc = new QgsOracleConnect( this, QStringLiteral( "New Connection" ) );
+  QgsOracleConnect* oc = new QgsOracleConnect( this, QStringLiteral( "New Connection" ) );
   if ( oc->exec() )
   {
     populateConnectionList();
@@ -117,7 +117,7 @@ void QgsOracleSelectGeoraster::on_btnNew_clicked()
 
 void QgsOracleSelectGeoraster::on_btnEdit_clicked()
 {
-  QgsOracleConnect *oc = new QgsOracleConnect( this, cmbConnections->currentText() );
+  QgsOracleConnect* oc = new QgsOracleConnect( this, cmbConnections->currentText() );
   if ( oc->exec() )
   {
     populateConnectionList();
@@ -180,7 +180,7 @@ void QgsOracleSelectGeoraster::connectToServer()
   }
 }
 
-void QgsOracleSelectGeoraster::showSelection( const QString & line )
+void QgsOracleSelectGeoraster::showSelection( const QString& line )
 {
   QString identification = line;
 
@@ -217,7 +217,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
    *  Get subdataset list
    */
 
-  char **papszMetadata = nullptr;
+  char** papszMetadata = nullptr;
   papszMetadata = GDALGetMetadata( hDS, "SUBDATASETS" );
   int nSubDatasets = CSLCount( papszMetadata );
 
@@ -284,7 +284,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
    */
 
   listWidget->clear();
-  QListWidgetItem *textItem;
+  QListWidgetItem* textItem;
 
   for ( int i = 0; i < nSubDatasets; i += 2 )
   {

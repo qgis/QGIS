@@ -26,9 +26,9 @@
 #include <QStandardItemModel>
 #include <QPushButton>
 
-QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mLayer( layer )
+QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget* parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -48,7 +48,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
 
   mCacheInMemoryCheckBox->setChecked( true );
 
-  QgsMapLayer *joinLayer = mJoinLayerComboBox->currentLayer();
+  QgsMapLayer* joinLayer = mJoinLayerComboBox->currentLayer();
   if ( joinLayer && joinLayer->isValid() )
   {
     mJoinFieldComboBox->setLayer( joinLayer );

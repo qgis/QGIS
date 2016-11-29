@@ -36,19 +36,28 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     ~QgsMeasureTool();
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    virtual Flags flags() const override
+    {
+      return QgsMapTool::AllowZoomRect;
+    }
 
     //! returns whether measuring distance or area
-    bool measureArea() { return mMeasureArea; }
+    bool measureArea()
+    {
+      return mMeasureArea;
+    }
 
     //! When we have added our last point, and not following
-    bool done() { return mDone; }
+    bool done()
+    {
+      return mDone;
+    }
 
     //! Reset and start new
     void restart();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint( const QgsPoint& point );
 
     //! Returns reference to array of the points
     const QList<QgsPoint>& points();
@@ -83,10 +92,10 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     QgsMeasureDialog* mDialog;
 
     //! Rubberband widget tracking the lines being drawn
-    QgsRubberBand *mRubberBand;
+    QgsRubberBand* mRubberBand;
 
     //! Rubberband widget tracking the added nodes to line
-    QgsRubberBand *mRubberBandPoints;
+    QgsRubberBand* mRubberBandPoints;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;

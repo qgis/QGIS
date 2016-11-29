@@ -50,15 +50,15 @@ int _fmode = _O_BINARY;
 #include <getopt.h>
 #endif
 
-TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server, const QString & coverage, const QString &version, bool force ):
-    mCacheDirPath( cacheDirPath )
-    , mMaxCoverages( maxCoverages )
-    , mServer( server )
-    , mCoverage( coverage )
-    , mVersion( version )
-    , mForce( force )
-    , mTimeout( 300000 )
-    , mOrigTimeout( 20000 )
+TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString& cacheDirPath, int maxCoverages, const QString& server, const QString& coverage, const QString& version, bool force ):
+  mCacheDirPath( cacheDirPath )
+  , mMaxCoverages( maxCoverages )
+  , mServer( server )
+  , mCoverage( coverage )
+  , mVersion( version )
+  , mForce( force )
+  , mTimeout( 300000 )
+  , mOrigTimeout( 20000 )
 {
 
 }
@@ -186,7 +186,7 @@ void TestQgsWcsPublicServers::init()
   }
 }
 
-TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QString & url )
+TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QString& url )
 {
   Q_FOREACH ( const Server& server, mServers )
   {
@@ -195,7 +195,7 @@ TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QStrin
   return Server();
 }
 
-QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QString & url, const QString & coverage, const QString &version )
+QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QString& url, const QString& coverage, const QString& version )
 {
   QList<Issue> issues;
   Q_FOREACH ( const Server& server, mServers )
@@ -215,7 +215,7 @@ QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QSt
   return issues;
 }
 
-QStringList TestQgsWcsPublicServers::issueDescriptions( const QString & url, const QString & coverage, const QString &version )
+QStringList TestQgsWcsPublicServers::issueDescriptions( const QString& url, const QString& coverage, const QString& version )
 {
   QStringList descriptions;
   Q_FOREACH ( const Issue& myIssue, issues( url, coverage, version ) )
@@ -225,7 +225,7 @@ QStringList TestQgsWcsPublicServers::issueDescriptions( const QString & url, con
   return descriptions;
 }
 
-int TestQgsWcsPublicServers::issueOffender( const QString & url, const QString & coverage, const QString &version )
+int TestQgsWcsPublicServers::issueOffender( const QString& url, const QString& coverage, const QString& version )
 {
   int offender = NoOffender;
   Q_FOREACH ( const Issue& myIssue, issues( url, coverage, version ) )
@@ -434,7 +434,7 @@ void TestQgsWcsPublicServers::test()
             myGdalXmlFile.close();
           }
 
-          QgsRasterLayer * myLayer = new QgsRasterLayer( uri, myCoverage.identifier, provider );
+          QgsRasterLayer* myLayer = new QgsRasterLayer( uri, myCoverage.identifier, provider );
           if ( myLayer->isValid() )
           {
             myLog << provider + "_crs:" + myLayer->dataProvider()->crs().authid();
@@ -442,10 +442,10 @@ void TestQgsWcsPublicServers::test()
             myLog << provider + "_height:" + QString::number( myLayer->dataProvider()->ySize() );
             QgsRectangle extent = myLayer->dataProvider()->extent();
             myLog << provider + "_extent:"
-            + QgsRasterBlock::printValue( extent.xMinimum() ) + ','
-            + QgsRasterBlock::printValue( extent.yMinimum() ) + ','
-            + QgsRasterBlock::printValue( extent.xMaximum() ) + ','
-            + QgsRasterBlock::printValue( extent.yMaximum() ) + ',';
+                  + QgsRasterBlock::printValue( extent.xMinimum() ) + ','
+                  + QgsRasterBlock::printValue( extent.yMinimum() ) + ','
+                  + QgsRasterBlock::printValue( extent.xMaximum() ) + ','
+                  + QgsRasterBlock::printValue( extent.yMaximum() ) + ',';
             int myBandCount = myLayer->dataProvider()->bandCount();
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
@@ -477,7 +477,7 @@ void TestQgsWcsPublicServers::test()
             // Verify data
             QSet<QString> myValues; // cannot be QSet<double>
             //void *myData = myLayer->dataProvider()->readBlock( 1, myLayer->extent(), myWidth, myHeight );
-            QgsRasterBlock *myBlock = myLayer->dataProvider()->block( 1, myLayer->extent(), myWidth, myHeight );
+            QgsRasterBlock* myBlock = myLayer->dataProvider()->block( 1, myLayer->extent(), myWidth, myHeight );
             if ( myBlock )
             {
               for ( int row = 0; row < myHeight; row++ )
@@ -848,7 +848,7 @@ QString TestQgsWcsPublicServers::row( const QStringList& theValues, const QStrin
 }
 
 /* print usage text */
-void usage( std::string const & appName )
+void usage( std::string const& appName )
 {
   std::cerr << "QGIS public WCS servers test - " << VERSION << " '" << RELEASE_NAME << "'\n"
             << "Console application for QGIS WCS provider (WCS client) testing.\n"
@@ -864,7 +864,7 @@ void usage( std::string const & appName )
             << "    Coverage once retrieved (success or fail) is not requested again until the cache is deleted.\n";
 }
 
-int main( int argc, char *argv[] )
+int main( int argc, char* argv[] )
 {
 #ifdef Q_OS_WIN // Windows
 #ifdef _MSC_VER

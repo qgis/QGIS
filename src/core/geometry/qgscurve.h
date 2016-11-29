@@ -75,7 +75,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     /** Returns a list of points within the curve.
      */
-    virtual void points( QgsPointSequence &pt ) const = 0;
+    virtual void points( QgsPointSequence& pt ) const = 0;
 
     /** Returns the number of points in the curve.
      */
@@ -109,9 +109,21 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsCurve* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
-    virtual int vertexCount( int part = 0, int ring = 0 ) const override { Q_UNUSED( part );  Q_UNUSED( ring ); return numPoints(); }
-    virtual int ringCount( int part = 0 ) const override { Q_UNUSED( part ); return numPoints() > 0 ? 1 : 0; }
-    virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
+    virtual int vertexCount( int part = 0, int ring = 0 ) const override
+    {
+      Q_UNUSED( part );
+      Q_UNUSED( ring );
+      return numPoints();
+    }
+    virtual int ringCount( int part = 0 ) const override
+    {
+      Q_UNUSED( part );
+      return numPoints() > 0 ? 1 : 0;
+    }
+    virtual int partCount() const override
+    {
+      return numPoints() > 0 ? 1 : 0;
+    }
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
 
     virtual QgsRectangle boundingBox() const override;
@@ -137,7 +149,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
+    virtual void clearCache() const override
+    {
+      mBoundingBox = QgsRectangle();
+      mCoordinateSequence.clear();
+      QgsAbstractGeometry::clearCache();
+    }
 
   private:
 

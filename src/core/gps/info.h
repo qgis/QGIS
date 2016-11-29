@@ -52,75 +52,75 @@ extern "C"
 {
 #endif
 
-  /**
-   * Position data in fractional degrees or radians
-   */
-  typedef struct _nmeaPOS
-  {
-    double lat;         //!< Latitude
-    double lon;         //!< Longitude
+/**
+ * Position data in fractional degrees or radians
+ */
+typedef struct _nmeaPOS
+{
+  double lat;         //!< Latitude
+  double lon;         //!< Longitude
 
-  } nmeaPOS;
+} nmeaPOS;
 
-  /**
-   * Information about satellite
-   * @see nmeaSATINFO
-   * @see nmeaGPGSV
-   */
-  typedef struct _nmeaSATELLITE
-  {
-    int     id;         //!< Satellite PRN number
-    int     in_use;     //!< Used in position fix
-    int     elv;        //!< Elevation in degrees, 90 maximum
-    int     azimuth;    //!< Azimuth, degrees from true north, 000 to 359
-    int     sig;        //!< Signal, 00-99 dB
+/**
+ * Information about satellite
+ * @see nmeaSATINFO
+ * @see nmeaGPGSV
+ */
+typedef struct _nmeaSATELLITE
+{
+  int     id;         //!< Satellite PRN number
+  int     in_use;     //!< Used in position fix
+  int     elv;        //!< Elevation in degrees, 90 maximum
+  int     azimuth;    //!< Azimuth, degrees from true north, 000 to 359
+  int     sig;        //!< Signal, 00-99 dB
 
-  } nmeaSATELLITE;
+} nmeaSATELLITE;
 
-  /**
-   * Information about all satellites in view
-   * @see nmeaINFO
-   * @see nmeaGPGSV
-   */
-  typedef struct _nmeaSATINFO
-  {
-    int     inuse;      //!< Number of satellites in use (not those in view)
-    int     inview;     //!< Total number of satellites in view
-    nmeaSATELLITE sat[NMEA_MAXSAT]; //!< Satellites information
+/**
+ * Information about all satellites in view
+ * @see nmeaINFO
+ * @see nmeaGPGSV
+ */
+typedef struct _nmeaSATINFO
+{
+  int     inuse;      //!< Number of satellites in use (not those in view)
+  int     inview;     //!< Total number of satellites in view
+  nmeaSATELLITE sat[NMEA_MAXSAT]; //!< Satellites information
 
-  } nmeaSATINFO;
+} nmeaSATINFO;
 
-  /**
-   * Summary GPS information from all parsed packets,
-   * used also for generating NMEA stream
-   * @see nmea_parse
-   * @see nmea_GPGGA2info, nmea_...2info
-   */
-  typedef struct _nmeaINFO
-  {
-    int     smask;      //!< Mask specifying types of packages from which data have been obtained
+/**
+ * Summary GPS information from all parsed packets,
+ * used also for generating NMEA stream
+ * @see nmea_parse
+ * @see nmea_GPGGA2info, nmea_...2info
+ */
+typedef struct _nmeaINFO
+{
+  int     smask;      //!< Mask specifying types of packages from which data have been obtained
 
-    nmeaTIME utc;       //!< UTC of position
+  nmeaTIME utc;       //!< UTC of position
 
-    int     sig;        //!< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
-    int     fix;        //!< Operating mode, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+  int     sig;        //!< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+  int     fix;        //!< Operating mode, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
 
-    double  PDOP;       //!< Position Dilution Of Precision
-    double  HDOP;       //!< Horizontal Dilution Of Precision
-    double  VDOP;       //!< Vertical Dilution Of Precision
+  double  PDOP;       //!< Position Dilution Of Precision
+  double  HDOP;       //!< Horizontal Dilution Of Precision
+  double  VDOP;       //!< Vertical Dilution Of Precision
 
-    double  lat;        //!< Latitude in NDEG - +/-[degree][min].[sec/60]
-    double  lon;        //!< Longitude in NDEG - +/-[degree][min].[sec/60]
-    double  elv;        //!< Antenna altitude above/below mean sea level (geoid) in meters
-    double  speed;      //!< Speed over the ground in kilometers/hour
-    double  direction;  //!< Track angle in degrees True
-    double  declination; //!< Magnetic variation degrees (Easterly var. subtracts from true course)
+  double  lat;        //!< Latitude in NDEG - +/-[degree][min].[sec/60]
+  double  lon;        //!< Longitude in NDEG - +/-[degree][min].[sec/60]
+  double  elv;        //!< Antenna altitude above/below mean sea level (geoid) in meters
+  double  speed;      //!< Speed over the ground in kilometers/hour
+  double  direction;  //!< Track angle in degrees True
+  double  declination; //!< Magnetic variation degrees (Easterly var. subtracts from true course)
 
-    nmeaSATINFO satinfo; //!< Satellites information
+  nmeaSATINFO satinfo; //!< Satellites information
 
-  } nmeaINFO;
+} nmeaINFO;
 
-  void nmea_zero_INFO( nmeaINFO *info );
+void nmea_zero_INFO( nmeaINFO* info );
 
 #ifdef  __cplusplus
 }

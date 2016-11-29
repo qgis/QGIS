@@ -52,12 +52,24 @@ class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
     Q_OBJECT
 
   public:
-    explicit QgsOracleConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOracleConn*>( name ) { initTimer( this ); }
+    explicit QgsOracleConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOracleConn*>( name )
+    {
+      initTimer( this );
+    }
 
   protected slots:
-    void handleConnectionExpired() { onConnectionExpired(); }
-    void startExpirationTimer() { expirationTimer->start(); }
-    void stopExpirationTimer() { expirationTimer->stop(); }
+    void handleConnectionExpired()
+    {
+      onConnectionExpired();
+    }
+    void startExpirationTimer()
+    {
+      expirationTimer->start();
+    }
+    void stopExpirationTimer()
+    {
+      expirationTimer->stop();
+    }
 
   protected:
     Q_DISABLE_COPY( QgsOracleConnPoolGroup )

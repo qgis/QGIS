@@ -39,19 +39,19 @@
 #include <QtSql/QSqlError>
 
 //! Used to create an editor for when the user tries to change the contents of a cell
-QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget* QgsMssqlSourceSelectDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( option );
   if ( index.column() == QgsMssqlTableModel::dbtmSql )
   {
-    QLineEdit *le = new QLineEdit( parent );
+    QLineEdit* le = new QLineEdit( parent );
     le->setText( index.data( Qt::DisplayRole ).toString() );
     return le;
   }
 
   if ( index.column() == QgsMssqlTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
-    QComboBox *cb = new QComboBox( parent );
+    QComboBox* cb = new QComboBox( parent );
     Q_FOREACH ( QgsWkbTypes::Type type,
                 QList<QgsWkbTypes::Type>()
                 << QgsWkbTypes::Point
@@ -74,7 +74,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
 
     if ( !values.isEmpty() )
     {
-      QComboBox *cb = new QComboBox( parent );
+      QComboBox* cb = new QComboBox( parent );
       cb->addItems( values );
       cb->setCurrentIndex( cb->findText( index.data( Qt::DisplayRole ).toString() ) );
       return cb;
@@ -83,7 +83,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
 
   if ( index.column() == QgsMssqlTableModel::dbtmSrid )
   {
-    QLineEdit *le = new QLineEdit( parent );
+    QLineEdit* le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
     le->insert( index.data( Qt::DisplayRole ).toString() );
     return le;
@@ -92,9 +92,9 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   return nullptr;
 }
 
-void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsMssqlSourceSelectDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QComboBox *cb = qobject_cast<QComboBox *>( editor );
+  QComboBox* cb = qobject_cast<QComboBox*>( editor );
   if ( cb )
   {
     if ( index.column() == QgsMssqlTableModel::dbtmType )
@@ -112,17 +112,17 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     }
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+  QLineEdit* le = qobject_cast<QLineEdit*>( editor );
   if ( le )
     model->setData( index, le->text() );
 }
 
-QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( nullptr )
-    , mUseEstimatedMetadata( false )
+QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( nullptr )
+  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -209,7 +209,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
 // Slot for adding a new connection
 void QgsMssqlSourceSelect::on_btnNew_clicked()
 {
-  QgsMssqlNewConnection *nc = new QgsMssqlNewConnection( this );
+  QgsMssqlNewConnection* nc = new QgsMssqlNewConnection( this );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -271,7 +271,7 @@ void QgsMssqlSourceSelect::on_btnLoad_clicked()
 // Slot for editing a connection
 void QgsMssqlSourceSelect::on_btnEdit_clicked()
 {
-  QgsMssqlNewConnection *nc = new QgsMssqlNewConnection( this, cmbConnections->currentText() );
+  QgsMssqlNewConnection* nc = new QgsMssqlNewConnection( this, cmbConnections->currentText() );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -304,12 +304,12 @@ void QgsMssqlSourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
-void QgsMssqlSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsMssqlSourceSelect::on_mTablesTreeView_clicked( const QModelIndex& index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex& index )
 {
   QSettings settings;
   if ( settings.value( QStringLiteral( "/qgis/addMSSQLDC" ), false ).toBool() )
@@ -330,7 +330,7 @@ void QgsMssqlSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString& text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -342,7 +342,7 @@ void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString & text
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString& text )
 {
   if ( text == tr( "All" ) )
   {
@@ -378,7 +378,7 @@ void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const Q
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsMssqlSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -656,7 +656,7 @@ QString QgsMssqlSourceSelect::connectionInfo()
   return mConnInfo;
 }
 
-void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
+void QgsMssqlSourceSelect::setSql( const QModelIndex& index )
 {
   if ( !index.parent().isValid() )
   {
@@ -667,7 +667,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::dbtmTable ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "mssql" ) );
+  QgsVectorLayer* vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "mssql" ) );
 
   if ( !vlayer->isValid() )
   {
@@ -676,7 +676,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   }
 
   // create a query builder object
-  QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
+  QgsQueryBuilder* gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
     mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
@@ -735,17 +735,17 @@ void QgsMssqlSourceSelect::setSearchExpression( const QString& regexp )
   Q_UNUSED( regexp );
 }
 
-void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( deselected )
   mAddButton->setEnabled( !selected.isEmpty() );
 }
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata )
-    : QThread()
-    , mConnectionName( connectionName )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mStopped( false )
+  : QThread()
+  , mConnectionName( connectionName )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsMssqlLayerProperty>( "QgsMssqlLayerProperty" );
 }
@@ -768,7 +768,7 @@ void QgsMssqlGeomColumnTypeThread::run()
         end = layerProperties.end();
         it != end; ++it )
   {
-    QgsMssqlLayerProperty &layerProperty = *it;
+    QgsMssqlLayerProperty& layerProperty = *it;
 
     if ( !mStopped )
     {

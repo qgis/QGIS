@@ -26,14 +26,14 @@
 #include <QToolButton>
 
 
-QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
-    : QWidget( parent )
-    , mLineEdit( nullptr )
-    , mCodeEditor( nullptr )
-    , mExpressionDialogTitle( tr( "Expression dialog" ) )
-    , mDa( nullptr )
-    , mExpressionContextGenerator( nullptr )
-    , mLayer( nullptr )
+QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget* parent )
+  : QWidget( parent )
+  , mLineEdit( nullptr )
+  , mCodeEditor( nullptr )
+  , mExpressionDialogTitle( tr( "Expression dialog" ) )
+  , mDa( nullptr )
+  , mExpressionContextGenerator( nullptr )
+  , mLayer( nullptr )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -45,7 +45,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                     << QgsExpressionContextUtils::projectScope();
 }
 
 void QgsExpressionLineEdit::setExpressionDialogTitle( const QString& title )
@@ -107,7 +107,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
   }
 }
 
-void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
+void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea& da )
 {
   mDa.reset( new QgsDistanceArea( da ) );
 }
@@ -129,7 +129,7 @@ QString QgsExpressionLineEdit::expression() const
   return QString();
 }
 
-bool QgsExpressionLineEdit::isValidExpression( QString *expressionError ) const
+bool QgsExpressionLineEdit::isValidExpression( QString* expressionError ) const
 {
   QString temp;
   return QgsExpression::checkExpression( expression(), &mExpressionContext, expressionError ? *expressionError : temp );

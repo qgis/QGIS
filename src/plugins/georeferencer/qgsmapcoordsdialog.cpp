@@ -20,11 +20,11 @@
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint &pixelCoords, QWidget* parent )
-    : QDialog( parent, Qt::Dialog )
-    , mPrevMapTool( nullptr )
-    , mQgisCanvas( qgisCanvas )
-    , mPixelCoords( pixelCoords )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint& pixelCoords, QWidget* parent )
+  : QDialog( parent, Qt::Dialog )
+  , mPrevMapTool( nullptr )
+  , mQgisCanvas( qgisCanvas )
+  , mPixelCoords( pixelCoords )
 {
   setupUi( this );
 
@@ -38,7 +38,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
 
   // User can input either DD or DMS coords (from QGis mapcanav we take DD coords)
-  QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( this );
+  QgsDMSAndDDValidator* validator = new QgsDMSAndDDValidator( this );
   leXCoord->setValidator( validator );
   leYCoord->setValidator( validator );
 
@@ -67,7 +67,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 void QgsMapCoordsDialog::updateOK()
 {
   bool enable = ( leXCoord->text().size() != 0 && leYCoord->text().size() != 0 );
-  QPushButton *okPushButton = buttonBox->button( QDialogButtonBox::Ok );
+  QPushButton* okPushButton = buttonBox->button( QDialogButtonBox::Ok );
   okPushButton->setEnabled( enable );
 }
 
@@ -91,7 +91,7 @@ void QgsMapCoordsDialog::on_buttonBox_accepted()
   close();
 }
 
-void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button )
+void QgsMapCoordsDialog::maybeSetXY( const QgsPoint& xy, Qt::MouseButton button )
 {
   // Only LeftButton should set point
   if ( Qt::LeftButton == button )

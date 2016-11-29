@@ -46,22 +46,28 @@ class QgsBench :  public QObject
 
     void printLog( const QString& printTime );
 
-    bool openProject( const QString & fileName );
+    bool openProject( const QString& fileName );
 
-    void setExtent( const QgsRectangle & extent );
+    void setExtent( const QgsRectangle& extent );
 
-    void saveSnapsot( const QString & fileName );
+    void saveSnapsot( const QString& fileName );
 
-    void saveLog( const QString & fileName );
+    void saveLog( const QString& fileName );
 
     QString serialize( const QMap<QString, QVariant>& theMap, int level = 0 );
 
-    void setRenderHints( const QPainter::RenderHints& hints ) { mRendererHints = hints; }
+    void setRenderHints( const QPainter::RenderHints& hints )
+    {
+      mRendererHints = hints;
+    }
 
-    void setParallel( bool enabled ) { mParallel = enabled; }
+    void setParallel( bool enabled )
+    {
+      mParallel = enabled;
+    }
 
   public slots:
-    void readProject( const QDomDocument &doc );
+    void readProject( const QDomDocument& doc );
 
   private:
     // snapshot image width

@@ -31,18 +31,18 @@ extern "C"
 #include <stdlib.h>
 }
 
-QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
-    : QFrame( parent )
-    , mTerminal( 0 )
-    , mTools( tools )
-    , mTabWidget( parent )
+QgsGrassShell::QgsGrassShell( QgsGrassTools* tools, QTabWidget* parent, const char* name )
+  : QFrame( parent )
+  , mTerminal( 0 )
+  , mTools( tools )
+  , mTabWidget( parent )
 {
   Q_UNUSED( name );
-  QVBoxLayout *mainLayout = new QVBoxLayout( this );
+  QVBoxLayout* mainLayout = new QVBoxLayout( this );
   mTerminal = new QTermWidget( 0, this );
   initTerminal( mTerminal );
-  QShortcut *pasteShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+V" ) ), mTerminal );
-  QShortcut *copyShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+C" ) ), mTerminal );
+  QShortcut* pasteShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+V" ) ), mTerminal );
+  QShortcut* copyShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+C" ) ), mTerminal );
 
   mainLayout->addWidget( mTerminal );
   setLayout( mainLayout );
@@ -95,7 +95,7 @@ void QgsGrassShell::closeShell()
   deleteLater();
 }
 
-void QgsGrassShell::initTerminal( QTermWidget *terminal )
+void QgsGrassShell::initTerminal( QTermWidget* terminal )
 {
   QStringList env( QLatin1String( "" ) );
   QStringList args( QLatin1String( "" ) );

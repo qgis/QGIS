@@ -34,10 +34,10 @@
 #include <QAbstractTableModel>
 #include <QToolButton>
 
-QgsBookmarks::QgsBookmarks( QWidget *parent )
-    : QgsDockWidget( parent )
-    , mQgisModel( nullptr )
-    , mProjectModel( nullptr )
+QgsBookmarks::QgsBookmarks( QWidget* parent )
+  : QgsDockWidget( parent )
+  , mQgisModel( nullptr )
+  , mProjectModel( nullptr )
 {
   setupUi( this );
   restorePosition();
@@ -52,9 +52,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   btnImpExp->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharing.svg" ) ) );
   btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
-  QMenu *share = new QMenu( this );
-  QAction *btnExport = share->addAction( tr( "&Export" ) );
-  QAction *btnImport = share->addAction( tr( "&Import" ) );
+  QMenu* share = new QMenu( this );
+  QAction* btnExport = share->addAction( tr( "&Export" ) );
+  QAction* btnImport = share->addAction( tr( "&Import" ) );
   btnExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ) );
   btnImport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ) );
   connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXml() ) );
@@ -137,7 +137,7 @@ void QgsBookmarks::addClicked()
   Q_ASSERT( mModel );
   Q_ASSERT( mQgisModel );
 
-  QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
+  QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
   QSqlQuery query( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
@@ -184,7 +184,7 @@ void QgsBookmarks::addClicked()
 void QgsBookmarks::deleteClicked()
 {
   QList<int> rows;
-  Q_FOREACH ( const QModelIndex &idx, lstBookmarks->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex& idx, lstBookmarks->selectionModel()->selectedIndexes() )
   {
     if ( idx.column() == 1 )
     {
@@ -209,7 +209,7 @@ void QgsBookmarks::deleteClicked()
   }
 }
 
-void QgsBookmarks::on_lstBookmarks_doubleClicked( const QModelIndex & index )
+void QgsBookmarks::on_lstBookmarks_doubleClicked( const QModelIndex& index )
 {
   Q_UNUSED( index );
   zoomToBookmark();
@@ -280,7 +280,7 @@ void QgsBookmarks::importFromXml()
 
   QString queries;
 
-  for ( int i = 0;i < nodeList.count(); i++ )
+  for ( int i = 0; i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
     QDomElement name = bookmark.firstChildElement( QStringLiteral( "name" ) );
@@ -350,7 +350,7 @@ void QgsBookmarks::exportToXml()
 
   QList<QString> headerList;
   headerList << QStringLiteral( "id" ) << QStringLiteral( "name" ) << QStringLiteral( "project" ) << QStringLiteral( "xmin" )
-  << QStringLiteral( "ymin" ) << QStringLiteral( "xmax" ) << QStringLiteral( "ymax" ) << QStringLiteral( "sr_id" );
+             << QStringLiteral( "ymin" ) << QStringLiteral( "xmax" ) << QStringLiteral( "ymax" ) << QStringLiteral( "sr_id" );
 
   for ( int i = 0; i < rowCount; ++i )
   {
@@ -497,10 +497,10 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
 }
 
 QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel& qgisTableModel, QAbstractTableModel& projectTableModel, QTreeView* treeView )
-    : mQgisTableModel( qgisTableModel )
-    , mProjectTableModel( projectTableModel )
-    , mTreeView( treeView )
-    , mProjectOpen( false )
+  : mQgisTableModel( qgisTableModel )
+  , mProjectTableModel( projectTableModel )
+  , mTreeView( treeView )
+  , mProjectOpen( false )
 {
   connect(
     QgisApp::instance(), SIGNAL( projectRead() ),

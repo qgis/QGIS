@@ -90,14 +90,14 @@ QVector< QgsPalLayerSettings::PredefinedPointPosition > QgsPalLayerSettings::DEF
 << QgsPalLayerSettings::BottomMiddle;*/
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : upsidedownLabels( Upright )
-    , mCurFeat( nullptr )
-    , xform( nullptr )
-    , extentGeom( nullptr )
-    , mFeaturesToLabel( 0 )
-    , mFeatsSendingToPal( 0 )
-    , mFeatsRegPal( 0 )
-    , expression( nullptr )
+  : upsidedownLabels( Upright )
+  , mCurFeat( nullptr )
+  , xform( nullptr )
+  , extentGeom( nullptr )
+  , mFeaturesToLabel( 0 )
+  , mFeatsSendingToPal( 0 )
+  , mFeatsRegPal( 0 )
+  , expression( nullptr )
 {
   enabled = false;
   drawLabels = true;
@@ -275,19 +275,19 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
-    : mCurFeat( nullptr )
-    , fieldIndex( 0 )
-    , xform( nullptr )
-    , extentGeom( nullptr )
-    , mFeaturesToLabel( 0 )
-    , mFeatsSendingToPal( 0 )
-    , mFeatsRegPal( 0 )
-    , expression( nullptr )
+  : mCurFeat( nullptr )
+  , fieldIndex( 0 )
+  , xform( nullptr )
+  , extentGeom( nullptr )
+  , mFeaturesToLabel( 0 )
+  , mFeatsSendingToPal( 0 )
+  , mFeatsRegPal( 0 )
+  , expression( nullptr )
 {
   *this = s;
 }
 
-QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings & s )
+QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings& s )
 {
   if ( this == &s )
     return *this;
@@ -422,7 +422,7 @@ static Qt::PenJoinStyle _decodePenJoinStyle( const QString& str )
 }
 
 void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
-    QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > & propertyMap )
+    QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >& propertyMap )
 {
   if ( !layer && !parentElem )
   {
@@ -455,7 +455,7 @@ void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer, QDo
 }
 
 void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
-    const QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > & propertyMap )
+    const QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >& propertyMap )
 {
   if ( !layer && !parentElem )
   {
@@ -531,7 +531,7 @@ void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer, QD
 
 void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
     QgsPalLayerSettings::DataDefinedProperties p,
-    QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > & propertyMap )
+    QMap < QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >& propertyMap )
 {
   QString newPropertyName = "labeling/dataDefined/" + mDataDefinedNames.value( p ).first;
   QVariant newPropertyField = layer->customProperty( newPropertyName, QVariant() );
@@ -1122,7 +1122,7 @@ QMap<QString, QString> QgsPalLayerSettings::dataDefinedMap( DataDefinedPropertie
   return map;
 }
 
-QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeature& f, const QgsFields& fields, const QgsExpressionContext *context ) const
+QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeature& f, const QgsFields& fields, const QgsExpressionContext* context ) const
 {
   if ( dataDefinedProperties.isEmpty() || !dataDefinedProperties.contains( p ) )
   {
@@ -1189,7 +1189,7 @@ QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeat
   return result;
 }
 
-bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext *context, const QVariant& originalValue ) const
+bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant& exprVal, QgsExpressionContext* context, const QVariant& originalValue ) const
 {
   // null passed-around QVariant
   exprVal.clear();
@@ -1256,7 +1256,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, &geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f, QgsRenderContext *context )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f, QgsRenderContext* context )
 {
   if ( !fm || !f )
   {
@@ -1433,7 +1433,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 #endif
 }
 
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &context, QgsLabelFeature** labelFeature , QgsGeometry* obstacleGeometry )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext& context, QgsLabelFeature** labelFeature , QgsGeometry* obstacleGeometry )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngine (labelFeature is set)
   Q_ASSERT( labelFeature );
@@ -1655,7 +1655,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
   else
   {
-    const QVariant &v = f.attribute( fieldIndex );
+    const QVariant& v = f.attribute( fieldIndex );
     labelText = v.isNull() ? QLatin1String( "" ) : v.toString();
   }
 
@@ -1807,7 +1807,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
 
   // simplify?
-  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
+  const QgsVectorSimplifyMethod& simplifyMethod = context.vectorSimplifyMethod();
   QScopedPointer<QgsGeometry> scopedClonedGeom;
   if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
   {
@@ -2348,7 +2348,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   lf->setDataDefinedValues( dataDefinedValues );
 }
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext &context, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry )
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderContext& context, QgsLabelFeature** obstacleFeature, QgsGeometry* obstacleGeometry )
 {
   mCurFeat = &f;
 
@@ -2368,7 +2368,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
   }
 
   // simplify?
-  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
+  const QgsVectorSimplifyMethod& simplifyMethod = context.vectorSimplifyMethod();
   QScopedPointer<QgsGeometry> scopedClonedGeom;
   if ( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification && simplifyMethod.forceLocalOptimization() )
   {
@@ -2578,7 +2578,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
 
 void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     QgsUnitTypes::RenderUnit fontunits,
-    QgsRenderContext &context )
+    QgsRenderContext& context )
 {
   // NOTE: labelFont already has pixelSize set, so pointSize or pointSizeF might return -1
 
@@ -2752,7 +2752,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
 }
 
-void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
+void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext& context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -2807,7 +2807,7 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   dataDefinedValEval( DDBlendMode, QgsPalLayerSettings::BufferBlendMode, exprVal, context.expressionContext() );
 }
 
-void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
+void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext& context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -2893,7 +2893,7 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
   // formatting for numbers is inline with generation of base label text and not passed to label painting
 }
 
-void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
+void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext& context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -3096,7 +3096,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
 
 }
 
-void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
+void QgsPalLayerSettings::parseDropShadow( QgsRenderContext& context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
@@ -3198,7 +3198,7 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
 // -------------
 
 QgsPalLabeling::QgsPalLabeling()
-    : mEngine( new QgsLabelingEngine() )
+  : mEngine( new QgsLabelingEngine() )
 {
 }
 
@@ -3239,7 +3239,7 @@ void QgsPalLabeling::clearActiveLayers()
 {
 }
 
-void QgsPalLabeling::clearActiveLayer( const QString &layerID )
+void QgsPalLabeling::clearActiveLayer( const QString& layerID )
 {
   Q_UNUSED( layerID );
 }
@@ -3289,13 +3289,13 @@ int QgsPalLabeling::prepareDiagramLayer( QgsVectorLayer* layer, QSet<QString>& a
   return 1;
 }
 
-void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context )
+void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext& context )
 {
   if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, nullptr ) )
     provider->registerFeature( f, context );
 }
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, QgsRenderContext& context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
   if ( geometry.isEmpty() )
   {
@@ -3322,7 +3322,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry& geometry, Q
   return false;
 }
 
-QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter )
+QStringList QgsPalLabeling::splitToLines( const QString& text, const QString& wrapCharacter )
 {
   QStringList multiLineSplit;
   if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
@@ -3341,7 +3341,7 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   return multiLineSplit;
 }
 
-QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
+QStringList QgsPalLabeling::splitToGraphemes( const QString& text )
 {
   QStringList graphemes;
   QTextBoundaryFinder boundaryFinder( QTextBoundaryFinder::Grapheme, text );
@@ -3355,7 +3355,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRenderContext &context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
+QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRenderContext& context, const QgsCoordinateTransform& ct, QgsGeometry* clipGeometry )
 {
   if ( geometry.isEmpty() )
   {
@@ -3372,7 +3372,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
     {
       geom.transform( ct );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       Q_UNUSED( cse );
       QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
@@ -3392,7 +3392,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry& geometry, QgsRen
       {
         center = ct.transform( center );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
         QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
@@ -3471,7 +3471,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const 
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
-void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext &context )
+void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, QgsRenderContext& context )
 {
   if ( QgsVectorLayerDiagramProvider* provider = mDiagramProviders.value( layerID, nullptr ) )
     provider->registerFeature( feat, context );
@@ -3912,7 +3912,7 @@ void QgsPalLabeling::deleteTemporaryData()
 {
 }
 
-QgsLabelingResults *QgsPalLabeling::takeResults()
+QgsLabelingResults* QgsPalLabeling::takeResults()
 {
   return mEngine->takeResults();
 }

@@ -31,7 +31,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
   public:
 
-    explicit QgsAngleMagnetWidget( const QString& label = QString(), QWidget *parent = nullptr );
+    explicit QgsAngleMagnetWidget( const QString& label = QString(), QWidget* parent = nullptr );
 
     ~QgsAngleMagnetWidget();
 
@@ -49,7 +49,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
   public slots:
 
   protected:
-    bool eventFilter( QObject *obj, QEvent *ev ) override;
+    bool eventFilter( QObject* obj, QEvent* ev ) override;
 
   private slots:
     void angleSpinBoxValueChanged( double angle );

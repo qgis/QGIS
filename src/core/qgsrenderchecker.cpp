@@ -31,17 +31,17 @@
 static int renderCounter = 0;
 
 QgsRenderChecker::QgsRenderChecker()
-    : mReport( QLatin1String( "" ) )
-    , mMatchTarget( 0 )
-    , mElapsedTime( 0 )
-    , mRenderedImageFile( QLatin1String( "" ) )
-    , mExpectedImageFile( QLatin1String( "" ) )
-    , mMismatchCount( 0 )
-    , mColorTolerance( 0 )
-    , mMaxSizeDifferenceX( 0 )
-    , mMaxSizeDifferenceY( 0 )
-    , mElapsedTimeTarget( 0 )
-    , mBufferDashMessages( false )
+  : mReport( QLatin1String( "" ) )
+  , mMatchTarget( 0 )
+  , mElapsedTime( 0 )
+  , mRenderedImageFile( QLatin1String( "" ) )
+  , mExpectedImageFile( QLatin1String( "" ) )
+  , mMismatchCount( 0 )
+  , mColorTolerance( 0 )
+  , mMaxSizeDifferenceX( 0 )
+  , mMaxSizeDifferenceY( 0 )
+  , mElapsedTimeTarget( 0 )
+  , mBufferDashMessages( false )
 {
 }
 
@@ -52,7 +52,7 @@ QString QgsRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
-void QgsRenderChecker::setControlName( const QString &theName )
+void QgsRenderChecker::setControlName( const QString& theName )
 {
   mControlName = theName;
   mExpectedImageFile = controlImagePath() + theName + '/' + mControlPathSuffix + theName + ".png";
@@ -236,10 +236,10 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
 
     QTextStream stream( &wldFile );
     stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
-    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
-          qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
-          qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
-          qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
+           .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+                 qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+                 qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+                 qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
   return compareImages( theTestName, theMismatchCount );

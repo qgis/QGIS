@@ -30,7 +30,7 @@ class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, privat
     Q_OBJECT
 
   public:
-    explicit QgsUniqueValuesConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsUniqueValuesConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:

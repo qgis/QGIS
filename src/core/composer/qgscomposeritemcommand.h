@@ -43,8 +43,14 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     //! Saves current item state as after state
     void saveAfterState();
 
-    QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
-    QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
+    QDomDocument previousState() const
+    {
+      return mPreviousState.cloneNode().toDocument();
+    }
+    QDomDocument afterState() const
+    {
+      return mAfterState.cloneNode().toDocument();
+    }
 
     //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
@@ -52,7 +58,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     /** Returns the target item the command applies to.
      * @returns target composer item
      */
-    QgsComposerItem *item() const;
+    QgsComposerItem* item() const;
 
   protected:
     //! Target item of the command
@@ -158,8 +164,11 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
     ~QgsComposerMergeCommand();
 
-    bool mergeWith( const QUndoCommand * command ) override;
-    int id() const override { return static_cast< int >( mContext ); }
+    bool mergeWith( const QUndoCommand* command ) override;
+    int id() const override
+    {
+      return static_cast< int >( mContext );
+    }
 
   private:
     Context mContext;

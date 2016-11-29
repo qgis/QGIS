@@ -60,7 +60,7 @@
   ")"
 
 Qgs25DRenderer::Qgs25DRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
+  : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
 {
   mSymbol.reset( new QgsFillSymbol() );
 
@@ -103,8 +103,8 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   QgsFeatureRequest::OrderBy orderBy;
   orderBy << QgsFeatureRequest::OrderByClause(
-    ORDER_BY_EXPRESSION,
-    false );
+            ORDER_BY_EXPRESSION,
+            false );
 
   setOrderBy( orderBy );
   setOrderByEnabled( true );
@@ -158,7 +158,7 @@ QgsFeatureRenderer* Qgs25DRenderer::clone() const
   return c;
 }
 
-QgsSymbol*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol* Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )

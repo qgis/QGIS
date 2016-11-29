@@ -56,7 +56,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Both part of the widget are optional.
      * @see QgsFileWidget
      */
-    explicit QgsExternalResourceWidget( QWidget *parent = 0 );
+    explicit QgsExternalResourceWidget( QWidget* parent = 0 );
 
     /**
      * @brief documentPath returns the path of the current document in the widget

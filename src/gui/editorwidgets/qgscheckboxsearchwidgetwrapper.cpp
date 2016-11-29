@@ -23,9 +23,9 @@
 #include <QCheckBox>
 
 QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mCheckBox( nullptr )
-    , mLayer( nullptr )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mCheckBox( nullptr )
+  , mLayer( nullptr )
 {
 }
 

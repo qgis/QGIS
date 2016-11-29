@@ -52,7 +52,7 @@ class TestQgsLabelingEngine : public QObject
     QString mReport;
 
     void setDefaultLabelParams( QgsVectorLayer* layer );
-    bool imageCheck( const QString& testName, QImage &image, int mismatchCount );
+    bool imageCheck( const QString& testName, QImage& image, int mismatchCount );
 
 };
 
@@ -408,11 +408,11 @@ void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
   QVector< QgsPalLayerSettings::PredefinedPointPosition > original;
   //make sure all placements are added here
   original << QgsPalLayerSettings::BottomLeft << QgsPalLayerSettings::BottomSlightlyLeft
-  << QgsPalLayerSettings::BottomMiddle << QgsPalLayerSettings::BottomSlightlyRight
-  << QgsPalLayerSettings::BottomRight << QgsPalLayerSettings::MiddleRight
-  << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopLeft
-  << QgsPalLayerSettings::TopSlightlyLeft << QgsPalLayerSettings::TopMiddle
-  << QgsPalLayerSettings::TopSlightlyRight << QgsPalLayerSettings::TopRight;
+           << QgsPalLayerSettings::BottomMiddle << QgsPalLayerSettings::BottomSlightlyRight
+           << QgsPalLayerSettings::BottomRight << QgsPalLayerSettings::MiddleRight
+           << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopLeft
+           << QgsPalLayerSettings::TopSlightlyLeft << QgsPalLayerSettings::TopMiddle
+           << QgsPalLayerSettings::TopSlightlyRight << QgsPalLayerSettings::TopRight;
   //encode list
   QString encoded = QgsLabelingUtils::encodePredefinedPositionOrder( original );
   QVERIFY( !encoded.isEmpty() );
@@ -425,7 +425,7 @@ void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
   decoded = QgsLabelingUtils::decodePredefinedPositionOrder( QStringLiteral( ",tr,x,BSR, L, t,," ) );
   QVector< QgsPalLayerSettings::PredefinedPointPosition > expected;
   expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
-  << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
+           << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
   QCOMPARE( decoded, expected );
 }
 
@@ -533,7 +533,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
 }
 
-bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, int mismatchCount )
+bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage& image, int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );

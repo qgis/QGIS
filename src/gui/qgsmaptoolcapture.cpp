@@ -38,13 +38,13 @@
 
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode )
-    : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
-    , mRubberBand( nullptr )
-    , mTempRubberBand( nullptr )
-    , mValidator( nullptr )
-    , mSnappingMarker( nullptr )
+  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mRubberBand( nullptr )
+  , mTempRubberBand( nullptr )
+  , mValidator( nullptr )
+  , mSnappingMarker( nullptr )
 #ifdef Q_OS_WIN
-    , mSkipNextContextMenuEvent( 0 )
+  , mSkipNextContextMenuEvent( 0 )
 #endif
 {
   mCaptureMode = mode;
@@ -58,11 +58,11 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizin
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
-  QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
+  QPixmap mySelectQPixmap = QPixmap(( const char** ) capture_point_cursor );
   setCursor( QCursor( mySelectQPixmap, 8, 8 ) );
 
-  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-           this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
+  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
@@ -107,14 +107,14 @@ void QgsMapToolCapture::validationFinished()
   }
 }
 
-void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
+void QgsMapToolCapture::currentLayerChanged( QgsMapLayer* layer )
 {
   if ( !mCaptureModeFromLayer )
     return;
 
   mCaptureMode = CaptureNone;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
   if ( !vlayer )
   {
     return;
@@ -155,7 +155,7 @@ QgsPoint QgsMapToolCapture::tracingStartPoint()
     QgsPointV2 v = mCaptureCurve.endPoint();
     return toMapCoordinates( layer, QgsPoint( v.x(), v.y() ) );
   }
-  catch ( QgsCsException & )
+  catch ( QgsCsException& )
   {
     QgsDebugMsg( "transformation to layer coordinate failed" );
     return QgsPoint();
@@ -257,7 +257,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint& point )
 }
 
 
-void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
+void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent* e )
 {
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
   bool snapped = e->isSnapped();
@@ -308,7 +308,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
         if ( mCaptureMode == CapturePolygon )
           mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
         QgsPointV2 pt = mCaptureCurve.endPoint();
-        QgsPoint mapPt = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), QgsPoint( pt.x(), pt.y() ) );
+        QgsPoint mapPt = toMapCoordinates( qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() ), QgsPoint( pt.x(), pt.y() ) );
         mTempRubberBand->addPoint( mapPt );
         mTempRubberBand->addPoint( point );
       }
@@ -321,7 +321,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
 
 int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   if ( !vlayer )
   {
     QgsDebugMsg( "no vector layer" );
@@ -336,7 +336,7 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerP
     if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
       layerPoint.addMValue( 0.0 );
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsDebugMsg( "transformation to layer coordinate failed" );
@@ -346,15 +346,15 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerP
   return 0;
 }
 
-int QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint )
+int QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2& layerPoint, QgsPointV2& mapPoint )
 {
   mapPoint = QgsPointV2( toMapCoordinates( p ) );
   return nextPoint( mapPoint, layerPoint );
 }
 
-int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match& match , QgsPointV2 &layerPoint )
+int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match& match , QgsPointV2& layerPoint )
 {
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   QgsVectorLayer* sourceLayer = match.layer();
   if ( match.isValid() && match.hasVertex() && sourceLayer &&
        ( sourceLayer->crs() == vlayer->crs() ) )
@@ -440,7 +440,7 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point, const QgsPointLocator::
   }
   else if ( mCaptureMode == CapturePolygon )
   {
-    const QgsPoint *firstPoint = mRubberBand->getPoint( 0, 0 );
+    const QgsPoint* firstPoint = mRubberBand->getPoint( 0, 0 );
     mTempRubberBand->addPoint( *firstPoint );
     mTempRubberBand->movePoint( point );
     mTempRubberBand->addPoint( point );
@@ -485,7 +485,7 @@ int QgsMapToolCapture::addCurve( QgsCurve* c )
   mTempRubberBand->addPoint( QgsPoint( endPt.x(), endPt.y() ) ); //add last point of c
 
   //transform back to layer CRS in case map CRS and layer CRS are different
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   QgsCoordinateTransform ct =  mCanvas->mapSettings().layerTransform( vlayer );
   if ( ct.isValid() )
   {
@@ -516,7 +516,7 @@ void QgsMapToolCapture::undo()
     {
       if ( tempRubberBandSize > 1 )
       {
-        const QgsPoint *point = mRubberBand->getPoint( 0, rubberBandSize - 2 );
+        const QgsPoint* point = mRubberBand->getPoint( 0, rubberBandSize - 2 );
         mTempRubberBand->movePoint( tempRubberBandSize - 2, *point );
       }
     }
@@ -585,7 +585,7 @@ void QgsMapToolCapture::stopCapturing()
   mGeomErrors.clear();
 
 #ifdef Q_OS_WIN
-  Q_FOREACH ( QWidget *w, qApp->topLevelWidgets() )
+  Q_FOREACH ( QWidget* w, qApp->topLevelWidgets() )
   {
     if ( w->objectName() == "QgisApp" )
     {
@@ -672,7 +672,7 @@ void QgsMapToolCapture::validateGeometry()
 void QgsMapToolCapture::addError( QgsGeometry::Error e )
 {
   mGeomErrors << e;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   if ( !vlayer )
     return;
 
@@ -680,7 +680,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
 
   if ( e.hasWhere() )
   {
-    QgsVertexMarker *vm =  new QgsVertexMarker( mCanvas );
+    QgsVertexMarker* vm =  new QgsVertexMarker( mCanvas );
     vm->setCenter( mCanvas->mapSettings().layerToMapCoordinates( vlayer, e.where() ) );
     vm->setIconType( QgsVertexMarker::ICON_X );
     vm->setPenWidth( 2 );
@@ -721,7 +721,7 @@ void QgsMapToolCapture::setPoints( const QList<QgsPoint>& pointList )
 }
 
 #ifdef Q_OS_WIN
-bool QgsMapToolCapture::eventFilter( QObject *obj, QEvent *event )
+bool QgsMapToolCapture::eventFilter( QObject* obj, QEvent* event )
 {
   if ( event->type() != QEvent::ContextMenu )
     return false;

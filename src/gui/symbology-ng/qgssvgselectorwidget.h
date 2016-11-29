@@ -179,8 +179,8 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
      */
     QgsSvgSelectorListModel( QObject* parent, const QString& path );
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
 
   protected:
     QStringList mSvgFiles;
@@ -233,17 +233,38 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QgsSvgSelectorWidget( QWidget* parent = nullptr );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget* create( QWidget* parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
+    static QgsSvgSelectorWidget* create( QWidget* parent = nullptr )
+    {
+      return new QgsSvgSelectorWidget( parent );
+    }
 
     QString currentSvgPath() const;
     QString currentSvgPathToName() const;
 
-    QTreeView* groupsTreeView() { return mGroupsTreeView; }
-    QListView* imagesListView() { return mImagesListView; }
-    QLineEdit* filePathLineEdit() { return mFileLineEdit; }
-    QPushButton* filePathButton() { return mFilePushButton; }
-    QCheckBox* relativePathCheckbox() { return mRelativePathChkBx; }
-    QLayout* selectorLayout() { return this->layout(); }
+    QTreeView* groupsTreeView()
+    {
+      return mGroupsTreeView;
+    }
+    QListView* imagesListView()
+    {
+      return mImagesListView;
+    }
+    QLineEdit* filePathLineEdit()
+    {
+      return mFileLineEdit;
+    }
+    QPushButton* filePathButton()
+    {
+      return mFilePushButton;
+    }
+    QCheckBox* relativePathCheckbox()
+    {
+      return mRelativePathChkBx;
+    }
+    QLayout* selectorLayout()
+    {
+      return this->layout();
+    }
 
   public slots:
     //! Accepts absolute and relative paths
@@ -286,13 +307,22 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     ~QgsSvgSelectorDialog();
 
     //! Returns the central layout. Widgets added to it must have this dialog as parent
-    QVBoxLayout* layout() { return mLayout; }
+    QVBoxLayout* layout()
+    {
+      return mLayout;
+    }
 
     //! Returns the button box
-    QDialogButtonBox* buttonBox() { return mButtonBox; }
+    QDialogButtonBox* buttonBox()
+    {
+      return mButtonBox;
+    }
 
     //! Returns pointer to the embedded SVG selector widget
-    QgsSvgSelectorWidget* svgSelector() { return mSvgSelector; }
+    QgsSvgSelectorWidget* svgSelector()
+    {
+      return mSvgSelector;
+    }
 
   protected:
     QVBoxLayout* mLayout;

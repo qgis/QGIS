@@ -28,7 +28,7 @@
  ****************************************************************************/
 
 QgsStringStatisticalSummary::QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats )
-    : mStatistics( stats )
+  : mStatistics( stats )
 {
   reset();
 }

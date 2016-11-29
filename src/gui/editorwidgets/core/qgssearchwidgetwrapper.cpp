@@ -79,9 +79,9 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
 }
 
 QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsWidgetWrapper( vl, nullptr, parent )
-    , mExpression( QString() )
-    , mFieldIdx( fieldIdx )
+  : QgsWidgetWrapper( vl, nullptr, parent )
+  , mExpression( QString() )
+  , mFieldIdx( fieldIdx )
 {
 }
 

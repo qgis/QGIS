@@ -40,34 +40,34 @@
 #include "qgsfeatureiterator.h"
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
-    : QWidget( parent )
-    , mEditorContext( QgsAttributeEditorContext() )
-    , mCanvas( nullptr )
-    , mMessageBar( nullptr )
-    , mForeignKey( QVariant() )
-    , mReferencedFieldIdx( -1 )
-    , mReferencingFieldIdx( -1 )
-    , mAllowNull( true )
-    , mHighlight( nullptr )
-    , mMapTool( nullptr )
-    , mMessageBarItem( nullptr )
-    , mRelationName( QLatin1String( "" ) )
-    , mReferencedAttributeForm( nullptr )
-    , mReferencedLayer( nullptr )
-    , mReferencingLayer( nullptr )
-    , mMasterModel( nullptr )
-    , mFilterModel( nullptr )
-    , mFeatureListModel( nullptr )
-    , mWindowWidget( nullptr )
-    , mShown( false )
-    , mIsEditable( true )
-    , mEmbedForm( false )
-    , mReadOnlySelector( false )
-    , mAllowMapIdentification( false )
-    , mOrderByValue( false )
-    , mOpenFormButtonVisible( true )
-    , mChainFilters( false )
-    , mAllowAddFeatures( false )
+  : QWidget( parent )
+  , mEditorContext( QgsAttributeEditorContext() )
+  , mCanvas( nullptr )
+  , mMessageBar( nullptr )
+  , mForeignKey( QVariant() )
+  , mReferencedFieldIdx( -1 )
+  , mReferencingFieldIdx( -1 )
+  , mAllowNull( true )
+  , mHighlight( nullptr )
+  , mMapTool( nullptr )
+  , mMessageBarItem( nullptr )
+  , mRelationName( QLatin1String( "" ) )
+  , mReferencedAttributeForm( nullptr )
+  , mReferencedLayer( nullptr )
+  , mReferencingLayer( nullptr )
+  , mMasterModel( nullptr )
+  , mFilterModel( nullptr )
+  , mFeatureListModel( nullptr )
+  , mWindowWidget( nullptr )
+  , mShown( false )
+  , mIsEditable( true )
+  , mEmbedForm( false )
+  , mReadOnlySelector( false )
+  , mAllowMapIdentification( false )
+  , mOrderByValue( false )
+  , mOpenFormButtonVisible( true )
+  , mChainFilters( false )
+  , mAllowAddFeatures( false )
 {
   mTopLayout = new QVBoxLayout( this );
   mTopLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -270,8 +270,8 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     QgsExpression expr( mReferencedLayer->displayExpression() );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mReferencedLayer );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::layerScope( mReferencedLayer );
     context.setFeature( mFeature );
     QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )
@@ -385,7 +385,7 @@ QVariant QgsRelationReferenceWidget::foreignKey() const
   }
 }
 
-void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
+void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
 {
   mEditorContext = context;
   mCanvas = canvas;
@@ -735,8 +735,8 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
     QgsExpression expr( mReferencedLayer->displayExpression() );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mReferencedLayer );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::layerScope( mReferencedLayer );
     context.setFeature( feature );
     QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )

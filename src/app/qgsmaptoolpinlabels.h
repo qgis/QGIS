@@ -29,7 +29,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolPinLabels( QgsMapCanvas *canvas );
+    QgsMapToolPinLabels( QgsMapCanvas* canvas );
     ~QgsMapToolPinLabels();
 
     //! Overridden mouse move event
@@ -41,8 +41,14 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
-    bool isShowingPinned() const { return mShowPinned; }
-    void setShowingPinned( bool showing ) { mShowPinned = showing; }
+    bool isShowingPinned() const
+    {
+      return mShowPinned;
+    }
+    void setShowingPinned( bool showing )
+    {
+      mShowPinned = showing;
+    }
 
     //! Called when Show Pinned Labels tool is toggled, via its qgisapp.cpp slot
     void showPinnedLabels( bool show );
@@ -82,7 +88,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
                          const QColor& color );
 
     //! Select valid labels to pin or unpin
-    void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e );
+    void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent* e );
 
     //! Pin or unpin current label relative to whether its editable
     bool pinUnpinCurrentLabel( bool pin );

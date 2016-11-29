@@ -33,16 +33,34 @@ class QgsResidualPlotItem: public QgsComposerItem
     //! \brief Reimplementation of QCanvasItem::paint
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    void setGCPList( const QgsGCPList& list ) { mGCPList = list; }
-    QgsGCPList GCPList() const { return mGCPList; }
+    void setGCPList( const QgsGCPList& list )
+    {
+      mGCPList = list;
+    }
+    QgsGCPList GCPList() const
+    {
+      return mGCPList;
+    }
 
-    void setExtent( const QgsRectangle& rect ) { mExtent = rect;}
-    QgsRectangle extent() const { return mExtent; }
+    void setExtent( const QgsRectangle& rect )
+    {
+      mExtent = rect;
+    }
+    QgsRectangle extent() const
+    {
+      return mExtent;
+    }
 
-    void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
-    bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
+    void setConvertScaleToMapUnits( bool convert )
+    {
+      mConvertScaleToMapUnits = convert;
+    }
+    bool convertScaleToMapUnits() const
+    {
+      return mConvertScaleToMapUnits;
+    }
 
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument& doc ) const override;
     virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:

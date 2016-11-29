@@ -23,15 +23,15 @@
 
 
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
-    , mSaturation( 0 )
-    , mSaturationScale( 1 )
-    , mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
-    , mColorizeOn( false )
-    , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-    , mColorizeH( 0 )
-    , mColorizeS( 50 )
-    , mColorizeStrength( 100 )
+  : QgsRasterInterface( input )
+  , mSaturation( 0 )
+  , mSaturationScale( 1 )
+  , mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
+  , mColorizeOn( false )
+  , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
+  , mColorizeH( 0 )
+  , mColorizeS( 50 )
+  , mColorizeStrength( 100 )
 {
 }
 
@@ -42,7 +42,7 @@ QgsHueSaturationFilter::~QgsHueSaturationFilter()
 QgsHueSaturationFilter* QgsHueSaturationFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered hue/saturation filter", 4 );
-  QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( nullptr );
+  QgsHueSaturationFilter* filter = new QgsHueSaturationFilter( nullptr );
   filter->setSaturation( mSaturation );
   filter->setGrayscaleMode( mGrayscaleMode );
   filter->setColorizeOn( mColorizeOn );
@@ -118,12 +118,12 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
   return true;
 }
 
-QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     return outputBlock;
@@ -131,7 +131,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, width, height, feedback );
+  QgsRasterBlock* inputBlock = mInput->block( bandNumber, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
@@ -225,7 +225,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
 }
 
 // Process a colorization and update resultant HSL & RGB values
-void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h, int &s, int &l )
+void QgsHueSaturationFilter::processColorization( int& r, int& g, int& b, int& h, int& s, int& l )
 {
   QColor myColor;
 
@@ -263,7 +263,7 @@ void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h
 }
 
 // Process a change in saturation and update resultant HSL & RGB values
-void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, int &s, int &l )
+void QgsHueSaturationFilter::processSaturation( int& r, int& g, int& b, int& h, int& s, int& l )
 {
 
   QColor myColor;

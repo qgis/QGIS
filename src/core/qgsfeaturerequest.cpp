@@ -23,60 +23,60 @@
 const QString QgsFeatureRequest::AllAttributes = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
-    : mFilter( FilterNone )
-    , mFilterFid( -1 )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+  : mFilter( FilterNone )
+  , mFilterFid( -1 )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
-    : mFilter( FilterFid )
-    , mFilterFid( fid )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+  : mFilter( FilterFid )
+  , mFilterFid( fid )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds& fids )
-    : mFilter( FilterFids )
-    , mFilterFid( -1 )
-    , mFilterFids( fids )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+  : mFilter( FilterFids )
+  , mFilterFid( -1 )
+  , mFilterFids( fids )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
-    : mFilter( FilterRect )
-    , mFilterRect( rect )
-    , mFilterFid( -1 )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+  : mFilter( FilterRect )
+  , mFilterRect( rect )
+  , mFilterFid( -1 )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext &context )
-    : mFilter( FilterExpression )
-    , mFilterFid( -1 )
-    , mFilterExpression( new QgsExpression( expr ) )
-    , mExpressionContext( context )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext& context )
+  : mFilter( FilterExpression )
+  , mFilterFid( -1 )
+  , mFilterExpression( new QgsExpression( expr ) )
+  , mExpressionContext( context )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
+QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest& rh )
 {
   operator=( rh );
 }
 
-QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
+QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest& rh )
 {
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
@@ -147,7 +147,7 @@ QgsFeatureRequest& QgsFeatureRequest::combineFilterExpression( const QString& ex
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionContext &context )
+QgsFeatureRequest& QgsFeatureRequest::setExpressionContext( const QgsExpressionContext& context )
 {
   mExpressionContext = context;
   return *this;
@@ -287,7 +287,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
 {
   while ( !mActiveIterators.empty() )
   {
-    QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
+    QgsAbstractFeatureIterator* it = *mActiveIterators.begin();
     QgsDebugMsg( "closing active iterator" );
     it->close();
   }
@@ -306,17 +306,17 @@ void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator* it )
 
 
 QgsFeatureRequest::OrderByClause::OrderByClause( const QString& expression, bool ascending )
-    : mExpression( expression )
-    , mAscending( ascending )
+  : mExpression( expression )
+  , mAscending( ascending )
 {
   // postgres behavior: default for ASC: NULLS LAST, default for DESC: NULLS FIRST
   mNullsFirst = !ascending;
 }
 
 QgsFeatureRequest::OrderByClause::OrderByClause( const QString& expression, bool ascending, bool nullsfirst )
-    : mExpression( expression )
-    , mAscending( ascending )
-    , mNullsFirst( nullsfirst )
+  : mExpression( expression )
+  , mAscending( ascending )
+  , mNullsFirst( nullsfirst )
 {
 }
 

@@ -416,7 +416,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
   double outlineWidth, fillOpacity, outlineOpacity;
   bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+       hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
   QgsSvgCache::instance()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
       outlineParam, hasDefaultOutlineColor, outline,
@@ -541,7 +541,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       continue;
     }
 
-    QListWidgetItem * listItem = new QListWidgetItem( mPreviewListWidget );
+    QListWidgetItem* listItem = new QListWidgetItem( mPreviewListWidget );
     listItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
     if ( fileIsSvg )
@@ -692,7 +692,7 @@ void QgsComposerPictureWidget::on_mNorthTypeComboBox_currentIndexChanged( int in
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
+void QgsComposerPictureWidget::resizeEvent( QResizeEvent* event )
 {
   Q_UNUSED( event );
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );

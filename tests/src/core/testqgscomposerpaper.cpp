@@ -35,8 +35,8 @@ class TestQgsComposerPaper : public QObject
 
   public:
     TestQgsComposerPaper()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
     {}
 
   private slots:
@@ -53,7 +53,7 @@ class TestQgsComposerPaper : public QObject
   private:
     QgsComposition* mComposition;
     QString mReport;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     // QgsSingleSymbolRenderer* mSymbolRenderer;
 
 };

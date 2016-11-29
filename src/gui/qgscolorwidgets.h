@@ -71,7 +71,10 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @returns color component for widget
      * @see setComponent
      */
-    ColorComponent component() const { return mComponent; }
+    ColorComponent component() const
+    {
+      return mComponent;
+    }
 
     /** Returns the current value of the widget's color component
      * @returns value of color component, or -1 if widget has multiple components or an invalid color
@@ -84,7 +87,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /** Create an icon for dragging colors
      * @param color for icon
      */
-    static QPixmap createDragIcon( const QColor &color );
+    static QPixmap createDragIcon( const QColor& color );
 
   public slots:
 
@@ -93,7 +96,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @param emitSignals set to true to emit the colorChanged signal after setting color
      * @see color
      */
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor& color, const bool emitSignals = false );
 
     /** Sets the color component which the widget controls
      * @param component color component for widget
@@ -116,7 +119,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /** Emitted when the widget's color changes
      * @param color new widget color
      */
-    void colorChanged( const QColor &color );
+    void colorChanged( const QColor& color );
 
     /** Emitted when mouse hovers over widget.
      * @note added in QGIS 2.14
@@ -172,10 +175,10 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     static const QPixmap& transparentBackground();
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e ) override;
+    void dragEnterEvent( QDragEnterEvent* e ) override;
 
     //Reimplemented to accept dropped colors
-    void dropEvent( QDropEvent *e ) override;
+    void dropEvent( QDropEvent* e ) override;
 
     void mouseMoveEvent( QMouseEvent* e ) override;
     void mousePressEvent( QMouseEvent* e ) override;
@@ -201,13 +204,16 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * @param menu parent menu
      * @param parent parent widget
      */
-    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = nullptr, QWidget *parent = nullptr );
+    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = nullptr, QWidget* parent = nullptr );
 
     virtual ~QgsColorWidgetAction();
 
     /** Returns the color widget contained in the widget action.
      */
-    QgsColorWidget* colorWidget() { return mColorWidget; }
+    QgsColorWidget* colorWidget()
+    {
+      return mColorWidget;
+    }
 
     /** Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
@@ -216,20 +222,26 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * stay open.
      * @see dismissOnColorSelection()
      */
-    void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
+    void setDismissOnColorSelection( bool dismiss )
+    {
+      mDismissOnColorSelection = dismiss;
+    }
 
     /** Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
      * @see setDismissOnColorSelection
      */
-    bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
+    bool dismissOnColorSelection() const
+    {
+      return mDismissOnColorSelection;
+    }
 
   signals:
 
     /** Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor &color );
+    void colorChanged( const QColor& color );
 
   private:
     QMenu* mMenu;
@@ -248,7 +260,7 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
 
     /** Emits color changed signal and closes parent menu
      */
-    void setColor( const QColor &color );
+    void setColor( const QColor& color );
 };
 
 
@@ -278,14 +290,14 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
   public slots:
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    virtual void setColor( const QColor& color, const bool emitSignals = false ) override;
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent *event ) override;
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseReleaseEvent( QMouseEvent *event ) override;
+    virtual void resizeEvent( QResizeEvent* event ) override;
+    virtual void mouseMoveEvent( QMouseEvent* event ) override;
+    virtual void mousePressEvent( QMouseEvent* event ) override;
+    virtual void mouseReleaseEvent( QMouseEvent* event ) override;
 
   private:
 
@@ -372,13 +384,13 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     virtual void setComponent( const ColorComponent component ) override;
 
   public slots:
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    virtual void setColor( const QColor& color, const bool emitSignals = false ) override;
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent *event ) override;
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
+    virtual void resizeEvent( QResizeEvent* event ) override;
+    virtual void mouseMoveEvent( QMouseEvent* event ) override;
+    virtual void mousePressEvent( QMouseEvent* event ) override;
 
   private:
 
@@ -474,7 +486,10 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * @returns orientation for the ramp
      * @see setOrientation
      */
-    Orientation orientation() const { return mOrientation; }
+    Orientation orientation() const
+    {
+      return mOrientation;
+    }
 
     /** Sets the margin between the edge of the widget and the ramp
      * @param margin margin around the ramp
@@ -486,7 +501,10 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * @returns margin around the ramp
      * @see setInteriorMargin
      */
-    int interiorMargin() const { return mMargin; }
+    int interiorMargin() const
+    {
+      return mMargin;
+    }
 
     /** Sets whether the ramp should be drawn within a frame
      * @param showFrame set to true to draw a frame around the ramp
@@ -498,7 +516,10 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * @returns true if a frame is drawn around the ramp
      * @see setShowFrame
      */
-    bool showFrame() const { return mShowFrame; }
+    bool showFrame() const
+    {
+      return mShowFrame;
+    }
 
     /** Sets the size for drawing the triangular markers on the ramp
      * @param markerSize marker size in pixels
@@ -514,10 +535,10 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
   protected:
 
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
+    virtual void mouseMoveEvent( QMouseEvent* event ) override;
     virtual void wheelEvent( QWheelEvent* event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent * event ) override;
+    virtual void mousePressEvent( QMouseEvent* event ) override;
+    virtual void keyPressEvent( QKeyEvent* event ) override;
 
   private:
 
@@ -566,7 +587,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     virtual void setComponent( const ColorComponent component ) override;
     virtual void setComponentValue( const int value ) override;
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    virtual void setColor( const QColor& color, const bool emitSignals = false ) override;
 
   private:
 
@@ -595,7 +616,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     /** Called when the color for the ramp changes
      */
-    void rampColorChanged( const QColor &color );
+    void rampColorChanged( const QColor& color );
 
     /** Called when the value of the spin box changes
      */
@@ -628,10 +649,10 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     virtual ~QgsColorTextWidget();
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    virtual void setColor( const QColor& color, const bool emitSignals = false ) override;
 
   protected:
-    void resizeEvent( QResizeEvent * event ) override;
+    void resizeEvent( QResizeEvent* event ) override;
 
   private:
 
@@ -697,7 +718,10 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @see color
      * @see setColor2
      */
-    QColor color2() const { return mColor2; }
+    QColor color2() const
+    {
+      return mColor2;
+    }
 
   public slots:
 
@@ -718,7 +742,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     void mouseReleaseEvent( QMouseEvent* e ) override;
 
     //reimplemented to allow dragging colors
-    void mouseMoveEvent( QMouseEvent *e ) override;
+    void mouseMoveEvent( QMouseEvent* e ) override;
 
   private:
 
@@ -732,7 +756,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
      * @param rect rect to draw color in
      * @param painter destination painter
      */
-    void drawColor( const QColor& color, QRect rect, QPainter &painter );
+    void drawColor( const QColor& color, QRect rect, QPainter& painter );
 };
 
 #endif // #ifndef QGSCOLORWIDGETS_H

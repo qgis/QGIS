@@ -17,15 +17,15 @@
 #include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h"
 
-QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mFilters( AllTypes )
-    , mModel( new QgsFieldModel( this ) )
+QgsFieldProxyModel::QgsFieldProxyModel( QObject* parent )
+  : QSortFilterProxyModel( parent )
+  , mFilters( AllTypes )
+  , mModel( new QgsFieldModel( this ) )
 {
   setSourceModel( mModel );
 }
 
-QgsFieldProxyModel *QgsFieldProxyModel::setFilters( QgsFieldProxyModel::Filters filters )
+QgsFieldProxyModel* QgsFieldProxyModel::setFilters( QgsFieldProxyModel::Filters filters )
 {
   mFilters = filters;
   invalidateFilter();
@@ -58,7 +58,7 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex& index ) const
   return false; // avoid warnings
 }
 
-bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
@@ -91,7 +91,7 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   return false;
 }
 
-bool QgsFieldProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+bool QgsFieldProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
   // empty field is always first
   if ( sourceModel()->data( left, QgsFieldModel::IsEmptyRole ).toBool() )

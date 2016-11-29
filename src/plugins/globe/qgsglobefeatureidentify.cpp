@@ -27,8 +27,8 @@
 #include <osgEarth/Registry>
 
 QgsGlobeFeatureIdentifyCallback::QgsGlobeFeatureIdentifyCallback( QgsMapCanvas* mapCanvas )
-    : mCanvas( mapCanvas )
-    , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
+  : mCanvas( mapCanvas )
+  , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
 {
   QColor color( Qt::green );
   color.setAlpha( 190 );
@@ -80,7 +80,7 @@ void QgsGlobeFeatureIdentifyCallback::onHit( osgEarth::ObjectID id )
 }
 
 #if OSGEARTH_VERSION_LESS_THAN(2, 7, 0)
-void QgsGlobeFeatureIdentifyCallback::onMiss( const EventArgs &/*args*/ )
+void QgsGlobeFeatureIdentifyCallback::onMiss( const EventArgs& /*args*/ )
 #else
 void QgsGlobeFeatureIdentifyCallback::onMiss()
 #endif

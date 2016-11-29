@@ -49,7 +49,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * @param qIface  pointer to QgisInterface instance that is passed to the rulesDialog
      * @param parent parent object
      */
-    checkDock( QgisInterface* qIface, QWidget *parent = nullptr );
+    checkDock( QgisInterface* qIface, QWidget* parent = nullptr );
     ~checkDock();
 
   private slots:

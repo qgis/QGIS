@@ -29,11 +29,11 @@
 #include <QJsonArray>
 
 QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer* vectorLayer, int precision )
-    : mPrecision( precision )
-    , mIncludeGeometry( true )
-    , mIncludeAttributes( true )
-    , mIncludeRelatedAttributes( false )
-    , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
+  : mPrecision( precision )
+  , mIncludeGeometry( true )
+  , mIncludeAttributes( true )
+  , mIncludeRelatedAttributes( false )
+  , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
 {
   if ( vectorLayer )
   {
@@ -53,7 +53,7 @@ void QgsJSONExporter::setVectorLayer( const QgsVectorLayer* vectorLayer )
   }
 }
 
-QgsVectorLayer *QgsJSONExporter::vectorLayer() const
+QgsVectorLayer* QgsJSONExporter::vectorLayer() const
 {
   return qobject_cast< QgsVectorLayer* >( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) );
 }
@@ -88,7 +88,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
         if ( transformed.transform( mTransform ) == 0 )
           geom = transformed;
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
       }
@@ -222,17 +222,17 @@ QString QgsJSONExporter::exportFeatures( const QgsFeatureList& features ) const
 // QgsJSONUtils
 //
 
-QgsFeatureList QgsJSONUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
+QgsFeatureList QgsJSONUtils::stringToFeatureList( const QString& string, const QgsFields& fields, QTextCodec* encoding )
 {
   return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
 }
 
-QgsFields QgsJSONUtils::stringToFields( const QString &string, QTextCodec *encoding )
+QgsFields QgsJSONUtils::stringToFields( const QString& string, QTextCodec* encoding )
 {
   return QgsOgrUtils::stringToFields( string, encoding );
 }
 
-QString QgsJSONUtils::encodeValue( const QVariant &value )
+QString QgsJSONUtils::encodeValue( const QVariant& value )
 {
   if ( value.isNull() )
     return QStringLiteral( "null" );

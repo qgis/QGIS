@@ -74,7 +74,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     /** Returns the status of expression compilation for filter expression requests.
      * @note added in QGIS 2.16
      */
-    CompileStatus compileStatus() const { return mCompileStatus; }
+    CompileStatus compileStatus() const
+    {
+      return mCompileStatus;
+    }
 
   protected:
 
@@ -97,7 +100,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * @param f The feature to write to
      * @return  true if a feature was written to f
      */
-    virtual bool nextFeatureFilterExpression( QgsFeature &f );
+    virtual bool nextFeatureFilterExpression( QgsFeature& f );
 
     /**
      * By default, the iterator will fetch all features and check if the id
@@ -110,7 +113,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * @param f The feature to write to
      * @return  true if a feature was written to f
      */
-    virtual bool nextFeatureFilterFids( QgsFeature & f );
+    virtual bool nextFeatureFilterFids( QgsFeature& f );
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
@@ -181,9 +184,9 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
   public:
     QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
-        : QgsAbstractFeatureIterator( request )
-        , mSource( source )
-        , mOwnSource( ownSource )
+      : QgsAbstractFeatureIterator( request )
+      , mSource( source )
+      , mOwnSource( ownSource )
     {
       mSource->iteratorOpened( this );
     }
@@ -196,7 +199,10 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 
   protected:
     //! to be called by from subclass in close()
-    void iteratorClosed() { mSource->iteratorClosed( this ); }
+    void iteratorClosed()
+    {
+      mSource->iteratorClosed( this );
+    }
 
     T* mSource;
     bool mOwnSource;
@@ -239,10 +245,13 @@ class CORE_EXPORT QgsFeatureIterator
     /** Returns the status of expression compilation for filter expression requests.
      * @note added in QGIS 2.16
      */
-    QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
+    QgsAbstractFeatureIterator::CompileStatus compileStatus() const
+    {
+      return mIter->compileStatus();
+    }
 
-    friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
-    friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
+    friend bool operator== ( const QgsFeatureIterator& fi1, const QgsFeatureIterator& fi2 );
+    friend bool operator!= ( const QgsFeatureIterator& fi1, const QgsFeatureIterator& fi2 );
 
   protected:
     QgsAbstractFeatureIterator* mIter;
@@ -251,19 +260,19 @@ class CORE_EXPORT QgsFeatureIterator
 ////////
 
 inline QgsFeatureIterator::QgsFeatureIterator()
-    : mIter( nullptr )
+  : mIter( nullptr )
 {
 }
 
 inline QgsFeatureIterator::QgsFeatureIterator( QgsAbstractFeatureIterator* iter )
-    : mIter( iter )
+  : mIter( iter )
 {
   if ( iter )
     iter->ref();
 }
 
 inline QgsFeatureIterator::QgsFeatureIterator( const QgsFeatureIterator& fi )
-    : mIter( fi.mIter )
+  : mIter( fi.mIter )
 {
   if ( mIter )
     mIter->ref();
@@ -301,12 +310,12 @@ inline bool QgsFeatureIterator::isClosed() const
   return mIter ? mIter->mClosed && !mIter->mZombie : true;
 }
 
-inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+inline bool operator== ( const QgsFeatureIterator& fi1, const QgsFeatureIterator& fi2 )
 {
   return fi1.mIter == fi2.mIter;
 }
 
-inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+inline bool operator!= ( const QgsFeatureIterator& fi1, const QgsFeatureIterator& fi2 )
 {
   return !( fi1 == fi2 );
 }

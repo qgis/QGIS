@@ -53,7 +53,10 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     QString mSqlWhereClause;
 
     // Return True if this feature source has spatial attributes.
-    bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
+    bool isSpatial()
+    {
+      return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty();
+    }
 
     friend class QgsDb2FeatureIterator;
     friend class QgsDb2ExpressionCompiler;
@@ -83,7 +86,7 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
 
   private:
 
-    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys ) override;
 
 
     // The current database

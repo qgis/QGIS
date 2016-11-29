@@ -47,17 +47,17 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr )
+             << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+             << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
 
-QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas )
-    : QWidget( parent )
-    , mMapCanvas( canvas )
+QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas* canvas )
+  : QWidget( parent )
+  , mMapCanvas( canvas )
 {
   mLayer = layer;
   if ( !layer )
@@ -185,7 +185,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   const QgsFields& layerFields = layer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
-    QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
+    QTreeWidgetItem* newItem = new QTreeWidgetItem( mAttributesTreeWidget );
     QString name = QStringLiteral( "\"%1\"" ).arg( layerFields.at( idx ).name() );
     newItem->setText( 0, name );
     newItem->setData( 0, RoleAttributeExpression, name );
@@ -343,7 +343,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       QList< QString >::const_iterator labIt = categoryLabels.constBegin();
       for ( ; catIt != categoryAttributes.constEnd(); ++catIt, ++coIt, ++labIt )
       {
-        QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
+        QTreeWidgetItem* newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
         newItem->setText( 0, *catIt );
         newItem->setData( 0, RoleAttributeExpression, *catIt );
         newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
@@ -375,7 +375,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       }
     }
 
-    const QgsDiagramLayerSettings *dls = layer->diagramLayerSettings();
+    const QgsDiagramLayerSettings* dls = layer->diagramLayerSettings();
     if ( dls )
     {
       mDiagramDistanceSpinBox->setValue( dls->distance() );
@@ -517,9 +517,9 @@ QString QgsDiagramProperties::guessLegendText( const QString& expression )
   return text;
 }
 
-void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
+void QgsDiagramProperties::addAttribute( QTreeWidgetItem* item )
 {
-  QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
+  QTreeWidgetItem* newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
 
   newItem->setText( 0, item->text( 0 ) );
   newItem->setText( 2, guessLegendText( item->text( 0 ) ) );
@@ -537,13 +537,13 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
 
 void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 {
-  Q_FOREACH ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem* attributeItem, mAttributesTreeWidget->selectedItems() )
   {
     addAttribute( attributeItem );
   }
 }
 
-void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
   Q_UNUSED( column );
   addAttribute( item );
@@ -551,7 +551,7 @@ void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidg
 
 void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
 {
-  Q_FOREACH ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
+  Q_FOREACH ( QTreeWidgetItem* attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
   {
     delete attributeItem;
   }
@@ -571,16 +571,16 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     QgsExpression exp( sizeFieldNameOrExp );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << QgsExpressionContextUtils::layerScope( mLayer );
+            << QgsExpressionContextUtils::projectScope()
+            << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+            << QgsExpressionContextUtils::layerScope( mLayer );
 
     exp.prepare( &context );
     if ( !exp.hasEvalError() )
     {
       QgsFeature feature;
       QgsFeatureIterator features = mLayer->getFeatures();
-      while ( features.nextFeature( *&feature ) )
+      while ( features.nextFeature(*& feature ) )
       {
         context.setFeature( feature );
         maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
@@ -607,7 +607,7 @@ void QgsDiagramProperties::on_mDiagramFontButton_clicked()
 }
 
 
-void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
   switch ( column )
   {
@@ -860,10 +860,10 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+          << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based attribute" ) );
@@ -887,7 +887,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
 void QgsDiagramProperties::showAddAttributeExpressionDialog()
 {
   QString expression;
-  QList<QTreeWidgetItem *> selections = mAttributesTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*> selections = mAttributesTreeWidget->selectedItems();
   if ( !selections.empty() )
   {
     expression = selections[0]->text( 0 );
@@ -898,7 +898,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   //Only add the expression if the user has entered some text.
   if ( !newExpression.isEmpty() )
   {
-    QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
+    QTreeWidgetItem* newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
 
     newItem->setText( 0, newExpression );
     newItem->setText( 2, newExpression );

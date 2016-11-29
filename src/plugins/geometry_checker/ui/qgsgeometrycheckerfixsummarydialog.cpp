@@ -19,10 +19,10 @@
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 
-QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInterface* iface, QgsVectorLayer* layer, const Statistics& stats, const QStringList &messages, QWidget *parent )
-    : QDialog( parent )
-    , mIface( iface )
-    , mLayer( layer )
+QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInterface* iface, QgsVectorLayer* layer, const Statistics& stats, const QStringList& messages, QWidget* parent )
+  : QDialog( parent )
+  , mIface( iface )
+  , mLayer( layer )
 {
   ui.setupUi( this );
 
@@ -112,7 +112,7 @@ void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget* table )
   connect( table->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onTableSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
 
-void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSelection &newSel, const QItemSelection & /*oldSel*/ )
+void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSelection& newSel, const QItemSelection& /*oldSel*/ )
 {
   const QAbstractItemModel* model = qobject_cast<QItemSelectionModel*>( QObject::sender() )->model();
 

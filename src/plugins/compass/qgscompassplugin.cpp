@@ -45,13 +45,13 @@ static const QString sPluginIcon = ":/compass.svn";
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsCompassPlugin::QgsCompassPlugin( QgisInterface *themQGisIface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( themQGisIface )
-    , mActionRunCompass( 0 )
-    , mActionAboutCompass( 0 )
-    , mQgsCompassPluginGui( 0 )
-    , mDock( 0 )
+QgsCompassPlugin::QgsCompassPlugin( QgisInterface* themQGisIface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( themQGisIface )
+  , mActionRunCompass( 0 )
+  , mActionAboutCompass( 0 )
+  , mQgsCompassPluginGui( 0 )
+  , mDock( 0 )
 {
 }
 
@@ -166,7 +166,7 @@ void QgsCompassPlugin::setCurrentTheme( QString )
   }
 }
 
-QIcon QgsCompassPlugin::getThemeIcon( const QString &theName )
+QIcon QgsCompassPlugin::getThemeIcon( const QString& theName )
 {
   if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + theName ) )
   {
@@ -203,7 +203,7 @@ void QgsCompassPlugin::about()
                         ).arg( sPluginVersion );
 
   // create dynamicaly because on Mac this dialog is modeless
-  QWidget *w = new QWidget;
+  QWidget* w = new QWidget;
   w->setAttribute( Qt::WA_DeleteOnClose );
   w->setWindowIcon( getThemeIcon( "/compass.png" ) );
   QMessageBox::about( w, title, text );
@@ -215,7 +215,7 @@ void QgsCompassPlugin::about()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * themQGisIfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* themQGisIfacePointer )
 {
   return new QgsCompassPlugin( themQGisIfacePointer );
 }
@@ -256,7 +256,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

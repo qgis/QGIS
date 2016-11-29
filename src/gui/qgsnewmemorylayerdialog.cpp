@@ -30,7 +30,7 @@
 #include <QUuid>
 #include <QFileDialog>
 
-QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
+QgsVectorLayer* QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget* parent )
 {
   QgsNewMemoryLayerDialog dialog( parent );
   if ( dialog.exec() == QDialog::Rejected )
@@ -78,8 +78,8 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   return newLayer;
 }
 
-QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

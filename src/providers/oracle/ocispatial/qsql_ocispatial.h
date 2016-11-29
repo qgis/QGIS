@@ -70,23 +70,23 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialResult : public QSqlCachedResult
     friend struct QOCISpatialResultPrivate;
     friend class QOCISpatialCols;
   public:
-    QOCISpatialResult( const QOCISpatialDriver * db, const QOCISpatialDriverPrivate* p );
+    QOCISpatialResult( const QOCISpatialDriver* db, const QOCISpatialDriverPrivate* p );
     ~QOCISpatialResult();
     bool prepare( const QString& query );
     bool exec();
     QVariant handle() const;
 
   protected:
-    bool gotoNext( ValueCache &values, int index );
+    bool gotoNext( ValueCache& values, int index );
     bool reset( const QString& query );
     int size();
     int numRowsAffected();
     QSqlRecord record() const;
     QVariant lastInsertId() const;
-    void virtual_hook( int id, void *data );
+    void virtual_hook( int id, void* data );
 
   private:
-    QOCISpatialResultPrivate *d;
+    QOCISpatialResultPrivate* d;
 };
 
 class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
@@ -99,28 +99,28 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     QOCISpatialDriver( OCIEnv* env, OCISvcCtx* ctx, QObject* parent = 0 );
     ~QOCISpatialDriver();
     bool hasFeature( DriverFeature f ) const;
-    bool open( const QString & db,
-               const QString & user,
-               const QString & password,
-               const QString & host,
+    bool open( const QString& db,
+               const QString& user,
+               const QString& password,
+               const QString& host,
                int port,
                const QString& connOpts );
     void close();
-    QSqlResult *createResult() const;
+    QSqlResult* createResult() const;
     QStringList tables( QSql::TableType ) const;
     QSqlRecord record( const QString& tablename ) const;
     QSqlIndex primaryIndex( const QString& tablename ) const;
-    QString formatValue( const QSqlField &field,
+    QString formatValue( const QSqlField& field,
                          bool trimStrings ) const;
     QVariant handle() const;
-    QString escapeIdentifier( const QString &identifier, IdentifierType ) const;
+    QString escapeIdentifier( const QString& identifier, IdentifierType ) const;
 
   protected:
     bool                beginTransaction();
     bool                commitTransaction();
     bool                rollbackTransaction();
   private:
-    QOCISpatialDriverPrivate *d;
+    QOCISpatialDriverPrivate* d;
 };
 
 QT_END_NAMESPACE

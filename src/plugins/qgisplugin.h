@@ -77,77 +77,77 @@ class QgisPlugin
     /**
      * Constructor for QgisPlugin
      */
-    QgisPlugin( QString const & name = "",
-                QString const & description = "",
-                QString const & category = "",
-                QString const & version = "",
+    QgisPlugin( QString const& name = "",
+                QString const& description = "",
+                QString const& category = "",
+                QString const& version = "",
                 PLUGINTYPE type = MAPLAYER )
-        : mName( name )
-        , mDescription( description )
-        , mCategory( category )
-        , mVersion( version )
-        , mType( type )
+      : mName( name )
+      , mDescription( description )
+      , mCategory( category )
+      , mVersion( version )
+      , mType( type )
     {}
 
     virtual ~QgisPlugin()
     {}
 
     //! Get the name of the plugin
-    QString const & name() const
+    QString const& name() const
     {
       return mName;
     }
 
-    QString       & name()
+    QString&        name()
     {
       return mName;
     }
 
     //! Version of the plugin
-    QString const & version() const
+    QString const& version() const
     {
       return mVersion;
     }
 
     //! Version of the plugin
-    QString & version()
+    QString& version()
     {
       return mVersion;
     }
 
     //! A brief description of the plugin
-    QString const & description() const
+    QString const& description() const
     {
       return mDescription;
     }
 
     //! A brief description of the plugin
-    QString       & description()
+    QString&        description()
     {
       return mDescription;
     }
 
     //! Plugin category
-    QString const & category() const
+    QString const& category() const
     {
       return mCategory;
     }
 
     //! Plugin category
-    QString       & category()
+    QString&        category()
     {
       return mCategory;
     }
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE const & type() const
+    QgisPlugin::PLUGINTYPE const& type() const
     {
       return mType;
     }
 
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE       & type()
+    QgisPlugin::PLUGINTYPE&        type()
     {
       return mType;
     }
@@ -186,10 +186,10 @@ class QgisPlugin
 // Typedefs used by qgis main app
 
 //! Typedef for the function that returns a generic pointer to a plugin object
-typedef QgisPlugin *create_t( QgisInterface * );
+typedef QgisPlugin* create_t( QgisInterface* );
 
 //! Typedef for the function to unload a plugin and free its resources
-typedef void unload_t( QgisPlugin * );
+typedef void unload_t( QgisPlugin* );
 
 //! Typedef for getting the name of the plugin without instantiating it
 typedef QString name_t();

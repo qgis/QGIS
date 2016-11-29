@@ -44,8 +44,8 @@ class TestQgsMarkerLineSymbol : public QObject
     Q_OBJECT
   public:
     TestQgsMarkerLineSymbol()
-        : mLinesLayer( 0 )
-        , mMapSettings( 0 )
+      : mLinesLayer( 0 )
+      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -67,7 +67,7 @@ class TestQgsMarkerLineSymbol : public QObject
 
     QString mTestDataDir;
     QgsVectorLayer* mLinesLayer;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QString mReport;
 };
 
@@ -80,7 +80,7 @@ void TestQgsMarkerLineSymbol::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  QList<QgsMapLayer *> mapLayers;
+  QList<QgsMapLayer*> mapLayers;
 
   //create a line layer that will be used in all tests...
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";

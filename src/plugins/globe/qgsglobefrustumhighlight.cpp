@@ -22,11 +22,11 @@
 #include "qgsglobefrustumhighlight.h"
 
 QgsGlobeFrustumHighlightCallback::QgsGlobeFrustumHighlightCallback( osg::View* view, osgEarth::Terrain* terrain, QgsMapCanvas* mapCanvas, QColor color )
-    : osg::NodeCallback()
-    , mView( view )
-    , mTerrain( terrain )
-    , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
-    , mSrs( osgEarth::SpatialReference::create( mapCanvas->mapSettings().destinationCrs().toWkt().toStdString() ) )
+  : osg::NodeCallback()
+  , mView( view )
+  , mTerrain( terrain )
+  , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
+  , mSrs( osgEarth::SpatialReference::create( mapCanvas->mapSettings().destinationCrs().toWkt().toStdString() ) )
 {
   mRubberBand->setColor( color );
 }
@@ -38,8 +38,8 @@ QgsGlobeFrustumHighlightCallback::~QgsGlobeFrustumHighlightCallback()
 
 void QgsGlobeFrustumHighlightCallback::operator()( osg::Node*, osg::NodeVisitor* )
 {
-  const osg::Viewport::value_type &width = mView->getCamera()->getViewport()->width();
-  const osg::Viewport::value_type &height = mView->getCamera()->getViewport()->height();
+  const osg::Viewport::value_type& width = mView->getCamera()->getViewport()->width();
+  const osg::Viewport::value_type& height = mView->getCamera()->getViewport()->height();
 
   osg::Vec3d corners[4];
 

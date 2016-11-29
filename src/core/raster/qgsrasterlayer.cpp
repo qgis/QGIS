@@ -75,7 +75,7 @@ email                : tim at linfiniti.com
 #include <QTime>
 
 // typedefs for provider plugin functions of interest
-typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QString & retErrMsg );
+typedef bool isvalidrasterfilename_t( QString const& theFileNameQString, QString& retErrMsg );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -84,10 +84,10 @@ const double QgsRasterLayer::CUMULATIVE_CUT_UPPER = 0.98;
 const double QgsRasterLayer::SAMPLE_SIZE = 250000;
 
 QgsRasterLayer::QgsRasterLayer()
-    : QgsMapLayer( RasterLayer )
-    , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
-    , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( nullptr )
+  : QgsMapLayer( RasterLayer )
+  , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
+  , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mDataProvider( nullptr )
 {
   init();
   mValid = false;
@@ -97,10 +97,10 @@ QgsRasterLayer::QgsRasterLayer(
   const QString& path,
   const QString& baseName,
   bool loadDefaultStyleFlag )
-    : QgsMapLayer( RasterLayer, baseName, path )
-    , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
-    , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( nullptr )
+  : QgsMapLayer( RasterLayer, baseName, path )
+  , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
+  , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mDataProvider( nullptr )
 {
   QgsDebugMsgLevel( "Entered", 4 );
 
@@ -125,16 +125,16 @@ QgsRasterLayer::QgsRasterLayer(
  * @todo Rename into a general constructor when the old raster interface is retired
  * parameter dummy is just there to distinguish this function signature from the old non-provider one.
  */
-QgsRasterLayer::QgsRasterLayer( const QString & uri,
-                                const QString & baseName,
-                                const QString & providerKey,
+QgsRasterLayer::QgsRasterLayer( const QString& uri,
+                                const QString& baseName,
+                                const QString& providerKey,
                                 bool loadDefaultStyleFlag )
-    : QgsMapLayer( RasterLayer, baseName, uri )
+  : QgsMapLayer( RasterLayer, baseName, uri )
     // Constant that signals property not used.
-    , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
-    , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mDataProvider( nullptr )
-    , mProviderKey( providerKey )
+  , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
+  , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mDataProvider( nullptr )
+  , mProviderKey( providerKey )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   init();
@@ -174,7 +174,7 @@ QgsRasterLayer::~QgsRasterLayer()
  */
 bool QgsRasterLayer::isValidRasterFileName( const QString& theFileNameQString, QString& retErrMsg )
 {
-  isvalidrasterfilename_t *pValid = reinterpret_cast< isvalidrasterfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
+  isvalidrasterfilename_t* pValid = reinterpret_cast< isvalidrasterfilename_t* >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
   if ( ! pValid )
   {
     QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library" );
@@ -185,13 +185,13 @@ bool QgsRasterLayer::isValidRasterFileName( const QString& theFileNameQString, Q
   return myIsValid;
 }
 
-bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString )
+bool QgsRasterLayer::isValidRasterFileName( QString const& theFileNameQString )
 {
   QString retErrMsg;
   return isValidRasterFileName( theFileNameQString, retErrMsg );
 }
 
-QDateTime QgsRasterLayer::lastModified( QString const & name )
+QDateTime QgsRasterLayer::lastModified( QString const& name )
 {
   QgsDebugMsgLevel( "name=" + name, 4 );
   QDateTime t;
@@ -210,7 +210,7 @@ QDateTime QgsRasterLayer::lastModified( QString const & name )
 }
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider * classFactoryFunction_t( const QString * );
+typedef QgsDataProvider* classFactoryFunction_t( const QString* );
 
 //////////////////////////////////////////////////////////
 //
@@ -258,14 +258,14 @@ void QgsRasterLayer::reload()
   }
 }
 
-QgsMapLayerRenderer *QgsRasterLayer::createMapRenderer( QgsRenderContext& rendererContext )
+QgsMapLayerRenderer* QgsRasterLayer::createMapRenderer( QgsRenderContext& rendererContext )
 {
   return new QgsRasterLayerRenderer( this, rendererContext );
 }
 
 
-void QgsRasterLayer::draw( QPainter * theQPainter,
-                           QgsRasterViewPort * theRasterViewPort,
+void QgsRasterLayer::draw( QPainter* theQPainter,
+                           QgsRasterViewPort* theRasterViewPort,
                            const QgsMapToPixel* theQgsMapToPixel )
 {
   QgsDebugMsgLevel( " 3 arguments", 4 );
@@ -278,7 +278,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // procedure to use :
   //
 
-  QgsRasterProjector *projector = mPipe.projector();
+  QgsRasterProjector* projector = mPipe.projector();
 
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
@@ -298,7 +298,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
-  QgsRasterRenderer *renderer = mPipe.renderer();
+  QgsRasterRenderer* renderer = mPipe.renderer();
   if ( renderer )
   {
     renderer->legendSymbologyItems( symbolList );
@@ -622,7 +622,7 @@ void QgsRasterLayer::init()
   mLastViewPort.mHeight = 0;
 }
 
-void QgsRasterLayer::setDataProvider( QString const & provider )
+void QgsRasterLayer::setDataProvider( QString const& provider )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   mValid = false; // assume the layer is invalid until we determine otherwise
@@ -776,19 +776,19 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   }
 
   // brightness filter
-  QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
+  QgsBrightnessContrastFilter* brightnessFilter = new QgsBrightnessContrastFilter();
   mPipe.set( brightnessFilter );
 
   // hue/saturation filter
-  QgsHueSaturationFilter * hueSaturationFilter = new QgsHueSaturationFilter();
+  QgsHueSaturationFilter* hueSaturationFilter = new QgsHueSaturationFilter();
   mPipe.set( hueSaturationFilter );
 
   //resampler (must be after renderer)
-  QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
+  QgsRasterResampleFilter* resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
 
   // projector (may be anywhere in pipe)
-  QgsRasterProjector * projector = new QgsRasterProjector;
+  QgsRasterProjector* projector = new QgsRasterProjector;
   mPipe.set( projector );
 
   // Set default identify format - use the richest format available
@@ -975,7 +975,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   setContrastEnhancement( myAlgorithm, myLimits );
 }
 
-void QgsRasterLayer::setLayerOrder( QStringList const & layers )
+void QgsRasterLayer::setLayerOrder( QStringList const& layers )
 {
   QgsDebugMsgLevel( "entered.", 4 );
 
@@ -1006,7 +1006,10 @@ QDateTime QgsRasterLayer::timestamp() const
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !theRenderer ) { return; }
+  if ( !theRenderer )
+  {
+    return;
+  }
   mPipe.set( theRenderer );
   emit rendererChanged();
   emit styleChanged();
@@ -1018,7 +1021,7 @@ void QgsRasterLayer::showProgress( int theValue )
 }
 
 
-void QgsRasterLayer::showStatusMessage( QString const & theMessage )
+void QgsRasterLayer::showStatusMessage( QString const& theMessage )
 {
   // QgsDebugMsg(QString("entered with '%1'.").arg(theMessage));
 
@@ -1041,7 +1044,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor& bgColor, QImage
   myQImage.setColor( 0, bgColor.rgba() );
   myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
 
-  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
+  QgsRasterViewPort* myRasterViewPort = new QgsRasterViewPort();
 
   double myMapUnitsPerPixel;
   double myX = 0.0;
@@ -1072,9 +1075,9 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor& bgColor, QImage
   myRasterViewPort->mSrcDatumTransform = -1;
   myRasterViewPort->mDestDatumTransform = -1;
 
-  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
+  QgsMapToPixel* myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
 
-  QPainter * myQPainter = new QPainter( &myQImage );
+  QPainter* myQPainter = new QPainter( &myQImage );
   draw( myQPainter, myRasterViewPort, myMapToPixel );
   delete myRasterViewPort;
   delete myMapToPixel;
@@ -1140,13 +1143,13 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     QgsRasterRendererRegistryEntry rendererEntry;
     if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
     {
-      QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+      QgsRasterRenderer* renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
       mPipe.set( renderer );
     }
   }
 
   //brightness
-  QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
+  QgsBrightnessContrastFilter* brightnessFilter = new QgsBrightnessContrastFilter();
   mPipe.set( brightnessFilter );
 
   //brightness coefficient
@@ -1157,7 +1160,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   }
 
   //hue/saturation
-  QgsHueSaturationFilter * hueSaturationFilter = new QgsHueSaturationFilter();
+  QgsHueSaturationFilter* hueSaturationFilter = new QgsHueSaturationFilter();
   mPipe.set( hueSaturationFilter );
 
   //saturation coefficient
@@ -1168,7 +1171,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   }
 
   //resampler
-  QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
+  QgsRasterResampleFilter* resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
 
   //max oversampling
@@ -1191,7 +1194,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   return true;
 }
 
-bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsRasterLayer::readStyle( const QDomNode& node, QString& errorMessage )
 {
   return readSymbology( node, errorMessage );
 } //readSymbology
@@ -1343,7 +1346,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
  * @param errorMessage reference to string that will be updated with any error messages
  * @return true in case of success.
  */
-bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & document, QString& errorMessage ) const
+bool QgsRasterLayer::writeSymbology( QDomNode& layer_node, QDomDocument& document, QString& errorMessage ) const
 {
   Q_UNUSED( errorMessage );
   QDomElement layerElem = layer_node.toElement();
@@ -1354,7 +1357,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 
   for ( int i = 1; i < mPipe.size(); i++ )
   {
-    QgsRasterInterface * interface = mPipe.at( i );
+    QgsRasterInterface* interface = mPipe.at( i );
     if ( !interface ) continue;
     interface->writeXml( document, pipeElement );
   }
@@ -1370,7 +1373,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   return true;
 }
 
-bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsRasterLayer::writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
   return writeSymbology( node, doc, errorMessage );
 
@@ -1380,8 +1383,8 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
  *  virtual
  *  @note Called by QgsMapLayer::writeXml().
  */
-bool QgsRasterLayer::writeXml( QDomNode & layer_node,
-                               QDomDocument & document ) const
+bool QgsRasterLayer::writeXml( QDomNode& layer_node,
+                               QDomDocument& document ) const
 {
   // first get the layer element so that we can append the type attribute
 

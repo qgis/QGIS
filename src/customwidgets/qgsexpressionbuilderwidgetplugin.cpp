@@ -18,9 +18,9 @@
 #include "qgsexpressionbuilderwidgetplugin.h"
 
 
-QgsExpressionBuilderWidgetPlugin::QgsExpressionBuilderWidgetPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsExpressionBuilderWidgetPlugin::QgsExpressionBuilderWidgetPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsExpressionBuilderWidgetPlugin::isContainer() const
   return true;
 }
 
-QWidget *QgsExpressionBuilderWidgetPlugin::createWidget( QWidget *parent )
+QWidget* QgsExpressionBuilderWidgetPlugin::createWidget( QWidget* parent )
 {
   return new QgsExpressionBuilderWidget( parent );
 }
@@ -60,7 +60,7 @@ bool QgsExpressionBuilderWidgetPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsExpressionBuilderWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsExpressionBuilderWidgetPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

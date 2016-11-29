@@ -21,9 +21,9 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxwidget.h"
 
-QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
-    : QgsRasterRendererWidget( layer, extent )
-    , mMinMaxWidget( nullptr )
+QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle& extent )
+  : QgsRasterRendererWidget( layer, extent )
+  , mMinMaxWidget( nullptr )
 {
   setupUi( this );
   createValidators();
@@ -39,7 +39,7 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
     mMinMaxWidget->setExtent( extent );
     mMinMaxWidget->setMapCanvas( mCanvas );
-    QHBoxLayout *layout = new QHBoxLayout();
+    QHBoxLayout* layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0 );
     mMinMaxContainerWidget->setLayout( layout );
     layout->addWidget( mMinMaxWidget );
@@ -219,7 +219,7 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, 
   Q_UNUSED( theOrigin );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
-  QLineEdit *myMinLineEdit, *myMaxLineEdit;
+  QLineEdit* myMinLineEdit, *myMaxLineEdit;
 
   if ( mRedBandComboBox->currentData().toInt() == theBandNo )
   {

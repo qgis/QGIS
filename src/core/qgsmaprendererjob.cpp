@@ -35,15 +35,15 @@
 #include "qgscsexception.h"
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
-    : mSettings( settings )
-    , mCache( nullptr )
-    , mRenderingTime( 0 )
+  : mSettings( settings )
+  , mCache( nullptr )
+  , mRenderingTime( 0 )
 {
 }
 
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings& settings )
-    : QgsMapRendererJob( settings )
+  : QgsMapRendererJob( settings )
 {
 }
 
@@ -64,7 +64,7 @@ const QgsMapSettings& QgsMapRendererJob::mapSettings() const
 }
 
 
-bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform& ct, QgsRectangle &extent, QgsRectangle &r2 )
+bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer* ml, const QgsCoordinateTransform& ct, QgsRectangle& extent, QgsRectangle& r2 )
 {
   bool split = false;
 
@@ -155,7 +155,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException& cse )
   {
     Q_UNUSED( cse );
     QgsDebugMsg( "Transform error caught" );
@@ -191,7 +191,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
 
     QgsDebugMsgLevel( "Rendering at layer item " + layerId, 2 );
 
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
     if ( !ml )
     {
@@ -235,7 +235,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     // or if there's a labeling engine that needs the layer to register features
     if ( mCache && ml->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
       if ( vl->isEditable() || ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( vl ) ) )
         mCache->clearCacheImage( ml->id() );
     }
@@ -246,7 +246,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     job.img = nullptr;
     job.blendMode = ml->blendMode();
     job.opacity = 1.0;
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml ) )
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml ) )
     {
       job.opacity = 1.0 - vl->layerTransparency() / 100.0;
     }
@@ -275,7 +275,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsLabelingEn
     if ( mCache || !painter || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage * mypFlattenedImage = nullptr;
+      QImage* mypFlattenedImage = nullptr;
       mypFlattenedImage = new QImage( mSettings.outputSize().width(),
                                       mSettings.outputSize().height(),
                                       mSettings.outputImageFormat() );

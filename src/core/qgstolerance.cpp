@@ -49,7 +49,7 @@ double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer* lay
 }
 
 
-double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
+double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
 {
   // converts to layer units
   if ( units == LayerUnits )
@@ -78,7 +78,7 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
   return toleranceInProjectUnits( tolerance, nullptr, mapSettings, units );
 }
 
-double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
+double QgsTolerance::vertexSearchRadius( QgsMapLayer* layer, const QgsMapSettings& mapSettings )
 {
   QSettings settings;
   double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
@@ -86,7 +86,7 @@ double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSetting
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
-double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings& mapSettings )
+double QgsTolerance::defaultTolerance( QgsMapLayer* layer, const QgsMapSettings& mapSettings )
 {
   QSettings settings;
   double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble();

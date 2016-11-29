@@ -40,7 +40,10 @@ class QgsPgTableModel : public QStandardItemModel
     void setSql( const QModelIndex& index, const QString& sql );
 
     //! Returns the number of tables in the model
-    int tableCount() const { return mTableCount; }
+    int tableCount() const
+    {
+      return mTableCount;
+    }
 
     enum columns
     {
@@ -57,9 +60,9 @@ class QgsPgTableModel : public QStandardItemModel
       dbtmColumns
     };
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
-    QString layerURI( const QModelIndex &index, const QString& connInfo, bool useEstimatedMetadata );
+    QString layerURI( const QModelIndex& index, const QString& connInfo, bool useEstimatedMetadata );
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 

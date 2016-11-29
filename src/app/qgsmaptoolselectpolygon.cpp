@@ -24,7 +24,7 @@ email                : jpalmer at linz dot govt dot nz
 
 
 QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+  : QgsMapTool( canvas )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;

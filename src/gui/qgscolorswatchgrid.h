@@ -37,7 +37,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget *parent = nullptr );
+    QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget* parent = nullptr );
 
     virtual ~QgsColorSwatchGrid();
 
@@ -51,30 +51,39 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @returns context string which is passed to scheme for color generation
      * @see setContext
      */
-    QString context() const { return mContext; }
+    QString context() const
+    {
+      return mContext;
+    }
 
     /** Sets the current context for the grid
      * @param context string which is passed to scheme for color generation
      * @see context
      */
-    void setContext( const QString &context );
+    void setContext( const QString& context );
 
     /** Get the base color for the widget
      * @returns base color which is passed to scheme for color generation
      * @see setBaseColor
      */
-    QColor baseColor() const { return mBaseColor; }
+    QColor baseColor() const
+    {
+      return mBaseColor;
+    }
 
     /** Sets the base color for the widget
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
-    void setBaseColor( const QColor &baseColor );
+    void setBaseColor( const QColor& baseColor );
 
     /** Gets the list of colors shown in the grid
      * @returns list of colors currently shown in the grid
      */
-    QgsNamedColorList *colors() { return &mColors; }
+    QgsNamedColorList* colors()
+    {
+      return &mColors;
+    }
 
   public slots:
 
@@ -87,7 +96,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     /** Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor &color );
+    void colorChanged( const QColor& color );
 
     /** Emitted when mouse hovers over widget
      */
@@ -96,10 +105,10 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
   protected:
 
     //reimplemented QWidget events
-    void paintEvent( QPaintEvent * event ) override;
-    void mouseMoveEvent( QMouseEvent * event ) override;
-    void mousePressEvent( QMouseEvent * event ) override;
-    void mouseReleaseEvent( QMouseEvent * event ) override;
+    void paintEvent( QPaintEvent* event ) override;
+    void mouseMoveEvent( QMouseEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
     void keyPressEvent( QKeyEvent* event ) override;
     void focusInEvent( QFocusEvent* event ) override;
     void focusOutEvent( QFocusEvent* event ) override;
@@ -128,7 +137,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     /** Draws widget
      * @param painter destination painter
      */
-    void draw( QPainter &painter );
+    void draw( QPainter& painter );
 
     /** Calculate swatch corresponding to a position within the widget
      * @param position position
@@ -144,7 +153,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     /** Generates a checkboard pattern for transparent color backgrounds
      * @returns checkboard pixmap
      */
-    const QPixmap &transparentBackground();
+    const QPixmap& transparentBackground();
 };
 
 
@@ -167,7 +176,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = nullptr, const QString& context = QString(), QWidget *parent = nullptr );
+    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = nullptr, const QString& context = QString(), QWidget* parent = nullptr );
 
     virtual ~QgsColorSwatchGridAction();
 
@@ -175,7 +184,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
-    void setBaseColor( const QColor &baseColor );
+    void setBaseColor( const QColor& baseColor );
 
     /** Get the base color for the color grid
      * @returns base color which is passed to scheme for color generation
@@ -193,7 +202,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param context string which is passed to scheme for color generation
      * @see context
      */
-    void setContext( const QString &context );
+    void setContext( const QString& context );
 
     /** Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
@@ -203,14 +212,20 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @see dismissOnColorSelection()
      * @note added in QGIS 2.14
      */
-    void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
+    void setDismissOnColorSelection( bool dismiss )
+    {
+      mDismissOnColorSelection = dismiss;
+    }
 
     /** Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
      * @see setDismissOnColorSelection
      * @note added in QGIS 2.14
      */
-    bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
+    bool dismissOnColorSelection() const
+    {
+      return mDismissOnColorSelection;
+    }
 
   public slots:
 
@@ -223,7 +238,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     /** Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor &color );
+    void colorChanged( const QColor& color );
 
   private:
     QMenu* mMenu;
@@ -237,7 +252,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
 
     /** Emits color changed signal and closes parent menu
      */
-    void setColor( const QColor &color );
+    void setColor( const QColor& color );
 
     /** Handles setting the active action for the menu when cursor hovers over color grid
      */

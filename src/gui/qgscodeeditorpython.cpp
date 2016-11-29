@@ -25,9 +25,9 @@
 #include <QTextStream>
 #include <Qsci/qscilexerpython.h>
 
-QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
-    : QgsCodeEditor( parent )
-    , mAPISFilesList( filenames )
+QgsCodeEditorPython::QgsCodeEditorPython( QWidget* parent, const QList<QString>& filenames )
+  : QgsCodeEditor( parent )
+  , mAPISFilesList( filenames )
 {
   if ( !parent )
   {
@@ -106,14 +106,14 @@ void QgsCodeEditorPython::setSciLexerPython()
 }
 
 
-void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
+void QgsCodeEditorPython::loadAPIs( const QList<QString>& filenames )
 {
   mAPISFilesList = filenames;
   //QgsDebugMsg( QString( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
   setSciLexerPython();
 }
 
-bool QgsCodeEditorPython::loadScript( const QString &script )
+bool QgsCodeEditorPython::loadScript( const QString& script )
 {
   QgsDebugMsg( QString( "The script file: %1" ).arg( script ) );
   QFile file( script );

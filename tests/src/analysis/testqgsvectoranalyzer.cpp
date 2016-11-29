@@ -26,9 +26,9 @@ class TestQgsVectorAnalyzer : public QObject
 
   public:
     TestQgsVectorAnalyzer()
-        : mpLineLayer( 0 )
-        , mpPolyLayer( 0 )
-        , mpPointLayer( 0 )
+      : mpLineLayer( 0 )
+      , mpPolyLayer( 0 )
+      , mpPointLayer( 0 )
     {}
 
   private slots:
@@ -47,9 +47,9 @@ class TestQgsVectorAnalyzer : public QObject
     void layerExtent();
   private:
     QgsGeometryAnalyzer mAnalyzer;
-    QgsVectorLayer * mpLineLayer;
-    QgsVectorLayer * mpPolyLayer;
-    QgsVectorLayer * mpPointLayer;
+    QgsVectorLayer* mpLineLayer;
+    QgsVectorLayer* mpPolyLayer;
+    QgsVectorLayer* mpPointLayer;
 
 };
 

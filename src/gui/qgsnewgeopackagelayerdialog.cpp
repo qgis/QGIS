@@ -51,11 +51,11 @@
 #define SUPPORT_FIELD_WIDTH
 #endif
 
-QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOkButton( nullptr )
-    , mTableNameEdited( false )
-    , mLayerIdentifierEdited( false )
+QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOkButton( nullptr )
+  , mTableNameEdited( false )
+  , mLayerIdentifierEdited( false )
 {
   setupUi( this );
 
@@ -277,8 +277,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
     msgBox.setIcon( QMessageBox::Question );
     msgBox.setWindowTitle( tr( "The file already exists." ) );
     msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
-    QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
-    QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
+    QPushButton* overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
+    QPushButton* addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
     msgBox.setStandardButtons( QMessageBox::Cancel );
     msgBox.setDefaultButton( addNewLayerButton );
     bool overwrite = false;
@@ -394,7 +394,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   }
 
   // Set options
-  char **options = nullptr;
+  char** options = nullptr;
 
   if ( overwriteTable )
     options = CSLSetNameValue( options, "OVERWRITE", "YES" );
@@ -491,11 +491,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   QString uri( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseEdit->text(), tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
-  QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
+  QgsVectorLayer* layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
   if ( layer->isValid() )
   {
     // register this layer with the central layers registry
-    QList<QgsMapLayer *> myList;
+    QList<QgsMapLayer*> myList;
     myList << layer;
     //addMapLayers returns a list of all successfully added layers
     //so we compare that to our original list.

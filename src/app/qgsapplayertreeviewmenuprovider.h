@@ -25,9 +25,9 @@ class QAction;
 struct LegendLayerAction
 {
   LegendLayerAction( QAction* a, const QString& m, bool all )
-      : action( a )
-      , menu( m )
-      , allLayers( all )
+    : action( a )
+    , menu( m )
+    , allLayers( all )
   {}
   QAction* action;
   QString menu;
@@ -64,9 +64,9 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
   private slots:
 
     void editVectorSymbol();
-    void setVectorSymbolColor( const QColor &color );
+    void setVectorSymbolColor( const QColor& color );
     void editSymbolLegendNodeSymbol();
-    void setSymbolLegendNodeColor( const QColor &color );
+    void setSymbolLegendNodeColor( const QColor& color );
 };
 
 #endif // QGSAPPLAYERTREEVIEWMENUPROVIDER_H

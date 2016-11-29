@@ -23,15 +23,15 @@
 #include <limits>
 
 QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), c )
-    , mPolylineStyleSymbol( nullptr )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), c )
+  , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
 
 QgsComposerPolyline::QgsComposerPolyline( const QPolygonF& polyline, QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), polyline, c )
-    , mPolylineStyleSymbol( nullptr )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), polyline, c )
+  , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
@@ -100,7 +100,7 @@ QString QgsComposerPolyline::displayName() const
   return tr( "<polyline>" );
 }
 
-void QgsComposerPolyline::_draw( QPainter *painter )
+void QgsComposerPolyline::_draw( QPainter* painter )
 {
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
@@ -123,7 +123,7 @@ void QgsComposerPolyline::_draw( QPainter *painter )
   painter->scale( dotsPerMM, dotsPerMM );
 }
 
-void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
+void QgsComposerPolyline::_readXmlStyle( const QDomElement& elmt )
 {
   mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt ) );
 }
@@ -135,7 +135,7 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
   emit frameChanged();
 }
 
-void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
+void QgsComposerPolyline::_writeXmlStyle( QDomDocument& doc, QDomElement& elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
                          mPolylineStyleSymbol.data(),

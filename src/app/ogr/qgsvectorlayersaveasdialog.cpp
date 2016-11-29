@@ -33,22 +33,22 @@ static const int COLUMN_IDX_TYPE = 1;
 static const int COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE = 2;
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mCRS( srsid )
-    , mLayer( 0 )
-    , mAttributeTableItemChangedSlotEnabled( true )
-    , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
-    , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
+  : QDialog( parent, fl )
+  , mCRS( srsid )
+  , mLayer( 0 )
+  , mAttributeTableItemChangedSlotEnabled( true )
+  , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
+  , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
 {
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mLayer( layer )
-    , mAttributeTableItemChangedSlotEnabled( true )
-    , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
-    , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer* layer, int options, QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mLayer( layer )
+  , mAttributeTableItemChangedSlotEnabled( true )
+  , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
+  , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
 {
   if ( layer )
   {
@@ -135,17 +135,17 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
 
   for ( it = options.constBegin(); it != options.constEnd(); ++it )
   {
-    QgsVectorFileWriter::Option *option = it.value();
-    QLabel *label = new QLabel( it.key() );
-    QWidget *control = nullptr;
+    QgsVectorFileWriter::Option* option = it.value();
+    QLabel* label = new QLabel( it.key() );
+    QWidget* control = nullptr;
     switch ( option->type )
     {
       case QgsVectorFileWriter::Int:
       {
-        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
+        QgsVectorFileWriter::IntOption* opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
         if ( opt )
         {
-          QSpinBox *sb = new QSpinBox();
+          QSpinBox* sb = new QSpinBox();
           sb->setObjectName( it.key() );
           sb->setValue( opt->defaultValue );
           control = sb;
@@ -155,7 +155,7 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
 
       case QgsVectorFileWriter::Set:
       {
-        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
+        QgsVectorFileWriter::SetOption* opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
         if ( opt )
         {
           QComboBox* cb = new QComboBox();
@@ -177,7 +177,7 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
 
       case QgsVectorFileWriter::String:
       {
-        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
+        QgsVectorFileWriter::StringOption* opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
         if ( opt )
         {
           QLineEdit* le = new QLineEdit( opt->defaultValue );
@@ -229,8 +229,8 @@ void QgsVectorLayerSaveAsDialog::accept()
         msgBox.setIcon( QMessageBox::Question );
         msgBox.setWindowTitle( tr( "The layer already exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file or overwrite the layer?" ) );
-        QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
-        QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
+        QPushButton* overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
+        QPushButton* overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
         msgBox.setStandardButtons( QMessageBox::Cancel );
         msgBox.setDefaultButton( QMessageBox::Cancel );
         int ret = msgBox.exec();
@@ -258,9 +258,9 @@ void QgsVectorLayerSaveAsDialog::accept()
         msgBox.setIcon( QMessageBox::Question );
         msgBox.setWindowTitle( tr( "The layer already exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file, overwrite the layer or append features to the layer?" ) );
-        QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
-        QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
-        QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to layer" ), QMessageBox::ActionRole );
+        QPushButton* overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
+        QPushButton* overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
+        QPushButton* appendToLayerButton = msgBox.addButton( tr( "Append to layer" ), QMessageBox::ActionRole );
         msgBox.setStandardButtons( QMessageBox::Cancel );
         msgBox.setDefaultButton( QMessageBox::Cancel );
         int ret = msgBox.exec();
@@ -279,8 +279,8 @@ void QgsVectorLayerSaveAsDialog::accept()
         msgBox.setIcon( QMessageBox::Question );
         msgBox.setWindowTitle( tr( "The layer already exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file or append features to the layer?" ) );
-        QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
-        QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to layer" ), QMessageBox::ActionRole );
+        QPushButton* overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
+        QPushButton* appendToLayerButton = msgBox.addButton( tr( "Append to layer" ), QMessageBox::ActionRole );
         msgBox.setStandardButtons( QMessageBox::Cancel );
         msgBox.setDefaultButton( QMessageBox::Cancel );
         int ret = msgBox.exec();
@@ -409,7 +409,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     {
       QgsField fld = mLayer->fields().at( i );
       Qt::ItemFlags flags = mLayer->providerType() != QLatin1String( "oracle" ) || !fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
-      QTableWidgetItem *item;
+      QTableWidgetItem* item;
       item = new QTableWidgetItem( fld.name() );
       item->setFlags( flags | Qt::ItemIsUserCheckable );
       item->setCheckState(( selectAllFields ) ? Qt::Checked : Qt::Unchecked );
@@ -422,7 +422,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       if ( foundFieldThatCanBeExportedAsDisplayedValue )
       {
         const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields()[i].name() );
-        QgsEditorWidgetFactory *factory = nullptr;
+        QgsEditorWidgetFactory* factory = nullptr;
         if ( flags == Qt::ItemIsEnabled &&
              setup.type() != QLatin1String( "TextEdit" ) &&
              ( factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() ) ) )
@@ -557,7 +557,7 @@ void QgsVectorLayerSaveAsDialog::on_mReplaceRawFieldValues_stateChanged( int )
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
 }
 
-void QgsVectorLayerSaveAsDialog::on_mAttributeTable_itemChanged( QTableWidgetItem * item )
+void QgsVectorLayerSaveAsDialog::on_mAttributeTable_itemChanged( QTableWidgetItem* item )
 {
   if ( !mAttributeTableItemChangedSlotEnabled )
     return;
@@ -713,7 +713,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption *opt =
+          QgsVectorFileWriter::HiddenOption* opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
           options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
@@ -765,7 +765,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption *opt =
+          QgsVectorFileWriter::HiddenOption* opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption*>( it.value() );
           options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;

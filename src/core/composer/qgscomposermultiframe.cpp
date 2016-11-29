@@ -19,20 +19,20 @@
 #include <QtCore>
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands )
-    : QgsComposerObject( c )
-    , mResizeMode( UseExistingFrames )
-    , mCreateUndoCommands( createUndoCommands )
-    , mIsRecalculatingSize( false )
+  : QgsComposerObject( c )
+  , mResizeMode( UseExistingFrames )
+  , mCreateUndoCommands( createUndoCommands )
+  , mIsRecalculatingSize( false )
 {
   mComposition->addMultiFrame( this );
   connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame()
-    : QgsComposerObject( nullptr )
-    , mResizeMode( UseExistingFrames )
-    , mCreateUndoCommands( false )
-    , mIsRecalculatingSize( false )
+  : QgsComposerObject( nullptr )
+  , mResizeMode( UseExistingFrames )
+  , mCreateUndoCommands( false )
+  , mIsRecalculatingSize( false )
 {
 }
 
@@ -335,7 +335,7 @@ QgsComposerFrame* QgsComposerMultiFrame::frame( int i ) const
   return mFrameItems.at( i );
 }
 
-int QgsComposerMultiFrame::frameIndex( QgsComposerFrame *frame ) const
+int QgsComposerMultiFrame::frameIndex( QgsComposerFrame* frame ) const
 {
   return mFrameItems.indexOf( frame );
 }

@@ -20,8 +20,8 @@
 
 
 QgsPreviewEffect::QgsPreviewEffect( QObject* parent )
-    : QGraphicsEffect( parent )
-    , mMode( PreviewGrayscale )
+  : QGraphicsEffect( parent )
+  , mMode( PreviewGrayscale )
 {
   //effect is disabled by default
   setEnabled( false );
@@ -61,11 +61,11 @@ void QgsPreviewEffect::draw( QPainter* painter )
   {
     case QgsPreviewEffect::PreviewGrayscale:
     {
-      QRgb * line;
+      QRgb* line;
 
       for ( int y = 0; y < image.height(); y++ )
       {
-        line = ( QRgb * )image.scanLine( y );
+        line = ( QRgb* )image.scanLine( y );
         for ( int x = 0; x < image.width(); x++ )
         {
           int gray = 0.21 * qRed( line[x] ) + 0.72 * qGreen( line[x] ) + 0.07 * qBlue( line[x] );
@@ -85,11 +85,11 @@ void QgsPreviewEffect::draw( QPainter* painter )
     case QgsPreviewEffect::PreviewProtanope:
     case QgsPreviewEffect::PreviewDeuteranope:
     {
-      QRgb * line;
+      QRgb* line;
 
       for ( int y = 0; y < image.height(); y++ )
       {
-        line = ( QRgb * )image.scanLine( y );
+        line = ( QRgb* )image.scanLine( y );
         for ( int x = 0; x < image.width(); x++ )
         {
           line[x] = simulateColorBlindness( line[x], mMode );
@@ -142,14 +142,14 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEf
   return qRgb( red, green, blue );
 }
 
-void QgsPreviewEffect::simulateProtanopeLMS( double& L, double &M, double &S )
+void QgsPreviewEffect::simulateProtanopeLMS( double& L, double& M, double& S )
 {
   //adjust L component to simulate vision of Protanope
   //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5)
   L = ( 2.02344 * M ) + ( -2.52581 * S );
 }
 
-void QgsPreviewEffect::simulateDeuteranopeLMS( double& L, double &M, double &S )
+void QgsPreviewEffect::simulateDeuteranopeLMS( double& L, double& M, double& S )
 {
   //adjust M component to simulate vision of Deuteranope
   //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5)

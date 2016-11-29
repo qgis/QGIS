@@ -25,8 +25,8 @@
 namespace QgisGui
 {
 
-  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+  bool GUI_EXPORT openFilesRememberingFilter( QString const& filterName,
+      QString const& filters, QStringList& selectedFiles, QString& enc, QString& title,
       bool cancelAll )
   {
     Q_UNUSED( enc );
@@ -83,7 +83,7 @@ namespace QgisGui
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, const QString& theMessage, const QString& defaultFilename )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget* theParent, const QString& theMessage, const QString& defaultFilename )
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
@@ -176,19 +176,19 @@ namespace QgisGui
     return qMakePair<QString, QString>( outputFileName, ext );
   }
 
-  QString createFileFilter_( QString const &longName, QString const &glob )
+  QString createFileFilter_( QString const& longName, QString const& glob )
   {
     return QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() );
   }
 
-  QString createFileFilter_( QString const &format )
+  QString createFileFilter_( QString const& format )
   {
     QString longName = format.toUpper() + " format";
     QString glob = "*." + format;
     return createFileFilter_( longName, glob );
   }
 
-  QFont getFont( bool &ok, const QFont &initial, const QString &title )
+  QFont getFont( bool& ok, const QFont& initial, const QString& title )
   {
     // parent is intentionally not set to 'this' as
     // that would make it follow the style sheet font

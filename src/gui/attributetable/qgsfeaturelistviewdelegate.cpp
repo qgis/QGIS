@@ -27,12 +27,12 @@
 #include <QMouseEvent>
 #include <QObject>
 
-QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
-    : QItemDelegate( parent )
-    , mFeatureSelectionModel( nullptr )
-    , mEditSelectionModel( nullptr )
-    , mListModel( listModel )
-    , mCurrentFeatureEdited( false )
+QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel* listModel, QObject* parent )
+  : QItemDelegate( parent )
+  , mFeatureSelectionModel( nullptr )
+  , mEditSelectionModel( nullptr )
+  , mListModel( listModel )
+  , mCurrentFeatureEdited( false )
 {
 }
 
@@ -48,7 +48,7 @@ QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElemen
   }
 }
 
-void QgsFeatureListViewDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
+void QgsFeatureListViewDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel )
 {
   mFeatureSelectionModel = featureSelectionModel;
 }
@@ -70,7 +70,7 @@ QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, 
   return QSize( option.rect.width(), qMax( height, option.fontMetrics.height() ) );
 }
 
-void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsFeatureListViewDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   static QPixmap selectedIcon;
   if ( selectedIcon.isNull() )

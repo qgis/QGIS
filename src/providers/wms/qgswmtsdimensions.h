@@ -37,13 +37,16 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
 
   public:
     //! Constructor
-    QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsWmtsDimensions( const QgsWmtsTileLayer& layer, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
     //! Destructor
     ~QgsWmtsDimensions();
 
-    void selectedDimensions( QHash<QString, QString> &dims );
+    void selectedDimensions( QHash<QString, QString>& dims );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 };
 
 

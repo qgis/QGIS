@@ -30,8 +30,8 @@ class TestProjectionIssues : public QObject
     Q_OBJECT
   public:
     TestProjectionIssues()
-        : mRasterLayer( 0 )
-        , mMapCanvas( 0 )
+      : mRasterLayer( 0 )
+      , mMapCanvas( 0 )
     {}
 
   private slots:
@@ -64,7 +64,7 @@ void TestProjectionIssues::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QList<QgsMapLayer *> mapLayers;
+  QList<QgsMapLayer*> mapLayers;
   mapLayers.append( mRasterLayer );
   QgsMapLayerRegistry::instance()->addMapLayers( mapLayers );
 

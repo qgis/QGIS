@@ -17,7 +17,7 @@
 #include "qgsvectorlayer.h"
 
 QgsTrackedVectorLayerTools::QgsTrackedVectorLayerTools()
-    : mBackend()
+  : mBackend()
 {
 }
 

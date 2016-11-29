@@ -54,7 +54,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     };
 
     //! Return pointer to the parent layer node
-    QgsLayerTreeLayer* layerNode() const { return mLayerNode; }
+    QgsLayerTreeLayer* layerNode() const
+    {
+      return mLayerNode;
+    }
 
     //! Return pointer to model owning this legend node
     QgsLayerTreeModel* model() const;
@@ -68,13 +71,29 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Set some data associated with the item. Default implementation does nothing and returns false.
     virtual bool setData( const QVariant& value, int role );
 
-    virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
-    virtual void setEmbeddedInParent( bool embedded ) { mEmbeddedInParent = embedded; }
+    virtual bool isEmbeddedInParent() const
+    {
+      return mEmbeddedInParent;
+    }
+    virtual void setEmbeddedInParent( bool embedded )
+    {
+      mEmbeddedInParent = embedded;
+    }
 
-    virtual QString userLabel() const { return mUserLabel; }
-    virtual void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; }
+    virtual QString userLabel() const
+    {
+      return mUserLabel;
+    }
+    virtual void setUserLabel( const QString& userLabel )
+    {
+      mUserLabel = userLabel;
+    }
 
-    virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ); return true; }
+    virtual bool isScaleOK( double scale ) const
+    {
+      Q_UNUSED( scale );
+      return true;
+    }
 
     /** Notification from model that information from associated map view has changed.
      *  Default implementation does nothing. */
@@ -159,17 +178,30 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     virtual void setEmbeddedInParent( bool embedded ) override;
 
-    void setUserLabel( const QString& userLabel ) override { mUserLabel = userLabel; updateLabel(); }
+    void setUserLabel( const QString& userLabel ) override
+    {
+      mUserLabel = userLabel;
+      updateLabel();
+    }
 
-    virtual bool isScaleOK( double scale ) const override { return mItem.isScaleOK( scale ); }
+    virtual bool isScaleOK( double scale ) const override
+    {
+      return mItem.isScaleOK( scale );
+    }
 
     virtual void invalidateMapBasedData() override;
 
     //! Set the icon size
     //! @note added in 2.10
-    void setIconSize( QSize sz ) { mIconSize = sz; }
+    void setIconSize( QSize sz )
+    {
+      mIconSize = sz;
+    }
     //! @note added in 2.10
-    QSize iconSize() const { return mIconSize; }
+    QSize iconSize() const
+    {
+      return mIconSize;
+    }
 
     /**
      * Calculates the minimum icon size to prevent cropping. When evaluating
@@ -230,7 +262,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     static const int indentSize = 20;
 
     // return a temporary context or null if legendMapViewData are not valid
-    QgsRenderContext * createTemporaryRenderContext() const;
+    QgsRenderContext* createTemporaryRenderContext() const;
 
     /** Sets all items belonging to the same layer as this node to the same check state.
      * @param state check state

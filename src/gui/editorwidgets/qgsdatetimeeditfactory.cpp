@@ -22,11 +22,11 @@
 #include <QSettings>
 
 QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper *QgsDateTimeEditFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
+QgsEditorWidgetWrapper* QgsDateTimeEditFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsDateTimeEditWrapper( vl, fieldIdx, editor, parent );
 }
@@ -36,7 +36,7 @@ QgsSearchWidgetWrapper* QgsDateTimeEditFactory::createSearchWidget( QgsVectorLay
   return new QgsDateTimeSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
-QgsEditorConfigWidget *QgsDateTimeEditFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+QgsEditorConfigWidget* QgsDateTimeEditFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsDateTimeEditConfig( vl, fieldIdx, parent );
 }

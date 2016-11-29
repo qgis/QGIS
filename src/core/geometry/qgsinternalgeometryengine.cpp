@@ -28,7 +28,7 @@
 #include <queue>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometry )
-    : mGeometry( geometry.geometry() )
+  : mGeometry( geometry.geometry() )
 {
 
 }
@@ -58,8 +58,8 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     linesToProcess << static_cast<QgsLineString*>( curve->segmentize() );
   }
 
-  QgsMultiPolygonV2 *multipolygon = linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr;
-  QgsPolygonV2 *polygon = nullptr;
+  QgsMultiPolygonV2* multipolygon = linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr;
+  QgsPolygonV2* polygon = nullptr;
 
   if ( !linesToProcess.empty() )
   {
@@ -102,11 +102,11 @@ class Cell
 {
   public:
     Cell( double x, double y, double h, const QgsPolygonV2* polygon )
-        : x( x )
-        , y( y )
-        , h( h )
-        , d( polygon->pointDistanceToBoundary( x, y ) )
-        , max( d + h * M_SQRT2 )
+      : x( x )
+      , y( y )
+      , h( h )
+      , d( polygon->pointDistanceToBoundary( x, y ) )
+      , max( d + h * M_SQRT2 )
     {}
 
     //! Cell center x

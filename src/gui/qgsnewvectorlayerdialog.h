@@ -36,7 +36,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     // @return fileName on success, empty string use aborted, QString::null if creation failed
     static QString runAndCreateLayer( QWidget* parent = nullptr, QString* enc = nullptr );
 
-    QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewVectorLayerDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
@@ -54,12 +54,15 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void on_mRemoveAttributeButton_clicked();
     void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
     void nameChanged( const QString& );
     void selectionChanged();
 
   private:
-    QPushButton *mOkButton;
+    QPushButton* mOkButton;
 };
 
 #endif //qgsnewvectorlayerdialog_H

@@ -58,7 +58,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /*
      * the current layer changed
      */
-    void currentLayerChanged( QgsMapLayer *layer );
+    void currentLayerChanged( QgsMapLayer* layer );
 
     /*
      * the current edition state changed
@@ -85,7 +85,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /**
      * Update select feature rubber band using a certain geometry
      */
-    void updateSelectFeature( const QgsGeometry &geom );
+    void updateSelectFeature( const QgsGeometry& geom );
 
     /**
      * Deletes the rubber band pointers and clears mRubberBands
@@ -149,7 +149,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QMap<QgsFeatureId, QList< QPair<QgsVertexId, QgsPointV2> > > mMoveVertices;
 
     //! Object containing selected feature and it's vertexes
-    QgsSelectedFeature *mSelectedFeature;
+    QgsSelectedFeature* mSelectedFeature;
 
     //! Dock widget which allows editing vertices
     QgsNodeEditor* mNodeEditor;
@@ -170,7 +170,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QgsPoint mClosestMapVertex;
 
     //! Active rubberband for selecting vertexes
-    QRubberBand *mSelectionRubberBand;
+    QRubberBand* mSelectionRubberBand;
 
     //! Rectangle defining area for selecting vertexes
     QRect* mRect;

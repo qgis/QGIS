@@ -27,9 +27,9 @@
 #include <QMenu>
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style )
-    : QgsPanelWidget()
-    , mLayer( layer )
-    , mStyle( style )
+  : QgsPanelWidget()
+  , mLayer( layer )
+  , mStyle( style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
@@ -278,9 +278,9 @@ void QgsRendererWidget::applyChanges()
 // QgsDataDefinedValueDialog
 //
 
-QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label )
-    : mSymbolList( symbolList )
-    , mLayer( layer )
+QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer* layer, const QString& label )
+  : mSymbolList( symbolList )
+  , mLayer( layer )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
@@ -309,12 +309,12 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -358,7 +358,7 @@ QgsDataDefined QgsDataDefinedValueDialog::symbolDataDefined() const
 
   // check that all symbols share the same size expression
   QgsDataDefined dd = symbolDataDefined( mSymbolList.back() );
-  Q_FOREACH ( QgsSymbol * it, mSymbolList )
+  Q_FOREACH ( QgsSymbol* it, mSymbolList )
   {
     if ( !it || symbolDataDefined( it ) != dd )
       return QgsDataDefined();
@@ -376,12 +376,12 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
     // shall we set the "en masse" expression for properties ?
     || dd.isActive() )
   {
-    Q_FOREACH ( QgsSymbol * it, mSymbolList )
+    Q_FOREACH ( QgsSymbol* it, mSymbolList )
       setDataDefined( it, dd );
   }
 }
 
-QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol* symbol ) const
 {
   const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedSize();
@@ -394,25 +394,25 @@ void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, const QgsDataD
 }
 
 
-QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol* symbol ) const
 {
   const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
   return marker->dataDefinedAngle();
 }
 
-void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd )
 {
   static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedAngle( dd );
 }
 
 
-QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol* symbol ) const
 {
   const QgsLineSymbol* line = static_cast<const QgsLineSymbol*>( symbol );
   return line->dataDefinedWidth();
 }
 
-void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd )
 {
   static_cast<QgsLineSymbol*>( symbol )->setDataDefinedWidth( dd );
 }

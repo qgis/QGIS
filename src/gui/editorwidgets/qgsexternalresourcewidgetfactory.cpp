@@ -20,7 +20,7 @@
 #include "qgsexternalresourceconfigdlg.h"
 
 QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

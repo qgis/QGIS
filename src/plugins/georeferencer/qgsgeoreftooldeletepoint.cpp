@@ -18,7 +18,7 @@
 #include "qgsgeoreftooldeletepoint.h"
 
 QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas* canvas )
-    : QgsMapToolEmitPoint( canvas )
+  : QgsMapToolEmitPoint( canvas )
 {
 }
 

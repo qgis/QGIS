@@ -123,7 +123,7 @@ void TestQgsGeometryImport::pointGeos()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create( 1, 2 );
+  GEOSCoordSequence* coord = GEOSCoordSeq_create( 1, 2 );
   GEOSCoordSeq_setX( coord, 0, x );
   GEOSCoordSeq_setY( coord, 0, y );
   GEOSGeometry* geosPt = GEOSGeom_createPoint( coord );
@@ -206,7 +206,7 @@ void TestQgsGeometryImport::linestringGeos()
   QFETCH( QVariantList, line );
 
   //create geos coord sequence first
-  GEOSCoordSequence *coord = GEOSCoordSeq_create( line.count(), 2 );
+  GEOSCoordSequence* coord = GEOSCoordSeq_create( line.count(), 2 );
   for ( int i = 0; i < line.count(); i++ )
   {
     QPointF pt = line.at( i ).toPointF();

@@ -35,7 +35,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
+    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer* layer = nullptr );
 
     //! Destructor
     virtual ~QgsSymbolsListWidget();
@@ -56,11 +56,14 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* layer() const { return mLayer; }
+    const QgsVectorLayer* layer() const
+    {
+      return mLayer;
+    }
 
   public slots:
 
-    void setSymbolFromStyle( const QModelIndex & index );
+    void setSymbolFromStyle( const QModelIndex& index );
     void setSymbolColor( const QColor& color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );

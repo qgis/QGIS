@@ -24,12 +24,18 @@ class QgsGeometryMultipartCheck : public QgsGeometryCheck
 
   public:
     explicit QgsGeometryMultipartCheck( QgsFeaturePool* featurePool )
-        : QgsGeometryCheck( FeatureCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+      : QgsGeometryCheck( FeatureCheck, featurePool ) {}
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Multipart object with only one feature" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
+    QString errorDescription() const override
+    {
+      return tr( "Multipart object with only one feature" );
+    }
+    QString errorName() const override
+    {
+      return QStringLiteral( "QgsGeometryMultipartCheck" );
+    }
   private:
     enum ResolutionMethod { ConvertToSingle, RemoveObject, NoChange };
 };

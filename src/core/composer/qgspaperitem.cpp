@@ -124,19 +124,19 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 //QgsPaperItem
 
 QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
-    mPageGrid( nullptr )
+  mPageGrid( nullptr )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( nullptr ), mPageMargin( 0 )
+  mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
-    mPageGrid( nullptr ), mPageMargin( 0 )
+  mPageGrid( nullptr ), mPageMargin( 0 )
 {
   initialize();
 }
@@ -213,7 +213,7 @@ void QgsPaperItem::calculatePageMargin()
   mPageMargin = maxBleed - ( 25.4 / mComposition->printResolution() );
 }
 
-bool QgsPaperItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsPaperItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );

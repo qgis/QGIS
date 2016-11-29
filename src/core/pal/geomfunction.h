@@ -82,7 +82,7 @@ namespace pal
        * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
        * \return convexHull's size
        */
-      static int convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull );
+      static int convexHullId( int* id, const double* const x, const double* const y, int n, int*& cHull );
 
       /**
        * Returns true if the two segments intersect.
@@ -96,10 +96,10 @@ namespace pal
        */
       static bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
                                            double x3, double y3, double x4, double y4,  // 2nd line segment
-                                           double *x, double *y );
+                                           double* x, double* y );
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
-      static int reorderPolygon( int nbPoints, double *x, double *y );
+      static int reorderPolygon( int nbPoints, double* x, double* y );
 
       /** Returns true if a GEOS prepared geometry totally contains a label candidate.
        * @param geom GEOS prepared geometry

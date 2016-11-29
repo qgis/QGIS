@@ -37,12 +37,12 @@ class TestQgsComposerRotation : public QObject
 
   public:
     TestQgsComposerRotation()
-        : mComposition( 0 )
-        , mComposerRect( 0 )
-        , mComposerLabel( 0 )
-        , mComposerMap( 0 )
-        , mMapSettings( 0 )
-        , mRasterLayer( 0 )
+      : mComposition( 0 )
+      , mComposerRect( 0 )
+      , mComposerLabel( 0 )
+      , mComposerMap( 0 )
+      , mMapSettings( 0 )
+      , mRasterLayer( 0 )
     {}
 
   private slots:
@@ -61,7 +61,7 @@ class TestQgsComposerRotation : public QObject
     QgsComposerShape* mComposerRect;
     QgsComposerLabel* mComposerLabel;
     QgsComposerMap* mComposerMap;
-    QgsMapSettings *mMapSettings;
+    QgsMapSettings* mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };

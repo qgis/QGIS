@@ -36,7 +36,10 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
        @return 0 in case of success*/
     int interpolatePoint( double x, double y, double& result ) override;
 
-    void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}
+    void setDistanceCoefficient( double p )
+    {
+      mDistanceCoefficient = p;
+    }
 
   private:
 

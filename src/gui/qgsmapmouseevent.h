@@ -84,20 +84,29 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @return True if there is a snapped point cached.
      */
-    bool isSnapped() const { return mSnapMatch.isValid(); }
+    bool isSnapped() const
+    {
+      return mSnapMatch.isValid();
+    }
 
     /**
      * @brief mapPoint returns the point in coordinates
      * @return the point in map coordinates, after snapping if requested in the event.
      */
-    inline QgsPoint mapPoint() const { return mMapPoint; }
+    inline QgsPoint mapPoint() const
+    {
+      return mMapPoint;
+    }
 
     /**
       * Returns the matching data from the most recently snapped point.
       * @return the snapping data structure
       * @note added in 2.14
       */
-    QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
+    QgsPointLocator::Match mapPointMatch() const
+    {
+      return mSnapMatch;
+    }
 
     /**
      * Set the (snapped) point this event points to in map coordinates.
@@ -112,14 +121,20 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @return The cursor position in map coordinates.
      */
-    QgsPoint originalMapPoint() const { return mMapPoint; }
+    QgsPoint originalMapPoint() const
+    {
+      return mMapPoint;
+    }
 
     /**
      * The snapped mouse cursor in pixel coordinates.
      *
      * @return The snapped mouse cursor position in pixel coordinates.
      */
-    QPoint pixelPoint() const { return mPixelPoint; }
+    QPoint pixelPoint() const
+    {
+      return mPixelPoint;
+    }
 
     /**
      * The unsnapped, real mouse cursor position in pixel coordinates.
@@ -127,7 +142,10 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @return Mouse position in pixel coordinates
      */
-    QPoint originalPixelPoint() const { return pos(); }
+    QPoint originalPixelPoint() const
+    {
+      return pos();
+    }
 
   private:
 

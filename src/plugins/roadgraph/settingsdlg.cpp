@@ -25,17 +25,17 @@
 
 //standard includes
 
-RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mSettings( settings )
+RgSettingsDlg::RgSettingsDlg( RgSettings* settings, QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mSettings( settings )
 {
 
   // create base widgets;
   setWindowTitle( tr( "Road graph plugin settings" ) );
-  QVBoxLayout *v = new QVBoxLayout( this );
+  QVBoxLayout* v = new QVBoxLayout( this );
 
-  QHBoxLayout *h = new QHBoxLayout();
-  QLabel *l = new QLabel( tr( "Time unit" ), this );
+  QHBoxLayout* h = new QHBoxLayout();
+  QLabel* l = new QLabel( tr( "Time unit" ), this );
   h->addWidget( l );
   mcbPluginsTimeUnit = new QComboBox( this );
   h->addWidget( mcbPluginsTimeUnit );
@@ -60,7 +60,7 @@ RgSettingsDlg::RgSettingsDlg( RgSettings *settings, QWidget* parent, Qt::WindowF
   mSettingsWidget = mSettings->getGui( this );
   v->addWidget( mSettingsWidget );
 
-  QDialogButtonBox *bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
+  QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
   connect( bb, SIGNAL( accepted() ), this, SLOT( on_buttonBox_accepted() ) );
   connect( bb, SIGNAL( rejected() ), this, SLOT( on_buttonBox_rejected() ) );
   connect( bb, SIGNAL( helpRequested() ), this, SLOT( on_buttonBox_helpRequested() ) );

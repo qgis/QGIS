@@ -30,9 +30,9 @@
 #include "qgsrasterinterface.h"
 #include "qgsrectangle.h"
 
-QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
-    : mInput( input )
-    , mOn( true )
+QgsRasterInterface::QgsRasterInterface( QgsRasterInterface* input )
+  : mInput( input )
+  , mOn( true )
 {
 }
 
@@ -40,10 +40,10 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
-void QgsRasterInterface::initStatistics( QgsRasterBandStats &theStatistics,
+void QgsRasterInterface::initStatistics( QgsRasterBandStats& theStatistics,
     int theBandNo,
     int theStats,
-    const QgsRectangle & theExtent,
+    const QgsRectangle& theExtent,
     int theSampleSize )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ), 4 );
@@ -99,7 +99,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &theStatistics,
 
 bool QgsRasterInterface::hasStatistics( int theBandNo,
                                         int theStats,
-                                        const QgsRectangle & theExtent,
+                                        const QgsRectangle& theExtent,
                                         int theSampleSize )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theStats = %2 theSampleSize = %3" ).arg( theBandNo ).arg( theStats ).arg( theSampleSize ), 4 );
@@ -121,7 +121,7 @@ bool QgsRasterInterface::hasStatistics( int theBandNo,
 
 QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
     int theStats,
-    const QgsRectangle & theExtent,
+    const QgsRectangle& theExtent,
     int theSampleSize )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theStats = %2 theSampleSize = %3" ).arg( theBandNo ).arg( theStats ).arg( theSampleSize ), 4 );
@@ -246,11 +246,11 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
   return myRasterBandStats;
 }
 
-void QgsRasterInterface::initHistogram( QgsRasterHistogram &theHistogram,
+void QgsRasterInterface::initHistogram( QgsRasterHistogram& theHistogram,
                                         int theBandNo,
                                         int theBinCount,
                                         double theMinimum, double theMaximum,
-                                        const QgsRectangle & theExtent,
+                                        const QgsRectangle& theExtent,
                                         int theSampleSize,
                                         bool theIncludeOutOfRange )
 {
@@ -370,7 +370,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &theHistogram,
 bool QgsRasterInterface::hasHistogram( int theBandNo,
                                        int theBinCount,
                                        double theMinimum, double theMaximum,
-                                       const QgsRectangle & theExtent,
+                                       const QgsRectangle& theExtent,
                                        int theSampleSize,
                                        bool theIncludeOutOfRange )
 {
@@ -396,7 +396,7 @@ bool QgsRasterInterface::hasHistogram( int theBandNo,
 QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
     int theBinCount,
     double theMinimum, double theMaximum,
-    const QgsRectangle & theExtent,
+    const QgsRectangle& theExtent,
     int theSampleSize,
     bool theIncludeOutOfRange )
 {
@@ -510,8 +510,8 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
 
 void QgsRasterInterface::cumulativeCut( int theBandNo,
                                         double theLowerCount, double theUpperCount,
-                                        double &theLowerValue, double &theUpperValue,
-                                        const QgsRectangle & theExtent,
+                                        double& theLowerValue, double& theUpperValue,
+                                        const QgsRectangle& theExtent,
                                         int theSampleSize )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 theLowerCount = %2 theUpperCount = %3 theSampleSize = %4" ).arg( theBandNo ).arg( theLowerCount ).arg( theUpperCount ).arg( theSampleSize ), 4 );

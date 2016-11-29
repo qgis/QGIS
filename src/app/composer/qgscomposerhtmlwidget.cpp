@@ -26,9 +26,9 @@
 
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( nullptr, html )
-    , mHtml( html )
-    , mFrame( frame )
+  : QgsComposerItemBaseWidget( nullptr, html )
+  , mHtml( html )
+  , mFrame( frame )
 {
   setupUi( this );
   setPanelTitle( tr( "HTML properties" ) );
@@ -69,11 +69,11 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
-    : QgsComposerItemBaseWidget( nullptr, nullptr )
-    , mHtml( nullptr )
-    , mFrame( nullptr )
-    , mHtmlEditor( nullptr )
-    , mStylesheetEditor( nullptr )
+  : QgsComposerItemBaseWidget( nullptr, nullptr )
+  , mHtml( nullptr )
+  , mFrame( nullptr )
+  , mHtmlEditor( nullptr )
+  , mStylesheetEditor( nullptr )
 {
 }
 
@@ -416,7 +416,7 @@ void QgsComposerHtmlWidget::on_mAddFramePushButton_clicked()
   //shift new frame so that it sits 10 units below current frame
   pos.ry() += mFrame->rect().height() + 10;
 
-  QgsComposerFrame * newFrame = mHtml->createNewFrame( mFrame, pos, mFrame->rect().size() );
+  QgsComposerFrame* newFrame = mHtml->createNewFrame( mFrame, pos, mFrame->rect().size() );
   mHtml->recalculateFrameSizes();
 
   //set new frame as selection

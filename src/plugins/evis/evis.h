@@ -92,7 +92,7 @@ class eVis: public QObject, public QgisPlugin
   public:
 
     //! Constructor
-    explicit eVis( QgisInterface * theInterface );
+    explicit eVis( QgisInterface* theInterface );
 
     //! Destructor */
     ~eVis();
@@ -117,7 +117,7 @@ class eVis: public QObject, public QgisPlugin
 
   private:
 
-    QgisInterface *mQGisIface;
+    QgisInterface* mQGisIface;
 
     QAction* mDatabaseConnectionActionPointer;
 

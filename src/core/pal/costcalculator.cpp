@@ -25,12 +25,12 @@
 
 using namespace pal;
 
-bool CostCalculator::candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 )
+bool CostCalculator::candidateSortGrow( const LabelPosition* c1, const LabelPosition* c2 )
 {
   return c1->cost() < c2->cost();
 }
 
-bool CostCalculator::candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 )
+bool CostCalculator::candidateSortShrink( const LabelPosition* c1, const LabelPosition* c2 )
 {
   return c1->cost() > c2->cost();
 }
@@ -93,7 +93,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<FeaturePart*, double, 2, double>* obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
@@ -147,19 +147,19 @@ void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <FeaturePart*, double, 2, double>* obstacles, double bbx[4], double bby[4] )
 {
   double amin[2];
   double amax[2];
 
-  PolygonCostCalculator *pCost = new PolygonCostCalculator( lp );
+  PolygonCostCalculator* pCost = new PolygonCostCalculator( lp );
 
   // center
   //cost = feat->getDistInside((this->x[0] + this->x[2])/2.0, (this->y[0] + this->y[2])/2.0 );
 
   pCost->update( lp->feature );
 
-  PointSet *extent = new PointSet( 4, bbx, bby );
+  PointSet* extent = new PointSet( 4, bbx, bby );
 
   pCost->update( extent );
 
@@ -174,7 +174,7 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <Feat
   delete pCost;
 }
 
-int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <FeaturePart*, double, 2, double>* obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
   if ( max_p > feat->lPos.count() )
@@ -219,7 +219,7 @@ int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <Feat
   return max_p;
 }
 
-PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
+PolygonCostCalculator::PolygonCostCalculator( LabelPosition* lp ) : lp( lp )
 {
   px = ( lp->x[0] + lp->x[2] ) / 2.0;
   py = ( lp->y[0] + lp->y[2] ) / 2.0;
@@ -228,7 +228,7 @@ PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   ok = false;
 }
 
-void PolygonCostCalculator::update( PointSet *pset )
+void PolygonCostCalculator::update( PointSet* pset )
 {
   double d = pset->minDistanceToPoint( px, py );
   if ( d < dist )

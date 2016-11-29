@@ -49,11 +49,11 @@ static QString quotedColumn( QString name )
 #define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
 
 
-QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
-    : QgsVectorDataProvider( uri )
-    , mValid( true )
-    , mCachedStatistics( false )
-    , mFeatureCount( 0 )
+QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const& uri )
+  : QgsVectorDataProvider( uri )
+  , mValid( true )
+  , mCachedStatistics( false )
+  , mFeatureCount( 0 )
 {
   mError.clear();
 
@@ -100,11 +100,11 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
 
 bool QgsVirtualLayerProvider::loadSourceLayers()
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &layer, mDefinition.sourceLayers() )
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& layer, mDefinition.sourceLayers() )
   {
     if ( layer.isReferenced() )
     {
-      QgsMapLayer *l = QgsMapLayerRegistry::instance()->mapLayer( layer.reference() );
+      QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layer.reference() );
       if ( !l )
       {
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
@@ -223,7 +223,7 @@ bool QgsVirtualLayerProvider::createIt()
   {
 
     QStringList tables = referencedTables( mDefinition.query() );
-    Q_FOREACH ( const QString &tname, tables )
+    Q_FOREACH ( const QString& tname, tables )
     {
       // is it in source layers ?
       if ( mDefinition.hasSourceLayer( tname ) )
@@ -232,7 +232,7 @@ bool QgsVirtualLayerProvider::createIt()
       }
       // is it in loaded layers ?
       bool found = false;
-      Q_FOREACH ( const QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+      Q_FOREACH ( const QgsMapLayer* l, QgsMapLayerRegistry::instance()->mapLayers() )
       {
         if ( l->type() != QgsMapLayer::VectorLayer )
           continue;
@@ -420,7 +420,7 @@ bool QgsVirtualLayerProvider::createIt()
     mTableName = mLayers[0].name;
 
     TableDef td = tableDefinitionFromVirtualTable( mSqlite.get(), mTableName );
-    Q_FOREACH ( const ColumnDef &c, td )
+    Q_FOREACH ( const ColumnDef& c, td )
     {
       if ( !c.isGeometry() )
       {
@@ -616,7 +616,7 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
  */
-QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString * uri )
+QGISEXTERN QgsVirtualLayerProvider* classFactory( const QString* uri )
 {
   return new QgsVirtualLayerProvider( *uri );
 }

@@ -84,13 +84,13 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
   return environment;
 }
 
-QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                                bool direct, QWidget *parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , QgsGrassModuleBase()
-    , mOptions( 0 )
-    , mSuccess( false )
-    , mDirect( direct )
+QgsGrassModule::QgsGrassModule( QgsGrassTools* tools, QString moduleName, QgisInterface* iface,
+                                bool direct, QWidget* parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , QgsGrassModuleBase()
+  , mOptions( 0 )
+  , mSuccess( false )
+  , mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
@@ -159,7 +159,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   mXName = xName;
 #endif
 
-  QVBoxLayout *layout = new QVBoxLayout( mTabWidget->widget( 0 ) );
+  QVBoxLayout* layout = new QVBoxLayout( mTabWidget->widget( 0 ) );
   layout->setContentsMargins( 0, 0, 0, 0 );
   if ( xName == QLatin1String( "r.mapcalc" ) )
   {
@@ -171,7 +171,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
     mOptions = new QgsGrassModuleStandardOptions( mTools, this,
         mIface, mXName, qDocElem, mDirect, mTabWidget->widget( 0 ) );
   }
-  layout->addWidget( dynamic_cast<QWidget *>( mOptions ) );
+  layout->addWidget( dynamic_cast<QWidget*>( mOptions ) );
 
   if ( !mOptions->errors().isEmpty() )
   {
@@ -207,8 +207,8 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   connect( &mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( readStderr() ) );
   connect( &mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( finished( int, QProcess::ExitStatus ) ) );
 
-  const char *env = "GRASS_MESSAGE_FORMAT=gui";
-  char *envstr = new char[strlen( env )+1];
+  const char* env = "GRASS_MESSAGE_FORMAT=gui";
+  char* envstr = new char[strlen( env )+1];
   strcpy( envstr, env );
   putenv( envstr );
 
@@ -500,13 +500,13 @@ void QgsGrassModule::run()
         QMessageBox questionBox( QMessageBox::Question, tr( "Warning" ),
                                  tr( "Input %1 outside current region!" ).arg( outsideRegion.join( QStringLiteral( "," ) ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel );
-        QPushButton *resetButton = nullptr;
+        QPushButton* resetButton = nullptr;
         if ( QgsGrass::versionMajor() > 6 || ( QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 ) )
         {
           resetButton = questionBox.addButton( tr( "Use Input Region" ), QMessageBox::DestructiveRole );
         }
         questionBox.exec();
-        QAbstractButton *clicked = questionBox.clickedButton();
+        QAbstractButton* clicked = questionBox.clickedButton();
         if ( clicked == questionBox.button( QMessageBox::Cancel ) )
           return;
         if ( clicked == resetButton )
@@ -862,7 +862,7 @@ void QgsGrassModule::viewOutput()
                    QgsGrass::getDefaultLocation(),
                    QgsGrass::getDefaultMapset(), map );
       }
-      catch ( QgsGrass::Exception &e )
+      catch ( QgsGrass::Exception& e )
       {
         QgsDebugMsg( e.what() );
         continue;
@@ -921,7 +921,7 @@ void QgsGrassModule::viewOutput()
   }
 }
 
-QgisInterface *QgsGrassModule::qgisIface()
+QgisInterface* QgsGrassModule::qgisIface()
 {
   return mIface;
 }
@@ -951,7 +951,7 @@ QString QgsGrassModule::libraryPathVariable()
 #endif
 }
 
-void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
+void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment& environment )
 {
   QString pathVariable = libraryPathVariable();
   QString separator;

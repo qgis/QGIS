@@ -182,13 +182,19 @@ class CORE_EXPORT QgsMapToPixel
      * @see yCenter()
      * @note added in QGIS 3.0
      */
-    double xCenter() const { return mXCenter; }
+    double xCenter() const
+    {
+      return mXCenter;
+    }
 
     /** Returns the center y-coordinate for the transform.
      * @see xCenter()
      * @note added in QGIS 3.0
      */
-    double yCenter() const { return mYCenter; }
+    double yCenter() const
+    {
+      return mYCenter;
+    }
 
   private:
     double mMapUnitsPerPixel;

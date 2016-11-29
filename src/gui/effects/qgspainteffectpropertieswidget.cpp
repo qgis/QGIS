@@ -66,9 +66,9 @@ static void _initWidgetFunctions()
 }
 
 
-QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget *parent )
-    : QWidget( parent )
-    , mEffect( effect )
+QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget* parent )
+  : QWidget( parent )
+  , mEffect( effect )
 {
   setupUi( this );
   _initWidgetFunctions();

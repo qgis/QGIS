@@ -29,9 +29,9 @@
 #include "qgsrasterrenderer.h"
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent )
-    : QObject( parent )
-    , mLayerNode( nodeL )
-    , mEmbeddedInParent( false )
+  : QObject( parent )
+  , mLayerNode( nodeL )
+  , mEmbeddedInParent( false )
 {
 }
 
@@ -132,10 +132,10 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 
 
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mItem( item )
-    , mSymbolUsesMapUnits( false )
-    , mIconSize( 16, 16 )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mItem( item )
+  , mSymbolUsesMapUnits( false )
+  , mIconSize( 16, 16 )
 {
   updateLabel();
 
@@ -222,7 +222,7 @@ void QgsSymbolLegendNode::uncheckAllItems()
 }
 
 inline
-QgsRenderContext * QgsSymbolLegendNode::createTemporaryRenderContext() const
+QgsRenderContext* QgsSymbolLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
   double mupp = 0.0;
@@ -479,10 +479,10 @@ void QgsSymbolLegendNode::updateLabel()
 
 
 QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon, QObject* parent, const QString& key )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mLabel( label )
-    , mIcon( icon )
-    , mKey( key )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mLabel( label )
+  , mIcon( icon )
+  , mKey( key )
 {
 }
 
@@ -502,8 +502,8 @@ QVariant QgsSimpleLegendNode::data( int role ) const
 // -------------------------------------------------------------------------
 
 QgsImageLegendNode::QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mImage( img )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mImage( img )
 {
 }
 
@@ -535,9 +535,9 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemCo
 // -------------------------------------------------------------------------
 
 QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mColor( color )
-    , mLabel( label )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mColor( color )
+  , mLabel( label )
 {
 }
 
@@ -591,8 +591,8 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
 // -------------------------------------------------------------------------
 
 QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent )
-    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-    , mValid( false )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mValid( false )
 {
 }
 

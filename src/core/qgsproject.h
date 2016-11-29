@@ -336,7 +336,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList& invisibleLayers );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -387,7 +387,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
      * @note added in 2.4
      */
-    QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
+    QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const
+    {
+      return mLayerTreeRegistryBridge;
+    }
 
     /** Returns pointer to the project's map theme collection.
      * @note added in QGIS 2.12
@@ -398,7 +401,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Set a list of layers which should not be taken into account on map identification
      */
-    void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
+    void setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
@@ -523,7 +526,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @param layerElem The layer element from the project file
      * @param doc The document
      */
-    void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
+    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc );
 
     //! emitted when the project file has been written and closed
     void projectSaved();
@@ -688,6 +691,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 /** Return the version string found in the given DOM document
    @returns the version string or an empty string if none found
  */
-CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
+CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const& doc );
 
 #endif

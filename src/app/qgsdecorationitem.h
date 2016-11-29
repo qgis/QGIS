@@ -44,18 +44,30 @@ class APP_EXPORT QgsDecorationItem: public QObject
     //! Destructor
     virtual ~ QgsDecorationItem();
 
-    void setEnabled( bool enabled ) { mEnabled = enabled; }
-    bool enabled() const { return mEnabled; }
+    void setEnabled( bool enabled )
+    {
+      mEnabled = enabled;
+    }
+    bool enabled() const
+    {
+      return mEnabled;
+    }
 
     /** Returns the current placement for the item.
      * @see setPlacement()
      */
-    Placement placement() const { return mPlacement; }
+    Placement placement() const
+    {
+      return mPlacement;
+    }
 
     /** Sets the placement of the item.
      * @see placement()
      */
-    void setPlacement( Placement placement ) { mPlacement = placement; }
+    void setPlacement( Placement placement )
+    {
+      mPlacement = placement;
+    }
 
   signals:
     void toggled( bool t );
@@ -67,12 +79,15 @@ class APP_EXPORT QgsDecorationItem: public QObject
     virtual void saveToProject();
 
     //! this does the meaty bit of the work
-    virtual void render( QPainter * ) {}
+    virtual void render( QPainter* ) {}
     //! Show the dialog box
     virtual void run() {}
 
-    virtual void setName( const char *name );
-    virtual QString name() { return mName; }
+    virtual void setName( const char* name );
+    virtual QString name()
+    {
+      return mName;
+    }
 
     //! Redraws the decoration
     void update();

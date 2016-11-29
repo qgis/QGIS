@@ -33,8 +33,8 @@
 #if 0
 QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
                     QString comment )
-    : mName( nam ), mType( typ ), mLength( len ), mPrecision( prec ), mNumeric( num )
-    , mComment( comment )
+  : mName( nam ), mType( typ ), mLength( len ), mPrecision( prec ), mNumeric( num )
+  , mComment( comment )
 {
   // This function used to lower case the field name since some stores
   // use upper case (eg. shapefiles), but that caused problems with
@@ -50,8 +50,8 @@ QgsField::QgsField( const QString& name, QVariant::Type type,
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
 
-QgsField::QgsField( const QgsField &other )
-    : d( other.d )
+QgsField::QgsField( const QgsField& other )
+  : d( other.d )
 {
 
 }
@@ -62,7 +62,7 @@ QgsField::QgsField( const QgsField &other )
  * See details in QEP #17
  ****************************************************************************/
 
-QgsField &QgsField::operator =( const QgsField & other )
+QgsField& QgsField::operator =( const QgsField& other )
 {
   d = other.d;
   return *this;
@@ -331,8 +331,8 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
   quint32 type, subType, length, precision, constraints, originNotNull, originUnique, originExpression, strengthNotNull, strengthUnique, strengthExpression;
   QString name, typeName, comment, alias, defaultValueExpression, constraintExpression, constraintDescription;
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
-  >> defaultValueExpression >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-  constraintExpression >> constraintDescription >> subType;
+     >> defaultValueExpression >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
+     constraintExpression >> constraintDescription >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );

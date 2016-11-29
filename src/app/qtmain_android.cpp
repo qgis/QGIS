@@ -36,20 +36,20 @@
 
 #include <jni.h>
 
-static JavaVM *m_javaVM = NULL;
-static JNIEnv *m_env = NULL;
+static JavaVM* m_javaVM = NULL;
+static JNIEnv* m_env = NULL;
 static jobject objptr;
 static QSemaphore m_quitAppSemaphore;
 static QList<QByteArray> m_applicationParams;
-static const char * const QtNativeClassPathName = "org/kde/necessitas/industrius/QtNative";
+static const char* const QtNativeClassPathName = "org/kde/necessitas/industrius/QtNative";
 
-extern "C" int main( int, char ** ); //use the standard main method to start the application
-static void * startMainMethod( void * /*data*/ )
+extern "C" int main( int, char** );  //use the standard main method to start the application
+static void* startMainMethod( void* /*data*/ )
 {
 
-  char **  params;
+  char**   params;
   params = ( char** )malloc( sizeof( char* ) * m_applicationParams.length() );
-  for ( int i = 0;i < m_applicationParams.size();i++ )
+  for ( int i = 0; i < m_applicationParams.size(); i++ )
     params[i] = ( char* )m_applicationParams[i].constData();
 
   int ret = main( m_applicationParams.length(), params );
@@ -77,7 +77,7 @@ static void * startMainMethod( void * /*data*/ )
 static jboolean startQtApp( JNIEnv* env, jobject /*object*/, jstring paramsString, jstring environmentString )
 {
   qDebug() << "startQtApp";
-  const char * nativeString = env->GetStringUTFChars( environmentString, 0 );
+  const char* nativeString = env->GetStringUTFChars( environmentString, 0 );
   QByteArray string = nativeString;
   env->ReleaseStringUTFChars( environmentString, nativeString );
   m_applicationParams = string.split( '\t' );
@@ -103,7 +103,7 @@ static jboolean startQtApp( JNIEnv* env, jobject /*object*/, jstring paramsStrin
 
 static JNINativeMethod methods[] =
 {
-  {"startQtApp", "(Ljava/lang/String;Ljava/lang/String;)V", ( void * )startQtApp}
+  {"startQtApp", "(Ljava/lang/String;Ljava/lang/String;)V", ( void* )startQtApp}
 };
 
 /*

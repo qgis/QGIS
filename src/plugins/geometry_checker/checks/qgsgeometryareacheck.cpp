@@ -18,7 +18,7 @@
 #include "qgsgeometryareacheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& /*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds& ids ) const
 {
   const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
@@ -55,7 +55,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
   }
 }
 
-void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes &changes ) const
+void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -122,7 +122,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 }
 
-bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString& errMsg ) const
+bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, int method, int mergeAttributeIndex, Changes& changes, QString& errMsg ) const
 {
   double maxVal = 0.;
   QgsFeature mergeFeature;

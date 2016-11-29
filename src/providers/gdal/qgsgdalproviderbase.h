@@ -46,10 +46,10 @@ class QgsGdalProviderBase
     static void registerGdalDrivers();
 
     //! Wrapper function for GDALOpen to get around possible bugs in GDAL
-    static GDALDatasetH  gdalOpen( const char *pszFilename, GDALAccess eAccess );
+    static GDALDatasetH  gdalOpen( const char* pszFilename, GDALAccess eAccess );
 
     //! Wrapper function for GDALRasterIO to get around possible bugs in GDAL
-    static CPLErr gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback = nullptr );
+    static CPLErr gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void* pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback = nullptr );
 
     //! Wrapper function for GDALRasterIO to get around possible bugs in GDAL
     static int gdalGetOverviewCount( GDALRasterBandH hBand );

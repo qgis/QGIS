@@ -23,8 +23,8 @@
 #include <Qsci/qscilexersql.h>
 
 
-QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
-    : QgsCodeEditor( parent )
+QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget* parent )
+  : QgsCodeEditor( parent )
 {
   if ( !parent )
   {
@@ -52,9 +52,12 @@ class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
 {
   public:
     //! constructor
-    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
+    explicit QgsCaseInsensitiveLexerSQL( QObject* parent = 0 ) : QsciLexerSQL( parent ) {}
 
-    bool caseSensitive() const override { return false; }
+    bool caseSensitive() const override
+    {
+      return false;
+    }
 };
 
 void QgsCodeEditorSQL::setSciLexerSQL()

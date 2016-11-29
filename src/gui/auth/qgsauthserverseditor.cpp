@@ -28,12 +28,12 @@
 #include "qgsauthguiutils.h"
 #include "qgslogger.h"
 
-QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
-    : QWidget( parent )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
-    , mRootSslConfigItem( nullptr )
+QgsAuthServersEditor::QgsAuthServersEditor( QWidget* parent )
+  : QWidget( parent )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
+  , mRootSslConfigItem( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -58,8 +58,8 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( treeServerConfigs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
              this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
-    connect( treeServerConfigs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeServerConfigs, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
+             this, SLOT( handleDoubleClick( QTreeWidgetItem*, int ) ) );
 
     connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshSslConfigsView() ) );
 
@@ -129,7 +129,7 @@ void QgsAuthServersEditor::refreshSslConfigsView()
   populateSslConfigsView();
 }
 
-void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
+void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem* item,
     const QList<QgsAuthConfigSslServer>& configs,
     QgsAuthServersEditor::ConfigType conftype )
 {
@@ -145,7 +145,7 @@ void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
 
 void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer>& configs,
     QgsAuthServersEditor::ConfigType conftype,
-    QTreeWidgetItem *parent )
+    QTreeWidgetItem* parent )
 {
   if ( configs.size() < 1 )
     return;
@@ -162,9 +162,9 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   QMap< QString, QList<QgsAuthConfigSslServer> >::const_iterator it = orgconfigs.constBegin();
   for ( ; it != orgconfigs.constEnd(); ++it )
   {
-    QTreeWidgetItem * grpitem( new QTreeWidgetItem( parent,
-                               QStringList() << it.key(),
-                               ( int )QgsAuthServersEditor::OrgName ) );
+    QTreeWidgetItem* grpitem( new QTreeWidgetItem( parent,
+                              QStringList() << it.key(),
+                              ( int )QgsAuthServersEditor::OrgName ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -184,7 +184,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
 
 void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslServer>& configs,
     QgsAuthServersEditor::ConfigType conftype,
-    QTreeWidgetItem *parent )
+    QTreeWidgetItem* parent )
 {
   if ( configs.size() < 1 )
     return;
@@ -207,7 +207,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
     coltxts << QString( config.sslHostPort() );
     coltxts << cert.expiryDate().toString();
 
-    QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )conftype ) );
+    QTreeWidgetItem* item( new QTreeWidgetItem( parent, coltxts, ( int )conftype ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
@@ -250,7 +250,7 @@ void QgsAuthServersEditor::checkSelection()
   btnEditServer->setEnabled( isconfig );
 }
 
-void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
+void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem* item, int col )
 {
   Q_UNUSED( col );
   bool isconfig = true;
@@ -275,7 +275,7 @@ void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 
 void QgsAuthServersEditor::on_btnAddServer_clicked()
 {
-  QgsAuthSslImportDialog *dlg = new QgsAuthSslImportDialog( this );
+  QgsAuthSslImportDialog* dlg = new QgsAuthSslImportDialog( this );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 580, 512 );
   if ( dlg->exec() )
@@ -376,7 +376,7 @@ void QgsAuthServersEditor::on_btnEditServer_clicked()
   QgsAuthConfigSslServer config( QgsAuthManager::instance()->getSslCertCustomConfig( digest, hostport ) );
   QSslCertificate cert( config.sslCertificate() );
 
-  QgsAuthSslConfigDialog * dlg = new QgsAuthSslConfigDialog( this, cert, hostport );
+  QgsAuthSslConfigDialog* dlg = new QgsAuthSslConfigDialog( this, cert, hostport );
   dlg->sslCustomConfigWidget()->setConfigCheckable( false );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 500, 500 );
@@ -404,7 +404,7 @@ void QgsAuthServersEditor::authMessageOut( const QString& message, const QString
   messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
 }
 
-void QgsAuthServersEditor::showEvent( QShowEvent *e )
+void QgsAuthServersEditor::showEvent( QShowEvent* e )
 {
   if ( !mDisabled )
   {
@@ -413,7 +413,7 @@ void QgsAuthServersEditor::showEvent( QShowEvent *e )
   QWidget::showEvent( e );
 }
 
-QgsMessageBar * QgsAuthServersEditor::messageBar()
+QgsMessageBar* QgsAuthServersEditor::messageBar()
 {
   return msgBar;
 }

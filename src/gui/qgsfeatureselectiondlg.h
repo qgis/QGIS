@@ -28,7 +28,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     Q_OBJECT
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent = nullptr );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext& context, QWidget* parent = nullptr );
 
     /**
      * Get the selected features

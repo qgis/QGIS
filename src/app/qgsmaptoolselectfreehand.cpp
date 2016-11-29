@@ -24,8 +24,8 @@ email                : jpalmer at linz dot govt dot nz
 
 
 QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;

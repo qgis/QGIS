@@ -32,8 +32,8 @@
 #include <QImageWriter>
 
 QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -49,16 +49,16 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
 }
 
 QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
   QSet<QString> defaultActionScopes;
   defaultActionScopes << QStringLiteral( "Canvas" )
-  << QStringLiteral( "FieldSpecific" )
-  << QStringLiteral( "AttributeTableRow" )
-  << QStringLiteral( "FeatureForm" );
+                      << QStringLiteral( "FieldSpecific" )
+                      << QStringLiteral( "AttributeTableRow" )
+                      << QStringLiteral( "FeatureForm" );
 
   init( defaultActionScopes );
 }

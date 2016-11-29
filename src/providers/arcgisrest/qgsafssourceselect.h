@@ -31,8 +31,8 @@ class QgsAfsSourceSelect: public QgsSourceSelectDialog
 
   protected:
     bool connectToService( const QgsOwsConnection& connection ) override;
-    void buildQuery( const QgsOwsConnection &connection, const QModelIndex& ) override;
-    QString getLayerURI( const QgsOwsConnection &connection,
+    void buildQuery( const QgsOwsConnection& connection, const QModelIndex& ) override;
+    QString getLayerURI( const QgsOwsConnection& connection,
                          const QString& layerTitle, const QString& layerName,
                          const QString& crs = QString(),
                          const QString& filter = QString(),

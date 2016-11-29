@@ -30,8 +30,8 @@ class TestQgsVectorDataProvider : public QObject
     Q_OBJECT
   public:
     TestQgsVectorDataProvider()
-        : vlayerPoints( 0 )
-        , vlayerLines( 0 )
+      : vlayerPoints( 0 )
+      , vlayerLines( 0 )
     {}
 
   private slots:

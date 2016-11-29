@@ -63,9 +63,9 @@ class TestQgsAuthManager: public QObject
 
 
 TestQgsAuthManager::TestQgsAuthManager()
-    : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
-    , mTempDir( QDir::tempPath() + "/auth" )
-    , mPass( "pass" )
+  : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
+  , mTempDir( QDir::tempPath() + "/auth" )
+  , mPass( "pass" )
 {
 }
 
@@ -134,7 +134,7 @@ void TestQgsAuthManager::cleanupTempDir()
   QDir tmpDir = QDir( mTempDir );
   if ( tmpDir.exists() )
   {
-    Q_FOREACH ( const QString &tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
+    Q_FOREACH ( const QString& tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
     {
       QVERIFY2( tmpDir.remove( mTempDir + '/' + tf ), qPrintable( "Could not remove " + mTempDir + '/' + tf ) );
     }
@@ -177,7 +177,7 @@ void TestQgsAuthManager::testMasterPassword()
 {
   // password is already stored/set in initTestCase()
   // NOTE: leave it in the same state when done with this test
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager* authm = QgsAuthManager::instance();
 
   QVERIFY( authm->masterPasswordIsSet() );
   QVERIFY( authm->masterPasswordHashInDb() );
@@ -221,7 +221,7 @@ void TestQgsAuthManager::testAuthConfigs()
   QList<QgsAuthMethodConfig> configs( registerAuthConfigs() );
   QVERIFY( !configs.isEmpty() );
 
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager* authm = QgsAuthManager::instance();
 
   // test storing/loading/updating
   Q_FOREACH ( QgsAuthMethodConfig config, configs )
@@ -259,7 +259,7 @@ void TestQgsAuthManager::testAuthConfigs()
     QVERIFY( config == config2 );
 
     // changed config should update then correctly roundtrip
-    Q_FOREACH ( const QString &key, config2.configMap().keys() )
+    Q_FOREACH ( const QString& key, config2.configMap().keys() )
     {
       config2.setConfig( key, config2.configMap().value( key ) + "changed" );
     }
@@ -336,7 +336,7 @@ void TestQgsAuthManager::testAuthMethods()
   QList<QgsAuthMethodConfig> configs( registerAuthConfigs() );
   QVERIFY( !configs.isEmpty() );
 
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager* authm = QgsAuthManager::instance();
 
   Q_FOREACH ( QgsAuthMethodConfig config, configs )
   {
@@ -347,7 +347,7 @@ void TestQgsAuthManager::testAuthMethods()
     QString configid( config.id() );
 
     // correct method, loaded from core auth method plugin registry, should be returned
-    QgsAuthMethod *authmethod = authm->configAuthMethod( configid );
+    QgsAuthMethod* authmethod = authm->configAuthMethod( configid );
     QVERIFY( authmethod );
     QCOMPARE( authmethod->key(), config.method() );
 

@@ -36,17 +36,17 @@
 #include <QPainter>
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mCustomLayerTree( nullptr )
-    , mComposerMap( nullptr )
-    , mLegendFilterByMap( false )
-    , mLegendFilterByExpression( false )
-    , mFilterOutAtlas( false )
-    , mFilterAskedForUpdate( false )
-    , mInAtlas( false )
-    , mInitialMapScaleCalculated( false )
-    , mForceResize( false )
-    , mSizeToContents( true )
+  : QgsComposerItem( composition )
+  , mCustomLayerTree( nullptr )
+  , mComposerMap( nullptr )
+  , mLegendFilterByMap( false )
+  , mLegendFilterByExpression( false )
+  , mFilterOutAtlas( false )
+  , mFilterAskedForUpdate( false )
+  , mInAtlas( false )
+  , mInitialMapScaleCalculated( false )
+  , mForceResize( false )
+  , mSizeToContents( true )
 {
   mLegendModel = new QgsLegendModelV2( QgsProject::instance()->layerTreeRoot() );
 
@@ -59,18 +59,18 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 }
 
 QgsComposerLegend::QgsComposerLegend()
-    : QgsComposerItem( nullptr )
-    , mLegendModel( nullptr )
-    , mCustomLayerTree( nullptr )
-    , mComposerMap( nullptr )
-    , mLegendFilterByMap( false )
-    , mLegendFilterByExpression( false )
-    , mFilterOutAtlas( false )
-    , mFilterAskedForUpdate( false )
-    , mInAtlas( false )
-    , mInitialMapScaleCalculated( false )
-    , mForceResize( false )
-    , mSizeToContents( true )
+  : QgsComposerItem( nullptr )
+  , mLegendModel( nullptr )
+  , mCustomLayerTree( nullptr )
+  , mComposerMap( nullptr )
+  , mLegendFilterByMap( false )
+  , mLegendFilterByExpression( false )
+  , mFilterOutAtlas( false )
+  , mFilterAskedForUpdate( false )
+  , mInAtlas( false )
+  , mInitialMapScaleCalculated( false )
+  , mForceResize( false )
+  , mSizeToContents( true )
 {
 
 }
@@ -275,62 +275,176 @@ void QgsComposerLegend::setTitle( const QString& t )
     mComposition->itemsModel()->updateItemDisplayName( this );
   }
 }
-QString QgsComposerLegend::title() const { return mSettings.title(); }
+QString QgsComposerLegend::title() const
+{
+  return mSettings.title();
+}
 
-Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
-void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
+Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const
+{
+  return mSettings.titleAlignment();
+}
+void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment )
+{
+  mSettings.setTitleAlignment( alignment );
+}
 
-QgsComposerLegendStyle& QgsComposerLegend::rstyle( QgsComposerLegendStyle::Style s ) { return mSettings.rstyle( s ); }
-QgsComposerLegendStyle QgsComposerLegend::style( QgsComposerLegendStyle::Style s ) const { return mSettings.style( s ); }
-void QgsComposerLegend::setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style ) { mSettings.setStyle( s, style ); }
+QgsComposerLegendStyle& QgsComposerLegend::rstyle( QgsComposerLegendStyle::Style s )
+{
+  return mSettings.rstyle( s );
+}
+QgsComposerLegendStyle QgsComposerLegend::style( QgsComposerLegendStyle::Style s ) const
+{
+  return mSettings.style( s );
+}
+void QgsComposerLegend::setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style )
+{
+  mSettings.setStyle( s, style );
+}
 
-QFont QgsComposerLegend::styleFont( QgsComposerLegendStyle::Style s ) const { return mSettings.style( s ).font(); }
-void QgsComposerLegend::setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f ) { rstyle( s ).setFont( f ); }
+QFont QgsComposerLegend::styleFont( QgsComposerLegendStyle::Style s ) const
+{
+  return mSettings.style( s ).font();
+}
+void QgsComposerLegend::setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f )
+{
+  rstyle( s ).setFont( f );
+}
 
-void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
-void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
+void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, double margin )
+{
+  rstyle( s ).setMargin( margin );
+}
+void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin )
+{
+  rstyle( s ).setMargin( side, margin );
+}
 
-double QgsComposerLegend::boxSpace() const { return mSettings.boxSpace(); }
-void QgsComposerLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
+double QgsComposerLegend::boxSpace() const
+{
+  return mSettings.boxSpace();
+}
+void QgsComposerLegend::setBoxSpace( double s )
+{
+  mSettings.setBoxSpace( s );
+}
 
-double QgsComposerLegend::columnSpace() const { return mSettings.columnSpace(); }
-void QgsComposerLegend::setColumnSpace( double s ) { mSettings.setColumnSpace( s ); }
+double QgsComposerLegend::columnSpace() const
+{
+  return mSettings.columnSpace();
+}
+void QgsComposerLegend::setColumnSpace( double s )
+{
+  mSettings.setColumnSpace( s );
+}
 
-QColor QgsComposerLegend::fontColor() const { return mSettings.fontColor(); }
-void QgsComposerLegend::setFontColor( const QColor& c ) { mSettings.setFontColor( c ); }
+QColor QgsComposerLegend::fontColor() const
+{
+  return mSettings.fontColor();
+}
+void QgsComposerLegend::setFontColor( const QColor& c )
+{
+  mSettings.setFontColor( c );
+}
 
-double QgsComposerLegend::symbolWidth() const { return mSettings.symbolSize().width(); }
-void QgsComposerLegend::setSymbolWidth( double w ) { mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) ); }
+double QgsComposerLegend::symbolWidth() const
+{
+  return mSettings.symbolSize().width();
+}
+void QgsComposerLegend::setSymbolWidth( double w )
+{
+  mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
+}
 
-double QgsComposerLegend::symbolHeight() const { return mSettings.symbolSize().height(); }
-void QgsComposerLegend::setSymbolHeight( double h ) { mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) ); }
+double QgsComposerLegend::symbolHeight() const
+{
+  return mSettings.symbolSize().height();
+}
+void QgsComposerLegend::setSymbolHeight( double h )
+{
+  mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) );
+}
 
-double QgsComposerLegend::wmsLegendWidth() const { return mSettings.wmsLegendSize().width(); }
-void QgsComposerLegend::setWmsLegendWidth( double w ) { mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) ); }
+double QgsComposerLegend::wmsLegendWidth() const
+{
+  return mSettings.wmsLegendSize().width();
+}
+void QgsComposerLegend::setWmsLegendWidth( double w )
+{
+  mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) );
+}
 
-double QgsComposerLegend::wmsLegendHeight() const {return mSettings.wmsLegendSize().height(); }
-void QgsComposerLegend::setWmsLegendHeight( double h ) { mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) ); }
+double QgsComposerLegend::wmsLegendHeight() const
+{
+  return mSettings.wmsLegendSize().height();
+}
+void QgsComposerLegend::setWmsLegendHeight( double h )
+{
+  mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) );
+}
 
-void QgsComposerLegend::setWrapChar( const QString& t ) { mSettings.setWrapChar( t ); }
-QString QgsComposerLegend::wrapChar() const {return mSettings.wrapChar(); }
+void QgsComposerLegend::setWrapChar( const QString& t )
+{
+  mSettings.setWrapChar( t );
+}
+QString QgsComposerLegend::wrapChar() const
+{
+  return mSettings.wrapChar();
+}
 
-int QgsComposerLegend::columnCount() const { return mSettings.columnCount(); }
-void QgsComposerLegend::setColumnCount( int c ) { mSettings.setColumnCount( c ); }
+int QgsComposerLegend::columnCount() const
+{
+  return mSettings.columnCount();
+}
+void QgsComposerLegend::setColumnCount( int c )
+{
+  mSettings.setColumnCount( c );
+}
 
-bool QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
-void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
+bool QgsComposerLegend::splitLayer() const
+{
+  return mSettings.splitLayer();
+}
+void QgsComposerLegend::setSplitLayer( bool s )
+{
+  mSettings.setSplitLayer( s );
+}
 
-bool QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
-void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
+bool QgsComposerLegend::equalColumnWidth() const
+{
+  return mSettings.equalColumnWidth();
+}
+void QgsComposerLegend::setEqualColumnWidth( bool s )
+{
+  mSettings.setEqualColumnWidth( s );
+}
 
-bool QgsComposerLegend::drawRasterBorder() const { return mSettings.drawRasterBorder(); }
-void QgsComposerLegend::setDrawRasterBorder( bool enabled ) { mSettings.setDrawRasterBorder( enabled ); }
+bool QgsComposerLegend::drawRasterBorder() const
+{
+  return mSettings.drawRasterBorder();
+}
+void QgsComposerLegend::setDrawRasterBorder( bool enabled )
+{
+  mSettings.setDrawRasterBorder( enabled );
+}
 
-QColor QgsComposerLegend::rasterBorderColor() const { return mSettings.rasterBorderColor(); }
-void QgsComposerLegend::setRasterBorderColor( const QColor& color ) { mSettings.setRasterBorderColor( color ); }
+QColor QgsComposerLegend::rasterBorderColor() const
+{
+  return mSettings.rasterBorderColor();
+}
+void QgsComposerLegend::setRasterBorderColor( const QColor& color )
+{
+  mSettings.setRasterBorderColor( color );
+}
 
-double QgsComposerLegend::rasterBorderWidth() const { return mSettings.rasterBorderWidth(); }
-void QgsComposerLegend::setRasterBorderWidth( double width ) { mSettings.setRasterBorderWidth( width ); }
+double QgsComposerLegend::rasterBorderWidth() const
+{
+  return mSettings.rasterBorderWidth();
+}
+void QgsComposerLegend::setRasterBorderWidth( double width )
+{
+  mSettings.setRasterBorderWidth( width );
+}
 
 void QgsComposerLegend::synchronizeWithModel()
 {
@@ -350,7 +464,7 @@ void QgsComposerLegend::updateItem()
   QgsComposerItem::updateItem();
 }
 
-bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerLegend::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {
@@ -740,7 +854,7 @@ void QgsComposerLegend::onAtlasEnded()
 #include "qgsvectorlayer.h"
 
 QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent )
-    : QgsLayerTreeModel( rootNode, parent )
+  : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );

@@ -66,25 +66,37 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see setX()
      * @see rx()
      */
-    double x() const { return mX; }
+    double x() const
+    {
+      return mX;
+    }
 
     /** Returns the point's y-coordinate.
      * @see setY()
      * @see ry()
      */
-    double y() const { return mY; }
+    double y() const
+    {
+      return mY;
+    }
 
     /** Returns the point's z-coordinate.
      * @see setZ()
      * @see rz()
      */
-    double z() const { return mZ; }
+    double z() const
+    {
+      return mZ;
+    }
 
     /** Returns the point's m value.
      * @see setM()
      * @see rm()
      */
-    double m() const { return mM; }
+    double m() const
+    {
+      return mM;
+    }
 
     /** Returns a reference to the x-coordinate of this point.
      * Using a reference makes it possible to directly manipulate x in place.
@@ -92,7 +104,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see setX()
      * @note not available in Python bindings
      */
-    double &rx() { clearCache(); return mX; }
+    double& rx()
+    {
+      clearCache();
+      return mX;
+    }
 
     /** Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
@@ -100,7 +116,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see setY()
      * @note not available in Python bindings
      */
-    double &ry() { clearCache(); return mY; }
+    double& ry()
+    {
+      clearCache();
+      return mY;
+    }
 
     /** Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.
@@ -108,7 +128,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see setZ()
      * @note not available in Python bindings
      */
-    double &rz() { clearCache(); return mZ; }
+    double& rz()
+    {
+      clearCache();
+      return mZ;
+    }
 
     /** Returns a reference to the m value of this point.
      * Using a reference makes it possible to directly manipulate m in place.
@@ -116,19 +140,31 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see setM()
      * @note not available in Python bindings
      */
-    double &rm() { clearCache(); return mM; }
+    double& rm()
+    {
+      clearCache();
+      return mM;
+    }
 
     /** Sets the point's x-coordinate.
      * @see x()
      * @see rx()
      */
-    void setX( double x ) { clearCache(); mX = x; }
+    void setX( double x )
+    {
+      clearCache();
+      mX = x;
+    }
 
     /** Sets the point's y-coordinate.
      * @see y()
      * @see ry()
      */
-    void setY( double y ) { clearCache(); mY = y; }
+    void setY( double y )
+    {
+      clearCache();
+      mY = y;
+    }
 
     /** Sets the point's z-coordinate.
      * @note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
@@ -136,7 +172,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see z()
      * @see rz()
      */
-    void setZ( double z ) { clearCache(); mZ = z; }
+    void setZ( double z )
+    {
+      clearCache();
+      mZ = z;
+    }
 
     /** Sets the point's m-value.
      * @note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
@@ -144,7 +184,11 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see m()
      * @see rm()
      */
-    void setM( double m ) { clearCache(); mM = m; }
+    void setM( double m )
+    {
+      clearCache();
+      mM = m;
+    }
 
     /** Returns the point as a QPointF.
      * @note added in QGIS 2.14
@@ -193,9 +237,18 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     double azimuth( const QgsPointV2& other ) const;
 
     //implementation of inherited methods
-    virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
-    virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
-    virtual int dimension() const override { return 0; }
+    virtual QgsRectangle boundingBox() const override
+    {
+      return QgsRectangle( mX, mY, mX, mY );
+    }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "Point" );
+    }
+    virtual int dimension() const override
+    {
+      return 0;
+    }
     virtual QgsPointV2* clone() const override;
     void clear() override;
     virtual bool fromWkb( QgsConstWkbPtr& wkb ) override;
@@ -210,13 +263,25 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
                     bool transformZ = false ) override;
     void transform( const QTransform& t ) override;
     virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual int nCoordinates() const override { return 1; }
+    virtual int nCoordinates() const override
+    {
+      return 1;
+    }
     virtual QgsAbstractGeometry* boundary() const override;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override
+    {
+      Q_UNUSED( position );
+      Q_UNUSED( vertex );
+      return false;
+    }
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
+    virtual bool deleteVertex( QgsVertexId position ) override
+    {
+      Q_UNUSED( position );
+      return false;
+    }
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
@@ -224,12 +289,28 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     /** Angle undefined. Always returns 0.0
         @param vertex the vertex id
         @return 0.0*/
-    double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
+    double vertexAngle( QgsVertexId vertex ) const override
+    {
+      Q_UNUSED( vertex );
+      return 0.0;
+    }
 
-    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
-    virtual int ringCount( int /*part*/ = 0 ) const override { return 1; }
-    virtual int partCount() const override { return 1; }
-    virtual QgsPointV2 vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
+    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override
+    {
+      return 1;
+    }
+    virtual int ringCount( int /*part*/ = 0 ) const override
+    {
+      return 1;
+    }
+    virtual int partCount() const override
+    {
+      return 1;
+    }
+    virtual QgsPointV2 vertexAt( QgsVertexId /*id*/ ) const override
+    {
+      return *this;
+    }
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

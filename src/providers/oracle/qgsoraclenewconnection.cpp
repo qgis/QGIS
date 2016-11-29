@@ -25,8 +25,8 @@
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"
 
-QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mOriginalConnName( connName )
+QgsOracleNewConnection::QgsOracleNewConnection( QWidget* parent, const QString& connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
 
@@ -145,7 +145,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( !txtWorkspace->text().isEmpty() )
     uri.setParam( "dbworkspace", txtWorkspace->text() );
 
-  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( uri ) );
+  QgsOracleConn* conn = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( uri ) );
 
   if ( conn )
   {

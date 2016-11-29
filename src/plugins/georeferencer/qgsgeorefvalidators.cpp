@@ -17,12 +17,12 @@
 
 #include "qgsgeorefvalidators.h"
 
-QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject *parent )
-    : QValidator( parent )
+QgsDMSAndDDValidator::QgsDMSAndDDValidator( QObject* parent )
+  : QValidator( parent )
 {
 }
 
-QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) const
+QValidator::State QgsDMSAndDDValidator::validate( QString& input, int& pos ) const
 {
   Q_UNUSED( pos );
 

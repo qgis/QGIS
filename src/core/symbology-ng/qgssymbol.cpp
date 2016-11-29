@@ -86,13 +86,13 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, cons
 ////////////////////
 
 QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList& layers )
-    : mType( type )
-    , mLayers( layers )
-    , mAlpha( 1.0 )
-    , mRenderHints( 0 )
-    , mClipFeaturesToExtent( true )
-    , mLayer( nullptr )
-    , mSymbolRenderContext( nullptr )
+  : mType( type )
+  , mLayers( layers )
+  , mAlpha( 1.0 )
+  , mRenderHints( 0 )
+  , mClipFeaturesToExtent( true )
+  , mLayer( nullptr )
+  , mSymbolRenderContext( nullptr )
 {
 
   // check they're all correct symbol layers
@@ -138,7 +138,7 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext& context, const QgsCurve& 
     ct.transformPolygon( pts );
   }
 
-  QPointF *ptr = pts.data();
+  QPointF* ptr = pts.data();
   for ( int i = 0; i < pts.size(); ++i, ++ptr )
   {
     mtp.transformInPlace( ptr->rx(), ptr->ry() );
@@ -174,7 +174,7 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext& context, const QgsCurve&
     ct.transformPolygon( poly );
   }
 
-  QPointF *ptr = poly.data();
+  QPointF* ptr = poly.data();
   for ( int i = 0; i < poly.size(); ++i, ++ptr )
   {
     mtp.transformInPlace( ptr->rx(), ptr->ry() );
@@ -183,7 +183,7 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext& context, const QgsCurve&
   return poly;
 }
 
-void QgsSymbol::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext &context, const QgsPolygonV2& polygon, bool clipToExtent )
+void QgsSymbol::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const QgsPolygonV2& polygon, bool clipToExtent )
 {
   holes.clear();
 
@@ -255,7 +255,7 @@ void QgsSymbol::setOutputUnit( QgsUnitTypes::RenderUnit u )
   }
 }
 
-void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsSymbol::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
@@ -580,7 +580,7 @@ QString QgsSymbol::dump() const
   return s;
 }
 
-void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsSymbol::toSld( QDomDocument& doc, QDomElement& element, QgsStringMap props ) const
 {
   props[ QStringLiteral( "alpha" )] = QString::number( alpha() );
   double scaleFactor = 1.0;
@@ -674,7 +674,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
   //convert curve types to normal point/line/polygon ones
   if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
   {
-    QgsAbstractGeometry *g = geom.geometry()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
+    QgsAbstractGeometry* g = geom.geometry()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
     if ( !g )
     {
       return;
@@ -985,17 +985,17 @@ void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext& context, int c
 
 
 QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha, bool selected, QgsSymbol::RenderHints renderHints, const QgsFeature* f, const QgsFields& fields, const QgsMapUnitScale& mapUnitScale )
-    : mRenderContext( c )
-    , mExpressionContextScope( nullptr )
-    , mOutputUnit( u )
-    , mMapUnitScale( mapUnitScale )
-    , mAlpha( alpha )
-    , mSelected( selected )
-    , mRenderHints( renderHints )
-    , mFeature( f )
-    , mFields( fields )
-    , mGeometryPartCount( 0 )
-    , mGeometryPartNum( 0 )
+  : mRenderContext( c )
+  , mExpressionContextScope( nullptr )
+  , mOutputUnit( u )
+  , mMapUnitScale( mapUnitScale )
+  , mAlpha( alpha )
+  , mSelected( selected )
+  , mRenderHints( renderHints )
+  , mFeature( f )
+  , mFields( fields )
+  , mGeometryPartCount( 0 )
+  , mGeometryPartNum( 0 )
 {
 }
 
@@ -1077,7 +1077,7 @@ QgsFillSymbol* QgsFillSymbol::createSimple( const QgsStringMap& properties )
 ///////////////////
 
 QgsMarkerSymbol::QgsMarkerSymbol( const QgsSymbolLayerList& layers )
-    : QgsSymbol( Marker, layers )
+  : QgsSymbol( Marker, layers )
 {
   if ( mLayers.isEmpty() )
     mLayers.append( new QgsSimpleMarkerSymbolLayer() );
@@ -1266,7 +1266,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbol::sizeUnit() const
   return unit;
 }
 
-void QgsMarkerSymbol::setSizeMapUnitScale( const QgsMapUnitScale &scale )
+void QgsMarkerSymbol::setSizeMapUnitScale( const QgsMapUnitScale& scale )
 {
   Q_FOREACH ( QgsSymbolLayer* layer, mLayers )
   {
@@ -1291,7 +1291,7 @@ QgsMapUnitScale QgsMarkerSymbol::sizeMapUnitScale() const
   return QgsMapUnitScale();
 }
 
-void QgsMarkerSymbol::setDataDefinedSize( const QgsDataDefined &dd )
+void QgsMarkerSymbol::setDataDefinedSize( const QgsDataDefined& dd )
 {
   const double symbolSize = size();
 
@@ -1503,7 +1503,7 @@ QgsMarkerSymbol* QgsMarkerSymbol::clone() const
 // LINE
 
 QgsLineSymbol::QgsLineSymbol( const QgsSymbolLayerList& layers )
-    : QgsSymbol( Line, layers )
+  : QgsSymbol( Line, layers )
 {
   if ( mLayers.isEmpty() )
     mLayers.append( new QgsSimpleLineSymbolLayer() );
@@ -1685,7 +1685,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF& points, const QgsFeature* f
   context.setPainter( renderPainter );
 }
 
-void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer* layer, const QPolygonF& points, QgsSymbolRenderContext& context )
 {
   if ( layer->hasDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED ) )
   {
@@ -1723,7 +1723,7 @@ QgsLineSymbol* QgsLineSymbol::clone() const
 // FILL
 
 QgsFillSymbol::QgsFillSymbol( const QgsSymbolLayerList& layers )
-    : QgsSymbol( Fill, layers )
+  : QgsSymbol( Fill, layers )
 {
   if ( mLayers.isEmpty() )
     mLayers.append( new QgsSimpleFillSymbolLayer() );

@@ -59,7 +59,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
 {
   public:
-    QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest &request );
+    QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
 
     ~QgsOracleFeatureIterator();
 
@@ -78,7 +78,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     bool openQuery( QString whereClause, bool showLog = true );
 
-    QgsOracleConn *mConnection;
+    QgsOracleConn* mConnection;
     QSqlQuery mQry;
     bool mRewind;
     bool mExpressionCompiled;

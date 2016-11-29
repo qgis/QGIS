@@ -50,7 +50,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 
 
     struct Map_info* map();
-    QgsGrassVectorMapLayer * mLayer;
+    QgsGrassVectorMapLayer* mLayer;
     int mLayerType;     // layer type POINT, LINE, ...
     int mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
 
@@ -122,14 +122,14 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
      *  @param feature
      *  @param cat category number
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol );
+    void setFeatureAttributes( int cat, QgsFeature* feature, QgsGrassVectorMap::TopoSymbol symbol );
 
     /** Set feature attributes.
      *  @param feature
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassVectorMap::TopoSymbol symbol );
+    void setFeatureAttributes( int cat, QgsFeature* feature, const QgsAttributeList& attlist, QgsGrassVectorMap::TopoSymbol symbol );
 
     //! Canceled -> close when possible
     bool mCanceled;

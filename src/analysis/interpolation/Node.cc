@@ -32,7 +32,7 @@ Node::Node( const Node& n )
 }
 
 
-Node& Node::operator=( const Node & n )
+Node& Node::operator=( const Node& n )
 {
   Point3D* tmp = mPoint;
 

@@ -288,7 +288,7 @@ void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor& 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor &newColor )
+void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor& newColor )
 {
   if ( !mComposerScaleBar )
   {

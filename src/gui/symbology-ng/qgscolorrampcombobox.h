@@ -27,7 +27,7 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    explicit QgsColorRampComboBox( QWidget *parent = nullptr );
+    explicit QgsColorRampComboBox( QWidget* parent = nullptr );
 
     ~QgsColorRampComboBox();
 
@@ -57,9 +57,15 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     static QSize rampIconSize;
 
     //! @note added in 2.2
-    void setShowGradientOnly( bool gradientOnly ) { mShowGradientOnly = gradientOnly; }
+    void setShowGradientOnly( bool gradientOnly )
+    {
+      mShowGradientOnly = gradientOnly;
+    }
     //! @note added in 2.2
-    bool showGradientOnly() const { return mShowGradientOnly; }
+    bool showGradientOnly() const
+    {
+      return mShowGradientOnly;
+    }
 
   public slots:
     void colorRampChanged( int index );

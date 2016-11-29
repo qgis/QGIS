@@ -53,13 +53,19 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
      * @see mapCanvas()
      * @note added in QGIS 2.12
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas ) { mMapCanvas = canvas; }
+    virtual void setMapCanvas( QgsMapCanvas* canvas )
+    {
+      mMapCanvas = canvas;
+    }
 
     /** Returns the map canvas associated with the widget.
      * @see setMapCanvas
      * @note added in QGIS 2.12
      */
-    const QgsMapCanvas* mapCanvas() const { return mMapCanvas; }
+    const QgsMapCanvas* mapCanvas() const
+    {
+      return mMapCanvas;
+    }
 
   protected:
 
@@ -115,7 +121,10 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
                QgsDataDefinedButton::DataTypes datatypes = AnyType,
                const QString& description = QString() );
 
-    QMap< QString, QString > definedProperty() const { return mProperty; }
+    QMap< QString, QString > definedProperty() const
+    {
+      return mProperty;
+    }
 
     /** Updates a QgsDataDefined with the current settings from the button
      * @param dd QgsDataDefined to update
@@ -141,49 +150,77 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Whether the current data definition or expression is to be used
      */
-    bool isActive() const { return mProperty.value( QStringLiteral( "active" ) ).toInt(); }
+    bool isActive() const
+    {
+      return mProperty.value( QStringLiteral( "active" ) ).toInt();
+    }
 
     /**
      * Whether the current expression is to be used instead of field mapping
      */
-    bool useExpression() const { return mProperty.value( QStringLiteral( "useexpr" ) ).toInt(); }
+    bool useExpression() const
+    {
+      return mProperty.value( QStringLiteral( "useexpr" ) ).toInt();
+    }
 
     /**
      * The current defined expression
      */
-    QString getExpression() const { return mProperty.value( QStringLiteral( "expression" ) ); }
+    QString getExpression() const
+    {
+      return mProperty.value( QStringLiteral( "expression" ) );
+    }
 
     /**
      * The current defined field
      */
-    QString getField() const { return mProperty.value( QStringLiteral( "field" ) ); }
+    QString getField() const
+    {
+      return mProperty.value( QStringLiteral( "field" ) );
+    }
 
     /**
      * The current definition
      * @returns empty QString if not active, otherwise currently defined expression or field name
      */
-    QString currentDefinition() const { return mCurrentDefinition; }
+    QString currentDefinition() const
+    {
+      return mCurrentDefinition;
+    }
 
     /**
      * The valid data types that will work for the definition (QVariant-coercible to expected type)
      * Compared against the variant type of the QgsField from data source and expression result
      */
-    const DataTypes& validDataTypes() const { return mDataTypes; }
+    const DataTypes& validDataTypes() const
+    {
+      return mDataTypes;
+    }
 
     /**
      * The full definition description and current definition (internally generated on a contextual basis)
      */
-    QString fullDescription() const { return mFullDescription; }
+    QString fullDescription() const
+    {
+      return mFullDescription;
+    }
 
     /**
      * The usage information about this data definition
      */
-    QString usageInfo() const { return mUsageInfo; }
+    QString usageInfo() const
+    {
+      return mUsageInfo;
+    }
 
     /**
      * Set the usage information about this data definition
      */
-    void setUsageInfo( const QString& info ) { mUsageInfo = info; updateGui(); }
+    void setUsageInfo( const QString& info )
+    {
+      mUsageInfo = info;
+      updateGui();
+    }
 
     /**
      * Register list of sibling widgets that get disabled/enabled when data definition or expression is set/unset
@@ -205,7 +242,10 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Clears list of sibling widgets
      */
-    void clearEnabledWidgets() { mEnabledWidgets.clear(); }
+    void clearEnabledWidgets()
+    {
+      mEnabledWidgets.clear();
+    }
 
     /**
      * Register list of sibling widgets that get checked when data definition or expression is active
@@ -227,7 +267,10 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Clears list of checkable sibling widgets
      */
-    void clearCheckedWidgets() { mCheckedWidgets.clear(); }
+    void clearCheckedWidgets()
+    {
+      mCheckedWidgets.clear();
+    }
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -247,7 +290,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      * @note added in 2.10
      * @see assistant()
      */
-    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
+    void setAssistant( const QString& title, QgsDataDefinedAssistant* assistant );
 
     /** Returns the assistant used to defined the data defined object properties, if set.
      * @see setAssistant()
@@ -326,22 +369,31 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void dataDefinedActivated( bool active );
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
 
     /**
      * Set whether the current expression is to be used instead of field mapping
      */
-    void setUseExpression( bool use ) { mProperty.insert( QStringLiteral( "useexpr" ), use ? "1" : "0" ); }
+    void setUseExpression( bool use )
+    {
+      mProperty.insert( QStringLiteral( "useexpr" ), use ? "1" : "0" );
+    }
 
     /**
      * Set the current defined expression
      */
-    void setExpression( const QString& exp ) { mProperty.insert( QStringLiteral( "expression" ), exp ); }
+    void setExpression( const QString& exp )
+    {
+      mProperty.insert( QStringLiteral( "expression" ), exp );
+    }
 
     /**
      * Set the current defined field
      */
-    void setField( const QString& field ) { mProperty.insert( QStringLiteral( "field" ), field ); }
+    void setField( const QString& field )
+    {
+      mProperty.insert( QStringLiteral( "field" ), field );
+    }
 
   private:
     void showDescriptionDialog();

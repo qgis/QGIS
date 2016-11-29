@@ -75,7 +75,10 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @return The model in use
      */
-    QgsFeatureListModel* featureListModel() { return mModel; }
+    QgsFeatureListModel* featureListModel()
+    {
+      return mModel;
+    }
 
     /**
      * The display expression is an expression used to render the fields into a single string
@@ -123,11 +126,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
   protected:
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseReleaseEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
-    virtual void contextMenuEvent( QContextMenuEvent *event ) override;
+    virtual void mouseMoveEvent( QMouseEvent* event ) override;
+    virtual void mousePressEvent( QMouseEvent* event ) override;
+    virtual void mouseReleaseEvent( QMouseEvent* event ) override;
+    virtual void keyPressEvent( QKeyEvent* event ) override;
+    virtual void contextMenuEvent( QContextMenuEvent* event ) override;
 
   signals:
 
@@ -136,7 +139,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @param feat the feature, which will be edited.
      */
-    void currentEditSelectionChanged( QgsFeature &feat );
+    void currentEditSelectionChanged( QgsFeature& feat );
 
     /**
      * Is emitted, whenever the display expression is successfully changed
@@ -154,7 +157,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @param fids  A list of features to be edited
      */
-    void setEditSelection( const QgsFeatureIds &fids );
+    void setEditSelection( const QgsFeatureIds& fids );
 
     /**
      * Set the feature(s) to be edited
@@ -176,9 +179,9 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void editSelectionChanged( const QItemSelection& deselected, const QItemSelection& selected );
 
   private:
-    void selectRow( const QModelIndex &index, bool anchor );
+    void selectRow( const QModelIndex& index, bool anchor );
 
-    QgsFeatureListModel *mModel;
+    QgsFeatureListModel* mModel;
     QItemSelectionModel* mCurrentEditSelectionModel;
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;

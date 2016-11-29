@@ -28,7 +28,7 @@ class QDomElement;
 class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 {
   public:
-    QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
+    QgsBrightnessContrastFilter( QgsRasterInterface* input = nullptr );
     ~QgsBrightnessContrastFilter();
 
     QgsBrightnessContrastFilter* clone() const override;
@@ -39,13 +39,25 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
-    int brightness() const { return mBrightness; }
+    void setBrightness( int brightness )
+    {
+      mBrightness = qBound( -255, brightness, 255 );
+    }
+    int brightness() const
+    {
+      return mBrightness;
+    }
 
-    void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
-    int contrast() const { return mContrast; }
+    void setContrast( int contrast )
+    {
+      mContrast = qBound( -100, contrast, 100 );
+    }
+    int contrast() const
+    {
+      return mContrast;
+    }
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
 

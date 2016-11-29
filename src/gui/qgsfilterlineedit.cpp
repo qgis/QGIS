@@ -24,12 +24,12 @@
 #include <QPainter>
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
-    : QLineEdit( parent )
-    , mClearButtonVisible( true )
-    , mClearMode( ClearToNull )
-    , mNullValue( nullValue )
-    , mFocusInEvent( false )
-    , mClearHover( false )
+  : QLineEdit( parent )
+  , mClearButtonVisible( true )
+  , mClearMode( ClearToNull )
+  , mNullValue( nullValue )
+  , mFocusInEvent( false )
+  , mClearHover( false )
 {
   // need mouse tracking to handle cursor changes
   setMouseTracking( true );
@@ -147,7 +147,7 @@ void QgsFilterLineEdit::leaveEvent( QEvent* e )
   QLineEdit::leaveEvent( e );
 }
 
-void QgsFilterLineEdit::onTextChanged( const QString &text )
+void QgsFilterLineEdit::onTextChanged( const QString& text )
 {
   if ( isNull() )
   {

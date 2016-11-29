@@ -62,11 +62,11 @@ QString temp4( GRASS_VERSION_RELEASE );
 
 bool QgsGrassNewMapset::mRunning = false;
 
-QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
-                                      QgsGrassPlugin *plugin, QWidget * parent,
+QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface* iface,
+                                      QgsGrassPlugin* plugin, QWidget* parent,
                                       Qt::WindowFlags f )
-    : QWizard( parent, f )
-    , QgsGrassNewMapsetBase()
+  : QWizard( parent, f )
+  , QgsGrassNewMapsetBase()
 {
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
@@ -338,7 +338,7 @@ void QgsGrassNewMapset::checkLocation()
   }
 }
 
-void QgsGrassNewMapset::existingLocationChanged( const QString &text )
+void QgsGrassNewMapset::existingLocationChanged( const QString& text )
 {
   Q_UNUSED( text );
 }
@@ -422,7 +422,7 @@ void QgsGrassNewMapset::setGrassProjection()
     }
     else
     {
-      char *wkt = nullptr;
+      char* wkt = nullptr;
 
       QgsDebugMsg( QString( "OSRIsGeographic = %1" ).arg( OSRIsGeographic( hCRS ) ) );
       QgsDebugMsg( QString( "OSRIsProjected = %1" ).arg( OSRIsProjected( hCRS ) ) );
@@ -518,7 +518,7 @@ void QgsGrassNewMapset::setRegionPage()
       {
         points[i] = trans.transform( points[i] );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
         QgsDebugMsg( "Cannot transform point" );
@@ -845,7 +845,7 @@ void QgsGrassNewMapset::setSelectedRegion()
         points[i] = trans.transform( points[i] );
         QgsDebugMsg( QString( "%1,%2" ).arg( points[i].x() ).arg( points[i].y() ) );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
         QgsDebugMsg( "Cannot transform point" );
@@ -933,7 +933,7 @@ void QgsGrassNewMapset::setCurrentRegion()
       {
         points[i] = trans.transform( points[i] );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
         QgsDebugMsg( "Cannot transform point" );
@@ -1066,7 +1066,7 @@ void QgsGrassNewMapset::drawRegion()
         points[i] = trans.transform( points[i] );
         QgsDebugMsg( QString( " --> %1,%2" ).arg( points[i].x() ).arg( points[i].y() ) );
       }
-      catch ( QgsCsException &cse )
+      catch ( QgsCsException& cse )
       {
         Q_UNUSED( cse );
         QgsDebugMsg( "Cannot transform point" );
@@ -1313,7 +1313,7 @@ void QgsGrassNewMapset::accept()
 }
 
 /********************************************************************/
-void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
+void QgsGrassNewMapset::setError( QLabel* line, const QString& err )
 {
 
   if ( !err.isEmpty() )
@@ -1333,7 +1333,7 @@ void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
 
 // Warning: we have to catch key press otherwise QWizard goes always
 // to next page if Key_Enter is pressed
-void QgsGrassNewMapset::keyPressEvent( QKeyEvent * e )
+void QgsGrassNewMapset::keyPressEvent( QKeyEvent* e )
 {
   Q_UNUSED( e );
 // QgsDebugMsg(QString("key = %1").arg(e->key()));
@@ -1356,7 +1356,7 @@ void QgsGrassNewMapset::pageSelected( int index )
       // Projection selector
       if ( !mProjectionSelector )
       {
-        QGridLayout *projectionLayout = new QGridLayout( mProjectionFrame );
+        QGridLayout* projectionLayout = new QGridLayout( mProjectionFrame );
 
         mProjectionSelector = new QgsProjectionSelector( mProjectionFrame, "Projection", 0 );
         mProjectionSelector->setEnabled( false );
@@ -1425,7 +1425,7 @@ void QgsGrassNewMapset::close( void )
   deleteLater();
 }
 
-void QgsGrassNewMapset::closeEvent( QCloseEvent *e )
+void QgsGrassNewMapset::closeEvent( QCloseEvent* e )
 {
 
   e->accept();

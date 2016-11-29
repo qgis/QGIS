@@ -59,7 +59,10 @@ class QgsWCSServer: public QgsOWSServer
     QByteArray* getCoverage();
 
     //! Sets configuration parser for administration settings. Does not take ownership
-    void setAdminConfigParser( QgsWCSProjectParser* parser ) { mConfigParser = parser; }
+    void setAdminConfigParser( QgsWCSProjectParser* parser )
+    {
+      mConfigParser = parser;
+    }
 
   private:
     //! Don't use the default constructor

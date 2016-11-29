@@ -96,7 +96,10 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QgsMapLayerStyleManager( QgsMapLayer* layer );
 
     //! Get pointer to the associated map layer
-    QgsMapLayer* layer() const { return mLayer; }
+    QgsMapLayer* layer() const
+    {
+      return mLayer;
+    }
 
     //! Reset the style manager to a basic state - with one default style which is set as current
     void reset();

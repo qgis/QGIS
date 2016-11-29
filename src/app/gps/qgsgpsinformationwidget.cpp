@@ -63,10 +63,10 @@
 #include <QPixmap>
 #include <QPen>
 
-QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , mNmea( nullptr )
-    , mpCanvas( thepCanvas )
+QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas* thepCanvas, QWidget* parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , mNmea( nullptr )
+  , mpCanvas( thepCanvas )
 {
   setupUi( this );
 
@@ -77,7 +77,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mpMapMarker = nullptr;
   mpRubberBand = nullptr;
   populateDevices();
-  QWidget * mpHistogramWidget = mStackedWidget->widget( 1 );
+  QWidget* mpHistogramWidget = mStackedWidget->widget( 1 );
 #ifndef WITH_QWTPOLAR
   mBtnSatellites->setVisible( false );
 #endif
@@ -106,7 +106,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   mpCurve->attach( mpPlot );
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
-  QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mpHistogramWidget );
+  QVBoxLayout* mpHistogramLayout = new QVBoxLayout( mpHistogramWidget );
   mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
   mpHistogramLayout->addWidget( mpPlot );
   mpHistogramWidget->setLayout( mpHistogramLayout );
@@ -115,7 +115,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   // Set up the polar graph for satellite pos
   //
 #ifdef WITH_QWTPOLAR
-  QWidget * mpPolarWidget = mStackedWidget->widget( 2 );
+  QWidget* mpPolarWidget = mStackedWidget->widget( 2 );
   mpSatellitesWidget = new QwtPolarPlot( /*QwtText( tr( "Satellite View" ), QwtText::PlainText ),*/ mpPolarWidget );  // possible title for graph removed for now as it is too large in small windows
   mpSatellitesWidget->setAutoReplot( false );   // plot on demand (after all data has been handled)
   mpSatellitesWidget->setPlotBackground( Qt::white );
@@ -160,7 +160,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
 
   //QwtLegend *legend = new QwtLegend;
   //mpSatellitesWidget->insertLegend(legend, QwtPolarPlot::BottomLegend);
-  QVBoxLayout *mpPolarLayout = new QVBoxLayout( mpPolarWidget );
+  QVBoxLayout* mpPolarLayout = new QVBoxLayout( mpPolarWidget );
   mpPolarLayout->setContentsMargins( 0, 0, 0, 0 );
   mpPolarLayout->addWidget( mpSatellitesWidget );
   mpPolarWidget->setLayout( mpPolarLayout );
@@ -419,8 +419,8 @@ void QgsGPSInformationWidget::connectGps()
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );
   showStatusBarMessage( tr( "Connecting to GPS device..." ) );
 
-  QgsGPSDetector *detector = new QgsGPSDetector( port );
-  connect( detector, SIGNAL( detected( QgsGPSConnection * ) ), this, SLOT( connected( QgsGPSConnection * ) ) );
+  QgsGPSDetector* detector = new QgsGPSDetector( port );
+  connect( detector, SIGNAL( detected( QgsGPSConnection* ) ), this, SLOT( connected( QgsGPSConnection* ) ) );
   connect( detector, SIGNAL( detectionFailed() ), this, SLOT( timedout() ) );
   detector->advance();   // start the detection process
 }
@@ -433,7 +433,7 @@ void QgsGPSInformationWidget::timedout()
   showStatusBarMessage( tr( "Failed to connect to GPS device." ) );
 }
 
-void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
+void QgsGPSInformationWidget::connected( QgsGPSConnection* conn )
 {
   mNmea = conn;
   connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
@@ -587,7 +587,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
       if ( currentInfo.id > 0 )       // don't show satellite if id=0 (no satellite indication)
       {
 #ifdef WITH_QWTPOLAR
-        QwtPolarMarker *mypMarker = new QwtPolarMarker();
+        QwtPolarMarker* mypMarker = new QwtPolarMarker();
 #if (QWT_POLAR_VERSION<0x010000)
         mypMarker->setPosition( QwtPolarPoint( currentInfo.azimuth, currentInfo.elevation ) );
 #else
@@ -722,7 +722,8 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   if ( mGroupShowMarker->isChecked() ) // show marker
   {
     if ( validFlag ) // update cursor position if valid position
-    {                // initially, cursor isn't drawn until first valid fix; remains visible until GPS disconnect
+    {
+      // initially, cursor isn't drawn until first valid fix; remains visible until GPS disconnect
       if ( ! mpMapMarker )
       {
         mpMapMarker = new QgsGpsMarker( mpCanvas );
@@ -786,7 +787,7 @@ void QgsGPSInformationWidget::on_mBtnResetFeature_clicked()
 
 void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mpCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mpCanvas->currentLayer() );
   QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
   // -------------- preconditions ------------------------
@@ -822,7 +823,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     double y = myPoint.y();
 
     int size = 1 + sizeof( int ) + 2 * sizeof( double );
-    unsigned char *buf = new unsigned char[size];
+    unsigned char* buf = new unsigned char[size];
 
     QgsWkbPtr wkbPtr( buf, size );
     wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Point << x << y;
@@ -862,7 +863,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     if ( layerWKBType == QgsWkbTypes::LineString )
     {
       int size = 1 + 2 * sizeof( int ) + 2 * mCaptureList.size() * sizeof( double );
-      unsigned char *buf = new unsigned char[size];
+      unsigned char* buf = new unsigned char[size];
 
       QgsWkbPtr wkbPtr( buf, size );
       wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << mCaptureList.size();
@@ -884,7 +885,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     else if ( layerWKBType == QgsWkbTypes::Polygon )
     {
       int size = 1 + 3 * sizeof( int ) + 2 * ( mCaptureList.size() + 1 ) * sizeof( double );
-      unsigned char *buf = new unsigned char[size];
+      unsigned char* buf = new unsigned char[size];
 
       QgsWkbPtr wkbPtr( buf, size );
       wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Polygon << 1 << mCaptureList.size() + 1;
@@ -1052,9 +1053,9 @@ void QgsGPSInformationWidget::logNmeaSentence( const QString& nmeaString )
   }
 }
 
-void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
+void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer* lyr )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( lyr );
 
   // Add feature button tracks edit state of layer
   if ( vlayer != mpLastLayer )

@@ -41,11 +41,11 @@ class QgsOracleRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren();
 
-    virtual QWidget * paramWidget();
+    virtual QWidget* paramWidget();
 
     virtual QList<QAction*> actions();
 
-    static QMainWindow *sMainWindow;
+    static QMainWindow* sMainWindow;
 
   public slots:
     void connectionsChanged();
@@ -60,11 +60,14 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     ~QgsOracleConnectionItem();
 
     QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
+    virtual bool equal( const QgsDataItem* other );
     virtual QList<QAction*> actions();
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+    virtual bool acceptDrop()
+    {
+      return true;
+    }
+    virtual bool handleDrop( const QMimeData* data, Qt::DropAction action );
 
     void refresh();
 
@@ -83,8 +86,8 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 
   private:
     void stop();
-    QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
-    QgsOracleColumnTypeThread *mColumnTypeThread;
+    QMap<QString, QgsOracleOwnerItem* > mOwnerMap;
+    QgsOracleColumnTypeThread* mColumnTypeThread;
     void setAllAsPopulated();
 };
 

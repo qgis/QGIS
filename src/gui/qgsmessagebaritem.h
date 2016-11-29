@@ -33,39 +33,48 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     Q_OBJECT
   public:
     //! make out a widget containing a message to be displayed on the bar
-    QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
+    QgsMessageBarItem( const QString& text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget* parent = nullptr );
 
     //! make out a widget containing title and message to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
+    QgsMessageBarItem( const QString& title, const QString& text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget* parent = nullptr );
 
     //! make out a widget containing title, message and widget to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
+    QgsMessageBarItem( const QString& title, const QString& text, QWidget* widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget* parent = nullptr );
 
     //! make out a widget containing a widget to be displayed on the bar
-    QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
+    QgsMessageBarItem( QWidget* widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget* parent = nullptr );
 
     ~QgsMessageBarItem();
 
-    QgsMessageBarItem *setText( const QString& text );
+    QgsMessageBarItem* setText( const QString& text );
 
-    QgsMessageBarItem *setTitle( const QString& title );
+    QgsMessageBarItem* setTitle( const QString& title );
 
-    QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
+    QgsMessageBarItem* setLevel( QgsMessageBar::MessageLevel level );
 
-    QgsMessageBarItem *setWidget( QWidget *widget );
+    QgsMessageBarItem* setWidget( QWidget* widget );
 
-    QgsMessageBarItem *setIcon( const QIcon &icon );
+    QgsMessageBarItem* setIcon( const QIcon& icon );
 
-    QgsMessageBarItem *setDuration( int duration );
+    QgsMessageBarItem* setDuration( int duration );
 
     //! returns the duration in second of the message
-    int duration() const { return mDuration; }
+    int duration() const
+    {
+      return mDuration;
+    }
 
     //! returns the level
-    QgsMessageBar::MessageLevel level() { return mLevel; }
+    QgsMessageBar::MessageLevel level()
+    {
+      return mLevel;
+    }
 
     //! returns the styleSheet
-    QString getStyleSheet() { return mStyleSheet; }
+    QString getStyleSheet()
+    {
+      return mStyleSheet;
+    }
 
   signals:
     //! emitted when the message level has changed
@@ -79,12 +88,12 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QString mText;
     QgsMessageBar::MessageLevel mLevel;
     int mDuration;
-    QWidget *mWidget;
+    QWidget* mWidget;
     QIcon mUserIcon;
-    QHBoxLayout *mLayout;
-    QLabel *mLblIcon;
+    QHBoxLayout* mLayout;
+    QLabel* mLblIcon;
     QString mStyleSheet;
-    QTextEdit *mTextEdit;
+    QTextEdit* mTextEdit;
 };
 
 #endif // qgsmessagebaritem_H

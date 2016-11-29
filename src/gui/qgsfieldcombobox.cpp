@@ -19,8 +19,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfieldmodel.h"
 
-QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
-    : QComboBox( parent )
+QgsFieldComboBox::QgsFieldComboBox( QWidget* parent )
+  : QComboBox( parent )
 {
   mFieldProxyModel = new QgsFieldProxyModel( this );
   setModel( mFieldProxyModel );
@@ -43,13 +43,13 @@ bool QgsFieldComboBox::allowEmptyFieldName() const
   return mFieldProxyModel->sourceFieldModel()->allowEmptyFieldName();
 }
 
-void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
+void QgsFieldComboBox::setLayer( QgsMapLayer* layer )
 {
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
   mFieldProxyModel->sourceFieldModel()->setLayer( vl );
 }
 
-QgsVectorLayer *QgsFieldComboBox::layer() const
+QgsVectorLayer* QgsFieldComboBox::layer() const
 {
   return mFieldProxyModel->sourceFieldModel()->layer();
 }

@@ -99,8 +99,14 @@ struct QgsTracerGraph
     //! coordinates of the edge (including endpoints)
     QVector<QgsPoint> coords;
 
-    int otherVertex( int v0 ) const { return v1 == v0 ? v2 : v1; }
-    double weight() const { return distance2D( coords ); }
+    int otherVertex( int v0 ) const
+    {
+      return v1 == v0 ? v2 : v1;
+    }
+    double weight() const
+    {
+      return distance2D( coords );
+    }
   };
 
   struct V
@@ -125,7 +131,7 @@ struct QgsTracerGraph
 
 QgsTracerGraph* makeGraph( const QVector<QgsPolyline>& edges )
 {
-  QgsTracerGraph *g = new QgsTracerGraph();
+  QgsTracerGraph* g = new QgsTracerGraph();
   g->joinedVertices = 0;
   QHash<QgsPoint, int> point2vertex;
 
@@ -454,10 +460,10 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
 
 
 QgsTracer::QgsTracer()
-    : mGraph( 0 )
-    , mReprojectionEnabled( false )
-    , mMaxFeatureCount( 0 )
-    , mHasTopologyProblem( false )
+  : mGraph( 0 )
+  , mReprojectionEnabled( false )
+  , mMaxFeatureCount( 0 )
+  , mHasTopologyProblem( false )
 {
 }
 
@@ -545,7 +551,7 @@ bool QgsTracer::initGraph()
 
     delete noded;
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException& e )
   {
     // no big deal... we will just not have nicely noded linework, potentially
     // missing some intersections

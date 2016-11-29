@@ -41,20 +41,20 @@
 
 using namespace pal;
 
-Layer::Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll )
-    : mProvider( provider )
-    , mName( name )
-    , pal( pal )
-    , mObstacleType( QgsPalLayerSettings::PolygonInterior )
-    , mActive( active )
-    , mLabelLayer( toLabel )
-    , mDisplayAll( displayAll )
-    , mCentroidInside( false )
-    , mArrangement( arrangement )
-    , mArrangementFlags( nullptr )
-    , mMode( LabelPerFeature )
-    , mMergeLines( false )
-    , mUpsidedownLabels( Upright )
+Layer::Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal* pal, bool displayAll )
+  : mProvider( provider )
+  , mName( name )
+  , pal( pal )
+  , mObstacleType( QgsPalLayerSettings::PolygonInterior )
+  , mActive( active )
+  , mLabelLayer( toLabel )
+  , mDisplayAll( displayAll )
+  , mCentroidInside( false )
+  , mArrangement( arrangement )
+  , mArrangementFlags( nullptr )
+  , mMode( LabelPerFeature )
+  , mMergeLines( false )
+  , mUpsidedownLabels( Upright )
 {
   mFeatureIndex = new RTree<FeaturePart*, double, 2, double>();
   mObstacleIndex = new RTree<FeaturePart*, double, 2, double>();
@@ -433,7 +433,7 @@ void Layer::chopFeaturesAtRepeatDistance()
       fpart->getBoundingBox( bmin, bmax );
       mFeatureIndex->Remove( bmin, bmax, fpart );
 
-      const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
+      const GEOSCoordSequence* cs = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
       // get number of points
       unsigned int n;

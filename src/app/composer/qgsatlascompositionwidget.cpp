@@ -27,7 +27,7 @@
 #include "qgsvectorlayer.h"
 
 QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsComposition* c ):
-    QWidget( parent ), mComposition( c )
+  QWidget( parent ), mComposition( c )
 {
   setupUi( this );
 
@@ -72,7 +72,7 @@ void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
   }
 }
 
-void QgsAtlasCompositionWidget::changeCoverageLayer( QgsMapLayer *layer )
+void QgsAtlasCompositionWidget::changeCoverageLayer( QgsMapLayer* layer )
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )

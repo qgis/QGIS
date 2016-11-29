@@ -22,8 +22,8 @@
 #include "qgsproject.h"
 #include <QSettings>
 
-QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
-    : QWidget( parent )
+QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget* parent )
+  : QWidget( parent )
 {
   mDialog = new QgsGenericProjectionSelector( this );
 
@@ -257,7 +257,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem& c
   mCrs = crs;
 }
 
-void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem& crs )
 {
   int layerItemIndex = mCrsComboBox->findData( QgsProjectionSelectionWidget::LayerCrs );
   if ( crs.isValid() )

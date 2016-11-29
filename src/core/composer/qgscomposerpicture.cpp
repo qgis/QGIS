@@ -43,39 +43,39 @@
 #include <QEventLoop>
 #include <QCoreApplication>
 
-QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
-    : QgsComposerItem( composition )
-    , mMode( Unknown )
-    , mPictureRotation( 0 )
-    , mRotationMap( nullptr )
-    , mNorthMode( GridNorth )
-    , mNorthOffset( 0.0 )
-    , mResizeMode( QgsComposerPicture::Zoom )
-    , mPictureAnchor( UpperLeft )
-    , mSvgFillColor( QColor( 255, 255, 255 ) )
-    , mSvgBorderColor( QColor( 0, 0, 0 ) )
-    , mSvgBorderWidth( 0.2 )
-    , mHasExpressionError( false )
-    , mLoadingSvg( false )
+QgsComposerPicture::QgsComposerPicture( QgsComposition* composition )
+  : QgsComposerItem( composition )
+  , mMode( Unknown )
+  , mPictureRotation( 0 )
+  , mRotationMap( nullptr )
+  , mNorthMode( GridNorth )
+  , mNorthOffset( 0.0 )
+  , mResizeMode( QgsComposerPicture::Zoom )
+  , mPictureAnchor( UpperLeft )
+  , mSvgFillColor( QColor( 255, 255, 255 ) )
+  , mSvgBorderColor( QColor( 0, 0, 0 ) )
+  , mSvgBorderWidth( 0.2 )
+  , mHasExpressionError( false )
+  , mLoadingSvg( false )
 {
   mPictureWidth = rect().width();
   init();
 }
 
 QgsComposerPicture::QgsComposerPicture()
-    : QgsComposerItem( nullptr )
-    , mMode( Unknown )
-    , mPictureRotation( 0 )
-    , mRotationMap( nullptr )
-    , mNorthMode( GridNorth )
-    , mNorthOffset( 0.0 )
-    , mResizeMode( QgsComposerPicture::Zoom )
-    , mPictureAnchor( UpperLeft )
-    , mSvgFillColor( QColor( 255, 255, 255 ) )
-    , mSvgBorderColor( QColor( 0, 0, 0 ) )
-    , mSvgBorderWidth( 0.2 )
-    , mHasExpressionError( false )
-    , mLoadingSvg( false )
+  : QgsComposerItem( nullptr )
+  , mMode( Unknown )
+  , mPictureRotation( 0 )
+  , mRotationMap( nullptr )
+  , mNorthMode( GridNorth )
+  , mNorthOffset( 0.0 )
+  , mResizeMode( QgsComposerPicture::Zoom )
+  , mPictureAnchor( UpperLeft )
+  , mSvgFillColor( QColor( 255, 255, 255 ) )
+  , mSvgBorderColor( QColor( 0, 0, 0 ) )
+  , mSvgBorderWidth( 0.2 )
+  , mHasExpressionError( false )
+  , mLoadingSvg( false )
 {
   mPictureHeight = rect().height();
   init();
@@ -247,7 +247,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   }
 }
 
-QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &boundRectHeightMM, QSize imageRectPixels )
+QRect QgsComposerPicture::clippedImageRect( double& boundRectWidthMM, double& boundRectHeightMM, QSize imageRectPixels )
 {
   int boundRectWidthPixels = boundRectWidthMM * mComposition->printResolution() / 25.4;
   int boundRectHeightPixels = boundRectHeightMM * mComposition->printResolution() / 25.4;
@@ -303,7 +303,7 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
   return QRect( leftClip, topClip, boundRectWidthPixels, boundRectHeightPixels );
 }
 
-void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
+void QgsComposerPicture::refreshPicture( const QgsExpressionContext* context )
 {
   QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext* evalContext = context ? context : &scopedContext;
@@ -332,7 +332,7 @@ void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
   loadPicture( source );
 }
 
-void QgsComposerPicture::loadRemotePicture( const QString &url )
+void QgsComposerPicture::loadRemotePicture( const QString& url )
 {
   //remote location
 
@@ -361,7 +361,7 @@ void QgsComposerPicture::loadRemotePicture( const QString &url )
   }
 }
 
-void QgsComposerPicture::loadLocalPicture( const QString &path )
+void QgsComposerPicture::loadLocalPicture( const QString& path )
 {
   QFile pic;
   pic.setFileName( path );
@@ -377,7 +377,7 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
     if ( sourceFileSuffix.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       //try to open svg
-      const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
+      const QByteArray& svgContent = QgsSvgCache::instance()->svgContent( pic.fileName(), rect().width(), mSvgFillColor, mSvgBorderColor, mSvgBorderWidth,
                                      1.0, 1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
@@ -451,7 +451,7 @@ void QgsComposerPicture::updateMapRotation()
   setPictureRotation( rotation );
 }
 
-void QgsComposerPicture::loadPicture( const QString &path )
+void QgsComposerPicture::loadPicture( const QString& path )
 {
   if ( path.startsWith( QLatin1String( "http" ) ) )
   {
@@ -731,7 +731,7 @@ void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::Da
   QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
 }
 
-void QgsComposerPicture::setPicturePath( const QString &path )
+void QgsComposerPicture::setPicturePath( const QString& path )
 {
   mSourcePath = path;
   refreshPicture();
@@ -742,7 +742,7 @@ QString QgsComposerPicture::picturePath() const
   return mSourcePath;
 }
 
-bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   if ( elem.isNull() )
   {

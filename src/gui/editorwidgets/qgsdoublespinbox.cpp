@@ -26,12 +26,12 @@
 
 #define CLEAR_ICON_SIZE 16
 
-QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
-    : QDoubleSpinBox( parent )
-    , mShowClearButton( true )
-    , mClearValueMode( MinimumValue )
-    , mCustomClearValue( 0.0 )
-    , mExpressionsEnabled( true )
+QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget* parent )
+  : QDoubleSpinBox( parent )
+  , mShowClearButton( true )
+  , mClearValueMode( MinimumValue )
+  , mCustomClearValue( 0.0 )
+  , mExpressionsEnabled( true )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
@@ -56,13 +56,13 @@ void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
   mExpressionsEnabled = enabled;
 }
 
-void QgsDoubleSpinBox::changeEvent( QEvent *event )
+void QgsDoubleSpinBox::changeEvent( QEvent* event )
 {
   QDoubleSpinBox::changeEvent( event );
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 
-void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
+void QgsDoubleSpinBox::paintEvent( QPaintEvent* event )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
   QDoubleSpinBox::paintEvent( event );
@@ -116,7 +116,7 @@ double QgsDoubleSpinBox::clearValue() const
     return mCustomClearValue;
 }
 
-QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
+QString QgsDoubleSpinBox::stripped( const QString& originalText ) const
 {
   //adapted from QAbstractSpinBoxPrivate::stripped
   //trims whitespace, prefix and suffix from spin box text
@@ -146,7 +146,7 @@ QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
   return text;
 }
 
-double QgsDoubleSpinBox::valueFromText( const QString &text ) const
+double QgsDoubleSpinBox::valueFromText( const QString& text ) const
 {
   if ( !mExpressionsEnabled )
   {
@@ -162,7 +162,7 @@ double QgsDoubleSpinBox::valueFromText( const QString &text ) const
   return QgsExpression::evaluateToDouble( trimmedText, value() );
 }
 
-QValidator::State QgsDoubleSpinBox::validate( QString &input, int &pos ) const
+QValidator::State QgsDoubleSpinBox::validate( QString& input, int& pos ) const
 {
   if ( !mExpressionsEnabled )
   {

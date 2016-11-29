@@ -40,7 +40,7 @@
 #include <QDragEnterEvent>
 
 QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent )
-    : QTextEdit( text, parent )
+  : QTextEdit( text, parent )
 {
   setReadOnly( true );
   setFrameStyle( QFrame::NoFrame );
@@ -63,13 +63,13 @@ void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 }
 
 QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget* parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
 }
 
 void QgsBrowserPropertiesWidget::setWidget( QWidget* paramWidget )
 {
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
   paramWidget->setParent( this );
   layout->addWidget( paramWidget );
 }
@@ -87,7 +87,7 @@ QgsBrowserPropertiesWidget* QgsBrowserPropertiesWidget::createWidget( QgsDataIte
   else if ( item->type() == QgsDataItem::Layer )
   {
     // prefer item's widget over standard layer widget
-    QWidget *paramWidget = item->paramWidget();
+    QWidget* paramWidget = item->paramWidget();
     if ( paramWidget )
     {
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
@@ -103,7 +103,7 @@ QgsBrowserPropertiesWidget* QgsBrowserPropertiesWidget::createWidget( QgsDataIte
 }
 
 QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget* parent )
-    : QgsBrowserPropertiesWidget( parent )
+  : QgsBrowserPropertiesWidget( parent )
 {
   setupUi( this );
 
@@ -113,7 +113,7 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget* parent )
 
 void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
 {
-  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
+  QgsLayerItem* layerItem = qobject_cast<QgsLayerItem*>( item );
   if ( !layerItem )
     return;
 
@@ -215,8 +215,8 @@ void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
 }
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent )
-    : QgsBrowserPropertiesWidget( parent )
-    , mDirectoryWidget( nullptr )
+  : QgsBrowserPropertiesWidget( parent )
+  , mDirectoryWidget( nullptr )
 {
   setupUi( this );
 
@@ -236,9 +236,9 @@ void QgsBrowserDirectoryProperties::setItem( QgsDataItem* item )
 }
 
 QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString& settingsSection, QWidget* parent )
-    : QDialog( parent )
-    , mPropertiesWidget( nullptr )
-    , mSettingsSection( settingsSection )
+  : QDialog( parent )
+  , mPropertiesWidget( nullptr )
+  , mSettingsSection( settingsSection )
 {
   setupUi( this );
   QSettings settings;
@@ -261,12 +261,12 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem* item )
   setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * parent )
-    : QgsDockWidget( parent )
-    , mModel( nullptr )
-    , mProxyModel( nullptr )
-    , mPropertiesWidgetEnabled( false )
-    , mPropertiesWidgetHeight( 0 )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget* parent )
+  : QgsDockWidget( parent )
+  , mModel( nullptr )
+  , mProxyModel( nullptr )
+  , mPropertiesWidgetEnabled( false )
+  , mPropertiesWidgetHeight( 0 )
 {
   setupUi( this );
 
@@ -317,9 +317,9 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   connect( mActionPropertiesWidget, SIGNAL( triggered( bool ) ), this, SLOT( enablePropertiesWidget( bool ) ) );
   connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
-  connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
-  connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
-  connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
+  connect( mLeFilter, SIGNAL( textChanged( const QString& ) ), this, SLOT( setFilter() ) );
+  connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( setFilterSyntax( QAction* ) ) );
+  connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showContextMenu( const QPoint& ) ) );
   connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
   connect( mSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( splitterMoved() ) );
 }
@@ -332,7 +332,7 @@ QgsBrowserDockWidget::~QgsBrowserDockWidget()
   settings.setValue( settingsSection() + "/propertiesWidgetHeight", mPropertiesWidgetHeight );
 }
 
-void QgsBrowserDockWidget::showEvent( QShowEvent * e )
+void QgsBrowserDockWidget::showEvent( QShowEvent* e )
 {
   // delayed initialization of the model
   if ( !mModel )
@@ -351,8 +351,8 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree
-    connect( mBrowserView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( mBrowserView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
+             this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
 
     // objectName used by settingsSection() is not yet set in constructor
     QSettings settings;
@@ -379,7 +379,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   if ( !item )
     return;
 
-  QMenu *menu = new QMenu( this );
+  QMenu* menu = new QMenu( this );
 
   if ( item->type() == QgsDataItem::Directory )
   {
@@ -399,7 +399,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     }
     menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
-    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
+    QAction* action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
     action->setChecked( settings.value( QStringLiteral( "/qgis/scanItemsFastScanUris" ),
                                         QStringList() ).toStringList().contains( item->path() ) );
@@ -441,7 +441,7 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !item )
     return;
 
-  QgsDirectoryItem * dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  QgsDirectoryItem* dirItem = dynamic_cast<QgsDirectoryItem*>( item );
   if ( !dirItem )
     return;
 
@@ -474,7 +474,7 @@ void QgsBrowserDockWidget::refresh()
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 {
-  QgsDataItem *item = mModel->dataItem( index );
+  QgsDataItem* item = mModel->dataItem( index );
   if ( item )
   {
     QgsDebugMsg( "path = " + item->path() );
@@ -493,7 +493,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   {
     QModelIndex idx = mModel->index( i, 0, index );
     QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
-    QgsDataItem *child = mModel->dataItem( idx );
+    QgsDataItem* child = mModel->dataItem( idx );
 
     // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
     // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
@@ -511,7 +511,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   }
 }
 
-void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
+void QgsBrowserDockWidget::addLayer( QgsLayerItem* layerItem )
 {
   if ( !layerItem )
     return;
@@ -524,11 +524,11 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
 {
   QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
-  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+  QgsDataItem* item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
   if ( item && item->type() == QgsDataItem::Project )
   {
-    QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
+    QgsProjectItem* projectItem = qobject_cast<QgsProjectItem*>( item );
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -538,7 +538,7 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
   }
   if ( item && item->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
+    QgsLayerItem* layerItem = qobject_cast<QgsLayerItem*>( item );
     if ( layerItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -564,10 +564,10 @@ void QgsBrowserDockWidget::addSelectedLayers()
   // If any of the layer items are QGIS we just open and exit the loop
   Q_FOREACH ( const QModelIndex& index, list )
   {
-    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+    QgsDataItem* item = mModel->dataItem( mProxyModel->mapToSource( index ) );
     if ( item && item->type() == QgsDataItem::Project )
     {
-      QgsProjectItem *projectItem = qobject_cast<QgsProjectItem*>( item );
+      QgsProjectItem* projectItem = qobject_cast<QgsProjectItem*>( item );
       if ( projectItem )
         QgisApp::instance()->openFile( projectItem->path() );
 
@@ -579,10 +579,10 @@ void QgsBrowserDockWidget::addSelectedLayers()
   // add items in reverse order so they are in correct order in the layers dock
   for ( int i = list.size() - 1; i >= 0; i-- )
   {
-    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
+    QgsDataItem* item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
     if ( item && item->type() == QgsDataItem::Layer )
     {
-      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
+      QgsLayerItem* layerItem = qobject_cast<QgsLayerItem*>( item );
       if ( layerItem )
         addLayer( layerItem );
     }
@@ -665,7 +665,7 @@ void QgsBrowserDockWidget::setFilter()
     mProxyModel->setFilter( filter );
 }
 
-void QgsBrowserDockWidget::setFilterSyntax( QAction * action )
+void QgsBrowserDockWidget::setFilterSyntax( QAction* action )
 {
   if ( !action || ! mProxyModel )
     return;
@@ -681,7 +681,7 @@ void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
 
 int QgsBrowserDockWidget::selectedItemsCount()
 {
-  QItemSelectionModel *selectonModel = mBrowserView->selectionModel();
+  QItemSelectionModel* selectonModel = mBrowserView->selectionModel();
   if ( selectonModel )
   {
     return selectonModel->selectedIndexes().size();
@@ -689,7 +689,7 @@ int QgsBrowserDockWidget::selectedItemsCount()
   return 0;
 }
 
-void QgsBrowserDockWidget::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
+void QgsBrowserDockWidget::selectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
@@ -711,7 +711,7 @@ void QgsBrowserDockWidget::clearPropertiesWidget()
 void QgsBrowserDockWidget::setPropertiesWidget()
 {
   clearPropertiesWidget();
-  QItemSelectionModel *selectonModel = mBrowserView->selectionModel();
+  QItemSelectionModel* selectonModel = mBrowserView->selectionModel();
   if ( selectonModel )
   {
     QModelIndexList indexes = selectonModel->selectedIndexes();
@@ -803,7 +803,7 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent* e )
   }
 }
 
-void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
+void QgsDockBrowserTreeView::dropEvent( QDropEvent* e )
 {
   // if this mime data come from layer tree, the proposed action will be MoveAction
   // but for browser we really need CopyAction
@@ -820,10 +820,10 @@ void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
 //
 
 QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject* parent )
-    : QSortFilterProxyModel( parent )
-    , mModel( nullptr )
-    , mPatternSyntax( QStringLiteral( "normal" ) )
-    , mCaseSensitivity( Qt::CaseInsensitive )
+  : QSortFilterProxyModel( parent )
+  , mModel( nullptr )
+  , mPatternSyntax( QStringLiteral( "normal" ) )
+  , mCaseSensitivity( Qt::CaseInsensitive )
 {
   setDynamicSortFilter( true );
 }

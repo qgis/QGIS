@@ -40,7 +40,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     };
 
   public:
-    QgsStatusBarCoordinatesWidget( QWidget *parent );
+    QgsStatusBarCoordinatesWidget( QWidget* parent );
 
     //! define the map canvas associated to the widget
     void setMapCanvas( QgsMapCanvas* mapCanvas );
@@ -53,7 +53,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void coordinatesChanged();
 
   private slots:
-    void showMouseCoordinates( const QgsPoint &p );
+    void showMouseCoordinates( const QgsPoint& p );
     void extentsViewToggled( bool theFlag );
     void validateCoordinates();
     void dizzy();
@@ -62,13 +62,13 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
   private:
     void refreshMapCanvas();
 
-    QLineEdit *mLineEdit;
-    QToolButton *mToggleExtentsViewButton;
+    QLineEdit* mLineEdit;
+    QToolButton* mToggleExtentsViewButton;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
-    QLabel *mLabel;
+    QLabel* mLabel;
 
-    QValidator *mCoordsEditValidator;
-    QTimer *mDizzyTimer;
+    QValidator* mCoordsEditValidator;
+    QTimer* mDizzyTimer;
     QgsMapCanvas* mMapCanvas;
 
     //! The number of decimal places to use if not automatic

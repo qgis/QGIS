@@ -38,7 +38,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
   public:
 
     //! Returns the instance pointer, creating the object on the first call
-    static QgsMapLayerRegistry * instance();
+    static QgsMapLayerRegistry* instance();
 
     ~QgsMapLayerRegistry();
 
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @see mapLayer()
      * @see mapLayers()
      */
-    QList<QgsMapLayer *> mapLayersByName( const QString& layerName ) const;
+    QList<QgsMapLayer*> mapLayersByName( const QString& layerName ) const;
 
     /** Returns a map of all registered layers by layer ID.
      * @see mapLayer()
@@ -120,9 +120,9 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @note added in QGIS 1.8
      * @see addMapLayer()
      */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer*>& theMapLayers,
-                                       bool addToLegend = true,
-                                       bool takeOwnership = true );
+    QList<QgsMapLayer*> addMapLayers( const QList<QgsMapLayer*>& theMapLayers,
+                                      bool addToLegend = true,
+                                      bool takeOwnership = true );
 
     /**
      * @brief
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * take ownership
      * @see addMapLayers()
      */
-    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer, bool addToLegend = true, bool takeOwnership = true );
+    QgsMapLayer* addMapLayer( QgsMapLayer* theMapLayer, bool addToLegend = true, bool takeOwnership = true );
 
     /**
      * @brief
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @see layerWasAdded()
      */
     //TODO QGIS 3.0 - rename theMapLayers to mapLayers
-    void layersAdded( const QList<QgsMapLayer *>& theMapLayers );
+    void layersAdded( const QList<QgsMapLayer*>& theMapLayers );
 
     /**
      * Emitted when a layer was added to the registry.
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     /** Debugging member
      *  invoked when a connect() is made to this object
      */
-    void connectNotify( const char * signal ) override;
+    void connectNotify( const char* signal ) override;
 #endif
 
   private slots:
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
   private:
     //! private singleton constructor
-    QgsMapLayerRegistry( QObject * parent = nullptr );
+    QgsMapLayerRegistry( QObject* parent = nullptr );
 
     QMap<QString, QgsMapLayer*> mMapLayers;
 };

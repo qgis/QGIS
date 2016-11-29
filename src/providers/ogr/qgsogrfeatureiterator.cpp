@@ -36,15 +36,15 @@
 
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-    , mFeatureFetched( false )
-    , mConn( nullptr )
-    , ogrLayer( nullptr )
-    , mSubsetStringSet( false )
-    , mFetchGeometry( false )
-    , mExpressionCompiled( false )
-    , mFilterFids( mRequest.filterFids() )
-    , mFilterFidsIt( mFilterFids.constBegin() )
+  : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
+  , mFeatureFetched( false )
+  , mConn( nullptr )
+  , ogrLayer( nullptr )
+  , mSubsetStringSet( false )
+  , mFetchGeometry( false )
+  , mExpressionCompiled( false )
+  , mFilterFids( mRequest.filterFids() )
+  , mFilterFidsIt( mFilterFids.constBegin() )
 {
   mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mProvider->dataSourceUri() );
   if ( !mConn->ds )
@@ -274,7 +274,7 @@ bool QgsOgrFeatureIterator::close()
 }
 
 
-void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex ) const
+void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature& f, int attindex ) const
 {
   if ( mSource->mFirstFieldIsFid && attindex == 0 )
   {
@@ -352,7 +352,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) 
 
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
-    : mProvider( p )
+  : mProvider( p )
 {
   mDataSource = p->dataSourceUri();
   mLayerName = p->layerName();

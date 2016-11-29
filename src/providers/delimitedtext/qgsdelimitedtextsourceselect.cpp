@@ -33,13 +33,13 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded )
-    : QDialog( parent, fl )
-    , mFile( new QgsDelimitedTextFile() )
-    , mExampleRowCount( 20 )
-    , mBadRowCount( 0 )
-    , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-    , mLastFileType( QLatin1String( "" ) )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embedded )
+  : QDialog( parent, fl )
+  , mFile( new QgsDelimitedTextFile() )
+  , mExampleRowCount( 20 )
+  , mBadRowCount( 0 )
+  , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
+  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
@@ -418,7 +418,11 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   {
     QgsDelimitedTextFile::Status status = mFile->nextRecord( values );
     if ( status == QgsDelimitedTextFile::RecordEOF ) break;
-    if ( status != QgsDelimitedTextFile::RecordOk ) { mBadRowCount++; continue; }
+    if ( status != QgsDelimitedTextFile::RecordOk )
+    {
+      mBadRowCount++;
+      continue;
+    }
     counter++;
 
     // Look at count of non-blank fields
@@ -445,7 +449,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     {
       QString value = i < nv ? values[i] : QLatin1String( "" );
       if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "...";
-      QTableWidgetItem *item = new QTableWidgetItem( value );
+      QTableWidgetItem* item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
       {
@@ -567,7 +571,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
 }
 
-bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname )
+bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList& fields, QList<bool>& isValidNumber, const QString& xname, const QString& yname )
 {
   // If fields already set, then nothing to do
   if ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) return true;

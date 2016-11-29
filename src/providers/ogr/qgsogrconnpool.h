@@ -64,10 +64,15 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
   public:
     explicit QgsOgrConnPoolGroup( const QString& name )
-        : QgsConnectionPoolGroup<QgsOgrConn*>( name )
-        , mRefCount( 0 )
-    { initTimer( this ); }
-    void ref() { ++mRefCount; }
+      : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+      , mRefCount( 0 )
+    {
+      initTimer( this );
+    }
+    void ref()
+    {
+      ++mRefCount;
+    }
     bool unref()
     {
       Q_ASSERT( mRefCount > 0 );
@@ -75,9 +80,18 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     }
 
   protected slots:
-    void handleConnectionExpired() { onConnectionExpired(); }
-    void startExpirationTimer() { expirationTimer->start(); }
-    void stopExpirationTimer() { expirationTimer->stop(); }
+    void handleConnectionExpired()
+    {
+      onConnectionExpired();
+    }
+    void startExpirationTimer()
+    {
+      expirationTimer->start();
+    }
+    void stopExpirationTimer()
+    {
+      expirationTimer->stop();
+    }
 
   protected:
     Q_DISABLE_COPY( QgsOgrConnPoolGroup )
@@ -157,7 +171,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   private:
     QgsOgrConnPool();
     ~QgsOgrConnPool();
-    static QgsOgrConnPool *mInstance;
+    static QgsOgrConnPool* mInstance;
 };
 
 

@@ -27,8 +27,8 @@
 
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas* canvas, QObject* parent )
-    : QItemDelegate( parent )
-    , mCanvas( canvas )
+  : QItemDelegate( parent )
+  , mCanvas( canvas )
 {
 }
 
@@ -90,7 +90,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget* editor, const QModelIndex
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
     QgsSnappingConfig::SnappingType type = ( QgsSnappingConfig::SnappingType )val.toInt();
-    QComboBox *cb = qobject_cast<QComboBox *>( editor );
+    QComboBox* cb = qobject_cast<QComboBox*>( editor );
     if ( cb )
     {
       cb->setCurrentIndex( cb->findData( type ) );
@@ -98,7 +98,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget* editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
   {
-    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    QDoubleSpinBox* w = qobject_cast<QDoubleSpinBox*>( editor );
     if ( w )
     {
       w->setValue( val.toDouble() );
@@ -107,7 +107,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget* editor, const QModelIndex
   else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
     QgsTolerance::UnitType units = ( QgsTolerance::UnitType )val.toInt();
-    QComboBox *w = qobject_cast<QComboBox *>( editor );
+    QComboBox* w = qobject_cast<QComboBox*>( editor );
     if ( w )
     {
       w->setCurrentIndex( w->findData( units ) );
@@ -120,7 +120,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget* editor, QAbstractItemModel
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn ||
        index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
-    QComboBox *w = qobject_cast<QComboBox *>( editor );
+    QComboBox* w = qobject_cast<QComboBox*>( editor );
     if ( w )
     {
       model->setData( index, w->currentData(), Qt::EditRole );
@@ -128,7 +128,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget* editor, QAbstractItemModel
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
   {
-    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    QDoubleSpinBox* w = qobject_cast<QDoubleSpinBox*>( editor );
     if ( w )
     {
       model->setData( index, w->value(), Qt::EditRole );
@@ -137,11 +137,11 @@ void QgsSnappingLayerDelegate::setModelData( QWidget* editor, QAbstractItemModel
 }
 
 
-QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject* project, QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mProject( project )
-    , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-    , mLayerTreeModel( nullptr )
+QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject* project, QObject* parent )
+  : QSortFilterProxyModel( parent )
+  , mProject( project )
+  , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
+  , mLayerTreeModel( nullptr )
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsListChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
@@ -260,11 +260,11 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
   hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode* node, const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode* node, const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings>& oldSettings )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
     {
       hasRowchanged( child, oldSettings );
     }
@@ -308,7 +308,7 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode* node ) const
     return false;
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
     {
       if ( nodeShown( child ) )
       {
@@ -358,7 +358,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex& idx, int role ) con
   {
     if ( role == Qt::CheckStateRole )
     {
-      QgsVectorLayer *vl = vectorLayer( idx );
+      QgsVectorLayer* vl = vectorLayer( idx );
       if ( vl  && mIndividualLayerSettings.contains( vl ) )
       {
         const QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
@@ -424,7 +424,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex& idx, int role ) con
   }
   else
   {
-    QgsVectorLayer *vl = vectorLayer( idx );
+    QgsVectorLayer* vl = vectorLayer( idx );
 
     if ( !vl || !mIndividualLayerSettings.contains( vl ) )
     {
@@ -556,7 +556,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
 
   if ( index.column() == TypeColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsVectorLayer* vl = vectorLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -576,7 +576,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
 
   if ( index.column() == ToleranceColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsVectorLayer* vl = vectorLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -596,7 +596,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
 
   if ( index.column() == UnitsColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsVectorLayer* vl = vectorLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )

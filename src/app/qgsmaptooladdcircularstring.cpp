@@ -25,12 +25,12 @@
 #include "qgisapp.h"
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
-    , mParentTool( parentTool )
-    , mRubberBand( nullptr )
-    , mTempRubberBand( nullptr )
-    , mShowCenterPointRubberBand( false )
-    , mCenterPointRubberBand( nullptr )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
+  , mParentTool( parentTool )
+  , mRubberBand( nullptr )
+  , mTempRubberBand( nullptr )
+  , mShowCenterPointRubberBand( false )
+  , mCenterPointRubberBand( nullptr )
 {
   if ( mCanvas )
   {
@@ -39,12 +39,12 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture* par
 }
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-    , mParentTool( nullptr )
-    , mRubberBand( nullptr )
-    , mTempRubberBand( nullptr )
-    , mShowCenterPointRubberBand( false )
-    , mCenterPointRubberBand( nullptr )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+  , mParentTool( nullptr )
+  , mRubberBand( nullptr )
+  , mTempRubberBand( nullptr )
+  , mShowCenterPointRubberBand( false )
+  , mCenterPointRubberBand( nullptr )
 {
   if ( mCanvas )
   {

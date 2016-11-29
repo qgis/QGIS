@@ -29,9 +29,9 @@
 #define FRAME_MARGIN 2
 #define CLICK_THRESHOLD ( MARKER_WIDTH / 2 + 3 )
 
-QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
-    : QWidget( parent )
-    , mSelectedStop( 0 )
+QgsGradientStopEditor::QgsGradientStopEditor( QWidget* parent, QgsGradientColorRamp* ramp )
+  : QWidget( parent )
+  , mSelectedStop( 0 )
 {
   if ( ramp )
     mGradient = *ramp;
@@ -40,25 +40,25 @@ QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorR
   if ( sOuterTriangle.isEmpty() )
   {
     sOuterTriangle << QPointF( 0, MARKER_HEIGHT ) << QPointF( MARKER_WIDTH, MARKER_HEIGHT )
-    << QPointF( MARKER_WIDTH, MARKER_WIDTH / 2.0 )
-    << QPointF( MARKER_WIDTH / 2.0, 0 )
-    << QPointF( 0, MARKER_WIDTH / 2.0 )
-    << QPointF( 0, MARKER_HEIGHT );
+                   << QPointF( MARKER_WIDTH, MARKER_WIDTH / 2.0 )
+                   << QPointF( MARKER_WIDTH / 2.0, 0 )
+                   << QPointF( 0, MARKER_WIDTH / 2.0 )
+                   << QPointF( 0, MARKER_HEIGHT );
   }
   if ( sInnerTriangle.isEmpty() )
   {
     sInnerTriangle << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP ) << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_HEIGHT - MARKER_GAP )
-    << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
-    << QPointF( MARKER_WIDTH / 2.0, MARKER_GAP )
-    << QPointF( MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
-    << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP );
+                   << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
+                   << QPointF( MARKER_WIDTH / 2.0, MARKER_GAP )
+                   << QPointF( MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
+                   << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP );
   }
 
   setFocusPolicy( Qt::StrongFocus );
   setAcceptDrops( true );
 }
 
-void QgsGradientStopEditor::setGradientRamp( const QgsGradientColorRamp &ramp )
+void QgsGradientStopEditor::setGradientRamp( const QgsGradientColorRamp& ramp )
 {
   mGradient = ramp;
   mStops = mGradient.stops();
@@ -73,7 +73,7 @@ QSize QgsGradientStopEditor::sizeHint() const
   return QSize( 200, 80 );
 }
 
-void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
+void QgsGradientStopEditor::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
   QPainter painter( this );
@@ -171,7 +171,7 @@ QgsGradientStop QgsGradientStopEditor::selectedStop() const
   }
 }
 
-void QgsGradientStopEditor::setSelectedStopColor( const QColor &color )
+void QgsGradientStopEditor::setSelectedStopColor( const QColor& color )
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
@@ -201,7 +201,7 @@ void QgsGradientStopEditor::setSelectedStopOffset( double offset )
   }
 }
 
-void QgsGradientStopEditor::setSelectedStopDetails( const QColor &color, double offset )
+void QgsGradientStopEditor::setSelectedStopDetails( const QColor& color, double offset )
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
@@ -239,21 +239,21 @@ void QgsGradientStopEditor::deleteSelectedStop()
   }
 }
 
-void QgsGradientStopEditor::setColor1( const QColor &color )
+void QgsGradientStopEditor::setColor1( const QColor& color )
 {
   mGradient.setColor1( color );
   update();
   emit changed();
 }
 
-void QgsGradientStopEditor::setColor2( const QColor &color )
+void QgsGradientStopEditor::setColor2( const QColor& color )
 {
   mGradient.setColor2( color );
   update();
   emit changed();
 }
 
-void QgsGradientStopEditor::mouseMoveEvent( QMouseEvent *e )
+void QgsGradientStopEditor::mouseMoveEvent( QMouseEvent* e )
 {
   if ( e->buttons() & Qt::LeftButton )
   {
@@ -313,7 +313,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   return closestStop;
 }
 
-void QgsGradientStopEditor::mousePressEvent( QMouseEvent *e )
+void QgsGradientStopEditor::mousePressEvent( QMouseEvent* e )
 {
   if ( e->pos().y() >= rect().height() - MARGIN_BOTTOM - 1 )
   {
@@ -328,7 +328,7 @@ void QgsGradientStopEditor::mousePressEvent( QMouseEvent *e )
   e->accept();
 }
 
-void QgsGradientStopEditor::mouseDoubleClickEvent( QMouseEvent *e )
+void QgsGradientStopEditor::mouseDoubleClickEvent( QMouseEvent* e )
 {
   if ( e->buttons() & Qt::LeftButton )
   {
@@ -343,7 +343,7 @@ void QgsGradientStopEditor::mouseDoubleClickEvent( QMouseEvent *e )
   e->accept();
 }
 
-void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
+void QgsGradientStopEditor::keyPressEvent( QKeyEvent* e )
 {
   if (( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
@@ -386,7 +386,7 @@ const QPixmap& QgsGradientStopEditor::transparentBackground()
   return transpBkgrd;
 }
 
-void QgsGradientStopEditor::drawStopMarker( QPainter& painter, QPoint topMiddle, const QColor &color, bool selected )
+void QgsGradientStopEditor::drawStopMarker( QPainter& painter, QPoint topMiddle, const QColor& color, bool selected )
 {
   painter.save();
   painter.setRenderHint( QPainter::Antialiasing );
@@ -440,7 +440,7 @@ bool QgsGradientStopEditor::selectedStopIsMovable() const
 }
 
 
-void QgsGradientStopEditor::dragEnterEvent( QDragEnterEvent *e )
+void QgsGradientStopEditor::dragEnterEvent( QDragEnterEvent* e )
 {
   //is dragged data valid color data?
   bool hasAlpha;
@@ -453,7 +453,7 @@ void QgsGradientStopEditor::dragEnterEvent( QDragEnterEvent *e )
   }
 }
 
-void QgsGradientStopEditor::dropEvent( QDropEvent *e )
+void QgsGradientStopEditor::dropEvent( QDropEvent* e )
 {
   //is dropped data valid color data?
   bool hasAlpha = false;

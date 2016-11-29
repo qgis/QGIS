@@ -47,7 +47,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     /** Constructor for QgsVariableEditorWidget.
      * @param parent parent widget
      */
-    QgsVariableEditorWidget( QWidget *parent = nullptr );
+    QgsVariableEditorWidget( QWidget* parent = nullptr );
 
     ~QgsVariableEditorWidget();
 
@@ -63,7 +63,10 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * are created with an empty context by default.
      * @see setContext()
      */
-    QgsExpressionContext* context() const { return mContext.data(); }
+    QgsExpressionContext* context() const
+    {
+      return mContext.data();
+    }
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
@@ -85,7 +88,10 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * @param group setting group
      * @see settingGroup()
      */
-    void setSettingGroup( const QString &group ) { mSettingGroup = group; }
+    void setSettingGroup( const QString& group )
+    {
+      mSettingGroup = group;
+    }
 
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
      * the same setting group will synchronise their settings, eg the size
@@ -93,7 +99,10 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * @returns setting group name
      * @see setSettingGroup()
      */
-    QString settingGroup() const { return mSettingGroup; }
+    QString settingGroup() const
+    {
+      return mSettingGroup;
+    }
 
     /** Returns a map variables set within the editable scope. Read only variables are not
      * returned. This method can be used to retrieve the variables edited an added by
@@ -117,7 +126,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
   protected:
 
-    void showEvent( QShowEvent *event ) override;
+    void showEvent( QShowEvent* event ) override;
 
   private:
 
@@ -158,20 +167,38 @@ class QgsVariableEditorTree : public QTreeWidget
       RowBaseColor
     };
 
-    explicit QgsVariableEditorTree( QWidget *parent = nullptr );
+    explicit QgsVariableEditorTree( QWidget* parent = nullptr );
 
-    QTreeWidgetItem *indexToItem( const QModelIndex &index ) const { return itemFromIndex( index ); }
-    QModelIndex itemToIndex( QTreeWidgetItem* item ) const { return indexFromItem( item ); }
-    QString variableNameFromItem( QTreeWidgetItem* item ) const { return item ? item->text( 0 ) : QString(); }
-    QString variableNameFromIndex( const QModelIndex& index ) const { return variableNameFromItem( itemFromIndex( index ) ); }
+    QTreeWidgetItem* indexToItem( const QModelIndex& index ) const
+    {
+      return itemFromIndex( index );
+    }
+    QModelIndex itemToIndex( QTreeWidgetItem* item ) const
+    {
+      return indexFromItem( item );
+    }
+    QString variableNameFromItem( QTreeWidgetItem* item ) const
+    {
+      return item ? item->text( 0 ) : QString();
+    }
+    QString variableNameFromIndex( const QModelIndex& index ) const
+    {
+      return variableNameFromItem( itemFromIndex( index ) );
+    }
     QgsExpressionContextScope* scopeFromItem( QTreeWidgetItem* item ) const;
     QTreeWidgetItem* itemFromVariable( QgsExpressionContextScope* scope, const QString& name ) const;
-    void setEditableScopeIndex( int scopeIndex ) { mEditableScopeIndex = scopeIndex; }
+    void setEditableScopeIndex( int scopeIndex )
+    {
+      mEditableScopeIndex = scopeIndex;
+    }
     QgsExpressionContextScope* editableScope();
-    void setContext( QgsExpressionContext* context ) { mContext = context; }
+    void setContext( QgsExpressionContext* context )
+    {
+      mContext = context;
+    }
     void refreshTree();
     void removeItem( QTreeWidgetItem* item );
-    void renameItem( QTreeWidgetItem *item, const QString &name );
+    void renameItem( QTreeWidgetItem* item, const QString& name );
     void resetTree();
     void emitChanged();
 
@@ -180,12 +207,12 @@ class QgsVariableEditorTree : public QTreeWidget
     void scopeChanged();
 
   protected:
-    void keyPressEvent( QKeyEvent *event ) override;
-    void mousePressEvent( QMouseEvent *event ) override;
-    void drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void keyPressEvent( QKeyEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
+    void drawRow( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
     QColor rowColor( int index ) const;
-    void toggleContextExpanded( QTreeWidgetItem *item );
-    void editNext( const QModelIndex &index );
+    void toggleContextExpanded( QTreeWidgetItem* item );
+    void editNext( const QModelIndex& index );
 
     QModelIndex moveCursor( CursorAction cursorAction, Qt::KeyboardModifiers modifiers ) override;
 
@@ -209,22 +236,22 @@ class VariableEditorDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    VariableEditorDelegate( QObject *parent = nullptr, QgsVariableEditorTree *tree = nullptr )
-        : QItemDelegate( parent )
-        , mParentTree( tree )
+    VariableEditorDelegate( QObject* parent = nullptr, QgsVariableEditorTree* tree = nullptr )
+      : QItemDelegate( parent )
+      , mParentTree( tree )
     {}
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const override;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
-                               const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option,
+                           const QModelIndex& index ) const override;
+    void updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option,
+                               const QModelIndex& index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
     void setModelData( QWidget* widget, QAbstractItemModel* model,
-                       const QModelIndex & index ) const override;
-    void setEditorData( QWidget *, const QModelIndex & ) const override {}
+                       const QModelIndex& index ) const override;
+    void setEditorData( QWidget*, const QModelIndex& ) const override {}
 
   private:
-    QgsVariableEditorTree *mParentTree;
+    QgsVariableEditorTree* mParentTree;
 };
 
 /// @endcond

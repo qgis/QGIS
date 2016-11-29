@@ -28,11 +28,11 @@
 #include <QTcpSocket>
 
 #ifdef Q_OS_MACX
-QgsAbout::QgsAbout( QWidget *parent )
-    : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsAbout::QgsAbout( QWidget* parent )
+  : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
 QgsAbout::QgsAbout( QWidget *parent )
-    : QgsOptionsDialogBase( QStringLiteral( "about" ), parent )  // Normal dialog in non Mac-OS
+  : QgsOptionsDialogBase( QStringLiteral( "about" ), parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
@@ -65,7 +65,7 @@ void QgsAbout::init()
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
 
-  connect( developersMapView, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
+  connect( developersMapView, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( openUrl( const QUrl& ) ) );
 
   // set the 60x60 icon pixmap
   qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );
@@ -280,7 +280,7 @@ void QgsAbout::on_btnQgisHome_clicked()
   openUrl( QStringLiteral( "http://qgis.org" ) );
 }
 
-void QgsAbout::openUrl( const QUrl &url )
+void QgsAbout::openUrl( const QUrl& url )
 {
   //use the users default browser
   QDesktopServices::openUrl( url );

@@ -50,13 +50,25 @@ class ANALYSIS_EXPORT QgsRelief
       @return 0 in case of success*/
     int processRaster( QProgressDialog* p );
 
-    double zFactor() const { return mZFactor; }
-    void setZFactor( double factor ) { mZFactor = factor; }
+    double zFactor() const
+    {
+      return mZFactor;
+    }
+    void setZFactor( double factor )
+    {
+      mZFactor = factor;
+    }
 
     void clearReliefColors();
     void addReliefColorClass( const ReliefColor& color );
-    const QList< ReliefColor >& reliefColors() const { return mReliefColors; }
-    void setReliefColors( const QList< ReliefColor >& c ) { mReliefColors = c; }
+    const QList< ReliefColor >& reliefColors() const
+    {
+      return mReliefColors;
+    }
+    void setReliefColors( const QList< ReliefColor >& c )
+    {
+      mReliefColors = c;
+    }
 
     /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
       @return true in case of success*/

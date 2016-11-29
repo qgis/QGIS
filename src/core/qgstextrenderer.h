@@ -50,7 +50,7 @@ class CORE_EXPORT QgsTextBufferSettings
     /** Copy constructor.
      * @param other source QgsTextBufferSettings
      */
-    QgsTextBufferSettings& operator=( const QgsTextBufferSettings &other );
+    QgsTextBufferSettings& operator=( const QgsTextBufferSettings& other );
 
     ~QgsTextBufferSettings();
 
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     QgsTextBackgroundSettings( const QgsTextBackgroundSettings& other );
 
-    QgsTextBackgroundSettings& operator=( const QgsTextBackgroundSettings &other );
+    QgsTextBackgroundSettings& operator=( const QgsTextBackgroundSettings& other );
 
     ~QgsTextBackgroundSettings();
 
@@ -618,7 +618,7 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     QgsTextShadowSettings( const QgsTextShadowSettings& other );
 
-    QgsTextShadowSettings& operator=( const QgsTextShadowSettings &other );
+    QgsTextShadowSettings& operator=( const QgsTextShadowSettings& other );
 
     ~QgsTextShadowSettings();
 
@@ -860,57 +860,84 @@ class CORE_EXPORT QgsTextFormat
      */
     QgsTextFormat( const QgsTextFormat& other );
 
-    QgsTextFormat& operator=( const QgsTextFormat &other );
+    QgsTextFormat& operator=( const QgsTextFormat& other );
 
     ~QgsTextFormat();
 
     /** Returns a reference to the text buffer settings.
      * @see setBuffer()
      */
-    QgsTextBufferSettings& buffer() { return mBufferSettings; }
+    QgsTextBufferSettings& buffer()
+    {
+      return mBufferSettings;
+    }
 
     /** Returns a reference to the text buffer settings.
      * @see setBuffer()
      */
-    QgsTextBufferSettings buffer() const { return mBufferSettings; }
+    QgsTextBufferSettings buffer() const
+    {
+      return mBufferSettings;
+    }
 
     /** Sets the text's buffer settings.
      * @param bufferSettings buffer settings
      * @see buffer()
      */
-    void setBuffer( const QgsTextBufferSettings& bufferSettings ) { mBufferSettings = bufferSettings; }
+    void setBuffer( const QgsTextBufferSettings& bufferSettings )
+    {
+      mBufferSettings = bufferSettings;
+    }
 
     /** Returns a reference to the text background settings.
      * @see setBackground()
      */
-    QgsTextBackgroundSettings& background() { return mBackgroundSettings; }
+    QgsTextBackgroundSettings& background()
+    {
+      return mBackgroundSettings;
+    }
 
     /** Returns a reference to the text background settings.
      * @see setBackground()
      */
-    QgsTextBackgroundSettings background() const { return mBackgroundSettings; }
+    QgsTextBackgroundSettings background() const
+    {
+      return mBackgroundSettings;
+    }
 
     /** Sets the text's background settings.
      * @param backgroundSettings background settings
      * @see background()
      */
-    void setBackground( const QgsTextBackgroundSettings& backgroundSettings ) { mBackgroundSettings = backgroundSettings; }
+    void setBackground( const QgsTextBackgroundSettings& backgroundSettings )
+    {
+      mBackgroundSettings = backgroundSettings;
+    }
 
     /** Returns a reference to the text drop shadow settings.
      * @see setShadow()
      */
-    QgsTextShadowSettings& shadow() { return mShadowSettings; }
+    QgsTextShadowSettings& shadow()
+    {
+      return mShadowSettings;
+    }
 
     /** Returns a reference to the text drop shadow settings.
      * @see setShadow()
      */
-    QgsTextShadowSettings shadow() const { return mShadowSettings; }
+    QgsTextShadowSettings shadow() const
+    {
+      return mShadowSettings;
+    }
 
     /** Sets the text's drop shadow settings.
      * @param shadowSettings shadow settings
      * @see shadow()
      */
-    void setShadow( const QgsTextShadowSettings& shadowSettings ) { mShadowSettings = shadowSettings; }
+    void setShadow( const QgsTextShadowSettings& shadowSettings )
+    {
+      mShadowSettings = shadowSettings;
+    }
 
     /** Returns the font used for rendering text. Note that the size of the font
      * is not used, and size() should be called instead to determine the size
@@ -1075,14 +1102,20 @@ class CORE_EXPORT QgsTextFormat
      * if the font was not found and a replacement was used instead.
      * @see resolvedFontFamily()
      */
-    bool fontFound() const { return mTextFontFound; }
+    bool fontFound() const
+    {
+      return mTextFontFound;
+    }
 
     /** Returns the family for the resolved font, ie if the specified font
      * was not found on the system this will return the name of the replacement
      * font.
      * @see fontFound()
      */
-    QString resolvedFontFamily() const { return mTextFontFamily; }
+    QString resolvedFontFamily() const
+    {
+      return mTextFontFamily;
+    }
 
   private:
 
@@ -1223,12 +1256,12 @@ class CORE_EXPORT QgsTextRenderer
     struct Component
     {
       Component()
-          : useOrigin( false )
-          , rotation( 0.0 )
-          , rotationOffset( 0.0 )
-          , pictureBuffer( 0.0 )
-          , dpiRatio( 1.0 )
-          , hAlign( AlignLeft )
+        : useOrigin( false )
+        , rotation( 0.0 )
+        , rotationOffset( 0.0 )
+        , pictureBuffer( 0.0 )
+        , dpiRatio( 1.0 )
+        , hAlign( AlignLeft )
       {}
 
       //! Component text
@@ -1259,7 +1292,7 @@ class CORE_EXPORT QgsTextRenderer
     };
 
     static void drawBuffer( QgsRenderContext& context,
-                            const Component &component,
+                            const Component& component,
                             const QgsTextFormat& format );
 
     static void drawBackground( QgsRenderContext& context,
@@ -1268,12 +1301,12 @@ class CORE_EXPORT QgsTextRenderer
                                 const QStringList& textLines,
                                 DrawMode mode = Rect );
 
-    static void drawShadow( QgsRenderContext &context,
-                            const Component &component,
+    static void drawShadow( QgsRenderContext& context,
+                            const Component& component,
                             const QgsTextFormat& format );
 
-    static void drawText( QgsRenderContext &context,
-                          const Component &component,
+    static void drawText( QgsRenderContext& context,
+                          const Component& component,
                           const QgsTextFormat& format );
 
     static void drawTextInternal( TextPart drawType,
@@ -1281,7 +1314,7 @@ class CORE_EXPORT QgsTextRenderer
                                   const QgsTextFormat& format,
                                   const Component& component,
                                   const QStringList& textLines,
-                                  const QFontMetricsF *fontMetrics,
+                                  const QFontMetricsF* fontMetrics,
                                   HAlignment alignment,
                                   bool drawAsOutlines,
                                   DrawMode mode = Rect );

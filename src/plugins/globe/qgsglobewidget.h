@@ -23,7 +23,7 @@ class QgsGlobeWidget : public QDockWidget
 {
     Q_OBJECT
   public:
-    QgsGlobeWidget( QgisInterface *iface, QWidget* parent = 0 );
+    QgsGlobeWidget( QgisInterface* iface, QWidget* parent = 0 );
     QStringList getSelectedLayers() const;
 
   signals:
@@ -36,7 +36,7 @@ class QgsGlobeWidget : public QDockWidget
     QgisInterface* mQgisIface;
     QMenu* mLayerSelectionMenu;
 
-    void contextMenuEvent( QContextMenuEvent * e ) override;
+    void contextMenuEvent( QContextMenuEvent* e ) override;
 
   private slots:
     void updateLayerSelectionMenu();

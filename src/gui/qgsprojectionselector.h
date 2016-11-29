@@ -29,7 +29,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WindowFlags fl = 0 );
+    QgsProjectionSelector( QWidget* parent, const char* name = "", Qt::WindowFlags fl = 0 );
 
     ~QgsProjectionSelector();
 
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *
      * \todo Should this be public?
      */
-    void loadUserCrsList( QSet<QString> *crsFilter = nullptr );
+    void loadUserCrsList( QSet<QString>* crsFilter = nullptr );
 
     /**
      * \brief Populate the proj tree view with system projection names...
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *
      * \todo Should this be public?
      */
-    void loadCrsList( QSet<QString> *crsFilter = nullptr );
+    void loadCrsList( QSet<QString>* crsFilter = nullptr );
 
     /*!
      * \brief Make the string safe for use in SQL statements.
@@ -99,20 +99,20 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      * \warning This function's behaviour is undefined if it is called after the widget is shown.
      */
     void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
-    void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* prev );
+    void on_lstRecent_currentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* prev );
     void on_cbxHideDeprecated_stateChanged();
-    void on_leSearch_textChanged( const QString & );
+    void on_leSearch_textChanged( const QString& );
 
     //! mark selected projection for push to front
     void pushProjectionToFront();
 
   protected:
     //! Used to ensure the projection list view is actually populated
-    void showEvent( QShowEvent * theEvent ) override;
+    void showEvent( QShowEvent* theEvent ) override;
 
     //! Used to manage column sizes
-    void resizeEvent( QResizeEvent * theEvent ) override;
+    void resizeEvent( QResizeEvent* theEvent ) override;
 
   private:
 
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
      *                  where you just want to offer what the WMS server can support.
      *
      */
-    QString ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter );
+    QString ogcWmsCrsFilterAsSqlExpression( QSet<QString>* crsFilter );
 
     /**
      * \brief does the legwork of applying CRS Selection
@@ -152,11 +152,11 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void showDBMissingWarning( const QString& theFileName );
     // List view nodes for the tree view of projections
     //! User defined projections node
-    QTreeWidgetItem *mUserProjList;
+    QTreeWidgetItem* mUserProjList;
     //! GEOGCS node
-    QTreeWidgetItem *mGeoList;
+    QTreeWidgetItem* mGeoList;
     //! PROJCS node
-    QTreeWidgetItem *mProjList;
+    QTreeWidgetItem* mProjList;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;
@@ -194,15 +194,15 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     QStringList mRecentProjections;
 
     //! Hide deprecated CRSes
-    void hideDeprecated( QTreeWidgetItem *item );
+    void hideDeprecated( QTreeWidgetItem* item );
 
   private slots:
     //! get list of authorities
     QStringList authorities();
 
     //! Apply projection on double click
-    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem* current, int column );
+    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem* current, int column );
 
   signals:
     void sridSelected( const QString& theSRID );

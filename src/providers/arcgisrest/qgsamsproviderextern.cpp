@@ -25,7 +25,7 @@ const QString AMS_KEY = QStringLiteral( "arcgismapserver" );
 const QString AMS_DESCRIPTION = QStringLiteral( "ArcGIS Map Server data provider" );
 
 
-QGISEXTERN QgsAmsProvider * classFactory( const QString *uri )
+QGISEXTERN QgsAmsProvider* classFactory( const QString* uri )
 {
   return new QgsAmsProvider( *uri );
 }
@@ -45,7 +45,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsAmsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsAmsSourceSelect* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   return new QgsAmsSourceSelect( parent, fl );
 }
@@ -55,7 +55,7 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
   {

@@ -27,11 +27,11 @@
 #include <QPixmap>
 
 CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas )
-    : QgsMapTool( thepCanvas )
-    , mpRubberBand( nullptr )
+  : QgsMapTool( thepCanvas )
+  , mpRubberBand( nullptr )
 {
   // set cursor
-  QPixmap myCursor = QPixmap(( const char ** ) capture_point_cursor );
+  QPixmap myCursor = QPixmap(( const char** ) capture_point_cursor );
   mCursor = QCursor( myCursor, 8, 8 ); //8,8 is the point in the cursor where clicks register
   mpMapCanvas = thepCanvas;
   mpRubberBand = new QgsRubberBand( mpMapCanvas, QgsWkbTypes::PolygonGeometry );
@@ -43,19 +43,19 @@ CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
 {
 }
 
-void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent * thepEvent )
+void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent* thepEvent )
 {
   QgsPoint myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );
   emit mouseMoved( myOriginalPoint );
 }
 
-void CoordinateCaptureMapTool::canvasPressEvent( QgsMapMouseEvent * thepEvent )
+void CoordinateCaptureMapTool::canvasPressEvent( QgsMapMouseEvent* thepEvent )
 {
   Q_UNUSED( thepEvent );
 }
 
-void CoordinateCaptureMapTool::canvasReleaseEvent( QgsMapMouseEvent * thepEvent )
+void CoordinateCaptureMapTool::canvasReleaseEvent( QgsMapMouseEvent* thepEvent )
 {
   QgsPoint myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );

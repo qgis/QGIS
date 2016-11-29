@@ -18,7 +18,7 @@
 #include "qgscursors.h"
 
 // cursors
-const char *zoom_in[] =
+const char* zoom_in[] =
 {
   "16 16 3 1",
   ". c None",
@@ -42,7 +42,7 @@ const char *zoom_in[] =
   "..............#."
 };
 
-const char *zoom_out[] =
+const char* zoom_out[] =
 {
   "16 16 4 1",
   "b c None",
@@ -68,7 +68,7 @@ const char *zoom_out[] =
 };
 
 
-const char *capture_point_cursor[] =
+const char* capture_point_cursor[] =
 {
   "16 16 3 1",
   " »     c None",
@@ -92,7 +92,7 @@ const char *capture_point_cursor[] =
   "       +.+      "
 };
 
-const char *select_cursor[] =
+const char* select_cursor[] =
 {
   "16 16 3 1",
   "# c None",
@@ -116,7 +116,7 @@ const char *select_cursor[] =
   "#############.##"
 };
 
-const char *identify_cursor[] =
+const char* identify_cursor[] =
 {
   "16 16 3 1",
   "# c None",
@@ -140,7 +140,7 @@ const char *identify_cursor[] =
   "#############.##"
 };
 
-const char *cross_hair_cursor[] =
+const char* cross_hair_cursor[] =
 {
   "16 16 3 1",
   " »     c None",
@@ -164,7 +164,7 @@ const char *cross_hair_cursor[] =
   "       +.+      "
 };
 
-const char *sampler_cursor[] =
+const char* sampler_cursor[] =
 {
   "16 16 3 1",
   " »     c None",

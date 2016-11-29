@@ -24,8 +24,8 @@
 #include <QTextCodec>
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-    : mReply( nullptr )
-    , mContentLoaded( false )
+  : mReply( nullptr )
+  , mContentLoaded( false )
 {
 
 }
@@ -63,7 +63,7 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
   connect( mReply, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
 }
 
-QNetworkReply *QgsNetworkContentFetcher::reply()
+QNetworkReply* QgsNetworkContentFetcher::reply()
 {
   if ( !mContentLoaded )
   {

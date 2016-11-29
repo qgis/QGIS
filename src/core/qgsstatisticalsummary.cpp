@@ -26,7 +26,7 @@
  ****************************************************************************/
 
 QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
-    : mStatistics( stats )
+  : mStatistics( stats )
 {
   reset();
 }
@@ -61,7 +61,7 @@ void QgsStatisticalSummary::reset()
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsStatisticalSummary::calculate( const QList<double> &values )
+void QgsStatisticalSummary::calculate( const QList<double>& values )
 {
   reset();
 

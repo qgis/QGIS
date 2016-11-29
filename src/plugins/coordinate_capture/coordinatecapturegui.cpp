@@ -17,7 +17,7 @@
 //standard includes
 
 CoordinateCaptureGui::CoordinateCaptureGui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
 }
 

@@ -34,27 +34,27 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
   public:
     QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule* rootRule, QObject* parent = nullptr );
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
     virtual QVariant headerData( int section, Qt::Orientation orientation,
                                  int role = Qt::DisplayRole ) const override;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    virtual int columnCount( const QModelIndex& = QModelIndex() ) const override;
     //! provide model index for parent's child item
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
     //! provide parent model index
-    virtual QModelIndex parent( const QModelIndex &index ) const override;
+    virtual QModelIndex parent( const QModelIndex& index ) const override;
 
     // editing support
-    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
 
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
 
     // new methods
 
@@ -139,7 +139,10 @@ class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
                                 QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
     ~QgsLabelingRulePropsWidget();
 
-    QgsRuleBasedLabeling::Rule* rule() { return mRule; }
+    QgsRuleBasedLabeling::Rule* rule()
+    {
+      return mRule;
+    }
 
     virtual void setDockMode( bool dockMode ) override;
 

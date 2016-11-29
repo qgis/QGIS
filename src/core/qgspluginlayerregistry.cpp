@@ -22,7 +22,7 @@
 #include "qgsmaplayerregistry.h"
 
 QgsPluginLayerType::QgsPluginLayerType( const QString& name )
-    : mName( name )
+  : mName( name )
 {
 }
 
@@ -46,7 +46,7 @@ QgsPluginLayer* QgsPluginLayerType::createLayer( const QString& uri )
   return nullptr;
 }
 
-bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
+bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer* layer )
 {
   Q_UNUSED( layer );
   return false;

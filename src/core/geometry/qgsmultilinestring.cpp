@@ -23,7 +23,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiLineString::QgsMultiLineString()
-    : QgsMultiCurve()
+  : QgsMultiCurve()
 {
   mWkbType = QgsWkbTypes::MultiLineString;
 }
@@ -41,7 +41,7 @@ bool QgsMultiLineString::fromWkt( const QString& wkt )
 QDomElement QgsMultiLineString::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineString*>( geom ) )
     {
@@ -61,7 +61,7 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument& doc, int precision, const 
 QDomElement QgsMultiLineString::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineString*>( geom ) )
     {
@@ -79,7 +79,7 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument& doc, int precision, const 
 QString QgsMultiLineString::asJSON( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, mGeometries )
   {
     if ( dynamic_cast<const QgsCurve*>( geom ) )
     {

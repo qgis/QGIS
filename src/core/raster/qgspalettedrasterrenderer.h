@@ -35,13 +35,16 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
-    QgsPalettedRasterRenderer * clone() const override;
+    QgsPalettedRasterRenderer* clone() const override;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock* block( int bandNo, const QgsRectangle& extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     //! Returns number of colors
-    int nColors() const { return mNColors; }
+    int nColors() const
+    {
+      return mNColors;
+    }
     //! Returns copy of color array (caller takes ownership)
     QColor* colors() const;
 
@@ -52,7 +55,10 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /** Return optional category label
      *  @note added in 2.1 */
-    QString label( int idx ) const { return mLabels.value( idx ); }
+    QString label( int idx ) const
+    {
+      return mLabels.value( idx );
+    }
 
     /** Set category label
      *  @note added in 2.1 */

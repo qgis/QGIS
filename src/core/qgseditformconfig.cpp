@@ -25,7 +25,7 @@ QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 }
 
 QgsEditFormConfig::QgsEditFormConfig()
-    : d( new QgsEditFormConfigPrivate() )
+  : d( new QgsEditFormConfigPrivate() )
 {
 }
 
@@ -87,11 +87,11 @@ bool QgsEditFormConfig::removeWidgetConfig( const QString& widgetName )
 }
 
 QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig& o )
-    : d( o.d )
+  : d( o.d )
 {
 }
 
-QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig & o )
+QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig& o )
 {
   d = o.d;
   return *this;
@@ -499,7 +499,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
   //// END TODO
 }
 
-QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent )
+QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement& elem, QgsAttributeEditorElement* parent )
 {
   QgsAttributeEditorElement* newElement = nullptr;
 
@@ -532,7 +532,7 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     for ( int i = 0; i < childNodeList.size(); i++ )
     {
       QDomElement childElem = childNodeList.at( i ).toElement();
-      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container );
+      QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
       if ( myElem )
         container->addChildElement( myElem );
     }

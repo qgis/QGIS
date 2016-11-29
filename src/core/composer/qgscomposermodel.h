@@ -68,19 +68,19 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     ~QgsComposerModel();
 
     //reimplemented QAbstractItemModel methods
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex& index ) const override;
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex& index, int role ) const override;
+    Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    bool setData( const QModelIndex& index, const QVariant& value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     Qt::DropActions supportedDropActions() const override;
     virtual QStringList mimeTypes() const override;
-    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    virtual QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
 
     /** Clears all items from z-order list and resets the model
      * @note added in QGIS 2.5
@@ -105,13 +105,13 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @note added in QGIS 2.5
      * @see reorderItemToTop
      */
-    void addItemAtTop( QgsComposerItem *item );
+    void addItemAtTop( QgsComposerItem* item );
 
     /** Removes an item from the z-order list.
      * @param item item to remove
      * @note added in QGIS 2.5
      */
-    void removeItem( QgsComposerItem *item );
+    void removeItem( QgsComposerItem* item );
 
     /** Moves an item up the z-order list.
      * @param item item to move
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemToBottom
      * @note added in QGIS 2.5
      */
-    bool reorderItemUp( QgsComposerItem *item );
+    bool reorderItemUp( QgsComposerItem* item );
 
     /** Moves an item down the z-order list.
      * @param item item to move
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemToBottom
      * @note added in QGIS 2.5
      */
-    bool reorderItemDown( QgsComposerItem *item );
+    bool reorderItemDown( QgsComposerItem* item );
 
     /** Moves an item to the top of the z-order list.
      * @param item item to move
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemToBottom
      * @note added in QGIS 2.5
      */
-    bool reorderItemToTop( QgsComposerItem *item );
+    bool reorderItemToTop( QgsComposerItem* item );
 
     /** Moves an item to the bottom of the z-order list.
      * @param item item to move
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemToTop
      * @note added in QGIS 2.5
      */
-    bool reorderItemToBottom( QgsComposerItem *item );
+    bool reorderItemToBottom( QgsComposerItem* item );
 
     /** Finds the next composer item above an item. This method only considers
      * items which are currently in the composition, and ignores items which have been
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see getComposerItemBelow
      * @note added in QGIS 2.5
      */
-    QgsComposerItem* getComposerItemAbove( QgsComposerItem *item ) const;
+    QgsComposerItem* getComposerItemAbove( QgsComposerItem* item ) const;
 
     /** Finds the next composer item below an item. This method only considers
      * items which are currently in the composition, and ignores items which have been
@@ -177,14 +177,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see getComposerItemAbove
      * @note added in QGIS 2.5
      */
-    QgsComposerItem* getComposerItemBelow( QgsComposerItem *item ) const;
+    QgsComposerItem* getComposerItemBelow( QgsComposerItem* item ) const;
 
     /** Returns the item z-order list. This list includes both items currently in the
      * composition and items which have been removed from the composition.
      * @returns item z-order list
      * @note added in QGIS 2.5
      */
-    QList<QgsComposerItem *>* zOrderList();
+    QList<QgsComposerItem*>* zOrderList();
 
     /** Marks an item as removed from the composition. This must be called whenever an item
      * has been removed from the composition.
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see setItemRestored
      * @note added in QGIS 2.5
      */
-    void setItemRemoved( QgsComposerItem *item );
+    void setItemRemoved( QgsComposerItem* item );
 
     /** Restores an item to the composition. This must be called whenever an item removed
      * from the composition is restored to the composition.
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see setItemRemoved
      * @note added in QGIS 2.5
      */
-    void setItemRestored( QgsComposerItem *item );
+    void setItemRestored( QgsComposerItem* item );
 
     /** Must be called when an item's display name is modified
      * @param item item to update
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
-    void updateItemDisplayName( QgsComposerItem *item );
+    void updateItemDisplayName( QgsComposerItem* item );
 
     /** Must be called when an item's lock status changes
      * @param item item to update
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
-    void updateItemLockStatus( QgsComposerItem *item );
+    void updateItemLockStatus( QgsComposerItem* item );
 
     /** Must be called when an item's visibility changes
      * @param item item to update
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
-    void updateItemVisibility( QgsComposerItem *item );
+    void updateItemVisibility( QgsComposerItem* item );
 
     /** Must be called when an item's selection status changes
      * @param item item to update
@@ -236,14 +236,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemLockStatus
      * @note added in QGIS 2.5
      */
-    void updateItemSelectStatus( QgsComposerItem *item );
+    void updateItemSelectStatus( QgsComposerItem* item );
 
     /** Returns the QModelIndex corresponding to a QgsComposerItem, if possible
      * @param item QgsComposerItem to find index for
      * @param column column number for created QModelIndex
      * @returns QModelIndex corresponding to item and specified column
      */
-    QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
+    QModelIndex indexForItem( QgsComposerItem* item, const int column = 0 );
 
   public slots:
 
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param index QModelIndex of item to set as selected
      * @note added in QGIS 2.5
      */
-    void setSelected( const QModelIndex &index );
+    void setSelected( const QModelIndex& index );
 
   protected:
 
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @param index QModelIndex for item
      * @returns item corresponding to index
      */
-    QgsComposerItem* itemFromIndex( const QModelIndex &index ) const;
+    QgsComposerItem* itemFromIndex( const QModelIndex& index ) const;
 
     /** Rebuilds the list of all composer items which are present in the composition. This is
      * called when the stacking of order changes or when items are removed/restored to the
@@ -308,13 +308,16 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
      * @param composition composition to attach model to
      * @param parent optional parent
      */
-    QgsComposerProxyModel( QgsComposition* composition, QObject *parent = nullptr );
+    QgsComposerProxyModel( QgsComposition* composition, QObject* parent = nullptr );
 
     /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
      * item type filter is set.
      * @see setFilterType()
      */
-    QgsComposerItem::ItemType filterType() const { return mItemTypeFilter; }
+    QgsComposerItem::ItemType filterType() const
+    {
+      return mItemTypeFilter;
+    }
 
     /** Sets the item type filter. Only matching item types will be shown.
      * @param itemType type to filter. Set to QgsComposerItem::ComposerItem to show all
@@ -332,11 +335,17 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
     /** Returns the list of specific items excluded from the model.
      * @see setExceptedItemList()
      */
-    QList< QgsComposerItem* > exceptedItemList() const { return mExceptedList; }
+    QList< QgsComposerItem* > exceptedItemList() const
+    {
+      return mExceptedList;
+    }
 
     /** Returns the QgsComposerModel used in this proxy model.
      */
-    QgsComposerModel* sourceLayerModel() const { return static_cast< QgsComposerModel* >( sourceModel() ); }
+    QgsComposerModel* sourceLayerModel() const
+    {
+      return static_cast< QgsComposerModel* >( sourceModel() );
+    }
 
     /** Returns the QgsComposerItem corresponding to an index from the source
      * QgsComposerModel model.
@@ -346,8 +355,8 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
     QgsComposerItem* itemFromSourceIndex( const QModelIndex& sourceIndex ) const;
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const override;
+    bool lessThan( const QModelIndex& left, const QModelIndex& right ) const override;
 
   private:
     QgsComposition* mComposition;

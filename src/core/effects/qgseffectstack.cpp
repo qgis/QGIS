@@ -21,13 +21,13 @@
 #include <QPicture>
 
 QgsEffectStack::QgsEffectStack()
-    : QgsPaintEffect()
+  : QgsPaintEffect()
 {
 
 }
 
-QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
-    : QgsPaintEffect( other )
+QgsEffectStack::QgsEffectStack( const QgsEffectStack& other )
+  : QgsPaintEffect( other )
 {
   //deep copy
   for ( int i = 0; i < other.count(); ++i )
@@ -36,8 +36,8 @@ QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
   }
 }
 
-QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect )
-    : QgsPaintEffect()
+QgsEffectStack::QgsEffectStack( const QgsPaintEffect& effect )
+  : QgsPaintEffect()
 {
   appendEffect( effect.clone() );
 }
@@ -47,7 +47,7 @@ QgsEffectStack::~QgsEffectStack()
   clearStack();
 }
 
-QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack & rhs )
+QgsEffectStack& QgsEffectStack::operator=( const QgsEffectStack& rhs )
 {
   if ( &rhs == this )
     return *this;
@@ -62,14 +62,14 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack & rhs )
   return *this;
 }
 
-QgsPaintEffect *QgsEffectStack::create( const QgsStringMap &map )
+QgsPaintEffect* QgsEffectStack::create( const QgsStringMap& map )
 {
   QgsEffectStack* effect = new QgsEffectStack();
   effect->readProperties( map );
   return effect;
 }
 
-void QgsEffectStack::draw( QgsRenderContext &context )
+void QgsEffectStack::draw( QgsRenderContext& context )
 {
   QPainter* destPainter = context.painter();
 
@@ -98,7 +98,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
       pic = currentPic;
     }
 
-    QPicture *resultPic = new QPicture();
+    QPicture* resultPic = new QPicture();
     QPainter p( resultPic );
     context.setPainter( &p );
     //effect stack has it's own handling of the QPicture DPI issue, so
@@ -144,7 +144,7 @@ QgsEffectStack* QgsEffectStack::clone() const
   return new QgsEffectStack( *this );
 }
 
-bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) const
+bool QgsEffectStack::saveProperties( QDomDocument& doc, QDomElement& element ) const
 {
   //effect stack needs to save all child effects
   if ( element.isNull() )
@@ -167,7 +167,7 @@ bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) c
   return ok;
 }
 
-bool QgsEffectStack::readProperties( const QDomElement &element )
+bool QgsEffectStack::readProperties( const QDomElement& element )
 {
   if ( element.isNull() )
   {
@@ -196,7 +196,7 @@ QgsStringMap QgsEffectStack::properties() const
   return props;
 }
 
-void QgsEffectStack::readProperties( const QgsStringMap &props )
+void QgsEffectStack::readProperties( const QgsStringMap& props )
 {
   Q_UNUSED( props );
 }
@@ -207,12 +207,12 @@ void QgsEffectStack::clearStack()
   mEffectList.clear();
 }
 
-void QgsEffectStack::appendEffect( QgsPaintEffect *effect )
+void QgsEffectStack::appendEffect( QgsPaintEffect* effect )
 {
   mEffectList.append( effect );
 }
 
-bool QgsEffectStack::insertEffect( const int index, QgsPaintEffect *effect )
+bool QgsEffectStack::insertEffect( const int index, QgsPaintEffect* effect )
 {
   if ( index < 0 || index > mEffectList.count() )
     return false;
@@ -223,7 +223,7 @@ bool QgsEffectStack::insertEffect( const int index, QgsPaintEffect *effect )
   return true;
 }
 
-bool QgsEffectStack::changeEffect( const int index, QgsPaintEffect *effect )
+bool QgsEffectStack::changeEffect( const int index, QgsPaintEffect* effect )
 {
   if ( index < 0 || index >= mEffectList.count() )
     return false;
@@ -235,7 +235,7 @@ bool QgsEffectStack::changeEffect( const int index, QgsPaintEffect *effect )
   return true;
 }
 
-QgsPaintEffect *QgsEffectStack::takeEffect( const int index )
+QgsPaintEffect* QgsEffectStack::takeEffect( const int index )
 {
   if ( index < 0 || index >= mEffectList.count() )
     return nullptr;
@@ -243,12 +243,12 @@ QgsPaintEffect *QgsEffectStack::takeEffect( const int index )
   return mEffectList.takeAt( index );
 }
 
-QList<QgsPaintEffect *> *QgsEffectStack::effectList()
+QList<QgsPaintEffect*>* QgsEffectStack::effectList()
 {
   return &mEffectList;
 }
 
-QgsPaintEffect *QgsEffectStack::effect( int index ) const
+QgsPaintEffect* QgsEffectStack::effect( int index ) const
 {
   if ( index >= 0 && index < mEffectList.count() )
   {

@@ -37,12 +37,12 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = QStringLiteral( ":/offline_editing/offline_editing_copy.png" );
 
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mActionConvertProject( nullptr )
-    , mActionSynchronize( nullptr )
-    , mOfflineEditing( nullptr )
-    , mProgressDialog( nullptr )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( theQgisInterface )
+  , mActionConvertProject( nullptr )
+  , mActionSynchronize( nullptr )
+  , mOfflineEditing( nullptr )
+  , mProgressDialog( nullptr )
 {
 }
 
@@ -87,7 +87,7 @@ void QgsOfflineEditingPlugin::initGui()
 
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
+  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( updateActions() ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateActions() ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateActions() ) );
   updateActions();
@@ -131,7 +131,7 @@ void QgsOfflineEditingPlugin::unload()
 {
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
   disconnect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
-  disconnect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
+  disconnect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( updateActions() ) );
 
   // remove the GUI
   mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
@@ -215,7 +215,7 @@ void QgsOfflineEditingPlugin::hideProgress()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new QgsOfflineEditingPlugin( theQgisInterfacePointer );
 }
@@ -257,7 +257,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

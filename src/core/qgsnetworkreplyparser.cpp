@@ -25,9 +25,9 @@
 #include <QString>
 #include <QStringList>
 
-QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
-    : mReply( reply )
-    , mValid( false )
+QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply* reply )
+  : mReply( reply )
+  , mValid( false )
 {
   QgsDebugMsg( "Entered." );
   if ( !mReply ) return;
@@ -135,7 +135,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   mValid = true;
 }
 
-bool QgsNetworkReplyParser::isMultipart( QNetworkReply *reply )
+bool QgsNetworkReplyParser::isMultipart( QNetworkReply* reply )
 {
   if ( !reply ) return false;
 

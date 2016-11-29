@@ -40,16 +40,22 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * @param theQgisIface pointer to a QgisInterface instance
      * @param parent parent widget
      */
-    rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* theQgisIface, QWidget *parent );
+    rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* theQgisIface, QWidget* parent );
     ~rulesDialog();
     /*
      * Returns pointer to the test table
      */
-    QTableWidget* rulesTable() { return mRulesTable; }
+    QTableWidget* rulesTable()
+    {
+      return mRulesTable;
+    }
     /*
      * Returns pointer to the test combobox
      */
-    QComboBox* rulesBox() { return mRuleBox; }
+    QComboBox* rulesBox()
+    {
+      return mRuleBox;
+    }
 
     /*
      * Initialize Rules UI with layers and rules

@@ -38,7 +38,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   public:
     //! Constructor - takes pointer to vector layer as a parameter
-    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = nullptr,
+    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget* parent = nullptr,
                            Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsSearchQueryBuilder();
@@ -60,8 +60,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void on_btnIn_clicked();
     void on_btnNotIn_clicked();
 
-    void on_lstFields_doubleClicked( const QModelIndex &index );
-    void on_lstValues_doubleClicked( const QModelIndex &index );
+    void on_lstFields_doubleClicked( const QModelIndex& index );
+    void on_lstValues_doubleClicked( const QModelIndex& index );
     void on_btnLessEqual_clicked();
     void on_btnGreaterEqual_clicked();
     void on_btnNotEqual_clicked();
@@ -88,7 +88,10 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      */
     void on_btnSampleValues_clicked();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     void saveQuery();
     void loadQuery();
@@ -122,8 +125,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     //! Map that holds field information, keyed by field name
     QMap<QString, int> mFieldMap;
     //! Model for fields ListView
-    QStandardItemModel *mModelFields;
+    QStandardItemModel* mModelFields;
     //! Model for values ListView
-    QStandardItemModel *mModelValues;
+    QStandardItemModel* mModelValues;
 };
 #endif //QGSSEARCHQUERYBUILDER_H

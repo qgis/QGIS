@@ -19,28 +19,28 @@
 #include <qmath.h>
 
 QgsScaleExpression::QgsScaleExpression( const QString& expression )
-    : QgsExpression( expression )
-    , mType( Unknown )
-    , mMinSize( 0 )
-    , mMaxSize( 10 )
-    , mMinValue( 0 )
-    , mMaxValue( 100 )
-    , mNullSize( 0 )
-    , mExponent( 1 )
+  : QgsExpression( expression )
+  , mType( Unknown )
+  , mMinSize( 0 )
+  , mMaxSize( 10 )
+  , mMinValue( 0 )
+  , mMaxValue( 100 )
+  , mNullSize( 0 )
+  , mExponent( 1 )
 {
   init();
 }
 
 QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
-    : QgsExpression( createExpression( type, baseExpression, minValue, maxValue, minSize, maxSize, nullSize, exponent ) )
-    , mExpression( baseExpression )
-    , mType( type )
-    , mMinSize( minSize )
-    , mMaxSize( maxSize )
-    , mMinValue( minValue )
-    , mMaxValue( maxValue )
-    , mNullSize( nullSize )
-    , mExponent( 1 )
+  : QgsExpression( createExpression( type, baseExpression, minValue, maxValue, minSize, maxSize, nullSize, exponent ) )
+  , mExpression( baseExpression )
+  , mType( type )
+  , mMinSize( minSize )
+  , mMaxSize( maxSize )
+  , mMinValue( minValue )
+  , mMaxValue( maxValue )
+  , mNullSize( nullSize )
+  , mExponent( 1 )
 {
   switch ( type )
   {
@@ -69,7 +69,7 @@ void QgsScaleExpression::init()
   if ( !rootNode() )
     return;
 
-  const NodeFunction * f = dynamic_cast<const NodeFunction*>( rootNode() );
+  const NodeFunction* f = dynamic_cast<const NodeFunction*>( rootNode() );
   if ( !f )
     return;
 
@@ -127,7 +127,7 @@ void QgsScaleExpression::init()
   mExpression = args[0]->dump();
 }
 
-QString QgsScaleExpression::createExpression( Type type, const QString & baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
+QString QgsScaleExpression::createExpression( Type type, const QString& baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
 {
   QString minValueString = QString::number( minValue );
   QString maxValueString = QString::number( maxValue );

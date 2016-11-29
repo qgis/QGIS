@@ -232,7 +232,9 @@ int MathUtils::faculty( int n )
   int result = n;
 
   if ( n == 0 || n == 1 )
-    {return 1;}//faculty of 0 is 1!
+  {
+    return 1; //faculty of 0 is 1!
+  }
 
   for ( i = n - 1; i >= 2; i-- )
   {

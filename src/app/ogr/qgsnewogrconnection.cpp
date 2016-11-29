@@ -31,9 +31,9 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
+QgsNewOgrConnection::QgsNewOgrConnection( QWidget* parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
 {
   setupUi( this );
 

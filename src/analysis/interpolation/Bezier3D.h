@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     //! Destructor
     virtual ~Bezier3D();
     //! Do not use this method, since a Bezier curve does not consist of other curves
-    virtual void add( ParametricLine *pl ) override;
+    virtual void add( ParametricLine* pl ) override;
     //! Calculates the first derivative and assigns it to v
     virtual void calcFirstDer( float t, Vector3D* v ) override;
     //! Calculates the second derivative and assigns it to v
@@ -82,7 +82,7 @@ inline Bezier3D::~Bezier3D()
 
 //----------------------------------------------invalid methods add and remove (because of inheritance from ParametricLine)
 
-inline void Bezier3D::add( ParametricLine *pl )
+inline void Bezier3D::add( ParametricLine* pl )
 {
   Q_UNUSED( pl );
   QgsDebugMsg( "Error!!!!! A Bezier-curve can not be parent of a ParametricLine." );

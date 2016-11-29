@@ -116,7 +116,10 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
-    inline bool supportsField( const QgsVectorLayer* vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
+    inline bool supportsField( const QgsVectorLayer* vl, int fieldIdx )
+    {
+      return fieldScore( vl, fieldIdx ) > 0;
+    }
 
     /**
      * Returns a list of widget types which this editor widget supports.
@@ -126,7 +129,10 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return A map of widget type names and weight values
      * @note not available in Python bindings
      */
-    virtual QHash<const char*, int> supportedWidgetTypes() { return QHash<const char*, int>(); }
+    virtual QHash<const char*, int> supportedWidgetTypes()
+    {
+      return QHash<const char*, int>();
+    }
 
     /**
      * Create a pretty String representation of the value.

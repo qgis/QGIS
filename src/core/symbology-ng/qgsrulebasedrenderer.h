@@ -42,8 +42,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     struct FeatureToRender
     {
       FeatureToRender( QgsFeature& _f, int _flags )
-          : feat( _f )
-          , flags( _flags )
+        : feat( _f )
+        , flags( _flags )
       {}
       QgsFeature feat;
       int flags; // selected and/or draw markers
@@ -54,8 +54,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     struct RenderJob
     {
       RenderJob( FeatureToRender& _ftr, QgsSymbol* _s )
-          : ftr( _ftr )
-          , symbol( _s )
+        : ftr( _ftr )
+        , symbol( _s )
       {}
       FeatureToRender& ftr;
       QgsSymbol* symbol;
@@ -66,7 +66,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     struct RenderLevel
     {
       explicit RenderLevel( int z ): zIndex( z ) {}
-      ~RenderLevel() { Q_FOREACH ( RenderJob* j, jobs ) delete j; }
+      ~RenderLevel()
+      {
+        Q_FOREACH ( RenderJob* j, jobs ) delete j;
+      }
       int zIndex;
       QList<RenderJob*> jobs;
 
@@ -83,7 +86,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       }
 
       RenderLevel( const RenderLevel& other )
-          : zIndex( other.zIndex )
+        : zIndex( other.zIndex )
       {
         Q_FOREACH ( RenderJob* job, other.jobs )
         {
@@ -157,7 +160,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * @param context   The context in which the rendering happens
          * @return          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature& f, QgsRenderContext *context = nullptr ) const;
+        bool isFilterOK( QgsFeature& f, QgsRenderContext* context = nullptr ) const;
 
         /**
          * Check if this rule applies for a given scale
@@ -167,48 +170,84 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool isScaleOK( double scale ) const;
 
-        QgsSymbol* symbol() { return mSymbol; }
-        QString label() const { return mLabel; }
-        bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
-        int scaleMinDenom() const { return mScaleMinDenom; }
-        int scaleMaxDenom() const { return mScaleMaxDenom; }
+        QgsSymbol* symbol()
+        {
+          return mSymbol;
+        }
+        QString label() const
+        {
+          return mLabel;
+        }
+        bool dependsOnScale() const
+        {
+          return mScaleMinDenom != 0 || mScaleMaxDenom != 0;
+        }
+        int scaleMinDenom() const
+        {
+          return mScaleMinDenom;
+        }
+        int scaleMaxDenom() const
+        {
+          return mScaleMaxDenom;
+        }
 
         /**
          * A filter that will check if this rule applies
          * @return An expression
          */
-        QgsExpression* filter() const { return mFilter; }
+        QgsExpression* filter() const
+        {
+          return mFilter;
+        }
 
         /**
          * A filter that will check if this rule applies
          * @return An expression
          */
-        QString filterExpression() const { return mFilterExp; }
+        QString filterExpression() const
+        {
+          return mFilterExp;
+        }
 
         /**
          * A human readable description for this rule
          *
          * @return Description
          */
-        QString description() const { return mDescription; }
+        QString description() const
+        {
+          return mDescription;
+        }
 
         /**
          * Returns if this rule is active
          *
          * @return True if the rule is active
          */
-        bool active() const { return mIsActive; }
+        bool active() const
+        {
+          return mIsActive;
+        }
 
         //! Unique rule identifier (for identification of rule within renderer)
         //! @note added in 2.6
-        QString ruleKey() const { return mRuleKey; }
+        QString ruleKey() const
+        {
+          return mRuleKey;
+        }
         //! Override the assigned rule key (should be used just internally by rule-based renderer)
         //! @note added in 2.6
-        void setRuleKey( const QString& key ) { mRuleKey = key; }
+        void setRuleKey( const QString& key )
+        {
+          mRuleKey = key;
+        }
 
         //! set a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbol* sym );
-        void setLabel( const QString& label ) { mLabel = label; }
+        void setLabel( const QString& label )
+        {
+          mLabel = label;
+        }
 
         /**
          * Set the minimum denominator for which this rule shall apply.
@@ -216,7 +255,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Set to 0 to disable the minimum check
          * @param scaleMinDenom The minimum scale denominator for this rule
          */
-        void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+        void setScaleMinDenom( int scaleMinDenom )
+        {
+          mScaleMinDenom = scaleMinDenom;
+        }
 
         /**
          * Set the maximum denominator for which this rule shall apply.
@@ -224,7 +266,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Set to 0 to disable the maximum check
          * @param scaleMaxDenom maximum scale denominator for this rule
          */
-        void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+        void setScaleMaxDenom( int scaleMaxDenom )
+        {
+          mScaleMaxDenom = scaleMaxDenom;
+        }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
@@ -238,18 +283,24 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * @param description Description
          */
-        void setDescription( const QString& description ) { mDescription = description; }
+        void setDescription( const QString& description )
+        {
+          mDescription = description;
+        }
 
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated
          */
-        void setActive( bool state ) { mIsActive = state; }
+        void setActive( bool state )
+        {
+          mIsActive = state;
+        }
 
         //! clone this rule, return new instance
         Rule* clone() const;
 
-        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+        void toSld( QDomDocument& doc, QDomElement& element, QgsStringMap props ) const;
 
         /**
          * Create a rule from the SLD provided in element and for the specified geometry type.
@@ -315,21 +366,36 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * @return A list of rules
          */
-        RuleList& children() { return mChildren; }
+        RuleList& children()
+        {
+          return mChildren;
+        }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * @return A list of descendant rules
          */
-        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        RuleList descendants() const
+        {
+          RuleList l;
+          Q_FOREACH ( Rule* c, mChildren )
+          {
+            l += c;
+            l += c->descendants();
+          }
+          return l;
+        }
 
         /**
          * The parent rule
          *
          * @return Parent rule
          */
-        Rule* parent() { return mParent; }
+        Rule* parent()
+        {
+          return mParent;
+        }
 
         //! add child rule, take ownership, sets this as parent
         void appendChild( Rule* rule );
@@ -365,7 +431,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * @return True if this rule is an else rule
          */
-        bool isElse() { return mElseRule; }
+        bool isElse()
+        {
+          return mElseRule;
+        }
 
       protected:
         void initFilter();
@@ -427,7 +496,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual QgsRuleBasedRenderer* clone() const override;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement& element, const QgsStringMap& props = QgsStringMap() ) const override;
 
     static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
@@ -447,11 +516,17 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    virtual Capabilities capabilities() override
+    {
+      return MoreSymbolsPerFeature | Filter | ScaleDependent;
+    }
 
     /////
 
-    Rule* rootRule() { return mRootRule; }
+    Rule* rootRule()
+    {
+      return mRootRule;
+    }
 
     //////
 
@@ -465,7 +540,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! creates a QgsRuleBasedRenderer from an existing renderer.
     //! @note added in 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsRuleBasedRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsRuleBasedRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
     static void convertToDataDefinedSymbology( QgsSymbol* symbol, const QString& sizeScaleField, const QString& rotationField = QString() );

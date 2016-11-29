@@ -27,7 +27,7 @@
 class CORE_EXPORT QgsWkbException : public QgsException
 {
   public:
-    QgsWkbException( QString const &what ) : QgsException( what ) {}
+    QgsWkbException( QString const& what ) : QgsException( what ) {}
 };
 
 
@@ -38,9 +38,9 @@ class CORE_EXPORT QgsWkbException : public QgsException
 
 class CORE_EXPORT QgsWkbPtr
 {
-    mutable unsigned char *mP;
-    unsigned char *mStart;
-    unsigned char *mEnd;
+    mutable unsigned char* mP;
+    unsigned char* mStart;
+    unsigned char* mEnd;
 
     void verifyBound( int size ) const;
 
@@ -68,30 +68,101 @@ class CORE_EXPORT QgsWkbPtr
   public:
     //! Construct WKB pointer from QByteArray
     QgsWkbPtr( QByteArray& wkb );
-    QgsWkbPtr( unsigned char *p, int size );
+    QgsWkbPtr( unsigned char* p, int size );
 
-    inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; }
-    inline const QgsWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
-    inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; }
+    inline const QgsWkbPtr& operator>>( double& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsWkbPtr& operator>>( float& r ) const
+    {
+      double v;
+      read( v );
+      r = v;
+      return *this;
+    }
+    inline const QgsWkbPtr& operator>>( int& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsWkbPtr& operator>>( unsigned int& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsWkbPtr& operator>>( char& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsWkbPtr& operator>>( QgsWkbTypes::Type& v ) const
+    {
+      read( v );
+      return *this;
+    }
 
-    inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const int &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; }
-    inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; }
+    inline QgsWkbPtr& operator<<( const double& v )
+    {
+      write( v );
+      return *this;
+    }
+    inline QgsWkbPtr& operator<<( const float& r )
+    {
+      double v = r;
+      write( v );
+      return *this;
+    }
+    inline QgsWkbPtr& operator<<( const int& v )
+    {
+      write( v );
+      return *this;
+    }
+    inline QgsWkbPtr& operator<<( const unsigned int& v )
+    {
+      write( v );
+      return *this;
+    }
+    inline QgsWkbPtr& operator<<( const char& v )
+    {
+      write( v );
+      return *this;
+    }
+    inline QgsWkbPtr& operator<<( const QgsWkbTypes::Type& v )
+    {
+      write( v );
+      return *this;
+    }
     //! Append data from a byte array
-    inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; }
+    inline QgsWkbPtr& operator<<( const QByteArray& data )
+    {
+      write( data );
+      return *this;
+    }
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; }
+    inline void operator+=( int n )
+    {
+      verifyBound( n );
+      mP += n;
+    }
 
-    inline operator unsigned char *() const { return mP; }
-    inline int size() const { return mEnd - mStart; }
-    inline int remaining() const { return mEnd - mP; }
-    inline int writtenSize() const { return mP - mStart; }
+    inline operator unsigned char* () const
+    {
+      return mP;
+    }
+    inline int size() const
+    {
+      return mEnd - mStart;
+    }
+    inline int remaining() const
+    {
+      return mEnd - mP;
+    }
+    inline int writtenSize() const
+    {
+      return mP - mStart;
+    }
 };
 
 /** \ingroup core
@@ -102,8 +173,8 @@ class CORE_EXPORT QgsWkbPtr
 class CORE_EXPORT QgsConstWkbPtr
 {
   protected:
-    mutable unsigned char *mP;
-    unsigned char *mEnd;
+    mutable unsigned char* mP;
+    unsigned char* mEnd;
     mutable bool mEndianSwap;
     mutable QgsWkbTypes::Type mWkbType;
 
@@ -123,25 +194,60 @@ class CORE_EXPORT QgsConstWkbPtr
   public:
     //! Construct WKB pointer from QByteArray
     explicit QgsConstWkbPtr( const QByteArray& wkb );
-    QgsConstWkbPtr( const unsigned char *p, int size );
+    QgsConstWkbPtr( const unsigned char* p, int size );
     QgsWkbTypes::Type readHeader() const;
 
-    inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
-    inline const QgsConstWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; }
-    inline const QgsConstWkbPtr &operator>>( int &v ) const { read( v ); return *this; }
-    inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; }
-    inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
+    inline const QgsConstWkbPtr& operator>>( double& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsConstWkbPtr& operator>>( float& r ) const
+    {
+      double v;
+      read( v );
+      r = v;
+      return *this;
+    }
+    inline const QgsConstWkbPtr& operator>>( int& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsConstWkbPtr& operator>>( unsigned int& v ) const
+    {
+      read( v );
+      return *this;
+    }
+    inline const QgsConstWkbPtr& operator>>( char& v ) const
+    {
+      read( v );
+      return *this;
+    }
 
     //! Read a point
-    virtual const QgsConstWkbPtr &operator>>( QPointF &point ) const;
+    virtual const QgsConstWkbPtr& operator>>( QPointF& point ) const;
     //! Read a point array
-    virtual const QgsConstWkbPtr &operator>>( QPolygonF &points ) const;
+    virtual const QgsConstWkbPtr& operator>>( QPolygonF& points ) const;
 
-    inline void operator+=( int n ) { verifyBound( n ); mP += n; }
-    inline void operator-=( int n ) { mP -= n; }
+    inline void operator+=( int n )
+    {
+      verifyBound( n );
+      mP += n;
+    }
+    inline void operator-=( int n )
+    {
+      mP -= n;
+    }
 
-    inline operator const unsigned char *() const { return mP; }
-    inline int remaining() const { return mEnd - mP; }
+    inline operator const unsigned char* () const
+    {
+      return mP;
+    }
+    inline int remaining() const
+    {
+      return mEnd - mP;
+    }
 };
 
 #endif // QGSWKBPTR_H

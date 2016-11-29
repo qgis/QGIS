@@ -25,20 +25,20 @@
 
 QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
     QgsComposition* c )
-    : QgsComposerItem( c )
-    , mTagName( tagName )
-    , mSelectedNode( -1 )
-    , mDrawNodes( false )
+  : QgsComposerItem( c )
+  , mTagName( tagName )
+  , mSelectedNode( -1 )
+  , mDrawNodes( false )
 {
 }
 
 QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
     const QPolygonF& polygon,
     QgsComposition* c )
-    : QgsComposerItem( c )
-    , mTagName( tagName )
-    , mSelectedNode( -1 )
-    , mDrawNodes( false )
+  : QgsComposerItem( c )
+  , mTagName( tagName )
+  , mSelectedNode( -1 )
+  , mDrawNodes( false )
 {
   const QRectF boundingRect = polygon.boundingRect();
   setSceneRect( boundingRect );
@@ -128,7 +128,7 @@ bool QgsComposerNodesItem::addNode( QPointF pt,
   return rc;
 }
 
-void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
+void QgsComposerNodesItem::drawNodes( QPainter* painter ) const
 {
   double rectSize = 3.0 / horizontalViewScaleFactor();
 
@@ -162,7 +162,7 @@ void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
     drawSelectedNode( painter );
 }
 
-void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
+void QgsComposerNodesItem::drawSelectedNode( QPainter* painter ) const
 {
   double rectSize = 3.0 / horizontalViewScaleFactor();
 
@@ -239,7 +239,7 @@ int QgsComposerNodesItem::nodeAtPosition( QPointF node,
   return idx;
 }
 
-bool QgsComposerNodesItem::nodePosition( const int index, QPointF &position )
+bool QgsComposerNodesItem::nodePosition( const int index, QPointF& position )
 {
   bool rc( false );
 
@@ -357,7 +357,7 @@ void QgsComposerNodesItem::updateSceneRect()
   emit itemChanged();
 }
 
-bool QgsComposerNodesItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerNodesItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement composerPolygonElem = doc.createElement( mTagName );
 

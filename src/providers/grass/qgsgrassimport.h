@@ -30,7 +30,7 @@ class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
 {
     Q_OBJECT
   public:
-    static QgsGrassImportIcon *instance();
+    static QgsGrassImportIcon* instance();
     QgsGrassImportIcon();
     virtual ~QgsGrassImportIcon() {}
 };
@@ -43,12 +43,15 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassImportProgress( QProcess *process, QObject *parent = 0 );
+    QgsGrassImportProgress( QProcess* process, QObject* parent = 0 );
 
-    void setProcess( QProcess *process );
-    QString progressHtml() { return mProgressHtml; }
+    void setProcess( QProcess* process );
+    QString progressHtml()
+    {
+      return mProgressHtml;
+    }
 
-    void append( const QString & html );
+    void append( const QString& html );
     void setRange( int min, int max );
     void setValue( int value );
 
@@ -56,7 +59,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
     void onReadyReadStandardError();
 
   signals:
-    void progressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value );
+    void progressChanged( const QString& recentHtml, const QString& allHtml, int min, int max, int value );
 
   private:
     QProcess* mProcess;
@@ -73,9 +76,12 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassImport( const QgsGrassObject &grassObject );
+    QgsGrassImport( const QgsGrassObject& grassObject );
     virtual ~QgsGrassImport();
-    QgsGrassObject grassObject() const { return mGrassObject; }
+    QgsGrassObject grassObject() const
+    {
+      return mGrassObject;
+    }
     virtual void importInThread();
     virtual bool import() = 0;
     // source description for error message purposes (maybe uri or something similar)
@@ -84,7 +90,10 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     QString error();
     virtual QStringList names() const;
     bool isCanceled() const;
-    QgsGrassImportProgress * progress() { return mProgress; }
+    QgsGrassImportProgress* progress()
+    {
+      return mProgress;
+    }
   public slots:
     void onFinished();
     // TODO: this is not completely kosher, because QgsGrassImport exist on the main thread
@@ -97,11 +106,11 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 
   signals:
     // sent when process finished
-    void finished( QgsGrassImport *import );
+    void finished( QgsGrassImport* import );
 
   protected:
-    static bool run( QgsGrassImport *imp );
-    void setError( const QString &error );
+    static bool run( QgsGrassImport* imp );
+    void setError( const QString& error );
     void addProgressRow( QString html );
     QgsGrassObject mGrassObject;
     QString mError;
@@ -117,7 +126,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
   public:
     // takes pipe ownership
     QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
-                          const QgsRectangle &extent, int xSize, int ySize );
+                          const QgsRectangle& extent, int xSize, int ySize );
     ~QgsGrassRasterImport();
     bool import() override;
     QString srcDescription() const override;

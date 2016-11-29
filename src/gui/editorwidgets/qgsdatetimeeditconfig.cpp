@@ -18,7 +18,7 @@
 #include "qgsvectorlayer.h"
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -136,7 +136,7 @@ QString QgsDateTimeEditConfig::defaultFormat( const QVariant::Type type )
 }
 
 
-void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
+void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig& config )
 {
   const QgsField fieldDef = layer()->fields().at( field() );
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), defaultFormat( fieldDef.type() ) ).toString();

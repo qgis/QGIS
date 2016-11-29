@@ -93,16 +93,22 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     /** Returns the composition the item is attached to.
      * @returns QgsComposition for item.
      */
-    const QgsComposition* composition() const { return mComposition; }
+    const QgsComposition* composition() const
+    {
+      return mComposition;
+    }
 
     //! @note not available in python bindings
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition* composition()
+    {
+      return mComposition;
+    }
 
     /** Stores item state in DOM element
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement& elem, QDomDocument& doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
@@ -124,7 +130,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
      */
-    void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
+    void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString& expression, const QString& field );
 
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -134,7 +140,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see customProperties()
      * @note added in QGIS 2.12
      */
-    void setCustomProperty( const QString &key, const QVariant &value );
+    void setCustomProperty( const QString& key, const QVariant& value );
 
     /** Read a custom property from the object.
      * @param key property key
@@ -145,7 +151,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see customProperties()
      * @note added in QGIS 2.12
      */
-    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+    QVariant customProperty( const QString& key, const QVariant& defaultValue = QVariant() ) const;
 
     /** Remove a custom property from the object.
      * @param key property key
@@ -154,7 +160,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see customProperties()
      * @note added in QGIS 2.12
      */
-    void removeCustomProperty( const QString &key );
+    void removeCustomProperty( const QString& key );
 
     /** Return list of keys stored in custom properties for the object.
      * @see setCustomProperty()
@@ -203,7 +209,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * atlas feature and coverage layer fields prior to calling this method.
      * @note this method was added in version 2.5
      */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant& expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
   signals:
 

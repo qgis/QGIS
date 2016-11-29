@@ -45,14 +45,14 @@
 #include <QScopedPointer>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
-    : QWidget( parent )
-    , mSymbol( symbol )
-    , mStyle( style )
-    , mAdvancedMenu( nullptr )
-    , mClipFeaturesAction( nullptr )
-    , mLayer( layer )
-    , mMapCanvas( nullptr )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer* layer )
+  : QWidget( parent )
+  , mSymbol( symbol )
+  , mStyle( style )
+  , mAdvancedMenu( nullptr )
+  , mClipFeaturesAction( nullptr )
+  , mLayer( layer )
+  , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -75,7 +75,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
-  connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
+  connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setSymbolFromStyle( const QModelIndex& ) ) );
 
   connect( mStyle, &QgsStyle::symbolSaved , this, &QgsSymbolsListWidget::symbolAddedToStyle );
   connect( mStyle, &QgsStyle::groupsModified , this, &QgsSymbolsListWidget::populateGroups );
@@ -473,13 +473,13 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   //otherwise create a default symbol context
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -576,7 +576,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mClipFeaturesAction->blockSignals( false );
 }
 
-void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
+void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex& index )
 {
   QString symbolName = index.data( Qt::UserRole ).toString();
   lblSymbolName->setText( symbolName );

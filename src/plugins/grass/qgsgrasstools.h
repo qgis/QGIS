@@ -41,18 +41,18 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
 
   public:
     //! Constructor
-    QgsGrassTools( QgisInterface *iface,
-                   QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0 );
+    QgsGrassTools( QgisInterface* iface,
+                   QWidget* parent = 0, const char* name = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassTools();
 
     //! Append item to model or parent
-    void appendItem( QStandardItemModel *treeModel, QStandardItem *parent, QStandardItem *item );
+    void appendItem( QStandardItemModel* treeModel, QStandardItem* parent, QStandardItem* item );
 
     //! Recursively add sections and modules to the list view
     //  If parent is 0, the modules are added to mModulesListView root
-    void addModules( QStandardItem *parent, QDomElement &element, QStandardItemModel *treeModel, QStandardItemModel * modulesListModel, bool direct );
+    void addModules( QStandardItem* parent, QDomElement& element, QStandardItemModel* treeModel, QStandardItemModel* modulesListModel, bool direct );
 
     //! Returns application directory
     QString appDir();
@@ -63,7 +63,7 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     bool loadConfig();
 
     //! Load configuration from file
-    bool loadConfig( QString filePath, QStandardItemModel *treeModel, QStandardItemModel * modulesListModel, bool direct );
+    bool loadConfig( QString filePath, QStandardItemModel* treeModel, QStandardItemModel* modulesListModel, bool direct );
 
     void debugChanged();
 
@@ -71,7 +71,7 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     void close( void );
 
     //! Close event
-    void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent* e ) override;
 
     //! Restore window position
     void restorePosition();
@@ -94,7 +94,7 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     //! Update the regex used to filter the modules list (autoconnect to ui)
     void on_mFilterInput_textChanged( QString theText );
     //! Run a module when its entry is clicked in the list view
-    void itemClicked( const QModelIndex &theIndex );
+    void itemClicked( const QModelIndex& theIndex );
     //! Run a module given its module name e.g. r.in.gdal
     void runModule( QString name, bool direct );
     void on_mDebugButton_clicked();
@@ -114,27 +114,27 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     };
 
     // debug item recursively, return number of errors
-    int debug( QStandardItem *item );
+    int debug( QStandardItem* item );
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface* mIface;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas* mCanvas;
 
-    QStandardItemModel * mTreeModel;
-    QgsGrassToolsTreeFilterProxyModel * mTreeModelProxy;
+    QStandardItemModel* mTreeModel;
+    QgsGrassToolsTreeFilterProxyModel* mTreeModelProxy;
 
     // For model & filtered model by Tim
-    QStandardItemModel * mModulesListModel;
-    QSortFilterProxyModel * mModelProxy;
+    QStandardItemModel* mModulesListModel;
+    QSortFilterProxyModel* mModelProxy;
 
     // Region widget
-    QgsGrassRegion *mRegion;
+    QgsGrassRegion* mRegion;
 
     // this was used for direct
-    void removeEmptyItems( QStandardItemModel *treeModel );
-    void removeEmptyItems( QStandardItem *item );
+    void removeEmptyItems( QStandardItemModel* treeModel );
+    void removeEmptyItems( QStandardItem* item );
 
     // Show (fill) / hide tabs according to direct/indirect mode
     void showTabs();

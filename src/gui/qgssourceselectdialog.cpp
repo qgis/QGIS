@@ -44,13 +44,13 @@ class QgsSourceSelectItemDelegate : public QItemDelegate
 {
   public:
     //! Constructor
-    QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QgsSourceSelectItemDelegate( QObject* parent = 0 ) : QItemDelegate( parent ) { }
+    QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 };
 
 
 QgsSourceSelectDialog::QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mServiceName( serviceName ), mServiceType( serviceType ), mBuildQueryButton( 0 ), mImageEncodingGroup( 0 )
+  : QDialog( parent, fl ), mServiceName( serviceName ), mServiceType( serviceType ), mBuildQueryButton( 0 ), mImageEncodingGroup( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
@@ -335,7 +335,8 @@ void QgsSourceSelectDialog::addButtonClicked()
   //create layers that user selected from this feature source
   QModelIndexList list = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < list.size(); i++ )
-  { //add a wfs layer to the map
+  {
+    //add a wfs layer to the map
     QModelIndex idx = mModelProxy->mapToSource( list[i] );
     if ( !idx.isValid() )
     {
@@ -412,14 +413,14 @@ void QgsSourceSelectDialog::on_cmbConnections_activated( int index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
-void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex & index )
+void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex& index )
 {
   QgsDebugMsg( "double click called" );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
 
-void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous )
+void QgsSourceSelectDialog::treeWidgetCurrentRowChanged( const QModelIndex& current, const QModelIndex& previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
@@ -448,7 +449,7 @@ void QgsSourceSelectDialog::filterChanged( const QString& text )
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsSourceSelectItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   QVariant indexData = index.data( Qt::DisplayRole );
   if ( indexData.isNull() )

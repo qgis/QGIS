@@ -25,7 +25,7 @@
 
 
 QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer* layer )
-    : mLayer( layer )
+  : mLayer( layer )
 {
 
 }
@@ -502,7 +502,7 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
   // value to return when NO features are aggregated:
   switch ( aggregate )
   {
-      // sensible values:
+    // sensible values:
     case Count:
     case CountDistinct:
     case CountMissing:
@@ -511,7 +511,7 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
     case StringConcatenate:
       return ""; // zero length string - not null!
 
-      // undefined - nothing makes sense here
+    // undefined - nothing makes sense here
     case Sum:
     case Min:
     case Max:

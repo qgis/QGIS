@@ -39,8 +39,8 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
-QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded ):
-    QDialog( parent, fl )
+QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embedded ):
+  QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -174,12 +174,12 @@ void QgsSpatiaLiteSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int 
   on_btnConnect_clicked();
 }
 
-void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_clicked( const QModelIndex& index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex& index )
 {
   setSql( index );
 }
@@ -192,7 +192,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString& text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -204,7 +204,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString &
   }
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString& text )
 {
   if ( text == tr( "All" ) )
   {
@@ -228,7 +228,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( co
   }
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -313,7 +313,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
   return true;
 }
 
-QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
+QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex& index )
 {
   QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), 0 ) )->text();
   QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), 2 ) )->text();
@@ -384,7 +384,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
 
   QItemSelection selection = mTablesTreeView->selectionModel()->selection();
   QModelIndexList selectedIndices = selection.indexes();
-  QStandardItem *currentItem = nullptr;
+  QStandardItem* currentItem = nullptr;
 
   QModelIndexList::const_iterator selected_it = selectedIndices.constBegin();
   for ( ; selected_it != selectedIndices.constEnd(); ++selected_it )
@@ -516,12 +516,12 @@ QString QgsSpatiaLiteSourceSelect::connectionInfo()
   return QStringLiteral( "dbname='%1'" ).arg( QString( mSqlitePath ).replace( '\'', QLatin1String( "\\'" ) ) );
 }
 
-void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
+void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex& index )
 {
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ) );
+  QgsVectorLayer* vlayer = new QgsVectorLayer( layerURI( idx ), tableName, QStringLiteral( "spatialite" ) );
 
   if ( !vlayer->isValid() )
   {
@@ -530,7 +530,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   }
 
   // create a query builder object
-  QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
+  QgsQueryBuilder* gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
     mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
@@ -573,12 +573,12 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString & regexp )
+void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString& regexp )
 {
   Q_UNUSED( regexp );
 }
 
-void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( deselected )
   mAddButton->setEnabled( !selected.isEmpty() );

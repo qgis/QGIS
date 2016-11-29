@@ -57,7 +57,7 @@
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
 
-QObject * ABISYM( QgsApplication::mFileOpenEventReceiver );
+QObject* ABISYM( QgsApplication::mFileOpenEventReceiver );
 QStringList ABISYM( QgsApplication::mFileOpenEventList );
 QString ABISYM( QgsApplication::mPrefixPath );
 QString ABISYM( QgsApplication::mPluginPath );
@@ -100,8 +100,8 @@ const char* QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
   so that platform-conditional code is minimized and paths are easier
   to change due to centralization.
 */
-QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
-    : QApplication( argc, argv, GUIenabled )
+QgsApplication::QgsApplication( int& argc, char** argv, bool GUIenabled, const QString& customConfigPath, const QString& platformName )
+  : QApplication( argc, argv, GUIenabled )
 {
   sPlatformName = platformName;
 
@@ -172,7 +172,7 @@ void QgsApplication::init( QString customConfigPath )
   }
   else
   {
-    char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
 #if defined(Q_OS_MACX) || defined(Q_OS_WIN)
@@ -213,7 +213,7 @@ void QgsApplication::init( QString customConfigPath )
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
   QString passfile( QStringLiteral( "QGIS_AUTH_PASSWORD_FILE" ) ); // QString, for comparison
-  Q_FOREACH ( const QString &varStr, QProcess::systemEnvironment() )
+  Q_FOREACH ( const QString& varStr, QProcess::systemEnvironment() )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -247,7 +247,7 @@ QgsApplication* QgsApplication::instance()
   return qobject_cast<QgsApplication*>( QCoreApplication::instance() );
 }
 
-bool QgsApplication::event( QEvent * event )
+bool QgsApplication::event( QEvent* event )
 {
   bool done = false;
   if ( event->type() == QEvent::FileOpen )
@@ -263,7 +263,7 @@ bool QgsApplication::event( QEvent * event )
       // Store filename because receiver has not registered yet.
       // If QGIS has been launched by double clicking a file icon, FileOpen will be
       // the first event; the main window is not yet ready to handle the event.
-      ABISYM( mFileOpenEventList ).append( static_cast<QFileOpenEvent *>( event )->file() );
+      ABISYM( mFileOpenEventList ).append( static_cast<QFileOpenEvent*>( event )->file() );
       done = true;
     }
   }
@@ -275,7 +275,7 @@ bool QgsApplication::event( QEvent * event )
   return done;
 }
 
-bool QgsApplication::notify( QObject * receiver, QEvent * event )
+bool QgsApplication::notify( QObject* receiver, QEvent* event )
 {
   bool done = false;
   // Crashes  in customization (especially on Mac), if we're not in the main/UI thread, see #5597
@@ -291,13 +291,13 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   {
     done = QApplication::notify( receiver, event );
   }
-  catch ( QgsException & e )
+  catch ( QgsException& e )
   {
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
-  catch ( std::exception & e )
+  catch ( std::exception& e )
   {
     QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
     if ( qApp->thread() == QThread::currentThread() )
@@ -313,12 +313,12 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   return done;
 }
 
-QgsRuntimeProfiler *QgsApplication::profiler()
+QgsRuntimeProfiler* QgsApplication::profiler()
 {
   return instance()->mProfiler;
 }
 
-void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
+void QgsApplication::setFileOpenEventReceiver( QObject* receiver )
 {
   // Set receiver for FileOpen events
   ABISYM( mFileOpenEventReceiver ) = receiver;
@@ -335,7 +335,7 @@ void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
   }
 }
 
-void QgsApplication::setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths )
+void QgsApplication::setPrefixPath( const QString& thePrefixPath, bool useDefaultPaths )
 {
   ABISYM( mPrefixPath ) = thePrefixPath;
 #if defined(_MSC_VER)
@@ -353,12 +353,12 @@ void QgsApplication::setPrefixPath( const QString &thePrefixPath, bool useDefaul
   ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 }
 
-void QgsApplication::setPluginPath( const QString &thePluginPath )
+void QgsApplication::setPluginPath( const QString& thePluginPath )
 {
   ABISYM( mPluginPath ) = thePluginPath;
 }
 
-void QgsApplication::setPkgDataPath( const QString &thePkgDataPath )
+void QgsApplication::setPkgDataPath( const QString& thePkgDataPath )
 {
   ABISYM( mPkgDataPath ) = thePkgDataPath;
   QString mySvgPath = thePkgDataPath + ( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
@@ -426,7 +426,7 @@ QString QgsApplication::iconPath( const QString& iconFile )
   return defaultThemePath() + iconFile;
 }
 
-QIcon QgsApplication::getThemeIcon( const QString &theName )
+QIcon QgsApplication::getThemeIcon( const QString& theName )
 {
   QgsApplication* app = instance();
   if ( app && app->mIconCache.contains( theName ) )
@@ -457,7 +457,7 @@ QIcon QgsApplication::getThemeIcon( const QString &theName )
 }
 
 // TODO: add some caching mechanism ?
-QPixmap QgsApplication::getThemePixmap( const QString &theName )
+QPixmap QgsApplication::getThemePixmap( const QString& theName )
 {
   QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
   QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
@@ -476,7 +476,7 @@ QPixmap QgsApplication::getThemePixmap( const QString &theName )
 /*!
   Set the theme path to the specified theme.
 */
-void QgsApplication::setThemeName( const QString &theThemeName )
+void QgsApplication::setThemeName( const QString& theThemeName )
 {
   ABISYM( mThemeName ) = theThemeName;
 }
@@ -488,7 +488,7 @@ QString QgsApplication::themeName()
   return ABISYM( mThemeName );
 }
 
-void QgsApplication::setUITheme( const QString &themeName )
+void QgsApplication::setUITheme( const QString& themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
@@ -828,7 +828,7 @@ QString QgsApplication::userFullName()
 #elif defined(Q_OS_ANDROID)
   sUserFullName = "Not available";
 #else
-  struct passwd *p = getpwuid( getuid() );
+  struct passwd* p = getpwuid( getuid() );
 
   if ( p )
   {
@@ -1255,7 +1255,7 @@ QgsActionScopeRegistry* QgsApplication::actionScopeRegistry()
   return instance()->mActionScopeRegistry;
 }
 
-bool QgsApplication::createDB( QString *errorMessage )
+bool QgsApplication::createDB( QString* errorMessage )
 {
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
@@ -1304,7 +1304,7 @@ bool QgsApplication::createDB( QString *errorMessage )
   else
   {
     // migrate if necessary
-    sqlite3 *db;
+    sqlite3* db;
     if ( sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
     {
       if ( errorMessage )
@@ -1314,7 +1314,7 @@ bool QgsApplication::createDB( QString *errorMessage )
       return false;
     }
 
-    char *errmsg;
+    char* errmsg;
     int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
     if ( res == SQLITE_OK )
     {

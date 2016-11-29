@@ -41,9 +41,12 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
     void setContent( const QImage& image, const QgsRectangle& rect );
 
     //! @note added in 2.4
-    QImage contentImage() const { return mImage; }
+    QImage contentImage() const
+    {
+      return mImage;
+    }
 
-    virtual void paint( QPainter * painter ) override;
+    virtual void paint( QPainter* painter ) override;
 
   private:
 

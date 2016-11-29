@@ -50,8 +50,8 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void on_mDefaultMarkerRadioButton_toggled( bool toggled );
     void on_mNoMarkerRadioButton_toggled( bool toggled );
     void on_mSvgMarkerRadioButton_toggled( bool toggled );
-    void on_mStartMarkerLineEdit_textChanged( const QString & text );
-    void on_mEndMarkerLineEdit_textChanged( const QString & text );
+    void on_mStartMarkerLineEdit_textChanged( const QString& text );
+    void on_mEndMarkerLineEdit_textChanged( const QString& text );
     void on_mStartMarkerToolButton_clicked();
     void on_mEndMarkerToolButton_clicked();
     void on_mLineStyleButton_clicked();

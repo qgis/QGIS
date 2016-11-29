@@ -48,7 +48,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     Q_OBJECT
   public:
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
-    QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsPluginManager( QWidget* parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsPluginManager();
@@ -69,13 +69,13 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void getCppPluginsMetadata();
 
     //! Create new spacer item for sorting by status in the plugin list view
-    QStandardItem * createSpacerItem( const QString& text, const QString& value );
+    QStandardItem* createSpacerItem( const QString& text, const QString& value );
 
     //! Repopulate the plugin list model
     void reloadModelData();
 
     //! Fill the html browser widget with plugin details
-    void showPluginDetails( QStandardItem * item );
+    void showPluginDetails( QStandardItem* item );
 
     //! Remove python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata();
@@ -84,7 +84,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void addPluginMetadata( const QString& key, const QMap<QString, QString>& metadata );
 
     //! Return metadata of given plugin
-    const QMap<QString, QString> * pluginMetadata( const QString& key ) const;
+    const QMap<QString, QString>* pluginMetadata( const QString& key ) const;
 
     //! Select one of the vertical tabs programatically
     void selectTabItem( int idx );
@@ -106,19 +106,19 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void updateWindowTitle() override;
 
     //! Handle plugin selection
-    void currentPluginChanged( const QModelIndex & theIndex );
+    void currentPluginChanged( const QModelIndex& theIndex );
 
     //! Load/unload plugin when checkbox state changed
-    void pluginItemChanged( QStandardItem * item );
+    void pluginItemChanged( QStandardItem* item );
 
     //! Display details of inactive item too
-    void on_vwPlugins_clicked( const QModelIndex & index );
+    void on_vwPlugins_clicked( const QModelIndex& index );
 
     //! Load/unload plugin by double click
-    void on_vwPlugins_doubleClicked( const QModelIndex & index );
+    void on_vwPlugins_doubleClicked( const QModelIndex& index );
 
     //! Handle click in the web wiew
-    void on_wvDetails_linkClicked( const QUrl & url );
+    void on_wvDetails_linkClicked( const QUrl& url );
 
     //! Update the filter when user changes the filter expression
     void on_leFilter_textChanged( QString theText );
@@ -157,10 +157,16 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_ckbDeprecated_toggled( bool state );
 
     //! Open help browser
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
 
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
-    void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
+    void optionsStackedWidget_CurrentChanged( int indx )
+    {
+      Q_UNUSED( indx )
+    }
 
     //! Only show plugins from selected repository (e.g. for inspection)
     void setRepositoryFilter();
@@ -169,7 +175,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void clearRepositoryFilter();
 
     //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration = -1 );
+    void pushMessage( const QString& text, QgsMessageBar::MessageLevel level, int duration = -1 );
 
 #ifndef WITH_QTWEBKIT
     //! vote button was clicked
@@ -208,9 +214,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! send vote
     void sendVote( int pluginId, int vote );
 
-    QStandardItemModel *mModelPlugins;
+    QStandardItemModel* mModelPlugins;
 
-    QgsPluginSortFilterProxyModel * mModelProxy;
+    QgsPluginSortFilterProxyModel* mModelProxy;
 
     QgsPythonUtils* mPythonUtils;
 
@@ -225,7 +231,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QList<int> mCheckingOnStartIntervals;
 
-    QgsMessageBar *msgBar;
+    QgsMessageBar* msgBar;
 
 #ifndef WITH_QTWEBKIT
     int mCurrentPluginId;

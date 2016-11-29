@@ -156,7 +156,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool supportsSubsetString() const override
+    {
+      return true;
+    }
 
     virtual QString subsetString() const override
     {
@@ -181,7 +184,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @param y Y value of point
      * @return True if point is within the rectangle
      */
-    bool boundsCheck( QgsGeometry *geom );
+    bool boundsCheck( QgsGeometry* geom );
 
     /**
      * Try to read field types from CSVT (or equialent xxxT) file.
@@ -189,7 +192,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @param message  Pointer to a string to receive a status message
      * @return A list of field type strings, empty if not found or not valid
      */
-    QStringList readCsvtFieldTypes( const QString& filename, QString *message = nullptr );
+    QStringList readCsvtFieldTypes( const QString& filename, QString* message = nullptr );
 
   private slots:
 
@@ -206,13 +209,13 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void clearInvalidLines() const;
     void recordInvalidLine( const QString& message );
     void reportErrors( const QStringList& messages = QStringList(), bool showDialog = false ) const;
-    static bool recordIsEmpty( QStringList &record );
+    static bool recordIsEmpty( QStringList& record );
     void setUriParameter( const QString& parameter, const QString& value );
 
 
-    static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
-    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString& decimalPoint, bool xyDms );
-    static double dmsStringToDouble( const QString &sX, bool *xOk );
+    static QgsGeometry geomFromWkt( QString& sWkt, bool wktHasPrefixRegexp );
+    static bool pointFromXY( QString& sX, QString& sY, QgsPoint& point, const QString& decimalPoint, bool xyDms );
+    static double dmsStringToDouble( const QString& sX, bool* xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
     bool mLayerValid;
@@ -221,7 +224,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     mutable bool mValid;
 
     //! Text file
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile* mFile;
 
     // Fields
     GeomRepresentationType mGeomRep;
@@ -253,7 +256,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QString mSubsetString;
     mutable QString mCachedSubsetString;
-    QgsExpression *mSubsetExpression;
+    QgsExpression* mSubsetExpression;
     bool mBuildSubsetIndex;
     mutable QList<quintptr> mSubsetIndex;
     mutable bool mUseSubsetIndex;
@@ -279,7 +282,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool mBuildSpatialIndex;
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
-    mutable QgsSpatialIndex *mSpatialIndex;
+    mutable QgsSpatialIndex* mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

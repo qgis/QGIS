@@ -17,9 +17,9 @@
 #include "qgsogrprovider.h"
 
 QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
-                                | QgsSqlExpressionCompiler::NoUnaryMinus )
-    , mSource( source )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
+                              | QgsSqlExpressionCompiler::NoUnaryMinus )
+  , mSource( source )
 {
 }
 

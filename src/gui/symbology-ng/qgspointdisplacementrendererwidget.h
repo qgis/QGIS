@@ -56,7 +56,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void on_mLabelColorButton_colorChanged( const QColor& newColor );
     void on_mCircleModificationSpinBox_valueChanged( double d );
     void on_mScaleDependentLabelsCheckBox_stateChanged( int state );
-    void on_mMaxScaleDenominatorEdit_textChanged( const QString & text );
+    void on_mMaxScaleDenominatorEdit_textChanged( const QString& text );
     void on_mCenterSymbolPushButton_clicked();
     void on_mRendererSettingsButton_clicked();
     void updateCenterSymbolFromWidget();

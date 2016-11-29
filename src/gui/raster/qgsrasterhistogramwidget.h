@@ -42,7 +42,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
+    QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget* parent = nullptr );
     ~QgsRasterHistogramWidget();
 
     //! Save the histogram as an image to disk
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     bool computeHistogram( bool forceComputeFlag );
 
     //! Apply a histoActionTriggered() event.
-    void histoAction( const QString &actionName, bool actionFlag = true );
+    void histoAction( const QString& actionName, bool actionFlag = true );
 
     //! Apply a histoActionTriggered() event.
     void setSelectedBand( int index );
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     };
 
     //! \brief Pointer to the raster layer that this property dilog changes the behaviour of.
-    QgsRasterLayer * mRasterLayer;
+    QgsRasterLayer* mRasterLayer;
     //! \brief Pointer to the renderer widget, to get/set min/max.
     QgsRasterRendererWidget* mRendererWidget;
     //! \brief Name of the renderer widget (see QgsRasterRendererRegistry).

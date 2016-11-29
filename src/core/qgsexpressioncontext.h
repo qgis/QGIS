@@ -56,9 +56,9 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )
-        : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
-        , mUsesGeometry( usesGeometry )
-        , mReferencedColumns( referencedColumns )
+      : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
+      , mUsesGeometry( usesGeometry )
+      , mReferencedColumns( referencedColumns )
     {}
 
     virtual ~QgsScopedExpressionFunction() {}
@@ -106,9 +106,9 @@ class CORE_EXPORT QgsExpressionContextScope
        * @param readOnly true if variable should not be editable by users
        */
       StaticVariable( const QString& name = QString(), const QVariant& value = QVariant(), bool readOnly = false )
-          : name( name )
-          , value( value )
-          , readOnly( readOnly )
+        : name( name )
+        , value( value )
+        , readOnly( readOnly )
       {}
 
       //! Variable name
@@ -136,7 +136,10 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Returns the friendly display name of the context scope.
      */
-    QString name() const { return mName; }
+    QString name() const
+    {
+      return mName;
+    }
 
     /** Convenience method for setting a variable in the context scope by name and value. If a variable
      * with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
@@ -199,7 +202,10 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /** Returns the count of variables contained within the scope.
      */
-    int variableCount() const { return mVariables.count(); }
+    int variableCount() const
+    {
+      return mVariables.count();
+    }
 
     /** Tests whether a function with the specified name exists in the scope.
      * @param name function name
@@ -207,7 +213,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * @see function()
      * @see hasFunction()
      */
-    bool hasFunction( const QString &name ) const;
+    bool hasFunction( const QString& name ) const;
 
     /** Retrieves a function from the scope.
      * @param name function name
@@ -216,7 +222,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * @see functionNames()
      * @see variable()
      */
-    QgsExpression::Function* function( const QString &name ) const;
+    QgsExpression::Function* function( const QString& name ) const;
 
     /** Retrieves a list of names of functions contained in the scope.
      * @see function()
@@ -248,7 +254,7 @@ class CORE_EXPORT QgsExpressionContextScope
     QHash<QString, StaticVariable> mVariables;
     QHash<QString, QgsScopedExpressionFunction* > mFunctions;
 
-    bool variableNameSort( const QString &a, const QString &b );
+    bool variableNameSort( const QString& a, const QString& b );
 };
 
 /** \ingroup core
@@ -275,7 +281,7 @@ class CORE_EXPORT QgsExpressionContext
 
     QgsExpressionContext& operator=( const QgsExpressionContext& other );
 
-    QgsExpressionContext& operator=( QgsExpressionContext && other );
+    QgsExpressionContext& operator=( QgsExpressionContext&& other );
 
     ~QgsExpressionContext();
 
@@ -344,7 +350,10 @@ class CORE_EXPORT QgsExpressionContext
     /** Returns a list of scopes contained within the stack.
      * @returns list of pointers to scopes
      */
-    QList< QgsExpressionContextScope* > scopes() { return mStack; }
+    QList< QgsExpressionContextScope* > scopes()
+    {
+      return mStack;
+    }
 
     /** Returns the index of the specified scope if it exists within the context.
      * @param scope scope to find
@@ -616,7 +625,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
      * For instance, map scale and rotation.
      */
-    static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings &mapSettings );
+    static QgsExpressionContextScope* mapSettingsScope( const QgsMapSettings& mapSettings );
 
     /**
      * Updates a symbol scope related to a QgsSymbol to an expression context.
@@ -630,7 +639,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, number of pages and page sizes.
      * @param composition source composition
      */
-    static QgsExpressionContextScope* compositionScope( const QgsComposition *composition );
+    static QgsExpressionContextScope* compositionScope( const QgsComposition* composition );
 
     /** Sets a composition context variable. This variable will be contained within scopes retrieved via
      * compositionScope().
@@ -661,7 +670,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, item size and position.
      * @param composerItem source composer item
      */
-    static QgsExpressionContextScope* composerItemScope( const QgsComposerItem *composerItem );
+    static QgsExpressionContextScope* composerItemScope( const QgsComposerItem* composerItem );
 
     /** Sets a composer item context variable. This variable will be contained within scopes retrieved via
      * composerItemScope().

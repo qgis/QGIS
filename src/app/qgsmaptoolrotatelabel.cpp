@@ -28,13 +28,13 @@
 #include "qgsapplication.h"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas* canvas )
-    : QgsMapToolLabel( canvas )
-    , mStartRotation( 0.0 )
-    , mCurrentRotation( 0.0 )
-    , mCurrentMouseAzimuth( 0.0 )
-    , mRotationItem( nullptr )
-    , mRotationPreviewBox( nullptr )
-    , mCtrlPressed( false )
+  : QgsMapToolLabel( canvas )
+  , mStartRotation( 0.0 )
+  , mCurrentRotation( 0.0 )
+  , mCurrentMouseAzimuth( 0.0 )
+  , mRotationItem( nullptr )
+  , mRotationPreviewBox( nullptr )
+  , mCtrlPressed( false )
 {
 }
 

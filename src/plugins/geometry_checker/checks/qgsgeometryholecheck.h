@@ -24,12 +24,18 @@ class QgsGeometryHoleCheck : public QgsGeometryCheck
 
   public:
     explicit QgsGeometryHoleCheck( QgsFeaturePool* featurePool )
-        : QgsGeometryCheck( FeatureCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
+      : QgsGeometryCheck( FeatureCheck, featurePool ) {}
+    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Polygon with hole" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryHoleCheck" ); }
+    QString errorDescription() const override
+    {
+      return tr( "Polygon with hole" );
+    }
+    QString errorName() const override
+    {
+      return QStringLiteral( "QgsGeometryHoleCheck" );
+    }
   private:
     enum ResolutionMethod { RemoveHoles, NoChange };
 };

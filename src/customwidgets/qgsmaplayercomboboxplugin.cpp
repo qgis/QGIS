@@ -18,9 +18,9 @@
 #include "qgsmaplayercomboboxplugin.h"
 
 
-QgsMapLayerComboBoxPlugin::QgsMapLayerComboBoxPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsMapLayerComboBoxPlugin::QgsMapLayerComboBoxPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsMapLayerComboBoxPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsMapLayerComboBoxPlugin::createWidget( QWidget *parent )
+QWidget* QgsMapLayerComboBoxPlugin::createWidget( QWidget* parent )
 {
   return new QgsMapLayerComboBox( parent );
 }
@@ -60,7 +60,7 @@ bool QgsMapLayerComboBoxPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsMapLayerComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsMapLayerComboBoxPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

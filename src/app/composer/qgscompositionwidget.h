@@ -26,7 +26,12 @@ class QgsDataDefinedButton;
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper( const QString& name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( const QString& name, double width, double height )
+  {
+    mName = name;
+    mWidth = width;
+    mHeight = height;
+  }
   QString mName;
   double mWidth;
   double mHeight;
@@ -108,13 +113,13 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     void createPaperEntries();
     void insertPaperEntries();
 
-    double size( QDoubleSpinBox *spin );
-    void setSize( QDoubleSpinBox *spin, double v );
+    double size( QDoubleSpinBox* spin );
+    void setSize( QDoubleSpinBox* spin, double v );
     //! Blocks / unblocks the signals of all items
     void blockSignals( bool block );
 
     //! Sets a data defined property for the item from its current data defined button settings
-    void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
+    void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property );
 
     //! Returns the data defined property corresponding to a data defined button widget
     virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );

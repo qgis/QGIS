@@ -22,13 +22,13 @@
 #include "qgsvectorlayer.h"
 
 QgsRelation::QgsRelation()
-    : mReferencingLayer( nullptr )
-    , mReferencedLayer( nullptr )
-    , mValid( false )
+  : mReferencingLayer( nullptr )
+  , mReferencedLayer( nullptr )
+  , mValid( false )
 {
 }
 
-QgsRelation QgsRelation::createFromXml( const QDomNode &node )
+QgsRelation QgsRelation::createFromXml( const QDomNode& node )
 {
   QDomElement elem = node.toElement();
 
@@ -90,7 +90,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   return relation;
 }
 
-void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
+void QgsRelation::writeXml( QDomNode& node, QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "relation" ) );
   elem.setAttribute( QStringLiteral( "id" ), mRelationId );

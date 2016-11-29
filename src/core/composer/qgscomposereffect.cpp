@@ -20,7 +20,7 @@
 #include "qgscomposereffect.h"
 
 QgsComposerEffect::QgsComposerEffect()
-    : mCompositionMode( QPainter::CompositionMode_SourceOver )
+  : mCompositionMode( QPainter::CompositionMode_SourceOver )
 {
 }
 
@@ -28,7 +28,7 @@ QgsComposerEffect::~QgsComposerEffect()
 {
 }
 
-void QgsComposerEffect::draw( QPainter *painter )
+void QgsComposerEffect::draw( QPainter* painter )
 {
   QPoint offset;
   QPixmap pixmap;

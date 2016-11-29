@@ -19,7 +19,7 @@
 #include "qgsphotoconfigdlg.h"
 
 QgsPhotoWidgetFactory::QgsPhotoWidgetFactory( const QString& name )
-    :  QgsEditorWidgetFactory( name )
+  :  QgsEditorWidgetFactory( name )
 {
 }
 

@@ -42,59 +42,59 @@ class RgLineVectorLayerSettingsWidget : public QWidget
 {
     Q_OBJECT
   public:
-    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings *s, QWidget* parent = nullptr );
+    RgLineVectorLayerSettingsWidget( RgLineVectorLayerSettings* s, QWidget* parent = nullptr );
 
   private slots:
     void on_mcbLayers_selectItem();
 
   private:
-    QgsVectorLayer * selectedLayer();
+    QgsVectorLayer* selectedLayer();
 
   public:
 
     /**
      * list of passible layers
      */
-    QgsMapLayerComboBox *mcbLayers;
+    QgsMapLayerComboBox* mcbLayers;
 
     /**
      * list of possible fields for use as direction
      */
-    QComboBox *mcbDirection;
+    QComboBox* mcbDirection;
 
     /**
      *
      */
-    QLineEdit *mleFirstPointToLastPointDirection;
+    QLineEdit* mleFirstPointToLastPointDirection;
 
     /**
      *
      */
-    QLineEdit *mleLastPointToFirstPointDirection;
+    QLineEdit* mleLastPointToFirstPointDirection;
 
     /**
      *
      */
-    QLineEdit *mleBothDirection;
+    QLineEdit* mleBothDirection;
 
     /**
      * default direction value
      */
-    QComboBox *mcbDirectionDefault;
+    QComboBox* mcbDirectionDefault;
 
     /**
      * list of possible fields for use as speed
      */
-    QComboBox *mcbSpeed;
+    QComboBox* mcbSpeed;
 
     /**
      * Default speed value
      */
-    QSpinBox *msbSpeedDefault;
+    QSpinBox* msbSpeedDefault;
 
     /**
      * Unit of speed
      */
-    QComboBox *mcbUnitOfSpeed;
+    QComboBox* mcbUnitOfSpeed;
 };
 #endif

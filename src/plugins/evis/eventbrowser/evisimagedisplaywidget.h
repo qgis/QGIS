@@ -69,13 +69,19 @@ class eVisImageDisplayWidget : public QWidget
      * and end up getting not being able to zoom in or out
      */
     //! \brief Accessor for ZOOM_STEPS
-    int getZoomSteps() { return ZOOM_STEPS; }
+    int getZoomSteps()
+    {
+      return ZOOM_STEPS;
+    }
 
     //! \brief Mutator for ZOON_STEPS
-    void setZoomSteps( int steps ) { ZOOM_STEPS = steps; }
+    void setZoomSteps( int steps )
+    {
+      ZOOM_STEPS = steps;
+    }
 
   protected:
-    void resizeEvent( QResizeEvent *event ) override;
+    void resizeEvent( QResizeEvent* event ) override;
 
   private:
 

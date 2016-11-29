@@ -25,12 +25,12 @@
 #endif
 
 QgsFileDownloader::QgsFileDownloader( QUrl url, QString outputFileName, bool enableGuiNotifications )
-    : mUrl( url )
-    , mReply( nullptr )
-    , mProgressDialog( nullptr )
-    , mDownloadCanceled( false )
-    , mErrors()
-    , mGuiNotificationsEnabled( enableGuiNotifications )
+  : mUrl( url )
+  , mReply( nullptr )
+  , mProgressDialog( nullptr )
+  , mDownloadCanceled( false )
+  , mErrors()
+  , mGuiNotificationsEnabled( enableGuiNotifications )
 {
   mFile.setFileName( outputFileName );
   startDownload();
@@ -90,7 +90,7 @@ void QgsFileDownloader::onRequestTimedOut()
 }
 
 #ifndef QT_NO_SSL
-void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
+void QgsFileDownloader::onSslErrors( QNetworkReply* reply, const QList<QSslError>& errors )
 {
   Q_UNUSED( reply );
   QStringList errorMessages;

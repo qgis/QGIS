@@ -21,7 +21,7 @@
 #include <QObject>
 
 class QgsMessageOutput;
-typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
+typedef QgsMessageOutput* ( *MESSAGE_OUTPUT_CREATOR )();
 
 
 /** \ingroup core

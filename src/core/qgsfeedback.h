@@ -43,8 +43,8 @@ class CORE_EXPORT QgsFeedback : public QObject
   public:
     //! Construct a feedback object
     QgsFeedback( QObject* parent = nullptr )
-        : QObject( parent )
-        , mCancelled( false )
+      : QObject( parent )
+      , mCancelled( false )
     {}
 
     virtual ~QgsFeedback() {}
@@ -59,7 +59,10 @@ class CORE_EXPORT QgsFeedback : public QObject
     }
 
     //! Tells whether the operation has been cancelled already
-    bool isCancelled() const { return mCancelled; }
+    bool isCancelled() const
+    {
+      return mCancelled;
+    }
 
   signals:
     //! Internal routines can connect to this signal if they use event loop

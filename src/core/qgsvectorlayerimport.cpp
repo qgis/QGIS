@@ -35,35 +35,35 @@
 #define FEATURE_BUFFER_SIZE 200
 
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
-  const QString &uri,
-  const QgsFields &fields,
+  const QString& uri,
+  const QgsFields& fields,
   QgsWkbTypes::Type geometryType,
-  const QgsCoordinateReferenceSystem &destCRS,
+  const QgsCoordinateReferenceSystem& destCRS,
   bool overwrite,
-  QMap<int, int> *oldToNewAttrIdx,
-  QString *errorMessage,
-  const QMap<QString, QVariant> *options
+  QMap<int, int>* oldToNewAttrIdx,
+  QString* errorMessage,
+  const QMap<QString, QVariant>* options
 );
 
 
-QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
-    const QString &providerKey,
+QgsVectorLayerImport::QgsVectorLayerImport( const QString& uri,
+    const QString& providerKey,
     const QgsFields& fields,
     QgsWkbTypes::Type geometryType,
     const QgsCoordinateReferenceSystem& crs,
     bool overwrite,
-    const QMap<QString, QVariant> *options,
-    QProgressDialog *progress )
-    : mErrorCount( 0 )
-    , mAttributeCount( -1 )
-    , mProgress( progress )
+    const QMap<QString, QVariant>* options,
+    QProgressDialog* progress )
+  : mErrorCount( 0 )
+  , mAttributeCount( -1 )
+  , mProgress( progress )
 
 {
   mProvider = nullptr;
 
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+  QgsProviderRegistry* pReg = QgsProviderRegistry::instance();
 
-  QLibrary *myLib = pReg->providerLibrary( providerKey );
+  QLibrary* myLib = pReg->providerLibrary( providerKey );
   if ( !myLib )
   {
     mError = ErrInvalidProvider;
@@ -71,7 +71,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
-  createEmptyLayer_t * pCreateEmpty = reinterpret_cast< createEmptyLayer_t * >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
+  createEmptyLayer_t* pCreateEmpty = reinterpret_cast< createEmptyLayer_t* >( cast_to_fptr( myLib->resolve( "createEmptyLayer" ) ) );
   if ( !pCreateEmpty )
   {
     delete myLib;
@@ -101,7 +101,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   QgsDebugMsg( "Created empty layer" );
 
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider* >( pReg->provider( providerKey, uri ) );
+  QgsVectorDataProvider* vectorProvider = dynamic_cast< QgsVectorDataProvider* >( pReg->provider( providerKey, uri ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
@@ -212,10 +212,10 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    const QString& providerKey,
                                    const QgsCoordinateReferenceSystem& destCRS,
                                    bool onlySelected,
-                                   QString *errorMessage,
+                                   QString* errorMessage,
                                    bool skipAttributeCreation,
-                                   QMap<QString, QVariant> *options,
-                                   QProgressDialog *progress )
+                                   QMap<QString, QVariant>* options,
+                                   QProgressDialog* progress )
 {
   QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform ct;
@@ -286,7 +286,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
-  QgsVectorLayerImport * writer =
+  QgsVectorLayerImport* writer =
     new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options, progress );
 
   // check whether file creation was successful
@@ -375,7 +375,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
           fet.setGeometry( g );
         }
       }
-      catch ( QgsCsException &e )
+      catch ( QgsCsException& e )
       {
         delete writer;
 

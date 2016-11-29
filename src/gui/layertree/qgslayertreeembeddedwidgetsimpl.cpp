@@ -28,7 +28,7 @@
 ///@cond PRIVATE
 
 QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer* layer )
-    : mLayer( layer )
+  : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
   QLabel* l = new QLabel( QStringLiteral( "Transparency" ), this );

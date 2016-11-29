@@ -25,14 +25,20 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
 {
     Q_OBJECT
   public:
-    QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
+    QgsGlobePluginDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
 
     struct LayerDataSource
     {
       QString uri;
       QString type;
-      bool operator==( const LayerDataSource& other ) { return uri == other.uri && type == other.type; }
-      bool operator!=( const LayerDataSource& other ) { return uri != other.uri || type != other.type; }
+      bool operator==( const LayerDataSource& other )
+      {
+        return uri == other.uri && type == other.type;
+      }
+      bool operator!=( const LayerDataSource& other )
+      {
+        return uri != other.uri || type != other.type;
+      }
     };
     void readProjectSettings();
 
@@ -55,7 +61,7 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
   private:
     void restoreSavedSettings();
     void writeProjectSettings();
-    bool validateRemoteUri( const QString &uri , QString &errMsg ) const;
+    bool validateRemoteUri( const QString& uri , QString& errMsg ) const;
 
   private slots:
     void apply();
@@ -68,13 +74,13 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     void on_mRemoveImageryButton_clicked();
     void on_mRemoveElevationButton_clicked();
 
-    void addImagery( const QString &type, const QString &uri );
+    void addImagery( const QString& type, const QString& uri );
     void addTMSImagery();
     void addCustomTMSImagery();
     void addCustomWMSImagery();
     void addRasterImagery();
     void addCustomRasterImagery();
-    void addElevation( const QString &type, const QString &uri );
+    void addElevation( const QString& type, const QString& uri );
     void addTMSElevation();
     void addCustomTMSElevation();
     void addCustomRasterElevation();

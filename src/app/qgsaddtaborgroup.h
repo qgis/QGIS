@@ -33,7 +33,7 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     typedef QPair<QString, QTreeWidgetItem*> TabPair;
 
   public:
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair>& tabList, QWidget *parent = nullptr );
+    QgsAddTabOrGroup( QgsVectorLayer* lyr, const QList<TabPair>& tabList, QWidget* parent = nullptr );
     ~QgsAddTabOrGroup();
 
     QString name();
@@ -51,7 +51,7 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     void on_mTabButton_toggled( bool checked );
 
   protected:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer* mLayer;
     QList< TabPair > mTabs;
 };
 

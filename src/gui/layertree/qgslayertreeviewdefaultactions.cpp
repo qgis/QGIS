@@ -26,8 +26,8 @@
 #include <QAction>
 
 QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView* view )
-    : QObject( view )
-    , mView( view )
+  : QObject( view )
+  , mView( view )
 {
 }
 
@@ -222,7 +222,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
     QgsMapLayer* layer = layers.at( i );
     QgsRectangle layerExtent = layer->extent();
 
-    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vLayer )
     {
       if ( vLayer->geometryType() == QgsWkbTypes::NullGeometry )

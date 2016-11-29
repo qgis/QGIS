@@ -24,10 +24,10 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterdataprovider.h"
 
-QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent )
-    : QWidget( parent )
-    , mLayer( theLayer )
-    , mCanvas( nullptr )
+QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget* parent )
+  : QWidget( parent )
+  , mLayer( theLayer )
+  , mCanvas( nullptr )
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );

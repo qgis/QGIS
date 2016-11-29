@@ -15,8 +15,8 @@
 
 #include "qgsphotoconfigdlg.h"
 
-QgsPhotoConfigDlg::QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsPhotoConfigDlg::QgsPhotoConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   connect( sbWidgetHeight, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );

@@ -40,14 +40,14 @@
 
 
 QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas, QWidget* parent )
-    : QWidget( parent )
-    , mProject( project )
-    , mCanvas( canvas )
-    , mModeAction( nullptr )
-    , mTypeAction( nullptr )
-    , mToleranceAction( nullptr )
-    , mUnitAction( nullptr )
-    , mLayerTreeView( nullptr )
+  : QWidget( parent )
+  , mProject( project )
+  , mCanvas( canvas )
+  , mModeAction( nullptr )
+  , mTypeAction( nullptr )
+  , mToleranceAction( nullptr )
+  , mUnitAction( nullptr )
+  , mLayerTreeView( nullptr )
 {
   // detect the type of display
   QToolBar* tb = qobject_cast<QToolBar*>( parent );
@@ -74,7 +74,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mModeButton = new QToolButton();
   mModeButton->setToolTip( tr( "Snapping mode" ) );
   mModeButton->setPopupMode( QToolButton::InstantPopup );
-  QMenu *modeMenu = new QMenu( tr( "Set snapping mode" ), this );
+  QMenu* modeMenu = new QMenu( tr( "Set snapping mode" ), this );
   mAllLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAllLayers.svg" ) ), QStringLiteral( "All layers" ), modeMenu );
   mActiveLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingActiveLayer.svg" ) ), QStringLiteral( "Active layer" ), modeMenu );
   mAdvancedModeAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAdvanced.svg" ) ), QStringLiteral( "Advanced configuration" ), modeMenu );
@@ -93,7 +93,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mTypeButton = new QToolButton();
   mTypeButton->setToolTip( tr( "Snapping type" ) );
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
-  QMenu *typeMenu = new QMenu( tr( "Set snapping mode" ), this );
+  QMenu* typeMenu = new QMenu( tr( "Set snapping mode" ), this );
   mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), QStringLiteral( "Vertex" ), typeMenu );
   mVertexAndSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), QStringLiteral( "Vertex and segment" ), typeMenu );
   mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), QStringLiteral( "Segment" ), typeMenu );
@@ -452,14 +452,14 @@ void QgsSnappingWidget::setConfig( const QgsSnappingConfig& config )
 
 
 
-void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
+void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode* node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : nullptr;
+  QgsLayerTreeGroup* group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : nullptr;
   if ( !group )
     return;
 
-  QList<QgsLayerTreeNode *> toRemove;
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  QList<QgsLayerTreeNode*> toRemove;
+  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
   {
     if ( QgsLayerTree::isLayer( child ) && QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayer::VectorLayer )
     {
@@ -473,6 +473,6 @@ void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
       toRemove << child;
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *child, toRemove )
+  Q_FOREACH ( QgsLayerTreeNode* child, toRemove )
     group->removeChildNode( child );
 }

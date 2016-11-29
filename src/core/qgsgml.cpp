@@ -42,11 +42,11 @@ static const char* GML32_NAMESPACE = "http://www.opengis.net/gml/3.2";
 QgsGml::QgsGml(
   const QString& typeName,
   const QString& geometryAttribute,
-  const QgsFields & fields )
-    : QObject()
-    , mParser( typeName, geometryAttribute, fields )
-    , mTypeName( typeName )
-    , mFinished( false )
+  const QgsFields& fields )
+  : QObject()
+  , mParser( typeName, geometryAttribute, fields )
+  , mTypeName( typeName )
+  , mFinished( false )
 {
   int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )
@@ -175,7 +175,7 @@ int QgsGml::getFeatures( const QString& uri, QgsWkbTypes::Type* wkbType, QgsRect
   return 0;
 }
 
-int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent )
+int QgsGml::getFeatures( const QByteArray& data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent )
 {
   mExtent.setMinimal();
 
@@ -275,35 +275,35 @@ QgsCoordinateReferenceSystem QgsGml::crs() const
 
 QgsGmlStreamingParser::QgsGmlStreamingParser( const QString& typeName,
     const QString& geometryAttribute,
-    const QgsFields & fields,
+    const QgsFields& fields,
     AxisOrientationLogic axisOrientationLogic,
     bool invertAxisOrientation )
-    : mTypeName( typeName )
-    , mTypeNameBA( mTypeName.toUtf8() )
-    , mTypeNamePtr( mTypeNameBA.constData() )
-    , mWkbType( QgsWkbTypes::Unknown )
-    , mGeometryAttribute( geometryAttribute )
-    , mGeometryAttributeBA( geometryAttribute.toUtf8() )
-    , mGeometryAttributePtr( mGeometryAttributeBA.constData() )
-    , mFields( fields )
-    , mIsException( false )
-    , mTruncatedResponse( false )
-    , mParseDepth( 0 )
-    , mFeatureTupleDepth( 0 )
-    , mCurrentFeature( nullptr )
-    , mFeatureCount( 0 )
-    , mCurrentWKB( nullptr, 0 )
-    , mBoundedByNullFound( false )
-    , mDimension( 0 )
-    , mCoorMode( coordinate )
-    , mEpsg( 0 )
-    , mGMLNameSpaceURIPtr( nullptr )
-    , mAxisOrientationLogic( axisOrientationLogic )
-    , mInvertAxisOrientationRequest( invertAxisOrientation )
-    , mInvertAxisOrientation( invertAxisOrientation )
-    , mNumberReturned( -1 )
-    , mNumberMatched( -1 )
-    , mFoundUnhandledGeometryElement( false )
+  : mTypeName( typeName )
+  , mTypeNameBA( mTypeName.toUtf8() )
+  , mTypeNamePtr( mTypeNameBA.constData() )
+  , mWkbType( QgsWkbTypes::Unknown )
+  , mGeometryAttribute( geometryAttribute )
+  , mGeometryAttributeBA( geometryAttribute.toUtf8() )
+  , mGeometryAttributePtr( mGeometryAttributeBA.constData() )
+  , mFields( fields )
+  , mIsException( false )
+  , mTruncatedResponse( false )
+  , mParseDepth( 0 )
+  , mFeatureTupleDepth( 0 )
+  , mCurrentFeature( nullptr )
+  , mFeatureCount( 0 )
+  , mCurrentWKB( nullptr, 0 )
+  , mBoundedByNullFound( false )
+  , mDimension( 0 )
+  , mCoorMode( coordinate )
+  , mEpsg( 0 )
+  , mGMLNameSpaceURIPtr( nullptr )
+  , mAxisOrientationLogic( axisOrientationLogic )
+  , mInvertAxisOrientationRequest( invertAxisOrientation )
+  , mInvertAxisOrientation( invertAxisOrientation )
+  , mNumberReturned( -1 )
+  , mNumberMatched( -1 )
+  , mFoundUnhandledGeometryElement( false )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
@@ -338,33 +338,33 @@ static QString stripNS( const QString& string )
 }
 
 QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& layerProperties,
-    const QgsFields & fields,
+    const QgsFields& fields,
     const QMap< QString, QPair<QString, QString> >& mapFieldNameToSrcLayerNameFieldName,
     AxisOrientationLogic axisOrientationLogic,
     bool invertAxisOrientation )
-    : mLayerProperties( layerProperties )
-    , mTypeNamePtr( nullptr )
-    , mWkbType( QgsWkbTypes::Unknown )
-    , mGeometryAttributePtr( nullptr )
-    , mFields( fields )
-    , mIsException( false )
-    , mTruncatedResponse( false )
-    , mParseDepth( 0 )
-    , mFeatureTupleDepth( 0 )
-    , mCurrentFeature( nullptr )
-    , mFeatureCount( 0 )
-    , mCurrentWKB( nullptr, 0 )
-    , mBoundedByNullFound( false )
-    , mDimension( 0 )
-    , mCoorMode( coordinate )
-    , mEpsg( 0 )
-    , mGMLNameSpaceURIPtr( nullptr )
-    , mAxisOrientationLogic( axisOrientationLogic )
-    , mInvertAxisOrientationRequest( invertAxisOrientation )
-    , mInvertAxisOrientation( invertAxisOrientation )
-    , mNumberReturned( -1 )
-    , mNumberMatched( -1 )
-    , mFoundUnhandledGeometryElement( false )
+  : mLayerProperties( layerProperties )
+  , mTypeNamePtr( nullptr )
+  , mWkbType( QgsWkbTypes::Unknown )
+  , mGeometryAttributePtr( nullptr )
+  , mFields( fields )
+  , mIsException( false )
+  , mTruncatedResponse( false )
+  , mParseDepth( 0 )
+  , mFeatureTupleDepth( 0 )
+  , mCurrentFeature( nullptr )
+  , mFeatureCount( 0 )
+  , mCurrentWKB( nullptr, 0 )
+  , mBoundedByNullFound( false )
+  , mDimension( 0 )
+  , mCoorMode( coordinate )
+  , mEpsg( 0 )
+  , mGMLNameSpaceURIPtr( nullptr )
+  , mAxisOrientationLogic( axisOrientationLogic )
+  , mInvertAxisOrientationRequest( invertAxisOrientation )
+  , mInvertAxisOrientation( invertAxisOrientation )
+  , mNumberReturned( -1 )
+  , mNumberMatched( -1 )
+  , mFoundUnhandledGeometryElement( false )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
@@ -1249,7 +1249,7 @@ QString QgsGmlStreamingParser::readAttribute( const QString& attributeName, cons
   return QString();
 }
 
-bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, const QString& coordString ) const
+bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle& r, const QString& coordString ) const
 {
   QList<QgsPoint> points;
   if ( pointsFromCoordinateString( points, coordString ) != 0 )
@@ -1340,7 +1340,7 @@ int QgsGmlStreamingParser::pointsFromString( QList<QgsPoint>& points, const QStr
   return 1;
 }
 
-int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& point ) const
+int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr& wkbPtr, const QgsPoint& point ) const
 {
   int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
@@ -1351,7 +1351,7 @@ int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& point
   return 0;
 }
 
-int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const
+int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr& wkbPtr, const QList<QgsPoint>& lineCoordinates ) const
 {
   int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
@@ -1369,7 +1369,7 @@ int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>&
   return 0;
 }
 
-int QgsGmlStreamingParser::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const
+int QgsGmlStreamingParser::getRingWKB( QgsWkbPtr& wkbPtr, const QList<QgsPoint>& ringCoordinates ) const
 {
   int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
@@ -1490,9 +1490,9 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 int QgsGmlStreamingParser::totalWKBFragmentSize() const
 {
   int result = 0;
-  Q_FOREACH ( const QList<QgsWkbPtr> &list, mCurrentWKBFragments )
+  Q_FOREACH ( const QList<QgsWkbPtr>& list, mCurrentWKBFragments )
   {
-    Q_FOREACH ( const QgsWkbPtr &i, list )
+    Q_FOREACH ( const QgsWkbPtr& i, list )
     {
       result += i.size();
     }

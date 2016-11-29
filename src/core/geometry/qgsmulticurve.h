@@ -28,7 +28,10 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiCurve" ); }
+    virtual QString geometryType() const override
+    {
+      return QStringLiteral( "MultiCurve" );
+    }
     QgsMultiCurve* clone() const override;
 
     bool fromWkt( const QString& wkt ) override;

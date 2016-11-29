@@ -28,7 +28,7 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
   public:
     //! Constructor
     //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
-    QgsGrassSelect( QWidget *parent, int type = VECTOR );
+    QgsGrassSelect( QWidget* parent, int type = VECTOR );
     //! Destructor
     ~QgsGrassSelect();
 
@@ -55,19 +55,31 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     void on_GisdbaseBrowse_clicked();
 
     //! Reset combobox of locations for current Gisdbase
-    void on_egisdbase_textChanged() { setLocations(); }
+    void on_egisdbase_textChanged()
+    {
+      setLocations();
+    }
     void setLocations();
 
     //! Reset combobox of mapsets for current Location
-    void on_elocation_activated() { setMapsets(); }
+    void on_elocation_activated()
+    {
+      setMapsets();
+    }
     void setMapsets();
 
     //! Reset combobox of maps for current Gisdbase + Location
-    void on_emapset_activated() { setMaps(); }
+    void on_emapset_activated()
+    {
+      setMaps();
+    }
     void setMaps();
 
     //! Reset combobox of layers for current Gisdbase + Location + Map
-    void on_emap_activated() { setLayers(); }
+    void on_emap_activated()
+    {
+      setLayers();
+    }
     void setLayers();
 
   private:

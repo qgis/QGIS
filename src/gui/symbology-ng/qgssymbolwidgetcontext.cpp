@@ -15,12 +15,12 @@
 #include "qgssymbolwidgetcontext.h"
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext()
-    : mMapCanvas( nullptr )
+  : mMapCanvas( nullptr )
 {}
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext& other )
-    : mMapCanvas( other.mMapCanvas )
-    , mAdditionalScopes( other.mAdditionalScopes )
+  : mMapCanvas( other.mMapCanvas )
+  , mAdditionalScopes( other.mAdditionalScopes )
 {
   if ( other.mExpressionContext )
   {
@@ -28,7 +28,7 @@ QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext& ot
   }
 }
 
-QgsSymbolWidgetContext& QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext & other )
+QgsSymbolWidgetContext& QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext& other )
 {
   mMapCanvas = other.mMapCanvas;
   mAdditionalScopes = other.mAdditionalScopes;

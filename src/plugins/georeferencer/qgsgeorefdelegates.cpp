@@ -21,39 +21,39 @@
 #include "qgsgeorefdelegates.h"
 
 // ------------------------ QgsNonEditableDelegate ------------------------- //
-QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget* parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
-QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget* parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
-QWidget *QgsDmsAndDdDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &/*option*/,
-    const QModelIndex &/*index*/ ) const
+QWidget* QgsDmsAndDdDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& /*option*/,
+    const QModelIndex& /*index*/ ) const
 {
-  QLineEdit *editor = new QLineEdit( parent );
-  QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( editor );
+  QLineEdit* editor = new QLineEdit( parent );
+  QgsDMSAndDDValidator* validator = new QgsDMSAndDDValidator( editor );
   editor->setValidator( validator );
 
   return editor;
 }
 
-void QgsDmsAndDdDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsDmsAndDdDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
   QString value = index.model()->data( index, Qt::EditRole ).toString();
 
-  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
+  QLineEdit* lineEdit = static_cast<QLineEdit*>( editor );
   lineEdit->setText( value );
 }
 
-void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
-                                        const QModelIndex &index ) const
+void QgsDmsAndDdDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
+                                        const QModelIndex& index ) const
 {
-  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
+  QLineEdit* lineEdit = static_cast<QLineEdit*>( editor );
   QString stringValue = lineEdit->text();
   double value = 0;
   if ( stringValue.contains( ' ' ) )
@@ -66,8 +66,8 @@ void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *mod
   model->setData( index, value, Qt::ToolTipRole );
 }
 
-void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
-    const QModelIndex &/*index*/ ) const
+void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option,
+    const QModelIndex& /*index*/ ) const
 {
   editor->setGeometry( option.rect );
 }
@@ -90,17 +90,17 @@ double QgsDmsAndDdDelegate::dmsToDD( const QString& dms ) const
 }
 
 // ---------------------------- QgsCoordDelegate --------------------------- //
-QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+QgsCoordDelegate::QgsCoordDelegate( QWidget* parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
-QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &/*option*/,
-    const QModelIndex &/*index*/ ) const
+QWidget* QgsCoordDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& /*option*/,
+    const QModelIndex& /*index*/ ) const
 {
-  QLineEdit *editor = new QLineEdit( parent );
+  QLineEdit* editor = new QLineEdit( parent );
   QRegExp re( "-?\\d*(\\.\\d+)?" );
-  QRegExpValidator *validator = new QRegExpValidator( re, editor );
+  QRegExpValidator* validator = new QRegExpValidator( re, editor );
   editor->setValidator( validator );
 
   return editor;
@@ -110,13 +110,13 @@ void QgsCoordDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
 {
   QString value = index.model()->data( index, Qt::EditRole ).toString();
 
-  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
+  QLineEdit* lineEdit = static_cast<QLineEdit*>( editor );
   lineEdit->setText( value );
 }
 
 void QgsCoordDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
-  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
+  QLineEdit* lineEdit = static_cast<QLineEdit*>( editor );
   QString stringValue = lineEdit->text();
   double value = stringValue.toDouble();
   model->setData( index, value, Qt::EditRole );

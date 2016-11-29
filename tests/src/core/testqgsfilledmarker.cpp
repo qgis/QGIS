@@ -45,11 +45,11 @@ class TestQgsFilledMarkerSymbol : public QObject
 
   public:
     TestQgsFilledMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( nullptr )
-        , mFilledMarkerLayer( nullptr )
-        , mMarkerSymbol( nullptr )
-        , mSymbolRenderer( nullptr )
+      : mTestHasError( false )
+      , mpPointsLayer( nullptr )
+      , mFilledMarkerLayer( nullptr )
+      , mMarkerSymbol( nullptr )
+      , mSymbolRenderer( nullptr )
     {}
 
   private slots:
@@ -67,7 +67,7 @@ class TestQgsFilledMarkerSymbol : public QObject
 
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
+    QgsVectorLayer* mpPointsLayer;
     QgsFilledMarkerSymbolLayer* mFilledMarkerLayer;
     QgsMarkerSymbol* mMarkerSymbol;
     QgsSingleSymbolRenderer* mSymbolRenderer;
@@ -98,7 +98,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer*>() << mpPointsLayer );
 
   //setup symbol
   QgsGradientFillSymbolLayer* gradientFill = new QgsGradientFillSymbolLayer();

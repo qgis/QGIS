@@ -69,12 +69,20 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     {
       public:
         FeatureStats( bool storeValues = false, bool storeValueCounts = false )
-            : mStoreValues( storeValues )
-            , mStoreValueCounts( storeValueCounts )
+          : mStoreValues( storeValues )
+          , mStoreValueCounts( storeValueCounts )
         {
           reset();
         }
-        void reset() { sum = 0; count = 0; max = -FLT_MAX; min = FLT_MAX; valueCount.clear(); values.clear(); }
+        void reset()
+        {
+          sum = 0;
+          count = 0;
+          max = -FLT_MAX;
+          min = FLT_MAX;
+          valueCount.clear();
+          values.clear();
+        }
         void addValue( float value, double weight = 1.0 )
         {
           if ( weight < 1.0 )

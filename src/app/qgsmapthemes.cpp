@@ -36,7 +36,7 @@ QgsMapThemes* QgsMapThemes::sInstance;
 
 
 QgsMapThemes::QgsMapThemes()
-    : mMenu( new QMenu )
+  : mMenu( new QMenu )
 {
 
   mMenu->addAction( QgisApp::instance()->actionShowAllLayers() );

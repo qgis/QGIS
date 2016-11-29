@@ -18,7 +18,7 @@
 #include "qgsderivativefilter.h"
 
 QgsDerivativeFilter::QgsDerivativeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : QgsNineCellFilter( inputFile, outputFile, outputFormat )
+  : QgsNineCellFilter( inputFile, outputFile, outputFormat )
 {
 
 }

@@ -82,12 +82,12 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry();
 
     //! Copy constructor will prompt a deep copy of the object
-    QgsGeometry( const QgsGeometry & );
+    QgsGeometry( const QgsGeometry& );
 
     /** Assignments will prompt a deep copy of the object
      * @note not available in python bindings
      */
-    QgsGeometry & operator=( QgsGeometry const & rhs );
+    QgsGeometry& operator=( QgsGeometry const& rhs );
 
     /** Creates a geometry from an abstract geometry object. Ownership of
      * geom is transferred.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsGeometry
       This class will take ownership of the buffer.
       @note not available in python bindings
      */
-    void fromWkb( unsigned char *wkb, int length );
+    void fromWkb( unsigned char* wkb, int length );
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    int addPart( const QList<QgsPoint>& points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    int addPart( const QgsPointSequence& points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsGeometry
      * @note not available in python bindings
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( GEOSGeometry *newPart );
+    int addPart( GEOSGeometry* newPart );
 
     /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsGeometry
     int splitGeometry( const QList<QgsPoint>& splitLine,
                        QList<QgsGeometry>& newGeometries,
                        bool topological,
-                       QList<QgsPoint> &topologyTestPoints );
+                       QList<QgsPoint>& topologyTestPoints );
 
     /** Replaces a part of this geometry with another line
      * @return 0 in case of success
@@ -781,16 +781,25 @@ class CORE_EXPORT QgsGeometry
         explicit Error( const QString& m ) : message( m ), hasLocation( false ) {}
         Error( const QString& m, const QgsPoint& p ) : message( m ), location( p ), hasLocation( true ) {}
 
-        QString what() { return message; }
-        QgsPoint where() { return location; }
-        bool hasWhere() { return hasLocation; }
+        QString what()
+        {
+          return message;
+        }
+        QgsPoint where()
+        {
+          return location;
+        }
+        bool hasWhere()
+        {
+          return hasLocation;
+        }
     };
 
     /** Validate geometry and produce a list of geometry errors
      * @note added in 1.5
      * @note python binding added in 1.6
      **/
-    void validateGeometry( QList<Error> &errors );
+    void validateGeometry( QList<Error>& errors );
 
     /** Compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
      * @param geometryList a list of QgsGeometry as input
@@ -872,14 +881,14 @@ class CORE_EXPORT QgsGeometry
      * @returns QgsPolyline
      * @see createPolygonFromQPolygonF
      */
-    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
+    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF& polygon );
 
     /** Creates a QgsPolygon from a QPolygonF.
      * @param polygon source polygon
      * @returns QgsPolygon
      * @see createPolylineFromQPolygonF
      */
-    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
+    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF& polygon );
 
     /** Compares two polylines for equality within a specified tolerance.
      * @param p1 first polyline
@@ -934,13 +943,13 @@ class CORE_EXPORT QgsGeometry
      * @param input list of QgsPoint objects to be upgraded
      * @param output destination for list of points converted to QgsPointV2
      */
-    static void convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output );
+    static void convertPointList( const QList<QgsPoint>& input, QgsPointSequence& output );
 
     /** Downgrades a point list from QgsPointV2 to QgsPoint
      * @param input list of QgsPointV2 objects to be downgraded
      * @param output destination for list of points converted to QgsPoint
      */
-    static void convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output );
+    static void convertPointList( const QgsPointSequence& input, QList<QgsPoint>& output );
 
     //! Allows direct construction of QVariants from geometry.
     operator QVariant() const
@@ -960,7 +969,7 @@ class CORE_EXPORT QgsGeometry
 
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
 
-    static void convertToPolyline( const QgsPointSequence &input, QgsPolyline& output );
+    static void convertToPolyline( const QgsPointSequence& input, QgsPolyline& output );
     static void convertPolygon( const QgsPolygonV2& input, QgsPolygon& output );
 
     //! Try to convert the geometry to a point
@@ -980,7 +989,7 @@ class CORE_EXPORT QgsGeometry
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    QgsLineString* smoothLine( const QgsLineString & line, const unsigned int iterations = 1, const double offset = 0.25,
+    QgsLineString* smoothLine( const QgsLineString& line, const unsigned int iterations = 1, const double offset = 0.25,
                                double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     /** Smooths a polygon using the Chaikin algorithm
@@ -993,7 +1002,7 @@ class CORE_EXPORT QgsGeometry
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    QgsPolygonV2* smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+    QgsPolygonV2* smoothPolygon( const QgsPolygonV2& polygon, const unsigned int iterations = 1, const double offset = 0.25,
                                  double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
 

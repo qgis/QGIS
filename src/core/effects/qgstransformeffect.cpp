@@ -21,7 +21,7 @@
 #include <QPicture>
 #include <QTransform>
 
-QgsPaintEffect* QgsTransformEffect::create( const QgsStringMap &map )
+QgsPaintEffect* QgsTransformEffect::create( const QgsStringMap& map )
 {
   QgsTransformEffect* newEffect = new QgsTransformEffect();
   newEffect->readProperties( map );
@@ -29,17 +29,17 @@ QgsPaintEffect* QgsTransformEffect::create( const QgsStringMap &map )
 }
 
 QgsTransformEffect::QgsTransformEffect()
-    : QgsPaintEffect()
-    , mTranslateX( 0.0 )
-    , mTranslateY( 0.0 )
-    , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
-    , mScaleX( 1.0 )
-    , mScaleY( 1.0 )
-    , mRotation( 0.0 )
-    , mShearX( 0.0 )
-    , mShearY( 0.0 )
-    , mReflectX( false )
-    , mReflectY( false )
+  : QgsPaintEffect()
+  , mTranslateX( 0.0 )
+  , mTranslateY( 0.0 )
+  , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
+  , mScaleX( 1.0 )
+  , mScaleY( 1.0 )
+  , mRotation( 0.0 )
+  , mShearX( 0.0 )
+  , mShearY( 0.0 )
+  , mReflectX( false )
+  , mReflectY( false )
 {
 
 }
@@ -49,7 +49,7 @@ QgsTransformEffect::~QgsTransformEffect()
 
 }
 
-void QgsTransformEffect::draw( QgsRenderContext &context )
+void QgsTransformEffect::draw( QgsRenderContext& context )
 {
   if ( !source() || !enabled() || !context.painter() )
     return;
@@ -85,7 +85,7 @@ QgsStringMap QgsTransformEffect::properties() const
   return props;
 }
 
-void QgsTransformEffect::readProperties( const QgsStringMap &props )
+void QgsTransformEffect::readProperties( const QgsStringMap& props )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
@@ -106,7 +106,7 @@ QgsTransformEffect* QgsTransformEffect::clone() const
   return newEffect;
 }
 
-QRectF QgsTransformEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsTransformEffect::boundingRect( const QRectF& rect, const QgsRenderContext& context ) const
 {
   QTransform t = createTransform( context );
   return t.mapRect( rect );

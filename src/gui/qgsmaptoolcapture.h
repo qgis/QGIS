@@ -57,7 +57,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * @return Capture curve
      */
-    const QgsCompoundCurve* captureCurve() const { return &mCaptureCurve; }
+    const QgsCompoundCurve* captureCurve() const
+    {
+      return &mCaptureCurve;
+    }
 
 
     /**
@@ -65,7 +68,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * @param e The mouse event
      */
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent * e ) override;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
@@ -74,7 +77,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     virtual void keyPressEvent( QKeyEvent* e ) override;
 
 #ifdef Q_OS_WIN
-    virtual bool eventFilter( QObject *obj, QEvent *e ) override;
+    virtual bool eventFilter( QObject* obj, QEvent* e ) override;
 #endif
 
     /**
@@ -84,7 +87,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
   private slots:
     void validationFinished();
-    void currentLayerChanged( QgsMapLayer *layer );
+    void currentLayerChanged( QgsMapLayer* layer );
     void addError( QgsGeometry::Error );
 
 
@@ -111,7 +114,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  2 if the transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint );
+    int nextPoint( QPoint p, QgsPointV2& layerPoint, QgsPointV2& mapPoint );
 
     /** Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
@@ -119,7 +122,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * @note added in 2.14
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2& layerPoint );
+    int fetchLayerPoint( const QgsPointLocator::Match& match, QgsPointV2& layerPoint );
 
     /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
@@ -132,7 +135,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
      * @note added in 2.14
      */
-    int addVertex( const QgsPoint& mapPoint, const QgsPointLocator::Match &match );
+    int addVertex( const QgsPoint& mapPoint, const QgsPointLocator::Match& match );
 
     //! Removes the last vertex from mRubberBand and mCaptureList
     void undo();
@@ -204,9 +207,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     void validateGeometry();
     QStringList mValidationWarnings;
-    QgsGeometryValidator *mValidator;
+    QgsGeometryValidator* mValidator;
     QList< QgsGeometry::Error > mGeomErrors;
-    QList< QgsVertexMarker * > mGeomErrorMarkers;
+    QList< QgsVertexMarker* > mGeomErrorMarkers;
 
     bool mCaptureModeFromLayer;
 

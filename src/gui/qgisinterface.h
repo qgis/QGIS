@@ -136,14 +136,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void newProject( bool thePromptToSaveFlag = false ) = 0;
 
     //! Get pointer to the active layer (layer selected in the legend)
-    virtual QgsMapLayer *activeLayer() = 0;
+    virtual QgsMapLayer* activeLayer() = 0;
 
     //! Set the active layer (layer gets selected in the legend)
     //! returns true if the layer exists, false otherwise
-    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+    virtual bool setActiveLayer( QgsMapLayer* ) = 0;
 
     //! Add an icon to the plugins toolbar
-    virtual int addToolBarIcon( QAction *qAction ) = 0;
+    virtual int addToolBarIcon( QAction* qAction ) = 0;
 
     /**
      * Add a widget to the plugins toolbar.
@@ -156,7 +156,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction* addToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the plugin toolbar
-    virtual void removeToolBarIcon( QAction *qAction ) = 0;
+    virtual void removeToolBarIcon( QAction* qAction ) = 0;
 
     /**
      * Add a widget to the raster toolbar.
@@ -169,13 +169,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction* addRasterToolBarWidget( QWidget* widget ) = 0;
 
     //! Add an icon to the Raster toolbar
-    virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
+    virtual int addRasterToolBarIcon( QAction* qAction ) = 0;
 
     //! Remove an action (icon) from the Raster toolbar
-    virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
+    virtual void removeRasterToolBarIcon( QAction* qAction ) = 0;
 
     //! Add an icon to the Vector toolbar
-    virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
+    virtual int addVectorToolBarIcon( QAction* qAction ) = 0;
 
     /**
      * Add a widget to the vector toolbar.
@@ -188,10 +188,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction* addVectorToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
-    virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
+    virtual void removeVectorToolBarIcon( QAction* qAction ) = 0;
 
     //! Add an icon to the Database toolbar
-    virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
+    virtual int addDatabaseToolBarIcon( QAction* qAction ) = 0;
 
     /**
      * Add a widget to the database toolbar.
@@ -204,10 +204,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction* addDatabaseToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Database toolbar
-    virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
+    virtual void removeDatabaseToolBarIcon( QAction* qAction ) = 0;
 
     //! Add an icon to the Web toolbar
-    virtual int addWebToolBarIcon( QAction *qAction ) = 0;
+    virtual int addWebToolBarIcon( QAction* qAction ) = 0;
 
     /**
      * Add a widget to the web toolbar.
@@ -220,17 +220,17 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction* addWebToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Web toolbar
-    virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
+    virtual void removeWebToolBarIcon( QAction* qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar *addToolBar( const QString& name ) = 0;
+    virtual QToolBar* addToolBar( const QString& name ) = 0;
 
     //! Add a toolbar
     //! @note added in 2.3
     virtual void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     //! Return a pointer to the map canvas
-    virtual QgsMapCanvas * mapCanvas() = 0;
+    virtual QgsMapCanvas* mapCanvas() = 0;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
@@ -240,10 +240,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() = 0;
 
     //! Return a pointer to the main window (instance of QgisApp in case of QGIS)
-    virtual QWidget * mainWindow() = 0;
+    virtual QWidget* mainWindow() = 0;
 
     //! Return the message bar of the main app
-    virtual QgsMessageBar * messageBar() = 0;
+    virtual QgsMessageBar* messageBar() = 0;
 
     //! Open the message log dock widget *
     virtual void openMessageLog() = 0;
@@ -293,10 +293,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removePluginMenu( const QString& name, QAction* action ) = 0;
 
     //! Add "add layer" action to layer menu
-    virtual void insertAddLayerAction( QAction *action ) = 0;
+    virtual void insertAddLayerAction( QAction* action ) = 0;
 
     //! Remove "add layer" action from layer menu
-    virtual void removeAddLayerAction( QAction *action ) = 0;
+    virtual void removeAddLayerAction( QAction* action ) = 0;
 
     //! Add action to the Database menu
     virtual void addPluginToDatabaseMenu( const QString& name, QAction* action ) = 0;
@@ -323,10 +323,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removePluginWebMenu( const QString& name, QAction* action ) = 0;
 
     //! Add a dock widget to the main window
-    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget* dockwidget ) = 0;
 
     //! Remove specified dock widget from main window (doesn't delete it).
-    virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
+    virtual void removeDockWidget( QDockWidget* dockwidget ) = 0;
 
     /** Advanced digitizing dock widget
      *  @note Added in 2.12
@@ -334,18 +334,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsAdvancedDigitizingDockWidget* cadDockWidget() = 0;
 
     //! Open layer properties dialog
-    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+    virtual void showLayerProperties( QgsMapLayer* l ) = 0;
 
     //! Open attribute table dialog
-    virtual QDialog* showAttributeTable( QgsVectorLayer *l, const QString& filterExpression = QString() ) = 0;
+    virtual QDialog* showAttributeTable( QgsVectorLayer* l, const QString& filterExpression = QString() ) = 0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
-    virtual void addWindow( QAction *action ) = 0;
+    virtual void addWindow( QAction* action ) = 0;
 
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
-    virtual void removeWindow( QAction *action ) = 0;
+    virtual void removeWindow( QAction* action ) = 0;
 
     //! Register action to the shortcuts manager so its shortcut can be changed in GUI
     virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) = 0;
@@ -399,163 +399,163 @@ class GUI_EXPORT QgisInterface : public QObject
      */
 
     // Menus
-    virtual QMenu *projectMenu() = 0;
-    virtual QMenu *editMenu() = 0;
-    virtual QMenu *viewMenu() = 0;
-    virtual QMenu *layerMenu() = 0;
-    virtual QMenu *newLayerMenu() = 0;
+    virtual QMenu* projectMenu() = 0;
+    virtual QMenu* editMenu() = 0;
+    virtual QMenu* viewMenu() = 0;
+    virtual QMenu* layerMenu() = 0;
+    virtual QMenu* newLayerMenu() = 0;
     //! @note added in 2.5
-    virtual QMenu *addLayerMenu() = 0;
-    virtual QMenu *settingsMenu() = 0;
-    virtual QMenu *pluginMenu() = 0;
-    virtual QMenu *rasterMenu() = 0;
-    virtual QMenu *databaseMenu() = 0;
-    virtual QMenu *vectorMenu() = 0;
-    virtual QMenu *webMenu() = 0;
-    virtual QMenu *firstRightStandardMenu() = 0;
-    virtual QMenu *windowMenu() = 0;
-    virtual QMenu *helpMenu() = 0;
+    virtual QMenu* addLayerMenu() = 0;
+    virtual QMenu* settingsMenu() = 0;
+    virtual QMenu* pluginMenu() = 0;
+    virtual QMenu* rasterMenu() = 0;
+    virtual QMenu* databaseMenu() = 0;
+    virtual QMenu* vectorMenu() = 0;
+    virtual QMenu* webMenu() = 0;
+    virtual QMenu* firstRightStandardMenu() = 0;
+    virtual QMenu* windowMenu() = 0;
+    virtual QMenu* helpMenu() = 0;
 
     // ToolBars
-    virtual QToolBar *fileToolBar() = 0;
-    virtual QToolBar *layerToolBar() = 0;
-    virtual QToolBar *mapNavToolToolBar() = 0;
-    virtual QToolBar *digitizeToolBar() = 0;
-    virtual QToolBar *advancedDigitizeToolBar() = 0;
-    virtual QToolBar *attributesToolBar() = 0;
-    virtual QToolBar *pluginToolBar() = 0;
-    virtual QToolBar *helpToolBar() = 0;
-    virtual QToolBar *rasterToolBar() = 0;
-    virtual QToolBar *vectorToolBar() = 0;
-    virtual QToolBar *databaseToolBar() = 0;
-    virtual QToolBar *webToolBar() = 0;
+    virtual QToolBar* fileToolBar() = 0;
+    virtual QToolBar* layerToolBar() = 0;
+    virtual QToolBar* mapNavToolToolBar() = 0;
+    virtual QToolBar* digitizeToolBar() = 0;
+    virtual QToolBar* advancedDigitizeToolBar() = 0;
+    virtual QToolBar* attributesToolBar() = 0;
+    virtual QToolBar* pluginToolBar() = 0;
+    virtual QToolBar* helpToolBar() = 0;
+    virtual QToolBar* rasterToolBar() = 0;
+    virtual QToolBar* vectorToolBar() = 0;
+    virtual QToolBar* databaseToolBar() = 0;
+    virtual QToolBar* webToolBar() = 0;
 
     // Project menu actions
-    virtual QAction *actionNewProject() = 0;
-    virtual QAction *actionOpenProject() = 0;
-    virtual QAction *actionSaveProject() = 0;
-    virtual QAction *actionSaveProjectAs() = 0;
-    virtual QAction *actionSaveMapAsImage() = 0;
-    virtual QAction *actionProjectProperties() = 0;
-    virtual QAction *actionPrintComposer() = 0;
-    virtual QAction *actionShowComposerManager() = 0;
-    virtual QAction *actionExit() = 0;
+    virtual QAction* actionNewProject() = 0;
+    virtual QAction* actionOpenProject() = 0;
+    virtual QAction* actionSaveProject() = 0;
+    virtual QAction* actionSaveProjectAs() = 0;
+    virtual QAction* actionSaveMapAsImage() = 0;
+    virtual QAction* actionProjectProperties() = 0;
+    virtual QAction* actionPrintComposer() = 0;
+    virtual QAction* actionShowComposerManager() = 0;
+    virtual QAction* actionExit() = 0;
 
     // Edit menu actions
-    virtual QAction *actionCutFeatures() = 0;
-    virtual QAction *actionCopyFeatures() = 0;
-    virtual QAction *actionPasteFeatures() = 0;
-    virtual QAction *actionAddFeature() = 0;
-    virtual QAction *actionDeleteSelected() = 0;
-    virtual QAction *actionMoveFeature() = 0;
-    virtual QAction *actionSplitFeatures() = 0;
-    virtual QAction *actionSplitParts() = 0;
-    virtual QAction *actionAddRing() = 0;
-    virtual QAction *actionAddPart() = 0;
-    virtual QAction *actionSimplifyFeature() = 0;
-    virtual QAction *actionDeleteRing() = 0;
-    virtual QAction *actionDeletePart() = 0;
-    virtual QAction *actionNodeTool() = 0;
+    virtual QAction* actionCutFeatures() = 0;
+    virtual QAction* actionCopyFeatures() = 0;
+    virtual QAction* actionPasteFeatures() = 0;
+    virtual QAction* actionAddFeature() = 0;
+    virtual QAction* actionDeleteSelected() = 0;
+    virtual QAction* actionMoveFeature() = 0;
+    virtual QAction* actionSplitFeatures() = 0;
+    virtual QAction* actionSplitParts() = 0;
+    virtual QAction* actionAddRing() = 0;
+    virtual QAction* actionAddPart() = 0;
+    virtual QAction* actionSimplifyFeature() = 0;
+    virtual QAction* actionDeleteRing() = 0;
+    virtual QAction* actionDeletePart() = 0;
+    virtual QAction* actionNodeTool() = 0;
 
     // View menu actions
     //! Get access to the native pan action. Call trigger() on it to set the default pan map tool.
-    virtual QAction *actionPan() = 0;
+    virtual QAction* actionPan() = 0;
     //! Get access to the native touch action.
-    virtual QAction *actionTouch() = 0;
+    virtual QAction* actionTouch() = 0;
     //! Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
-    virtual QAction *actionPanToSelected() = 0;
+    virtual QAction* actionPanToSelected() = 0;
     //! Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.
-    virtual QAction *actionZoomIn() = 0;
+    virtual QAction* actionZoomIn() = 0;
     //! Get access to the native zoom out action. Call trigger() on it to set the default zoom out map tool.
-    virtual QAction *actionZoomOut() = 0;
+    virtual QAction* actionZoomOut() = 0;
     //! Get access to the native select action. Call trigger() on it to set the default select map tool.
-    virtual QAction *actionSelect() = 0;
+    virtual QAction* actionSelect() = 0;
     //! Get access to the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
-    virtual QAction *actionSelectRectangle() = 0;
+    virtual QAction* actionSelectRectangle() = 0;
     //! Get access to the native select polygon action. Call trigger() on it to set the default select polygon map tool.
-    virtual QAction *actionSelectPolygon() = 0;
+    virtual QAction* actionSelectPolygon() = 0;
     //! Get access to the native select freehand action. Call trigger() on it to set the default select freehand map tool.
-    virtual QAction *actionSelectFreehand() = 0;
+    virtual QAction* actionSelectFreehand() = 0;
     //! Get access to the native select radius action. Call trigger() on it to set the default select radius map tool.
-    virtual QAction *actionSelectRadius() = 0;
+    virtual QAction* actionSelectRadius() = 0;
     //! Get access to the native identify action. Call trigger() on it to set the default identify map tool.
-    virtual QAction *actionIdentify() = 0;
+    virtual QAction* actionIdentify() = 0;
     //! Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
-    virtual QAction *actionFeatureAction() = 0;
+    virtual QAction* actionFeatureAction() = 0;
     //! Get access to the native measure action. Call trigger() on it to set the default measure map tool.
-    virtual QAction *actionMeasure() = 0;
+    virtual QAction* actionMeasure() = 0;
     //! Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.
-    virtual QAction *actionMeasureArea() = 0;
+    virtual QAction* actionMeasureArea() = 0;
     //! Get access to the native zoom full extent action. Call trigger() on it to zoom to the full extent.
-    virtual QAction *actionZoomFullExtent() = 0;
+    virtual QAction* actionZoomFullExtent() = 0;
     //! Get access to the native zoom to layer action. Call trigger() on it to zoom to the active layer.
-    virtual QAction *actionZoomToLayer() = 0;
+    virtual QAction* actionZoomToLayer() = 0;
     //! Get access to the native zoom to selected action. Call trigger() on it to zoom to the current selection.
-    virtual QAction *actionZoomToSelected() = 0;
+    virtual QAction* actionZoomToSelected() = 0;
     //! Get access to the native zoom last action. Call trigger() on it to zoom to last.
-    virtual QAction *actionZoomLast() = 0;
+    virtual QAction* actionZoomLast() = 0;
     //! Get access to the native zoom next action. Call trigger() on it to zoom to next.
-    virtual QAction *actionZoomNext() = 0;
+    virtual QAction* actionZoomNext() = 0;
     //! Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
-    virtual QAction *actionZoomActualSize() = 0;
+    virtual QAction* actionZoomActualSize() = 0;
     //! Get access to the native map tips action. Call trigger() on it to toggle map tips.
-    virtual QAction *actionMapTips() = 0;
+    virtual QAction* actionMapTips() = 0;
     //! Get access to the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
-    virtual QAction *actionNewBookmark() = 0;
+    virtual QAction* actionNewBookmark() = 0;
     //! Get access to the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
-    virtual QAction *actionShowBookmarks() = 0;
+    virtual QAction* actionShowBookmarks() = 0;
     //! Get access to the native draw action.
-    virtual QAction *actionDraw() = 0;
+    virtual QAction* actionDraw() = 0;
 
     // Layer menu actions
-    virtual QAction *actionNewVectorLayer() = 0;
-    virtual QAction *actionAddOgrLayer() = 0;
-    virtual QAction *actionAddRasterLayer() = 0;
-    virtual QAction *actionAddPgLayer() = 0;
-    virtual QAction *actionAddWmsLayer() = 0;
+    virtual QAction* actionNewVectorLayer() = 0;
+    virtual QAction* actionAddOgrLayer() = 0;
+    virtual QAction* actionAddRasterLayer() = 0;
+    virtual QAction* actionAddPgLayer() = 0;
+    virtual QAction* actionAddWmsLayer() = 0;
     //! Get access to the native Add ArcGIS FeatureServer action.
-    virtual QAction *actionAddAfsLayer() = 0;
+    virtual QAction* actionAddAfsLayer() = 0;
     //! Get access to the native Add ArcGIS MapServer action.
-    virtual QAction *actionAddAmsLayer() = 0;
-    virtual QAction *actionCopyLayerStyle() = 0;
-    virtual QAction *actionPasteLayerStyle() = 0;
-    virtual QAction *actionOpenTable() = 0;
-    virtual QAction *actionOpenFieldCalculator() = 0;
-    virtual QAction *actionToggleEditing() = 0;
-    virtual QAction *actionSaveActiveLayerEdits() = 0;
-    virtual QAction *actionAllEdits() = 0;
-    virtual QAction *actionSaveEdits() = 0;
-    virtual QAction *actionSaveAllEdits() = 0;
-    virtual QAction *actionRollbackEdits() = 0;
-    virtual QAction *actionRollbackAllEdits() = 0;
-    virtual QAction *actionCancelEdits() = 0;
-    virtual QAction *actionCancelAllEdits() = 0;
-    virtual QAction *actionLayerSaveAs() = 0;
-    virtual QAction *actionDuplicateLayer() = 0;
-    virtual QAction *actionLayerProperties() = 0;
-    virtual QAction *actionAddToOverview() = 0;
-    virtual QAction *actionAddAllToOverview() = 0;
-    virtual QAction *actionRemoveAllFromOverview() = 0;
-    virtual QAction *actionHideAllLayers() = 0;
-    virtual QAction *actionShowAllLayers() = 0;
-    virtual QAction *actionHideSelectedLayers() = 0;
-    virtual QAction *actionShowSelectedLayers() = 0;
+    virtual QAction* actionAddAmsLayer() = 0;
+    virtual QAction* actionCopyLayerStyle() = 0;
+    virtual QAction* actionPasteLayerStyle() = 0;
+    virtual QAction* actionOpenTable() = 0;
+    virtual QAction* actionOpenFieldCalculator() = 0;
+    virtual QAction* actionToggleEditing() = 0;
+    virtual QAction* actionSaveActiveLayerEdits() = 0;
+    virtual QAction* actionAllEdits() = 0;
+    virtual QAction* actionSaveEdits() = 0;
+    virtual QAction* actionSaveAllEdits() = 0;
+    virtual QAction* actionRollbackEdits() = 0;
+    virtual QAction* actionRollbackAllEdits() = 0;
+    virtual QAction* actionCancelEdits() = 0;
+    virtual QAction* actionCancelAllEdits() = 0;
+    virtual QAction* actionLayerSaveAs() = 0;
+    virtual QAction* actionDuplicateLayer() = 0;
+    virtual QAction* actionLayerProperties() = 0;
+    virtual QAction* actionAddToOverview() = 0;
+    virtual QAction* actionAddAllToOverview() = 0;
+    virtual QAction* actionRemoveAllFromOverview() = 0;
+    virtual QAction* actionHideAllLayers() = 0;
+    virtual QAction* actionShowAllLayers() = 0;
+    virtual QAction* actionHideSelectedLayers() = 0;
+    virtual QAction* actionShowSelectedLayers() = 0;
 
     // Plugin menu actions
-    virtual QAction *actionManagePlugins() = 0;
-    virtual QAction *actionPluginListSeparator() = 0;
-    virtual QAction *actionShowPythonDialog() = 0;
+    virtual QAction* actionManagePlugins() = 0;
+    virtual QAction* actionPluginListSeparator() = 0;
+    virtual QAction* actionShowPythonDialog() = 0;
 
     // Settings menu actions
-    virtual QAction *actionToggleFullScreen() = 0;
-    virtual QAction *actionOptions() = 0;
-    virtual QAction *actionCustomProjection() = 0;
+    virtual QAction* actionToggleFullScreen() = 0;
+    virtual QAction* actionOptions() = 0;
+    virtual QAction* actionCustomProjection() = 0;
 
     // Help menu actions
-    virtual QAction *actionHelpContents() = 0;
-    virtual QAction *actionQgisHomePage() = 0;
-    virtual QAction *actionCheckQgisVersion() = 0;
-    virtual QAction *actionAbout() = 0;
+    virtual QAction* actionHelpContents() = 0;
+    virtual QAction* actionQgisHomePage() = 0;
+    virtual QAction* actionCheckQgisVersion() = 0;
+    virtual QAction* actionAbout() = 0;
 
     /**
      * Open feature form
@@ -564,7 +564,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
      * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
      */
-    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer* l, QgsFeature& f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
     /**
      * Returns a feature form for a given feature
@@ -574,7 +574,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * @return A feature form
      */
-    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer* l, QgsFeature& f ) = 0;
 
     /**
      * Access the vector layer tools instance.
@@ -601,7 +601,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list */
-    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
+    virtual QList<QgsMapLayer*> editableLayers( bool modified = false ) const = 0;
 
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() = 0;
@@ -611,7 +611,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
-    void currentLayerChanged( QgsMapLayer * layer );
+    void currentLayerChanged( QgsMapLayer* layer );
 
     /**
      * This signal is emitted when a new composer instance has been created

@@ -19,8 +19,8 @@
 #include "qgsvectorlayercache.h"
 
 QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache* cachedVectorLayer )
-    : QgsAbstractCacheIndex()
-    , C( cachedVectorLayer )
+  : QgsAbstractCacheIndex()
+  , C( cachedVectorLayer )
 {
 
 }
@@ -40,7 +40,7 @@ void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest& featureR
   Q_UNUSED( fids )
 }
 
-bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest )
+bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest )
 {
   switch ( featureRequest.filterType() )
   {

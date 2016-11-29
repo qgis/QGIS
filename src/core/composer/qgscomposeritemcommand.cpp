@@ -23,11 +23,11 @@
 #include "qgslogger.h"
 
 QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent )
-    : QUndoCommand( text, parent )
-    , mItem( item )
-    , mMultiFrame( nullptr )
-    , mFrameNumber( 0 )
-    , mFirstRun( true )
+  : QUndoCommand( text, parent )
+  , mItem( item )
+  , mMultiFrame( nullptr )
+  , mFrameNumber( 0 )
+  , mFirstRun( true )
 {
   //is item a frame?
   QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( mItem );
@@ -126,8 +126,8 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
 //
 
 QgsComposerMergeCommand::QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text )
-    : QgsComposerItemCommand( item, text )
-    , mContext( c )
+  : QgsComposerItemCommand( item, text )
+  , mContext( c )
 {
 }
 
@@ -135,7 +135,7 @@ QgsComposerMergeCommand::~QgsComposerMergeCommand()
 {
 }
 
-bool QgsComposerMergeCommand::mergeWith( const QUndoCommand * command )
+bool QgsComposerMergeCommand::mergeWith( const QUndoCommand* command )
 {
   QgsComposerItem* thisItem = item();
   if ( !thisItem )

@@ -54,7 +54,7 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+             << QgsExpressionContextUtils::projectScope();
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -79,12 +79,12 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
-    , mDock( nullptr )
-    , mLayer( theLayer )
-    , mRubberBand( nullptr )
-    , mCurrentSearchWidgetWrapper( nullptr )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer* theLayer, QWidget* parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+  , mDock( nullptr )
+  , mLayer( theLayer )
+  , mRubberBand( nullptr )
+  , mCurrentSearchWidgetWrapper( nullptr )
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + theLayer->id() );
   setupUi( this );
@@ -136,7 +136,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
        settings.value( QStringLiteral( "/qgis/attributeTableBehaviour" ), QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
-    QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
+    QgsMapCanvas* mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
     r.setFilterRect( extent );
 
@@ -194,7 +194,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mMainView, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ), this, SLOT( viewModeChanged( QgsAttributeForm::Mode ) ) );
 
   // info from table to application
-  connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
+  connect( this, SIGNAL( saveEdits( QgsMapLayer* ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer* ) ) );
 
   bool myDockFlag = settings.value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool();
   if ( myDockFlag )
@@ -339,7 +339,7 @@ QgsAttributeTableDialog::~QgsAttributeTableDialog()
 
 void QgsAttributeTableDialog::updateTitle()
 {
-  QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
+  QWidget* w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
   w->setWindowTitle( tr( " %1 :: Features total: %2, filtered: %3, selected: %4%5" )
                      .arg( mLayer->name() )
                      .arg( mMainView->featureCount() )
@@ -476,8 +476,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( layer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( layer );
 
   QgsField fld = layer->fields().at( fieldindex );
 
@@ -548,7 +548,7 @@ void QgsAttributeTableDialog::layerActionTriggered()
 
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
-  mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
+  mFilterButton->setDefaultAction( qobject_cast<QAction*>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget
@@ -585,8 +585,8 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   // Show expression builder
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression based filter" ) );
@@ -967,8 +967,8 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+          << QgsExpressionContextUtils::projectScope()
+          << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( !filterExpression.prepare( &context ) )
   {
@@ -1023,7 +1023,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 //
 
 QgsAttributeTableDock::QgsAttributeTableDock( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QgsDockWidget( title, parent, flags )
+  : QgsDockWidget( title, parent, flags )
 {
   setObjectName( QStringLiteral( "AttributeTable" ) ); // set object name so the position can be saved
 }

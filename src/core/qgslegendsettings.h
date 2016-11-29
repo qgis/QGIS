@@ -38,50 +38,119 @@ class CORE_EXPORT QgsLegendSettings
   public:
     QgsLegendSettings();
 
-    void setTitle( const QString& t ) { mTitle = t; }
-    QString title() const { return mTitle; }
+    void setTitle( const QString& t )
+    {
+      mTitle = t;
+    }
+    QString title() const
+    {
+      return mTitle;
+    }
 
     /** Returns the alignment of the legend title
      * @returns Qt::AlignmentFlag for the legend title
      * @see setTitleAlignment
      */
-    Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
+    Qt::AlignmentFlag titleAlignment() const
+    {
+      return mTitleAlignment;
+    }
 
     /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @see titleAlignment
      */
-    void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
+    void setTitleAlignment( Qt::AlignmentFlag alignment )
+    {
+      mTitleAlignment = alignment;
+    }
 
     //! Returns reference to modifiable style
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
+    QgsComposerLegendStyle& rstyle( QgsComposerLegendStyle::Style s )
+    {
+      return mStyleMap[s];
+    }
     //! Returns style
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style ) { mStyleMap[s] = style; }
+    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const
+    {
+      return mStyleMap.value( s );
+    }
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style )
+    {
+      mStyleMap[s] = style;
+    }
 
-    double boxSpace() const {return mBoxSpace;}
-    void setBoxSpace( double s ) {mBoxSpace = s;}
+    double boxSpace() const
+    {
+      return mBoxSpace;
+    }
+    void setBoxSpace( double s )
+    {
+      mBoxSpace = s;
+    }
 
-    void setWrapChar( const QString& t ) {mWrapChar = t;}
-    QString wrapChar() const {return mWrapChar;}
+    void setWrapChar( const QString& t )
+    {
+      mWrapChar = t;
+    }
+    QString wrapChar() const
+    {
+      return mWrapChar;
+    }
 
-    double columnSpace() const {return mColumnSpace;}
-    void setColumnSpace( double s ) { mColumnSpace = s;}
+    double columnSpace() const
+    {
+      return mColumnSpace;
+    }
+    void setColumnSpace( double s )
+    {
+      mColumnSpace = s;
+    }
 
-    int columnCount() const { return mColumnCount; }
-    void setColumnCount( int c ) { mColumnCount = c;}
+    int columnCount() const
+    {
+      return mColumnCount;
+    }
+    void setColumnCount( int c )
+    {
+      mColumnCount = c;
+    }
 
-    bool splitLayer() const { return mSplitLayer; }
-    void setSplitLayer( bool s ) { mSplitLayer = s;}
+    bool splitLayer() const
+    {
+      return mSplitLayer;
+    }
+    void setSplitLayer( bool s )
+    {
+      mSplitLayer = s;
+    }
 
-    bool equalColumnWidth() const { return mEqualColumnWidth; }
-    void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
+    bool equalColumnWidth() const
+    {
+      return mEqualColumnWidth;
+    }
+    void setEqualColumnWidth( bool s )
+    {
+      mEqualColumnWidth = s;
+    }
 
-    QColor fontColor() const {return mFontColor;}
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    QColor fontColor() const
+    {
+      return mFontColor;
+    }
+    void setFontColor( const QColor& c )
+    {
+      mFontColor = c;
+    }
 
-    QSizeF symbolSize() const {return mSymbolSize;}
-    void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
+    QSizeF symbolSize() const
+    {
+      return mSymbolSize;
+    }
+    void setSymbolSize( QSizeF s )
+    {
+      mSymbolSize = s;
+    }
 
     /** Returns whether a border will be drawn around raster symbol items.
      * @see setDrawRasterBorder()
@@ -89,7 +158,10 @@ class CORE_EXPORT QgsLegendSettings
      * @see rasterBorderWidth()
      * @note added in QGIS 2.12
      */
-    bool drawRasterBorder() const { return mRasterSymbolBorder; }
+    bool drawRasterBorder() const
+    {
+      return mRasterSymbolBorder;
+    }
 
     /** Sets whether a border will be drawn around raster symbol items.
      * @param enabled set to true to draw borders
@@ -98,7 +170,10 @@ class CORE_EXPORT QgsLegendSettings
      * @see setRasterBorderWidth()
      * @note added in QGIS 2.12
      */
-    void setDrawRasterBorder( bool enabled ) { mRasterSymbolBorder = enabled; }
+    void setDrawRasterBorder( bool enabled )
+    {
+      mRasterSymbolBorder = enabled;
+    }
 
     /** Returns the border color for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
@@ -107,7 +182,10 @@ class CORE_EXPORT QgsLegendSettings
      * @see rasterBorderWidth()
      * @note added in QGIS 2.12
      */
-    QColor rasterBorderColor() const { return mRasterBorderColor; }
+    QColor rasterBorderColor() const
+    {
+      return mRasterBorderColor;
+    }
 
     /** Sets the border color for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
@@ -117,7 +195,10 @@ class CORE_EXPORT QgsLegendSettings
      * @see setRasterBorderWidth()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderColor( const QColor& color ) { mRasterBorderColor = color; }
+    void setRasterBorderColor( const QColor& color )
+    {
+      mRasterBorderColor = color;
+    }
 
     /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
@@ -126,7 +207,10 @@ class CORE_EXPORT QgsLegendSettings
      * @see rasterBorderColor()
      * @note added in QGIS 2.12
      */
-    double rasterBorderWidth() const { return mRasterBorderWidth; }
+    double rasterBorderWidth() const
+    {
+      return mRasterBorderWidth;
+    }
 
     /** Sets the border width for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
@@ -136,25 +220,64 @@ class CORE_EXPORT QgsLegendSettings
      * @see setRasterBorderColor()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderWidth( double width ) { mRasterBorderWidth = width; }
+    void setRasterBorderWidth( double width )
+    {
+      mRasterBorderWidth = width;
+    }
 
-    QSizeF wmsLegendSize() const {return mWmsLegendSize;}
-    void setWmsLegendSize( QSizeF s ) {mWmsLegendSize = s;}
+    QSizeF wmsLegendSize() const
+    {
+      return mWmsLegendSize;
+    }
+    void setWmsLegendSize( QSizeF s )
+    {
+      mWmsLegendSize = s;
+    }
 
-    double lineSpacing() const { return mLineSpacing; }
-    void setLineSpacing( double s ) { mLineSpacing = s; }
+    double lineSpacing() const
+    {
+      return mLineSpacing;
+    }
+    void setLineSpacing( double s )
+    {
+      mLineSpacing = s;
+    }
 
-    double mmPerMapUnit() const { return mMmPerMapUnit; }
-    void setMmPerMapUnit( double mmPerMapUnit ) { mMmPerMapUnit = mmPerMapUnit; }
+    double mmPerMapUnit() const
+    {
+      return mMmPerMapUnit;
+    }
+    void setMmPerMapUnit( double mmPerMapUnit )
+    {
+      mMmPerMapUnit = mmPerMapUnit;
+    }
 
-    bool useAdvancedEffects() const { return mUseAdvancedEffects; }
-    void setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
+    bool useAdvancedEffects() const
+    {
+      return mUseAdvancedEffects;
+    }
+    void setUseAdvancedEffects( bool use )
+    {
+      mUseAdvancedEffects = use;
+    }
 
-    double mapScale() const { return mMapScale; }
-    void setMapScale( double scale ) { mMapScale = scale; }
+    double mapScale() const
+    {
+      return mMapScale;
+    }
+    void setMapScale( double scale )
+    {
+      mMapScale = scale;
+    }
 
-    int dpi() const { return mDpi; }
-    void setDpi( int dpi ) { mDpi = dpi; }
+    int dpi() const
+    {
+      return mDpi;
+    }
+    void setDpi( int dpi )
+    {
+      mDpi = dpi;
+    }
 
     // utility functions
 

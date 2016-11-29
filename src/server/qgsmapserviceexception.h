@@ -35,8 +35,14 @@ class SERVER_EXPORT QgsMapServiceException
 {
   public:
     QgsMapServiceException( const QString& code, const QString& message );
-    QString code() const {return mCode;}
-    QString message() const {return mMessage;}
+    QString code() const
+    {
+      return mCode;
+    }
+    QString message() const
+    {
+      return mMessage;
+    }
   private:
     QString mCode;
     QString mMessage;

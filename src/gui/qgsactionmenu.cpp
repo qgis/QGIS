@@ -20,20 +20,20 @@
 #include "qgsfeatureiterator.h"
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeature& feature, const QString& actionScope, QWidget*  parent )
-    : QMenu( parent )
-    , mLayer( layer )
-    , mFeature( feature )
-    , mFeatureId( feature.id() )
-    , mActionScope( actionScope )
+  : QMenu( parent )
+  , mLayer( layer )
+  , mFeature( feature )
+  , mFeatureId( feature.id() )
+  , mActionScope( actionScope )
 {
   init();
 }
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer* layer, const QgsFeatureId fid, const QString& actionScope, QWidget*  parent )
-    : QMenu( parent )
-    , mLayer( layer )
-    , mFeatureId( fid )
-    , mActionScope( actionScope )
+  : QMenu( parent )
+  , mLayer( layer )
+  , mFeatureId( fid )
+  , mActionScope( actionScope )
 {
   init();
 }
@@ -149,22 +149,22 @@ void QgsActionMenu::reloadActions()
 
 
 QgsActionMenu::ActionData::ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-    : actionType( MapLayerAction )
-    , actionData( QVariant::fromValue<QgsMapLayerAction*>( action ) )
-    , featureId( featureId )
-    , mapLayer( mapLayer )
+  : actionType( MapLayerAction )
+  , actionData( QVariant::fromValue<QgsMapLayerAction*>( action ) )
+  , featureId( featureId )
+  , mapLayer( mapLayer )
 {}
 
 
 QgsActionMenu::ActionData::ActionData( const QgsAction& action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-    : actionType( AttributeAction )
-    , actionData( QVariant::fromValue<QgsAction>( action ) )
-    , featureId( featureId )
-    , mapLayer( mapLayer )
+  : actionType( AttributeAction )
+  , actionData( QVariant::fromValue<QgsAction>( action ) )
+  , featureId( featureId )
+  , mapLayer( mapLayer )
 {}
 
 QgsActionMenu::ActionData::ActionData()
-    : actionType( Invalid )
-    , featureId( 0 )
-    , mapLayer( nullptr )
+  : actionType( Invalid )
+  , featureId( 0 )
+  , mapLayer( nullptr )
 {}

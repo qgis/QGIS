@@ -64,9 +64,15 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! called when map tool is being deactivated
     void deactivate() override;
 
-    double tolerance() const { return mTolerance; }
+    double tolerance() const
+    {
+      return mTolerance;
+    }
 
-    QgsTolerance::UnitType toleranceUnits() const { return mToleranceUnits; }
+    QgsTolerance::UnitType toleranceUnits() const
+    {
+      return mToleranceUnits;
+    }
 
     QString statusText() const;
 

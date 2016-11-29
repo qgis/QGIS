@@ -46,10 +46,14 @@ struct QgsOracleLayerProperty
   QString              sql;
 
   QgsOracleLayerProperty()
-      : isView( false )
+    : isView( false )
   {}
 
-  int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+  int size() const
+  {
+    Q_ASSERT( types.size() == srids.size() );
+    return types.size();
+  }
 
   bool operator==( const QgsOracleLayerProperty& other )
   {
@@ -111,7 +115,7 @@ class QgsOracleConn : public QObject
 {
     Q_OBJECT
   public:
-    static QgsOracleConn *connectDb( const QgsDataSourceUri &uri );
+    static QgsOracleConn* connectDb( const QgsDataSourceUri& uri );
     void disconnect();
 
     /** Double quote a Oracle identifier for placement in a SQL string.
@@ -120,15 +124,15 @@ class QgsOracleConn : public QObject
 
     /** Quote a value for placement in a SQL string.
      */
-    static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
+    static QString quotedValue( const QVariant& value, QVariant::Type type = QVariant::Invalid );
 
     //! Get the list of supported layers
-    bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,
+    bool supportedLayers( QVector<QgsOracleLayerProperty>& layers,
                           bool geometryTablesOnly,
                           bool userTablesOnly = true,
                           bool allowGeometrylessTables = false );
 
-    void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
+    void retrieveLayerTypes( QgsOracleLayerProperty& layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
     //! Gets information about the spatial tables
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
@@ -136,7 +140,7 @@ class QgsOracleConn : public QObject
     //! Get primary key candidates (all int4 columns)
     QStringList pkCandidates( QString ownerName, QString viewName );
 
-    static QString fieldExpression( const QgsField &fld );
+    static QString fieldExpression( const QgsField& fld );
 
     QString connInfo();
 
@@ -166,13 +170,16 @@ class QgsOracleConn : public QObject
     static QString databaseName( QString database, QString host, QString port );
     static QString toPoolName( const QgsDataSourceUri& uri );
 
-    operator QSqlDatabase() { return mDatabase; }
+    operator QSqlDatabase()
+    {
+      return mDatabase;
+    }
 
   private:
     explicit QgsOracleConn( QgsDataSourceUri uri );
     ~QgsOracleConn();
 
-    bool exec( QSqlQuery &qry, QString sql );
+    bool exec( QSqlQuery& qry, QString sql );
 
     //! reference count
     int mRef;
@@ -188,7 +195,7 @@ class QgsOracleConn : public QObject
     //! List of the supported layers
     QVector<QgsOracleLayerProperty> mLayersSupported;
 
-    static QMap<QString, QgsOracleConn *> sConnections;
+    static QMap<QString, QgsOracleConn*> sConnections;
     static int snConnections;
 };
 

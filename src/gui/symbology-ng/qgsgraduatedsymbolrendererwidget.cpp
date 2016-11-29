@@ -43,9 +43,9 @@
 
 ///@cond PRIVATE
 
-QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject * parent ) : QAbstractItemModel( parent )
-    , mRenderer( nullptr )
-    , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
+QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject* parent ) : QAbstractItemModel( parent )
+  , mRenderer( nullptr )
+  , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
 {
 }
 
@@ -86,7 +86,7 @@ void QgsGraduatedSymbolRendererModel::addClass( const QgsRendererRange& range )
   endInsertRows();
 }
 
-QgsRendererRange QgsGraduatedSymbolRendererModel::rendererRange( const QModelIndex &index )
+QgsRendererRange QgsGraduatedSymbolRendererModel::rendererRange( const QModelIndex& index )
 {
   if ( !index.isValid() || !mRenderer || mRenderer->ranges().size() <= index.row() )
   {
@@ -96,7 +96,7 @@ QgsRendererRange QgsGraduatedSymbolRendererModel::rendererRange( const QModelInd
   return mRenderer->ranges().value( index.row() );
 }
 
-Qt::ItemFlags QgsGraduatedSymbolRendererModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsGraduatedSymbolRendererModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
   {
@@ -118,7 +118,7 @@ Qt::DropActions QgsGraduatedSymbolRendererModel::supportedDropActions() const
   return Qt::MoveAction;
 }
 
-QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int role ) const
+QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() || !mRenderer ) return QVariant();
 
@@ -156,7 +156,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   {
     switch ( index.column() )
     {
-        // case 1: return rangeStr;
+      // case 1: return rangeStr;
       case 2:
         return range.label();
       default:
@@ -167,7 +167,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   return QVariant();
 }
 
-bool QgsGraduatedSymbolRendererModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsGraduatedSymbolRendererModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   if ( !index.isValid() )
     return false;
@@ -208,7 +208,7 @@ QVariant QgsGraduatedSymbolRendererModel::headerData( int section, Qt::Orientati
   return QVariant();
 }
 
-int QgsGraduatedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
+int QgsGraduatedSymbolRendererModel::rowCount( const QModelIndex& parent ) const
 {
   if ( parent.isValid() || !mRenderer )
   {
@@ -217,13 +217,13 @@ int QgsGraduatedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
   return mRenderer->ranges().size();
 }
 
-int QgsGraduatedSymbolRendererModel::columnCount( const QModelIndex & index ) const
+int QgsGraduatedSymbolRendererModel::columnCount( const QModelIndex& index ) const
 {
   Q_UNUSED( index );
   return 3;
 }
 
-QModelIndex QgsGraduatedSymbolRendererModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsGraduatedSymbolRendererModel::index( int row, int column, const QModelIndex& parent ) const
 {
   if ( hasIndex( row, column, parent ) )
   {
@@ -232,7 +232,7 @@ QModelIndex QgsGraduatedSymbolRendererModel::index( int row, int column, const Q
   return QModelIndex();
 }
 
-QModelIndex QgsGraduatedSymbolRendererModel::parent( const QModelIndex &index ) const
+QModelIndex QgsGraduatedSymbolRendererModel::parent( const QModelIndex& index ) const
 {
   Q_UNUSED( index );
   return QModelIndex();
@@ -245,15 +245,15 @@ QStringList QgsGraduatedSymbolRendererModel::mimeTypes() const
   return types;
 }
 
-QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData* QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList& indexes ) const
 {
-  QMimeData *mimeData = new QMimeData();
+  QMimeData* mimeData = new QMimeData();
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
   // Create list of rows
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  Q_FOREACH ( const QModelIndex& index, indexes )
   {
     if ( !index.isValid() || index.column() != 0 )
       continue;
@@ -264,7 +264,7 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
   return mimeData;
 }
 
-bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
   Q_UNUSED( row );
   Q_UNUSED( column );
@@ -362,10 +362,10 @@ void QgsGraduatedSymbolRendererModel::updateLabels()
 
 // ------------------------------ View style --------------------------------
 QgsGraduatedSymbolRendererViewStyle::QgsGraduatedSymbolRendererViewStyle( QStyle* style )
-    : QProxyStyle( style )
+  : QProxyStyle( style )
 {}
 
-void QgsGraduatedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
+void QgsGraduatedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
 {
   if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
   {
@@ -393,13 +393,13 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::projectScope()
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -419,9 +419,9 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 }
 
 QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
-    , mModel( nullptr )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
+  , mModel( nullptr )
 {
 
 
@@ -482,8 +482,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   methodComboBox->blockSignals( false );
 
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
-  connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
-  connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
+  connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( rangesDoubleClicked( const QModelIndex& ) ) );
+  connect( viewGraduated, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( rangesClicked( const QModelIndex& ) ) );
   connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
   connect( btnGraduatedClassify, SIGNAL( clicked() ), this, SLOT( classifyGraduated() ) );
@@ -692,9 +692,9 @@ void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
   emit widgetChanged();
 }
 
-void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
+void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget* container )
 {
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
   if ( !dlg )
     return;
 
@@ -889,7 +889,7 @@ QgsRangeList QgsGraduatedSymbolRendererWidget::selectedRanges()
   return selectedRanges;
 }
 
-void QgsGraduatedSymbolRendererWidget::rangesDoubleClicked( const QModelIndex & idx )
+void QgsGraduatedSymbolRendererWidget::rangesDoubleClicked( const QModelIndex& idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
     changeRangeSymbol( idx.row() );
@@ -897,7 +897,7 @@ void QgsGraduatedSymbolRendererWidget::rangesDoubleClicked( const QModelIndex & 
     changeRange( idx.row() );
 }
 
-void QgsGraduatedSymbolRendererWidget::rangesClicked( const QModelIndex & idx )
+void QgsGraduatedSymbolRendererWidget::rangesClicked( const QModelIndex& idx )
 {
   if ( !idx.isValid() )
     mRowSelected = -1;
@@ -978,9 +978,9 @@ void QgsGraduatedSymbolRendererWidget::deleteAllClasses()
 
 bool QgsGraduatedSymbolRendererWidget::rowsOrdered()
 {
-  const QgsRangeList &ranges = mRenderer->ranges();
+  const QgsRangeList& ranges = mRenderer->ranges();
   bool ordered = true;
-  for ( int i = 1;i < ranges.size();++i )
+  for ( int i = 1; i < ranges.size(); ++i )
   {
     if ( ranges[i] < ranges[i-1] )
     {
@@ -1013,7 +1013,7 @@ void QgsGraduatedSymbolRendererWidget::toggleBoundariesLink( bool linked )
     }
 
     // Ok to proceed
-    for ( int i = 1;i < mRenderer->ranges().size();++i )
+    for ( int i = 1; i < mRenderer->ranges().size(); ++i )
     {
       mRenderer->updateRangeLowerValue( i, mRenderer->ranges()[i-1].upperValue() );
     }
@@ -1021,7 +1021,7 @@ void QgsGraduatedSymbolRendererWidget::toggleBoundariesLink( bool linked )
   }
 }
 
-void QgsGraduatedSymbolRendererWidget::changeCurrentValue( QStandardItem * item )
+void QgsGraduatedSymbolRendererWidget::changeCurrentValue( QStandardItem* item )
 {
   if ( item->column() == 2 )
   {

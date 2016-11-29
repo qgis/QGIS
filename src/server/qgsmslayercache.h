@@ -67,9 +67,15 @@ class QgsMSLayerCache: public QObject
      @return a pointer to the layer or 0 if no such layer*/
     QgsMapLayer* searchLayer( const QString& url, const QString& layerName, const QString& configFile = QString() );
 
-    int projectsMaxLayers() const { return mProjectMaxLayers; }
+    int projectsMaxLayers() const
+    {
+      return mProjectMaxLayers;
+    }
 
-    void setProjectMaxLayers( int n ) { mProjectMaxLayers = n; }
+    void setProjectMaxLayers( int n )
+    {
+      mProjectMaxLayers = n;
+    }
 
     //for debugging
     void logCacheContents() const;

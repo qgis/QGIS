@@ -28,13 +28,13 @@ QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface* input,
     QgsContrastEnhancement* redEnhancement,
     QgsContrastEnhancement* greenEnhancement,
     QgsContrastEnhancement* blueEnhancement )
-    : QgsRasterRenderer( input, QStringLiteral( "multibandcolor" ) )
-    , mRedBand( redBand )
-    , mGreenBand( greenBand )
-    , mBlueBand( blueBand )
-    , mRedContrastEnhancement( redEnhancement )
-    , mGreenContrastEnhancement( greenEnhancement )
-    , mBlueContrastEnhancement( blueEnhancement )
+  : QgsRasterRenderer( input, QStringLiteral( "multibandcolor" ) )
+  , mRedBand( redBand )
+  , mGreenBand( greenBand )
+  , mBlueBand( blueBand )
+  , mRedContrastEnhancement( redEnhancement )
+  , mGreenContrastEnhancement( greenEnhancement )
+  , mBlueContrastEnhancement( blueEnhancement )
 {
 }
 
@@ -47,7 +47,7 @@ QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
 
 QgsMultiBandColorRenderer* QgsMultiBandColorRenderer::clone() const
 {
-  QgsMultiBandColorRenderer * renderer = new QgsMultiBandColorRenderer( nullptr, mRedBand, mGreenBand, mBlueBand );
+  QgsMultiBandColorRenderer* renderer = new QgsMultiBandColorRenderer( nullptr, mRedBand, mGreenBand, mBlueBand );
   renderer->copyCommonProperties( this );
 
   if ( mRedContrastEnhancement )
@@ -130,10 +130,10 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   return r;
 }
 
-QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const& extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  QgsRasterBlock* outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     return outputBlock;

@@ -100,9 +100,9 @@ void QgsAction::readXml( const QDomNode& actionNode )
   if ( actionScopeNodes.isEmpty() )
   {
     mActionScopes
-    << QStringLiteral( "Canvas" )
-    << QStringLiteral( "Field" )
-    << QStringLiteral( "Feature" );
+        << QStringLiteral( "Canvas" )
+        << QStringLiteral( "Field" )
+        << QStringLiteral( "Feature" );
   }
   else
   {

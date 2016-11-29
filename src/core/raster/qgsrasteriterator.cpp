@@ -18,10 +18,10 @@
 #include "qgsrasterviewport.h"
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input )
-    : mInput( input )
-    , mFeedback( nullptr )
-    , mMaximumTileWidth( 2000 )
-    , mMaximumTileHeight( 2000 )
+  : mInput( input )
+  , mFeedback( nullptr )
+  , mMaximumTileWidth( 2000 )
+  , mMaximumTileHeight( 2000 )
 {
 }
 
@@ -50,7 +50,7 @@ void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, c
 
 bool QgsRasterIterator::readNextRasterPart( int bandNumber,
     int& nCols, int& nRows,
-    QgsRasterBlock **block,
+    QgsRasterBlock** block,
     int& topLeftCol, int& topLeftRow )
 {
   QgsDebugMsgLevel( "Entered", 4 );

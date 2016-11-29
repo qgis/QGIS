@@ -31,7 +31,7 @@ class Compass : public QObject, public QCompassFilter
   public:
     Compass();
     ~Compass();
-    bool filter( QCompassReading *reading );
+    bool filter( QCompassReading* reading );
     bool isActive();
     bool start();
     bool stop();
@@ -42,7 +42,7 @@ class Compass : public QObject, public QCompassFilter
     QCompass mSensor;
 
   signals:
-    void azimuthChanged( const QVariant &azimuth, const QVariant &calibrationLevel );
+    void azimuthChanged( const QVariant& azimuth, const QVariant& calibrationLevel );
 };
 
 #endif // _COMPASS_H__

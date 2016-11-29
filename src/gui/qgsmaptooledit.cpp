@@ -25,7 +25,7 @@
 
 
 QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+  : QgsMapTool( canvas )
 {
 }
 
@@ -70,7 +70,7 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
 
 QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
 {
-  return qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  return qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
 }
 
 
@@ -82,7 +82,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
   }
 
   //find out current vector layer
-  QgsVectorLayer *vlayer = currentVectorLayer();
+  QgsVectorLayer* vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {

@@ -55,10 +55,10 @@
 // how many bins are suitable depending on data type and range
 //#define RASTER_HISTOGRAM_BINS 256
 
-QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
-    : QgsMapLayerConfigWidget( lyr, nullptr, parent )
-    , mRasterLayer( lyr )
-    , mRendererWidget( nullptr )
+QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget* parent )
+  : QgsMapLayerConfigWidget( lyr, nullptr, parent )
+  , mRasterLayer( lyr )
+  , mRendererWidget( nullptr )
 {
   setupUi( this );
 
@@ -362,7 +362,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
   // x axis scale only set after computing global min/max across bands (see below)
   // add a grid
-  QwtPlotGrid * myGrid = new QwtPlotGrid();
+  QwtPlotGrid* myGrid = new QwtPlotGrid();
   myGrid->attach( mpPlot );
 
   // make colors list
@@ -374,9 +374,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
   while ( myColors.size() <= myBandCountInt )
   {
     myColors <<
-    QColor( 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ) );
+             QColor( 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
+                     1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
+                     1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ) );
   }
   //randomise seed again
   qsrand( time( nullptr ) );
@@ -496,7 +496,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       myDrawLines = false;
     }
 
-    QwtPlotCurve * mypCurve = nullptr;
+    QwtPlotCurve* mypCurve = nullptr;
     if ( myDrawLines )
     {
       mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -506,7 +506,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     }
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QwtPlotHistogram * mypHisto = 0;
+    QwtPlotHistogram* mypHisto = 0;
     if ( ! myDrawLines )
     {
       mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -517,7 +517,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypHisto->setBrush( QBrush( mHistoColors.at( myIteratorInt ) ) );
     }
 #else
-    HistogramItem *mypHistoItem = nullptr;
+    HistogramItem* mypHistoItem = nullptr;
     if ( ! myDrawLines )
     {
       mypHistoItem = new HistogramItem( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -642,10 +642,10 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
       mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
-      connect( mHistoPicker, SIGNAL( selected( const QPointF & ) ), this, SLOT( histoPickerSelected( const QPointF & ) ) );
+      connect( mHistoPicker, SIGNAL( selected( const QPointF& ) ), this, SLOT( histoPickerSelected( const QPointF& ) ) );
 #else
       mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
-      connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelectedQwt5( const QwtDoublePoint & ) ) );
+      connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint& ) ), this, SLOT( histoPickerSelectedQwt5( const QwtDoublePoint& ) ) );
 #endif
     }
     mHistoPicker->setEnabled( false );
@@ -782,7 +782,7 @@ void QgsRasterHistogramWidget::histoActionTriggered( QAction* action )
   histoAction( action->data().toString(), action->isChecked() );
 }
 
-void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool actionFlag )
+void QgsRasterHistogramWidget::histoAction( const QString& actionName, bool actionFlag )
 {
   if ( actionName == QLatin1String( "" ) )
     return;
@@ -1050,7 +1050,7 @@ void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
 
 // local function used by histoPickerSelected(), to get a rounded picked value
 // this is sensitive and may not always be correct, needs more testing
-QString findClosestTickVal( double target, const QwtScaleDiv * scale, int div = 100 )
+QString findClosestTickVal( double target, const QwtScaleDiv* scale, int div = 100 )
 {
   if ( !scale ) return QLatin1String( "" );
 
@@ -1087,9 +1087,9 @@ void QgsRasterHistogramWidget::histoPickerSelected( QPointF pos )
   if ( btnHistoMin->isChecked() || btnHistoMax->isChecked() )
   {
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060100
-    const QwtScaleDiv * scale = &mpPlot->axisScaleDiv( QwtPlot::xBottom );
+    const QwtScaleDiv* scale = &mpPlot->axisScaleDiv( QwtPlot::xBottom );
 #else
-    const QwtScaleDiv * scale = mpPlot->axisScaleDiv( QwtPlot::xBottom );
+    const QwtScaleDiv* scale = mpPlot->axisScaleDiv( QwtPlot::xBottom );
 #endif
 
     if ( btnHistoMin->isChecked() )

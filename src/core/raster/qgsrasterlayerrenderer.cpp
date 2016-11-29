@@ -25,11 +25,11 @@
 #include "qgscsexception.h"
 
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
-    : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( nullptr )
-    , mPipe( nullptr )
-    , mContext( rendererContext )
-    , mFeedback( new Feedback( this ) )
+  : QgsMapLayerRenderer( layer->id() )
+  , mRasterViewPort( nullptr )
+  , mPipe( nullptr )
+  , mContext( rendererContext )
+  , mFeedback( new Feedback( this ) )
 {
   mPainter = rendererContext.painter();
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
@@ -59,7 +59,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     {
       myProjectedViewExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.extent() );
     }
-    catch ( QgsCsException &cs )
+    catch ( QgsCsException& cs )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not reproject view extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
       myProjectedViewExtent.setMinimal();
@@ -69,7 +69,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     {
       myProjectedLayerExtent = rendererContext.coordinateTransform().transformBoundingBox( layer->extent() );
     }
-    catch ( QgsCsException &cs )
+    catch ( QgsCsException& cs )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
       myProjectedLayerExtent.setMinimal();
@@ -203,7 +203,7 @@ bool QgsRasterLayerRenderer::render()
   // procedure to use :
   //
 
-  QgsRasterProjector *projector = mPipe->projector();
+  QgsRasterProjector* projector = mPipe->projector();
 
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
@@ -227,9 +227,9 @@ QgsFeedback* QgsRasterLayerRenderer::feedback() const
   return mFeedback;
 }
 
-QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
-    : mR( r )
-    , mMinimalPreviewInterval( 250 )
+QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer* r )
+  : mR( r )
+  , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
 }

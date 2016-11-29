@@ -44,10 +44,10 @@
 #include <cmath>
 
 QgsDecorationItem::QgsDecorationItem( QObject* parent )
-    : QObject( parent )
-    , mEnabled( false )
-    , mPlacement( TopLeft )
-    , mMarginUnit( QgsUnitTypes::RenderMillimeters )
+  : QObject( parent )
+  , mEnabled( false )
+  , mPlacement( TopLeft )
+  , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 
@@ -76,7 +76,7 @@ void QgsDecorationItem::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }
 
-void QgsDecorationItem::setName( const char *name )
+void QgsDecorationItem::setName( const char* name )
 {
   mName = name;
   mNameConfig = name;

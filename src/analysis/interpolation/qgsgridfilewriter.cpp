@@ -23,23 +23,23 @@
 #include <QProgressDialog>
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
-    : mInterpolator( i )
-    , mOutputFilePath( outputPath )
-    , mInterpolationExtent( extent )
-    , mNumColumns( nCols )
-    , mNumRows( nRows )
-    , mCellSizeX( cellSizeX )
-    , mCellSizeY( cellSizeY )
+  : mInterpolator( i )
+  , mOutputFilePath( outputPath )
+  , mInterpolationExtent( extent )
+  , mNumColumns( nCols )
+  , mNumRows( nRows )
+  , mCellSizeX( cellSizeX )
+  , mCellSizeY( cellSizeY )
 {
 
 }
 
 QgsGridFileWriter::QgsGridFileWriter()
-    : mInterpolator( nullptr )
-    , mNumColumns( 0 )
-    , mNumRows( 0 )
-    , mCellSizeX( 0 )
-    , mCellSizeY( 0 )
+  : mInterpolator( nullptr )
+  , mNumColumns( 0 )
+  , mNumRows( 0 )
+  , mCellSizeX( 0 )
+  , mCellSizeY( 0 )
 {
 
 }

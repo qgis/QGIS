@@ -65,17 +65,17 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mpMapTool( nullptr )
-    , mpTrackMouseButton( nullptr )
-    , mpCaptureButton( nullptr )
-    , mypUserCrsToolButton( nullptr )
-    , mypCRSLabel( nullptr )
-    , mCanvasDisplayPrecision( 5 )
-    , mUserCrsDisplayPrecision( 5 )
-    , mQGisIface( theQgisInterface )
-    , mQActionPointer( nullptr )
+CoordinateCapture::CoordinateCapture( QgisInterface* theQgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mpMapTool( nullptr )
+  , mpTrackMouseButton( nullptr )
+  , mpCaptureButton( nullptr )
+  , mypUserCrsToolButton( nullptr )
+  , mypCRSLabel( nullptr )
+  , mCanvasDisplayPrecision( 5 )
+  , mUserCrsDisplayPrecision( 5 )
+  , mQGisIface( theQgisInterface )
+  , mQActionPointer( nullptr )
 {
 }
 
@@ -123,8 +123,8 @@ void CoordinateCapture::initGui()
   connect( mpMapTool, SIGNAL( mouseClicked( QgsPoint ) ), this, SLOT( mouseClicked( QgsPoint ) ) );
 
   // create a little widget with x and y display to put into our dock widget
-  QWidget * mypWidget = new QWidget();
-  QGridLayout *mypLayout = new QGridLayout( mypWidget );
+  QWidget* mypWidget = new QWidget();
+  QGridLayout* mypLayout = new QGridLayout( mypWidget );
   mypLayout->setColumnMinimumWidth( 0, 36 );
   mypWidget->setLayout( mypLayout );
 
@@ -143,7 +143,7 @@ void CoordinateCapture::initGui()
   mpCanvasEdit->setReadOnly( true );
   mpCanvasEdit->setToolTip( tr( "Coordinate in map canvas coordinate reference system (lat,lon or east,north)" ) );
 
-  QPushButton * mypCopyButton = new QPushButton( mypWidget );
+  QPushButton* mypCopyButton = new QPushButton( mypWidget );
   mypCopyButton->setText( tr( "Copy to clipboard" ) );
   connect( mypCopyButton, SIGNAL( clicked() ), this, SLOT( copy() ) );
 
@@ -228,7 +228,7 @@ void CoordinateCapture::update( const QgsPoint& thePoint )
 }
 void CoordinateCapture::copy()
 {
-  QClipboard *myClipboard = QApplication::clipboard();
+  QClipboard* myClipboard = QApplication::clipboard();
   //if we are on x11 system put text into selection ready for middle button pasting
   if ( myClipboard->supportsSelection() )
   {
@@ -256,11 +256,10 @@ void CoordinateCapture::showOrHide()
 {
   if ( !mpDockWidget )
     run();
+  else if ( mQActionPointer->isChecked() )
+    mpDockWidget->show();
   else
-    if ( mQActionPointer->isChecked() )
-      mpDockWidget->show();
-    else
-      mpDockWidget->hide();
+    mpDockWidget->hide();
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -335,7 +334,7 @@ QString CoordinateCapture::getIconPath( const QString& theName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* theQgisInterfacePointer )
 {
   return new CoordinateCapture( theQgisInterfacePointer );
 }
@@ -376,7 +375,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin* thePluginPointer )
 {
   delete thePluginPointer;
 }

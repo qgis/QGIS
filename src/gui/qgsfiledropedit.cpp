@@ -30,8 +30,8 @@
   or directories only. By default, dropping is limited to files only.
 */
 
-QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
-    : QLineEdit( parent )
+QgsFileDropEdit::QgsFileDropEdit( QWidget* parent )
+  : QLineEdit( parent )
 {
   mDirOnly = false;
   mFileOnly = true;
@@ -77,7 +77,7 @@ void QgsFileDropEdit::setSuffixFilter( const QString& suffix )
 /*!
   Return file name if object meets drop criteria.
 */
-QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
+QString QgsFileDropEdit::acceptableFilePath( QDropEvent* event ) const
 {
   QString path;
   if ( event->mimeData()->hasUrls() )
@@ -95,7 +95,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   Check if dragged object is acceptible. Called when a drag is in progress
   and the mouse enters this widget.
 */
-void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
+void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent* event )
 {
   QString filePath = acceptableFilePath( event );
   if ( !filePath.isEmpty() )
@@ -113,7 +113,7 @@ void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
 /*!
   Called when a drag is in progress and the mouse leaves this widget.
 */
-void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
+void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent* event )
 {
   QLineEdit::dragLeaveEvent( event );
   event->accept();
@@ -124,7 +124,7 @@ void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
 /*!
   Receive the dragged object. Called when the drag is dropped on this widget.
 */
-void QgsFileDropEdit::dropEvent( QDropEvent *event )
+void QgsFileDropEdit::dropEvent( QDropEvent* event )
 {
   QString filePath = acceptableFilePath( event );
   if ( !filePath.isEmpty() )
@@ -145,7 +145,7 @@ void QgsFileDropEdit::dropEvent( QDropEvent *event )
 /*!
   Paints line edit with drag highlight in response to a paint event.
 */
-void QgsFileDropEdit::paintEvent( QPaintEvent *e )
+void QgsFileDropEdit::paintEvent( QPaintEvent* e )
 {
   QLineEdit::paintEvent( e );
   if ( mDragActive )

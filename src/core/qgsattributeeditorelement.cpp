@@ -16,7 +16,7 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsrelationmanager.h"
 
-void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
+void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement* widget )
 {
   mChildren.append( widget );
 }
@@ -89,7 +89,7 @@ QgsAttributeEditorElement* QgsAttributeEditorRelation::clone( QgsAttributeEditor
 
   return element;
 }
-void QgsAttributeEditorField::saveConfiguration( QDomElement &elem ) const
+void QgsAttributeEditorField::saveConfiguration( QDomElement& elem ) const
 {
   elem.setAttribute( QStringLiteral( "index" ), mIdx );
 }

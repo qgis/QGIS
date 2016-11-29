@@ -83,7 +83,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void mousePressEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
 
     /**
      * Called for mouse release events on a table cell.
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
 
     /**
      * Called for mouse move events on a table cell.
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent* event ) override;
 
     /**
      * Called for key press events
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void keyPressEvent( QKeyEvent *event ) override;
+    void keyPressEvent( QKeyEvent* event ) override;
 
     /**
      * @brief
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * Saves geometry to the settings on close
      * @param event not used
      */
-    void closeEvent( QCloseEvent *event ) override;
+    void closeEvent( QCloseEvent* event ) override;
 
   signals:
 
@@ -169,7 +169,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsAttributeTableDelegate* mTableDelegate;
-    QMenu *mActionPopup;
+    QMenu* mActionPopup;
     int mRowSectionAnchor;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
     QMap< QModelIndex, QWidget* > mActionWidgets;

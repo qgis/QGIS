@@ -18,17 +18,17 @@
 
 #include "qgsnetworkaccessmanager.h"
 
-QgsVersionInfo::QgsVersionInfo( QObject *parent )
-    : QObject( parent )
-    , mLatestVersion( 0 )
-    , mError( QNetworkReply::NoError )
+QgsVersionInfo::QgsVersionInfo( QObject* parent )
+  : QObject( parent )
+  , mLatestVersion( 0 )
+  , mError( QNetworkReply::NoError )
 {
 
 }
 
 void QgsVersionInfo::checkVersion()
 {
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://ubuntu.qgis.org/version.txt" ) ) ) );
+  QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://ubuntu.qgis.org/version.txt" ) ) ) );
   connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
 }
 
@@ -44,7 +44,7 @@ bool QgsVersionInfo::isDevelopmentVersion() const
 
 void QgsVersionInfo::versionReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+  QNetworkReply* reply = qobject_cast<QNetworkReply*>( sender() );
   Q_ASSERT( reply );
 
   mError = reply->error();

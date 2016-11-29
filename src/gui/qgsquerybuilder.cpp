@@ -24,18 +24,18 @@
 
 // constructor used when the query builder must make its own
 // connection to the database
-QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
-                                  QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mPreviousFieldRow( -1 )
-    , mLayer( layer )
+QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer* layer,
+                                  QWidget* parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mPreviousFieldRow( -1 )
+  , mLayer( layer )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/Windows/QueryBuilder/geometry" ) ).toByteArray() );
 
-  QPushButton *pbn = new QPushButton( tr( "&Test" ) );
+  QPushButton* pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, SIGNAL( clicked() ), this, SLOT( test() ) );
 
@@ -61,7 +61,7 @@ QgsQueryBuilder::~QgsQueryBuilder()
   settings.setValue( QStringLiteral( "/Windows/QueryBuilder/geometry" ), saveGeometry() );
 }
 
-void QgsQueryBuilder::showEvent( QShowEvent *event )
+void QgsQueryBuilder::showEvent( QShowEvent* event )
 {
   txtSQL->setFocus();
   QDialog::showEvent( event );
@@ -77,7 +77,7 @@ void QgsQueryBuilder::populateFields()
       // only consider native fields
       continue;
     }
-    QStandardItem *myItem = new QStandardItem( fields.at( idx ).name() );
+    QStandardItem* myItem = new QStandardItem( fields.at( idx ).name() );
     myItem->setData( idx );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
@@ -134,7 +134,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
     else
       value = values[i].toString();
 
-    QStandardItem *myItem = new QStandardItem( value );
+    QStandardItem* myItem = new QStandardItem( value );
     myItem->setEditable( false );
     myItem->setData( values[i], Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
@@ -153,7 +153,7 @@ void QgsQueryBuilder::on_btnSampleValues_clicked()
   }
 
   //delete connection mModelValues and lstValues
-  QStandardItemModel *tmp = new QStandardItemModel();
+  QStandardItemModel* tmp = new QStandardItemModel();
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), 25 );
@@ -180,7 +180,7 @@ void QgsQueryBuilder::on_btnGetAllValues_clicked()
   }
 
   //delete connection mModelValues and lstValues
-  QStandardItemModel *tmp = new QStandardItemModel();
+  QStandardItemModel* tmp = new QStandardItemModel();
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), -1 );
@@ -310,7 +310,7 @@ void QgsQueryBuilder::setSql( const QString& sqlStatement )
   txtSQL->setText( sqlStatement );
 }
 
-void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
+void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex& index )
 {
   if ( mPreviousFieldRow != index.row() )
   {
@@ -323,13 +323,13 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
   }
 }
 
-void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
+void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex& index )
 {
   txtSQL->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
+void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex& index )
 {
   QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
   if ( value.isNull() )

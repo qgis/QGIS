@@ -24,14 +24,14 @@
 #include <QSettings>
 
 QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mWebView( nullptr )
-    , mLineEdit( nullptr )
-    , mButton( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mWebView( nullptr )
+  , mLineEdit( nullptr )
+  , mButton( nullptr )
 {
 }
 
-void QgsWebViewWidgetWrapper::loadUrl( const QString &url )
+void QgsWebViewWidgetWrapper::loadUrl( const QString& url )
 {
   QString path = url;
 

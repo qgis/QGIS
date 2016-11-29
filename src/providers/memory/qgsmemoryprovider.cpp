@@ -31,8 +31,8 @@ static const QString TEXT_PROVIDER_KEY = QStringLiteral( "memory" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provider" );
 
 QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mSpatialIndex( nullptr )
+  : QgsVectorDataProvider( uri )
+  , mSpatialIndex( nullptr )
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
@@ -166,7 +166,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
           precision = reFieldDef.cap( 3 ).toInt();
         }
         if ( reFieldDef.cap( 4 ) != QLatin1String( "" ) )
-        {  //array
+        {
+          //array
           subType = type;
           type = ( subType == QVariant::String ? QVariant::StringList : QVariant::List );
         }
@@ -229,7 +230,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     uri.addQueryItem( QStringLiteral( "index" ), QStringLiteral( "yes" ) );
   }
 
-  QgsAttributeList attrs = const_cast<QgsMemoryProvider *>( this )->attributeIndexes();
+  QgsAttributeList attrs = const_cast<QgsMemoryProvider*>( this )->attributeIndexes();
   for ( int i = 0; i < attrs.size(); i++ )
   {
     QgsField field = mFields.at( attrs[i] );
@@ -296,7 +297,7 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 }
 
 
-bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
+bool QgsMemoryProvider::addFeatures( QgsFeatureList& flist )
 {
   // TODO: sanity checks of fields and geometries
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
@@ -318,7 +319,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
   return true;
 }
 
-bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds& id )
 {
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
@@ -340,7 +341,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
   return true;
 }
 
-bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
+bool QgsMemoryProvider::addAttributes( const QList<QgsField>& attributes )
 {
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
@@ -420,7 +421,7 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
   return true;
 }
 
-bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
+bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap& attr_map )
 {
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -435,7 +436,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
   return true;
 }
 
-bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
+bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap& geometry_map )
 {
   for ( QgsGeometryMap::const_iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
@@ -543,7 +544,7 @@ QString  QgsMemoryProvider::description() const
  * Class factory to return a pointer to a newly created
  * QgsMemoryProvider object
  */
-QGISEXTERN QgsMemoryProvider *classFactory( const QString *uri )
+QGISEXTERN QgsMemoryProvider* classFactory( const QString* uri )
 {
   return new QgsMemoryProvider( *uri );
 }

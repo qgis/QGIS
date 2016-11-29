@@ -64,7 +64,10 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * @return The widget as template type or NULL, if it cannot be cast to this type.
      */
     template <class T>
-    T* widget() { return dynamic_cast<T>( mWidget ); }
+    T* widget()
+    {
+      return dynamic_cast<T>( mWidget );
+    }
 
     /**
      * Will set the config of this wrapper to the specified config.

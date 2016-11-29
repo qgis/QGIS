@@ -21,15 +21,15 @@
 
 class QgsMessageLogConsole;
 
-QgsMessageLog *QgsMessageLog::sInstance = nullptr;
+QgsMessageLog* QgsMessageLog::sInstance = nullptr;
 
 QgsMessageLog::QgsMessageLog()
-    : QObject()
+  : QObject()
 {
   sInstance = this;
 }
 
-QgsMessageLog *QgsMessageLog::instance()
+QgsMessageLog* QgsMessageLog::instance()
 {
   if ( !sInstance )
   {
@@ -57,7 +57,7 @@ void QgsMessageLog::emitMessage( const QString& message, const QString& tag, Qgs
 }
 
 QgsMessageLogConsole::QgsMessageLogConsole()
-    : QObject( QgsMessageLog::instance() )
+  : QObject( QgsMessageLog::instance() )
 {
   connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
            this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
@@ -66,10 +66,10 @@ QgsMessageLogConsole::QgsMessageLogConsole()
 void QgsMessageLogConsole::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
 {
   std::cout
-    << tag.toLocal8Bit().data() << "[" <<
-    ( level == QgsMessageLog::INFO ? "INFO"
-      : level == QgsMessageLog::WARNING ? "WARNING"
-      : "CRITICAL" )
-    << "]: " << message.toLocal8Bit().data() << std::endl;
+      << tag.toLocal8Bit().data() << "[" <<
+      ( level == QgsMessageLog::INFO ? "INFO"
+        : level == QgsMessageLog::WARNING ? "WARNING"
+        : "CRITICAL" )
+      << "]: " << message.toLocal8Bit().data() << std::endl;
 }
 

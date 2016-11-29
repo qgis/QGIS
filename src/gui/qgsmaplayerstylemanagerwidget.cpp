@@ -32,8 +32,8 @@
 #include "qgsrasterlayer.h"
 
 
-QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsMapLayerConfigWidget( layer, canvas, parent )
+QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent )
+  : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   mModel = new QStandardItemModel( this );
   mStyleList = new QListView( this );
@@ -92,7 +92,7 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
   currentStyleChanged( active );
 }
 
-void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
+void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex& index )
 {
   if ( !mLayer || !index.isValid() )
     return;

@@ -43,7 +43,10 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
      */
     void draw( QPainter* p, double xOffset = 0 ) const override;
 
-    void setTickPosition( TickPosition p ) {mTickPosition = p;}
+    void setTickPosition( TickPosition p )
+    {
+      mTickPosition = p;
+    }
 
   private:
     QgsTicksScaleBarStyle(); //forbidden

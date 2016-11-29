@@ -121,7 +121,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual ~QgsComposerItem();
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerItem; }
+    virtual int type() const override
+    {
+      return ComposerItem;
+    }
 
     /** Returns whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
@@ -130,7 +133,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note added in QGIS 2.5
      * @see setIsRemoved
      */
-    virtual bool isRemoved() const { return mRemovedFromComposition; }
+    virtual bool isRemoved() const
+    {
+      return mRemovedFromComposition;
+    }
 
     /** Sets whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
@@ -139,13 +145,19 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note added in QGIS 2.5
      * @see isRemoved
      */
-    void setIsRemoved( const bool removed ) { mRemovedFromComposition = removed; }
+    void setIsRemoved( const bool removed )
+    {
+      mRemovedFromComposition = removed;
+    }
 
     //! \brief Set selected, selected item should be highlighted
     virtual void setSelected( bool s );
 
     //! \brief Is selected
-    virtual bool selected() const { return QGraphicsRectItem::isSelected(); }
+    virtual bool selected() const
+    {
+      return QGraphicsRectItem::isSelected();
+    }
 
     //! Moves item in canvas coordinates
     void move( double dx, double dy );
@@ -153,7 +165,11 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Move Content of item. Does nothing per default (but implemented in composer map)
        @param dx move in x-direction (canvas coordinates)
        @param dy move in y-direction(canvas coordinates)*/
-    virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
+    virtual void moveContent( double dx, double dy )
+    {
+      Q_UNUSED( dx );
+      Q_UNUSED( dy );
+    }
 
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
      * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
@@ -161,7 +177,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param mode zoom mode
      * @note added in QGIS 2.5
      */
-    virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) { Q_UNUSED( factor ); Q_UNUSED( point ); Q_UNUSED( mode ); }
+    virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom )
+    {
+      Q_UNUSED( factor );
+      Q_UNUSED( point );
+      Q_UNUSED( mode );
+    }
 
     /** Gets the page the item is currently on.
      * @returns page number for item, beginning on page 1
@@ -212,7 +233,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner. */
-    ItemPositionMode lastUsedPositionMode() { return mLastUsedPositionMode; }
+    ItemPositionMode lastUsedPositionMode()
+    {
+      return mLastUsedPositionMode;
+    }
 
     /** Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
@@ -231,7 +255,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see frameJoinStyle
      * @see frameOutlineColor
      */
-    bool hasFrame() const {return mFrame;}
+    bool hasFrame() const
+    {
+      return mFrame;
+    }
 
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
@@ -260,7 +287,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see frameJoinStyle
      * @see setFrameOutlineColor
      */
-    QColor frameOutlineColor() const { return pen().color(); }
+    QColor frameOutlineColor() const
+    {
+      return pen().color();
+    }
 
     /** Sets frame outline width
      * @param outlineWidth new width for outline frame
@@ -280,7 +310,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see frameJoinStyle
      * @see frameOutlineColor
      */
-    double frameOutlineWidth() const { return pen().widthF(); }
+    double frameOutlineWidth() const
+    {
+      return pen().widthF();
+    }
 
     /** Returns the join style used for drawing the item's frame
      * @returns Join style for outline frame
@@ -290,7 +323,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see frameOutlineWidth
      * @see frameOutlineColor
      */
-    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+    Qt::PenJoinStyle frameJoinStyle() const
+    {
+      return mFrameJoinStyle;
+    }
 
     /** Sets join style used when drawing the item's frame
      * @param style Join style for outline frame
@@ -326,7 +362,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see setBackgroundEnabled
      * @see backgroundColor
      */
-    bool hasBackground() const {return mBackground;}
+    bool hasBackground() const
+    {
+      return mBackground;
+    }
 
     /** Set whether this item has a Background drawn around it or not.
      * @param drawBackground draw Background
@@ -334,14 +373,20 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see hasBackground
      * @see setBackgroundColor
      */
-    void setBackgroundEnabled( const bool drawBackground ) { mBackground = drawBackground; }
+    void setBackgroundEnabled( const bool drawBackground )
+    {
+      mBackground = drawBackground;
+    }
 
     /** Gets the background color for this item
      * @returns background color
      * @see setBackgroundColor
      * @see hasBackground
      */
-    QColor backgroundColor() const { return mBackgroundColor; }
+    QColor backgroundColor() const
+    {
+      return mBackgroundColor;
+    }
 
     /** Sets the background color for this item
      * @param backgroundColor new background color
@@ -355,7 +400,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns item blending mode
      * @see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    QPainter::CompositionMode blendMode() const
+    {
+      return mBlendMode;
+    }
 
     /** Sets the item's composition blending mode
      * @param blendMode blending mode for item
@@ -367,7 +415,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns transparency as integer between 0 (transparent) and 255 (opaque)
      * @see setTransparency
      */
-    int transparency() const { return mTransparency; }
+    int transparency() const
+    {
+      return mTransparency;
+    }
 
     /** Sets the item's transparency
      * @param transparency integer between 0 (transparent) and 255 (opaque)
@@ -381,7 +432,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see transparency
      * @see blendMode
      */
-    bool effectsEnabled() const { return mEffectsEnabled; }
+    bool effectsEnabled() const
+    {
+      return mEffectsEnabled;
+    }
 
     /** Sets whether effects (eg blend modes) are enabled for the item
      * @param effectsEnabled set to true to enable effects
@@ -392,17 +446,26 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void setEffectsEnabled( const bool effectsEnabled );
 
     //! Composite operations for item groups do nothing per default
-    virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
+    virtual void addItem( QgsComposerItem* item )
+    {
+      Q_UNUSED( item );
+    }
     virtual void removeItems() {}
 
-    virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
+    virtual void beginItemCommand( const QString& text )
+    {
+      beginCommand( text );
+    }
 
     /** Starts new composer undo command
       @param commandText command title
       @param c context for mergeable commands (unknown for non-mergeable commands*/
     void beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
-    virtual void endItemCommand() { endCommand(); }
+    virtual void endItemCommand()
+    {
+      endCommand();
+    }
     //! Finish current command and push it onto the undo stack
     void endCommand();
     void cancelCommand();
@@ -420,7 +483,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * returns true if item is locked for mouse movement and resizing
      * @see setPositionLock
      */
-    bool positionLock() const { return mItemPositionLocked; }
+    bool positionLock() const
+    {
+      return mItemPositionLocked;
+    }
 
     /** Returns the current rotation for the composer item.
      * @returns rotation for composer item
@@ -433,13 +499,19 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
     //! Updates item, with the possibility to do custom update for subclasses
-    virtual void updateItem() { QGraphicsRectItem::update(); }
+    virtual void updateItem()
+    {
+      QGraphicsRectItem::update();
+    }
 
     /** Get item's id (which is not necessarly unique)
      * @returns item id
      * @see setId
      */
-    QString id() const { return mId; }
+    QString id() const
+    {
+      return mId;
+    }
 
     /** Set item's id (which is not necessarly unique)
      * @param id new id for item
@@ -453,7 +525,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see id
      * @see setId
      */
-    QString uuid() const { return mUuid; }
+    QString uuid() const
+    {
+      return mUuid;
+    }
 
     /** Get item display name. This is the item's id if set, and if
      * not, a user-friendly string identifying item type.
@@ -494,7 +569,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note added in version 2.5
      * @see setIsGroupMember
      */
-    bool isGroupMember() const { return mIsGroupMember; }
+    bool isGroupMember() const
+    {
+      return mIsGroupMember;
+    }
 
     /** Sets whether this item is part of a group
      * @param isGroupMember set to true if item is in a group
@@ -509,14 +587,20 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note this method was added in version 2.4
      * @see setCurrentExportLayer
      */
-    virtual int numberExportLayers() const { return 0; }
+    virtual int numberExportLayers() const
+    {
+      return 0;
+    }
 
     /** Sets the current layer to draw for exporting
      * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
      * @note this method was added in version 2.4
      * @see numberExportLayers
      */
-    virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
+    virtual void setCurrentExportLayer( const int layerIdx = -1 )
+    {
+      mCurrentExportLayer = layerIdx;
+    }
 
     /** Creates an expression context relating to the item's current state. The context includes
      * scopes for global, project, composition, atlas and item properties.
@@ -589,7 +673,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode;
     bool mEffectsEnabled;
-    QgsComposerEffect *mEffect;
+    QgsComposerEffect* mEffect;
 
     //! Item transparency
     int mTransparency;
@@ -655,7 +739,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * set and position mode has been accounted for
      * @note added in QGIS 2.5
      */
-    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext* context = nullptr );
+    QRectF evalItemRect( const QRectF& newRect, const bool resizeOnly = false, const QgsExpressionContext* context = nullptr );
 
     /** Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn
@@ -696,7 +780,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       * @param context expression context for evaulating data defined rotation
       * @note this method was added in version 2.5
      */
-    void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
+    void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext& context = QgsExpressionContext() );
 
     /** Refresh item's transparency, considering data defined transparency
       * @param updateItem set to false to prevent the item being automatically updated
@@ -704,12 +788,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       * @param context expression context for evaulating data defined transparency
       * @note this method was added in version 2.5
      */
-    void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
+    void refreshTransparency( const bool updateItem = true, const QgsExpressionContext& context = QgsExpressionContext() );
 
     /** Refresh item's blend mode, considering data defined blend mode
      * @note this method was added in version 2.5
      */
-    void refreshBlendMode( const QgsExpressionContext &context );
+    void refreshBlendMode( const QgsExpressionContext& context );
 
     void init( const bool manageZValue );
 

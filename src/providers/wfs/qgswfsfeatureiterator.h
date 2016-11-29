@@ -44,7 +44,10 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     void launch( const QUrl& url );
 
     //! Return result of request, or -1 if not known/error
-    int numberMatched() const { return mNumberMatched; }
+    int numberMatched() const
+    {
+      return mNumberMatched;
+    }
 
   signals:
     void gotHitsResponse();
@@ -66,9 +69,9 @@ class QgsWFSProgressDialog: public QProgressDialog
     Q_OBJECT
   public:
     //! Constructor
-    QgsWFSProgressDialog( const QString & labelText, const QString & cancelButtonText, int minimum, int maximum, QWidget * parent );
+    QgsWFSProgressDialog( const QString& labelText, const QString& cancelButtonText, int minimum, int maximum, QWidget* parent );
 
-    void resizeEvent( QResizeEvent * ev ) override;
+    void resizeEvent( QResizeEvent* ev ) override;
 
   signals:
     void hide();
@@ -163,7 +166,10 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     ~QgsWFSThreadedFeatureDownloader();
 
     //! Return downloader object
-    QgsWFSFeatureDownloader* downloader() { return mDownloader; }
+    QgsWFSFeatureDownloader* downloader()
+    {
+      return mDownloader;
+    }
 
     //! Stops (synchronously) the download
     void stop();
@@ -188,7 +194,7 @@ class QgsWFSFeatureSource;
     already cached. It will actually start by consuming cache features for
     initial feedback, and then process the live downloaded features. */
 class QgsWFSFeatureIterator : public QObject,
-      public QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>
+  public QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>
 {
     Q_OBJECT
   public:
@@ -206,7 +212,7 @@ class QgsWFSFeatureIterator : public QObject,
 
   private slots:
     void featureReceived( int featureCount );
-    void featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list );
+    void featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair>& list );
     void endOfDownload( bool success );
     void checkInterruption();
 

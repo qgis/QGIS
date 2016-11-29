@@ -53,7 +53,7 @@ class QgsWFSSharedData : public QObject
 
     /** Used by a QgsWFSFeatureIterator to start a downloader and get the
         generation counter. */
-    int registerToCache( QgsWFSFeatureIterator* iterator, const QgsRectangle &rect = QgsRectangle() );
+    int registerToCache( QgsWFSFeatureIterator* iterator, const QgsRectangle& rect = QgsRectangle() );
 
     /** Used by the rewind() method of an iterator so as to get the up-to-date
         generation counter. */
@@ -64,7 +64,7 @@ class QgsWFSSharedData : public QObject
     void serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featureList );
 
     //! Called by QgsWFSFeatureDownloader::run() at the end of the download process.
-    void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, const QString &errorMsg );
+    void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, const QString& errorMsg );
 
     /** Used by QgsWFSProvider::reloadData(). The effect is to invalid
         all the caching state, so that a new request results in fresh download */
@@ -77,10 +77,10 @@ class QgsWFSSharedData : public QObject
     bool deleteFeatures( const QgsFeatureIds& fidlist );
 
     //! Change into the on-disk cache the passed geometries. Used by WFS-T
-    bool changeGeometryValues( const QgsGeometryMap &geometry_map );
+    bool changeGeometryValues( const QgsGeometryMap& geometry_map );
 
     //! Change into the on-disk cache the passed attributes. Used by WFS-T
-    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
+    bool changeAttributeValues( const QgsChangedAttributesMap& attr_map );
 
     //! Force an update of the feature count
     void setFeatureCount( int featureCount );
@@ -89,10 +89,16 @@ class QgsWFSSharedData : public QObject
     int getFeatureCount( bool issueRequestIfNeeded = true );
 
     //! Return whether the feature count is exact, or approximate/transient
-    bool isFeatureCountExact() const { return mFeatureCountExact; }
+    bool isFeatureCountExact() const
+    {
+      return mFeatureCountExact;
+    }
 
     //! Return whether the server support RESULTTYPE=hits
-    bool supportsHits() const { return mCaps.supportsHits; }
+    bool supportsHits() const
+    {
+      return mCaps.supportsHits;
+    }
 
     //! Compute WFS filter from the sql or filter in the URI
     bool computeFilter( QString& errorMsg );
@@ -104,7 +110,10 @@ class QgsWFSSharedData : public QObject
     QString srsName() const;
 
     //! Return whether the feature download is finished
-    bool downloadFinished() const { return mDownloadFinished; }
+    bool downloadFinished() const
+    {
+      return mDownloadFinished;
+    }
 
   signals:
 

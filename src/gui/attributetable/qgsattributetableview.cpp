@@ -35,14 +35,14 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
 
-QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
-    : QTableView( parent )
-    , mFilterModel( nullptr )
-    , mFeatureSelectionModel( nullptr )
-    , mFeatureSelectionManager( nullptr )
-    , mActionPopup( nullptr )
-    , mRowSectionAnchor( 0 )
-    , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
+QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
+  : QTableView( parent )
+  , mFilterModel( nullptr )
+  , mFeatureSelectionModel( nullptr )
+  , mFeatureSelectionManager( nullptr )
+  , mActionPopup( nullptr )
+  , mRowSectionAnchor( 0 )
+  , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "/BetterAttributeTable/geometry" ) ).toByteArray() );
@@ -70,7 +70,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( recreateActionWidgets() ) );
 }
 
-bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
+bool QgsAttributeTableView::eventFilter( QObject* object, QEvent* event )
 {
   if ( object == verticalHeader()->viewport() )
   {
@@ -201,7 +201,7 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     action->setData( "map_layer_action" );
     action->setToolTip( mapLayerAction->text() );
     action->setProperty( "fid", fid );
-    action->setProperty( "action", qVariantFromValue( qobject_cast<QObject *>( mapLayerAction ) ) );
+    action->setProperty( "action", qVariantFromValue( qobject_cast<QObject*>( mapLayerAction ) ) );
     connect( action, SIGNAL( triggered() ), this, SLOT( actionTriggered() ) );
     actionList << action;
 
@@ -246,41 +246,41 @@ QWidget* QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   return container;
 }
 
-void QgsAttributeTableView::closeEvent( QCloseEvent *e )
+void QgsAttributeTableView::closeEvent( QCloseEvent* e )
 {
   Q_UNUSED( e );
   QSettings settings;
   settings.setValue( QStringLiteral( "/BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
 
-void QgsAttributeTableView::mousePressEvent( QMouseEvent *event )
+void QgsAttributeTableView::mousePressEvent( QMouseEvent* event )
 {
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mousePressEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
-void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
+void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent* event )
 {
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseReleaseEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
-void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
+void QgsAttributeTableView::mouseMoveEvent( QMouseEvent* event )
 {
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseMoveEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
-void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
+void QgsAttributeTableView::keyPressEvent( QKeyEvent* event )
 {
   switch ( event->key() )
   {
 
-      // Default Qt behavior would be to change the selection.
-      // We don't make it that easy for the user to trash his selection.
+    // Default Qt behavior would be to change the selection.
+    // We don't make it that easy for the user to trash his selection.
     case Qt::Key_Up:
     case Qt::Key_Down:
     case Qt::Key_Left:
@@ -327,7 +327,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
     return;
   }
 
-  QgsVectorLayer *vlayer = mFilterModel->layer();
+  QgsVectorLayer* vlayer = mFilterModel->layer();
   if ( !vlayer )
     return;
 
@@ -418,8 +418,8 @@ void QgsAttributeTableView::actionTriggered()
   }
   else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {
-    QObject* object = action->property( "action" ).value<QObject *>();
-    QgsMapLayerAction* layerAction = qobject_cast<QgsMapLayerAction *>( object );
+    QObject* object = action->property( "action" ).value<QObject*>();
+    QgsMapLayerAction* layerAction = qobject_cast<QgsMapLayerAction*>( object );
     if ( layerAction )
     {
       layerAction->triggerForFeature( mFilterModel->layer(), &f );

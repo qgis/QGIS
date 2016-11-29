@@ -26,7 +26,7 @@
 
 // ---------------------------------------------------------------------------
 QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
@@ -45,14 +45,14 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
   Q_FOREACH ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    QLibrary* library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
     {
       QgsDebugMsg( "Cannot get provider " + key );
       continue;
     }
 
-    dataItem_t * dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
+    dataItem_t* dItem = ( dataItem_t* ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );
@@ -61,7 +61,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 
     QString path = key.toLower() + ":/" + name();
     QgsDebugMsg( "path = " + path );
-    QgsDataItem *item = dItem( path, this );  // empty path -> top level
+    QgsDataItem* item = dItem( path, this );  // empty path -> top level
     if ( !item )
     {
       QgsDebugMsg( "Connection not found by provider" );
@@ -118,13 +118,13 @@ void QgsOWSConnectionItem::replacePath( QgsDataItem* item, QString before, QStri
   }
 }
 
-bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
+bool QgsOWSConnectionItem::equal( const QgsDataItem* other )
 {
   if ( type() != other->type() )
   {
     return false;
   }
-  const QgsOWSConnectionItem *o = dynamic_cast<const QgsOWSConnectionItem *>( other );
+  const QgsOWSConnectionItem* o = dynamic_cast<const QgsOWSConnectionItem*>( other );
   return ( o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -170,7 +170,7 @@ void QgsOWSConnectionItem::deleteConnection()
 
 
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconOws.svg" );
@@ -198,7 +198,7 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
   }
   Q_FOREACH ( const QString& connName, connNames )
   {
-    QgsDataItem * conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
+    QgsDataItem* conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
     connections.append( conn );
   }
   return connections;
@@ -218,10 +218,10 @@ QList<QAction*> QgsOWSRootItem::actions()
 }
 
 
-QWidget * QgsOWSRootItem::paramWidget()
+QWidget* QgsOWSRootItem::paramWidget()
 {
 #if 0
-  QgsOWSSourceSelect *select = new QgsOWSSourceSelect( 0, 0, true, true );
+  QgsOWSSourceSelect* select = new QgsOWSSourceSelect( 0, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 #endif
@@ -255,7 +255,7 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem* dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
   {
@@ -265,7 +265,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 }
 
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
-QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WindowFlags fl )
+QGISEXTERN QDialog* selectWidget( QWidget* parent, Qt::WindowFlags fl )
 {
   Q_UNUSED( parent );
   Q_UNUSED( fl );

@@ -38,12 +38,12 @@ QgsGmlFeatureClass::QgsGmlFeatureClass()
 }
 
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString& name, const QString& path )
-    : mName( name )
-    , mPath( path )
+  : mName( name )
+  , mPath( path )
 {
 }
 
-int QgsGmlFeatureClass::fieldIndex( const QString & name )
+int QgsGmlFeatureClass::fieldIndex( const QString& name )
 {
   for ( int i = 0; i < mFields.size(); i++ )
   {
@@ -54,15 +54,15 @@ int QgsGmlFeatureClass::fieldIndex( const QString & name )
 
 // --------------------------- QgsGmlSchema -------------------------------
 QgsGmlSchema::QgsGmlSchema()
-    : QObject()
-    , mCurrentFeature( nullptr )
-    , mFeatureCount( 0 )
-    , mLevel( 0 )
-    , mSkipLevel( std::numeric_limits<int>::max() )
+  : QObject()
+  , mCurrentFeature( nullptr )
+  , mFeatureCount( 0 )
+  , mLevel( 0 )
+  , mSkipLevel( std::numeric_limits<int>::max() )
 {
   mGeometryTypes << QStringLiteral( "Point" ) << QStringLiteral( "MultiPoint" )
-  << QStringLiteral( "LineString" ) << QStringLiteral( "MultiLineString" )
-  << QStringLiteral( "Polygon" ) << QStringLiteral( "MultiPolygon" );
+                 << QStringLiteral( "LineString" ) << QStringLiteral( "MultiLineString" )
+                 << QStringLiteral( "Polygon" ) << QStringLiteral( "MultiPolygon" );
 }
 
 QgsGmlSchema::~QgsGmlSchema()
@@ -84,7 +84,7 @@ QString QgsGmlSchema::readAttribute( const QString& attributeName, const XML_Cha
   return QString();
 }
 
-bool QgsGmlSchema::parseXSD( const QByteArray &xml )
+bool QgsGmlSchema::parseXSD( const QByteArray& xml )
 {
   QDomDocument dom;
   QString errorMsg;
@@ -127,7 +127,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
   return true;
 }
 
-bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & typeName, QgsGmlFeatureClass & featureClass )
+bool QgsGmlSchema::xsdFeatureClass( const QDomElement& element, const QString& typeName, QgsGmlFeatureClass& featureClass )
 {
   //QgsDebugMsg("typeName = " + typeName );
   QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), typeName );
@@ -163,9 +163,9 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
 
   QStringList geometryAliases;
   geometryAliases << QStringLiteral( "location" ) << QStringLiteral( "centerOf" ) << QStringLiteral( "position" ) << QStringLiteral( "extentOf" )
-  << QStringLiteral( "coverage" ) << QStringLiteral( "edgeOf" ) << QStringLiteral( "centerLineOf" ) << QStringLiteral( "multiLocation" )
-  << QStringLiteral( "multiCenterOf" ) << QStringLiteral( "multiPosition" ) << QStringLiteral( "multiCenterLineOf" )
-  << QStringLiteral( "multiEdgeOf" ) << QStringLiteral( "multiCoverage" ) << QStringLiteral( "multiExtentOf" );
+                  << QStringLiteral( "coverage" ) << QStringLiteral( "edgeOf" ) << QStringLiteral( "centerLineOf" ) << QStringLiteral( "multiLocation" )
+                  << QStringLiteral( "multiCenterOf" ) << QStringLiteral( "multiPosition" ) << QStringLiteral( "multiCenterLineOf" )
+                  << QStringLiteral( "multiEdgeOf" ) << QStringLiteral( "multiCoverage" ) << QStringLiteral( "multiExtentOf" );
 
   // Add attributes from current comple type
   QList<QDomElement> sequenceElements = domElements( extrest, QStringLiteral( "sequence.element" ) );
@@ -242,7 +242,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
   return true;
 }
 
-QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, const QString & name )
+QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement& element, const QString& name )
 {
   //QgsDebugMsg("name = " + name );
   QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), name );
@@ -265,12 +265,12 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
   return xsdComplexTypeGmlBaseType( element, stripNS( extrestName ) );
 }
 
-QString QgsGmlSchema::stripNS( const QString & name )
+QString QgsGmlSchema::stripNS( const QString& name )
 {
   return name.contains( ':' ) ? name.section( ':', 1 ) : name;
 }
 
-QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const QString & path )
+QList<QDomElement> QgsGmlSchema::domElements( const QDomElement& element, const QString& path )
 {
   QList<QDomElement> list;
 
@@ -304,12 +304,12 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
   return list;
 }
 
-QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString & path )
+QDomElement QgsGmlSchema::domElement( const QDomElement& element, const QString& path )
 {
   return domElements( element, path ).value( 0 );
 }
 
-QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement> &elements, const QString & attr, const QString & attrVal )
+QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement>& elements, const QString& attr, const QString& attrVal )
 {
   QList<QDomElement> list;
   Q_FOREACH ( const QDomElement& el, elements )
@@ -322,13 +322,13 @@ QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement> &elements, cons
   return list;
 }
 
-QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString & path, const QString & attr, const QString & attrVal )
+QDomElement QgsGmlSchema::domElement( const QDomElement& element, const QString& path, const QString& attr, const QString& attrVal )
 {
   QList<QDomElement> list = domElements( element, path );
   return domElements( list, attr, attrVal ).value( 0 );
 }
 
-bool QgsGmlSchema::guessSchema( const QByteArray &data )
+bool QgsGmlSchema::guessSchema( const QByteArray& data )
 {
   mLevel = 0;
   mSkipLevel = std::numeric_limits<int>::max();
@@ -418,7 +418,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   else if ( parseMode == QgsGmlSchema::attribute && ns == GML_NAMESPACE && mGeometryTypes.indexOf( localName ) >= 0 )
   {
     // Geometry (Point,MultiPoint,...) in geometry attribute
-    QStringList &geometryAttributes = mFeatureClassMap[mCurrentFeatureName].geometryAttributes();
+    QStringList& geometryAttributes = mFeatureClassMap[mCurrentFeatureName].geometryAttributes();
     if ( geometryAttributes.count( mAttributeName ) == 0 )
     {
       geometryAttributes.append( mAttributeName );
@@ -538,7 +538,7 @@ void QgsGmlSchema::addAttribute( const QString& name, const QString& value )
   }
   //QgsDebugMsg( "mStringCash = " + mStringCash + " type = " + QVariant::typeToName( type )  );
   //QMap<QString, QgsField> & fields = mFeatureClassMap[mCurrentFeatureName].fields();
-  QList<QgsField> & fields = mFeatureClassMap[mCurrentFeatureName].fields();
+  QList<QgsField>& fields = mFeatureClassMap[mCurrentFeatureName].fields();
   int fieldIndex = mFeatureClassMap[mCurrentFeatureName].fieldIndex( name );
   if ( fieldIndex == -1 )
   {
@@ -547,7 +547,7 @@ void QgsGmlSchema::addAttribute( const QString& name, const QString& value )
   }
   else
   {
-    QgsField &field = fields[fieldIndex];
+    QgsField& field = fields[fieldIndex];
     // check if type is sufficient
     if (( field.type() == QVariant::Int && ( type == QVariant::String || type == QVariant::Double ) ) ||
         ( field.type() == QVariant::Double && type == QVariant::String ) )
@@ -562,13 +562,13 @@ QStringList QgsGmlSchema::typeNames() const
   return mFeatureClassMap.keys();
 }
 
-QList<QgsField> QgsGmlSchema::fields( const QString & typeName )
+QList<QgsField> QgsGmlSchema::fields( const QString& typeName )
 {
   if ( mFeatureClassMap.count( typeName ) == 0 ) return QList<QgsField>();
   return mFeatureClassMap[typeName].fields();
 }
 
-QStringList QgsGmlSchema::geometryAttributes( const QString & typeName )
+QStringList QgsGmlSchema::geometryAttributes( const QString& typeName )
 {
   if ( mFeatureClassMap.count( typeName ) == 0 ) return QStringList();
   return mFeatureClassMap[typeName].geometryAttributes();

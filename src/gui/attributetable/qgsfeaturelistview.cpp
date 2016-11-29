@@ -33,20 +33,20 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerselectionmanager.h"
 
-QgsFeatureListView::QgsFeatureListView( QWidget *parent )
-    : QListView( parent )
-    , mModel( nullptr )
-    , mCurrentEditSelectionModel( nullptr )
-    , mFeatureSelectionModel( nullptr )
-    , mFeatureSelectionManager( nullptr )
-    , mItemDelegate( nullptr )
-    , mEditSelectionDrag( false )
-    , mRowAnchor( 0 )
+QgsFeatureListView::QgsFeatureListView( QWidget* parent )
+  : QListView( parent )
+  , mModel( nullptr )
+  , mCurrentEditSelectionModel( nullptr )
+  , mFeatureSelectionModel( nullptr )
+  , mFeatureSelectionManager( nullptr )
+  , mItemDelegate( nullptr )
+  , mEditSelectionDrag( false )
+  , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
-QgsVectorLayerCache *QgsFeatureListView::layerCache()
+QgsVectorLayerCache* QgsFeatureListView::layerCache()
 {
   return mModel->layerCache();
 }
@@ -124,7 +124,7 @@ void QgsFeatureListView::setCurrentFeatureEdited( bool state )
   viewport()->update( visualRegionForSelection( mCurrentEditSelectionModel->selection() ) );
 }
 
-void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
+void QgsFeatureListView::mousePressEvent( QMouseEvent* event )
 {
   if ( mModel )
   {
@@ -181,7 +181,7 @@ void QgsFeatureListView::selectAll()
   mFeatureSelectionModel->selectFeatures( selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
 }
 
-void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
+void QgsFeatureListView::setEditSelection( const QgsFeatureIds& fids )
 {
   QItemSelection selection;
 
@@ -225,7 +225,7 @@ void QgsFeatureListView::repaintRequested()
     over the selection is extended; if a drag is in progress it is continued.
 */
 
-void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
+void QgsFeatureListView::mouseMoveEvent( QMouseEvent* event )
 {
   QPoint pos = event->pos();
 
@@ -248,7 +248,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
     your widget receives the release event. The function will emit the clicked() signal if an
     item was being pressed.
 */
-void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
+void QgsFeatureListView::mouseReleaseEvent( QMouseEvent* event )
 {
   Q_UNUSED( event );
 
@@ -263,7 +263,7 @@ void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
   }
 }
 
-void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
+void QgsFeatureListView::keyPressEvent( QKeyEvent* event )
 {
   if ( Qt::Key_Up == event->key() || Qt::Key_Down == event->key() )
   {
@@ -309,7 +309,7 @@ void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
+void QgsFeatureListView::contextMenuEvent( QContextMenuEvent* event )
 {
   QModelIndex index = indexAt( event->pos() );
 

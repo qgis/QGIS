@@ -25,7 +25,7 @@
 #include <qgsgeometry.h>
 
 QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled, double topologyTolerance, const QString& ellipsoidID )
-    : QgsGraphBuilderInterface( crs, otfEnabled, topologyTolerance, ellipsoidID )
+  : QgsGraphBuilderInterface( crs, otfEnabled, topologyTolerance, ellipsoidID )
 {
   mGraph = new QgsGraph();
 }

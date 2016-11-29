@@ -28,15 +28,15 @@
  ****************************************************************************/
 
 QgsInterval::QgsInterval()
-    : mSeconds( 0.0 )
-    , mValid( false )
+  : mSeconds( 0.0 )
+  , mValid( false )
 {
 
 }
 
 QgsInterval::QgsInterval( double seconds )
-    : mSeconds( seconds )
-    , mValid( true )
+  : mSeconds( seconds )
+  , mValid( true )
 { }
 
 bool QgsInterval::operator==( QgsInterval other ) const

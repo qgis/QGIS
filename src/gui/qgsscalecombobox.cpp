@@ -25,16 +25,16 @@
 #include <QLineEdit>
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
-    : QComboBox( parent )
-    , mScale( 1.0 )
-    , mMinScale( 0.0 )
+  : QComboBox( parent )
+  , mScale( 1.0 )
+  , mMinScale( 0.0 )
 {
   updateScales();
 
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( nullptr );
-  connect( this, SIGNAL( activated( const QString & ) ), this, SLOT( fixupScale() ) );
+  connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( fixupScale() ) );
   connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
   fixupScale();
 }
@@ -43,7 +43,7 @@ QgsScaleComboBox::~QgsScaleComboBox()
 {
 }
 
-void QgsScaleComboBox::updateScales( const QStringList &scales )
+void QgsScaleComboBox::updateScales( const QStringList& scales )
 {
   QStringList myScalesList;
   QString oldScale = currentText();
@@ -204,7 +204,7 @@ QString QgsScaleComboBox::toString( double scale )
   }
 }
 
-double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
+double QgsScaleComboBox::toDouble( const QString& scaleString, bool* returnOk )
 {
   bool ok = false;
   QString scaleTxt( scaleString );

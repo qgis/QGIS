@@ -32,8 +32,8 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-        : QObject( 0 )
-        , blendMode( QPainter::CompositionMode_SourceOver )
+      : QObject( 0 )
+      , blendMode( QPainter::CompositionMode_SourceOver )
     {}
     QPainter::CompositionMode blendMode;
   public slots:
@@ -52,7 +52,7 @@ class TestQgsMapLayer : public QObject
 
   public:
     TestQgsMapLayer()
-        : mpLayer( 0 )
+      : mpLayer( 0 )
     {}
 
   private slots:
@@ -70,7 +70,7 @@ class TestQgsMapLayer : public QObject
 
 
   private:
-    QgsMapLayer * mpLayer;
+    QgsMapLayer* mpLayer;
 };
 
 void TestQgsMapLayer::initTestCase()

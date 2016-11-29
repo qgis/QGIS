@@ -31,8 +31,8 @@ class TestQgsRasterCalculator : public QObject
 
   public:
     TestQgsRasterCalculator()
-        : mpLandsatRasterLayer( 0 )
-        , mpLandsatRasterLayer4326( 0 )
+      : mpLandsatRasterLayer( 0 )
+      , mpLandsatRasterLayer4326( 0 )
     {}
 
   private slots:
@@ -60,8 +60,8 @@ class TestQgsRasterCalculator : public QObject
 
   private:
 
-    QgsRasterLayer * mpLandsatRasterLayer;
-    QgsRasterLayer * mpLandsatRasterLayer4326;
+    QgsRasterLayer* mpLandsatRasterLayer;
+    QgsRasterLayer* mpLandsatRasterLayer4326;
 };
 
 void  TestQgsRasterCalculator::initTestCase()
@@ -87,7 +87,7 @@ void  TestQgsRasterCalculator::initTestCase()
       landsat4326RasterFileInfo.completeBaseName() );
 
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLandsatRasterLayer << mpLandsatRasterLayer4326 );
+    QList<QgsMapLayer*>() << mpLandsatRasterLayer << mpLandsatRasterLayer4326 );
 }
 
 void  TestQgsRasterCalculator::cleanupTestCase()

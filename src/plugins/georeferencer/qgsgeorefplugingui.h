@@ -44,7 +44,7 @@ class QgsGeorefDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsGeorefDockWidget( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsGeorefDockWidget( const QString& title, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
 };
 
 class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
@@ -56,7 +56,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     ~QgsGeorefPluginGui();
 
   protected:
-    void closeEvent( QCloseEvent * ) override;
+    void closeEvent( QCloseEvent* ) override;
 
   private slots:
     // file
@@ -86,7 +86,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
                    bool enable = true, bool refreshCanvas = true/*, bool verbose = true*/ );
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
-    void showCoordDialog( const QgsPoint &pixelCoords );
+    void showCoordDialog( const QgsPoint& pixelCoords );
 
     void selectPoint( QPoint );
     void movePoint( QPoint );
@@ -108,7 +108,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void extentsChangedQGisCanvas();
 
     // canvas info
-    void showMouseCoords( const QgsPoint &pt );
+    void showMouseCoords( const QgsPoint& pt );
     void updateMouseCoordinatePrecision();
 
     // Histogram stretch
@@ -174,15 +174,15 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // utils
     bool checkReadyGeoref();
-    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
+    QgsRectangle transformViewportBoundingBox( const QgsRectangle& canvasExtent, QgsGeorefTransform& t,
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
     int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
-    QString guessWorldFileName( const QString &rasterFileName );
-    QIcon getThemeIcon( const QString &theName );
+    QString guessWorldFileName( const QString& rasterFileName );
+    QIcon getThemeIcon( const QString& theName );
     bool checkFileExisting( const QString& fileName, const QString& title, const QString& question );
-    bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
+    bool equalGCPlists( const QgsGCPList& list1, const QgsGCPList& list2 );
     void logTransformOptions();
     void logRequaredGCPs();
     void clearGCPData();
@@ -203,17 +203,17 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QGridLayout* mCentralLayout;
 
     QgsMessageBar* mMessageBar;
-    QMenu *mPanelMenu;
-    QMenu *mToolbarMenu;
+    QMenu* mPanelMenu;
+    QMenu* mToolbarMenu;
 
-    QAction *mActionHelp;
+    QAction* mActionHelp;
 
-    QgsGCPListWidget *mGCPListWidget;
-    QLineEdit *mScaleEdit;
-    QLabel *mScaleLabel;
-    QLabel *mCoordsLabel;
-    QLabel *mTransformParamLabel;
-    QLabel *mEPSG;
+    QgsGCPListWidget* mGCPListWidget;
+    QLineEdit* mScaleEdit;
+    QLabel* mScaleLabel;
+    QLabel* mCoordsLabel;
+    QLabel* mTransformParamLabel;
+    QLabel* mEPSG;
     unsigned int mMousePrecisionDecimalPlaces;
 
     QString mRasterFileName;
@@ -231,24 +231,24 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;
 
-    QgisInterface *mIface;
+    QgisInterface* mIface;
 
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
-    QgsMapCanvas *mCanvas;
-    QgsRasterLayer *mLayer;
+    QgsMapCanvas* mCanvas;
+    QgsRasterLayer* mLayer;
     bool mAgainAddRaster;
 
-    QgsMapTool *mToolZoomIn;
-    QgsMapTool *mToolZoomOut;
-    QgsMapTool *mToolPan;
-    QgsMapTool *mToolAddPoint;
-    QgsMapTool *mToolDeletePoint;
-    QgsMapTool *mToolMovePoint;
-    QgsMapTool *mToolMovePointQgis;
+    QgsMapTool* mToolZoomIn;
+    QgsMapTool* mToolZoomOut;
+    QgsMapTool* mToolPan;
+    QgsMapTool* mToolAddPoint;
+    QgsMapTool* mToolDeletePoint;
+    QgsMapTool* mToolMovePoint;
+    QgsMapTool* mToolMovePointQgis;
 
-    QgsGeorefDataPoint *mMovingPoint;
-    QgsGeorefDataPoint *mMovingPointQgis;
+    QgsGeorefDataPoint* mMovingPoint;
+    QgsGeorefDataPoint* mMovingPointQgis;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans;

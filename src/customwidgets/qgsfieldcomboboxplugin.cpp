@@ -18,9 +18,9 @@
 #include "qgsfieldcomboboxplugin.h"
 
 
-QgsFieldComboBoxPlugin::QgsFieldComboBoxPlugin( QObject *parent )
-    : QObject( parent )
-    , mInitialized( false )
+QgsFieldComboBoxPlugin::QgsFieldComboBoxPlugin( QObject* parent )
+  : QObject( parent )
+  , mInitialized( false )
 {
 }
 
@@ -50,7 +50,7 @@ bool QgsFieldComboBoxPlugin::isContainer() const
   return false;
 }
 
-QWidget *QgsFieldComboBoxPlugin::createWidget( QWidget *parent )
+QWidget* QgsFieldComboBoxPlugin::createWidget( QWidget* parent )
 {
   return new QgsFieldComboBox( parent );
 }
@@ -60,7 +60,7 @@ bool QgsFieldComboBoxPlugin::isInitialized() const
   return mInitialized;
 }
 
-void QgsFieldComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsFieldComboBoxPlugin::initialize( QDesignerFormEditorInterface* core )
 {
   Q_UNUSED( core );
   if ( mInitialized )

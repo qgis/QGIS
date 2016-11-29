@@ -30,7 +30,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     Q_OBJECT
 
   public:
-    QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx );
+    QgsAttributeTypeDialog( QgsVectorLayer* vl, int fieldIdx );
     ~QgsAttributeTypeDialog();
 
     /**
@@ -120,7 +120,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * @param desc the expression description
      * @note added in QGIS 2.16
      **/
-    void setConstraintExpressionDescription( const QString &desc );
+    void setConstraintExpressionDescription( const QString& desc );
 
     /**
      * Getter for constraint expression description
@@ -139,7 +139,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Setter for the constraint expression
      * @note added in QGIS 2.16
      */
-    void setConstraintExpression( const QString &str );
+    void setConstraintExpression( const QString& str );
 
     /**
      * Sets whether the expression constraint is enforced.
@@ -173,7 +173,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void defaultExpressionChanged();
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer* mLayer;
     int mFieldIdx;
 
     QgsEditorWidgetConfig mWidgetConfig;

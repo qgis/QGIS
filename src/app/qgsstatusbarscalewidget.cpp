@@ -25,9 +25,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsscalecombobox.h"
 
-QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
-    : QWidget( parent )
-    , mMapCanvas( canvas )
+QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas* canvas, QWidget* parent )
+  : QWidget( parent )
+  , mMapCanvas( canvas )
 {
   // add a label to show current scale
   mLabel = new QLabel();
@@ -89,13 +89,13 @@ bool QgsStatusBarScaleWidget::isLocked() const
   return mLockButton->isChecked();
 }
 
-void QgsStatusBarScaleWidget::setFont( const QFont &font )
+void QgsStatusBarScaleWidget::setFont( const QFont& font )
 {
   mLabel->setFont( font );
   mScale->lineEdit()->setFont( font );
 }
 
-void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
+void QgsStatusBarScaleWidget::updateScales( const QStringList& scales )
 {
   mScale->updateScales( scales );
 }

@@ -47,41 +47,41 @@ class QgsCoordinateTransformPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateTransformPrivate()
-        : mIsValid( false )
-        , mShortCircuit( false )
-        , mSourceProjection( nullptr )
-        , mDestinationProjection( nullptr )
-        , mSourceDatumTransform( -1 )
-        , mDestinationDatumTransform( -1 )
+      : mIsValid( false )
+      , mShortCircuit( false )
+      , mSourceProjection( nullptr )
+      , mDestinationProjection( nullptr )
+      , mSourceDatumTransform( -1 )
+      , mDestinationDatumTransform( -1 )
     {
       setFinder();
     }
 
     QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem& source,
                                    const QgsCoordinateReferenceSystem& destination )
-        : mIsValid( false )
-        , mShortCircuit( false )
-        , mSourceCRS( source )
-        , mDestCRS( destination )
-        , mSourceProjection( nullptr )
-        , mDestinationProjection( nullptr )
-        , mSourceDatumTransform( -1 )
-        , mDestinationDatumTransform( -1 )
+      : mIsValid( false )
+      , mShortCircuit( false )
+      , mSourceCRS( source )
+      , mDestCRS( destination )
+      , mSourceProjection( nullptr )
+      , mDestinationProjection( nullptr )
+      , mSourceDatumTransform( -1 )
+      , mDestinationDatumTransform( -1 )
     {
       setFinder();
       initialise();
     }
 
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate& other )
-        : QSharedData( other )
-        , mIsValid( other.mIsValid )
-        , mShortCircuit( other.mShortCircuit )
-        , mSourceCRS( other.mSourceCRS )
-        , mDestCRS( other.mDestCRS )
-        , mSourceProjection( nullptr )
-        , mDestinationProjection( nullptr )
-        , mSourceDatumTransform( other.mSourceDatumTransform )
-        , mDestinationDatumTransform( other.mDestinationDatumTransform )
+      : QSharedData( other )
+      , mIsValid( other.mIsValid )
+      , mShortCircuit( other.mShortCircuit )
+      , mSourceCRS( other.mSourceCRS )
+      , mDestCRS( other.mDestCRS )
+      , mSourceProjection( nullptr )
+      , mDestinationProjection( nullptr )
+      , mSourceDatumTransform( other.mSourceDatumTransform )
+      , mDestinationDatumTransform( other.mDestinationDatumTransform )
     {
       //must reinitialize to setup mSourceProjection and mDestinationProjection
       initialise();
@@ -258,7 +258,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
         int methodCode = sqlite3_column_int( stmt, 0 );
         if ( methodCode == 9615 ) //ntv2
         {
-          transformString = "+nadgrids=" + QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 1 ) ) );
+          transformString = "+nadgrids=" + QString( reinterpret_cast< const char* >( sqlite3_column_text( stmt, 1 ) ) );
         }
         else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
         {

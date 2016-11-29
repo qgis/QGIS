@@ -78,24 +78,39 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     QgsVectorLayer* inputVectorLayer() const;
 
     //! Returns the no of rows for the raster
-    int rows() const { return mRows; }
+    int rows() const
+    {
+      return mRows;
+    }
 
     //! Returns the no of columns in the raster
-    int columns() const { return mColumns; }
+    int columns() const
+    {
+      return mColumns;
+    }
 
     //! Returns the cell size X value
-    double cellSizeX() const { return mXcellsize; }
+    double cellSizeX() const
+    {
+      return mXcellsize;
+    }
 
     //! Returns the cell size Y valuue
-    double cellSizeY() const { return mYcellsize; }
+    double cellSizeY() const
+    {
+      return mYcellsize;
+    }
 
     //! Return the BBox
-    QgsRectangle bbox() const { return mBBox; }
+    QgsRectangle bbox() const
+    {
+      return mBBox;
+    }
 
   private:
     QMap<QString, QString> mExtensionMap;
 
-    QMap<QString, QVariant> *mHeatmapSessionSettings;
+    QMap<QString, QVariant>* mHeatmapSessionSettings;
 
     // bbox of layer for lineedit changes
     QgsRectangle mBBox;
@@ -127,7 +142,9 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     double estimateRadius();
 
     inline double max( double a, double b )
-    { return a > b ? a : b; }
+    {
+      return a > b ? a : b;
+    }
 
   private slots:
     void on_mButtonBox_accepted();

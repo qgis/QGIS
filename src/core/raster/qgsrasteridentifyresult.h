@@ -44,29 +44,50 @@ class CORE_EXPORT QgsRasterIdentifyResult
     virtual ~QgsRasterIdentifyResult();
 
     //! \brief Returns true if valid
-    bool isValid() const { return mValid; }
+    bool isValid() const
+    {
+      return mValid;
+    }
 
     //! \brief Get results format
-    QgsRaster::IdentifyFormat format() const { return mFormat; }
+    QgsRaster::IdentifyFormat format() const
+    {
+      return mFormat;
+    }
 
     /** \brief Get results. Results are different for each format:
      * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
      * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
      * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      */
-    QMap<int, QVariant> results() const { return mResults; }
+    QMap<int, QVariant> results() const
+    {
+      return mResults;
+    }
 
     //! Set map of optional parameters
-    void setParams( const QMap<QString, QVariant> & theParams ) { mParams = theParams; }
+    void setParams( const QMap<QString, QVariant>& theParams )
+    {
+      mParams = theParams;
+    }
 
     //! Get map of optional parameters
-    QMap<QString, QVariant> params() const { return mParams; }
+    QMap<QString, QVariant> params() const
+    {
+      return mParams;
+    }
 
     //! \brief Get error
-    QgsError error() const { return mError; }
+    QgsError error() const
+    {
+      return mError;
+    }
 
     //! \brief Set error
-    void setError( const QgsError & theError ) { mError = theError;}
+    void setError( const QgsError& theError )
+    {
+      mError = theError;
+    }
 
   private:
     //! \brief Is valid

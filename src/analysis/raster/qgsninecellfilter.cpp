@@ -28,24 +28,24 @@
 #endif
 
 QgsNineCellFilter::QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : mInputFile( inputFile )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mCellSizeX( -1.0 )
-    , mCellSizeY( -1.0 )
-    , mInputNodataValue( -1.0 )
-    , mOutputNodataValue( -1.0 )
-    , mZFactor( 1.0 )
+  : mInputFile( inputFile )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mCellSizeX( -1.0 )
+  , mCellSizeY( -1.0 )
+  , mInputNodataValue( -1.0 )
+  , mOutputNodataValue( -1.0 )
+  , mZFactor( 1.0 )
 {
 
 }
 
 QgsNineCellFilter::QgsNineCellFilter()
-    : mCellSizeX( -1.0 )
-    , mCellSizeY( -1.0 )
-    , mInputNodataValue( -1.0 )
-    , mOutputNodataValue( -1.0 )
-    , mZFactor( 1.0 )
+  : mCellSizeX( -1.0 )
+  , mCellSizeY( -1.0 )
+  , mInputNodataValue( -1.0 )
+  , mOutputNodataValue( -1.0 )
+  , mZFactor( 1.0 )
 {
 }
 
@@ -108,11 +108,11 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
   }
 
   //keep only three scanlines in memory at a time
-  float* scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float* scanLine1 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
+  float* scanLine2 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
+  float* scanLine3 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
 
-  float* resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float* resultLine = ( float* ) CPLMalloc( sizeof( float ) * xSize );
 
   if ( p )
   {
@@ -150,7 +150,7 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
       CPLFree( scanLine1 );
       scanLine1 = scanLine2;
       scanLine2 = scanLine3;
-      scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+      scanLine3 = ( float* ) CPLMalloc( sizeof( float ) * xSize );
     }
 
     if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
@@ -236,7 +236,7 @@ GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
 
 GDALDriverH QgsNineCellFilter::openOutputDriver()
 {
-  char **driverMetadata;
+  char** driverMetadata;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
@@ -266,7 +266,7 @@ GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALD
   int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = nullptr;
+  char** papszOptions = nullptr;
   GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), xSize, ySize, 1, GDT_Float32, papszOptions );
   if ( !outputDataset )
   {

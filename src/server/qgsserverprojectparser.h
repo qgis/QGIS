@@ -40,9 +40,15 @@ class SERVER_EXPORT QgsServerProjectParser
     QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     ~QgsServerProjectParser();
 
-    QString projectPath() const { return mProjectPath; }
+    QString projectPath() const
+    {
+      return mProjectPath;
+    }
 
-    const QDomDocument* xmlDocument() const { return mXMLDoc; }
+    const QDomDocument* xmlDocument() const
+    {
+      return mXMLDoc;
+    }
 
     //! Returns project layers by id
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
@@ -64,9 +70,9 @@ class SERVER_EXPORT QgsServerProjectParser
 
     void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer ) const;
 
-    QgsRectangle layerBoundingBoxInProjectCrs( const QDomElement& layerElem, const QDomDocument &doc ) const;
+    QgsRectangle layerBoundingBoxInProjectCrs( const QDomElement& layerElem, const QDomDocument& doc ) const;
 
-    bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
+    bool crsSetForLayer( const QDomElement& layerElement, QSet<QString>& crsSet ) const;
 
     QgsCoordinateReferenceSystem projectCrs() const;
 
@@ -74,9 +80,15 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    const QList<QDomElement>& projectLayerElements() const { return mProjectLayerElements; }
+    const QList<QDomElement>& projectLayerElements() const
+    {
+      return mProjectLayerElements;
+    }
 
-    const QList<QDomElement>& legendGroupElements() const { return mLegendGroupElements; }
+    const QList<QDomElement>& legendGroupElements() const
+    {
+      return mLegendGroupElements;
+    }
 
     QString projectTitle() const;
 
@@ -84,11 +96,23 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QDomElement propertiesElem() const;
 
-    const QSet<QString>& restrictedLayers() const { return mRestrictedLayers; }
-    bool useLayerIds() const { return mUseLayerIDs; }
+    const QSet<QString>& restrictedLayers() const
+    {
+      return mRestrictedLayers;
+    }
+    bool useLayerIds() const
+    {
+      return mUseLayerIDs;
+    }
 
-    const QHash< QString, QDomElement >& projectLayerElementsByName() const { return mProjectLayerElementsByName; }
-    const QHash< QString, QDomElement >& projectLayerElementsById() const { return mProjectLayerElementsById; }
+    const QHash< QString, QDomElement >& projectLayerElementsByName() const
+    {
+      return mProjectLayerElementsByName;
+    }
+    const QHash< QString, QDomElement >& projectLayerElementsById() const
+    {
+      return mProjectLayerElementsById;
+    }
 
     void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
@@ -115,7 +139,7 @@ class SERVER_EXPORT QgsServerProjectParser
     //! Add layers for vector joins
     void addJoinLayersForElement( const QDomElement& layerElem ) const;
 
-    void addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const;
+    void addValueRelationLayersForLayer( const QgsVectorLayer* vl ) const;
     //! Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'
     void addGetFeatureLayers( const QDomElement& layerElem ) const;
 
@@ -135,7 +159,10 @@ class SERVER_EXPORT QgsServerProjectParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 = false ) const;
 
-    QStringList customLayerOrder() const { return mCustomLayerOrder; }
+    QStringList customLayerOrder() const
+    {
+      return mCustomLayerOrder;
+    }
 
   private:
 

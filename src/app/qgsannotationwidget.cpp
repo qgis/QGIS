@@ -24,7 +24,7 @@
 #include <QColorDialog>
 
 
-QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( nullptr )
+QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget* parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( nullptr )
 {
   setupUi( this );
 

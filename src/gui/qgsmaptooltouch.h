@@ -48,9 +48,12 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
     //! Overridden Mouse double click event.
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
 
-    virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
+    virtual Flags flags() const override
+    {
+      return QgsMapTool::Transient | QgsMapTool::AllowZoomRect;
+    }
 
-    bool gestureEvent( QGestureEvent *event ) override;
+    bool gestureEvent( QGestureEvent* event ) override;
 
   private:
 
@@ -58,7 +61,7 @@ class GUI_EXPORT QgsMapToolTouch : public QgsMapTool
     bool mDragging;
     //! Flag to indicate a pinch gesture is taking place
     bool mPinching;
-    void pinchTriggered( QPinchGesture *gesture );
+    void pinchTriggered( QPinchGesture* gesture );
 };
 
 #endif

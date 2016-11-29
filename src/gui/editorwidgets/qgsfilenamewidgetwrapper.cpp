@@ -23,10 +23,10 @@
 #include <QGridLayout>
 
 QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLineEdit( nullptr )
-    , mPushButton( nullptr )
-    , mLabel( nullptr )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mLineEdit( nullptr )
+  , mPushButton( nullptr )
+  , mLabel( nullptr )
 {
 }
 

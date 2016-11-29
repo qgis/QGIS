@@ -18,20 +18,20 @@
 #include "dockModel.h"
 #include "topolError.h"
 
-DockModel::DockModel( ErrorList& theErrorList, QObject *parent = nullptr ) : mErrorlist( theErrorList )
+DockModel::DockModel( ErrorList& theErrorList, QObject* parent = nullptr ) : mErrorlist( theErrorList )
 {
   Q_UNUSED( parent );
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
 
 }
 
-int DockModel::rowCount( const QModelIndex &parent ) const
+int DockModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return mErrorlist.count();
 }
 
-int DockModel::columnCount( const QModelIndex &parent ) const
+int DockModel::columnCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent );
   return 3;
@@ -53,7 +53,7 @@ QVariant DockModel::headerData( int section, Qt::Orientation orientation, int ro
   else return QVariant();
 }
 
-QVariant DockModel::data( const QModelIndex &index, int role ) const
+QVariant DockModel::data( const QModelIndex& index, int role ) const
 {
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
@@ -102,7 +102,7 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
   return val.toString();
 }
 
-bool DockModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool DockModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
   Q_UNUSED( index );
   Q_UNUSED( value );
@@ -110,7 +110,7 @@ bool DockModel::setData( const QModelIndex &index, const QVariant &value, int ro
   return false;
 }
 
-Qt::ItemFlags DockModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags DockModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
@@ -125,7 +125,7 @@ void DockModel::resetModel()
   endResetModel();
 }
 
-void DockModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
+void DockModel::reload( const QModelIndex& index1, const QModelIndex& index2 )
 
 {
   emit dataChanged( index1, index2 );

@@ -33,11 +33,11 @@
 // QgsVariableEditorWidget
 //
 
-QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
-    : QWidget( parent )
-    , mContext( nullptr )
-    , mEditableScopeIndex( -1 )
-    , mShown( false )
+QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget* parent )
+  : QWidget( parent )
+  , mContext( nullptr )
+  , mEditableScopeIndex( -1 )
+  , mShown( false )
 {
   QVBoxLayout* verticalLayout = new QVBoxLayout( this );
   verticalLayout->setSpacing( 3 );
@@ -75,7 +75,7 @@ QgsVariableEditorWidget::~QgsVariableEditorWidget()
   settings.setValue( saveKey() + "column0width", mTreeWidget->header()->sectionSize( 0 ) );
 }
 
-void QgsVariableEditorWidget::showEvent( QShowEvent * event )
+void QgsVariableEditorWidget::showEvent( QShowEvent* event )
 {
   // initialise widget on first show event only
   if ( mShown )
@@ -247,11 +247,11 @@ void QgsVariableEditorWidget::selectionChanged()
 // VariableEditorTree
 //
 
-QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
-    : QTreeWidget( parent )
-    , mEditorDelegate( nullptr )
-    , mEditableScopeIndex( -1 )
-    , mContext( nullptr )
+QgsVariableEditorTree::QgsVariableEditorTree( QWidget* parent )
+  : QTreeWidget( parent )
+  , mEditorDelegate( nullptr )
+  , mEditableScopeIndex( -1 )
+  , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )
@@ -277,7 +277,7 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setItemDelegate( mEditorDelegate );
 }
 
-QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem *item ) const
+QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem* item ) const
 {
   if ( !item )
     return nullptr;
@@ -301,7 +301,7 @@ QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem
   }
 }
 
-QTreeWidgetItem* QgsVariableEditorTree::itemFromVariable( QgsExpressionContextScope *scope, const QString &name ) const
+QTreeWidgetItem* QgsVariableEditorTree::itemFromVariable( QgsExpressionContextScope* scope, const QString& name ) const
 {
   int contextIndex = mContext ? mContext->indexOfScope( scope ) : 0;
   if ( contextIndex < 0 )
@@ -440,7 +440,7 @@ void QgsVariableEditorTree::refreshScopeItems( QgsExpressionContextScope* scope,
   refreshScopeVariables( scope, scopeIndex );
 }
 
-void QgsVariableEditorTree::removeItem( QTreeWidgetItem *item )
+void QgsVariableEditorTree::removeItem( QTreeWidgetItem* item )
 {
   if ( !item )
     return;
@@ -451,7 +451,7 @@ void QgsVariableEditorTree::removeItem( QTreeWidgetItem *item )
   emit scopeChanged();
 }
 
-void QgsVariableEditorTree::renameItem( QTreeWidgetItem *item, const QString& name )
+void QgsVariableEditorTree::renameItem( QTreeWidgetItem* item, const QString& name )
 {
   if ( !item )
     return;
@@ -593,7 +593,7 @@ QModelIndex QgsVariableEditorTree::moveCursor( QAbstractItemView::CursorAction c
   return QTreeWidget::moveCursor( cursorAction, modifiers );
 }
 
-void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
+void QgsVariableEditorTree::keyPressEvent( QKeyEvent* event )
 {
   switch ( event->key() )
   {
@@ -601,7 +601,7 @@ void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
     case Qt::Key_Enter:
     case Qt::Key_Space:
     {
-      QTreeWidgetItem *item = currentItem();
+      QTreeWidgetItem* item = currentItem();
       if ( item && !item->parent() )
       {
         event->accept();
@@ -622,7 +622,7 @@ void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
   QTreeWidget::keyPressEvent( event );
 }
 
-void QgsVariableEditorTree::mousePressEvent( QMouseEvent *event )
+void QgsVariableEditorTree::mousePressEvent( QMouseEvent* event )
 {
   QTreeWidget::mousePressEvent( event );
   QTreeWidgetItem* item = itemAt( event->pos() );
@@ -663,9 +663,9 @@ void QgsVariableEditorTree::mousePressEvent( QMouseEvent *event )
 // VariableEditorDelegate
 //
 
-QWidget* VariableEditorDelegate::createEditor( QWidget *parent,
+QWidget* VariableEditorDelegate::createEditor( QWidget* parent,
     const QStyleOptionViewItem&,
-    const QModelIndex &index ) const
+    const QModelIndex& index ) const
 {
   if ( !mParentTree )
     return nullptr;
@@ -674,7 +674,7 @@ QWidget* VariableEditorDelegate::createEditor( QWidget *parent,
   if ( !index.parent().isValid() )
     return nullptr;
 
-  QTreeWidgetItem *item = mParentTree->indexToItem( index );
+  QTreeWidgetItem* item = mParentTree->indexToItem( index );
   QgsExpressionContextScope* scope = mParentTree->scopeFromItem( item );
   if ( !item || !scope )
     return nullptr;
@@ -685,26 +685,26 @@ QWidget* VariableEditorDelegate::createEditor( QWidget *parent,
   if ( scope != mParentTree->editableScope() || scope->isReadOnly( variableName ) )
     return nullptr;
 
-  QLineEdit *lineEdit = new QLineEdit( parent );
+  QLineEdit* lineEdit = new QLineEdit( parent );
   lineEdit->setText( index.column() == 0 ? variableName : mParentTree->editableScope()->variable( variableName ).toString() );
   lineEdit->setAutoFillBackground( true );
   return lineEdit;
 }
 
-void VariableEditorDelegate::updateEditorGeometry( QWidget *editor,
-    const QStyleOptionViewItem &option,
-    const QModelIndex & ) const
+void VariableEditorDelegate::updateEditorGeometry( QWidget* editor,
+    const QStyleOptionViewItem& option,
+    const QModelIndex& ) const
 {
   editor->setGeometry( option.rect.adjusted( 0, 0, 0, -1 ) );
 }
 
-QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
-                                        const QModelIndex &index ) const
+QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem& option,
+                                        const QModelIndex& index ) const
 {
   return QItemDelegate::sizeHint( option, index ) + QSize( 3, 4 );
 }
 
-void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel *model,
+void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel* model,
     const QModelIndex& index ) const
 {
   Q_UNUSED( model );
@@ -712,8 +712,8 @@ void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel *
   if ( !mParentTree )
     return;
 
-  QTreeWidgetItem *item = mParentTree->indexToItem( index );
-  QgsExpressionContextScope *scope = mParentTree->scopeFromItem( item );
+  QTreeWidgetItem* item = mParentTree->indexToItem( index );
+  QgsExpressionContextScope* scope = mParentTree->scopeFromItem( item );
   if ( !item || !scope )
     return;
 

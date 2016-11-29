@@ -39,7 +39,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * @brief Widget to control a layers transparency and related options
      */
-    QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas* canvas, QWidget* parent = 0 );
     ~QgsRasterTransparencyWidget();
 
   public slots:
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void pixelSelected( const QgsPoint& canvasPoint );
 
     //! Transparency cell changed
-    void transparencyCellTextEdited( const QString & text );
+    void transparencyCellTextEdited( const QString& text );
 
     //! \brief slot executed when the transparency level changes.
     void sliderTransparency_valueChanged( int theValue );

@@ -38,7 +38,7 @@ class QString;
 class QStringList;
 
 void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc,
-    const QStringList &crsList, const QStringList& constrainedCrsList )
+    const QStringList& crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElement.isNull() )
   {
@@ -78,7 +78,7 @@ void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement& layerElement, c
 }
 
 void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-    const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList, const QStringList& constrainedCrsList )
+    const QgsCoordinateReferenceSystem& layerCRS, const QStringList& crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElem.isNull() )
   {
@@ -100,7 +100,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     {
       wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
     }
-    catch ( const QgsCsException & )
+    catch ( const QgsCsException& )
     {
       wgs84BoundingRect = QgsRectangle();
     }
@@ -208,7 +208,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
     {
       crsExtent = crsTransform.transformBoundingBox( layerExtent );
     }
-    catch ( QgsCsException &cse )
+    catch ( QgsCsException& cse )
     {
       Q_UNUSED( cse );
       return;
@@ -260,9 +260,9 @@ QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLaye
 {
   QStringList crsNumbers;
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
+  sqlite3*      myDatabase;
+  const char*   myTail;
+  sqlite3_stmt* myPreparedStatement;
   int           myResult;
 
   //check the db is available
@@ -279,7 +279,7 @@ QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLaye
   {
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      crsNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      crsNumbers.push_back( QString::fromUtf8(( char* )sqlite3_column_text( myPreparedStatement, 0 ) ) );
     }
   }
   sqlite3_finalize( myPreparedStatement );
