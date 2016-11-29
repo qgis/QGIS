@@ -2160,6 +2160,12 @@ bool QgsWmsServer::infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint,
     return false;
   }
 
+  //check if i, j are in the pixel range of the image
+  if ( i < 0 || i > mapRenderer->width() || j < 0 || j > mapRenderer->height() )
+  {
+    throw QgsMapServiceException( "InvalidPoint", "I/J parameters not within the pixel range" );
+  }
+
   double xRes = mapRenderer->extent().width() / mapRenderer->width();
   double yRes = mapRenderer->extent().height() / mapRenderer->height();
   infoPoint->setX( mapRenderer->extent().xMinimum() + i * xRes + xRes / 2.0 );
