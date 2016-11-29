@@ -268,6 +268,13 @@ QgsSymbolList QgsPointDistanceRenderer::originalSymbolsForFeature( QgsFeature& f
   return mRenderer->originalSymbolsForFeature( feat, context );
 }
 
+QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( QgsFeature& feat, QgsRenderContext& context )
+{
+  if ( !mRenderer )
+    return QSet< QString >() << QString();
+  return mRenderer->legendKeysForFeature( feat, context );
+}
+
 bool QgsPointDistanceRenderer::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
