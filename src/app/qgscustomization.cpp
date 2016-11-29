@@ -569,7 +569,7 @@ void QgsCustomization::createTreeItemToolbars()
 void QgsCustomization::createTreeItemDocks()
 {
   QStringList data;
-  data << "Panels";
+  data << "Docks";
 
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
