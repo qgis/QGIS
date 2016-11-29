@@ -110,6 +110,14 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertTrue(bad_task.exception)
         self.assertEqual(bad_task.status(), QgsTask.Terminated)
 
+    def testTaskFromFunctionWithFlags(self):
+        """ test creating task from function with flags"""
+
+        task = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.Flags())
+        self.assertFalse(task.canCancel())
+        task2 = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.CanCancel)
+        self.assertTrue(task2.canCancel())
+
     def testTaskFromFunctionWithKwargs(self):
         """ test creating task from function using kwargs """
 

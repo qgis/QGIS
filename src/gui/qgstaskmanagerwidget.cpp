@@ -37,12 +37,6 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
 
   QVBoxLayout* vLayout = new QVBoxLayout();
   vLayout->setMargin( 0 );
-#if 0
-  QToolBar* toolbar = new QToolBar();
-  toolbar->setIconSize( QSize( 16, 16 ) );
-  toolbar->addAction( new QAction( "test", this ) );
-  vLayout->addWidget( toolbar );
-#endif
   mTreeView = new QTreeView();
   mModel = new QgsTaskManagerModel( manager, this );
   mTreeView->setModel( mModel );
@@ -53,7 +47,6 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
   vLayout->addWidget( mTreeView );
-
 
   setLayout( vLayout );
 }
@@ -202,10 +195,11 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
     return flags;
   }
 
+  QgsTask* task = indexToTask( index );
   if ( index.column() == Status )
   {
-    //if ( static_cast< QgsTask::TaskStatus >( data( index, StatusRole ).toInt() ) == QgsTask::Running )
-    flags = flags | Qt::ItemIsEditable;
+    if ( task && task->canCancel() )
+      flags = flags | Qt::ItemIsEditable;
   }
   return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -225,7 +219,7 @@ bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &val
   {
     case Status:
     {
-      if ( value.toBool() )
+      if ( value.toBool() && task->canCancel() )
         task->cancel();
       return true;
     }
@@ -388,8 +382,8 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
     : QgsFloatingWidget( parent )
 {
   setLayout( new QVBoxLayout() );
-  setMinimumSize( 250, 150 );
   QgsTaskManagerWidget* w = new QgsTaskManagerWidget( manager );
+  setMinimumSize( w->sizeHint() );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
                  "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );

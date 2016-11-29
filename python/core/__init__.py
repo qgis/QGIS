@@ -199,12 +199,12 @@ def copy_func(f):
 
 class QgsTaskWrapper(QgsTask):
 
-    def __init__(self, description, function, on_finished, *args, **kwargs):
-        QgsTask.__init__(self, description)
+    def __init__(self, description, flags, function, on_finished, *args, **kwargs):
+        QgsTask.__init__(self, description, flags)
         self.args = args
         self.kwargs = kwargs
         self.function = copy_func(function)
-        self.on_finished = copy_func(on_finished)
+        self.on_finished = copy_func(on_finished) if on_finished else None
         self.returned_values = None
         self.exception = None
 
@@ -235,7 +235,8 @@ class QgsTaskWrapper(QgsTask):
             self.exception = ex
 
 
-def fromFunction(cls, description, function, *args, on_finished=None, **kwargs):
-    return QgsTaskWrapper(description, function, on_finished, *args, **kwargs)
+def fromFunction(cls, description, function, *args, on_finished=None, flags=QgsTask.AllFlags, **kwargs):
+    assert function
+    return QgsTaskWrapper(description, flags, function, on_finished, *args, **kwargs)
 
 QgsTask.fromFunction = classmethod(fromFunction)
