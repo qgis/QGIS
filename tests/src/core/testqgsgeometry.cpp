@@ -3050,6 +3050,31 @@ void TestQgsGeometry::polygon()
   QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.12, 0.5 ), -0.02, 0.0000000001 );
   QGSCOMPARENEAR( pd.pointDistanceToBoundary( -0.1, 0.5 ), -0.1, 0.0000000001 );
 
+  // remove interior rings
+  QgsLineString removeRingsExt;
+  removeRingsExt.setPoints( QList<QgsPointV2>() << QgsPointV2( 0, 0 ) << QgsPointV2( 1, 0 ) << QgsPointV2( 1, 1 )  << QgsPointV2( 0, 0 ) );
+  QgsPolygonV2 removeRings1;
+  removeRings1.removeInteriorRings();
+
+  removeRings1.setExteriorRing( boundary1.clone() );
+  removeRings1.removeInteriorRings();
+  QCOMPARE( removeRings1.numInteriorRings(), 0 );
+
+  // add interior rings
+  QgsLineString removeRingsRing1;
+  removeRingsRing1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0.1, 0.1 ) << QgsPointV2( 0.2, 0.1 ) << QgsPointV2( 0.2, 0.2 )  << QgsPointV2( 0.1, 0.1 ) );
+  QgsLineString removeRingsRing2;
+  removeRingsRing1.setPoints( QList<QgsPointV2>() << QgsPointV2( 0.6, 0.8 ) << QgsPointV2( 0.9, 0.8 ) << QgsPointV2( 0.9, 0.9 )  << QgsPointV2( 0.6, 0.8 ) );
+  removeRings1.setInteriorRings( QList< QgsCurve* >() << removeRingsRing1.clone() << removeRingsRing2.clone() );
+
+  // remove ring with size filter
+  removeRings1.removeInteriorRings( 0.0075 );
+  QCOMPARE( removeRings1.numInteriorRings(), 1 );
+
+  // remove ring with no size filter
+  removeRings1.removeInteriorRings();
+  QCOMPARE( removeRings1.numInteriorRings(), 0 );
+
 }
 
 void TestQgsGeometry::multiPoint()

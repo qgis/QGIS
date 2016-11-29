@@ -3620,5 +3620,31 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "Extend line: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testRemoveRings(self):
+        empty = QgsGeometry()
+        self.assertFalse(empty.removeInteriorRings())
+
+        # not a polygon
+        point = QgsGeometry.fromWkt('Point(1 2)')
+        self.assertFalse(point.removeInteriorRings())
+
+        # polygon
+        polygon = QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 0),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.1))')
+        removed = polygon.removeInteriorRings()
+        exp = 'Polygon((0 0, 1 0, 1 1, 0 0))'
+        result = removed.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Extend line: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # multipolygon
+        multipolygon = QgsGeometry.fromWkt('MultiPolygon(((0 0, 1 0, 1 1, 0 0),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.1)),'
+                                           '((10 0, 11 0, 11 1, 10 0),(10.1 10.1, 10.2 0.1, 10.2 0.2, 10.1 0.1)))')
+        removed = multipolygon.removeInteriorRings()
+        exp = 'MultiPolygon(((0 0, 1 0, 1 1, 0 0)),((10 0, 11 0, 11 1, 10 0)))'
+        result = removed.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Extend line: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+
 if __name__ == '__main__':
     unittest.main()
