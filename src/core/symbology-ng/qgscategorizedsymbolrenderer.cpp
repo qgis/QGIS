@@ -152,7 +152,6 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStr
 QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString& attrName, const QgsCategoryList& categories )
     : QgsFeatureRenderer( QStringLiteral( "categorizedSymbol" ) )
     , mAttrName( attrName )
-    , mInvertedColorRamp( false )
     , mAttrNum( -1 )
     , mCounting( false )
 {
@@ -472,7 +471,6 @@ QgsCategorizedSymbolRenderer* QgsCategorizedSymbolRenderer::clone() const
   if ( mSourceColorRamp.data() )
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
-    r->setInvertedColorRamp( mInvertedColorRamp );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
 
@@ -631,9 +629,6 @@ QgsFeatureRenderer* QgsCategorizedSymbolRenderer::create( QDomElement& element )
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
   {
     r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
-    QDomElement invertedColorRampElem = element.firstChildElement( QStringLiteral( "invertedcolorramp" ) );
-    if ( !invertedColorRampElem.isNull() )
-      r->setInvertedColorRamp( invertedColorRampElem.attribute( QStringLiteral( "value" ) ) == QLatin1String( "1" ) );
   }
 
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
@@ -721,9 +716,6 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument& doc )
   {
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mSourceColorRamp.data(), doc );
     rendererElem.appendChild( colorRampElem );
-    QDomElement invertedElem = doc.createElement( QStringLiteral( "invertedcolorramp" ) );
-    invertedElem.setAttribute( QStringLiteral( "value" ), mInvertedColorRamp );
-    rendererElem.appendChild( invertedElem );
   }
 
   QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
@@ -864,10 +856,9 @@ void QgsCategorizedSymbolRenderer::setSourceColorRamp( QgsColorRamp* ramp )
   mSourceColorRamp.reset( ramp );
 }
 
-void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp* ramp, bool inverted )
+void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp* ramp )
 {
   setSourceColorRamp( ramp );
-  setInvertedColorRamp( inverted );
   double num = mCategories.count() - 1;
   double count = 0;
 
@@ -882,7 +873,6 @@ void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp* ramp, bool inv
   Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
   {
     double value = count / num;
-    if ( mInvertedColorRamp ) value = 1.0 - value;
     cat.symbol()->setColor( mSourceColorRamp->color( value ) );
     count += 1;
   }

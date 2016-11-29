@@ -157,16 +157,11 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
       */
     void setSourceColorRamp( QgsColorRamp* ramp /Transfer/ );
 
-    //! @note added in 2.1
-    bool invertedColorRamp();
-    void setInvertedColorRamp( bool inverted );
-
     /** Update the color ramp used and all symbols colors.
       * @param ramp color ramp. Ownership is transferred to the renderer
-      * @param inverted set to true to invert ramp colors
       * @note added in 2.5
       */
-    void updateColorRamp( QgsColorRamp* ramp /Transfer/, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp /Transfer/ );
 
     //! items of symbology items in legend should be checkable
     //! @note added in 2.5

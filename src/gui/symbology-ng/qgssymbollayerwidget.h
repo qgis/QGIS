@@ -314,7 +314,11 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
   public slots:
     void setColor( const QColor& color );
     void setColor2( const QColor& color );
+
+    /** Applies the color ramp passed on by the color ramp button
+     */
     void applyColorRamp();
+
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );

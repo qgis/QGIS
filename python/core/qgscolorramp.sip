@@ -48,7 +48,7 @@ class QgsColorRamp
      */
     virtual QString type() const = 0;
 
-    virtual void invert() = 0;
+    virtual void invert();
 
     /** Creates a clone of the color ramp.
      */
@@ -226,8 +226,6 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
 
     virtual QString type() const;
 
-   virtual void invert();
-
     virtual QgsLimitedRandomColorRamp* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
@@ -286,8 +284,6 @@ class QgsRandomColorRamp : QgsColorRamp
     virtual void setTotalColorCount( const int colorCount );
 
     QString type() const;
-
-    virtual void invert();
 
     virtual QgsRandomColorRamp* clone() const /Factory/;
 
