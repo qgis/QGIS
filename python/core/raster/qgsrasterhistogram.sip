@@ -4,6 +4,9 @@ class QgsRasterHistogram
 #include <qgsrasterhistogram.h>
 %End
   public:
+
+    typedef QVector<int> HistogramVector;
+
     QgsRasterHistogram();
 
     /** Compares region, size etc. not histogram itself */
@@ -22,9 +25,9 @@ class QgsRasterHistogram
     bool includeOutOfRange;
 
     /** \brief Store the histogram for a given layer
-      * @note not available via python binding
-      */
-    // HistogramVector histogramVector;
+     * @note added in version 3.0
+     */
+    HistogramVector histogramVector;
 
     /** \brief The maximum histogram value. */
     double maximum;
