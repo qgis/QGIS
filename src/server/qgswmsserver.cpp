@@ -1964,7 +1964,7 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
 
   //background  color
   QString bgColorString = mParameters.value( "BGCOLOR" );
-  if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) );
+  if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) )
   {
     bgColorString.replace( 0, 2, "#" );
   }
