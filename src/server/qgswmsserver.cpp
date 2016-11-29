@@ -1962,6 +1962,19 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
   //transparent parameter
   bool transparent = mParameters.value( "TRANSPARENT" ).compare( "true", Qt::CaseInsensitive ) == 0;
 
+  //background  color
+  QString bgColorString = mParameters.value( "BGCOLOR" );
+  if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) );
+  {
+    bgColorString.replace( 0, 2, "#" );
+  }
+  QColor backgroundColor;
+  backgroundColor.setNamedColor( bgColorString );
+  if ( !backgroundColor.isValid() )
+  {
+    backgroundColor = QColor( Qt::white );
+  }
+
   //use alpha channel only if necessary because it slows down performance
   if ( transparent && !jpeg )
   {
@@ -1971,7 +1984,7 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
   else
   {
     theImage = new QImage( width, height, QImage::Format_RGB32 );
-    theImage->fill( qRgb( 255, 255, 255 ) );
+    theImage->fill( backgroundColor );
   }
 
   if ( !theImage )
