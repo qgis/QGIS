@@ -694,6 +694,10 @@ static QgsRectangle _parseBBOX( const QString &bboxStr, bool &ok )
   }
 
   ok = true;
+  if ( d[2] <= d[0] || d[3] <= d[1] )
+  {
+    throw QgsMapServiceException( "InvalidParameterValue", "BBOX is empty" );
+  }
   return QgsRectangle( d[0], d[1], d[2], d[3] );
 }
 
@@ -2042,6 +2046,11 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
   {
     //throw a service exception
     throw QgsMapServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
+  }
+
+  if ( mapExtent.isEmpty() )
+  {
+    throw QgsMapServiceException( "InvalidParameterValue", "BBOX is empty" );
   }
 
   QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceDegrees;
