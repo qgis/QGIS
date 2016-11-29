@@ -58,12 +58,14 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
     QgsTaskManagerModel* mModel;
 };
 
+///@cond PRIVATE
+
 /**
  * \ingroup gui
  * \class QgsTaskManagerFloatingWidget
  * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
  * @see QgsTaskManager
- * \note added in QGIS 2.16
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
 {
@@ -116,14 +118,12 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
     QgsTaskManager* mManager;
 };
 
-
-
 /**
  * \ingroup gui
  * \class QgsTaskManagerModel
  * A model representing a QgsTaskManager.
  * @see QgsTaskManager
- * \note added in QGIS 2.16
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 {
@@ -152,6 +152,12 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
      */
     QgsTask* indexToTask( const QModelIndex& index ) const;
 
+    //! Model roles
+    enum Roles
+    {
+      StatusRole = Qt::UserRole, //!< Status role
+    };
+
   private slots:
 
     void taskAdded( long id );
@@ -166,11 +172,6 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
       Description = 0,
       Progress = 1,
       Status = 2,
-    };
-
-    enum Roles
-    {
-      StatusRole = Qt::UserRole,
     };
 
     QgsTaskManager* mManager;
@@ -203,5 +204,7 @@ class GUI_EXPORT QgsTaskStatusDelegate : public QStyledItemDelegate
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
 };
+
+///@endcond
 
 #endif //QGSTASKMANAGERWIDGET_H

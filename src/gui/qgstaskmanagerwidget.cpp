@@ -25,6 +25,7 @@
 #include <QToolBar>
 #include <QProgressBar>
 #include <QAction>
+#include <QHeaderView>
 
 //
 // QgsTaskManagerWidget
@@ -45,6 +46,11 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mTreeView->setColumnWidth( 2, 28 );
+  mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+  mTreeView->header()->setStretchLastSection( false );
+  mTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
 
   vLayout->addWidget( mTreeView );
 
@@ -83,7 +89,7 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex&, int start, int
   }
 }
 
-
+///@cond PRIVATE
 //
 // QgsTaskManagerModel
 //
@@ -170,13 +176,42 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
           case Progress:
             return task->progress();
           case Status:
-            return static_cast<int>( task->status() );
+            // delegate shows status
+            return QVariant();
           default:
             return QVariant();
         }
 
       case StatusRole:
         return static_cast<int>( task->status() );
+
+      case Qt::ToolTipRole:
+        switch ( index.column() )
+        {
+          case Description:
+            return task->description();
+          case Progress:
+          case Status:
+          {
+            switch ( task->status() )
+            {
+              case QgsTask::Queued:
+                return tr( "Queued" );
+              case QgsTask::OnHold:
+                return tr( "On hold" );
+              case QgsTask::Running:
+                return tr( "Running" );
+              case QgsTask::Complete:
+                return tr( "Complete" );
+              case QgsTask::Terminated:
+                return tr( "Terminated" );
+            }
+            return QVariant();
+          }
+          default:
+            return QVariant();
+        }
+
 
       default:
         return QVariant();
@@ -331,7 +366,7 @@ void QgsTaskStatusDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   QStyledItemDelegate::paint( painter, option, index );
 
   QIcon icon;
-  switch ( static_cast< QgsTask::TaskStatus >( index.data().toInt() ) )
+  switch ( static_cast< QgsTask::TaskStatus >( index.data( QgsTaskManagerModel::StatusRole ).toInt() ) )
   {
     case QgsTask::Queued:
     case QgsTask::OnHold:
@@ -378,16 +413,18 @@ bool QgsTaskStatusDelegate::editorEvent( QEvent *event, QAbstractItemModel *mode
   return false;
 }
 
+
 QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *manager, QWidget *parent )
     : QgsFloatingWidget( parent )
 {
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget* w = new QgsTaskManagerWidget( manager );
-  setMinimumSize( w->sizeHint() );
+  setMinimumSize( 350, 270 );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
                  "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );
 }
+
 
 QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
     : QToolButton( parent )
@@ -473,3 +510,4 @@ void QgsTaskManagerStatusBarWidget::showButton()
     show();
   }
 }
+///@endcond
