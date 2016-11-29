@@ -167,16 +167,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
       */
     void setSourceColorRamp( QgsColorRamp* ramp );
 
-    //! @note added in 2.1
-    bool invertedColorRamp() { return mInvertedColorRamp; }
-    void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
-
     /** Update the color ramp used and all symbols colors.
       * @param ramp color ramp. Ownership is transferred to the renderer
-      * @param inverted set to true to invert ramp colors
       * @note added in 2.5
       */
-    void updateColorRamp( QgsColorRamp* ramp, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp );
 
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString& key ) override;
@@ -194,7 +189,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsCategoryList mCategories;
     QScopedPointer<QgsSymbol> mSourceSymbol;
     QScopedPointer<QgsColorRamp> mSourceColorRamp;
-    bool mInvertedColorRamp;
     QScopedPointer<QgsExpression> mExpression;
 
     //! attribute index (derived from attribute name in startRender)

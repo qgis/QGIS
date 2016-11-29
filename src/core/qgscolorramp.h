@@ -51,7 +51,9 @@ class CORE_EXPORT QgsColorRamp
     virtual QString type() const = 0;
 
 
-    virtual void invert() = 0;
+    /** Inverts the ordering of the color ramp.
+     */
+    virtual void invert() {}
 
     /** Creates a clone of the color ramp.
      */
@@ -259,7 +261,6 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "random" ); }
-    virtual void invert() override { return; }
     virtual QgsLimitedRandomColorRamp* clone() const override;
     virtual QgsStringMap properties() const override;
     int count() const override { return mCount; }
@@ -374,8 +375,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
     virtual void setTotalColorCount( const int colorCount );
 
     QString type() const override;
-
-    virtual void invert() override { return; }
 
     QgsRandomColorRamp* clone() const override;
 
