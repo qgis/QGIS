@@ -2038,6 +2038,11 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   QGis::UnitType mapUnits = QGis::Degrees;
 
   QString crs = mParameters.value( "CRS", mParameters.value( "SRS" ) );
+  if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
+  {
+    crs = QString( "EPSG:4326" );
+    mapExtent.invert();
+  }
 
   QgsCoordinateReferenceSystem outputCRS;
 
