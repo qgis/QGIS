@@ -80,12 +80,19 @@ void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement& layerElement, c
   layerElement.insertAfter( crsElement, precedingElement );
 }
 
-void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
+void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& lExtent,
     const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElem.isNull() )
   {
     return;
+  }
+
+  QgsRectangle layerExtent = lExtent;
+  if ( qgsDoubleNear( layerExtent.xMinimum(), layerExtent.xMaximum() ) || qgsDoubleNear( layerExtent.yMinimum(), layerExtent.yMaximum() ) )
+  {
+    //layer bbox cannot be empty
+    layerExtent.grow( 0.000001 );
   }
 
   QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
