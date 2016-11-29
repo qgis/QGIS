@@ -84,6 +84,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     void stopRender( QgsRenderContext& context ) override;
