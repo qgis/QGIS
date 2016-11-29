@@ -423,6 +423,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     hrefString = serviceUrl();
   }
 
+  //href needs to be a prefix
+  if ( !hrefString.endsWith( "?" ) && !hrefString.endsWith( "&" ) )
+  {
+    hrefString.append( hrefString.contains( "?" ) ? "&" : "?" );
+  }
+
   if ( version == "1.1.1" )
   {
     doc = QDomDocument( "WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'" );  //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
