@@ -221,9 +221,6 @@ class CORE_EXPORT QgsTask : public QObject, public QRunnable
      */
     void taskTerminated();
 
-    void subTaskComplete();
-
-
   protected:
 
     /**
