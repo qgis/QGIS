@@ -34,25 +34,35 @@ QgsTask::QgsTask( const QString &name, const Flags& flags )
     , mTotalProgress( 0.0 )
     , mShouldTerminate( false )
     , mStartCount( 0 )
-{}
+{
+  setAutoDelete( false );
+}
 
 QgsTask::~QgsTask()
 {
+  Q_ASSERT_X( mStatus == Queued || mStatus == Terminated || mStatus == Complete, "delete", QString( "status was %1" ).arg( mStatus ).toLatin1() );
+
+  QThreadPool::globalInstance()->cancel( this );
+
   Q_FOREACH ( const SubTask& subTask, mSubTasks )
   {
     delete subTask.task;
   }
 }
 
-void QgsTask::start()
+void QgsTask::run()
 {
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
+
+  if ( mStatus != Queued )
+    return;
+
   mStatus = Running;
   mOverallStatus = Running;
   emit statusChanged( Running );
   emit begun();
-  TaskResult result = run();
+  TaskResult result = _run();
   switch ( result )
   {
     case ResultSuccess:
@@ -74,6 +84,8 @@ void QgsTask::start()
 void QgsTask::cancel()
 {
   mShouldTerminate = true;
+
+  QThreadPool::globalInstance()->cancel( this );
   if ( mStatus == Queued || mStatus == OnHold )
   {
     // immediately terminate unstarted jobs
@@ -297,13 +309,14 @@ QgsTaskManager::~QgsTaskManager()
   cancelAll();
 
   //then clean them up, including waiting for them to terminate
-  mParentTaskMutex->lockForRead();
-  QSet< QgsTask* > parents = mParentTasks;
-  parents.detach();
-  mParentTaskMutex->unlock();
-  Q_FOREACH ( QgsTask* task, parents )
+  mTaskMutex->lockForRead();
+  QMap< long, TaskInfo > tasks = mTasks;
+  mTasks.detach();
+  mTaskMutex->unlock();
+  QMap< long, TaskInfo >::const_iterator it = tasks.constBegin();
+  for ( ; it != tasks.constEnd(); ++it )
   {
-    cleanupAndDeleteTask( task );
+    cleanupAndDeleteTask( it.value().task );
   }
 
   delete mTaskMutex;
@@ -437,10 +450,7 @@ void QgsTaskManager::cancelAll()
 
   Q_FOREACH ( QgsTask* task, parents )
   {
-    if ( task->isActive() )
-    {
-      task->cancel();
-    }
+    task->cancel();
   }
 }
 
@@ -640,6 +650,10 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
     return false;
 
   long id = taskId( task );
+  if ( id < 0 )
+    return false;
+
+  task->disconnect( this );
 
   mDependenciesMutex->lockForWrite();
   if ( mTaskDependencies.contains( id ) )
@@ -668,20 +682,24 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   mLayerDependencies.remove( id );
   mLayerDependenciesMutex->unlock();
 
-  if ( task->isActive() )
+  if ( task->status() != QgsTask::Complete || task->status() != QgsTask::Terminated )
   {
-    task->cancel();
     if ( isParent )
     {
       // delete task when it's terminated
       connect( task, &QgsTask::taskCompleted, task, &QgsTask::deleteLater );
       connect( task, &QgsTask::taskTerminated, task, &QgsTask::deleteLater );
     }
+    task->cancel();
   }
-  else if ( isParent )
+  else
   {
-    //task already finished, kill it
-    task->deleteLater();
+    QThreadPool::globalInstance()->cancel( task );
+    if ( isParent )
+    {
+      //task already finished, kill it
+      task->deleteLater();
+    }
   }
 
   // at this stage (hopefully) dependent tasks have been cancelled or queued
@@ -700,9 +718,6 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
 
 void QgsTaskManager::processQueue()
 {
-  static QMutex processMutex;
-
-  processMutex.lock();
   int prevActiveCount = countActiveTasks();
   mActiveTaskMutex->lockForWrite();
   mActiveTasks.clear();
@@ -710,10 +725,9 @@ void QgsTaskManager::processQueue()
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask* task = it.value().task;
-    if ( !it.value().added && task && task->mStatus == QgsTask::Queued && dependenciesSatisified( it.key() ) )
+    if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisified( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
-      it.value().added = true;
-      it.value().future = QtConcurrent::run( task, &QgsTask::start );
+      QThreadPool::globalInstance()->start( task );
     }
 
     if ( task && ( task->mStatus != QgsTask::Complete && task->mStatus != QgsTask::Terminated ) )
@@ -723,7 +737,6 @@ void QgsTaskManager::processQueue()
   }
   mTaskMutex->unlock();
   mActiveTaskMutex->unlock();
-  processMutex.unlock();
 
   mParentTaskMutex->lockForRead();
   bool allFinished = mActiveTasks.isEmpty();

@@ -180,7 +180,6 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   Q_UNUSED( role );
-  return false;
 
   if ( !index.isValid() )
     return false;

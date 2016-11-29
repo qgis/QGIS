@@ -14,7 +14,7 @@
  *
  * \note Added in version 3.0
  */
-class QgsTask : QObject
+class QgsTask : QObject, QRunnable
 {
 
 %TypeHeaderCode
@@ -93,7 +93,7 @@ class QgsTask : QObject
      * then this method should not be called directly, instead it is left to the
      * task manager to start the task when appropriate.
      */
-    void start();
+    void run();
 
     /**
      * Notifies the task that it should terminate. Calling this is not guaranteed
@@ -212,7 +212,7 @@ class QgsTask : QObject
      * @see completed()
      * @see terminated()
      */
-    virtual TaskResult run() = 0;
+    virtual TaskResult _run() = 0;
 
     /**
      * If the task is managed by a QgsTaskManager, this will be called after the
@@ -295,7 +295,7 @@ class QgsTaskManager : QObject
       /**
        * Constructor for TaskDefinition. Ownership of the task is transferred to the definition.
        */
-      TaskDefinition( QgsTask* task, QgsTaskList dependencies = QgsTaskList() );
+      explicit TaskDefinition( QgsTask* task, QgsTaskList dependencies = QgsTaskList() );
 
       //! Task
       QgsTask* task;
