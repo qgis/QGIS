@@ -83,9 +83,14 @@ void QgsTask::run()
 
 void QgsTask::cancel()
 {
-  mShouldTerminate = true;
+#if QT_VERSION < 0x050500
+  //can't cancel with qt < 5.5
+  return;
+#else
 
+  mShouldTerminate = true;
   QThreadPool::globalInstance()->cancel( this );
+
   if ( mStatus == Queued || mStatus == OnHold )
   {
     // immediately terminate unstarted jobs
@@ -100,6 +105,7 @@ void QgsTask::cancel()
   {
     subTask.task->cancel();
   }
+#endif
 }
 
 void QgsTask::hold()
@@ -694,7 +700,9 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
   else
   {
+#if QT_VERSION >= 0x050500
     QThreadPool::globalInstance()->cancel( task );
+#endif
     if ( isParent )
     {
       //task already finished, kill it
