@@ -584,7 +584,7 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QD
   //Fees
   QDomElement feesElem = propertiesElement.firstChildElement( "WMSFees" );
   QDomElement wmsFeesElem = doc.createElement( "Fees" );
-  QDomText wmsFeesText = doc.createTextNode( "conditions unknown" ); // default value if access conditions are unknown
+  QDomText wmsFeesText = doc.createTextNode( "None" ); // default value if access conditions are unknown
   if ( !feesElem.isNull() && !feesElem.text().isEmpty() )
   {
     wmsFeesText = doc.createTextNode( feesElem.text() );
