@@ -476,7 +476,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   //wms:GetCapabilities
   elem = doc.createElement( "GetCapabilities"/*wms:GetCapabilities*/ );
-  appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.wms_xml" : "text/xml" ) );
+  appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.wms_xml" : "XML" ) );
   elem.appendChild( dcpTypeElement );
   requestElement.appendChild( elem );
 
