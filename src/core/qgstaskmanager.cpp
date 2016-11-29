@@ -40,7 +40,7 @@ QgsTask::QgsTask( const QString &name, const Flags& flags )
 
 QgsTask::~QgsTask()
 {
-  Q_ASSERT_X( mStatus == Queued || mStatus == Terminated || mStatus == Complete, "delete", QString( "status was %1" ).arg( mStatus ).toLatin1() );
+  Q_ASSERT_X( mStatus != Running, "delete", QString( "status was %1" ).arg( mStatus ).toLatin1() );
 
   QThreadPool::globalInstance()->cancel( this );
 
@@ -333,25 +333,26 @@ QgsTaskManager::~QgsTaskManager()
   delete mLayerDependenciesMutex;
 }
 
-long QgsTaskManager::addTask( QgsTask* task )
+long QgsTaskManager::addTask( QgsTask* task, int priority )
 {
-  return addTaskPrivate( task, QgsTaskList(), false );
+  return addTaskPrivate( task, QgsTaskList(), false, priority );
 }
 
-long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition& definition )
+long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition& definition, int priority )
 {
   return addTaskPrivate( definition.task,
                          definition.dependencies,
-                         false );
+                         false,
+                         priority );
 }
 
 
-long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bool isSubTask )
+long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bool isSubTask, int priority )
 {
   long taskId = mNextTaskId++;
 
   mTaskMutex->lockForWrite();
-  mTasks.insert( taskId, task );
+  mTasks.insert( taskId, TaskInfo( task, priority ) );
   mTaskMutex->unlock();
 
   if ( isSubTask )
@@ -387,7 +388,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bo
         break;
     }
     //recursively add sub tasks
-    addTaskPrivate( subTask.task, subTask.dependencies, true );
+    addTaskPrivate( subTask.task, subTask.dependencies, true, priority );
   }
 
   if ( !dependencies.isEmpty() )
@@ -735,7 +736,7 @@ void QgsTaskManager::processQueue()
     QgsTask* task = it.value().task;
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisified( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
-      QThreadPool::globalInstance()->start( task );
+      QThreadPool::globalInstance()->start( task, it.value().priority );
     }
 
     if ( task && ( task->mStatus != QgsTask::Complete && task->mStatus != QgsTask::Terminated ) )

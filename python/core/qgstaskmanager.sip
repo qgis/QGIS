@@ -311,18 +311,21 @@ class QgsTaskManager : QObject
 
     /** Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
-     * the task.
+     * the task. The priority argument can be used to control the run queue's
+     * order of execution.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task /Transfer/ );
+    long addTask( QgsTask* task /Transfer/, int priority = 0 );
 
     /**
      * Adds a task to the manager, using a full task definition (including dependancy
      * handling). Ownership of the task is transferred to the manager, and the task
-     * manager will be responsible for starting the task.
+     * manager will be responsible for starting the task. The priority argument can
+     * be used to control the run queue's order of execution.
      * @returns unique task ID
      */
-    long addTask( const TaskDefinition& task /Transfer/ );
+    long addTask( const TaskDefinition& task /Transfer/, int priority = 0 );
+
 
     /** Returns the task with matching ID.
      * @param id task ID

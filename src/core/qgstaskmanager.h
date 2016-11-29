@@ -386,18 +386,20 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     /** Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
-     * the task.
+     * the task. The priority argument can be used to control the run queue's
+     * order of execution.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task );
+    long addTask( QgsTask* task, int priority = 0 );
 
     /**
      * Adds a task to the manager, using a full task definition (including dependancy
      * handling). Ownership of the task is transferred to the manager, and the task
-     * manager will be responsible for starting the task.
+     * manager will be responsible for starting the task. The priority argument can
+     * be used to control the run queue's order of execution.
      * @returns unique task ID
      */
-    long addTask( const TaskDefinition& task );
+    long addTask( const TaskDefinition& task, int priority = 0 );
 
     /** Returns the task with matching ID.
      * @param id task ID
@@ -498,12 +500,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     struct TaskInfo
     {
-      TaskInfo( QgsTask* task = nullptr )
+      TaskInfo( QgsTask* task = nullptr, int priority = 0 )
           : task( task )
-          , added( false )
+          , added( 0 )
+          , priority( priority )
       {}
       QgsTask* task;
       QAtomicInt added;
+      int priority;
     };
 
     mutable QReadWriteLock* mTaskMutex;
@@ -531,7 +535,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     long addTaskPrivate( QgsTask* task,
                          QgsTaskList dependencies,
-                         bool isSubTask );
+                         bool isSubTask,
+                         int priority );
 
     bool cleanupAndDeleteTask( QgsTask* task );
 
