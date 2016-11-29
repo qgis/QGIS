@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsSpatialIndex, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsSpatialIndex, QgsWkbTypes, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -61,7 +61,7 @@ class SplitWithLines(GeoAlgorithm):
         fieldList = layerA.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     layerA.wkbType(), layerA.crs())
+                        QgsWkbTypes.multiType(layerA.wkbType()), layerA.crs())
 
         spatialIndex = QgsSpatialIndex()
         splitGeoms = {}
@@ -81,105 +81,111 @@ class SplitWithLines(GeoAlgorithm):
         else:
             total = 100.0 / float(len(features))
 
-        multiGeoms = 0 # how many multi geometries were encountered
-
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
+            attrsA = inFeatA.attributes()
+            outFeat.setAttributes(attrsA)
 
             if inGeom.isMultipart():
-                multiGeoms += 1
-                # MultiGeometries are not allowed because the result of a splitted part cannot be clearly defined:
-                # 1) add both new parts as new features
-                # 2) store one part as a new feature and the other one as part of the multi geometry
-                # 2a) which part should be which, seems arbitrary
+                inGeoms = []
+
+                for g in inGeom.asGeometryCollection():
+                    inGeoms.append(g)
             else:
-                attrsA = inFeatA.attributes()
-                outFeat.setAttributes(attrsA)
                 inGeoms = [inGeom]
-                lines = spatialIndex.intersects(inGeom.boundingBox())
 
-                if len(lines) > 0:  # has intersection of bounding boxes
-                    splittingLines = []
+            lines = spatialIndex.intersects(inGeom.boundingBox())
 
-                    engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
-                    engine.prepareGeometry()
+            if len(lines) > 0:  # has intersection of bounding boxes
+                splittingLines = []
 
-                    for i in lines:
-                        try:
-                            splitGeom = splitGeoms[i]
-                        except:
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
+
+                for i in lines:
+                    try:
+                        splitGeom = splitGeoms[i]
+                    except:
+                        continue
+
+                    # check if trying to self-intersect
+                    if sameLayer:
+                        if inFeatA.id() == i:
                             continue
 
-                        # check if trying to self-intersect
-                        if sameLayer:
-                            if inFeatA.id() == i:
+                    if engine.intersects(splitGeom.geometry()):
+                        splittingLines.append(splitGeom)
+
+                if len(splittingLines) > 0:
+                    for splitGeom in splittingLines:
+                        splitterPList = None
+                        outGeoms = []
+
+                        split_geom_engine = QgsGeometry.createGeometryEngine(splitGeom.geometry())
+                        split_geom_engine.prepareGeometry()
+
+                        while len(inGeoms) > 0:
+                            inGeom = inGeoms.pop()
+
+                            if inGeom.geometry() == None: # this has been encountered and created a run-time error
                                 continue
 
-                        if engine.intersects(splitGeom.geometry()):
-                            splittingLines.append(splitGeom)
+                            if split_geom_engine.intersects(inGeom.geometry()):
+                                inPoints = vector.extractPoints(inGeom)
+                                if splitterPList == None:
+                                    splitterPList = vector.extractPoints(splitGeom)
 
-                    if len(splittingLines) > 0:
-                        for splitGeom in splittingLines:
-                            splitterPList = None
-                            outGeoms = []
+                                try:
+                                    result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
+                                except:
+                                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                                           self.tr('Geometry exception while splitting'))
+                                    result = 1
 
-                            split_geom_engine = QgsGeometry.createGeometryEngine(splitGeom.geometry())
-                            split_geom_engine.prepareGeometry()
-
-                            while len(inGeoms) > 0:
-                                inGeom = inGeoms.pop()
-
-                                if split_geom_engine.intersects(inGeom.geometry()):
-                                    inPoints = vector.extractPoints(inGeom)
-                                    if splitterPList == None:
-                                        splitterPList = vector.extractPoints(splitGeom)
-
-                                    try:
-                                        result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
-                                    except:
-                                        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                                               self.tr('Geometry exception while splitting'))
-                                        result = 1
-
-                                    # splitGeometry: If there are several intersections
-                                    # between geometry and splitLine, only the first one is considered.
-                                    if result == 0:  # split occurred
-                                        if inPoints == vector.extractPoints(inGeom):
-                                            # bug in splitGeometry: sometimes it returns 0 but
-                                            # the geometry is unchanged
-                                            outGeoms.append(inGeom)
-                                        else:
-                                            inGeoms.append(inGeom)
-
-                                            for aNewGeom in newGeometries:
-                                                inGeoms.append(aNewGeom)
-                                    else:
+                                # splitGeometry: If there are several intersections
+                                # between geometry and splitLine, only the first one is considered.
+                                if result == 0:  # split occurred
+                                    if inPoints == vector.extractPoints(inGeom):
+                                        # bug in splitGeometry: sometimes it returns 0 but
+                                        # the geometry is unchanged
                                         outGeoms.append(inGeom)
+                                    else:
+                                        inGeoms.append(inGeom)
+
+                                        for aNewGeom in newGeometries:
+                                            inGeoms.append(aNewGeom)
                                 else:
                                     outGeoms.append(inGeom)
+                            else:
+                                outGeoms.append(inGeom)
 
-                            inGeoms = outGeoms
+                        inGeoms = outGeoms
 
-                for aGeom in inGeoms:
-                    passed = True
+            parts = []
 
-                    if QgsWkbTypes.geometryType( aGeom.wkbType() )  == QgsWkbTypes.LineGeometry \
-                            and not QgsWkbTypes.isMultiType(aGeom.wkbType()):
-                        passed = len(aGeom.asPolyline()) > 2
+            for aGeom in inGeoms:
+                passed = True
 
-                        if not passed:
-                            passed = (len(aGeom.asPolyline()) == 2 and
-                                      aGeom.asPolyline()[0] != aGeom.asPolyline()[1])
+                if QgsWkbTypes.geometryType( aGeom.wkbType() )  == QgsWkbTypes.LineGeometry:
+                    firstVertex = aGeom.vertexAt(0)
+                    secondVertex  = aGeom.vertexAt(1)
+                    thirdVertex = aGeom.vertexAt(2)
+                    passed = thirdVertex != QgsPoint(0, 0) # more than 2 vertices
+
+                    if not passed:
+                        passed = secondVertex != QgsPoint(0, 0) # has 2 vertices
+
+                        if passed:
+                            passed = not (firstVertex.x() == secondVertex.x() and
+                                firstVertex.y() == secondVertex.y())
                             # sometimes splitting results in lines of zero length
 
-                    if passed:
-                        outFeat.setGeometry(aGeom)
-                        writer.addFeature(outFeat)
+                if passed:
+                    parts.append(aGeom)
+
+            if len(parts) > 0:
+                outFeat.setGeometry(QgsGeometry.collectGeometry(parts))
+                writer.addFeature(outFeat)
 
             progress.setPercentage(int(current * total))
-
-        if multiGeoms > 0:
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                   self.tr('Feature geometry error: %s input features ignored due to multi-geometry.') % str(multiGeoms))
-
         del writer
