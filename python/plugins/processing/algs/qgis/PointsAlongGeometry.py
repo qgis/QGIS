@@ -55,6 +55,7 @@ class PointsAlongGeometry(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Points along lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.tags = self.tr('create,interpolate,points,lines')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
