@@ -24,6 +24,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import codecs
 import yaml
 from qgis.core import Qgis, QgsWkbTypes
 from qgis.PyQt.QtCore import QSettings, QLocale
@@ -35,7 +36,7 @@ def loadShortHelp():
     for f in os.listdir(path):
         if f.endswith("yaml"):
             filename = os.path.join(path, f)
-            with open(filename) as stream:
+            with codecs.open(filename, encoding='utf-8') as stream:
                 h.update(yaml.load(stream))
     version = ".".join(Qgis.QGIS_VERSION.split(".")[0:2])
     overrideLocale = QSettings().value('locale/overrideFlag', False, bool)
