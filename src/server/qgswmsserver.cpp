@@ -480,7 +480,7 @@ QDomDocument QgsWmsServer::getCapabilities( const QString& version, bool fullPro
 
   //wms:GetCapabilities
   elem = doc.createElement( QStringLiteral( "GetCapabilities" )/*wms:GetCapabilities*/ );
-  appendFormats( doc, elem, QStringList() << ( version == QLatin1String( "1.1.1" ) ? "application/vnd.ogc.wms_xml" : "XML" ) );
+  appendFormats( doc, elem, QStringList() << ( version == QLatin1String( "1.1.1" ) ? "application/vnd.ogc.wms_xml" : "text/xml" ) );
   elem.appendChild( dcpTypeElement );
   requestElement.appendChild( elem );
 
@@ -560,7 +560,7 @@ QDomDocument QgsWmsServer::getCapabilities( const QString& version, bool fullPro
 
   //Exception element is mandatory
   elem = doc.createElement( QStringLiteral( "Exception" ) );
-  appendFormats( doc, elem, QStringList() << ( version == QLatin1String( "1.1.1" ) ? "application/vnd.ogc.se_xml" : "text/xml" ) );
+  appendFormats( doc, elem, QStringList() << ( version == QLatin1String( "1.1.1" ) ? "application/vnd.ogc.se_xml" : "XML" ) );
   capabilityElement.appendChild( elem );
 
   //UserDefinedSymbolization element
