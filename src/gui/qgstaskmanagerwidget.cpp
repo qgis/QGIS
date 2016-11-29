@@ -44,8 +44,9 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   vLayout->addWidget( toolbar );
 #endif
   mTreeView = new QTreeView();
-  mTreeView->setModel( new QgsTaskManagerModel( manager, this ) );
-  mTreeView->setItemDelegateForColumn( 1, new QgsProgressBarDelegate( this ) );
+  mModel = new QgsTaskManagerModel( manager, this );
+  mTreeView->setModel( mModel );
+  connect( mModel, &QgsTaskManagerModel::rowsInserted, this, &QgsTaskManagerWidget::modelRowsInserted );
   mTreeView->setItemDelegateForColumn( 2, new QgsTaskStatusDelegate( this ) );
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
@@ -55,6 +56,38 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
 
 
   setLayout( vLayout );
+}
+
+QgsTaskManagerWidget::~QgsTaskManagerWidget()
+{
+  delete mModel;
+}
+
+
+void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex&, int start, int end )
+{
+  for ( int row = start; row <= end; ++row )
+  {
+    QgsTask* task = mModel->indexToTask( mModel->index( row, 1 ) );
+    if ( !task )
+      continue;
+
+    QProgressBar* progressBar = new QProgressBar();
+    progressBar->setAutoFillBackground( true );
+    connect( task, &QgsTask::progressChanged, progressBar, [progressBar]( double progress )
+    {
+      //until first progress report, we show a progress bar of interderminant length
+      if ( progress > 0 )
+      {
+        progressBar->setMaximum( 100 );
+        progressBar->setValue( progress );
+      }
+      else
+        progressBar->setMaximum( 0 );
+    }
+           );
+    mTreeView->setIndexWidget( mModel->index( row, 1 ), progressBar );
+  }
 }
 
 
@@ -289,43 +322,6 @@ QModelIndex QgsTaskManagerModel::idToIndex( long id, int column ) const
 }
 
 
-
-//
-// QgsProgressBarDelegate
-//
-
-QgsProgressBarDelegate::QgsProgressBarDelegate( QObject *parent )
-    : QStyledItemDelegate( parent )
-{}
-
-void QgsProgressBarDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
-{
-  QStyledItemDelegate::paint( painter, option, index );
-
-  int progress = index.data().toInt();
-
-  QStyleOptionProgressBar progressBarOption;
-  progressBarOption.state = option.state;
-  progressBarOption.rect = option.rect;
-  progressBarOption.rect.setTop( option.rect.top() + 1 );
-  progressBarOption.rect.setHeight( option.rect.height() - 2 );
-  progressBarOption.minimum = 0;
-  progressBarOption.maximum = 100;
-  progressBarOption.progress = progress;
-  progressBarOption.text = QString::number( progress ) + "%";
-  progressBarOption.textVisible = true;
-  progressBarOption.textAlignment = Qt::AlignCenter;
-
-  QgsApplication::style()->drawControl( QStyle::CE_ProgressBar, &progressBarOption, painter );
-}
-
-QSize QgsProgressBarDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
-{
-  Q_UNUSED( index );
-  return QSize( option.rect.width(), option.fontMetrics.height() + 10 );
-}
-
-
 //
 // QgsTaskStatusDelegate
 //
@@ -449,7 +445,9 @@ void QgsTaskManagerStatusBarWidget::toggleDisplay()
 void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
 {
   mProgressBar->setValue( progress );
-  if ( mProgressBar->maximum( ) == 0 )
+  if ( qgsDoubleNear( progress, 0.0 ) )
+    mProgressBar->setMaximum( 0 );
+  else if ( mProgressBar->maximum( ) == 0 )
     mProgressBar->setMaximum( 100 );
   setToolTip( mManager->activeTasks().at( 0 )->description() );
 }

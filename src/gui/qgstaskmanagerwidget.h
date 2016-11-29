@@ -25,6 +25,7 @@ class QgsTaskManager;
 class QgsTask;
 class QTreeView;
 class QProgressBar;
+class QgsTaskManagerModel;
 
 /**
  * \ingroup gui
@@ -45,9 +46,16 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
      */
     QgsTaskManagerWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
 
+    ~QgsTaskManagerWidget();
+
+  private slots:
+
+    void modelRowsInserted( const QModelIndex& index, int start, int end );
+
   private:
 
     QTreeView* mTreeView;
+    QgsTaskManagerModel* mModel;
 };
 
 /**
@@ -138,6 +146,12 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
     Qt::ItemFlags flags( const QModelIndex & index ) const override;
     bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
 
+    /**
+     * Returns the task associated with a specified model index, or nullptr if no
+     * task was found.
+     */
+    QgsTask* indexToTask( const QModelIndex& index ) const;
+
   private slots:
 
     void taskAdded( long id );
@@ -163,31 +177,9 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
     QList< long > mRowToTaskIdList;
 
-    QgsTask* indexToTask( const QModelIndex& index ) const;
+
     int idToRow( long id ) const;
     QModelIndex idToIndex( long id, int column ) const;
-};
-
-
-/**
- * \ingroup gui
- * \class QgsProgressBarDelegate
- * A delegate for showing a progress bar within a view.
- * \note added in QGIS 3.0
- */
-class GUI_EXPORT QgsProgressBarDelegate : public QStyledItemDelegate
-{
-    Q_OBJECT
-
-  public:
-
-    /** Constructor for QgsProgressBarDelegate
-     * @param parent parent object
-     */
-    QgsProgressBarDelegate( QObject* parent = nullptr );
-
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**

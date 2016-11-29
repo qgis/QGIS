@@ -72,8 +72,7 @@ class CORE_EXPORT QgsTask : public QObject, public QRunnable
     enum Flag
     {
       CanCancel = 1 << 1, //!< Task can be cancelled
-      CanReportProgress = 1 << 2, //!< Task will report its progress
-      AllFlags = CanCancel | CanReportProgress, //!< Task supports all flags
+      AllFlags = CanCancel, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

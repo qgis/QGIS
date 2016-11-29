@@ -44,7 +44,6 @@ class QgsTask : QObject, QRunnable
     enum Flag
     {
       CanCancel, //!< Task can be cancelled
-      CanReportProgress, //!< Task will report its progress
       AllFlags, //!< Task supports all flags
     };
     typedef QFlags<QgsTask::Flag> Flags;

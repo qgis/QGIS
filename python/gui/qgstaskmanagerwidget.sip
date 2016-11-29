@@ -92,29 +92,14 @@ class QgsTaskManagerModel: QAbstractItemModel
     Qt::ItemFlags flags( const QModelIndex & index ) const;
     bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
 
-};
-
-
-/** \ingroup gui
- * \class QgsProgressBarDelegate
- * A delegate for showing a progress bar within a view
- * @note introduced in QGIS 2.16
- */
-class QgsProgressBarDelegate : QStyledItemDelegate
-{
-%TypeHeaderCode
-#include <qgstaskmanagerwidget.h>
-%End
-  public:
-
-    /** Constructor for QgsProgressBarDelegate
-     * @param parent parent object
+    /**
+     * Returns the task associated with a specified model index, or nullptr if no
+     * task was found.
      */
-    QgsProgressBarDelegate( QObject* parent /TransferThis/ = nullptr );
+    QgsTask* indexToTask( const QModelIndex& index ) const;
 
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
+
 
 /** \ingroup gui
  * \class QgsProgressBarDelegate

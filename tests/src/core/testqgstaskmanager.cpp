@@ -228,7 +228,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->description(), QString( "desc" ) );
   QVERIFY( !task->isActive() );
   QVERIFY( task->canCancel() );
-  QVERIFY( task->flags() & QgsTask::CanReportProgress );
+  QVERIFY( task->flags() & QgsTask::CanCancel );
 
   QSignalSpy startedSpy( task.data(), &QgsTask::begun );
   QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
@@ -271,13 +271,11 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( "desc", QgsTask::CanReportProgress ) );
+  task.reset( new TestTask( "desc", 0 ) );
   QVERIFY( !task->canCancel() );
-  QVERIFY( task->flags() & QgsTask::CanReportProgress );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
   task.reset( new TestTask( "desc", QgsTask::CanCancel ) );
   QVERIFY( task->canCancel() );
-  QVERIFY( !( task->flags() & QgsTask::CanReportProgress ) );
   QVERIFY( task->flags() & QgsTask::CanCancel );
 }
 

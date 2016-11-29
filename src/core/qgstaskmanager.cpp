@@ -62,6 +62,10 @@ void QgsTask::run()
   mOverallStatus = Running;
   emit statusChanged( Running );
   emit begun();
+
+  // force initial emission of progressChanged, but respect if task has had initial progress manually set
+  setProgress( mProgress );
+
   TaskResult result = _run();
   switch ( result )
   {
