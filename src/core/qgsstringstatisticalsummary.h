@@ -51,7 +51,8 @@ class CORE_EXPORT QgsStringStatisticalSummary
       Max = 16, //!< Maximum string value
       MinimumLength = 32, //!< Minimum length of string
       MaximumLength = 64, //!< Maximum length of string
-      All = Count | CountDistinct | CountMissing | Min | Max, //! All statistics
+      MeanLength = 128, //!< Mean length of strings
+      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength, //! All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -167,6 +168,12 @@ class CORE_EXPORT QgsStringStatisticalSummary
      */
     int maxLength() const { return mMaxLength; }
 
+    /**
+      * Returns the mean length of strings.
+      * @note added in QGIS 3.0
+      */
+    double meanLength() const { return mMeanLength; }
+
     /** Returns the friendly display name for a statistic
      * @param statistic statistic to return name for
      */
@@ -183,6 +190,8 @@ class CORE_EXPORT QgsStringStatisticalSummary
     QString mMax;
     int mMinLength;
     int mMaxLength;
+    long mSumLengths;
+    double mMeanLength;
 
     void testString( const QString& string );
 };

@@ -42,6 +42,8 @@ void QgsStringStatisticalSummary::reset()
   mMax.clear();
   mMinLength = INT_MAX;
   mMaxLength = 0;
+  mSumLengths = 0;
+  mMeanLength = 0;
 }
 
 void QgsStringStatisticalSummary::calculate( const QStringList& values )
@@ -71,8 +73,7 @@ void QgsStringStatisticalSummary::addValue( const QVariant& value )
 
 void QgsStringStatisticalSummary::finalize()
 {
-  //nothing to do for now - this method has been added for forward compatibility
-  //if statistics are implemented which require a post-calculation step
+  mMeanLength = mSumLengths / static_cast< double >( mCount );
 }
 
 void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList& values )
@@ -121,6 +122,8 @@ void QgsStringStatisticalSummary::testString( const QString& string )
       mMax = string;
     }
   }
+  if ( mStatistics & MeanLength )
+    mSumLengths += string.length();
   mMinLength = qMin( mMinLength, string.length() );
   mMaxLength = qMax( mMaxLength, string.length() );
 }
@@ -143,6 +146,8 @@ QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::St
       return mMinLength;
     case MaximumLength:
       return mMaxLength;
+    case MeanLength:
+      return mMeanLength;
     case All:
       return 0;
   }
@@ -167,6 +172,8 @@ QString QgsStringStatisticalSummary::displayName( QgsStringStatisticalSummary::S
       return QObject::tr( "Minimum length" );
     case MaximumLength:
       return QObject::tr( "Maximum length" );
+    case MeanLength:
+      return QObject::tr( "Mean length" );
     case All:
       return QString();
   }
