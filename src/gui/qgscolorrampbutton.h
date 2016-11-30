@@ -35,23 +35,13 @@ class QgsPanelWidget;
 class GUI_EXPORT QgsColorRampButton : public QToolButton
 {
     Q_OBJECT
-    Q_ENUMS( Behaviour )
     Q_PROPERTY( QString colorRampDialogTitle READ colorRampDialogTitle WRITE setColorRampDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( bool showMenu READ showMenu WRITE setShowMenu )
-    Q_PROPERTY( Behaviour behaviour READ behaviour WRITE setBehaviour )
     Q_PROPERTY( QgsColorRamp* defaultColorRamp READ defaultColorRamp WRITE setDefaultColorRamp )
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
-
-    /** Specifies the behaviour when the button is clicked
-     */
-    enum Behaviour
-    {
-      ShowDialog = 0, //!< Show a color ramp dialog when clicked
-      SignalOnly //!< Emit colorRampClicked signal only, no dialog
-    };
 
     /** Construct a new color ramp button.
      * @param parent The parent QWidget for the dialog
@@ -106,19 +96,6 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * @see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
-
-    /** Sets the behaviour for when the button is clicked. The default behaviour is to show
-     * a color ramp dialog.
-     * @param behaviour behaviour when button is clicked
-     * @see behaviour
-     */
-    void setBehaviour( const Behaviour behaviour );
-
-    /** Returns the behaviour for when the button is clicked.
-     * @returns behaviour when button is clicked
-     * @see setBehaviour
-     */
-    Behaviour behaviour() const { return mBehaviour; }
 
     /** Sets the default color ramp for the button, which is shown in the button's drop down menu for the
      * "default color ramp" option.
@@ -250,13 +227,6 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      */
     void colorRampChanged();
 
-    /** Emitted when the button is clicked, if the button's behaviour is set to SignalOnly
-     * @param colorramp Button's current color ramp
-     * @see setBehaviour
-     * @see behaviour
-     */
-    void colorRampClicked( const QgsColorRamp* colorramp );
-
   protected:
 
     bool event( QEvent *e ) override;
@@ -271,7 +241,6 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
   private:
 
-    Behaviour mBehaviour;
     QString mColorRampDialogTitle;
     bool mShowGradientOnly;
     QgsColorRamp* mColorRamp;

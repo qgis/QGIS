@@ -15,14 +15,6 @@ class QgsColorRampButton : QToolButton
 
   public:
 
-    /** Specifies the behaviour when the button is clicked
-     */
-    enum Behaviour
-    {
-      ShowDialog, /*!< show a color picker dialog when clicked */
-      SignalOnly /*!< emit colorClicked signal only, no dialog */
-    };
-
     /** Construct a new color ramp button.
      * @param parent The parent QWidget for the dialog
      * @param dialogTitle The title to show in the color ramp dialog
@@ -76,19 +68,6 @@ class QgsColorRampButton : QToolButton
      * @see setShowMenu
      */
     bool showMenu() const;
-
-    /** Sets the behaviour for when the button is clicked. The default behaviour is to show
-     * a color ramp dialog.
-     * @param behaviour behaviour when button is clicked
-     * @see behaviour
-     */
-    void setBehaviour( const Behaviour behaviour );
-
-    /** Returns the behaviour for when the button is clicked.
-     * @returns behaviour when button is clicked
-     * @see setBehaviour
-     */
-    Behaviour behaviour() const;
 
     /** Sets the default color ramp for the button, which is shown in the button's drop down menu for the
      * "default color ramp" option.
@@ -215,14 +194,6 @@ class QgsColorRampButton : QToolButton
      * In case the new color ramp is the same, no signal is emitted to avoid infinite loops.
      */
     void colorRampChanged();
-
-    /** Emitted when the button is clicked, if the button's behaviour is set to SignalOnly
-     * @param colorramp Button's current color ramp
-     * @see setBehaviour
-     * @see behaviour
-     * @note may not be available in Python bindings on some platforms
-     */
-    void colorRampClicked( const QgsColorRamp* colorramp );
 
   protected:
 
