@@ -161,6 +161,12 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(s[3].offset, 0.8)
         self.assertEqual(s[3].color, QColor(50, 20, 10))
 
+        # test invert function
+        r.invert()
+        self.assertEqual(r.color(0), QColor(0, 200, 0))
+        self.assertEqual(r.color(1), QColor(200, 0, 0))
+        self.assertEqual(r.color(0.2), QColor(50, 20, 10))
+
     def testQgsLimitedRandomColorRampV2(self):
         # test random color ramp
         r = QgsLimitedRandomColorRamp(5)
@@ -310,6 +316,11 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(cloned.count(), 2)
         self.assertEqual(cloned.fetchColors(), r.fetchColors())
 
+        # test invert function
+        r.invert()
+        self.assertEqual(r.color(0), QColor(0, 255, 0))
+        self.assertEqual(r.color(1), QColor(255, 0, 0))
+
     def testQgsColorBrewerColorRampV2(self):
         # test color brewer color ramps
         r = QgsColorBrewerColorRamp('OrRd', 6)
@@ -372,6 +383,13 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0.6), QColor(251, 106, 74))
         self.assertEqual(r.color(0.8), QColor(222, 45, 38))
         self.assertEqual(r.color(1.0), QColor(165, 15, 21))
+
+        # test invert function
+        r.invert()
+        self.assertEqual(r.color(0), QColor(165, 15, 21))
+        self.assertEqual(r.color(0.2), QColor(222, 45, 38))
+        self.assertEqual(r.color(1), QColor(254, 229, 217))
+        r.invert()
 
         # set colors
         r.setColors(3)

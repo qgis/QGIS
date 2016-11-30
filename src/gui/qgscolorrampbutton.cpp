@@ -36,7 +36,6 @@
 
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString& dialogTitle )
     : QToolButton( parent )
-    , mBehaviour( QgsColorRampButton::ShowDialog )
     , mColorRampDialogTitle( dialogTitle.isEmpty() ? tr( "Select Color Ramp" ) : dialogTitle )
     , mShowGradientOnly( false )
     , mColorRamp( nullptr )
@@ -227,21 +226,13 @@ QPixmap QgsColorRampButton::createMenuIcon( QgsColorRamp* colorramp )
 
 void QgsColorRampButton::buttonClicked()
 {
-  switch ( mBehaviour )
+  if ( !isRandomColorRamp() )
   {
-    case ShowDialog:
-      if ( !isRandomColorRamp() )
-      {
-        showColorRampDialog();
-      }
-      else
-      {
-        QToolButton::showMenu();
-      }
-      return;
-    case SignalOnly:
-      emit colorRampClicked( mColorRamp );
-      return;
+    showColorRampDialog();
+  }
+  else
+  {
+    QToolButton::showMenu();
   }
 }
 
@@ -533,11 +524,6 @@ void QgsColorRampButton::setShowMenu( const bool showMenu )
   //force recalculation of icon size
   mIconSize = QSize();
   setButtonBackground( mColorRamp );
-}
-
-void QgsColorRampButton::setBehaviour( const QgsColorRampButton::Behaviour behaviour )
-{
-  mBehaviour = behaviour;
 }
 
 void QgsColorRampButton::setDefaultColorRamp( QgsColorRamp* colorramp )
