@@ -66,6 +66,11 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant& value )
     testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
                   : QDateTime() );
   }
+  else //not a date
+  {
+    mCountMissing++;
+    mCount++;
+  }
   // QTime?
 }
 
