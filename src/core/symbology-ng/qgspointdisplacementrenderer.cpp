@@ -331,6 +331,13 @@ QgsSymbolV2List QgsPointDisplacementRenderer::originalSymbolsForFeature( QgsFeat
   return mRenderer->originalSymbolsForFeature( feat, context );
 }
 
+QSet< QString > QgsPointDisplacementRenderer::legendKeysForFeature( QgsFeature& feat, QgsRenderContext& context )
+{
+  if ( !mRenderer )
+    return QSet< QString >() << QString();
+  return mRenderer->legendKeysForFeature( feat, context );
+}
+
 bool QgsPointDisplacementRenderer::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )

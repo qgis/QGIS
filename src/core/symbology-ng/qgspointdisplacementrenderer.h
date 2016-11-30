@@ -79,6 +79,10 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
       @note available in python as originalSymbolsForFeature2
      */
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+    /** Returns which legend keys match the feature
+     * @note added in QGIS 2.18.2
+     */
+    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note available in python as willRenderFeature2
      */
