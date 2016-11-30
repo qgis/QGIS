@@ -235,7 +235,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * @param mode classification mode
      * @param symbol base symbol
      * @param ramp color ramp for classes
-     * @param inverted set to true to invert color ramp
      * @param legendFormat
      * @returns new QgsGraduatedSymbolRenderer object
      */
@@ -246,7 +245,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
       Mode mode,
       QgsSymbol* symbol,
       QgsColorRamp* ramp,
-      bool inverted = false,
       const QgsRendererRangeLabelFormat& legendFormat = QgsRendererRangeLabelFormat()
     );
 
@@ -285,16 +283,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void setSourceColorRamp( QgsColorRamp* ramp );
 
-    //! @note added in 2.1
-    bool invertedColorRamp() { return mInvertedColorRamp; }
-    void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
-
     /** Update the color ramp used. Also updates all symbols colors.
      * Doesn't alter current breaks.
      * @param ramp color ramp. Ownership is transferred to the renderer
-     * @param inverted set to true to invert ramp colors
      */
-    void updateColorRamp( QgsColorRamp* ramp = nullptr, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp = nullptr );
 
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.
@@ -343,7 +336,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     Mode mMode;
     QScopedPointer<QgsSymbol> mSourceSymbol;
     QScopedPointer<QgsColorRamp> mSourceColorRamp;
-    bool mInvertedColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
 
     QScopedPointer<QgsExpression> mExpression;

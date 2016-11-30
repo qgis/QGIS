@@ -226,7 +226,7 @@ QPixmap QgsColorRampButton::createMenuIcon( QgsColorRamp* colorramp )
 
 void QgsColorRampButton::buttonClicked()
 {
-  if ( !isRandomColorRamp() )
+  if ( !isRandomColorRamp() && !isNull() )
   {
     showColorRampDialog();
   }
@@ -241,7 +241,7 @@ void QgsColorRampButton::prepareMenu()
   mMenu->clear();
 
   QAction* invertAction = new QAction( tr( "Invert color ramp" ), this );
-  invertAction->setEnabled( !isRandomColorRamp() );
+  invertAction->setEnabled( !isNull() && !isRandomColorRamp() );
   mMenu->addAction( invertAction );
   connect( invertAction, &QAction::triggered, this, &QgsColorRampButton::invertColorRamp );
 
@@ -317,6 +317,7 @@ void QgsColorRampButton::prepareMenu()
   mMenu->addAction( newColorRampAction );
 
   QAction* editColorRampAction = new QAction( tr( "Edit color ramp..." ), this );
+  editColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( editColorRampAction, &QAction::triggered, this, &QgsColorRampButton::showColorRampDialog );
   mMenu->addAction( editColorRampAction );
 }

@@ -421,6 +421,12 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   {
     btnColorRamp->setColorRampFromName( defaultColorRamp );
   }
+  else
+  {
+    QgsColorRamp* ramp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 255, 0, 0 ) );
+    btnColorRamp->setColorRamp( ramp );
+    delete ramp;
+  }
 
   mCategorizedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 

@@ -288,7 +288,6 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString& attrName,
     : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
     , mAttrName( attrName )
     , mMode( Custom )
-    , mInvertedColorRamp( false )
     , mGraduatedMethod( GraduatedColor )
     , mAttrNum( -1 )
     , mCounting( false )
@@ -501,7 +500,6 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::clone() const
   if ( mSourceColorRamp.data() )
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
-    r->setInvertedColorRamp( mInvertedColorRamp );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setLabelFormat( labelFormat() );
@@ -790,7 +788,6 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::createRenderer(
   Mode mode,
   QgsSymbol* symbol,
   QgsColorRamp* ramp,
-  bool inverted,
   const QgsRendererRangeLabelFormat& labelFormat
 )
 {
@@ -798,7 +795,6 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::createRenderer(
   QgsGraduatedSymbolRenderer* r = new QgsGraduatedSymbolRenderer( attrName, ranges );
   r->setSourceSymbol( symbol->clone() );
   r->setSourceColorRamp( ramp->clone() );
-  r->setInvertedColorRamp( inverted );
   r->setMode( mode );
   r->setLabelFormat( labelFormat );
   r->updateClasses( vlayer, mode, classes );
@@ -916,7 +912,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer* vlayer, Mode mod
     QgsSymbol* newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbol::defaultSymbol( vlayer->geometryType() );
     addClass( QgsRendererRange( lower, upper, newSymbol, label ) );
   }
-  updateColorRamp( nullptr, mInvertedColorRamp );
+  updateColorRamp( nullptr );
 }
 
 QgsFeatureRenderer* QgsGraduatedSymbolRenderer::create( QDomElement& element )
@@ -985,9 +981,6 @@ QgsFeatureRenderer* QgsGraduatedSymbolRenderer::create( QDomElement& element )
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
   {
     r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
-    QDomElement invertedColorRampElem = element.firstChildElement( QStringLiteral( "invertedcolorramp" ) );
-    if ( !invertedColorRampElem.isNull() )
-      r->setInvertedColorRamp( invertedColorRampElem.attribute( QStringLiteral( "value" ) ) == QLatin1String( "1" ) );
   }
 
   // try to load mode
@@ -1098,9 +1091,6 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument& doc )
   {
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mSourceColorRamp.data(), doc );
     rendererElem.appendChild( colorRampElem );
-    QDomElement invertedElem = doc.createElement( QStringLiteral( "invertedcolorramp" ) );
-    invertedElem.setAttribute( QStringLiteral( "value" ), mInvertedColorRamp );
-    rendererElem.appendChild( invertedElem );
   }
 
   // save mode
@@ -1306,13 +1296,12 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
   }
 }
 
-void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp, bool inverted )
+void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
 {
   int i = 0;
   if ( ramp )
   {
     setSourceColorRamp( ramp );
-    setInvertedColorRamp( inverted );
   }
 
   if ( mSourceColorRamp )
@@ -1323,10 +1312,7 @@ void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp, bool inver
       if ( symbol )
       {
         double colorValue;
-        if ( inverted )
-          colorValue = ( mRanges.count() > 1 ? static_cast< double >( mRanges.count() - i - 1 ) / ( mRanges.count() - 1 ) : 0 );
-        else
-          colorValue = ( mRanges.count() > 1 ? static_cast< double >( i ) / ( mRanges.count() - 1 ) : 0 );
+        colorValue = ( mRanges.count() > 1 ? static_cast< double >( i ) / ( mRanges.count() - 1 ) : 0 );
         symbol->setColor( mSourceColorRamp->color( colorValue ) );
       }
       updateRangeSymbol( i, symbol );
@@ -1441,7 +1427,7 @@ void QgsGraduatedSymbolRenderer::addBreak( double breakValue, bool updateSymbols
     switch ( mGraduatedMethod )
     {
       case GraduatedColor:
-        updateColorRamp( mSourceColorRamp.data(), mInvertedColorRamp );
+        updateColorRamp( mSourceColorRamp.data() );
         break;
       case GraduatedSize:
         setSymbolSizes( minSymbolSize(), maxSymbolSize() );

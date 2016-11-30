@@ -122,6 +122,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
   private slots:
     void cleanUpSymbolSelector( QgsPanelWidget* container );
     void updateSymbolsFromWidget();
+    void toggleMethodWidgets( int idx );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
