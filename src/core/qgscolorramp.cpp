@@ -160,6 +160,20 @@ QColor QgsGradientColorRamp::color( double value ) const
   }
 }
 
+void QgsGradientColorRamp::invert()
+{
+  QColor tmpColor = mColor1;
+  mColor1 = mColor2;
+  mColor2 = tmpColor;
+
+  QgsGradientStopsList newStops;
+  for ( int k = mStops.size() - 1; k >= 0; k-- )
+  {
+    newStops << QgsGradientStop( 1 - mStops.at( k ).offset, mStops.at( k ).color );
+  }
+  mStops = newStops;
+}
+
 QgsGradientColorRamp* QgsGradientColorRamp::clone() const
 {
   QgsGradientColorRamp* r = new QgsGradientColorRamp( mColor1, mColor2,
@@ -473,9 +487,10 @@ QgsStringMap QgsRandomColorRamp::properties() const
 
 ////////////
 
-QgsColorBrewerColorRamp::QgsColorBrewerColorRamp( const QString& schemeName, int colors )
+QgsColorBrewerColorRamp::QgsColorBrewerColorRamp( const QString& schemeName, int colors, bool inverted )
     : mSchemeName( schemeName )
     , mColors( colors )
+    , mInverted( inverted )
 {
   loadPalette();
 }
@@ -484,18 +499,32 @@ QgsColorRamp* QgsColorBrewerColorRamp::create( const QgsStringMap& props )
 {
   QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME;
   int colors = DEFAULT_COLORBREWER_COLORS;
+  bool inverted = false;
 
   if ( props.contains( QStringLiteral( "schemeName" ) ) )
     schemeName = props[QStringLiteral( "schemeName" )];
   if ( props.contains( QStringLiteral( "colors" ) ) )
     colors = props[QStringLiteral( "colors" )].toInt();
+  if ( props.contains( QStringLiteral( "inverted" ) ) )
+    inverted = props[QStringLiteral( "inverted" )].toInt();
 
-  return new QgsColorBrewerColorRamp( schemeName, colors );
+  return new QgsColorBrewerColorRamp( schemeName, colors, inverted );
 }
 
 void QgsColorBrewerColorRamp::loadPalette()
 {
   mPalette = QgsColorBrewerPalette::listSchemeColors( mSchemeName, mColors );
+
+  if ( mInverted )
+  {
+    QList<QColor> tmpPalette;
+
+    for ( int k = mPalette.size() - 1; k >= 0; k-- )
+    {
+      tmpPalette << mPalette.at( k );
+    }
+    mPalette = tmpPalette;
+  }
 }
 
 QStringList QgsColorBrewerColorRamp::listSchemeNames()
@@ -525,9 +554,15 @@ QColor QgsColorBrewerColorRamp::color( double value ) const
   return mPalette.at( paletteEntry );
 }
 
+void QgsColorBrewerColorRamp::invert()
+{
+  mInverted = !mInverted;
+  loadPalette();
+}
+
 QgsColorBrewerColorRamp* QgsColorBrewerColorRamp::clone() const
 {
-  return new QgsColorBrewerColorRamp( mSchemeName, mColors );
+  return new QgsColorBrewerColorRamp( mSchemeName, mColors, mInverted );
 }
 
 QgsStringMap QgsColorBrewerColorRamp::properties() const
@@ -535,6 +570,7 @@ QgsStringMap QgsColorBrewerColorRamp::properties() const
   QgsStringMap map;
   map[QStringLiteral( "schemeName" )] = mSchemeName;
   map[QStringLiteral( "colors" )] = QString::number( mColors );
+  map[QStringLiteral( "inverted" )] = QString::number( mInverted );
   return map;
 }
 
@@ -811,6 +847,17 @@ QColor QgsPresetSchemeColorRamp::color( double value ) const
     return mColors.at( colorIdx ).first;
 
   return QColor();
+}
+
+void QgsPresetSchemeColorRamp::invert()
+{
+  QgsNamedColorList tmpColors;
+
+  for ( int k = mColors.size() - 1; k >= 0; k-- )
+  {
+    tmpColors << mColors.at( k );
+  }
+  mColors = tmpColors;
 }
 
 QgsPresetSchemeColorRamp* QgsPresetSchemeColorRamp::clone() const

@@ -152,18 +152,24 @@
    <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
-      <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mButtonEditRamp">
-       <property name="maximumSize">
+      <widget class="QgsColorRampButton" name="btnColorRamp">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
         <size>
-         <width>100</width>
-         <height>16777215</height>
+         <width>120</width>
+         <height>0</height>
         </size>
        </property>
-       <property name="text">
-        <string>Edit</string>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -545,6 +551,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
@@ -560,18 +572,13 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
   <tabstop>btnChangeColor</tabstop>
   <tabstop>btnChangeColor2</tabstop>
   <tabstop>radioColorRamp</tabstop>
-  <tabstop>cboGradientColorRamp</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>mButtonEditRamp</tabstop>
   <tabstop>cboGradientType</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
@@ -623,7 +630,7 @@
   <connection>
    <sender>radioColorRamp</sender>
    <signal>toggled(bool)</signal>
-   <receiver>cboGradientColorRamp</receiver>
+   <receiver>btnColorRamp</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

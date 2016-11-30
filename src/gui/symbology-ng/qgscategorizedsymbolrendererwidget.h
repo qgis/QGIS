@@ -107,7 +107,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void categoriesDoubleClicked( const QModelIndex & idx );
     void addCategory();
     void addCategories();
+
+    /** Applies the color ramp passed on by the color ramp button
+     */
     void applyColorRamp();
+
     void deleteCategories();
     void deleteAllCategories();
 
@@ -155,8 +159,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void changeSelectedSymbols();
 
     void changeCategorySymbol();
-
-    QgsColorRamp* getColorRamp();
 
     QList<QgsSymbol*> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();

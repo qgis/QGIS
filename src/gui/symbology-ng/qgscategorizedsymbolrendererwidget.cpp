@@ -21,6 +21,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"
 
@@ -410,21 +411,15 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   mExpressionWidget->setLayer( mLayer );
 
-  cboCategorizedColorRamp->populate( mStyle );
-  int randomIndex = cboCategorizedColorRamp->findText( tr( "Random colors" ) );
-  if ( randomIndex != -1 )
-  {
-    cboCategorizedColorRamp->setCurrentIndex( randomIndex );
-    mButtonEditRamp->setEnabled( false );
-  }
+  // initiate color ramp button to random
+  btnColorRamp->setShowRandomColorRamp( true );
+  btnColorRamp->setRandomColorRamp();
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
   if ( defaultColorRamp != QLatin1String( "" ) )
   {
-    int index = cboCategorizedColorRamp->findText( defaultColorRamp, Qt::MatchCaseSensitive );
-    if ( index >= 0 )
-      cboCategorizedColorRamp->setCurrentIndex( index );
+    btnColorRamp->setColorRampFromName( defaultColorRamp );
   }
 
   mCategorizedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
@@ -455,10 +450,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( btnDeleteCategories, SIGNAL( clicked() ), this, SLOT( deleteCategories() ) );
   connect( btnDeleteAllCategories, SIGNAL( clicked() ), this, SLOT( deleteAllCategories() ) );
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
-  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( applyColorRamp() ) );
-  connect( cboCategorizedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
-  connect( cboCategorizedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), cboCategorizedColorRamp, SLOT( editSourceRamp() ) );
+
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsCategorizedSymbolRendererWidget::applyColorRamp );
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -501,17 +494,11 @@ void QgsCategorizedSymbolRendererWidget::updateUiFromRenderer()
     updateCategorizedSymbolIcon();
   }
 
-  // set source color ramp
+  // if a color ramp attached to the renderer, enable the color ramp button
   if ( mRenderer->sourceColorRamp() )
   {
-    cboCategorizedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
-    cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
+    btnColorRamp->setColorRamp( mRenderer->sourceColorRamp() );
   }
-
-  if ( cboCategorizedColorRamp->currentText() == tr( "Random colors" ) )
-    mButtonEditRamp->setEnabled( false );
-  else
-    mButtonEditRamp->setEnabled( true );
 }
 
 QgsFeatureRenderer* QgsCategorizedSymbolRendererWidget::renderer()
@@ -627,20 +614,6 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
     cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
   }
 }
-
-QgsColorRamp* QgsCategorizedSymbolRendererWidget::getColorRamp()
-{
-  QgsColorRamp* ramp = cboCategorizedColorRamp->currentColorRamp();
-  if ( !ramp )
-  {
-    if ( cboCategorizedColorRamp->count() == 0 )
-      QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
-    else if ( !cboCategorizedColorRamp->createNewColorRampSelected() )
-      QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
-  }
-  return ramp;
-}
-
 
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
@@ -759,8 +732,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   // recreate renderer
   QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
-  r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
-  QScopedPointer< QgsColorRamp > ramp( getColorRamp() );
+  QScopedPointer< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( ramp )
     r->setSourceColorRamp( ramp->clone() );
 
@@ -777,15 +749,9 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
 
 void QgsCategorizedSymbolRendererWidget::applyColorRamp()
 {
-  if ( cboCategorizedColorRamp->currentText() == tr( "Random colors" ) )
-    mButtonEditRamp->setEnabled( false );
-  else
-    mButtonEditRamp->setEnabled( true );
-
-  QgsColorRamp* ramp = getColorRamp();
-  if ( ramp )
+  if ( !btnColorRamp->isNull() )
   {
-    mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
+    mRenderer->updateColorRamp( btnColorRamp->colorRamp()->clone() );
   }
   mModel->updateSymbology();
 }

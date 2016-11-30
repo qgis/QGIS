@@ -331,9 +331,10 @@ suffix</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -1012,8 +1012,7 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
   setupUi( this );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
-  cboGradientColorRamp->setShowGradientOnly( true );
-  cboGradientColorRamp->populate( QgsStyle::defaultStyle() );
+  btnColorRamp->setShowGradientOnly( true );
 
   btnChangeColor->setAllowAlpha( true );
   btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
@@ -1031,9 +1030,7 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
 
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
-  connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
-  connect( cboGradientColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), cboGradientColorRamp, SLOT( editSourceRamp() ) );
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGradientFillSymbolLayerWidget::applyColorRamp );
   connect( cboGradientType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientType( int ) ) );
   connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
   connect( cboGradientSpread, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientSpread( int ) ) );
@@ -1067,7 +1064,7 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   if ( mLayer->gradientColorType() == QgsGradientFillSymbolLayer::SimpleTwoColor )
   {
     radioTwoColor->setChecked( true );
-    cboGradientColorRamp->setEnabled( false );
+    btnColorRamp->setEnabled( false );
   }
   else
   {
@@ -1079,9 +1076,9 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   // set source color ramp
   if ( mLayer->colorRamp() )
   {
-    cboGradientColorRamp->blockSignals( true );
-    cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
-    cboGradientColorRamp->blockSignals( false );
+    btnColorRamp->blockSignals( true );
+    btnColorRamp->setColorRamp( mLayer->colorRamp() );
+    btnColorRamp->blockSignals( false );
   }
 
   cboGradientType->blockSignals( true );
@@ -1219,11 +1216,10 @@ void QgsGradientFillSymbolLayerWidget::colorModeChanged()
 
 void QgsGradientFillSymbolLayerWidget::applyColorRamp()
 {
-  QgsColorRamp* ramp = cboGradientColorRamp->currentColorRamp();
-  if ( !ramp )
+  if ( btnColorRamp->isNull() )
     return;
 
-  mLayer->setColorRamp( ramp );
+  mLayer->setColorRamp( btnColorRamp->colorRamp()->clone() );
   emit changed();
 }
 

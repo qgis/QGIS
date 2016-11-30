@@ -41,7 +41,7 @@
 %Include qgscharacterselectdialog.sip
 %Include qgscolorbrewercolorrampdialog.sip
 %Include qgscolorbutton.sip
-%Include qgscolorbutton.sip
+%Include qgscolorrampbutton.sip
 %Include qgscolordialog.sip
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip

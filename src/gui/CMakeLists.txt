@@ -188,6 +188,7 @@ SET(QGIS_GUI_SRCS
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
+  qgscolorrampbutton.cpp
   qgscolordialog.cpp
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
@@ -356,6 +357,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscollapsiblegroupbox.h
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
+  qgscolorrampbutton.h
   qgscolordialog.h
   qgscolorschemelist.h
   qgscolorswatchgrid.h
