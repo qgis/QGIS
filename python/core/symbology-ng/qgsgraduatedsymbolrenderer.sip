@@ -197,6 +197,16 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     //! @note Added in 2.6
     void calculateLabelPrecision( bool updateRanges = true );
 
+    /** Creates a new graduated renderer.
+     * @param vlayer vector layer
+     * @param attrName attribute to classify
+     * @param classes number of classes
+     * @param mode classification mode
+     * @param symbol base symbol
+     * @param ramp color ramp for classes
+     * @param legendFormat
+     * @returns new QgsGraduatedSymbolRenderer object
+     */
     static QgsGraduatedSymbolRenderer* createRenderer(
       QgsVectorLayer* vlayer,
       const QString& attrName,
@@ -204,7 +214,6 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
       Mode mode,
       QgsSymbol* symbol /Transfer/,
       QgsColorRamp* ramp /Transfer/,
-      bool inverted = false,
       const QgsRendererRangeLabelFormat& legendFormat = QgsRendererRangeLabelFormat()
     );
 
@@ -252,16 +261,11 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
      */
     void setSourceColorRamp( QgsColorRamp* ramp /Transfer/ );
 
-    //! @note added in 2.1
-    bool invertedColorRamp();
-    void setInvertedColorRamp( bool inverted );
-
     /** Update the color ramp used. Also updates all symbols colors.
      * Doesn't alter current breaks.
      * @param ramp color ramp. Ownership is transferred to the renderer
-     * @param inverted set to true to invert ramp colors
      */
-    void updateColorRamp( QgsColorRamp* ramp /Transfer/ = 0, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp /Transfer/ = 0 );
 
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.

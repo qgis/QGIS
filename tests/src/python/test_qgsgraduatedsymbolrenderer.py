@@ -142,7 +142,6 @@ def dumpGraduatedRenderer(r):
     else:
         rstr = rstr + symbol.dump() + ':'
     rstr = rstr + dumpColorRamp(r.sourceColorRamp())
-    rstr = rstr + str(r.invertedColorRamp()) + ':'
     rstr = rstr + dumpRangeList(r.ranges())
     return rstr
 
@@ -304,13 +303,6 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             dumpColorRamp(ramp),
             dumpColorRamp(renderer.sourceColorRamp()),
             "Get/set renderer color ramp")
-
-        renderer.setInvertedColorRamp(True)
-        self.assertTrue(renderer.invertedColorRamp(),
-                        "Get/set renderer inverted color ramp")
-        renderer.setInvertedColorRamp(False)
-        self.assertFalse(renderer.invertedColorRamp(),
-                         "Get/set renderer inverted color ramp")
 
         renderer.setSourceColorRamp(ramp)
         self.assertEqual(
