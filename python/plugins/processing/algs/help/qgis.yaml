@@ -22,6 +22,10 @@ qgis:advancedpythonfieldcalculator: >
 
 qgis:barplot:
 
+qgis:basicstatisticsfordatetimefields: >
+  This algorithm generates basic statistics from the analysis of a date or datetime field in the attribute table of a vector layer.
+
+  Statistics are generated as an HTML file.
 
 qgis:basicstatisticsfornumericfields: >
   This algorithm generates basic statistics from the analysis of a numeric field in the attribute table of a vector layer.

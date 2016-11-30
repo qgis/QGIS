@@ -1753,3 +1753,39 @@ tests:
       OUTPUT:
         name: expected/removed_holes_min_area.gml
         type: vector
+
+  - algorithm: qgis:basicstatisticsfordatetimefields
+    name: Basic stats datetime
+    params:
+      FIELD_NAME: date_time
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_datetime.html
+        type: file
+
+  - algorithm: qgis:basicstatisticsfordatetimefields
+    name: Basic stats date
+    params:
+      FIELD_NAME: date
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_date.html
+        type: file
+
+  - algorithm: qgis:basicstatisticsfordatetimefields
+    name: Basic stats time
+    params:
+      FIELD_NAME: time
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_time.html
+        type: file
