@@ -63,6 +63,7 @@ class BasicStatisticsDateTime(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for date/time fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+        self.tags = self.tr('stats,statistics,date,time,datetime,table,layer')
 
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
