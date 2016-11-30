@@ -18,6 +18,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 
 #include "qgsvectorlayer.h"
@@ -446,18 +447,22 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
 
-  cboGraduatedColorRamp->populate( mStyle );
-
   spinPrecision->setMinimum( QgsRendererRangeLabelFormat::MinPrecision );
   spinPrecision->setMaximum( QgsRendererRangeLabelFormat::MaxPrecision );
+
+  btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
   if ( defaultColorRamp != QLatin1String( "" ) )
   {
-    int index = cboGraduatedColorRamp->findText( defaultColorRamp, Qt::MatchCaseSensitive );
-    if ( index >= 0 )
-      cboGraduatedColorRamp->setCurrentIndex( index );
+    btnColorRamp->setColorRampFromName( defaultColorRamp );
+  }
+  else
+  {
+    QgsColorRamp* ramp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 255, 0, 0 ) );
+    btnColorRamp->setColorRamp( ramp );
+    delete ramp;
   }
 
 
@@ -543,10 +548,7 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 {
   connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
-  connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( reapplyColorRamp() ) );
-  connect( cboGraduatedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( reapplyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), cboGraduatedColorRamp, SLOT( editSourceRamp() ) );
-  connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( reapplyColorRamp() ) );
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGraduatedSymbolRendererWidget::reapplyColorRamp );
   connect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
   connect( txtLegendFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
@@ -563,10 +565,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 {
   disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
-  disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( reapplyColorRamp() ) );
-  disconnect( cboGraduatedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( reapplyColorRamp() ) );
-  disconnect( mButtonEditRamp, SIGNAL( clicked() ), cboGraduatedColorRamp, SLOT( editSourceRamp() ) );
-  disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( reapplyColorRamp() ) );
+  disconnect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGraduatedSymbolRendererWidget::reapplyColorRamp );
   disconnect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( txtLegendFormat, SIGNAL( textChanged( QString ) ), this, SLOT( labelFormatChanged() ) );
@@ -622,8 +621,9 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   {
     methodComboBox->setCurrentIndex( 0 );
     if ( mRenderer->sourceColorRamp() )
-      cboGraduatedColorRamp->setSourceColorRamp( mRenderer->sourceColorRamp() );
-    cbxInvertedColorRamp->setChecked( mRenderer->invertedColorRamp() );
+    {
+      btnColorRamp->setColorRamp( mRenderer->sourceColorRamp() );
+    }
   }
   else
   {
@@ -634,7 +634,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
       maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );
     }
   }
-  mMethodStackedWidget->setCurrentIndex( methodComboBox->currentIndex() );
+  toggleMethodWidgets( methodComboBox->currentIndex() );
   methodComboBox->blockSignals( false );
 
   QgsRendererRangeLabelFormat labelFormat = mRenderer->labelFormat();
@@ -659,18 +659,15 @@ void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString& fi
 
 void QgsGraduatedSymbolRendererWidget::on_methodComboBox_currentIndexChanged( int idx )
 {
-  mMethodStackedWidget->setCurrentIndex( idx );
+  toggleMethodWidgets( idx );
   if ( idx == 0 )
   {
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
-    QgsColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
+    QgsColorRamp* ramp = btnColorRamp->colorRamp();
 
     if ( !ramp )
     {
-      if ( cboGraduatedColorRamp->count() == 0 )
-        QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
-      else
-        QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
+      QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
       return;
     }
     mRenderer->setSourceColorRamp( ramp );
@@ -678,8 +675,40 @@ void QgsGraduatedSymbolRendererWidget::on_methodComboBox_currentIndexChanged( in
   }
   else
   {
+    lblColorRamp->setVisible( false );
+    btnColorRamp->setVisible( false );
+    lblSize->setVisible( true );
+    minSizeSpinBox->setVisible( true );
+    lblSize->setVisible( true );
+    maxSizeSpinBox->setVisible( true );
+    mSizeUnitWidget->setVisible( true );
+
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedSize );
     reapplySizes();
+  }
+}
+
+void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( int idx )
+{
+  if ( idx == 0 )
+  {
+    lblColorRamp->setVisible( true );
+    btnColorRamp->setVisible( true );
+    lblSize->setVisible( false );
+    minSizeSpinBox->setVisible( false );
+    lblSizeTo->setVisible( false );
+    maxSizeSpinBox->setVisible( false );
+    mSizeUnitWidget->setVisible( false );
+  }
+  else
+  {
+    lblColorRamp->setVisible( false );
+    btnColorRamp->setVisible( false );
+    lblSize->setVisible( true );
+    minSizeSpinBox->setVisible( true );
+    lblSizeTo->setVisible( true );
+    maxSizeSpinBox->setVisible( true );
+    mSizeUnitWidget->setVisible( true );
   }
 }
 
@@ -748,13 +777,10 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   int nclasses = spinGraduatedClasses->value();
 
-  QScopedPointer<QgsColorRamp> ramp( cboGraduatedColorRamp->currentColorRamp() );
+  QScopedPointer<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
   {
-    if ( cboGraduatedColorRamp->count() == 0 )
-      QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
-    else
-      QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
+    QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
     return;
   }
 
@@ -787,10 +813,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   {
     if ( !ramp )
     {
-      if ( cboGraduatedColorRamp->count() == 0 )
-        QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
-      else
-        QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
+      QMessageBox::critical( this, tr( "Error" ), tr( "No color ramp defined." ) );
       return;
     }
     mRenderer->setSourceColorRamp( ramp.take() );
@@ -815,11 +838,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
 {
-  QScopedPointer< QgsColorRamp > ramp( cboGraduatedColorRamp->currentColorRamp() );
+  QScopedPointer< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
     return;
 
-  mRenderer->updateColorRamp( ramp.take(), cbxInvertedColorRamp->isChecked() );
+  mRenderer->updateColorRamp( ramp.take() );
   mRenderer->updateSymbols( mGraduatedSymbol );
   refreshSymbolView();
 }
