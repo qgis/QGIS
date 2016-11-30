@@ -35,7 +35,7 @@ from qgis.core import (QgsStringStatisticalSummary,
                        QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
@@ -67,8 +67,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for text fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input vector layer')))
+        self.addParameter(ParameterTable(self.INPUT_LAYER,
+                                         self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
                                               self.tr('Field to calculate statistics on'),
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
