@@ -23,9 +23,6 @@
 #include <QSharedPointer>
 #include <QtTest/QtTest>
 
-//enable to allow fragile tests which intermittently fail
-#define WITH_FLAKY_TESTS
-
 class TestTask : public QgsTask
 {
     Q_OBJECT
@@ -173,29 +170,17 @@ class TestQgsTaskManager : public QObject
     void taskFinished();
     void subTask();
     void addTask();
-
-#ifdef WITH_FLAKY_TESTS
     void taskTerminationBeforeDelete();
-#endif
-
     void taskId();
     void progressChanged();
-#ifdef WITH_FLAKY_TESTS
     void statusChanged();
-#endif
-
     void allTasksFinished();
     void activeTasks();
-
     void holdTask();
     void dependancies();
     void layerDependencies();
-#ifdef WITH_FLAKY_TESTS
     void managerWithSubTasks();
-#endif
-
     void managerWithSubTasks2();
-
     void managerWithSubTasks3();
 };
 
@@ -344,8 +329,6 @@ void TestQgsTaskManager::addTask()
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
 }
 
-#ifdef WITH_FLAKY_TESTS
-// we don't run this by default - the sendPostedEvents call is fragile
 void TestQgsTaskManager::taskTerminationBeforeDelete()
 {
   //test that task is terminated by manager prior to delete
@@ -366,7 +349,6 @@ void TestQgsTaskManager::taskTerminationBeforeDelete()
   delete manager;
   QApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 }
-#endif
 
 void TestQgsTaskManager::taskFinished()
 {
@@ -631,7 +613,6 @@ void TestQgsTaskManager::progressChanged()
   QCOMPARE( spy2.last().at( 0 ).toDouble(), 30.0 );
 }
 
-#ifdef WITH_FLAKY_TESTS
 void TestQgsTaskManager::statusChanged()
 {
   // check that statusChanged signals emitted by tasks result in statusChanged signal from manager
@@ -668,7 +649,6 @@ void TestQgsTaskManager::statusChanged()
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
 }
-#endif
 
 void TestQgsTaskManager::allTasksFinished()
 {
@@ -931,7 +911,6 @@ void TestQgsTaskManager::layerDependencies()
   QgsMapLayerRegistry::instance()->removeMapLayers( QList< QgsMapLayer* >() << layer2 );
 }
 
-#ifdef WITH_FLAKY_TESTS
 void TestQgsTaskManager::managerWithSubTasks()
 {
   return;
@@ -1070,7 +1049,6 @@ void TestQgsTaskManager::managerWithSubTasks3()
   QCOMPARE( manager3.dependencies( subTaskId ), QSet< long >() << subTask2Id );
   QCOMPARE( manager3.dependencies( subTask2Id ), QSet< long >() );
 }
-#endif
 
 QTEST_MAIN( TestQgsTaskManager )
 #include "testqgstaskmanager.moc"
