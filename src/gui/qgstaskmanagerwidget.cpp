@@ -42,7 +42,6 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mModel = new QgsTaskManagerModel( manager, this );
   mTreeView->setModel( mModel );
   connect( mModel, &QgsTaskManagerModel::rowsInserted, this, &QgsTaskManagerWidget::modelRowsInserted );
-  mTreeView->setItemDelegateForColumn( 2, new QgsTaskStatusDelegate( this ) );
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -85,7 +84,13 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex&, int start, int
         progressBar->setMaximum( 0 );
     }
            );
-    mTreeView->setIndexWidget( mModel->index( row, 1 ), progressBar );
+    mTreeView->setIndexWidget( mModel->index( row, QgsTaskManagerModel::Progress ), progressBar );
+
+    QgsTaskStatusWidget* statusWidget = new QgsTaskStatusWidget( nullptr, task->status(), task->canCancel() );
+    statusWidget->setAutoFillBackground( true );
+    connect( task, &QgsTask::statusChanged, statusWidget, &QgsTaskStatusWidget::setStatus );
+    connect( statusWidget, &QgsTaskStatusWidget::cancelClicked, task, &QgsTask::cancel );
+    mTreeView->setIndexWidget( mModel->index( row, QgsTaskManagerModel::Status ), statusWidget );
   }
 }
 
@@ -200,7 +205,12 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
               case QgsTask::OnHold:
                 return tr( "On hold" );
               case QgsTask::Running:
-                return tr( "Running" );
+              {
+                if ( index.column() == Status && !task->canCancel() )
+                  return tr( "Running (cannot cancel)" );
+                else
+                  return tr( "Running" );
+              }
               case QgsTask::Complete:
                 return tr( "Complete" );
               case QgsTask::Terminated:
@@ -355,44 +365,86 @@ QModelIndex QgsTaskManagerModel::idToIndex( long id, int column ) const
 // QgsTaskStatusDelegate
 //
 
-QgsTaskStatusDelegate::QgsTaskStatusDelegate( QObject *parent )
-    : QStyledItemDelegate( parent )
+QgsTaskStatusWidget::QgsTaskStatusWidget( QWidget *parent, QgsTask::TaskStatus status, bool canCancel )
+    : QWidget( parent )
+    , mCanCancel( canCancel )
+    , mStatus( status )
+    , mInside( false )
 {
-
+  setMouseTracking( true );
 }
 
-void QgsTaskStatusDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize QgsTaskStatusWidget::sizeHint() const
 {
-  QStyledItemDelegate::paint( painter, option, index );
-
-  QIcon icon;
-  switch ( static_cast< QgsTask::TaskStatus >( index.data( QgsTaskManagerModel::StatusRole ).toInt() ) )
-  {
-    case QgsTask::Queued:
-    case QgsTask::OnHold:
-      icon = QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
-      break;
-    case QgsTask::Running:
-      icon = QgsApplication::getThemeIcon( "/mActionRefresh.png" );
-      break;
-    case QgsTask::Complete:
-      icon = QgsApplication::getThemeIcon( "/mActionCheckQgisVersion.png" );
-      break;
-    case QgsTask::Terminated:
-      icon = QgsApplication::getThemeIcon( "/mActionRemove.svg" );
-      break;
-  }
-  icon.paint( painter, option.rect.left() + 1, ( option.rect.top() + option.rect.bottom() ) / 2 - 12, 24, 24 );
-}
-
-QSize QgsTaskStatusDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
-{
-  Q_UNUSED( option );
-  Q_UNUSED( index );
   return QSize( 32, 32 );
 }
 
-bool QgsTaskStatusDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
+void QgsTaskStatusWidget::setStatus( int status )
+{
+  mStatus = static_cast< QgsTask::TaskStatus >( status );
+  update();
+}
+
+void QgsTaskStatusWidget::paintEvent( QPaintEvent* e )
+{
+  QWidget::paintEvent( e );
+
+  QIcon icon;
+  if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
+  {
+    icon = QgsApplication::getThemeIcon( "/mTaskCancel.svg" );
+  }
+  else
+  {
+    switch ( mStatus )
+    {
+      case QgsTask::Queued:
+        icon = QgsApplication::getThemeIcon( "/mTaskQueued.svg" );
+        break;
+      case QgsTask::OnHold:
+        icon = QgsApplication::getThemeIcon( "/mTaskOnHold.svg" );
+        break;
+      case QgsTask::Running:
+        icon = QgsApplication::getThemeIcon( "/mTaskRunning.svg" );
+        break;
+      case QgsTask::Complete:
+        icon = QgsApplication::getThemeIcon( "/mTaskComplete.svg" );
+        break;
+      case QgsTask::Terminated:
+        icon = QgsApplication::getThemeIcon( "/mTaskTerminated.svg" );
+        break;
+    }
+  }
+
+  QPainter p( this );
+  icon.paint( &p, 1, height() / 2 - 12, 24, 24 );
+  p.end();
+}
+
+void QgsTaskStatusWidget::mousePressEvent( QMouseEvent* )
+{
+  if ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) )
+    emit cancelClicked();
+}
+
+void QgsTaskStatusWidget::mouseMoveEvent( QMouseEvent* )
+{
+  if ( !mInside )
+  {
+    mInside = true;
+    update();
+  }
+}
+
+void QgsTaskStatusWidget::leaveEvent( QEvent* )
+{
+  mInside = false;
+  update();
+}
+
+
+/*
+bool QgsTaskStatusWidget::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
   Q_UNUSED( option );
   if ( event->type() == QEvent::MouseButtonPress )
@@ -409,10 +461,9 @@ bool QgsTaskStatusDelegate::editorEvent( QEvent *event, QAbstractItemModel *mode
       return model->setData( index, true, Qt::EditRole );
     }
   }
-
   return false;
 }
-
+*/
 
 QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *manager, QWidget *parent )
     : QgsFloatingWidget( parent )

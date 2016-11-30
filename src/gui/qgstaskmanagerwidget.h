@@ -18,6 +18,7 @@
 #define QGSTASKMANAGERWIDGET_H
 
 #include "qgsfloatingwidget.h"
+#include "qgstaskmanager.h"
 #include <QStyledItemDelegate>
 #include <QToolButton>
 
@@ -131,6 +132,13 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
   public:
 
+    enum Columns
+    {
+      Description = 0,
+      Progress = 1,
+      Status = 2,
+    };
+
     /** Constructor for QgsTaskManagerModel
      * @param manager task manager for model
      * @param parent parent object
@@ -167,13 +175,6 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
   private:
 
-    enum Columns
-    {
-      Description = 0,
-      Progress = 1,
-      Status = 2,
-    };
-
     QgsTaskManager* mManager;
 
     QList< long > mRowToTaskIdList;
@@ -185,24 +186,52 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
 /**
  * \ingroup gui
- * \class QgsTaskStatusDelegate
- * A delegate for showing task status within a view. Clicks on the delegate will cause the task to be cancelled (via the model).
+ * \class QgsTaskStatusWidget
+ * A widget for showing task status within a view. Clicks on the widget will cause the task to be cancelled (via the model).
  * \note added in QGIS 3.0
  */
-class GUI_EXPORT QgsTaskStatusDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 {
     Q_OBJECT
 
   public:
 
-    /** Constructor for QgsTaskStatusDelegate
+    /** Constructor for QgsTaskStatusWidget
      * @param parent parent object
      */
-    QgsTaskStatusDelegate( QObject* parent = nullptr );
+    QgsTaskStatusWidget( QWidget* parent = nullptr, QgsTask::TaskStatus status = QgsTask::Queued, bool canCancel = true );
 
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
+
+    QSize sizeHint() const override;
+
+    //bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
+
+  public slots:
+
+    /**
+     * Sets the status to show for the task.
+     */
+    void setStatus( int status );
+
+  signals:
+
+    /**
+     * Emitted when the user clicks a cancellable task.
+     */
+    void cancelClicked();
+
+  protected:
+
+    void paintEvent( QPaintEvent * e ) override;
+    void mousePressEvent( QMouseEvent* e ) override;
+    void mouseMoveEvent( QMouseEvent* e ) override;
+    void leaveEvent( QEvent* e ) override;
+
+  private:
+
+    bool mCanCancel;
+    QgsTask::TaskStatus mStatus;
+    bool mInside;
 };
 
 ///@endcond
