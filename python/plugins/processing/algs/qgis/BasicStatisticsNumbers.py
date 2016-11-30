@@ -68,12 +68,18 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     NULLVALUES = 'NULLVALUES'
     IQR = 'IQR'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use BasicStatistics instead
+        self.showInToolbox = False
+
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+        self.tags = self.tr('stats,statistics,number,table,layer')
 
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))

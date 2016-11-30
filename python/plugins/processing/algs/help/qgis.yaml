@@ -22,14 +22,10 @@ qgis:advancedpythonfieldcalculator: >
 
 qgis:barplot:
 
+qgis:basicstatisticsforfields: >
+  This algorithm generates basic statistics from the analysis of a values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported.
 
-qgis:basicstatisticsfornumericfields: >
-  This algorithm generates basic statistics from the analysis of a numeric field in the attribute table of a vector layer.
-
-  Statistics are generated as an HTML file.
-
-qgis:basicstatisticsfortextfields: >
-  This algorithm generates basic statistics from the analysis of a text field in the attribute table of a vector layer.
+  The statistics returned will depend on the field type.
 
   Statistics are generated as an HTML file.
 
