@@ -7,6 +7,8 @@ class QgsColorRampShader : QgsRasterShaderFunction
   public:
     QgsColorRampShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
 
+    ~QgsColorRampShader();
+
     //An entry for classification based upon value.
     //Such a classification is typically used for
     //single band layers where a pixel value represents
@@ -40,23 +42,23 @@ class QgsColorRampShader : QgsRasterShaderFunction
     /** \brief Get the color ramp type */
     QgsColorRampShader::ColorRamp_TYPE colorRampType() const;
 
-    /** \brief Get the original color ramp name
+    /** Get the source color ramp
      * @note added in QGIS 3.0
-     * @see setColorRampName()
+     * @see setSourceColorRamp()
      */
-    QString colorRampName() const;
+    QgsColorRamp* sourceColorRamp() const /Factory/;
+
+    /** Set the source color ramp
+     * @note added in QGIS 3.0
+     * @see sourceColorRamp()
+     */
+    void setSourceColorRamp( QgsColorRamp* colorramp /Transfer/ );
 
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
-
-    /** \brief Set the source color ramp name
-     * @note added in QGIS 3.0
-     * @see colorRampName()
-     */
-    void setColorRampName( const QString& theName );
 
     /** \brief Set the color ramp type*/
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );

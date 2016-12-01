@@ -20,6 +20,8 @@ email                : ersts@amnh.org
 #include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
 #include "qgsrasterblock.h"
+#include "qgssymbollayerutils.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -144,9 +146,16 @@ void QgsRasterShader::writeXml( QDomDocument& doc, QDomElement& parent ) const
   if ( colorRampShader )
   {
     QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
-    colorRampShaderElem.setAttribute( "colorRampName", colorRampShader->colorRampName() );
     colorRampShaderElem.setAttribute( "colorRampType", colorRampShader->colorRampTypeAsQString() );
     colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), colorRampShader->clip() );
+
+    // save source color ramp
+    if ( colorRampShader->sourceColorRamp() )
+    {
+      QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), colorRampShader->sourceColorRamp(), doc );
+      colorRampShaderElem.appendChild( colorRampElem );
+    }
+
     //items
     QList<QgsColorRampShader::ColorRampItem> itemList = colorRampShader->colorRampItemList();
     QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
@@ -171,7 +180,14 @@ void QgsRasterShader::readXml( const QDomElement& elem )
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader* colorRampShader = new QgsColorRampShader();
-    colorRampShader->setColorRampName( colorRampShaderElem.attribute( "colorRampName" ) );
+
+    // try to load color ramp (optional)
+    QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( QStringLiteral( "colorramp" ) );
+    if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+    {
+      colorRampShader->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+    }
+
     colorRampShader->setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );
     colorRampShader->setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
 

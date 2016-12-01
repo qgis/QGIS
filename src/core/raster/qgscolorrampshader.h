@@ -24,6 +24,7 @@ originally part of the larger QgsRasterLayer class
 #include <QColor>
 #include <QVector>
 
+#include "qgscolorramp.h"
 #include "qgsrastershaderfunction.h"
 
 /** \ingroup core
@@ -33,7 +34,20 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 {
 
   public:
+
     QgsColorRampShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+
+    /** Destructor
+     */
+    virtual ~QgsColorRampShader();
+
+    /** Copy constructor
+     */
+    QgsColorRampShader( const QgsColorRampShader& other );
+
+    /** Assignment operator
+     */
+    QgsColorRampShader& operator=( const QgsColorRampShader& other );
 
     //An entry for classification based upon value.
     //Such a classification is typically used for
@@ -75,23 +89,23 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //! \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
 
-    /** Get the original color ramp name
-     * @note added in QGIS 3.0
-     * @see setColorRampName()
-     */
-    QString colorRampName() const { return mColorRampName; }
-
     //! \brief Set custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
     //! \brief Set the color ramp type
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
-    /** Sets the source color ramp name
+    /** Get the source color ramp
      * @note added in QGIS 3.0
-     * @see colorRampName()
+     * @see setSourceColorRamp()
      */
-    void setColorRampName( const QString& theName );
+    QgsColorRamp* sourceColorRamp() const;
+
+    /** Set the source color ramp. Ownership is transferred to the renderer.
+     * @note added in QGIS 3.0
+     * @see sourceColorRamp()
+     */
+    void setSourceColorRamp( QgsColorRamp* colorramp );
 
     //! \brief Set the color ramp type
     void setColorRampType( const QString& theType );
@@ -116,6 +130,11 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     bool clip() const { return mClip; }
 
+  protected:
+
+    //! Source color ramp
+    QScopedPointer<QgsColorRamp> mSourceColorRamp;
+
   private:
 
     /** This vector holds the information for classification based on values.
@@ -134,9 +153,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     double mLUTOffset;
     double mLUTFactor;
     bool mLUTInitialized;
-
-    //! Color ramp name
-    QString mColorRampName;
 
     //! Do not render values out of range
     bool mClip;

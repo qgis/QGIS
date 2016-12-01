@@ -27,30 +27,31 @@
     <number>3</number>
    </property>
    <item row="4" column="1" colspan="4">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QgsColorRampComboBox" name="mColorRampComboBox"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mButtonEditRamp">
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="mInvertCheckBox">
-       <property name="text">
-        <string>Invert</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsColorRampButton" name="btnColorRamp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="mColorInterpolationLabel_2">
      <property name="text">
-      <string>Color</string>
+      <string>Color ramp</string>
      </property>
     </widget>
    </item>

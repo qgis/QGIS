@@ -175,6 +175,17 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      */
     bool showGradientOnly() const { return mShowGradientOnly; }
 
+    /** Sets the name of the current color ramp when it's available in the style manager
+     * @param name Name of the saved color ramp
+     * @see colorRampName
+     */
+    void setColorRampName( const QString& name ) { mColorRampName = name; }
+
+    /** Returns the name of the current color ramp when it's available in the style manager
+     * @see setColorRampName
+     */
+    QString colorRampName() const { return mColorRampName; }
+
   public slots:
 
     /** Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
@@ -243,6 +254,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     QString mColorRampDialogTitle;
     bool mShowGradientOnly;
     QgsColorRamp* mColorRamp;
+    QString mColorRampName;
     QgsStyle* mStyle;
 
     QgsColorRamp* mDefaultColorRamp;

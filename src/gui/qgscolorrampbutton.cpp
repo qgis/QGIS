@@ -89,6 +89,8 @@ void QgsColorRampButton::showColorRampDialog()
   if ( !currentRamp )
     return;
 
+  setColorRampName( QString() );
+
   if ( currentRamp->type() == QLatin1String( "gradient" ) )
   {
     QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( currentRamp.data() );
@@ -193,16 +195,10 @@ bool QgsColorRampButton::event( QEvent *e )
 {
   if ( e->type() == QEvent::ToolTip )
   {
-    //QString name = this->colorRamp().name();
-    /*int hue = this->color().hue();
-    //int value = this->color().value();
-    //int saturation = this->color().saturation();
-    QString info = QString( "HEX: %1 \n"
-                            "RGB: %2 \n"
-                            "HSV: %3,%4,%5" ).arg( name,
-                                                   QgsSymbolLayerUtils::encodeColor( this->color() ) )
-                   .arg( hue ).arg( saturation ).arg( value );*/
-    setToolTip( QString( "fix" ) );
+    if ( !colorRampName().isEmpty() )
+    {
+      setToolTip( colorRampName() );
+    }
   }
   return QToolButton::event( e );
 }
@@ -328,28 +324,30 @@ void QgsColorRampButton::loadColorRamp()
   if ( selectedItem )
   {
     QString name = selectedItem->text();
+    setColorRampName( name );
     setColorRampFromName( name );
   }
 }
 
 void QgsColorRampButton::createColorRamp()
 {
-  QString rampName;
+  QString name;
   if ( !mShowGradientOnly )
   {
-    rampName = QgsStyleManagerDialog::addColorRampStatic( this, mStyle );
+    name = QgsStyleManagerDialog::addColorRampStatic( this, mStyle );
   }
   else
   {
-    rampName = QgsStyleManagerDialog::addColorRampStatic( this, mStyle, QStringLiteral( "Gradient" ) );
+    name = QgsStyleManagerDialog::addColorRampStatic( this, mStyle, QStringLiteral( "Gradient" ) );
   }
-  if ( rampName.isEmpty() )
+  if ( name.isEmpty() )
     return;
 
   // make sure the color ramp is stored
   mStyle->save();
 
-  setColorRampFromName( rampName );
+  setColorRampName( name );
+  setColorRampFromName( name );
 }
 
 void QgsColorRampButton::invertColorRamp()
