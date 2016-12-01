@@ -359,7 +359,7 @@ MAPPING = {
         ]),
     ],
     "PyQt4": [
-        ("PyQt", [
+        ("qgis.PyQt", [
             "QtCore",
             "QtGui",
             "QtNetwork",
