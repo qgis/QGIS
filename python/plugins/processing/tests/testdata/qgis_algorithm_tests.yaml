@@ -1627,6 +1627,9 @@ tests:
       OUTPUT:
         name: expected/split_lines_with_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:splitwithlines
     name: Split poly with lines
@@ -1641,6 +1644,9 @@ tests:
       OUTPUT:
         name: expected/split_polys_with_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:splitwithlines
     name: Split lines with same lines
@@ -1655,6 +1661,9 @@ tests:
       OUTPUT:
         name: expected/split_lines_with_lines_same.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:dropgeometries
     name: Drop geometries

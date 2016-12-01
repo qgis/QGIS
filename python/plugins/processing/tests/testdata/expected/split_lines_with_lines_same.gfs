@@ -2,15 +2,15 @@
   <GMLFeatureClass>
     <Name>split_lines_with_lines_same</Name>
     <ElementPath>split_lines_with_lines_same</ElementPath>
-    <!--LINESTRING-->
-    <GeometryType>2</GeometryType>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>7</FeatureCount>
-      <ExtentXMin>-1.00000</ExtentXMin>
-      <ExtentXMax>11.00000</ExtentXMax>
-      <ExtentYMin>-3.00000</ExtentYMin>
-      <ExtentYMax>5.00000</ExtentYMax>
+      <FeatureCount>2</FeatureCount>
+      <ExtentXMin>0.77654</ExtentXMin>
+      <ExtentXMax>8.57235</ExtentXMax>
+      <ExtentYMin>-4.24413</ExtentYMin>
+      <ExtentYMax>2.17905</ExtentYMax>
     </DatasetSpecificInfo>
   </GMLFeatureClass>
 </GMLFeatureClassList>
