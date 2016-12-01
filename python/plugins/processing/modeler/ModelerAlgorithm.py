@@ -38,7 +38,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QPointF
 from qgis.PyQt.QtGui import QIcon
 from operator import attrgetter
 
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsExpressionContextScope, QgsScopedExpressionFunction, QgsExpression, NULL
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -85,6 +85,32 @@ class ModelerOutput(object):
 
     def todict(self):
         return self.__dict__
+
+
+class ModelParamFunction(QgsScopedExpressionFunction):
+
+    def __init__(self, model):
+        super(ModelParamFunction, self).__init__('model_param', 1, 'Processsing')
+        self.model = model
+
+    def func(self, values, context, parent):
+        if not self.model:
+            return NULL
+
+        param = values[0]
+
+        if param in self.model.inputs:
+            # check by name
+            return self.model.inputs[param].param.value
+        else:
+            # check by description
+            for p, v in self.model.inputs.items():
+                if v.param.description == param:
+                    return v.param.value
+        return NULL
+
+    def clone(self):
+        return ModelParamFunction(self.model)
 
 
 class Algorithm(object):
@@ -643,6 +669,16 @@ class ModelerAlgorithm(GeoAlgorithm):
                         executed.append(alg.name)
 
         return '\n'.join(s)
+
+    parameter_function = None
+
+    def createExpressionContextScope(self):
+        scope = QgsExpressionContextScope()
+        scope.addVariable(QgsExpressionContextScope.StaticVariable('model_name', self.name, True))
+        if not self.parameter_function:
+            self.parameter_function = ModelParamFunction(self)
+        scope.addFunction('model_param', self.parameter_function)
+        return scope
 
 
 def safeName(name):

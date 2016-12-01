@@ -62,6 +62,9 @@ class ExtractByExpression(GeoAlgorithm):
         else:
             raise GeoAlgorithmExecutionException(expression.parserErrorString())
 
+        context = self.createExpressionContext(layer)
+        req.setExpressionContext(context)
+
         for f in layer.getFeatures(req):
             writer.addFeature(f)
 

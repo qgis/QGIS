@@ -42,10 +42,17 @@ from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
+from processing.modeler.ModelerAlgorithm import ModelParamFunction
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.alglist import algList
 
+from qgis.core import QgsExpression
+
+
+# expression functions must be registered on load, and the function must survive for as long as it can be called
+model_param_function = ModelParamFunction(None)
+QgsExpression.registerFunction(model_param_function)
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
@@ -142,6 +149,9 @@ class ProcessingPlugin(object):
         self.iface.unregisterMainWindowAction(self.commanderAction)
 
         removeMenus()
+
+        # safely remove expression functions to avoid crash on exit
+        QgsExpression.unregisterFunction('model_param')
 
     def openCommander(self):
         if self.commander is None:
