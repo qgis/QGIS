@@ -2,11 +2,11 @@
   <GMLFeatureClass>
     <Name>split_polys_with_lines</Name>
     <ElementPath>split_polys_with_lines</ElementPath>
-    <!--POLYGON-->
-    <GeometryType>3</GeometryType>
+    <!--MULTIPOLYGON-->
+    <GeometryType>6</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>7</FeatureCount>
+      <FeatureCount>6</FeatureCount>
       <ExtentXMin>-1.00000</ExtentXMin>
       <ExtentXMax>10.00000</ExtentXMax>
       <ExtentYMin>-3.00000</ExtentYMin>
