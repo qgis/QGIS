@@ -178,7 +178,7 @@ class Parameter(object):
     def wrapper(self, dialog, row=0, col=0):
         wrapper = self.metadata.get('widget_wrapper', None)
         # wrapper metadata should be a class path
-        if isinstance(wrapper, basestring):
+        if isinstance(wrapper, str):
             tokens = wrapper.split('.')
             mod = __import__('.'.join(tokens[:-1]), fromlist=[tokens[-1]])
             wrapper = getattr(mod, tokens[-1])
