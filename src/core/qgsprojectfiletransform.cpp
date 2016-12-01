@@ -30,6 +30,7 @@
 #include "qgsprojectproperty.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsconfigurationmap.h"
 
 typedef QgsProjectVersion PFV;
 
@@ -59,6 +60,7 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 2, 0, 0 ), PFV( 2, 1, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 2, 1, 0 ), PFV( 2, 2, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &QgsProjectFileTransform::transform2200to2300},
+  {PFV( 2, 18, 0 ), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2180to2990},
 };
 
 bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersion )
@@ -607,6 +609,100 @@ void QgsProjectFileTransform::transform2200to2300()
   {
     QDomElement picture = composerPictureList.at( i ).toElement();
     picture.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( 4 ) );
+  }
+}
+
+void QgsProjectFileTransform::transform2180to2990()
+{
+  QDomNodeList mapLayers = mDom.elementsByTagName( QStringLiteral( "maplayer" ) );
+
+  for ( int mapLayerIndex = 0; mapLayerIndex < mapLayers.count(); ++mapLayerIndex )
+  {
+    QDomElement layerElem = mapLayers.at( mapLayerIndex ).toElement();
+
+    // The newly added fieldConfiguration element
+    QDomElement fieldConfigurationElement = mDom.createElement( QStringLiteral( "fieldConfiguration" ) );
+    layerElem.appendChild( fieldConfigurationElement );
+
+    QDomNodeList editTypeNodes = layerElem.namedItem( QStringLiteral( "edittypes" ) ).childNodes();
+    QDomElement constraintExpressionsElem = mDom.createElement( QStringLiteral( "constraintExpressions" ) );
+    layerElem.appendChild( constraintExpressionsElem );
+
+    for ( int i = 0; i < editTypeNodes.size(); ++i )
+    {
+      QDomNode editTypeNode = editTypeNodes.at( i );
+      QDomElement editTypeElement = editTypeNode.toElement();
+
+      QDomElement fieldElement = mDom.createElement( QStringLiteral( "field" ) );
+      fieldConfigurationElement.appendChild( fieldElement );
+
+      QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
+      fieldElement.setAttribute( QStringLiteral( "name" ), name );
+      QDomElement constraintExpressionElem = mDom.createElement( QStringLiteral( "constraint" ) );
+      constraintExpressionElem.setAttribute( "field", name );
+      constraintExpressionsElem.appendChild( constraintExpressionElem );
+
+      QDomElement editWidgetElement = mDom.createElement( QStringLiteral( "editWidget" ) );
+      fieldElement.appendChild( editWidgetElement );
+
+      QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
+      editWidgetElement.setAttribute( "type", ewv2Type );
+
+      QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
+
+      if ( !ewv2CfgElem.isNull() )
+      {
+        QDomElement editWidgetConfigElement = mDom.createElement( QStringLiteral( "config" ) );
+        editWidgetElement.appendChild( editWidgetConfigElement );
+
+        QVariantMap editWidgetConfiguration;
+
+        QDomNamedNodeMap configAttrs = ewv2CfgElem.attributes();
+        for ( int configIndex = 0; configIndex < configAttrs.count(); ++configIndex )
+        {
+          QDomAttr configAttr = configAttrs.item( configIndex ).toAttr();
+          if ( configAttr.name() == QStringLiteral( "fieldEditable" ) )
+          {
+            editWidgetConfigElement.setAttribute( QStringLiteral( "fieldEditable" ), configAttr.value() );
+          }
+          else if ( configAttr.name() == QStringLiteral( "labelOnTop" ) )
+          {
+            editWidgetConfigElement.setAttribute( QStringLiteral( "labelOnTop" ), configAttr.value() );
+          }
+          else if ( configAttr.name() == QStringLiteral( "notNull" ) )
+          {
+            editWidgetConfigElement.setAttribute( QStringLiteral( "notNull" ), configAttr.value() );
+          }
+          else if ( configAttr.name() == QStringLiteral( "constraint" ) )
+          {
+            constraintExpressionElem.setAttribute( "exp", configAttr.value() );
+          }
+          else if ( configAttr.name() == QStringLiteral( "constraintDescription" ) )
+          {
+            constraintExpressionElem.setAttribute( "desc", configAttr.value() );
+          }
+          else
+          {
+            editWidgetConfiguration.insert( configAttr.name(), configAttr.value() );
+          }
+        }
+
+        if ( ewv2Type == QStringLiteral( "ValueMap" ) )
+        {
+          QDomNodeList configElements = ewv2CfgElem.childNodes();
+          QVariantMap map;
+          for ( int configIndex = 0; configIndex < configElements.count(); ++configIndex )
+          {
+            QDomElement configElem = configElements.at( configIndex ).toElement();
+            map.insert( configElem.attribute( QStringLiteral( "key" ) ), configElem.attribute( QStringLiteral( "value" ) ) );
+          }
+          editWidgetConfiguration.insert( QStringLiteral( "map" ), map );
+        }
+
+        QgsConfigurationMap editWidgetConfigurationMap( editWidgetConfiguration );
+        editWidgetConfigurationMap.toXml( editWidgetConfigElement );
+      }
+    }
   }
 }
 
