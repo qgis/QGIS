@@ -167,17 +167,13 @@ class SplitWithLines(GeoAlgorithm):
                 passed = True
 
                 if QgsWkbTypes.geometryType( aGeom.wkbType() )  == QgsWkbTypes.LineGeometry:
-                    firstVertex = aGeom.vertexAt(0)
-                    secondVertex  = aGeom.vertexAt(1)
-                    thirdVertex = aGeom.vertexAt(2)
-                    passed = thirdVertex != QgsPoint(0, 0) # more than 2 vertices
+                    numPoints = aGeom.geometry().numPoints()
 
-                    if not passed:
-                        passed = secondVertex != QgsPoint(0, 0) # has 2 vertices
-
-                        if passed:
-                            passed = not (firstVertex.x() == secondVertex.x() and
-                                firstVertex.y() == secondVertex.y())
+                    if numPoints <= 2:
+                        if numPoints == 2:
+                            passed = not aGeom.geometry().isClosed() # tests if vertex 0 = vertex 1
+                        else:
+                            passed = False
                             # sometimes splitting results in lines of zero length
 
                 if passed:
