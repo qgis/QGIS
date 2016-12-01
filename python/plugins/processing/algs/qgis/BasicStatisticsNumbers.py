@@ -31,10 +31,11 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsStatisticalSummary
+from qgis.core import (QgsStatisticalSummary,
+                       QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
@@ -73,9 +74,10 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+        self.tags = self.tr('stats,statistics,number,table,layer')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input vector layer')))
+        self.addParameter(ParameterTable(self.INPUT_LAYER,
+                                         self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
                                               self.tr('Field to calculate statistics on'),
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
@@ -107,36 +109,16 @@ class BasicStatisticsNumbers(GeoAlgorithm):
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
-        cvValue = 0
-        minValue = 0
-        maxValue = 0
-        sumValue = 0
-        meanValue = 0
-        medianValue = 0
-        stdDevValue = 0
-        minority = 0
-        majority = 0
-        firstQuartile = 0
-        thirdQuartile = 0
-        nullValues = 0
-        iqr = 0
-
-        values = []
-
-        features = vector.features(layer)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName], layer.fields())
+        stat = QgsStatisticalSummary()
+        features = vector.features(layer, request)
         count = len(features)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
-            value = ft[fieldName]
-            if value or value == 0:
-                values.append(float(value))
-            else:
-                nullValues += 1
-
+            stat.addVariant(ft[fieldName])
             progress.setPercentage(int(current * total))
 
-        stat = QgsStatisticalSummary()
-        stat.calculate(values)
+        stat.finalize()
 
         count = stat.count()
         uniqueValue = stat.variety()
@@ -147,13 +129,13 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         meanValue = stat.mean()
         medianValue = stat.median()
         stdDevValue = stat.stDev()
-        if meanValue != 0.00:
-            cvValue = stdDevValue / meanValue
+        cvValue = stdDevValue / meanValue if meanValue != 0 else 0
         minority = stat.minority()
         majority = stat.majority()
         firstQuartile = stat.firstQuartile()
         thirdQuartile = stat.thirdQuartile()
         iqr = stat.interQuartileRange()
+        nullValues = stat.countMissing()
 
         data = []
         data.append(self.tr('Analyzed layer: {}').format(layer.name()))

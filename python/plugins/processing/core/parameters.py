@@ -1339,6 +1339,7 @@ class ParameterTableField(Parameter):
 
     DATA_TYPE_NUMBER = 0
     DATA_TYPE_STRING = 1
+    DATA_TYPE_DATETIME = 2
     DATA_TYPE_ANY = -1
 
     def __init__(self, name='', description='', parent=None, datatype=-1,
@@ -1376,6 +1377,8 @@ class ParameterTableField(Parameter):
             return 'numeric'
         elif self.datatype == self.DATA_TYPE_STRING:
             return 'string'
+        elif self.datatype == self.DATA_TYPE_DATETIME:
+            return 'datetime'
         else:
             return 'any'
 
@@ -1397,6 +1400,9 @@ class ParameterTableField(Parameter):
             elif definition.lower().strip().startswith('field string'):
                 parent = definition.strip()[len('field string') + 1:]
                 datatype = ParameterTableField.DATA_TYPE_STRING
+            elif definition.lower().strip().startswith('field datetime'):
+                parent = definition.strip()[len('field datetime') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_DATETIME
             else:
                 parent = definition.strip()[len('field') + 1:]
                 datatype = ParameterTableField.DATA_TYPE_ANY

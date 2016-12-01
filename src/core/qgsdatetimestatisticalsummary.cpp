@@ -41,6 +41,7 @@ void QgsDateTimeStatisticalSummary::reset()
   mCountMissing = 0;
   mMin = QDateTime();
   mMax = QDateTime();
+  mIsTimes = false;
 }
 
 void QgsDateTimeStatisticalSummary::calculate( const QVariantList& values )
@@ -65,6 +66,18 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant& value )
     QDate date = value.toDate();
     testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
                   : QDateTime() );
+  }
+  else if ( value.type() == QVariant::Time )
+  {
+    mIsTimes = true;
+    QTime time = value.toTime();
+    testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time )
+                  : QDateTime() );
+  }
+  else //not a date
+  {
+    mCountMissing++;
+    mCount++;
   }
   // QTime?
 }
@@ -121,11 +134,11 @@ QVariant QgsDateTimeStatisticalSummary::statistic( QgsDateTimeStatisticalSummary
     case CountMissing:
       return mCountMissing;
     case Min:
-      return mMin;
+      return mIsTimes ? QVariant( mMin.time() ) : QVariant( mMin );
     case Max:
-      return mMax;
+      return mIsTimes ? QVariant( mMax.time() ) : QVariant( mMax );
     case Range:
-      return QVariant::fromValue( mMax - mMin );
+      return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( mMax - mMin );
     case All:
       return 0;
   }

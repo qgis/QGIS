@@ -1022,7 +1022,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                     widget.setFilters(QgsFieldProxyModel.Numeric)
                 elif self.param.datatype == ParameterTableField.DATA_TYPE_STRING:
                     widget.setFilters(QgsFieldProxyModel.String)
-
+                elif self.param.datatype == ParameterTableField.DATA_TYPE_DATETIME:
+                    widget.setFilters(QgsFieldProxyModel.Date | QgsFieldProxyModel.Time)
                 return widget
         else:
             widget = QComboBox()
@@ -1067,6 +1068,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         elif self.param.datatype == ParameterTableField.DATA_TYPE_NUMBER:
             fieldTypes = [QVariant.Int, QVariant.Double, QVariant.LongLong,
                           QVariant.UInt, QVariant.ULongLong]
+        elif self.param.datatype == ParameterTableField.DATA_TYPE_DATETIME:
+            fieldTypes = [QVariant.Date, QVariant.Time, QVariant.DateTime]
 
         fieldNames = set()
         for field in self._layer.fields():
