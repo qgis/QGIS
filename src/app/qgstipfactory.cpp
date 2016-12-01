@@ -92,12 +92,12 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
   myTip.setContent( tr( "In the print composer toolbar you can find two buttons for moving"
-                        " elements. The left one (right arrow icon) selects and moves elements"
-                        " in the layout. After selecting the element with this tool you can also"
-                        " move them around with the arrow keys. For accurate positioning use the"
-                        " <strong>Position and Size</strong> section, which can be found in the"
-                        " tab <strong>Item Properties -> Position and Size</strong>."
-                        " The other move tool (a scrolled map icon with four oriented arrows)"
+                        " elements. The first one (<img src=\":/images/themes/default/mActionSelect.svg\"/>" )
+                        " selects and moves elements in the layout. After selecting the element"
+                        " with this tool you can also move them around with the arrow keys."
+                        " For accurate positioning use the <strong>Position and Size</strong> section,"
+                        " which can be found in the tab <strong>Item Properties -> Position and Size</strong>."
+                        " The other move tool (<img src=\":/images/themes/default/mActionMoveItemContent.svg\"/>" )"
                         " allows you to move the map content within a map frame."
                       ) );
   addGuiTip( myTip );
@@ -201,7 +201,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Copy, paste and cut in QGIS" ) );
   myTip.setContent( tr( "Copy, paste, and cut work as in another applications in QGIS. Select a "
                         "feature (a geometry or an attribut row in the attribute table) and use "
-                        "one of this shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
+                        "one of these shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
                       ) );
   addGuiTip( myTip );
   // by yjacolin
@@ -234,9 +234,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Live update rendering" ) );
-  myTip.setContent( tr( "Use the <strong>Layer Styling</strong> panel to easily and quickly configure the layer"
-                        " rendering. Check the <strong>Live update</strong> option to automatically apply to"
-                        " the map canvas each of your modifications."
+  myTip.setContent( tr( "Press F7 to activate the <strong>Layer Styling</strong> panel from which you can"
+                        " easily and quickly configure the layer rendering. Check the <strong>Live update</strong>"
+                        " option to automatically apply to the map canvas each of your modifications."
                       ) );
   addGuiTip( myTip );
   // by Harrissou Sant-anna
@@ -249,8 +249,17 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   // by Harrissou Sant-anna
   myTip.setTitle( tr( "Start QGIS from command line" ) );
-  myTip.setContent( tr( "QGIS supports a number of options when started from the command line. To get a list"
-                        " of the options, enter qgis --help on the command line."
+  myTip.setContent( tr( "QGIS can be launched from command line and supports a number of options. This can be"
+                        " handy if you need to use QGIS with particular configurations such as custom"
+                        " user profile or, without plugins... To get the list of the options,"
+                        " enter qgis --help on the command line."
+                      ) );
+  addGuiTip( myTip );
+  // by Harrissou Sant-anna
+  myTip.setTitle( tr( "Set your own shortcuts for your actions" ) );
+  myTip.setContent( tr( "QGIS provides you with a list of predefined shortcuts you can use to speed"
+                        " your workflow. These are available under <strong>Settings -> Configure"
+                        " shortcuts</strong> menu and can be extended and customized for any dialog or tool."
                       ) );
   addGuiTip( myTip );
 
