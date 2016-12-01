@@ -298,6 +298,7 @@ MAPPING = {
             "QPoint",
             "QPointF",
             "QDirIterator",
+            "QEventLoop",
             "NULL",
         ]),
         (None, [
