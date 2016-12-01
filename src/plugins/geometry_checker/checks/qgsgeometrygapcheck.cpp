@@ -87,7 +87,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
   // For each gap polygon which does not lie on the boundary, get neighboring polygons and add error
   for ( int iPart = 0, nParts = diffGeom->partCount(); iPart < nParts; ++iPart )
   {
-    QgsAbstractGeometry* geom = QgsGeometryCheckerUtils::getGeomPart( diffGeom, iPart );
+    QgsAbstractGeometry* geom = QgsGeometryCheckerUtils::getGeomPart( diffGeom, iPart )->clone();
     // Skip the gap between features and boundingbox
     if ( geom->boundingBox() == envelope->boundingBox() )
     {
@@ -127,7 +127,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, 
     }
 
     // Add error
-    errors.append( new QgsGeometryGapCheckError( this, geom->clone(), neighboringIds, geom->area(), gapAreaBBox ) );
+    errors.append( new QgsGeometryGapCheckError( this, geom, neighboringIds, geom->area(), gapAreaBBox ) );
   }
 
   delete unionGeom;
