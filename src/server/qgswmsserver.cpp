@@ -2089,8 +2089,13 @@ int QgsWmsServer::configureMapRender( const QPaintDevice* paintDevice ) const
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
 
   //map extent
-  bool bboxOk;
-  QgsRectangle mapExtent = _parseBBOX( mParameters.value( QStringLiteral( "BBOX" ), QStringLiteral( "0,0,0,0" ) ), bboxOk );
+  bool bboxOk = true;
+  QgsRectangle mapExtent;
+  if( mParameters.contains( "BBOX" ) )
+  {
+    mapExtent = _parseBBOX( mParameters.value( QStringLiteral( "BBOX" ), QStringLiteral( "0,0,0,0" ) ), bboxOk );
+  }
+
   if ( !bboxOk )
   {
     //throw a service exception
