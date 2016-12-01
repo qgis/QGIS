@@ -7915,7 +7915,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
     QSettings settings;
     QString markerType = settings.value( QStringLiteral( "/qgis/digitizing/marker_style" ), "Cross" ).toString();
-    bool markSelectedOnly = settings.value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), false ).toBool();
+    bool markSelectedOnly = settings.value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool();
 
     // redraw only if markers will be drawn
     if (( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
