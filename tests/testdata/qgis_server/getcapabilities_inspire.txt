@@ -97,7 +97,7 @@ Content-Type: text/xml; charset=utf-8
    </qgs:GetStyles>
   </Request>
   <Exception>
-   <Format>text/xml</Format>
+   <Format>XML</Format>
   </Exception>
   <sld:UserDefinedSymbolization RemoteWFS="0" RemoteWCS="0" InlineFeature="0" UserStyle="1" SupportSLD="1" UserLayer="0"/>
   <inspire_vs:ExtendedCapabilities>
@@ -123,6 +123,7 @@ Content-Type: text/xml; charset=utf-8
   <Layer queryable="1">
    <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
+   <CRS>CRS:84</CRS>
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
    <EX_GeographicBoundingBox>
@@ -137,6 +138,7 @@ Content-Type: text/xml; charset=utf-8
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
+    <CRS>CRS:84</CRS>
     <CRS>EPSG:4326</CRS>
     <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
