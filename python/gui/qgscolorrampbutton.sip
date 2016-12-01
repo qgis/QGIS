@@ -25,11 +25,10 @@ class QgsColorRampButton : QToolButton
 
     virtual QSize sizeHint() const;
 
-    /** Return the current color ramp.
-     * @returns currently selected color
-     * @see setColor
+    /** Return a copy of the current color ramp.
+     * @see setColorRamp()
      */
-    QgsColorRamp* colorRamp() const;
+    QgsColorRamp* colorRamp() const /Factory/;
 
     /** Set the title for the color ramp dialog window.
      * @param title Title for the color ramp dialog
@@ -72,18 +71,18 @@ class QgsColorRampButton : QToolButton
     /** Sets the default color ramp for the button, which is shown in the button's drop down menu for the
      * "default color ramp" option.
      * @param colorramp default color ramp for the button. Set to a null pointer to disable the default color
-     * ramp option.
+     * ramp option. The ramp will be cloned and ownership is not transferred.
      * @see defaultColorRamp
      */
     void setDefaultColorRamp( QgsColorRamp* colorramp );
 
-    /** Returns the default color ramp for the button, which is shown in the button's drop down menu for the
+    /** Returns a copy of the default color ramp for the button, which is shown in the button's drop down menu for the
      * "default color ramp" option.
      * @returns default color ramp for the button. Returns a null pointer if the default color ramp
      * option is disabled.
      * @see setDefaultColorRamp
      */
-    QgsColorRamp* defaultColorRamp() const;
+    QgsColorRamp* defaultColorRamp() const /Factory/;
 
     /** Sets whether a random colors option is shown in the button's drop down menu.
      * @param showNull set to true to show a null option
@@ -152,7 +151,7 @@ class QgsColorRampButton : QToolButton
 
     /** Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
      * to the previous color ramp.
-     * @param colorramp New color ramp for the button
+     * @param colorramp New color ramp for the button. The ramp will be cloned and ownership is not transferred.
      * @see setRandomColorRamp, setColorRampFromName, colorRamp
      */
     void setColorRamp( QgsColorRamp* colorramp );
@@ -168,7 +167,7 @@ class QgsColorRampButton : QToolButton
      * @param name Name of saved color ramp
      * @see setColorRamp, setRandomColorRamp, colorRamp
      */
-    void setColorRampFromName( QString name = QString() );
+    void setColorRampFromName( const QString& name = QString() );
 
     /** Sets the background pixmap for the button based upon current color ramp.
      * @param colorramp Color ramp for button background. If no color ramp is specified, the button's current

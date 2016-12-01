@@ -412,7 +412,7 @@ void QgsColorRampButton::setColorRamp( QgsColorRamp* colorramp )
   mColorRampSet = true;
 }
 
-void QgsColorRampButton::setColorRampFromName( QString name )
+void QgsColorRampButton::setColorRampFromName( const QString& name )
 {
   if ( !name.isEmpty() )
   {
