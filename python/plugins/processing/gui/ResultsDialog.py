@@ -49,7 +49,7 @@ class ResultsDialog(BASE, WIDGET):
         self.keyIcon = QIcon()
         self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
 
-        self.tree.itemClicked.connect(self.changeResult)
+        self.tree.currentItemChanged.connect(self.changeResult)
 
         self.fillTree()
 

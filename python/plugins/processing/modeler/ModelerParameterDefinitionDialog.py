@@ -140,6 +140,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.datatypeCombo.addItem(self.tr('Any'), -1)
             self.datatypeCombo.addItem(self.tr('Number'), 0)
             self.datatypeCombo.addItem(self.tr('String'), 1)
+            self.datatypeCombo.addItem(self.tr('Date/time'), 2)
             self.verticalLayout.addWidget(self.datatypeCombo)
 
             if self.param is not None and self.param.datatype is not None:

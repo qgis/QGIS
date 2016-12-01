@@ -152,7 +152,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:basicstatisticsfornumericfields
+  - algorithm: qgis:basicstatisticsforfields
     name: Basic statistics for numeric fields
     params:
     - name: multipolys.gml
@@ -182,7 +182,7 @@ tests:
           - 'NULL \(missing\) values: 1'
           - 'Interquartile Range \(IQR\): 0.123'
 
-  - algorithm: qgis:basicstatisticsfortextfields
+  - algorithm: qgis:basicstatisticsforfields
     name: Basic statistics for text fields
     params:
     - name: multipolys.gml
@@ -191,7 +191,18 @@ tests:
     results:
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_string.html
-        type: file
+        type: regex
+        rules:
+          - 'Analyzed layer: multipolys.gml'
+          - 'Analyzed field: Bname'
+          - 'Count: 4'
+          - 'Unique values: 2'
+          - 'Minimum value: Test'
+          - 'Maximum value: Test'
+          - 'Minimum length: 0'
+          - 'Maximum length: 4'
+          - 'Mean length: 3.0'
+          - 'NULL \(missing\) values: 1'
 
   # Split lines with lines considers two cases
   # case 1: two different layers
@@ -1753,3 +1764,63 @@ tests:
       OUTPUT:
         name: expected/removed_holes_min_area.gml
         type: vector
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic stats datetime
+    params:
+      FIELD_NAME: date_time
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_datetime.html
+        type: regex
+        rules:
+          - 'Analyzed layer: custom/datetimes.tab'
+          - 'Analyzed field: date_time'
+          - 'Count: 4'
+          - 'Unique values: 3'
+          - 'Minimum value: 2014-11-30T14:30:02'
+          - 'Maximum value: 2016-11-30T14:29:22'
+          - 'NULL \(missing\) values: 1'
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic stats date
+    params:
+      FIELD_NAME: date
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_date.html
+        type: regex
+        rules:
+          - 'Analyzed layer: custom/datetimes.tab'
+          - 'Analyzed field: date'
+          - 'Count: 4'
+          - 'Unique values: 3'
+          - 'Minimum value: 2014-11-30T00:00:00'
+          - 'Maximum value: 2016-11-30T00:00:00'
+          - 'NULL \(missing\) values: 1'
+
+  - algorithm: qgis:basicstatisticsforfields
+    name: Basic stats time
+    params:
+      FIELD_NAME: time
+      INPUT_LAYER:
+        name: custom/datetimes.tab
+        type: table
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_time.html
+        type: regex
+        rules:
+          - 'Analyzed layer: custom/datetimes.tab'
+          - 'Analyzed field: time'
+          - 'Count: 4'
+          - 'Unique values: 3'
+          - 'Minimum value: 03:29:40'
+          - 'Maximum value: 15:29:22'
+          - 'NULL \(missing\) values: 1'

@@ -180,6 +180,7 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .CreateAttributeIndex import CreateAttributeIndex
 from .DropGeometry import DropGeometry
+from .BasicStatistics import BasicStatisticsForField
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -243,7 +244,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         TinInterpolationZValue(), TinInterpolationAttribute(),
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
-                        PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry()
+                        PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
+                        BasicStatisticsForField()
                         ]
 
         if hasMatplotlib:

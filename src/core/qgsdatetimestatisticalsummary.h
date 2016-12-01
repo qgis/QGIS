@@ -154,6 +154,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     int mCountMissing;
     QDateTime mMin;
     QDateTime mMax;
+    bool mIsTimes;
 
     void testDateTime( const QDateTime& dateTime );
 };
