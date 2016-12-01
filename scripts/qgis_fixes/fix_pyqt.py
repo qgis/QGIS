@@ -33,6 +33,7 @@ MAPPING = {
          "QPolygonF",
          "QFontMetricsF",
          "QGradient",
+         "QIntValidator",
          ]),
         ("qgis.PyQt.QtWidgets", [
          "QAbstractButton",
@@ -284,6 +285,7 @@ MAPPING = {
             "pyqtSlot",
             "qDebug",
             "qWarning",
+            "qVersion",
             "QDate",
             "QTime",
             "QDateTime",
