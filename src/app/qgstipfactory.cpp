@@ -92,12 +92,12 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
   myTip.setContent( tr( "In the print composer toolbar you can find two buttons for moving"
-                        " elements. The first one (<img src=\":/images/themes/default/mActionSelect.svg\"/>" )
+                        " elements. The first one ( <img src=\":/images/themes/default/mActionSelect.svg\"/> )"
                         " selects and moves elements in the layout. After selecting the element"
                         " with this tool you can also move them around with the arrow keys."
                         " For accurate positioning use the <strong>Position and Size</strong> section,"
                         " which can be found in the tab <strong>Item Properties -> Position and Size</strong>."
-                        " The other move tool (<img src=\":/images/themes/default/mActionMoveItemContent.svg\"/>" )"
+                        " The other move tool ( <img src=\":/images/themes/default/mActionMoveItemContent.svg\"/> )"
                         " allows you to move the map content within a map frame."
                       ) );
   addGuiTip( myTip );
