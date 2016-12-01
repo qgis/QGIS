@@ -88,6 +88,7 @@ class CORE_EXPORT QgsProjectFileTransform
     void transform1400to1500();
     void transform1800to1900();
     void transform2200to2300();
+    void transform2180to2990();
 
     //helper functions
     static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );
