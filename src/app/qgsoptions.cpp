@@ -881,7 +881,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mSearchRadiusVertexEditComboBox->setCurrentIndex( index );
 
   //vertex marker
-  mMarkersOnlyForSelectedCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), false ).toBool() );
+  mMarkersOnlyForSelectedCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool() );
 
   mMarkerStyleComboBox->addItem( tr( "Semi transparent circle" ) );
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
