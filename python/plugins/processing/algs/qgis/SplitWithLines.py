@@ -127,7 +127,7 @@ class SplitWithLines(GeoAlgorithm):
                         while len(inGeoms) > 0:
                             inGeom = inGeoms.pop()
 
-                            if inGeom.geometry() == None: # this has been encountered and created a run-time error
+                            if inGeom.isEmpty(): # this has been encountered and created a run-time error
                                 continue
 
                             if split_geom_engine.intersects(inGeom.geometry()):
