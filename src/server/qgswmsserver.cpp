@@ -2082,7 +2082,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   //map extent
   bool bboxOk = true;
   QgsRectangle mapExtent;
-  if( mParameters.contains( "BBOX" ) )
+  if ( mParameters.contains( "BBOX" ) )
   {
     mapExtent = _parseBBOX( mParameters.value( "BBOX", "0,0,0,0" ), bboxOk );
   }
