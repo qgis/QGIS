@@ -328,11 +328,6 @@ class CORE_EXPORT QgsEditFormConfig
      */
     explicit QgsEditFormConfig();
 
-    /**
-     * Parse the XML for the config of one editor widget.
-     */
-    static QgsEditorWidgetConfig parseEditorWidgetConfig( const QDomElement& cfgElem );
-
   private:
 
     /**

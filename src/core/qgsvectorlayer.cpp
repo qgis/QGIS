@@ -82,6 +82,7 @@
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
+#include "qgsconfigurationmap.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -1742,20 +1743,20 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 } // bool QgsVectorLayer::writeXml
 
 
-bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
+bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMessage )
 {
   if ( !mExpressionFieldBuffer )
     mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
-  mExpressionFieldBuffer->readXml( node );
+  mExpressionFieldBuffer->readXml( layerNode );
 
   updateFields();
 
-  readStyle( node, errorMessage );
+  readStyle( layerNode, errorMessage );
 
-  mDisplayExpression = node.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
-  mMapTipTemplate = node.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
+  mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
+  mMapTipTemplate = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
 
-  QString displayField = node.namedItem( QStringLiteral( "displayfield" ) ).toElement().text();
+  QString displayField = layerNode.namedItem( QStringLiteral( "displayfield" ) ).toElement().text();
 
   // Try to migrate pre QGIS 3.0 display field property
   if ( mFields.lookupField( displayField ) < 0 )
@@ -1771,9 +1772,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   // process the attribute actions
-  mActions->readXml( node );
+  mActions->readXml( layerNode );
 
-  QDomNode annotationFormNode = node.namedItem( QStringLiteral( "annotationform" ) );
+  QDomNode annotationFormNode = layerNode.namedItem( QStringLiteral( "annotationform" ) );
   if ( !annotationFormNode.isNull() )
   {
     QDomElement e = annotationFormNode.toElement();
@@ -1781,7 +1782,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   mAttributeAliasMap.clear();
-  QDomNode aliasesNode = node.namedItem( QStringLiteral( "aliases" ) );
+  QDomNode aliasesNode = layerNode.namedItem( QStringLiteral( "aliases" ) );
   if ( !aliasesNode.isNull() )
   {
     QDomElement aliasElem;
@@ -1811,7 +1812,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
-  QDomNode excludeWMSNode = node.namedItem( QStringLiteral( "excludeAttributesWMS" ) );
+  QDomNode excludeWMSNode = layerNode.namedItem( QStringLiteral( "excludeAttributesWMS" ) );
   if ( !excludeWMSNode.isNull() )
   {
     QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
@@ -1822,7 +1823,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   mExcludeAttributesWFS.clear();
-  QDomNode excludeWFSNode = node.namedItem( QStringLiteral( "excludeAttributesWFS" ) );
+  QDomNode excludeWFSNode = layerNode.namedItem( QStringLiteral( "excludeAttributesWFS" ) );
   if ( !excludeWFSNode.isNull() )
   {
     QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
@@ -1832,13 +1833,33 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  mEditFormConfig.readXml( node );
+  // Load editor widget configuration
+  QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
 
-  mAttributeTableConfig.readXml( node );
+  QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
 
-  mConditionalStyles->readXml( node );
+  for ( int i = 0; i < fieldConfigurationElementList.size(); ++i )
+  {
+    const QDomElement fieldConfigElement = fieldConfigurationElementList.at( i ).toElement();
+    const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
 
-  readCustomProperties( node, QStringLiteral( "variable" ) );
+    QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
+
+    const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
+    const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
+    QgsConfigurationMap editWidgetConfiguration;
+    editWidgetConfiguration.fromXml( cfgElem );
+    QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, editWidgetConfiguration.get() );
+    mFieldWidgetSetups[fieldName] = setup;
+  }
+
+  mEditFormConfig.readXml( layerNode );
+
+  mAttributeTableConfig.readXml( layerNode );
+
+  mConditionalStyles->readXml( layerNode );
+
+  readCustomProperties( layerNode, QStringLiteral( "variable" ) );
 
   return true;
 }
@@ -1956,19 +1977,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 {
   ( void )writeStyle( node, doc, errorMessage );
 
-<<<<<<< HEAD
-  // FIXME
-  // edittypes are written to the layerNode
-  // by slot QgsEditorWidgetRegistry::writeMapLayer()
-  // triggered by signal QgsProject::writeMapLayer()
-  // still other editing settings are written here,
-  // although they are not part of symbology either
-=======
+  QgsFields dataProviderFields = mDataProvider->fields();
+
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
 
   int index = 0;
   Q_FOREACH ( const QgsField& field, mFields )
   {
+
     QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
     fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
 
@@ -1980,7 +1996,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
     fieldElement.appendChild( editWidgetElement );
     editWidgetElement.setAttribute( "type", field.editorWidgetSetup().type() );
-
     QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
 
     QgsConfigurationMap( widgetSetup.config() ).toXml( editWidgetConfigElement );
@@ -1989,7 +2004,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     ++index;
   }
->>>>>>> dc0c72f... Fixup
 
   QDomElement afField = doc.createElement( QStringLiteral( "annotationform" ) );
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
@@ -3054,6 +3068,16 @@ void QgsVectorLayer::updateFields()
 
     constraints.setConstraintStrength( constraintStrengthIt.key().second, constraintStrengthIt.value() );
     mFields[ index ].setConstraints( constraints );
+  }
+
+  auto fieldWidgetIterator = mFieldWidgetSetups.constBegin();
+  for ( ; fieldWidgetIterator != mFieldWidgetSetups.constEnd(); ++ fieldWidgetIterator )
+  {
+    int index = mFields.indexOf( fieldWidgetIterator.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[index].setEditorWidgetSetup( fieldWidgetIterator.value() );
   }
 
   if ( oldFields != mFields )

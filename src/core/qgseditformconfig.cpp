@@ -355,42 +355,6 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
       }
     }
   }
-
-
-  QDomElement widgetsElem = node.namedItem( QStringLiteral( "widgets" ) ).toElement();
-
-  QDomNodeList widgetConfigsElems = widgetsElem.childNodes();
-
-  for ( int i = 0; i < widgetConfigsElems.size(); ++i )
-  {
-    const QDomElement wdgElem = widgetConfigsElems.at( i ).toElement();
-    const QDomElement cfgElem = wdgElem.namedItem( QStringLiteral( "config" ) ).toElement();
-    const QgsEditorWidgetConfig widgetConfig = parseEditorWidgetConfig( cfgElem );
-    setWidgetConfig( wdgElem.attribute( QStringLiteral( "name" ) ), widgetConfig );
-  }
-}
-
-QgsEditorWidgetConfig QgsEditFormConfig::parseEditorWidgetConfig( const QDomElement& cfgElem )
-{
-  QgsEditorWidgetConfig cfg;
-  //// TODO: MAKE THIS MORE GENERIC, SO INDIVIDUALL WIDGETS CAN NOT ONLY SAVE STRINGS
-  /// SEE QgsEditorWidgetFactory::writeConfig
-  for ( int j = 0; j < cfgElem.attributes().size(); ++j )
-  {
-    const QDomAttr attr = cfgElem.attributes().item( j ).toAttr();
-    cfg.insert( attr.name(), attr.value() );
-  }
-
-  const QDomNodeList optionElements = cfgElem.elementsByTagName( QStringLiteral( "option" ) );
-  for ( int j = 0; j < optionElements.size(); ++j )
-  {
-    const QDomElement option = optionElements.at( j ).toElement();
-    const QString key = option.attribute( QStringLiteral( "key" ) );
-    const QString value = option.attribute( QStringLiteral( "value" ) );
-    cfg.insert( key, value );
-  }
-  //// END TODO
-  return cfg;
 }
 
 void QgsEditFormConfig::writeXml( QDomNode& node ) const
