@@ -132,16 +132,6 @@
                  <number>100</number>
                 </property>
                </widget>
-              </item>    
-              <item row="2" column="0" colspan="4">
-               <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
-                <property name="minimumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -206,7 +196,7 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0" colspan="4">
+            <item row="3" column="0" colspan="4">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <widget class="QCheckBox" name="checkboxEnableOrderBy">
@@ -227,6 +217,16 @@
                </widget>
               </item>
              </layout>
+            </item>
+            <item row="2" column="0" colspan="4">
+             <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
