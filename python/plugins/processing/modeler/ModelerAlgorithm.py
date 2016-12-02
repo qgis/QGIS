@@ -582,7 +582,10 @@ class ModelerAlgorithm(GeoAlgorithm):
         def fromdict(d):
             try:
                 fullClassName = d["class"]
-                tokens = fullClassName.split(".")
+                if isinstance(fullClassName, basestring):
+                    tokens = fullClassName.split(".")
+                else:
+                    tokens = fullClassName.__class__.__name__.split(".")
                 className = tokens[-1]
                 moduleName = ".".join(tokens[:-1])
                 values = d["values"]
