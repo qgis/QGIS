@@ -292,7 +292,7 @@ void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup& v )
   d->editorWidgetSetup = v;
 }
 
-const QgsEditorWidgetSetup& QgsField::editorWidgetSetup() const
+QgsEditorWidgetSetup QgsField::editorWidgetSetup() const
 {
   return d->editorWidgetSetup;
 }

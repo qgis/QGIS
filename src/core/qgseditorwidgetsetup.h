@@ -30,7 +30,11 @@ class CORE_EXPORT QgsEditorWidgetSetup
     /**
      * Constructor
      */
-    QgsEditorWidgetSetup( const QString& type, const QgsEditorWidgetConfig& config ) : mType( type ), mConfig( config ) {}
+    QgsEditorWidgetSetup( const QString& type, const QgsEditorWidgetConfig& config )
+        : mType( type )
+        , mConfig( config )
+    {}
+
     QgsEditorWidgetSetup() {}
 
     /**
@@ -47,6 +51,7 @@ class CORE_EXPORT QgsEditorWidgetSetup
      * @return true if there is no widget configured.
      */
     bool isNull() const { return mType.isEmpty(); }
+
   private:
     QString mType;
     QgsEditorWidgetConfig mConfig;

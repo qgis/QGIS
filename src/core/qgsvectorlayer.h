@@ -799,7 +799,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
      */
-    bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
+    bool readSymbology( const QDomNode& layerNode, QString& errorMessage ) override;
 
     /** Read the style for the current layer from the Dom node supplied.
      * @param node node that will contain the style definition for this layer.
@@ -2015,6 +2015,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map which stores expression constraints for fields. Value is a pair of expression/description.
     QMap< QString, QPair< QString, QString > > mFieldConstraintExpressions;
+
+    QMap< QString, QgsEditorWidgetSetup > mFieldWidgetSetups;
 
     //! Holds the configuration for the edit form
     QgsEditFormConfig mEditFormConfig;

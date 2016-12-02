@@ -287,9 +287,4 @@ class QgsEditFormConfig
      * Deserialize drag and drop designer elements.
      */
     QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent );
-
-     /**
-      * Parse the XML for the config of one editor widget.
-      */
-    static QgsEditorWidgetConfig parseEditorWidgetConfig( const QDomElement& cfgElem );
 };

@@ -269,7 +269,7 @@ class CORE_EXPORT QgsField
      *
      * @return the value
      */
-    const QgsEditorWidgetSetup& editorWidgetSetup() const;
+    QgsEditorWidgetSetup editorWidgetSetup() const;
 
   private:
 
