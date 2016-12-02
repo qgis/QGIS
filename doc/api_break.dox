@@ -1572,6 +1572,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - getStyleFromDatabase(): msgError argument is correctly declared as output argument
 - loadNamedStyle(): theResultFlag argument is correctly declared as output argument
 - The duplicate selectionChanged() signal was removed. Use selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, const bool ) instead.
+- featureCount() now requires a legend key string instead of a QgsSymbol pointer argument.
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
 ------------------------

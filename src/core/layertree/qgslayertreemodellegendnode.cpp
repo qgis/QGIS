@@ -468,8 +468,8 @@ void QgsSymbolLegendNode::updateLabel()
   else
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
-    if ( showFeatureCount && vl && mItem.legacyRuleKey() )
-      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
+    if ( showFeatureCount && vl )
+      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.ruleKey() ) );
   }
 }
 

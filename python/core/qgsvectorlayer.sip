@@ -732,12 +732,11 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     bool readSld( const QDomNode& node, QString& errorMessage );
 
     /**
-     * Number of features rendered with specified symbol. Features must be first
+     * Number of features rendered with specified legend key. Features must be first
      * calculated by countSymbolFeatures()
-     * @param symbol the symbol
      * @return number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( QgsSymbol* symbol ) const;
+    long featureCount( const QString& legendKey ) const;
 
     /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
@@ -752,7 +751,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
     void setDataSource( const QString& dataSource, const QString& baseName, const QString& provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbol*).
+     * Count features for symbols. Feature counts may be get by featureCount().
      * @param showProgress show progress dialog
      * @return true if calculated, false if failed or was canceled by user
      */

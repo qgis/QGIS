@@ -622,12 +622,12 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( QgsSymbol* symbol ) const
+long QgsVectorLayer::featureCount( const QString& legendKey ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
 
-  return mSymbolFeatureCountMap.value( symbol );
+  return mSymbolFeatureCountMap.value( legendKey );
 }
 
 /** \ingroup core
@@ -697,7 +697,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
+    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
   }
 
   long nFeatures = featureCount();
@@ -749,10 +749,10 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   while ( fit.nextFeature( f ) )
   {
     renderContext.expressionContext().setFeature( f );
-    QgsSymbolList featureSymbolList = mRenderer->originalSymbolsForFeature( f, renderContext );
-    for ( QgsSymbolList::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
+    Q_FOREACH ( const QString& key, featureKeyList )
     {
-      mSymbolFeatureCountMap[*symbolIt] += 1;
+      mSymbolFeatureCountMap[key] += 1;
     }
     ++featuresCounted;
 
