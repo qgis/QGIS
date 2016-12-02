@@ -20,7 +20,6 @@ class QgsLayerTreeModelLegendNode : QObject
     enum LegendNodeRoles
     {
       RuleKeyRole,                    //!< rule key of the node (QString)
-      SymbolLegacyRuleKeyRole,      //!< for QgsSymbolLegendNode only - legacy rule key (void ptr, to be cast to QgsSymbol ptr)
       ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 

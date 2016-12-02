@@ -1016,6 +1016,11 @@ QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
 - setAutoCollapseSymbologyNodes() was removed. Use setAutoCollapseLegendNodes() instead.
 - autoCollapseSymbologyNodes() was removed. Use autoCollapseLegendNodes() instead.
 
+QgsLayerTreeModelLegendNode        {#qgis_api_break_3_0_QgsLayerTreeModelLegendNode}
+---------------------------
+
+- The SymbolLegacyRuleKeyRole role was removed. Use RuleKeyRole instead.
+
 
 QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
 ----------------
@@ -1572,6 +1577,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - getStyleFromDatabase(): msgError argument is correctly declared as output argument
 - loadNamedStyle(): theResultFlag argument is correctly declared as output argument
 - The duplicate selectionChanged() signal was removed. Use selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, const bool ) instead.
+- featureCount() now requires a legend key string instead of a QgsSymbol pointer argument.
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
 ------------------------

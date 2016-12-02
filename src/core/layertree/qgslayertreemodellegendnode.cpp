@@ -311,10 +311,6 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   {
     return mItem.ruleKey();
   }
-  else if ( role == SymbolLegacyRuleKeyRole )
-  {
-    return QVariant::fromValue<void*>( mItem.legacyRuleKey() );
-  }
   else if ( role == ParentRuleKeyRole )
   {
     return mItem.parentRuleKey();
@@ -468,8 +464,8 @@ void QgsSymbolLegendNode::updateLabel()
   else
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
-    if ( showFeatureCount && vl && mItem.legacyRuleKey() )
-      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
+    if ( showFeatureCount && vl )
+      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.ruleKey() ) );
   }
 }
 
