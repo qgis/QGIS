@@ -311,10 +311,6 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   {
     return mItem.ruleKey();
   }
-  else if ( role == SymbolLegacyRuleKeyRole )
-  {
-    return QVariant::fromValue<void*>( mItem.legacyRuleKey() );
-  }
   else if ( role == ParentRuleKeyRole )
   {
     return mItem.parentRuleKey();

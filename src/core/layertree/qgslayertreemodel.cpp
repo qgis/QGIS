@@ -1130,15 +1130,18 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
   {
     Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
     {
-      QgsSymbol* ruleKey = reinterpret_cast< QgsSymbol* >( node->data( QgsSymbolLegendNode::SymbolLegacyRuleKeyRole ).value<void*>() );
+      QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
       bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
-      if ( ruleKey && checked )
+      if ( checked )
       {
-        QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
         if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() ) )
         {
           if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
             filtered << node;
+        }
+        else
+        {
+          filtered << node;
         }
       }
       else  // unknown node type or unchecked
