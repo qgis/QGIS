@@ -619,11 +619,11 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
         expr += "'" + str.replace( "'", "''" ) + "'";
         break;
       }
-    case SQLITE_NULL:
-    case SQLITE_BLOB: // comparison to blob ignored
-    default:
-      expr += " is null";
-      break;
+      case SQLITE_NULL:
+      case SQLITE_BLOB: // comparison to blob ignored
+      default:
+        expr += " is null";
+        break;
     }
     request.setFilterExpression( expr );
   }
