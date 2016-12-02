@@ -384,7 +384,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex | QgsPointLocator::Edge );
     if ( !m.isValid() )
     {
-      emit messageEmitted( tr( "could not snap to a segment on the current layer." ) );
+      emit messageEmitted( tr( "could not snap to a segment or a vertex on the current layer. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits." ) );
       return;
     }
 
