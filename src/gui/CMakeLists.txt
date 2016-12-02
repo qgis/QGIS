@@ -16,7 +16,6 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgsarrowsymbollayerwidget.cpp
   symbology-ng/qgsbrushstylecombobox.cpp
   symbology-ng/qgscategorizedsymbolrendererwidget.cpp
-  symbology-ng/qgscolorrampcombobox.cpp
   symbology-ng/qgscptcitycolorrampdialog.cpp
   symbology-ng/qgsdashspacedialog.cpp
   symbology-ng/qgsellipsesymbollayerwidget.cpp
@@ -490,7 +489,6 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsarrowsymbollayerwidget.h
   symbology-ng/qgsbrushstylecombobox.h
   symbology-ng/qgscategorizedsymbolrendererwidget.h
-  symbology-ng/qgscolorrampcombobox.h
   symbology-ng/qgscptcitycolorrampdialog.h
   symbology-ng/qgsdashspacedialog.h
   symbology-ng/qgsellipsesymbollayerwidget.h

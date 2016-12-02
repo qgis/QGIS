@@ -224,7 +224,6 @@
 %Include symbology-ng/qgsarrowsymbollayerwidget.sip
 %Include symbology-ng/qgsbrushstylecombobox.sip
 %Include symbology-ng/qgscategorizedsymbolrendererwidget.sip
-%Include symbology-ng/qgscolorrampcombobox.sip
 %Include symbology-ng/qgscptcitycolorrampdialog.sip
 %Include symbology-ng/qgsdashspacedialog.sip
 %Include symbology-ng/qgsellipsesymbollayerwidget.sip
