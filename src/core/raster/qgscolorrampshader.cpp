@@ -24,6 +24,7 @@ originally part of the larger QgsRasterLayer class
 
 #include "qgslogger.h"
 #include "qgis.h"
+#include "qgscolorramp.h"
 #include "qgscolorrampshader.h"
 
 #include <cmath>
@@ -34,10 +35,35 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
     , mLUTOffset( 0.0 )
     , mLUTFactor( 1.0 )
     , mLUTInitialized( false )
-    , mColorRampName( QString() )
     , mClip( false )
 {
   QgsDebugMsgLevel( "called.", 4 );
+}
+
+QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader& other )
+    : QgsRasterShaderFunction( other )
+    , mLUT( other.mLUT )
+    , mLUTOffset( other.mLUTOffset )
+    , mLUTFactor( other.mLUTFactor )
+    , mLUTInitialized( other.mLUTInitialized )
+    , mClip( other.mClip )
+{
+  mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+}
+
+QgsColorRampShader & QgsColorRampShader::operator=( const QgsColorRampShader & other )
+{
+  mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  mLUT = other.mLUT;
+  mLUTOffset = other.mLUTOffset;
+  mLUTFactor = other.mLUTFactor;
+  mLUTInitialized = other.mLUTInitialized;
+  mClip = other.mClip;
+  return *this;
+}
+
+QgsColorRampShader::~QgsColorRampShader()
+{
 }
 
 QString QgsColorRampShader::colorRampTypeAsQString()
@@ -83,9 +109,14 @@ void QgsColorRampShader::setColorRampType( const QString& theType )
   }
 }
 
-void QgsColorRampShader::setColorRampName( const QString& theName )
+QgsColorRamp* QgsColorRampShader::sourceColorRamp() const
 {
-  mColorRampName = theName;
+  return mSourceColorRamp.data();
+}
+
+void QgsColorRampShader::setSourceColorRamp( QgsColorRamp* colorramp )
+{
+  mSourceColorRamp.reset( colorramp );
 }
 
 

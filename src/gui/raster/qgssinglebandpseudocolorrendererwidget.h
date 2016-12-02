@@ -31,8 +31,11 @@ class QgsRasterMinMaxWidget;
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
       private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
+
     Q_OBJECT
+
   public:
+
     enum Mode
     {
       Continuous = 1, // Using breaks from color palette
@@ -50,9 +53,14 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void setFromRenderer( const QgsRasterRenderer* r );
 
   public slots:
+
+    /** Executes the single band pseudo raster classficiation
+     */
+    void classify();
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
   private:
+
     enum Column
     {
       ValueColumn = 0,
@@ -65,10 +73,10 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void setUnitFromLabels();
 
   private slots:
+
+    void applyColorRamp();
     void on_mAddEntryButton_clicked();
     void on_mDeleteEntryButton_clicked();
-    void on_mNumberOfEntriesSpinBox_valueChanged();
-    void on_mClassifyButton_clicked();
     void on_mLoadFromBandButton_clicked();
     void on_mLoadFromFileButton_clicked();
     void on_mExportToFileButton_clicked();
@@ -82,15 +90,16 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
     void on_mMaxLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
-    void on_mColorRampComboBox_currentIndexChanged( int index );
 
   private:
+
     void setLineEditValue( QLineEdit *theLineEdit, double theValue );
     double lineEditValue( const QLineEdit *theLineEdit ) const;
     void resetClassifyButton();
     void showMinMaxOrigin();
     QgsRasterMinMaxWidget * mMinMaxWidget;
     int mMinMaxOrigin;
+
 };
 
 

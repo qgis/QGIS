@@ -22,6 +22,10 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
     void setFromRenderer( const QgsRasterRenderer* r );
 
   public slots:
+
+    /** Executes the single band pseudo raster classficiation
+     */
+    void classify();
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
 };
