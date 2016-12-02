@@ -112,32 +112,34 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
-     <item>
-      <widget class="QgsColorRampComboBox" name="mRampComboBox"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mButtonEditRamp">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="mInvertCheckBox">
-       <property name="text">
-        <string>Invert</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Color ramp</string>
+     </property>
+    </widget>   
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QgsColorRampButton" name="btnColorRamp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label">
@@ -219,15 +221,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mRampComboBox</tabstop>
-  <tabstop>mButtonEditRamp</tabstop>
-  <tabstop>mInvertCheckBox</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>mRadiusSpinBox</tabstop>
   <tabstop>mMaxSpinBox</tabstop>
   <tabstop>mWeightExpressionWidget</tabstop>

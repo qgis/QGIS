@@ -69,20 +69,6 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      */
     void setColorRamp( QgsColorRamp* ramp );
 
-    /** Returns whether the ramp is inverted
-     * @returns true if color ramp is inverted
-     * @see setInvertRamp
-     * @see colorRamp
-     */
-    bool invertRamp() const { return mInvertRamp; }
-
-    /** Sets whether the ramp is inverted
-     * @param invert set to true to invert color ramp
-     * @see invertRamp
-     * @see setColorRamp
-     */
-    void setInvertRamp( const bool invert ) { mInvertRamp = invert; }
-
     /** Returns the radius for the heatmap
      * @returns heatmap radius
      * @see setRadius
@@ -192,7 +178,6 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QScopedPointer<QgsExpression> mWeightExpression;
 
     QgsColorRamp* mGradientRamp;
-    bool mInvertRamp;
 
     double mExplicitMax;
     int mRenderQuality;
