@@ -103,20 +103,20 @@ class proximity(GdalAlgorithm):
             arguments.append('-values')
             arguments.append(values)
 
-        values = str(self.getParameterValue(self.MAX_DIST))
-        if values < 0:
+        dist = self.getParameterValue(self.MAX_DIST)
+        if dist > 0:
             arguments.append('-maxdist')
-            arguments.append(values)
+            arguments.append(str(dist))
 
-        values = str(self.getParameterValue(self.NODATA))
-        if values < 0:
+        nodata = self.getParameterValue(self.NODATA)
+        if nodata > 0:
             arguments.append('-nodata')
-            arguments.append(values)
+            arguments.append(str(nodata))
 
-        values = str(self.getParameterValue(self.BUF_VAL))
-        if values < 0:
+        buf = self.getParameterValue(self.BUF_VAL)
+        if buf > 0:
             arguments.append('-fixed-buf-val')
-            arguments.append(values)
+            arguments.append(str(buf))
 
         commands = []
         if isWindows():
