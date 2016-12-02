@@ -29,13 +29,16 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.analysis import (QgsLineVectorLayerDirector,
-                           QgsDistanceArcProperter,
+from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
+from qgis.analysis import (QgsVectorLayerDirector,
+                           QgsNetworkDistanceStrategy,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
                           )
+from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
                                         ParameterNumber,
@@ -57,10 +60,11 @@ class ShortestPath(GeoAlgorithm):
     START_POINT = 'START_POINT'
     END_POINT = 'END_POINT'
     DIRECTION_FIELD = 'DIRECTION_FIELD'
-    VALUE_DIRECT = 'VALUE_DIRECT'
-    VALUE_REVERSED = 'VALUE_REVERSED'
-    VALUE_BIDIRECTIONAL = 'VALUE_BIDIRECTIONAL'
+    VALUE_FORWARD = 'VALUE_FORWARD'
+    VALUE_BACKWARD = 'VALUE_BACKWARD'
+    VALUE_BOTH = 'VALUE_BOTH'
     DEFAULT_DIRECTION = 'DEFAULT_DIRECTION'
+    TOLERANCE = 'TOLERANCE'
     PATH_LENGTH = 'PATH_LENGTH'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
@@ -68,13 +72,13 @@ class ShortestPath(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.png'))
 
     def defineCharacteristics(self):
-        self.DIRECTIONS = {1: self.tr('Direct direction'),
-                           2: self.tr('Inverse direction'),
-                           3: self.tr('Bidirectional')
+        self.DIRECTIONS = {self.tr('Forward direction'): QgsVectorLayerDirector.DirectionForward,
+                           self.tr('Backward direction'): QgsVectorLayerDirector.DirectionForward,
+                           self.tr('Both directions'): QgsVectorLayerDirector.DirectionForward
                           }
 
-        self.UNITS = {0: self.tr('Meters'),
-                      1: self.tr('Kilometers')
+        self.UNITS = {self.tr('Meters'): 1,
+                      self.tr('Kilometers'): 1000
                      }
 
         self.name, self.i18n_name = self.trAlgorithm('Shortest path')
@@ -88,21 +92,35 @@ class ShortestPath(GeoAlgorithm):
         self.addParameter(ParameterPoint(self.END_POINT,
                                           self.tr('End point')))
 
-        self.addParameter(ParameterTableField(self.DIRECTION_FIELD,
-                                              self.tr('Road direction field'),
-                                              self.INPUT_VECTOR))
-        self.addParameter(ParameterString(self.VALUE_DIRECT,
-                                          self.tr('Value for direct direction road'),
-                                          ''))
-        self.addParameter(ParameterString(self.VALUE_REVERSED,
-                                          self.tr('Value for reversed direction road'),
-                                          ''))
-        self.addParameter(ParameterString(self.VALUE_BIDIRECTIONAL,
-                                          self.tr('Value for bidirectional road'),
-                                          ''))
-        self.addParameter(ParameterSelection(self.DEFAULT_DIRECTION,
-                                          self.tr('Default road direction'),
-                                          list(self.DIRECTIONS.keys())))
+        params = []
+        params.append(ParameterTableField(self.DIRECTION_FIELD,
+                                          self.tr('Road direction field'),
+                                          self.INPUT_VECTOR,
+                                          optional=True))
+        params.append(ParameterString(self.VALUE_FORWARD,
+                                      self.tr('Value for forward direction'),
+                                      '',
+                                      optional=True))
+        params.append(ParameterString(self.VALUE_BACKWARD,
+                                      self.tr('Value for backward direction'),
+                                      '',
+                                      optional=True))
+        params.append(ParameterString(self.VALUE_BOTH,
+                                      self.tr('Value for both directions'),
+                                      '',
+                                      optional=True))
+        params.append(ParameterSelection(self.DEFAULT_DIRECTION,
+                                         self.tr('Default road direction'),
+                                         list(self.DIRECTIONS.keys()),
+                                         default=2))
+        params.append(ParameterNumber(self.TOLERANCE,
+                                      self.tr('Topology tolerance'),
+                                      0.0, 0.0, 99999999.999999))
+
+
+        for p in params:
+            p.isAdvanced = True
+            self.addParameter(p)
 
         self.addOutput(OutputNumber(self.PATH_LENGTH,
                                     self.tr('Path length')))
@@ -113,8 +131,70 @@ class ShortestPath(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT_VECTOR))
-        fielName = self.getParameterValue(self.RASTER_BAND)
-        columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
-        st = self.getParameterValue(self.STATISTICS)
+        startPoint = self.getParameterValue(self.START_POINT)
+        endPoint = self.getParameterValue(self.END_POINT)
 
-        vectorLayer = dataobjects.getObjectFromUri(vectorPath)
+        fieldName = self.getParameterValue(self.DIRECTION_FIELD)
+        forwardValue = self.getParameterValue(self.VALUE_FORWARD)
+        backwardValue = self.getParameterValue(self.VALUE_BACKWARD)
+        bothValue = self.getParameterValue(self.VALUE_BOTH)
+        defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
+        tolerance = self.getParameterValue(self.TOLERANCE)
+
+        writer = self.getOutputFromName(
+            self.OUTPUT_LAYER).getVectorWriter(
+                layer.fields().toList(),
+                QgsWkbTypes.LineString,
+                layer.crs())
+
+        tmp = startPoint.split(',')
+        startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+        tmp = endPoint.split(',')
+        endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+        field = -1
+        if fieldName is not None:
+            field = layer.fields().lookupField(fieldName)
+
+        director = QgsVectorLayerDirector(layer,
+                                          field,
+                                          forwardValue,
+                                          backwardValue,
+                                          bothValue,
+                                          defaultDirection)
+        strategy = QgsNetworkDistanceStrategy()
+        director.addStrategy(strategy)
+        builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
+                                  iface.mapCanvas().hasCrsTransformEnabled(),
+                                  tolerance)
+        progress.setInfo(self.tr('Building graph...'))
+        snappedPoints = director.makeGraph(builder, [startPoint, endPoint])
+
+        progress.setInfo(self.tr('Calculating shortest path...'))
+        graph = builder.graph()
+        idxStart = graph.findVertex(snappedPoints[0])
+        idxEnd = graph.findVertex(snappedPoints[1])
+
+        tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+        if tree[idxEnd] == -1:
+            raise GeoAlgorithmExecutionException(
+                self.tr('There is no route from start point to end point.'))
+
+        route = []
+        cost = 0.0
+        current = idxEnd
+        while current != idxStart:
+            cost += graph.edge(tree[current]).cost(0)
+            route.append(graph.vertex(graph.edge(tree[current]).inVertex()).point())
+            current = graph.edge(tree[current]).outVertex()
+
+        route.append(snappedPoints[0])
+        route.reverse()
+
+        self.setOutputValue(self.PATH_LENGTH, cost)
+
+        progress.setInfo(self.tr('Writting results...'))
+        geom = QgsGeometry.fromPolyline(route)
+        feat = QgsFeature()
+        feat.setGeometry(geom)
+        writer.addFeature(feat)
+        del writer
