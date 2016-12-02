@@ -184,6 +184,7 @@ from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
 from .Heatmap import Heatmap
 from .Orthogonalize import Orthogonalize
+from .ShortestPath import ShortestPath
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -249,7 +250,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
                         PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
                         BasicStatisticsForField(), RasterCalculator(), Heatmap(),
-                        Orthogonalize()
+                        Orthogonalize(), ShortestPath()
                         ]
 
         if hasMatplotlib:
