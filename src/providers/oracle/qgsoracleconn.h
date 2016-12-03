@@ -25,6 +25,7 @@
 #include <QSet>
 #include <QThread>
 #include <QVariant>
+#include <QDateTime>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -191,6 +192,7 @@ class QgsOracleConn : public QObject
 
     static QMap<QString, QgsOracleConn *> sConnections;
     static int snConnections;
+    static QMap<QString, QDateTime> sBrokenConnections;
 };
 
 #endif
