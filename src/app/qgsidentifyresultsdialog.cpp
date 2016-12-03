@@ -43,6 +43,8 @@
 #include "qgsstringutils.h"
 #include "qgstreewidgetitem.h"
 #include "qgsfiledownloader.h"
+#include "qgsfieldkitregistry.h"
+#include "qgsfieldkit.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -732,6 +734,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
+  QgsFieldKit* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
 
   int idx = vlayer->fields().lookupField( fieldName );
 
@@ -744,11 +747,11 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   }
   else
   {
-    cache = factory->createCache( vlayer, idx, setup.config() );
+    cache = fieldKit->createCache( vlayer, idx, setup.config() );
     layerCaches.insert( fieldName, cache );
   }
 
-  return factory->representValue( vlayer, idx, setup.config(), cache, value );
+  return fieldKit->representValue( vlayer, idx, setup.config(), cache, value );
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,

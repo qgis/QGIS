@@ -76,11 +76,11 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const ValueRelationItem& i , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& i , mCache )
     {
-      if ( i.second == mLineEdit->text() )
+      if ( i.value == mLineEdit->text() )
       {
-        v = i.first;
+        v = i.key;
         break;
       }
     }
@@ -235,7 +235,7 @@ QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 {
-  mCache = QgsValueRelationWidgetWrapper::createCache( config() );
+  mCache = QgsValueRelationFieldKit::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
@@ -249,20 +249,20 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
-    Q_FOREACH ( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
     {
-      mComboBox->addItem( element.second, element.first );
+      mComboBox->addItem( element.value, element.key );
     }
 
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onValueChanged() ) );
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
     {
       QListWidgetItem *item;
-      item = new QListWidgetItem( element.second );
-      item->setData( Qt::UserRole, element.first );
+      item = new QListWidgetItem( element.value );
+      item->setData( Qt::UserRole, element.key );
 
       mListWidget->addItem( item );
     }
@@ -272,9 +272,9 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& i,  mCache )
     {
-      values << i.second;
+      values << i.value;
     }
 
     QStringListModel* m = new QStringListModel( values, mLineEdit );

@@ -152,7 +152,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString&
   QTableWidgetItem* valueCell;
   QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
-  if ( value == QStringLiteral( VALUEMAP_NULL_TEXT ) )
+  if ( value == VALUEMAP_NULL_TEXT )
   {
     QFont cellFont;
     cellFont.setItalic( true );
@@ -244,7 +244,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     }
 
     if ( key == settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
-      key = QStringLiteral( VALUEMAP_NULL_TEXT );
+      key = VALUEMAP_NULL_TEXT;
 
     map[ key ] = val;
   }

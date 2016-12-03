@@ -41,32 +41,6 @@ QgsEditorConfigWidget *QgsDateTimeEditFactory::configWidget( QgsVectorLayer *vl,
   return new QgsDateTimeEditConfig( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsDateTimeEditFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-  QgsEditorWidgetConfig cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "field_format" ) );
-  xml2config( configElement, cfg, QStringLiteral( "display_format" ) );
-  xml2config( configElement, cfg, QStringLiteral( "calendar_popup" ) );
-  xml2config( configElement, cfg, QStringLiteral( "allow_null" ) );
-
-  return cfg;
-}
-
-void QgsDateTimeEditFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-
-  config2xml( config, configElement, QStringLiteral( "field_format" ) );
-  config2xml( config, configElement, QStringLiteral( "display_format" ) );
-  config2xml( config, configElement, QStringLiteral( "calendar_popup" ) );
-  config2xml( config, configElement, QStringLiteral( "allow_null" ) );
-}
-
 QHash<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
 {
   QHash<const char*, int> map = QHash<const char*, int>();

@@ -16,11 +16,16 @@
 #ifndef QGSFIELDKITREGISTRY_H
 #define QGSFIELDKITREGISTRY_H
 
-#include <QVector>
+#include <QHash>
+#include <QString>
+#include <QObject>
+
 class QgsFieldKit;
 
-class QgsFieldKitRegistry
+class CORE_EXPORT QgsFieldKitRegistry : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -28,7 +33,7 @@ class QgsFieldKitRegistry
      *
      * Use the one provided by `QgsApplication::fieldKitRegistry()` instead.
      */
-    QgsFieldKitRegistry();
+    QgsFieldKitRegistry( QObject* parent = nullptr );
     ~QgsFieldKitRegistry();
 
     /**
@@ -39,10 +44,33 @@ class QgsFieldKitRegistry
      */
     void addFieldKit( QgsFieldKit* kit );
 
+    /**
+     * Remove a field kit from the registry.
+     * The field kit will be deleted.
+     */
     void removeFieldKit( QgsFieldKit* kit );
 
+    /**
+     * Get a field kit by its id. If there is no such id registered,
+     * a default QgsFallbackFieldKit with a null id will be returned instead.
+     */
+    QgsFieldKit* fieldKit( const QString& id ) const;
+
+  signals:
+
+    /**
+     * Will be emitted after a new field kit has been added.
+     */
+    void fieldKitAdded( QgsFieldKit* kit );
+
+    /**
+     * Will be emitted just before a field kit is removed and deleted.
+     */
+    void fieldKitRemoved( QgsFieldKit* kit );
+
   private:
-    QVector<QgsFieldKit*> mFieldKits;
+    QHash<QString, QgsFieldKit*> mFieldKits;
+    QgsFieldKit* mFallbackFieldKit;
 };
 
 #endif // QGSFIELDKITREGISTRY_H

@@ -17,6 +17,7 @@
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgsvaluerelationfieldkit.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -33,11 +34,6 @@ class QgsValueRelationWidgetFactory;
 class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
-
-  public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
-
   public:
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
     bool applyDirectly() override;
@@ -49,7 +45,6 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     virtual QString createExpression( FilterFlags flags ) const override;
 
   public slots:
-
     virtual void clearWidget() override;
     virtual void setEnabled( bool enabled ) override;
 
@@ -57,12 +52,10 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
-  public slots:
-
+  private slots:
     //! Called when current value of search widget changes
     void onValueChanged();
 
-  protected slots:
     void setExpression( QString exp ) override;
 
   private:
@@ -70,7 +63,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     QListWidget* mListWidget;
     QLineEdit* mLineEdit;
 
-    ValueRelationCache mCache;
+    QgsValueRelationFieldKit::ValueRelationCache mCache;
     QgsVectorLayer* mLayer;
 
     friend class QgsValueRelationWidgetFactory;

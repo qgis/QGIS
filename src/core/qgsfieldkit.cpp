@@ -15,6 +15,10 @@
  ***************************************************************************/
 #include "qgsfieldkit.h"
 
+#include "qgsfields.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+
 QgsFieldKit::QgsFieldKit()
 {
 }
@@ -23,27 +27,50 @@ QgsFieldKit::~QgsFieldKit()
 {
 }
 
-bool QgsFieldKit::supportsField( QgsVectorLayer* layer, int fieldIdx )
+QString QgsFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  return true;
+  Q_UNUSED( layer )
+  Q_UNUSED( fieldIndex )
+  Q_UNUSED( config )
+  Q_UNUSED( cache )
+  Q_UNUSED( value )
+
+  QString defVal;
+  if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
+    defVal = layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( fieldIndex ) );
+
+  return value == defVal ? defVal : layer->fields().at( fieldIndex ).displayString( value );
 }
 
-QString QgsFieldKit::representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  return "1";
+  Q_UNUSED( layer )
+  Q_UNUSED( fieldIndex )
+  Q_UNUSED( config )
+  Q_UNUSED( cache )
+
+  return value;
 }
 
-QVariant QgsFieldKit::sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+Qt::AlignmentFlag QgsFieldKit::alignmentFlag( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
 {
-  return 1;
+  Q_UNUSED( config );
+
+  QVariant::Type fldType = layer->fields().at( fieldIndex ).type();
+  bool alignRight = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong
+                      || fldType == QVariant::DateTime || fldType == QVariant::Date || fldType == QVariant::Time );
+
+  if ( alignRight )
+    return Qt::AlignRight;
+  else
+    return Qt::AlignLeft;
 }
 
-Qt::AlignmentFlag QgsFieldKit::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const
+QVariant QgsFieldKit::createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
 {
-  return Qt::AlignLeft;
-}
+  Q_UNUSED( layer )
+  Q_UNUSED( fieldIndex )
+  Q_UNUSED( config )
 
-QVariant QgsFieldKit::createCache( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const
-{
   return QVariant();
 }

@@ -22,6 +22,11 @@ QgsListFieldKit::QgsListFieldKit()
 
 }
 
+QString QgsListFieldKit::id() const
+{
+  return QStringLiteral( "List" );
+}
+
 QString QgsListFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( vl );

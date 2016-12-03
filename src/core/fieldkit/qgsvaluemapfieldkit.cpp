@@ -22,6 +22,11 @@ QgsValueMapFieldKit::QgsValueMapFieldKit()
 
 }
 
+QString QgsValueMapFieldKit::id() const
+{
+  return QStringLiteral( "ValueMap" );
+}
+
 QString QgsValueMapFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache )

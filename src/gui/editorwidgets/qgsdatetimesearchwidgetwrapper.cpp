@@ -21,6 +21,7 @@
 #include "qgsdatetimeedit.h"
 #include "qcalendarwidget.h"
 #include "qgsdatetimeeditconfig.h"
+#include "qgsdatetimefieldkit.h"
 
 #include <QSettings>
 
@@ -46,7 +47,7 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
   if ( ! mDateTimeEdit )
     return QDateTime();
 
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeEditConfig::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
+  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldKit::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
   return mDateTimeEdit->dateTime().toString( fieldFormat );
 }
 
@@ -152,7 +153,7 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     mDateTimeEdit->setAllowNull( false );
 
-    const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeEditConfig::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
+    const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeFieldKit::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
     mDateTimeEdit->setDisplayFormat( displayFormat );
 
     const bool calendar = config( QStringLiteral( "calendar_popup" ), false ).toBool();

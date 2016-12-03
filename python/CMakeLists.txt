@@ -101,6 +101,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/composer
   ../src/core/diagram
   ../src/core/effects
+  ../src/core/fieldkit
   ../src/core/dxf
   ../src/core/geometry
   ../src/core/gps

@@ -16,6 +16,7 @@
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsvectorlayer.h"
+#include "qgsdatetimefieldkit.h"
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -56,15 +57,15 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
   if ( idx == 0 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_DATEFORMAT );
+    mFieldFormatEdit->setText( QGSDATETIMEFIELDKIT_DATEFORMAT );
   }
   else if ( idx == 1 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_TIMEFORMAT );
+    mFieldFormatEdit->setText( QGSDATETIMEFIELDKIT_TIMEFORMAT );
   }
   else if ( idx == 2 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_DATETIMEFORMAT );
+    mFieldFormatEdit->setText( QGSDATETIMEFIELDKIT_DATETIMEFORMAT );
   }
 
   mFieldFormatEdit->setVisible( idx == 3 );
@@ -122,19 +123,19 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
 void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
 {
   const QgsField fieldDef = layer()->fields().at( field() );
-  const QString fieldFormat = config.value( QStringLiteral( "field_format" ), defaultFormat( fieldDef.type() ) ).toString();
+  const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldKit::defaultFormat( fieldDef.type() ) ).toString();
   mFieldFormatEdit->setText( fieldFormat );
 
-  if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
+  if ( fieldFormat == QGSDATETIMEFIELDKIT_DATEFORMAT )
     mFieldFormatComboBox->setCurrentIndex( 0 );
-  else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
+  else if ( fieldFormat == QGSDATETIMEFIELDKIT_TIMEFORMAT )
     mFieldFormatComboBox->setCurrentIndex( 1 );
-  else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
+  else if ( fieldFormat == QGSDATETIMEFIELDKIT_DATETIMEFORMAT )
     mFieldFormatComboBox->setCurrentIndex( 2 );
   else
     mFieldFormatComboBox->setCurrentIndex( 3 );
 
-  QString displayFormat = config.value( QStringLiteral( "display_format" ), defaultFormat( fieldDef.type() ) ).toString();
+  QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldKit::defaultFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );
   if ( displayFormat == mFieldFormatEdit->text() )
   {

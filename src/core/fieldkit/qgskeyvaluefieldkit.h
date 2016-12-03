@@ -18,11 +18,12 @@
 
 #include "qgsfieldkit.h"
 
-class QgsKeyValueFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsKeyValueFieldKit : public QgsFieldKit
 {
   public:
     QgsKeyValueFieldKit();
 
+    QString id() const override;
     QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
 

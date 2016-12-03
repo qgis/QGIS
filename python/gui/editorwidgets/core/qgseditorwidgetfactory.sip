@@ -111,42 +111,6 @@ class QgsEditorWidgetFactory
     //virtual QHash<const char*, int> supportedWidgetTypes();
 
     /**
-     * If the default sort order should be overwritten for this widget, you can transform the value in here.
-     *
-     * @param vl        The vector layer.
-     * @param fieldIdx  The index of the field.
-     * @param config    The editor widget config.
-     * @param cache     The editor widget cache.
-     * @param value     The value to represent.
-     *
-     * @return By default the value is returned unmodified.
-     *
-     * @note Added in 2.16
-     */
-    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
-
-    /**
-     * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
-     * values are represented.
-     * @param vl       The vector layer.
-     * @param fieldIdx The index of the field.
-     * @param config   The editor widget config.
-     * @return The alignment flag, normally Qt::AlignRight or Qt::AlignLeft
-     */
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const;
-
-    /**
-     * Create a cache for a given field.
-     *
-     * @param vl        The vector layer.
-     * @param fieldIdx  The index of the field.
-     * @param config    The editor widget config.
-     *
-     * @return The default implementation returns an invalid QVariant
-     */
-    virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config );
-
-    /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
      *
      * @param configElement The configuration element from the project file

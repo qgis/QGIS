@@ -16,6 +16,7 @@
 #include "qgsvaluemapsearchwidgetwrapper.h"
 #include "qgstexteditconfigdlg.h"
 #include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapfieldkit.h"
 
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
@@ -146,7 +147,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
 
     while ( it != cfg.constEnd() )
     {
-      if ( it.value() != QStringLiteral( VALUEMAP_NULL_TEXT ) )
+      if ( it.value() != VALUEMAP_NULL_TEXT )
         mComboBox->addItem( it.key(), it.value() );
       ++it;
     }

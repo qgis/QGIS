@@ -18,14 +18,40 @@
 
 #include "qgsfieldkit.h"
 
-class QgsValueRelationFieldKit : public QgsFieldKit
+#include <QVector>
+#include <QVariant>
+
+class CORE_EXPORT QgsValueRelationFieldKit : public QgsFieldKit
 {
   public:
+    struct ValueRelationItem
+    {
+      ValueRelationItem( const QVariant& key, const QString& value )
+          : key( key )
+          , value( value )
+      {}
+
+      ValueRelationItem()
+      {}
+
+      QVariant key;
+      QString value;
+    };
+
+    typedef QVector < ValueRelationItem > ValueRelationCache;
+
     QgsValueRelationFieldKit();
 
+    QString id() const override;
     QString representValue( QgsVectorLayer *layer, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
     QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+
+    QVariant createCache( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config ) const override;
+
+    static ValueRelationCache createCache( const QVariantMap& config );
 };
+
+Q_DECLARE_METATYPE( QgsValueRelationFieldKit::ValueRelationCache )
 
 #endif // QGSVALUERELATIONFIELDKIT_H
