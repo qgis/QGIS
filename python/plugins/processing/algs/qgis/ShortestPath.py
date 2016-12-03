@@ -77,10 +77,6 @@ class ShortestPath(GeoAlgorithm):
                            self.tr('Both directions'): QgsVectorLayerDirector.DirectionForward
                           }
 
-        self.UNITS = {self.tr('Meters'): 1,
-                      self.tr('Kilometers'): 1000
-                     }
-
         self.name, self.i18n_name = self.trAlgorithm('Shortest path')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
@@ -116,7 +112,6 @@ class ShortestPath(GeoAlgorithm):
         params.append(ParameterNumber(self.TOLERANCE,
                                       self.tr('Topology tolerance'),
                                       0.0, 0.0, 99999999.999999))
-
 
         for p in params:
             p.isAdvanced = True
