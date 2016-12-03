@@ -24,6 +24,7 @@
 #include "qgscoloreffect.h"
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 
 //
 // draw source
@@ -421,15 +422,12 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
 
-  mRampComboBox->populate( QgsStyle::defaultStyle() );
-  mRampComboBox->setShowGradientOnly( true );
-  connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
-  connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );
-
-  connect( radioSingleColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
+  btnColorRamp->setShowGradientOnly( true );
 
   initGui();
+
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGlowWidget::applyColorRamp );
+  connect( radioSingleColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
 }
 
 void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
@@ -461,14 +459,13 @@ void QgsGlowWidget::initGui()
 
   if ( mEffect->ramp() )
   {
-    mRampComboBox->setSourceColorRamp( mEffect->ramp() );
+    btnColorRamp->setColorRamp( mEffect->ramp() );
   }
 
   radioSingleColor->setChecked( mEffect->colorType() == QgsGlowEffect::SingleColor );
   mColorBtn->setEnabled( mEffect->colorType() == QgsGlowEffect::SingleColor );
   radioColorRamp->setChecked( mEffect->colorType() == QgsGlowEffect::ColorRamp );
-  mRampComboBox->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
-  mButtonEditRamp->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
+  btnColorRamp->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
   blockSignals( false );
@@ -483,7 +480,7 @@ void QgsGlowWidget::blockSignals( const bool block )
   mTranspSlider->blockSignals( block );
   mColorBtn->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
-  mRampComboBox->blockSignals( block );
+  btnColorRamp->blockSignals( block );
   radioSingleColor->blockSignals( block );
   radioColorRamp->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
@@ -503,7 +500,7 @@ void QgsGlowWidget::colorModeChanged()
   else
   {
     mEffect->setColorType( QgsGlowEffect::ColorRamp );
-    mEffect->setRamp( mRampComboBox->currentColorRamp() );
+    mEffect->setRamp( btnColorRamp->colorRamp() );
   }
   emit changed();
 }
@@ -594,7 +591,7 @@ void QgsGlowWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp* ramp = mRampComboBox->currentColorRamp();
+  QgsColorRamp* ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 

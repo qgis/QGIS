@@ -28,6 +28,7 @@
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 #include "qgsgradientcolorrampdialog.h"
 #include "qgsdatadefined.h"
 #include "qgsstyle.h" //for symbol selector dialog
@@ -1360,11 +1361,9 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  cboGradientColorRamp->populate( QgsStyle::defaultStyle() );
+  btnColorRamp->setShowGradientOnly( true );
 
-  connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
-  connect( cboGradientColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), cboGradientColorRamp, SLOT( editSourceRamp() ) );
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsShapeburstFillSymbolLayerWidget::applyColorRamp );
 
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
@@ -1395,7 +1394,7 @@ void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   if ( mLayer->colorType() == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
   {
     radioTwoColor->setChecked( true );
-    cboGradientColorRamp->setEnabled( false );
+    btnColorRamp->setEnabled( false );
   }
   else
   {
@@ -1444,9 +1443,9 @@ void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   // set source color ramp
   if ( mLayer->colorRamp() )
   {
-    cboGradientColorRamp->blockSignals( true );
-    cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
-    cboGradientColorRamp->blockSignals( false );
+    btnColorRamp->blockSignals( true );
+    btnColorRamp->setColorRamp( mLayer->colorRamp() );
+    btnColorRamp->blockSignals( false );
   }
 
   spinOffsetX->blockSignals( true );
@@ -1549,7 +1548,7 @@ void QgsShapeburstFillSymbolLayerWidget::on_mRadioUseWholeShape_toggled( bool va
 
 void QgsShapeburstFillSymbolLayerWidget::applyColorRamp()
 {
-  QgsColorRamp* ramp = cboGradientColorRamp->currentColorRamp();
+  QgsColorRamp* ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 

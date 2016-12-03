@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
@@ -95,17 +96,15 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
     mRenderer = new QgsHeatmapRenderer();
   }
 
-  mRampComboBox->setShowGradientOnly( true );
-  mRampComboBox->populate( QgsStyle::defaultStyle() );
-  connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
-  connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );
+  btnColorRamp->setShowGradientOnly( true );
+
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsHeatmapRendererWidget::applyColorRamp );
 
   if ( mRenderer->colorRamp() )
   {
-    mRampComboBox->blockSignals( true );
-    mRampComboBox->setSourceColorRamp( mRenderer->colorRamp() );
-    mRampComboBox->blockSignals( false );
+    btnColorRamp->blockSignals( true );
+    btnColorRamp->setColorRamp( mRenderer->colorRamp() );
+    btnColorRamp->blockSignals( false );
   }
   mRadiusSpinBox->blockSignals( true );
   mRadiusSpinBox->setValue( mRenderer->radius() );
@@ -120,9 +119,6 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   mQualitySlider->blockSignals( true );
   mQualitySlider->setValue( mRenderer->renderQuality() );
   mQualitySlider->blockSignals( false );
-  mInvertCheckBox->blockSignals( true );
-  mInvertCheckBox->setChecked( mRenderer->invertRamp() );
-  mInvertCheckBox->blockSignals( false );
 
   mWeightExpressionWidget->setLayer( layer );
   mWeightExpressionWidget->setField( mRenderer->weightExpression() );
@@ -148,7 +144,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp* ramp = mRampComboBox->currentColorRamp();
+  QgsColorRamp* ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
@@ -198,17 +194,6 @@ void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
   }
 
   mRenderer->setRenderQuality( v );
-  emit widgetChanged();
-}
-
-void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
-{
-  if ( !mRenderer )
-  {
-    return;
-  }
-
-  mRenderer->setInvertRamp( v );
   emit widgetChanged();
 }
 

@@ -40,7 +40,6 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
     , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
     , mWeightAttrNum( -1 )
     , mGradientRamp( nullptr )
-    , mInvertRamp( false )
     , mExplicitMax( 0.0 )
     , mRenderQuality( 3 )
     , mFeaturesRendered( 0 )
@@ -255,7 +254,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext& context )
       pixVal = mValues.at( idx ) > 0 ? qMin(( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
 
       //convert value to color from ramp
-      pixColor = mGradientRamp->color( mInvertRamp ? 1 - pixVal : pixVal );
+      pixColor = mGradientRamp->color( pixVal );
 
       scanLine[widthIndex] = pixColor.rgba();
       idx++;
@@ -286,7 +285,6 @@ QgsHeatmapRenderer* QgsHeatmapRenderer::clone() const
   {
     newRenderer->setColorRamp( mGradientRamp->clone() );
   }
-  newRenderer->setInvertRamp( mInvertRamp );
   newRenderer->setRadius( mRadius );
   newRenderer->setRadiusUnit( mRadiusUnit );
   newRenderer->setRadiusMapUnitScale( mRadiusMapUnitScale );
@@ -337,7 +335,6 @@ QgsFeatureRenderer* QgsHeatmapRenderer::create( QDomElement& element )
   {
     r->setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
   }
-  r->setInvertRamp( element.attribute( QStringLiteral( "invert_ramp" ), QStringLiteral( "0" ) ).toInt() );
   return r;
 }
 
@@ -356,7 +353,6 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
-  rendererElem.setAttribute( QStringLiteral( "invert_ramp" ), QString::number( mInvertRamp ) );
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )

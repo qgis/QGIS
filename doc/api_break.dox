@@ -230,6 +230,7 @@ Removed Classes        {#qgis_api_break_3_0_removed_classes}
 - QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.
 - QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.
+- QgsColorRampComboBox was removed, replaced by QgsColorRampButton
 - QgsComposerAttributeTable and associated classes (eg QgsComposerAttributeTableCompare,
 QgsComposerAttributeTableColumnModel, QgsComposerTableSortColumnsProxyModel) were removed.
 Use QgsComposerAttributeTableV2 instead.
@@ -435,12 +436,17 @@ QgsCachedFeatureIterator        {#qgis_api_break_3_0_QgsQgsCachedFeatureIterator
 
 - The constructor for QgsCachedFeatureIterator has changed.
 
+QgsCategorizedRenderer        {#qgis_api_break_3_0_QgsCategorizedRenderer}
+--------------------
+
+- setInvertedColorRamp() and invertedColorRamp() functions are gone, QgsColorRamp now responsible for invert
+- createRenderer() and updateColorRamp()'s inverted parameter is gone
 
 QgsCategorizedSymbolRendererWidget        {#qgis_api_break_3_0_QgsCategorizedSymbolRendererWidget}
 ----------------------------------
 
 - sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.
-
+- getColorRamp() was removed.
 
 QgsClipper        {#qgis_api_break_3_0_QgsClipper}
 ----------
@@ -956,12 +962,21 @@ QgsEditorWidgetRegistry        {#qgis_api_break_3_0_QgsEditorWidgetRegistry}
 - The signature of isFieldSupported() has been changed to return an unsigned (how good it supports the given field)
 and to const-correct it.
 
+QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}
+--------------------
+
+- setInvertedColorRamp() and invertedColorRamp() functions are gone, QgsColorRamp now responsible for invert
+- createRenderer() and updateColorRamp()'s inverted parameter is gone
 
 QgsGroupWMSDataDialog        {#qgis_api_break_3_0_QgsGroupWMSDataDialog}
 ---------------------
 
 - QgsGroupWMSDataDialo has been renamed to QgsGroupWmsDataDialog
 
+QgsHeatmapRenderer        {#qgis_api_break_3_0_QgsHeatmapRenderer}
+------------------
+
+- setInvertRamp() and invertRamp() functions are gone, QgsColorRamp now responsible for invert
 
 QgsHighlight        {#qgis_api_break_3_0_QgsHighlight}
 ------------

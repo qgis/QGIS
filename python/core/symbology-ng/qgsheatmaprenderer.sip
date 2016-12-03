@@ -40,20 +40,6 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
      */
     void setColorRamp( QgsColorRamp* ramp /Transfer/ );
 
-    /** Returns whether the ramp is inverted
-     * @returns true if color ramp is inverted
-     * @see setInvertRamp
-     * @see colorRamp
-     */
-    bool invertRamp() const;
-
-    /** Sets whether the ramp is inverted
-     * @param invert set to true to invert color ramp
-     * @see invertRamp
-     * @see setColorRamp
-     */
-    void setInvertRamp( const bool invert );
-
     /** Returns the radius for the heatmap
      * @returns heatmap radius
      * @see setRadius
