@@ -142,8 +142,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
 
   // Menu for the "Add item" toolbutton when in colorramp mode
   QStringList rampTypes;
-  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" ) << tr( "Preset colors" );
-  rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+  rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
+  rampTypes << tr( "Catalog: ColorBrewer" );
   mMenuBtnAddItemColorRamp = new QMenu( this );
   Q_FOREACH ( const QString& rampType, rampTypes )
     mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
