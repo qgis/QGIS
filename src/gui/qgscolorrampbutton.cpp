@@ -20,7 +20,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
 
-#include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 #include "qgsgradientcolorrampdialog.h"
 #include "qgslimitedrandomcolorrampdialog.h"
@@ -29,6 +28,7 @@
 #include "qgspresetcolorrampdialog.h"
 
 #include <QAction>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QMenu>
@@ -338,23 +338,56 @@ void QgsColorRampButton::loadColorRamp()
 
 void QgsColorRampButton::createColorRamp()
 {
-  QString name;
-  if ( !mShowGradientOnly )
+  QStringList rampTypes;
+  QString rampType;
+  bool ok = true;
+
+  if ( mShowGradientOnly )
   {
-    name = QgsStyleManagerDialog::addColorRampStatic( this, mStyle );
+    rampTypes << tr( "Gradient" ) << tr( "Catalog: cpt-city" );
   }
   else
   {
-    name = QgsStyleManagerDialog::addColorRampStatic( this, mStyle, QStringLiteral( "Gradient" ) );
+    rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
+    rampTypes << tr( "Catalog: ColorBrewer" );
   }
-  if ( name.isEmpty() )
+  rampType = QInputDialog::getItem( this, tr( "Color ramp type" ),
+                                    tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
+
+  if ( !ok || rampType.isEmpty() )
     return;
 
-  // make sure the color ramp is stored
-  mStyle->save();
+  QgsColorRamp*  ramp;
+  if ( rampType == tr( "Gradient" ) )
+  {
+    ramp = new QgsGradientColorRamp();
+  }
+  else if ( rampType == tr( "Random" ) )
+  {
+    ramp = new QgsLimitedRandomColorRamp();
+  }
+  else if ( rampType == tr( "Catalog: ColorBrewer" ) )
+  {
+    ramp = new QgsColorBrewerColorRamp();
+  }
+  else if ( rampType == tr( "Color presets" ) )
+  {
+    ramp = new QgsPresetSchemeColorRamp();
+  }
+  else if ( rampType == tr( "Catalog: cpt-city" ) )
+  {
+    ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ) );
+  }
+  else
+  {
+    QgsDebugMsg( "invalid ramp type " + rampType );
+    return;
+  }
 
-  setColorRampName( name );
-  setColorRampFromName( name );
+  setColorRamp( ramp );
+  delete ramp;
+
+  showColorRampDialog();
 }
 
 void QgsColorRampButton::saveColorRamp()
@@ -382,9 +415,11 @@ void QgsColorRampButton::saveColorRamp()
   QStringList colorRampTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
-  QgsColorRamp* savedColorRamp = colorRamp();
-  mStyle->addColorRamp( saveDlg.name(), savedColorRamp );
-  mStyle->saveColorRamp( saveDlg.name(), savedColorRamp, saveDlg.isFavorite(), colorRampTags );
+  QgsColorRamp* ramp = colorRamp();
+  mStyle->addColorRamp( saveDlg.name(), ramp );
+  mStyle->saveColorRamp( saveDlg.name(), ramp, saveDlg.isFavorite(), colorRampTags );
+
+  setColorRampName( saveDlg.name() );
 }
 
 void QgsColorRampButton::invertColorRamp()
