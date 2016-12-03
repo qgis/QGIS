@@ -57,38 +57,6 @@ void QgsKeyValueWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   Q_UNUSED( fieldIdx );
 }
 
-QString QgsKeyValueWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
-{
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
-  Q_UNUSED( config );
-  Q_UNUSED( cache );
-
-  if ( value.isNull() )
-  {
-    QSettings settings;
-    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
-  }
-
-  QString result;
-  const QVariantMap map = value.toMap();
-  for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
-  {
-    if ( !result.isEmpty() ) result.append( ", " );
-    result.append( i.key() ).append( ": " ).append( i.value().toString() );
-  }
-  return result;
-}
-
-Qt::AlignmentFlag QgsKeyValueWidgetFactory::alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config ) const
-{
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
-  Q_UNUSED( config );
-
-  return Qt::AlignLeft;
-}
-
 unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );

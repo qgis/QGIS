@@ -60,21 +60,6 @@ void QgsEditorWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, Q
   Q_UNUSED( fieldIdx );
 }
 
-QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
-{
-  Q_UNUSED( vl )
-  Q_UNUSED( fieldIdx )
-  Q_UNUSED( config )
-  Q_UNUSED( cache )
-  Q_UNUSED( value )
-
-  QString defVal;
-  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginProvider && vl->dataProvider() )
-    defVal = vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( fieldIdx ) );
-
-  return value == defVal ? defVal : vl->fields().at( fieldIdx ).displayString( value );
-}
-
 QVariant QgsEditorWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( vl )

@@ -119,23 +119,6 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
   return myConfig;
 }
 
-
-QString QgsDateTimeEditConfig::defaultFormat( const QVariant::Type type )
-{
-  switch ( type )
-  {
-    case QVariant::DateTime:
-      return QGSDATETIMEEDIT_DATETIMEFORMAT;
-      break;
-    case QVariant::Time:
-      return QGSDATETIMEEDIT_TIMEFORMAT;
-      break;
-    default:
-      return QGSDATETIMEEDIT_DATEFORMAT;
-  }
-}
-
-
 void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
 {
   const QgsField fieldDef = layer()->fields().at( field() );

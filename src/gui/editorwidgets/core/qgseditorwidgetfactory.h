@@ -129,19 +129,6 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QHash<const char*, int> supportedWidgetTypes() { return QHash<const char*, int>(); }
 
     /**
-     * Create a pretty String representation of the value.
-     *
-     * @param vl        The vector layer.
-     * @param fieldIdx  The index of the field.
-     * @param config    The editor widget config.
-     * @param cache     The editor widget cache.
-     * @param value     The value to represent.
-     *
-     * @return By default the string representation of the provided value as implied by the field definition is returned.
-     */
-    virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
-
-    /**
      * If the default sort order should be overwritten for this widget, you can transform the value in here.
      *
      * @param vl        The vector layer.
