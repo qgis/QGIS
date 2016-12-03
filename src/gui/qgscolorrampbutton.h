@@ -286,6 +286,10 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      */
     void createColorRamp();
 
+    /** Creates a new color ramp
+     */
+    void saveColorRamp();
+
     /** Inverts the current color ramp
      */
     void invertColorRamp();
