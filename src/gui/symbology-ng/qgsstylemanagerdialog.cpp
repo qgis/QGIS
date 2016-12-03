@@ -469,7 +469,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   {
     QStringList rampTypes;
     rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" ) << tr( "Preset colors" );
-    rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+    rampTypes << tr( "cpt-city" );
     rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
                                       tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
   }

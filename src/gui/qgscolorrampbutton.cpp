@@ -21,6 +21,7 @@
 #include "qgsstyle.h"
 
 #include "qgsstylemanagerdialog.h"
+#include "qgsstylesavedialog.h"
 #include "qgsgradientcolorrampdialog.h"
 #include "qgslimitedrandomcolorrampdialog.h"
 #include "qgscolorbrewercolorrampdialog.h"
@@ -28,6 +29,7 @@
 #include "qgspresetcolorrampdialog.h"
 
 #include <QAction>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QMenu>
 #include <QPainter>
@@ -316,6 +318,11 @@ void QgsColorRampButton::prepareMenu()
   editColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( editColorRampAction, &QAction::triggered, this, &QgsColorRampButton::showColorRampDialog );
   mMenu->addAction( editColorRampAction );
+
+  QAction* saveColorRampAction = new QAction( tr( "Save color ramp..." ), this );
+  saveColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
+  connect( saveColorRampAction, &QAction::triggered, this, &QgsColorRampButton::saveColorRamp );
+  mMenu->addAction( saveColorRampAction );
 }
 
 void QgsColorRampButton::loadColorRamp()
@@ -348,6 +355,36 @@ void QgsColorRampButton::createColorRamp()
 
   setColorRampName( name );
   setColorRampFromName( name );
+}
+
+void QgsColorRampButton::saveColorRamp()
+{
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::ColorrampEntity );
+  if ( !saveDlg.exec() || saveDlg.name().isEmpty() )
+  {
+    return;
+  }
+
+  // check if there is no symbol with same name
+  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+  {
+    int res = QMessageBox::warning( this, tr( "Save color ramp" ),
+                                    tr( "Color ramp with name '%1' already exists. Overwrite?" )
+                                    .arg( saveDlg.name() ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+    {
+      return;
+    }
+    mStyle->removeColorRamp( saveDlg.name() );
+  }
+
+  QStringList colorRampTags = saveDlg.tags().split( ',' );
+
+  // add new symbol to style and re-populate the list
+  QgsColorRamp* savedColorRamp = colorRamp();
+  mStyle->addColorRamp( saveDlg.name(), savedColorRamp );
+  mStyle->saveColorRamp( saveDlg.name(), savedColorRamp, saveDlg.isFavorite(), colorRampTags );
 }
 
 void QgsColorRampButton::invertColorRamp()
