@@ -69,7 +69,7 @@ class ShortestPath(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
     def defineCharacteristics(self):
         self.DIRECTIONS = {self.tr('Forward direction'): QgsVectorLayerDirector.DirectionForward,
