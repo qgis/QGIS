@@ -82,24 +82,6 @@ void QgsValueMapWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   }
 }
 
-QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
-{
-  Q_UNUSED( cache )
-
-  QString valueInternalText;
-  if ( value.isNull() )
-    valueInternalText = QStringLiteral( VALUEMAP_NULL_TEXT );
-  else
-    valueInternalText = value.toString();
-
-  return config.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
-}
-
-QVariant QgsValueMapWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
-{
-  return representValue( vl, fieldIdx, config, cache, value );
-}
-
 Qt::AlignmentFlag QgsValueMapWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
 {
   Q_UNUSED( vl );

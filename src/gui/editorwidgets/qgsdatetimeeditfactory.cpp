@@ -67,47 +67,6 @@ void QgsDateTimeEditFactory::writeConfig( const QgsEditorWidgetConfig& config, Q
   config2xml( config, configElement, QStringLiteral( "allow_null" ) );
 }
 
-QString QgsDateTimeEditFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
-{
-  Q_UNUSED( vl )
-  Q_UNUSED( fieldIdx )
-  Q_UNUSED( cache )
-
-  QString result;
-
-  if ( value.isNull() )
-  {
-    QSettings settings;
-    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
-  }
-
-  const QgsField field = vl->fields().at( fieldIdx );
-  const QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeEditConfig::defaultFormat( field.type() ) ).toString();
-  const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeEditConfig::defaultFormat( field.type() ) ).toString();
-
-  QDateTime date = QDateTime::fromString( value.toString(), fieldFormat );
-
-  if ( date.isValid() )
-  {
-    result = date.toString( displayFormat );
-  }
-  else
-  {
-    result = value.toString();
-  }
-
-  return result;
-}
-
-Qt::AlignmentFlag QgsDateTimeEditFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
-{
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
-  Q_UNUSED( config );
-
-  return Qt::AlignLeft;
-}
-
 QHash<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
 {
   QHash<const char*, int> map = QHash<const char*, int>();

@@ -127,6 +127,8 @@ SET(QGIS_CORE_SRCS
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
+  qgsfieldkit.cpp
+  qgsfieldkitregistry.cpp
   qgsfields.cpp
   qgsfontutils.cpp
   qgsgeometrycache.cpp
@@ -366,6 +368,14 @@ SET(QGIS_CORE_SRCS
   geometry/qgspolygon.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
+
+
+  fieldkit/qgsdatetimefieldkit.cpp
+  fieldkit/qgskeyvaluefieldkit.cpp
+  fieldkit/qgslistfieldkit.cpp
+  fieldkit/qgsrelationreferencefieldkit.cpp
+  fieldkit/qgsvaluemapfieldkit.cpp
+  fieldkit/qgsvaluerelationfieldkit.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -659,6 +669,8 @@ SET(QGIS_CORE_HDRS
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
+  qgsfieldkit.h
+  qgsfieldkitregistry.h
   qgsfields.h
   qgsfontutils.h
   qgsgeometrycache.h
@@ -875,6 +887,13 @@ SET(QGIS_CORE_HDRS
   geometry/qgssurface.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
+
+  fieldkit/qgsdatetimefieldkit.h
+  fieldkit/qgskeyvaluefieldkit.h
+  fieldkit/qgslistfieldkit.h
+  fieldkit/qgsrelationreferencefieldkit.h
+  fieldkit/qgsvaluemapfieldkit.h
+  fieldkit/qgsvaluerelationfieldkit.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

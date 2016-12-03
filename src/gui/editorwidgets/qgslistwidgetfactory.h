@@ -39,7 +39,6 @@ class GUI_EXPORT QgsListWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorConfigWidget* configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
     QgsEditorWidgetConfig readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx ) override;
     void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
     Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config ) const override;
     unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
