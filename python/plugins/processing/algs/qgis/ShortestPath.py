@@ -85,7 +85,7 @@ class ShortestPath(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer representing road network'),
+                                          self.tr('Vector layer representing network'),
                                           [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterPoint(self.START_POINT,
                                           self.tr('Start point')))
@@ -94,7 +94,7 @@ class ShortestPath(GeoAlgorithm):
 
         params = []
         params.append(ParameterTableField(self.DIRECTION_FIELD,
-                                          self.tr('Road direction field'),
+                                          self.tr('Direction field'),
                                           self.INPUT_VECTOR,
                                           optional=True))
         params.append(ParameterString(self.VALUE_FORWARD,
@@ -110,7 +110,7 @@ class ShortestPath(GeoAlgorithm):
                                       '',
                                       optional=True))
         params.append(ParameterSelection(self.DEFAULT_DIRECTION,
-                                         self.tr('Default road direction'),
+                                         self.tr('Default direction'),
                                          list(self.DIRECTIONS.keys()),
                                          default=2))
         params.append(ParameterNumber(self.TOLERANCE,
