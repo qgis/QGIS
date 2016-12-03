@@ -468,8 +468,8 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   if ( rampType.isEmpty() )
   {
     QStringList rampTypes;
-    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" ) << tr( "Preset colors" );
-    rampTypes << tr( "cpt-city" );
+    rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
+    rampTypes << tr( "Catalog: ColorBrewer" );
     rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
                                       tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
   }
@@ -499,7 +499,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
     ramp.reset( dlg.ramp().clone() );
     name = tr( "new random ramp" );
   }
-  else if ( rampType == tr( "ColorBrewer" ) )
+  else if ( rampType == tr( "Catalog: ColorBrewer" ) )
   {
     QgsColorBrewerColorRampDialog dlg( QgsColorBrewerColorRamp(), parent );
     if ( !dlg.exec() )
@@ -509,7 +509,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
     ramp.reset( dlg.ramp().clone() );
     name = dlg.ramp().schemeName() + QString::number( dlg.ramp().colors() );
   }
-  else if ( rampType == tr( "Preset colors" ) )
+  else if ( rampType == tr( "Color presets" ) )
   {
     QgsPresetColorRampDialog dlg( QgsPresetSchemeColorRamp(), parent );
     if ( !dlg.exec() )
@@ -519,7 +519,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
     ramp.reset( dlg.ramp().clone() );
     name = tr( "new preset ramp" );
   }
-  else if ( rampType == tr( "cpt-city" ) )
+  else if ( rampType == tr( "Catalog: cpt-city" ) )
   {
     QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ) ), parent );
     if ( !dlg.exec() )
