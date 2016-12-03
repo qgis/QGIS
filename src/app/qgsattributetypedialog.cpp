@@ -23,6 +23,8 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsfieldkitregistry.h"
+#include "qgsfieldkit.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 
@@ -348,13 +350,9 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  QString previewText = val.toString();
+  QgsFieldKit* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( editorWidgetType() );
 
-  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( editorWidgetType() );
-  if ( factory )
-  {
-    previewText = factory->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
-  }
+  QString previewText = fieldKit->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }

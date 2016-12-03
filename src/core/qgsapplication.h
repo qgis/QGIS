@@ -25,6 +25,7 @@
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
+class QgsFieldKitRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -396,6 +397,11 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsRuntimeProfiler* profiler();
 
+    /**
+     * Get the registry of available field kits.
+     */
+    static QgsFieldKitRegistry* fieldKitRegistry();
+
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should
@@ -465,6 +471,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsActionScopeRegistry* mActionScopeRegistry;
     QgsRuntimeProfiler* mProfiler;
     QgsTaskManager* mTaskManager;
+    QgsFieldKitRegistry* mFieldKitRegistry;
 };
 
 #endif

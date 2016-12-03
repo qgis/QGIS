@@ -37,7 +37,6 @@ class GUI_EXPORT QgsValueRelationWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
     QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
     void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) override;
 };
 
 #endif // QGSVALUERELATIONWIDGETFACTORY_H

@@ -25,11 +25,12 @@ QgsDateTimeFieldKit::QgsDateTimeFieldKit()
 
 }
 
-bool QgsDateTimeFieldKit::supportsField( QgsVectorLayer* layer, int fieldIdx )
+QString QgsDateTimeFieldKit::id() const
 {
+  return QStringLiteral( "DateTime" );
 }
 
-QString QgsDateTimeFieldKit::representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsDateTimeFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache )
 
@@ -41,7 +42,7 @@ QString QgsDateTimeFieldKit::representValue( QgsVectorLayer* layer, int fieldIdx
     return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
   }
 
-  const QgsField field = layer->fields().at( fieldIdx );
+  const QgsField field = layer->fields().at( fieldIndex );
   const QString displayFormat = config.value( QStringLiteral( "display_format" ), defaultFormat( field.type() ) ).toString();
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), defaultFormat( field.type() ) ).toString();
 
@@ -64,12 +65,12 @@ QString QgsDateTimeFieldKit::defaultFormat( const QVariant::Type type )
   switch ( type )
   {
     case QVariant::DateTime:
-      return QGSDATETIMEEDIT_DATETIMEFORMAT;
+      return QGSDATETIMEFIELDKIT_DATETIMEFORMAT;
       break;
     case QVariant::Time:
-      return QGSDATETIMEEDIT_TIMEFORMAT;
+      return QGSDATETIMEFIELDKIT_TIMEFORMAT;
       break;
     default:
-      return QGSDATETIMEEDIT_DATEFORMAT;
+      return QGSDATETIMEFIELDKIT_DATEFORMAT;
   }
 }

@@ -371,6 +371,7 @@ SET(QGIS_CORE_SRCS
 
 
   fieldkit/qgsdatetimefieldkit.cpp
+  fieldkit/qgsfallbackfieldkit.cpp
   fieldkit/qgskeyvaluefieldkit.cpp
   fieldkit/qgslistfieldkit.cpp
   fieldkit/qgsrelationreferencefieldkit.cpp
@@ -477,6 +478,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfeedback.h
   qgsfield.h
   qgsfieldconstraints.h
+  qgsfieldkitregistry.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
@@ -670,7 +672,6 @@ SET(QGIS_CORE_HDRS
   qgsfeaturerequest.h
   qgsfeaturestore.h
   qgsfieldkit.h
-  qgsfieldkitregistry.h
   qgsfields.h
   qgsfontutils.h
   qgsgeometrycache.h
@@ -889,6 +890,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgswkbtypes.h
 
   fieldkit/qgsdatetimefieldkit.h
+  fieldkit/qgsfallbackfieldkit.h
   fieldkit/qgskeyvaluefieldkit.h
   fieldkit/qgslistfieldkit.h
   fieldkit/qgsrelationreferencefieldkit.h
@@ -909,6 +911,7 @@ INCLUDE_DIRECTORIES(
   composer
   dxf
   effects
+  fieldkit
   geometry
   layertree
   pal

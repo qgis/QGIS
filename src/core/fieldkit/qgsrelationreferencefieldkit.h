@@ -18,10 +18,12 @@
 
 #include "qgsfieldkit.h"
 
-class QgsRelationReferenceFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsRelationReferenceFieldKit : public QgsFieldKit
 {
   public:
     QgsRelationReferenceFieldKit();
+
+    QString id() const override;
 
     virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 

@@ -78,12 +78,3 @@ void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& co
   config2xml( config, configElement, QStringLiteral( "AllowNull" ) );
   config2xml( config, configElement, QStringLiteral( "UseCompleter" ) );
 }
-
-QVariant QgsValueRelationWidgetFactory::createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config )
-{
-  Q_UNUSED( vl )
-  Q_UNUSED( fieldIdx )
-
-  return QVariant::fromValue<QgsValueRelationWidgetWrapper::ValueRelationCache>( QgsValueRelationWidgetWrapper::createCache( config ) );
-}
-

@@ -22,21 +22,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
 #include "qgsfeatureiterator.h"
+#include "qgsvaluerelationfieldkit.h"
 
 #include <QStringListModel>
 #include <QCompleter>
-
-bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
-{
-  return qgsVariantLessThan( p1.first, p2.first );
-}
-
-bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
-{
-  return qgsVariantLessThan( p1.second, p2.second );
-}
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -76,11 +65,11 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const ValueRelationItem& i , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& item , mCache )
     {
-      if ( i.second == mLineEdit->text() )
+      if ( item.value == mLineEdit->text() )
       {
-        v = i.first;
+        v = item.value;
         break;
       }
     }
@@ -106,7 +95,7 @@ QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 {
-  mCache = createCache( config() );
+  mCache = QgsValueRelationFieldKit::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
@@ -119,20 +108,20 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
     }
 
-    Q_FOREACH ( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
     {
-      mComboBox->addItem( element.second, element.first );
+      mComboBox->addItem( element.value, element.key );
     }
 
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
     {
       QListWidgetItem *item;
-      item = new QListWidgetItem( element.second );
-      item->setData( Qt::UserRole, element.first );
+      item = new QListWidgetItem( element.value );
+      item->setData( Qt::UserRole, element.key );
 
       mListWidget->addItem( item );
     }
@@ -142,9 +131,9 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& i,  mCache )
     {
-      values << i.second;
+      values << i.value;
     }
 
     QStringListModel* m = new QStringListModel( values, mLineEdit );
@@ -177,57 +166,15 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
   }
   else if ( mLineEdit )
   {
-    Q_FOREACH ( ValueRelationItem i, mCache )
+    Q_FOREACH ( QgsValueRelationFieldKit::ValueRelationItem i, mCache )
     {
-      if ( i.first == value )
+      if ( i.key == value )
       {
-        mLineEdit->setText( i.second );
+        mLineEdit->setText( i.value );
         break;
       }
     }
   }
-}
-
-
-QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper::createCache( const QgsEditorWidgetConfig& config )
-{
-  ValueRelationCache cache;
-
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
-
-  if ( !layer )
-    return cache;
-
-  int ki = layer->fields().lookupField( config.value( QStringLiteral( "Key" ) ).toString() );
-  int vi = layer->fields().lookupField( config.value( QStringLiteral( "Value" ) ).toString() );
-
-  QgsFeatureRequest request;
-
-  request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
-  if ( !config.value( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
-  {
-    request.setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
-  }
-
-  QgsFeatureIterator fit = layer->getFeatures( request );
-
-  QgsFeature f;
-  while ( fit.nextFeature( f ) )
-  {
-    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
-  }
-
-  if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )
-  {
-    qSort( cache.begin(), cache.end(), orderByValueLessThan );
-  }
-  else
-  {
-    qSort( cache.begin(), cache.end(), orderByKeyLessThan );
-  }
-
-  return cache;
 }
 
 void QgsValueRelationWidgetWrapper::showIndeterminateState()

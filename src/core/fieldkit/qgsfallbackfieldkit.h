@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgslistfieldkit.h - QgsListFieldKit
+  qgsfallbackfieldkit.h - QgsFallbackFieldKit
 
  ---------------------
- begin                : 3.12.2016
+ begin                : 4.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,19 +13,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLISTFIELDKIT_H
-#define QGSLISTFIELDKIT_H
+#ifndef QGSFALLBACKFIELDKIT_H
+#define QGSFALLBACKFIELDKIT_H
 
 #include "qgsfieldkit.h"
 
-class CORE_EXPORT QgsListFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsFallbackFieldKit : public QgsFieldKit
 {
   public:
-    QgsListFieldKit();
+    QgsFallbackFieldKit();
 
     QString id() const override;
-
-    QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
 
-#endif // QGSLISTFIELDKIT_H
+#endif // QGSFALLBACKFIELDKIT_H

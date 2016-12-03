@@ -21,41 +21,53 @@
 
 class QgsVectorLayer;
 
-class QgsFieldKit
+class CORE_EXPORT QgsFieldKit
 {
   public:
     QgsFieldKit();
 
     virtual ~QgsFieldKit();
 
-    virtual bool supportsField( QgsVectorLayer* layer, int fieldIdx );
+    /**
+     * Return a unique id for this field kit.
+     * This id will later be used to identify this field kit in the registry with QgsFieldKitRegistry::fieldKit().
+     *
+     * This id matches the id of a QgsEditorWidgetFactory.
+     */
+    virtual QString id() const = 0;
 
     /**
      * Create a pretty String representation of the value.
      *
      * @return By default the string representation of the provided value as implied by the field definition is returned.
+     *
+     * @note Added in 3.0
      */
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 
     /**
      * If the default sort order should be overwritten for this widget, you can transform the value in here.
      *
      * @return By default the value is returned unmodified.
      *
-     * @note Added in 2.16
+     * @note Added in 3.0
      */
-    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 
     /**
      * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
      * values are represented.
+     *
+     * @note Added in 3.0
      */
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const;
 
     /**
      * Create a cache for a given field.
+     *
+     * @note Added in 3.0
      */
-    virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+    virtual QVariant createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const;
 };
 
 #endif // QGSFIELDKIT_H

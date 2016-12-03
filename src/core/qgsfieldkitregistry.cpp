@@ -16,23 +16,50 @@
 #include "qgsfieldkitregistry.h"
 #include "qgsfieldkit.h"
 
-QgsFieldKitRegistry::QgsFieldKitRegistry()
-{
+#include "qgsvaluerelationfieldkit.h"
+#include "qgsvaluemapfieldkit.h"
+#include "qgsdatetimefieldkit.h"
+#include "qgsrelationreferencefieldkit.h"
+#include "qgskeyvaluefieldkit.h"
+#include "qgslistfieldkit.h"
+#include "qgsfallbackfieldkit.h"
 
+
+QgsFieldKitRegistry::QgsFieldKitRegistry( QObject* parent )
+    : QObject( parent )
+{
+  addFieldKit( new QgsValueRelationFieldKit() );
+  addFieldKit( new QgsValueMapFieldKit() );
+  addFieldKit( new QgsRelationReferenceFieldKit() );
+  addFieldKit( new QgsKeyValueFieldKit() );
+  addFieldKit( new QgsListFieldKit() );
+  addFieldKit( new QgsDateTimeFieldKit() );
+
+  mFallbackFieldKit = new QgsFallbackFieldKit();
 }
 
 QgsFieldKitRegistry::~QgsFieldKitRegistry()
 {
   qDeleteAll( mFieldKits );
+  delete mFallbackFieldKit;
 }
 
 void QgsFieldKitRegistry::addFieldKit( QgsFieldKit* kit )
 {
-  mFieldKits.prepend( kit );
+  mFieldKits.insert( kit->id(), kit );
+  emit fieldKitAdded( kit );
 }
 
 void QgsFieldKitRegistry::removeFieldKit( QgsFieldKit* kit )
 {
-  mFieldKits.removeOne( kit );
-  delete kit;
+  if ( mFieldKits.remove( kit->id() ) )
+  {
+    emit fieldKitRemoved( kit );
+    delete kit;
+  }
+}
+
+QgsFieldKit* QgsFieldKitRegistry::fieldKit( const QString& id ) const
+{
+  return mFieldKits.value( id, mFallbackFieldKit );
 }

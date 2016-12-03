@@ -20,10 +20,12 @@
 
 #define VALUEMAP_NULL_TEXT QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" )
 
-class QgsValueMapFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsValueMapFieldKit : public QgsFieldKit
 {
   public:
     QgsValueMapFieldKit();
+
+    QString id() const override;
 
     QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 

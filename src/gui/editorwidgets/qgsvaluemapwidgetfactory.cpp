@@ -82,15 +82,6 @@ void QgsValueMapWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   }
 }
 
-Qt::AlignmentFlag QgsValueMapWidgetFactory::alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const
-{
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
-  Q_UNUSED( config );
-
-  return Qt::AlignLeft;
-}
-
 QHash<const char*, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
 {
   QHash<const char*, int> map = QHash<const char*, int>();

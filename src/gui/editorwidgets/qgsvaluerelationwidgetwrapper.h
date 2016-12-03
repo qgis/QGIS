@@ -17,6 +17,7 @@
 #define QGSVALUERELATIONWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgsvaluerelationfieldkit.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -50,18 +51,9 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   public:
     explicit QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
-    static bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
-                                    const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
-    static bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
-                                      const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
 
-
-
-    // QgsEditorWidgetWrapper interface
-  public:
     QVariant value() const override;
-    // TODO or have friend class :)
-    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
+
     void showIndeterminateState() override;
 
   protected:
@@ -77,12 +69,10 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QListWidget* mListWidget;
     QLineEdit* mLineEdit;
 
-    ValueRelationCache mCache;
+    QgsValueRelationFieldKit::ValueRelationCache mCache;
     QgsVectorLayer* mLayer;
 
     friend class QgsValueRelationWidgetFactory;
 };
-
-Q_DECLARE_METATYPE( QgsValueRelationWidgetWrapper::ValueRelationCache )
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

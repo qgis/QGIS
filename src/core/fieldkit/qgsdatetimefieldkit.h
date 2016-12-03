@@ -18,22 +18,26 @@
 
 #include "qgsfieldkit.h"
 
-#define QGSDATETIMEEDIT_DATEFORMAT QStringLiteral( "yyyy-MM-dd" )
-#define QGSDATETIMEEDIT_TIMEFORMAT QStringLiteral( "HH:mm:ss" )
-#define QGSDATETIMEEDIT_DATETIMEFORMAT QStringLiteral( "yyyy-MM-dd HH:mm:ss" )
+#define QGSDATETIMEFIELDKIT_DATEFORMAT QStringLiteral( "yyyy-MM-dd" )
+#define QGSDATETIMEFIELDKIT_TIMEFORMAT QStringLiteral( "HH:mm:ss" )
+#define QGSDATETIMEFIELDKIT_DATETIMEFORMAT QStringLiteral( "yyyy-MM-dd HH:mm:ss" )
 
-class QgsDateTimeFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsDateTimeFieldKit : public QgsFieldKit
 {
   public:
     QgsDateTimeFieldKit();
 
-    virtual bool supportsField( QgsVectorLayer* layer, int fieldIdx ) override;
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+    QString id() const override;
+
+    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 
     /**
-     * Get the default format in function of the type
-     * @param type the field type
-     * @return the date/time format
+     * Get the default format in function of the type.
+     * The type is expected to be one of
+     *
+     * - QVariant::DateTime
+     * - QVariant::Date
+     * - QVariant::Time
      */
     static QString defaultFormat( const QVariant::Type type );
 };

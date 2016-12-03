@@ -27,6 +27,11 @@ QgsRelationReferenceFieldKit::QgsRelationReferenceFieldKit()
 
 }
 
+QString QgsRelationReferenceFieldKit::id() const
+{
+  return QStringLiteral( "RelationReference" );
+}
+
 QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache );

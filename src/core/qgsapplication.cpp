@@ -26,6 +26,7 @@
 #include "qgsactionscoperegistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgstaskmanager.h"
+#include "qgsfieldkitregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -111,6 +112,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, const
   mTaskManager = new QgsTaskManager();
   mProfiler = new QgsRuntimeProfiler();
   mActionScopeRegistry = new QgsActionScopeRegistry();
+  mFieldKitRegistry = new QgsFieldKitRegistry();
 
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
@@ -245,6 +247,7 @@ QgsApplication::~QgsApplication()
   delete mActionScopeRegistry;
   delete mTaskManager;
   delete mProfiler;
+  delete mFieldKitRegistry;
 }
 
 QgsApplication* QgsApplication::instance()
@@ -1422,3 +1425,8 @@ void QgsApplication::emitSettingsChanged()
   emit settingsChanged();
 }
 
+
+QgsFieldKitRegistry* QgsApplication::fieldKitRegistry()
+{
+  return instance()->mFieldKitRegistry;
+}

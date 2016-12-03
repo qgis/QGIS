@@ -28,12 +28,4 @@ class QgsValueRelationSearchWidgetWrapper : QgsSearchWidgetWrapper
     QWidget* createWidget( QWidget* parent );
     void initWidget( QWidget* editor );
 
-  public slots:
-
-    //! Called when current value of search widget changes
-    void onValueChanged();
-
-  protected slots:
-    void setExpression( QString exp );
-
 };
