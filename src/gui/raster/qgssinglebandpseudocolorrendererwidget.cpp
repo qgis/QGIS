@@ -336,7 +336,7 @@ void QgsSingleBandPseudoColorRendererWidget::classify()
 
   if ( mClassificationModeComboBox->currentData().toInt() == Continuous )
   {
-    if ( colorRamp.data() )
+    if ( colorRamp.data() &&  colorRamp->count() > 1 )
     {
       numberOfEntries = colorRamp->count();
       entryValues.reserve( numberOfEntries );
@@ -450,7 +450,7 @@ void QgsSingleBandPseudoColorRendererWidget::classify()
       }
     }
 
-    if ( !colorRamp.data() )
+    if ( !colorRamp.data() || colorRamp->count() == 1 )
     {
       //hard code color range from blue -> red (previous default)
       int colorDiff = 0;
