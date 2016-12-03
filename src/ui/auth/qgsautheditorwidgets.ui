@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -68,16 +59,7 @@
       <string>Management</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>6</number>
       </property>
       <item>
@@ -156,15 +138,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsAuthConfigEditor</class>
-   <extends>QWidget</extends>
-   <header>qgsauthconfigeditor.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QFrame</extends>
    <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthConfigEditor</class>
+   <extends>QWidget</extends>
+   <header>qgsauthconfigeditor.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

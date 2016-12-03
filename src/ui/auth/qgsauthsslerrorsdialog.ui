@@ -125,12 +125,6 @@
          </item>
          <item>
           <widget class="QToolButton" name="btnChainInfo">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>22</height>
-            </size>
-           </property>
            <property name="toolTip">
             <string>Show information for certificate chain</string>
            </property>
@@ -141,12 +135,6 @@
             <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
            </property>
-           <property name="iconSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
-           </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
@@ -154,12 +142,6 @@
          </item>
          <item>
           <widget class="QToolButton" name="btnChainCAs">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>22</height>
-            </size>
-           </property>
            <property name="toolTip">
             <string>Show information for certificate chain</string>
            </property>
@@ -169,12 +151,6 @@
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
              <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
