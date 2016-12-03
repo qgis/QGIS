@@ -25,11 +25,11 @@
 
 #include <QSettings>
 #include <QSqlError>
-#include <QDateTime>
 
 QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
+QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 
 QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceURI& uri )
 {
@@ -72,24 +72,44 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
 
-  QgsDebugMsg( QString( "Connecting with options: " ) + options );
+  QString username = uri.username();
+  QString password = uri.password();
 
+  QString realm( database );
+  if ( !username.isEmpty() )
+    realm.prepend( username + "@" );
+
+  if ( sBrokenConnections.contains( realm ) )
+  {
+    QDateTime now( QDateTime::currentDateTime() );
+    QDateTime since( sBrokenConnections[ realm ] );
+    QgsDebugMsg( QString( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
+
+    if ( since.secsTo( now ) < 30 )
+    {
+      QgsMessageLog::logMessage( tr( "Connection failed %1s ago - skipping retry" ).arg( since.secsTo( now ) ), tr( "Oracle" ) );
+      mRef = 0;
+      return;
+    }
+  }
+
+  QgsDebugMsg( QString( "Connecting with options: " ) + options );
   if ( !mDatabase.open() )
   {
-    QString username = uri.username();
-    QString password = uri.password();
-
-    QString realm( database );
-    if ( !username.isEmpty() )
-      realm.prepend( username + "@" );
-
     QgsCredentials::instance()->lock();
 
     while ( !mDatabase.open() )
     {
       bool ok = QgsCredentials::instance()->get( realm, username, password, mDatabase.lastError().text() );
       if ( !ok )
+      {
+        QDateTime now( QDateTime::currentDateTime() );
+        QgsDebugMsg( QString( "get failed: %1 <= %2" ).arg( realm ).arg( now.toString( Qt::ISODate ) ) );
+        sBrokenConnections.insert( realm, now );
         break;
+      }
+
+      sBrokenConnections.remove( realm );
 
       if ( !username.isEmpty() )
       {
