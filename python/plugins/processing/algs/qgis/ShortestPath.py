@@ -29,9 +29,10 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
+                           QgsNetworkSpeedStrategy,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
                           )
@@ -59,13 +60,16 @@ class ShortestPath(GeoAlgorithm):
     INPUT_VECTOR = 'INPUT_VECTOR'
     START_POINT = 'START_POINT'
     END_POINT = 'END_POINT'
+    STRATEGY = 'STRATEGY'
     DIRECTION_FIELD = 'DIRECTION_FIELD'
     VALUE_FORWARD = 'VALUE_FORWARD'
     VALUE_BACKWARD = 'VALUE_BACKWARD'
     VALUE_BOTH = 'VALUE_BOTH'
     DEFAULT_DIRECTION = 'DEFAULT_DIRECTION'
+    SPEED_FIELD = 'SPEED_FIELD'
+    DEFAULT_SPEED = 'DEFAULT_SPEED'
     TOLERANCE = 'TOLERANCE'
-    PATH_LENGTH = 'PATH_LENGTH'
+    TRAVEL_COST = 'TRAVEL_COST'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def getIcon(self):
@@ -77,6 +81,10 @@ class ShortestPath(GeoAlgorithm):
                            self.tr('Both directions'): QgsVectorLayerDirector.DirectionForward
                           }
 
+        self.STRATEGIES = [self.tr('Shortest'),
+                           self.tr('Fastest')
+                          ]
+
         self.name, self.i18n_name = self.trAlgorithm('Shortest path')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
@@ -87,6 +95,10 @@ class ShortestPath(GeoAlgorithm):
                                           self.tr('Start point')))
         self.addParameter(ParameterPoint(self.END_POINT,
                                           self.tr('End point')))
+        self.addParameter(ParameterSelection(self.STRATEGY,
+                                             self.tr('Path type to calculate'),
+                                             self.STRATEGIES,
+                                             default=0))
 
         params = []
         params.append(ParameterTableField(self.DIRECTION_FIELD,
@@ -109,16 +121,23 @@ class ShortestPath(GeoAlgorithm):
                                          self.tr('Default direction'),
                                          list(self.DIRECTIONS.keys()),
                                          default=2))
+        params.append(ParameterTableField(self.SPEED_FIELD,
+                                          self.tr('Speed field'),
+                                          self.INPUT_VECTOR,
+                                          optional=True))
+        params.append(ParameterNumber(self.DEFAULT_SPEED,
+                                      self.tr('Default speed (km/h)'),
+                                      0.0, 99999999.999999, 5.0))
         params.append(ParameterNumber(self.TOLERANCE,
                                       self.tr('Topology tolerance'),
-                                      0.0, 0.0, 99999999.999999))
+                                      0.0, 99999999.999999, 0.0))
 
         for p in params:
             p.isAdvanced = True
             self.addParameter(p)
 
-        self.addOutput(OutputNumber(self.PATH_LENGTH,
-                                    self.tr('Path length')))
+        self.addOutput(OutputNumber(self.TRAVEL_COST,
+                                    self.tr('Travel cost')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
@@ -128,12 +147,17 @@ class ShortestPath(GeoAlgorithm):
                 self.getParameterValue(self.INPUT_VECTOR))
         startPoint = self.getParameterValue(self.START_POINT)
         endPoint = self.getParameterValue(self.END_POINT)
+        strategy = self.getParameterValue(self.STRATEGY)
 
-        fieldName = self.getParameterValue(self.DIRECTION_FIELD)
+        directionFieldName = self.getParameterValue(self.DIRECTION_FIELD)
         forwardValue = self.getParameterValue(self.VALUE_FORWARD)
         backwardValue = self.getParameterValue(self.VALUE_BACKWARD)
         bothValue = self.getParameterValue(self.VALUE_BOTH)
         defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
+        bothValue = self.getParameterValue(self.VALUE_BOTH)
+        defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
+        speedFieldName = self.getParameterValue(self.SPEED_FIELD)
+        defaultSpeed = self.getParameterValue(self.DEFAULT_SPEED)
         tolerance = self.getParameterValue(self.TOLERANCE)
 
         writer = self.getOutputFromName(
@@ -146,17 +170,30 @@ class ShortestPath(GeoAlgorithm):
         startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
         tmp = endPoint.split(',')
         endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
-        field = -1
-        if fieldName is not None:
-            field = layer.fields().lookupField(fieldName)
+        directionField = -1
+        if directionFieldName is not None:
+            directionField = layer.fields().lookupField(directionFieldName)
+        speedField = -1
+        if speedFieldName is not None:
+            speedField = layer.fields().lookupField(speedFieldName)
 
         director = QgsVectorLayerDirector(layer,
-                                          field,
+                                          directionField,
                                           forwardValue,
                                           backwardValue,
                                           bothValue,
                                           defaultDirection)
-        strategy = QgsNetworkDistanceStrategy()
+
+        distUnit = iface.mapCanvas().mapSettings().destinationCrs().mapUnits()
+        multiplier = QgsUnitTypes.fromUnitToUnitFactor(distUnit, QgsUnitTypes.DistanceMeters)
+        if strategy == 0:
+            strategy = QgsNetworkDistanceStrategy()
+        else:
+            strategy = QgsNetworkSpeedStrategy(speedField,
+                                               defaultSpeed,
+                                               multiplier * 1000.0 / 3600.0)
+            multiplier = 3600
+
         director.addStrategy(strategy)
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
                                   iface.mapCanvas().hasCrsTransformEnabled(),
@@ -185,7 +222,7 @@ class ShortestPath(GeoAlgorithm):
         route.append(snappedPoints[0])
         route.reverse()
 
-        self.setOutputValue(self.PATH_LENGTH, cost)
+        self.setOutputValue(self.TRAVEL_COST, cost / multiplier)
 
         progress.setInfo(self.tr('Writting results...'))
         geom = QgsGeometry.fromPolyline(route)
