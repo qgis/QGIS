@@ -27,7 +27,7 @@ QString QgsValueMapFieldKit::id() const
   return QStringLiteral( "ValueMap" );
 }
 
-QString QgsValueMapFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsValueMapFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache )
 
@@ -37,10 +37,10 @@ QString QgsValueMapFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, c
   else
     valueInternalText = value.toString();
 
-  return config.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
+  return config.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
 }
 
-QVariant QgsValueMapFieldKit::sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsValueMapFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  return representValue( vl, fieldIdx, config, cache, value );
+  return representValue( layer, fieldIndex, config, cache, value );
 }

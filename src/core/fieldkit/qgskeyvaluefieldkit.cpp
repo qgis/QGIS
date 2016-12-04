@@ -27,10 +27,10 @@ QString QgsKeyValueFieldKit::id() const
   return QStringLiteral( "KeyValue" );
 }
 
-QString QgsKeyValueFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsKeyValueFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
+  Q_UNUSED( layer );
+  Q_UNUSED( fieldIndex );
   Q_UNUSED( config );
   Q_UNUSED( cache );
 

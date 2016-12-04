@@ -27,10 +27,10 @@ QString QgsListFieldKit::id() const
   return QStringLiteral( "List" );
 }
 
-QString QgsListFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsListFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
+  Q_UNUSED( layer );
+  Q_UNUSED( fieldIndex );
   Q_UNUSED( config );
   Q_UNUSED( cache );
 

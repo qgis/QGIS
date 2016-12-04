@@ -42,10 +42,10 @@ QString QgsValueRelationFieldKit::id() const
   return QStringLiteral( "ValueRelation" );
 }
 
-QString QgsValueRelationFieldKit::representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsValueRelationFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
+  Q_UNUSED( fieldIndex )
 
   QHash<QString, QString> vrCache;
 
@@ -55,7 +55,7 @@ QString QgsValueRelationFieldKit::representValue( QgsVectorLayer* layer, int fie
   }
   else
   {
-    vrCache = createCache( layer, fieldIdx, config ).value<QHash<QString, QString>>();
+    vrCache = createCache( layer, fieldIndex, config ).value<QHash<QString, QString>>();
   }
 
   if ( config.value( QStringLiteral( "AllowMulti" ) ).toBool() )
@@ -90,13 +90,15 @@ QString QgsValueRelationFieldKit::representValue( QgsVectorLayer* layer, int fie
   return QStringLiteral( "(%1)" ).arg( value.toString() );
 }
 
-QVariant QgsValueRelationFieldKit::sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsValueRelationFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  return representValue( vl, fieldIdx, config, cache, value );
+  return representValue( layer, fieldIndex, config, cache, value );
 }
 
-QVariant QgsValueRelationFieldKit::createCache( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const
+QVariant QgsValueRelationFieldKit::createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
 {
+  Q_UNUSED( layer )
+  Q_UNUSED( fieldIndex )
   return QVariant::fromValue<ValueRelationCache>( createCache( config ) );
 
 }

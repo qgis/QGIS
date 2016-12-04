@@ -35,11 +35,11 @@ class QgsValueRelationFieldKit : QgsFieldKit
     QgsValueRelationFieldKit();
 
     QString id() const;
-    QString representValue( QgsVectorLayer *layer, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+    QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-    QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+    QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-    QVariant createCache( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config ) const;
+    QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
     static ValueRelationCache createCache( const QVariantMap& config );
 };
