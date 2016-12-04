@@ -10600,6 +10600,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
     bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+    bool isSpatial = vlayer->isSpatial();
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
@@ -10610,14 +10611,16 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionIncreaseContrast->setEnabled( false );
     mActionDecreaseContrast->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
-    mActionLabeling->setEnabled( true );
-    mActionDiagramProperties->setEnabled( true );
+    mActionZoomToLayer->setEnabled( isSpatial );
+    mActionZoomToSelected->setEnabled( isSpatial );
+    mActionLabeling->setEnabled( isSpatial );
+    mActionDiagramProperties->setEnabled( isSpatial );
 
-    mActionSelectFeatures->setEnabled( true );
-    mActionSelectPolygon->setEnabled( true );
-    mActionSelectFreehand->setEnabled( true );
-    mActionSelectRadius->setEnabled( true );
-    mActionIdentify->setEnabled( true );
+    mActionSelectFeatures->setEnabled( isSpatial );
+    mActionSelectPolygon->setEnabled( isSpatial );
+    mActionSelectFreehand->setEnabled( isSpatial );
+    mActionSelectRadius->setEnabled( isSpatial );
+    mActionIdentify->setEnabled( isSpatial );
     mActionSelectByExpression->setEnabled( true );
     mActionSelectByForm->setEnabled( true );
     mActionOpenTable->setEnabled( true );
@@ -10640,7 +10643,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
       bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
       bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
-      bool canChangeGeometry = dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
+      bool canChangeGeometry = isSpatial && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
 
       mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
@@ -10660,8 +10663,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QgsWkbTypes::PointGeometry );
-      mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry ) );
+      mActionCircularStringCurvePoint->setEnabled( isEditable && isSpatial && ( canAddFeatures || canChangeGeometry ) && vlayer->geometryType() != QgsWkbTypes::PointGeometry );
+      mActionCircularStringRadius->setEnabled( isEditable && isSpatial && ( canAddFeatures || canChangeGeometry ) );
 
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
@@ -10757,6 +10760,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
+        mActionAddRing->setEnabled( false );
+        mActionFillRing->setEnabled( false );
+        mActionReshapeFeatures->setEnabled( false );
+        mActionSplitFeatures->setEnabled( false );
+        mActionSplitParts->setEnabled( false );
+        mActionSimplifyFeature->setEnabled( false );
+        mActionDeleteRing->setEnabled( false );
+        mActionOffsetCurve->setEnabled( false );
       }
 
       mActionOpenFieldCalc->setEnabled( true );
@@ -10807,6 +10818,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
     mActionZoomActualSize->setEnabled( true );
+    mActionZoomToLayer->setEnabled( true );
+    mActionZoomToSelected->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionSelectAll->setEnabled( false );
     mActionInvertSelection->setEnabled( false );

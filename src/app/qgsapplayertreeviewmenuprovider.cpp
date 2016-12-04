@@ -99,8 +99,11 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
-      menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
-      menu->addAction( actions->actionShowInOverview( menu ) );
+      if ( layer && layer->isSpatial() )
+      {
+        menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+        menu->addAction( actions->actionShowInOverview( menu ) );
+      }
 
       if ( rlayer )
       {
