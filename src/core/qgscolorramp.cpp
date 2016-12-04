@@ -205,6 +205,7 @@ QgsStringMap QgsGradientColorRamp::properties() const
     map["info_" + it.key()] = it.value();
   }
 
+  map[QStringLiteral( "gradientType" )] = type();
   return map;
 }
 void QgsGradientColorRamp::convertToDiscrete( bool discrete )
@@ -354,6 +355,7 @@ QgsStringMap QgsLimitedRandomColorRamp::properties() const
   map[QStringLiteral( "satMax" )] = QString::number( mSatMax );
   map[QStringLiteral( "valMin" )] = QString::number( mValMin );
   map[QStringLiteral( "valMax" )] = QString::number( mValMax );
+  map[QStringLiteral( "gradientType" )] = type();
   return map;
 }
 
@@ -571,6 +573,7 @@ QgsStringMap QgsColorBrewerColorRamp::properties() const
   map[QStringLiteral( "schemeName" )] = mSchemeName;
   map[QStringLiteral( "colors" )] = QString::number( mColors );
   map[QStringLiteral( "inverted" )] = QString::number( mInverted );
+  map[QStringLiteral( "gradientType" )] = type();
   return map;
 }
 
@@ -659,6 +662,7 @@ QgsStringMap QgsCptCityColorRamp::properties() const
   QgsStringMap map;
   map[QStringLiteral( "schemeName" )] = mSchemeName;
   map[QStringLiteral( "variantName" )] = mVariantName;
+  map[QStringLiteral( "gradientType" )] = type();
   return map;
 }
 
@@ -873,6 +877,7 @@ QgsStringMap QgsPresetSchemeColorRamp::properties() const
     props.insert( QStringLiteral( "preset_color_%1" ).arg( i ), QgsSymbolLayerUtils::encodeColor( mColors.at( i ).first ) );
     props.insert( QStringLiteral( "preset_color_name_%1" ).arg( i ), mColors.at( i ).second );
   }
+  props[QStringLiteral( "gradientType" )] = type();
   return props;
 }
 

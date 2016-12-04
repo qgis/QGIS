@@ -538,7 +538,15 @@ QgsSymbolLayer* QgsGradientFillSymbolLayer::create( const QgsStringMap& props )
     offset = QgsSymbolLayerUtils::decodePoint( props[QStringLiteral( "offset" )] );
 
   //attempt to create color ramp from props
-  QgsColorRamp* gradientRamp = QgsGradientColorRamp::create( props );
+  QgsColorRamp* gradientRamp;
+  if ( props.contains( QStringLiteral( "gradientType" ) ) && props[QStringLiteral( "gradientType" )] == QStringLiteral( "cpt-city" ) )
+  {
+    gradientRamp = QgsCptCityColorRamp::create( props );
+  }
+  else
+  {
+    gradientRamp = QgsGradientColorRamp::create( props );
+  }
 
   //create a new gradient fill layer with desired properties
   QgsGradientFillSymbolLayer* sl = new QgsGradientFillSymbolLayer( color, color2, colorType, type, coordinateMode, gradientSpread );
@@ -815,7 +823,8 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
   }
 
   //add stops to gradient
-  if ( gradientColorType == QgsGradientFillSymbolLayer::ColorRamp && gradientRamp && gradientRamp->type() == QLatin1String( "gradient" ) )
+  if ( gradientColorType == QgsGradientFillSymbolLayer::ColorRamp && gradientRamp &&
+       ( gradientRamp->type() == QLatin1String( "gradient" ) || gradientRamp->type() == QLatin1String( "cpt-city" ) ) )
   {
     //color ramp gradient
     QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( gradientRamp );
@@ -1017,7 +1026,15 @@ QgsSymbolLayer* QgsShapeburstFillSymbolLayer::create( const QgsStringMap& props 
   }
 
   //attempt to create color ramp from props
-  QgsColorRamp* gradientRamp = QgsGradientColorRamp::create( props );
+  QgsColorRamp* gradientRamp;
+  if ( props.contains( QStringLiteral( "gradientType" ) ) && props["gradientType"] == QStringLiteral( "cpt-city" ) )
+  {
+    gradientRamp = QgsCptCityColorRamp::create( props );
+  }
+  else
+  {
+    gradientRamp = QgsGradientColorRamp::create( props );
+  }
 
   //create a new shapeburst fill layer with desired properties
   QgsShapeburstFillSymbolLayer* sl = new QgsShapeburstFillSymbolLayer( color, color2, colorType, blurRadius, useWholeShape, maxDistance );
