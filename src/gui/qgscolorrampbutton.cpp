@@ -278,7 +278,7 @@ void QgsColorRampButton::prepareMenu()
   {
     QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
-    if ( !mShowGradientOnly || ramp->type() == QLatin1String( "gradient" ) )
+    if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
     {
       QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), QSize( 16, 16 ) );
       QAction* ra = new QAction( *it, this );
@@ -298,7 +298,7 @@ void QgsColorRampButton::prepareMenu()
   {
     QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
-    if ( !mShowGradientOnly || ramp->type() == QLatin1String( "gradient" ) )
+    if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
     {
       QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), QSize( 16, 16 ) );
       QAction* ra = new QAction( *it, this );

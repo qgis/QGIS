@@ -176,7 +176,14 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
 
   //attempt to create color ramp from props
   delete mRamp;
-  mRamp = QgsGradientColorRamp::create( props );
+  if ( props.contains( QStringLiteral( "gradientType" ) ) && props[QStringLiteral( "gradientType" )] == QStringLiteral( "cpt-city" ) )
+  {
+    mRamp = QgsCptCityColorRamp::create( props );
+  }
+  else
+  {
+    mRamp = QgsGradientColorRamp::create( props );
+  }
 }
 
 void QgsGlowEffect::setRamp( QgsColorRamp *ramp )
