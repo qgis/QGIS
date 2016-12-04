@@ -46,12 +46,6 @@ email                : morb at ozemail dot com dot au
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 
-#ifndef Q_WS_WIN
-#include <netinet/in.h>
-#else
-#include <winsock.h>
-#endif
-
 struct QgsGeometryPrivate
 {
   QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
