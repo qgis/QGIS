@@ -24,7 +24,7 @@ class QgsRelationReferenceFieldKit : QgsFieldKit
 
     QString id() const;
 
-    virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 
-    virtual QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QVariantMap&config, const QVariant& cache, const QVariant& value ) const override;
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap&config, const QVariant& cache, const QVariant& value ) const override;
 };

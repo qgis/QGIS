@@ -43,11 +43,11 @@ class CORE_EXPORT QgsValueRelationFieldKit : public QgsFieldKit
     QgsValueRelationFieldKit();
 
     QString id() const override;
-    QString representValue( QgsVectorLayer *layer, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+    QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
-    QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+    QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
-    QVariant createCache( QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config ) const override;
+    QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
 
     static ValueRelationCache createCache( const QVariantMap& config );
 };

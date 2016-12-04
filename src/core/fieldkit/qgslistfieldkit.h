@@ -25,7 +25,7 @@ class CORE_EXPORT QgsListFieldKit : public QgsFieldKit
 
     QString id() const override;
 
-    QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
 
 #endif // QGSLISTFIELDKIT_H

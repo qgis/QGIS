@@ -32,7 +32,7 @@ QString QgsRelationReferenceFieldKit::id() const
   return QStringLiteral( "RelationReference" );
 }
 
-QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache );
 
@@ -49,15 +49,15 @@ QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* vl, int fi
     return value.toString();
   }
   QgsVectorLayer* referencingLayer = relation.referencingLayer();
-  if ( vl != referencingLayer )
+  if ( layer != referencingLayer )
   {
-    QgsMessageLog::logMessage( "representValue() with inconsistent vl parameter w.r.t relation referencingLayer" );
+    QgsMessageLog::logMessage( "representValue() with inconsistent layer parameter w.r.t relation referencingLayer" );
     return value.toString();
   }
   int referencingFieldIdx = referencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
-  if ( referencingFieldIdx != fieldIdx )
+  if ( referencingFieldIdx != fieldIndex )
   {
-    QgsMessageLog::logMessage( "representValue() with inconsistent fieldIdx parameter w.r.t relation referencingFieldIdx" );
+    QgsMessageLog::logMessage( "representValue() with inconsistent fieldIndex parameter w.r.t relation referencingFieldIdx" );
     return value.toString();
   }
   QgsVectorLayer* referencedLayer = relation.referencedLayer();
@@ -68,7 +68,7 @@ QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* vl, int fi
   }
 
   // Attributes from the referencing layer
-  QgsAttributes attrs = QgsAttributes( vl->fields().count() );
+  QgsAttributes attrs = QgsAttributes( layer->fields().count() );
   // Set the value on the foreign key field of the referencing record
   attrs[ referencingFieldIdx ] = value;
 
@@ -93,7 +93,7 @@ QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* vl, int fi
   return title;
 }
 
-QVariant QgsRelationReferenceFieldKit::sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsRelationReferenceFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
-  return representValue( vl, fieldIdx, config, cache, value );
+  return representValue( layer, fieldIndex, config, cache, value );
 }

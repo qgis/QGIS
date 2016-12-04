@@ -24,5 +24,5 @@ class QgsListFieldKit : QgsFieldKit
 
     QString id() const;
 
-    QString representValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 };
