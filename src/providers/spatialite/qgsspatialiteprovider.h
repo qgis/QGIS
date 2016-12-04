@@ -472,6 +472,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
 
+    /**
+     * Handles an error encountered while executing an sql statement.
+     */
+    void handleError( const QString& sql, char* errorMessage, bool rollback = false );
+
     friend class QgsSpatiaLiteFeatureSource;
 
 };
