@@ -61,6 +61,8 @@
 %Include qgsfield.sip
 %Include qgsfieldconstraints.sip
 %Include qgsfields.sip
+%Include qgsfieldkitregistry.sip
+%Include qgsfieldkit.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
@@ -241,6 +243,14 @@
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsqtlocationconnection.sip
+
+%Include fieldkit/qgsdatetimefieldkit.sip
+%Include fieldkit/qgsfallbackfieldkit.sip
+%Include fieldkit/qgskeyvaluefieldkit.sip
+%Include fieldkit/qgslistfieldkit.sip
+%Include fieldkit/qgsrelationreferencefieldkit.sip
+%Include fieldkit/qgsvaluemapfieldkit.sip
+%Include fieldkit/qgsvaluerelationfieldkit.sip
 
 %Include layertree/qgslayertree.sip
 %Include layertree/qgslayertreegroup.sip
