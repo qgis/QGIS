@@ -161,11 +161,22 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(s[3].offset, 0.8)
         self.assertEqual(s[3].color, QColor(50, 20, 10))
 
-        # test invert function
+        # test continous invert function
         r.invert()
         self.assertEqual(r.color(0), QColor(0, 200, 0))
         self.assertEqual(r.color(1), QColor(200, 0, 0))
         self.assertEqual(r.color(0.2), QColor(50, 20, 10))
+
+        # test discrete invert function
+        r = QgsGradientColorRamp(QColor(255, 255, 255), QColor(0, 0, 0), True, [QgsGradientStop(0.33, QColor(128, 128, 128)),
+                                                                                QgsGradientStop(0.66, QColor(0, 0, 0))])
+        self.assertEqual(r.color(0.2), QColor(255, 255, 255))
+        self.assertEqual(r.color(0.5), QColor(128, 128, 128))
+        self.assertEqual(r.color(0.8), QColor(0, 0, 0))
+        r.invert()
+        self.assertEqual(r.color(0.2), QColor(0, 0, 0))
+        self.assertEqual(r.color(0.5), QColor(128, 128, 128))
+        self.assertEqual(r.color(0.8), QColor(255, 255, 255))
 
     def testQgsLimitedRandomColorRampV2(self):
         # test random color ramp

@@ -162,14 +162,27 @@ QColor QgsGradientColorRamp::color( double value ) const
 
 void QgsGradientColorRamp::invert()
 {
-  QColor tmpColor = mColor1;
-  mColor1 = mColor2;
-  mColor2 = tmpColor;
-
   QgsGradientStopsList newStops;
-  for ( int k = mStops.size() - 1; k >= 0; k-- )
+
+  if ( mDiscrete )
   {
-    newStops << QgsGradientStop( 1 - mStops.at( k ).offset, mStops.at( k ).color );
+    mColor2 = mColor1;
+    mColor1 = mStops.at( mStops.size() - 1 ).color;
+    for ( int k = mStops.size() - 1; k >= 1; k-- )
+    {
+      newStops << QgsGradientStop( 1 - mStops.at( k ).offset, mStops.at( k - 1 ).color );
+    }
+    newStops << QgsGradientStop( 1 - mStops.at( 0 ).offset, mColor2 );
+  }
+  else
+  {
+    QColor tmpColor = mColor2;
+    mColor2 = mColor1;
+    mColor1 = tmpColor;
+    for ( int k = mStops.size() - 1; k >= 0; k-- )
+    {
+      newStops << QgsGradientStop( 1 - mStops.at( k ).offset, mStops.at( k ).color );
+    }
   }
   mStops = newStops;
 }
