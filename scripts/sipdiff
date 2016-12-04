@@ -1,10 +1,29 @@
 #!/bin/bash
 
 for file in $*; do
-	d=${file#*/}
-	d=${d%/*}
-	f=${file##*/}
-	f=${f%.*}
+  d=${file#*/}
+  d=${d%/*}
+  f=${file##*/}
+  f=${f%.*}
 
-	vimdiff src/$d/$f.h python/$d/$f.sip
+  tempfile=$(mktemp ${f}XXXX --suffix=.h)
+
+  # Remove comments
+  sed 's/a/aA/g;s/__/aB/g;s/#/aC/g' "src/$d/$f.h" | gcc -P -E $arg - | sed 's/aC/#/g;s/aB/__/g;s/aA/a/g' > $tempfile
+
+  # Remove override keyword
+  sed -i 's/ override;/;/g' $tempfile
+
+  # Remove preprocessor directives
+  sed -i '/^#/d' $tempfile
+
+  # Remove CORE_EXPORT etc
+  sed -i 's/ [A-Z]*_EXPORT//g' $tempfile
+
+  # Remove public keyword from inherited classes
+  sed -i 's/\(class.*:\) public\(.*\)/\1\2/g' $tempfile
+
+  vimdiff $tempfile python/$d/$f.sip
+
+  rm $tempfile
 done
