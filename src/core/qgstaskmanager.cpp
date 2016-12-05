@@ -34,15 +34,11 @@ QgsTask::QgsTask( const QString &name, const Flags& flags )
     , mTotalProgress( 0.0 )
     , mShouldTerminate( false )
     , mStartCount( 0 )
-{
-  setAutoDelete( false );
-}
+{}
 
 QgsTask::~QgsTask()
 {
   Q_ASSERT_X( mStatus != Running, "delete", QString( "status was %1" ).arg( mStatus ).toLatin1() );
-
-  QThreadPool::globalInstance()->cancel( this );
 
   Q_FOREACH ( const SubTask& subTask, mSubTasks )
   {
@@ -50,7 +46,7 @@ QgsTask::~QgsTask()
   }
 }
 
-void QgsTask::run()
+void QgsTask::start()
 {
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
@@ -66,7 +62,7 @@ void QgsTask::run()
   // force initial emission of progressChanged, but respect if task has had initial progress manually set
   setProgress( mProgress );
 
-  TaskResult result = _run();
+  TaskResult result = run();
   switch ( result )
   {
     case ResultSuccess:
@@ -94,7 +90,6 @@ void QgsTask::cancel()
 
 #if QT_VERSION >= 0x050500
   //can't cancel queued tasks with qt < 5.5
-  QThreadPool::globalInstance()->cancel( this );
   if ( mStatus == Queued || mStatus == OnHold )
   {
     // immediately terminate unstarted jobs
@@ -294,6 +289,35 @@ void QgsTask::terminated()
   mStatus = Terminated;
   processSubTasksForTermination();
 }
+
+
+///@cond PRIVATE
+
+class QgsTaskRunnableWrapper : public QRunnable
+{
+  public:
+
+    QgsTaskRunnableWrapper( QgsTask* task )
+        : QRunnable()
+        , mTask( task )
+    {
+      setAutoDelete( true );
+    }
+
+    void run() override
+    {
+      Q_ASSERT( mTask );
+      mTask->start();
+    }
+
+  private:
+
+    QgsTask* mTask;
+
+};
+
+///@endcond
+
 
 
 //
@@ -594,6 +618,11 @@ void QgsTaskManager::taskStatusChanged( int status )
   if ( id < 0 )
     return;
 
+#if QT_VERSION >= 0x050500
+  QgsTaskRunnableWrapper* runnable = mTasks.value( id ).runnable;
+  QThreadPool::globalInstance()->cancel( runnable );
+#endif
+
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
   {
     QgsTask::TaskResult result = status == QgsTask::Complete ? QgsTask::ResultSuccess
@@ -665,6 +694,8 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   if ( id < 0 )
     return false;
 
+  QgsTaskRunnableWrapper* runnable = mTasks.value( id ).runnable;
+
   task->disconnect( this );
 
   mDependenciesMutex->lockForWrite();
@@ -707,7 +738,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   else
   {
 #if QT_VERSION >= 0x050500
-    QThreadPool::globalInstance()->cancel( task );
+    QThreadPool::globalInstance()->cancel( runnable );
 #endif
     if ( isParent )
     {
@@ -741,7 +772,7 @@ void QgsTaskManager::processQueue()
     QgsTask* task = it.value().task;
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisified( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
-      QThreadPool::globalInstance()->start( task, it.value().priority );
+      QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
     }
 
     if ( task && ( task->mStatus != QgsTask::Complete && task->mStatus != QgsTask::Terminated ) )
@@ -792,3 +823,10 @@ void QgsTaskManager::cancelDependentTasks( long taskId )
     }
   }
 }
+
+QgsTaskManager::TaskInfo::TaskInfo( QgsTask* task, int priority )
+    : task( task )
+    , added( 0 )
+    , priority( priority )
+    , runnable( new QgsTaskRunnableWrapper( task ) )
+{}

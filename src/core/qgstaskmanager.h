@@ -24,6 +24,7 @@
 #include <QReadWriteLock>
 
 class QgsTask;
+class QgsTaskRunnableWrapper;
 
 //! List of QgsTask objects
 typedef QList< QgsTask* > QgsTaskList;
@@ -35,7 +36,7 @@ typedef QList< QgsTask* > QgsTaskList;
  * or added to a QgsTaskManager for automatic management.
  *
  * Derived classes should implement the process they want to execute in the background
- * within the _run() method. This method will be called when the
+ * within the run() method. This method will be called when the
  * task commences (ie via calling run() ).
  *
  * Long running tasks should periodically check the isCancelled() flag to detect if the task
@@ -44,7 +45,7 @@ typedef QList< QgsTask* > QgsTaskList;
  *
  * \note Added in version 3.0
  */
-class CORE_EXPORT QgsTask : public QObject, public QRunnable
+class CORE_EXPORT QgsTask : public QObject
 {
     Q_OBJECT
 
@@ -122,7 +123,7 @@ class CORE_EXPORT QgsTask : public QObject, public QRunnable
      * then this method should not be called directly, instead it is left to the
      * task manager to start the task when appropriate.
      */
-    void run() override;
+    void start();
 
     /**
      * Notifies the task that it should terminate. Calling this is not guaranteed
@@ -242,7 +243,7 @@ class CORE_EXPORT QgsTask : public QObject, public QRunnable
      * @see completed()
      * @see terminated()
      */
-    virtual TaskResult _run() = 0;
+    virtual TaskResult run() = 0;
 
     /**
      * If the task is managed by a QgsTaskManager, this will be called after the
@@ -333,7 +334,6 @@ class CORE_EXPORT QgsTask : public QObject, public QRunnable
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
-
 
 /** \ingroup core
  * \class QgsTaskManager
@@ -496,14 +496,11 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     struct TaskInfo
     {
-      TaskInfo( QgsTask* task = nullptr, int priority = 0 )
-          : task( task )
-          , added( 0 )
-          , priority( priority )
-      {}
+      TaskInfo( QgsTask* task = nullptr, int priority = 0 );
       QgsTask* task;
       QAtomicInt added;
       int priority;
+      QgsTaskRunnableWrapper* runnable;
     };
 
     mutable QReadWriteLock* mTaskMutex;

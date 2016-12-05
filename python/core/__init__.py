@@ -208,7 +208,7 @@ class QgsTaskWrapper(QgsTask):
         self.returned_values = None
         self.exception = None
 
-    def _run(self):
+    def run(self):
         try:
             self.returned_values = self.function(self, *self.args, **self.kwargs)
         except Exception as ex:

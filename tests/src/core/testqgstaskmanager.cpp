@@ -40,7 +40,7 @@ class TestTask : public QgsTask
 
   protected:
 
-    TaskResult _run() override
+    TaskResult run() override
     {
       runCalled = true;
       return ResultPending;
@@ -62,7 +62,7 @@ class TestTerminationTask : public TestTask
 
   protected:
 
-    TaskResult _run() override
+    TaskResult run() override
     {
       while ( !isCancelled() )
         {}
@@ -85,7 +85,7 @@ class CancelableTask : public QgsTask
 
   protected:
 
-    TaskResult _run() override
+    TaskResult run() override
     {
       while ( !isCancelled() )
         {}
@@ -99,7 +99,7 @@ class SuccessTask : public QgsTask
 
   protected:
 
-    TaskResult _run() override
+    TaskResult run() override
     {
       return ResultSuccess;
     }
@@ -111,7 +111,7 @@ class FailTask : public QgsTask
 
   protected:
 
-    TaskResult _run() override
+    TaskResult run() override
     {
       return ResultFail;
     }
@@ -134,7 +134,7 @@ class FinishTask : public QgsTask
 
   protected:
 
-    TaskResult _run() override
+    TaskResult run() override
     {
       return desiredResult;
     }
@@ -218,7 +218,7 @@ void TestQgsTaskManager::task()
   QSignalSpy startedSpy( task.data(), &QgsTask::begun );
   QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
 
-  task->run();
+  task->start();
   QCOMPARE( task->status(), QgsTask::Running );
   QVERIFY( task->isActive() );
   QVERIFY( task->runCalled );
@@ -270,7 +270,7 @@ void TestQgsTaskManager::taskResult()
   QCOMPARE( task->status(), QgsTask::Queued );
   QSignalSpy statusSpy( task.data(), &QgsTask::statusChanged );
 
-  task->run();
+  task->start();
   QCOMPARE( statusSpy.count(), 2 );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
@@ -280,7 +280,7 @@ void TestQgsTaskManager::taskResult()
   QCOMPARE( task->status(), QgsTask::Queued );
   QSignalSpy statusSpy2( task.data(), &QgsTask::statusChanged );
 
-  task->run();
+  task->start();
   QCOMPARE( statusSpy2.count(), 2 );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 1 ).at( 0 ).toInt() ), QgsTask::Terminated );
