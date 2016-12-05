@@ -461,6 +461,8 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                                                            [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
         elif self.param.datatype == dataobjects.TYPE_RASTER:
             options = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+        elif self.param.datatype == dataobjects.TYPE_TABLE:
+            options = self.dialog.getAvailableValuesOfType(ParameterTable, OutputTable)
         else:
             options = self.dialog.getAvailableValuesOfType(ParameterFile, OutputFile)
         options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))
@@ -475,6 +477,8 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                     options = dataobjects.getRasterLayers(sorting=False)
                 elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
+                elif self.param.datatype == dataobjects.TYPE_TABLE:
+                    options = dataobjects.getTables(sorting=False)
                 else:
                     options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
                 opts = [getExtendedLayerName(opt) for opt in options]
@@ -493,6 +497,8 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 options = dataobjects.getRasterLayers(sorting=False)
             elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
                 options = dataobjects.getVectorLayers(sorting=False)
+            elif self.param.datatype == dataobjects.TYPE_TABLE:
+                options = dataobjects.getTables(sorting=False)
             else:
                 options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
             opts = [self.getExtendedLayerName(opt) for opt in options]
@@ -520,6 +526,8 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                     options = dataobjects.getRasterLayers(sorting=False)
                 elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
+                elif self.param.datatype == dataobjects.TYPE_TABLE:
+                    options = dataobjects.getTables(sorting=False)
                 else:
                     options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
                 return [options[i] for i in self.widget.selectedoptions]

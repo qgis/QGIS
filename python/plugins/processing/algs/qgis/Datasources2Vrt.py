@@ -32,6 +32,7 @@ import xml.sax.saxutils
 
 from osgeo import ogr
 
+from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
@@ -52,7 +53,8 @@ class Datasources2Vrt(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
-                                                 self.tr('Input datasources')))
+                                                 self.tr('Input datasources'),
+                                                 dataobjects.TYPE_TABLE))
         self.addParameter(ParameterBoolean(self.UNIONED,
                                            self.tr('Create "unioned" VRT'),
                                            default=False))
@@ -66,7 +68,6 @@ class Datasources2Vrt(GeoAlgorithm):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)
-        vrtString = self.getOutputValue(self.VRT_STRING)
 
         layers = input_layers.split(';')
 
