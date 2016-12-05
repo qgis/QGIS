@@ -19,7 +19,16 @@ import sys
 import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry, QgsField, QgsFieldConstraints, QgsVectorLayerUtils
+from qgis.core import (QgsVectorLayer,
+                       QgsVectorDataProvider,
+                       QgsPoint,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsProject,
+                       QgsMapLayerRegistry,
+                       QgsField,
+                       QgsFieldConstraints,
+                       QgsVectorLayerUtils)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -482,6 +491,41 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         vl.setDefaultValueExpression(3, "4*3")
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
         self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 12, None])
+
+    def testCreateAttributeIndex(self):
+        vl = QgsVectorLayer("dbname=%s table='test_defaults' key='id'" % self.dbname, "test_defaults", "spatialite")
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
+        self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
+        self.assertFalse(vl.dataProvider().createAttributeIndex(100))
+        self.assertTrue(vl.dataProvider().createAttributeIndex(1))
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        rs = cur.execute("SELECT * FROM sqlite_master WHERE type='index' AND tbl_name='test_defaults'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        index_name = res[0][1]
+        rs = cur.execute("PRAGMA index_info({})".format(index_name))
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0][2], 'name')
+
+        # second index
+        self.assertTrue(vl.dataProvider().createAttributeIndex(2))
+        rs = cur.execute("SELECT * FROM sqlite_master WHERE type='index' AND tbl_name='test_defaults'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 2)
+        indexed_columns = []
+        for row in res:
+            index_name = row[1]
+            rs = cur.execute("PRAGMA index_info({})".format(index_name))
+            res = [row for row in rs]
+            self.assertEqual(len(res), 1)
+            indexed_columns.append(res[0][2])
+
+        self.assertEqual(set(indexed_columns), set(['name', 'number']))
+        con.close()
+
 
 if __name__ == '__main__':
     unittest.main()

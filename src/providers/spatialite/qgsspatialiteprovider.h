@@ -170,6 +170,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QVariant defaultValue( int fieldId ) const override;
 
+    bool createAttributeIndex( int field ) override;
+
     /** The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
@@ -469,6 +471,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       GEOS_3D_MULTIPOLYGON       = -2147483642,
       GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
+
+    /**
+     * Handles an error encountered while executing an sql statement.
+     */
+    void handleError( const QString& sql, char* errorMessage, bool rollback = false );
 
     friend class QgsSpatiaLiteFeatureSource;
 
