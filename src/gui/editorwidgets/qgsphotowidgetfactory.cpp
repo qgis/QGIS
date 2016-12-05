@@ -33,26 +33,3 @@ QgsEditorConfigWidget* QgsPhotoWidgetFactory::configWidget( QgsVectorLayer* vl, 
 {
   return new QgsPhotoConfigDlg( vl, fieldIdx, parent );
 }
-
-QVariantMap QgsPhotoWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QVariantMap cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "Height" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Width" ) );
-
-  return cfg;
-}
-
-void QgsPhotoWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  config2xml( config, configElement, QStringLiteral( "Height" ) );
-  config2xml( config, configElement, QStringLiteral( "Width" ) );
-}

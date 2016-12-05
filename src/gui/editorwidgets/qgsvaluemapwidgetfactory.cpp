@@ -44,44 +44,6 @@ QgsEditorConfigWidget* QgsValueMapWidgetFactory::configWidget( QgsVectorLayer* v
   return new QgsValueMapConfigDlg( vl, fieldIdx, parent );
 }
 
-QVariantMap QgsValueMapWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QVariantMap cfg;
-
-  QDomNodeList nodes = configElement.elementsByTagName( QStringLiteral( "value" ) );
-
-  for ( int i = 0; i < nodes.size(); ++i )
-  {
-    QDomElement elem = nodes.at( i ).toElement();
-    cfg.insert( elem.attribute( QStringLiteral( "key" ) ), elem.attribute( QStringLiteral( "value" ) ) );
-  }
-
-  return cfg;
-}
-
-void QgsValueMapWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QVariantMap::ConstIterator it = config.constBegin();
-
-  while ( it != config.constEnd() )
-  {
-    QDomElement elem = doc.createElement( QStringLiteral( "value" ) );
-
-    elem.setAttribute( QStringLiteral( "key" ), it.key() );
-    elem.setAttribute( QStringLiteral( "value" ), it.value().toString() );
-
-    configElement.appendChild( elem );
-
-    ++it;
-  }
-}
-
 QHash<const char*, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
 {
   QHash<const char*, int> map = QHash<const char*, int>();

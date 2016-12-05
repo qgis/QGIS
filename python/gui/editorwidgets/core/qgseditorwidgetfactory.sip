@@ -68,28 +68,6 @@ class QgsEditorWidgetFactory
     virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0 /Factory/;
 
     /**
-     * Read the config from an XML file and map it to a proper {@link QVariantMap}.
-     *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     *
-     * @return A configuration object. This will be passed to your widget wrapper later on
-     */
-    QVariantMap readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
-
-    /**
-     * Serialize your configuration and save it in a xml doc.
-     *
-     * @param config        The configuration to serialize
-     * @param configElement The element, where you can write your configuration into
-     * @param doc           The document. You can use this to create new nodes
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     */
-    virtual void writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
-
-    /**
      * Check if this editor widget type supports a certain field.
      *
      * @param vl        The layer
@@ -111,17 +89,6 @@ class QgsEditorWidgetFactory
     //virtual QHash<const char*, int> supportedWidgetTypes();
 
     /**
-     * Read the config from an XML file and map it to a proper {@link QVariantMap}.
-     *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     *
-     * @return A configuration object. This will be passed to your widget wrapper later on
-     */
-    virtual QVariantMap readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
-
-    /**
      * This method allows disabling this editor widget type for a certain field.
      * By default, it returns 5 for every fields.
      * Reimplement this if you only support certain fields.
@@ -140,16 +107,4 @@ class QgsEditorWidgetFactory
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
     virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const;
-
-  protected:
-
-    /**
-     * Copy the given config element to a XML attribute.
-     */
-    static void config2xml( const QVariantMap& config, QDomElement& configElement, const QString& fieldName );
-
-    /**
-     * Copy the given XML attribute to the configuration element.
-     */
-    static void xml2config( const QDomElement& configElement, QVariantMap& config, const QString& fieldName );
 };

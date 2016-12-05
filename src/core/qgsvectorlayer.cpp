@@ -1977,9 +1977,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 {
   ( void )writeStyle( node, doc, errorMessage );
 
-  QgsFields dataProviderFields = mDataProvider->fields();
-
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
+  node.appendChild( fieldConfigurationElement );
 
   int index = 0;
   Q_FOREACH ( const QgsField& field, mFields )

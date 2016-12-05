@@ -34,52 +34,6 @@ QgsEditorConfigWidget* QgsExternalResourceWidgetFactory::configWidget( QgsVector
   return new QgsExternalResourceConfigDlg( vl, fieldIdx, parent );
 }
 
-void QgsExternalResourceWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  config2xml( config, configElement, QStringLiteral( "FileWidget" ) );
-  config2xml( config, configElement, QStringLiteral( "FileWidgetButton" ) );
-  config2xml( config, configElement, QStringLiteral( "UseLink" ) );
-  config2xml( config, configElement, QStringLiteral( "FullUrl" ) );
-  config2xml( config, configElement, QStringLiteral( "DefaultRoot" ) );
-  config2xml( config, configElement, QStringLiteral( "RelativeStorage" ) );
-  config2xml( config, configElement, QStringLiteral( "DocumentViewer" ) );
-  config2xml( config, configElement, QStringLiteral( "DocumentViewerWidth" ) );
-  config2xml( config, configElement, QStringLiteral( "DocumentViewerHeight" ) );
-  config2xml( config, configElement, QStringLiteral( "FileWidgetFilter" ) );
-  config2xml( config, configElement, QStringLiteral( "StorageMode" ) );
-}
-
-QVariantMap QgsExternalResourceWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QVariantMap cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "FileWidget" ) );
-  xml2config( configElement, cfg, QStringLiteral( "FileWidgetButton" ) );
-  xml2config( configElement, cfg, QStringLiteral( "UseLink" ) );
-  xml2config( configElement, cfg, QStringLiteral( "FullUrl" ) );
-  xml2config( configElement, cfg, QStringLiteral( "DefaultRoot" ) );
-  if ( configElement.hasAttribute( QStringLiteral( "RelativeStorage" ) ) )
-  {
-    if (( configElement.attribute( QStringLiteral( "RelativeStorage" ) ).toInt() == QgsFileWidget::RelativeDefaultPath && configElement.hasAttribute( QStringLiteral( "DefaultRoot" ) ) ) ||
-        configElement.attribute( QStringLiteral( "RelativeStorage" ) ).toInt() == QgsFileWidget::RelativeProject )
-      xml2config( configElement, cfg, QStringLiteral( "RelativeStorage" ) );
-  }
-  xml2config( configElement, cfg, QStringLiteral( "DocumentViewer" ) );
-  xml2config( configElement, cfg, QStringLiteral( "DocumentViewerWidth" ) );
-  xml2config( configElement, cfg, QStringLiteral( "DocumentViewerHeight" ) );
-  xml2config( configElement, cfg, QStringLiteral( "FileWidgetFilter" ) );
-  xml2config( configElement, cfg, QStringLiteral( "StorageMode" ) );
-
-  return cfg;
-}
-
 unsigned int QgsExternalResourceWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   if ( vl->fields().at( fieldIdx ).type() == QVariant::String )

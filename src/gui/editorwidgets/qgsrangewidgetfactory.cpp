@@ -34,36 +34,6 @@ QgsEditorConfigWidget* QgsRangeWidgetFactory::configWidget( QgsVectorLayer* vl, 
   return new QgsRangeConfigDlg( vl, fieldIdx, parent );
 }
 
-QVariantMap QgsRangeWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-  QVariantMap cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "Style" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Min" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Max" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Step" ) );
-  xml2config( configElement, cfg, QStringLiteral( "AllowNull" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Suffix" ) );
-
-  return cfg;
-}
-
-void QgsRangeWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-
-  config2xml( config, configElement, QStringLiteral( "Style" ) );
-  config2xml( config, configElement, QStringLiteral( "Min" ) );
-  config2xml( config, configElement, QStringLiteral( "Max" ) );
-  config2xml( config, configElement, QStringLiteral( "Step" ) );
-  config2xml( config, configElement, QStringLiteral( "AllowNull" ) );
-  config2xml( config, configElement, QStringLiteral( "Suffix" ) );
-}
-
 unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().at( fieldIdx );
