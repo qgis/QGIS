@@ -351,7 +351,7 @@ long QgsTaskManager::addTask( QgsTask* task, int priority )
 long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition& definition, int priority )
 {
   return addTaskPrivate( definition.task,
-                         definition.dependencies,
+                         definition.dependentTasks,
                          false,
                          priority );
 }

@@ -250,18 +250,17 @@ class QgsTaskManager : QObject
       /**
        * Constructor for TaskDefinition. Ownership of the task is transferred to the definition.
        */
-      explicit TaskDefinition( QgsTask* task, QgsTaskList dependencies = QgsTaskList() );
+      explicit TaskDefinition( QgsTask* task, QgsTaskList dependentTasks = QgsTaskList() );
 
       //! Task
       QgsTask* task;
 
       /**
-       * List of dependencies which must be completed before task can run.
-       * These tasks must be completed before task can run. If any dependent tasks are
+       * List of dependencies which must be completed before task can run. If any dependent tasks are
        * cancelled this task will also be cancelled. Dependent tasks must also be added
        * to the task manager for proper handling of dependencies.
        */
-      QgsTaskList dependencies;
+      QgsTaskList dependentTasks;
     };
 
     /** Adds a task to the manager. Ownership of the task is transferred

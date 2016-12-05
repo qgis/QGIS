@@ -334,29 +334,30 @@ class CORE_EXPORT QgsTaskManager : public QObject
     {
 
       /**
-       * Constructor for TaskDefinition.
+       * Constructor for TaskDefinition. Ownership of the task is not transferred to the definition,
+       * but will be transferred to a QgsTaskManager.
        */
-      explicit TaskDefinition( QgsTask* task, QgsTaskList dependencies = QgsTaskList() )
+      explicit TaskDefinition( QgsTask* task, QgsTaskList dependentTasks = QgsTaskList() )
           : task( task )
-          , dependencies( dependencies )
+          , dependentTasks( dependentTasks )
       {}
 
       //! Task
       QgsTask* task;
 
       /**
-       * List of dependencies which must be completed before task can run.
-       * These tasks must be completed before task can run. If any dependent tasks are
+       * List of dependent tasks which must be completed before task can run. If any dependent tasks are
        * cancelled this task will also be cancelled. Dependent tasks must also be added
        * to the task manager for proper handling of dependencies.
        */
-      QgsTaskList dependencies;
+      QgsTaskList dependentTasks;
     };
 
     /** Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
      * the task. The priority argument can be used to control the run queue's
-     * order of execution.
+     * order of execution, with larger numbers
+     * taking precedence over lower priority numbers.
      * @returns unique task ID
      */
     long addTask( QgsTask* task, int priority = 0 );
@@ -365,7 +366,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * Adds a task to the manager, using a full task definition (including dependancy
      * handling). Ownership of the task is transferred to the manager, and the task
      * manager will be responsible for starting the task. The priority argument can
-     * be used to control the run queue's order of execution.
+     * be used to control the run queue's order of execution, with larger numbers
+     * taking precedence over lower priority numbers.
      * @returns unique task ID
      */
     long addTask( const TaskDefinition& task, int priority = 0 );
@@ -389,7 +391,11 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     long taskId( QgsTask* task ) const;
 
-    //! Instructs all tasks tracked by the manager to terminate.
+    /**
+     * Instructs all tasks tracked by the manager to terminate. Individual tasks may take some time
+     * to cancel, or may totally ignore this instruction. Calling this does not block
+     * but will instead signal the tasks to cancel and then return immediately.
+     */
     void cancelAll();
 
     //! Returns true if all dependencies for the specified task are satisfied
