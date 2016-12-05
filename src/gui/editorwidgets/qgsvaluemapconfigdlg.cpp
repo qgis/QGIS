@@ -39,7 +39,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
 
 QVariantMap QgsValueMapConfigDlg::config()
 {
-  QVariantMap cfg;
+  QVariantMap values;
   QSettings settings;
 
   //store data to map
@@ -57,14 +57,16 @@ QVariantMap QgsValueMapConfigDlg::config()
 
     if ( !vi || vi->text().isNull() )
     {
-      cfg.insert( ks, ks );
+      values.insert( ks, ks );
     }
     else
     {
-      cfg.insert( vi->text(), ks );
+      values.insert( vi->text(), ks );
     }
   }
 
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "map" ), values );
   return cfg;
 }
 
@@ -77,7 +79,8 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap& config )
   }
 
   int row = 0;
-  for ( QVariantMap::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
+  QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+  for ( QVariantMap::ConstIterator mit = values.begin(); mit != values.end(); mit++, row++ )
   {
     if ( mit.value().isNull() )
       setRow( row, mit.key(), QString() );
