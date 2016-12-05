@@ -540,15 +540,34 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 {
   public:
+
+    /** Constructor for QgsCptCityColorRamp
+     * @param schemeName cpt-city scheme name
+     * @param variantName cpt-city variant name
+     * @param inverted invert ramp ordering
+     * @param doLoadFile load cpt-city ramp from file
+     */
     QgsCptCityColorRamp( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
                          const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
+                         bool inverted = false,
                          bool doLoadFile = true );
+
+    /** Constructor for QgsCptCityColorRamp
+     * @param schemeName cpt-city scheme name
+     * @param variantList cpt-city variant list
+     * @param variantName cpt-city variant name
+     * @param inverted invert ramp ordering
+     * @param doLoadFile load cpt-city ramp from file
+     */
     QgsCptCityColorRamp( const QString& schemeName, const QStringList& variantList,
-                         const QString& variantName = QString(), bool doLoadFile = true );
+                         const QString& variantName = QString(), bool inverted = false,
+                         bool doLoadFile = true );
 
     static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
 
     virtual QString type() const override { return QStringLiteral( "cpt-city" ); }
+
+    virtual void invert() override;
 
     virtual QgsCptCityColorRamp* clone() const override;
     void copy( const QgsCptCityColorRamp* other );
@@ -585,6 +604,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     QStringList mVariantList;
     bool mFileLoaded;
     bool mMultiStops;
+    bool mInverted;
 };
 
 
