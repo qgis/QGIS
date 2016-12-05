@@ -493,24 +493,24 @@ void QgsGeorefPluginGui::linkGeorefToQGis( bool link )
 
 // GCPs slots
 void QgsGeorefPluginGui::addPoint( const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
-                                   bool enable, bool refreshCanvas/*, bool verbose*/ )
+                                   bool enable, bool finalize )
 {
   QgsGeorefDataPoint* pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(),
       pixelCoords, mapCoords, enable );
   mPoints.append( pnt );
   mGCPsDirty = true;
-  mGCPListWidget->setGCPList( &mPoints );
-  if ( refreshCanvas )
+  if ( finalize )
   {
+    mGCPListWidget->setGCPList( &mPoints );
     mCanvas->refresh();
     mIface->mapCanvas()->refresh();
   }
 
-  connect( mCanvas, SIGNAL( extentsChanged() ), pnt, SLOT( updateCoords() ) );
-  updateGeorefTransform();
-
-  //  if (verbose)
-  //    logRequaredGCPs();
+  connect( mCanvas, &QgsMapCanvas::extentsChanged, pnt, &QgsGeorefDataPoint::updateCoords );
+  if ( finalize )
+  {
+    updateGeorefTransform();
+  }
 }
 
 void QgsGeorefPluginGui::deleteDataPoint( QPoint coords )
@@ -588,8 +588,9 @@ void QgsGeorefPluginGui::showCoordDialog( const QgsPoint &pixelCoords )
   if ( mLayer && !mMapCoordsDialog )
   {
     mMapCoordsDialog = new QgsMapCoordsDialog( mIface->mapCanvas(), pixelCoords, this );
-    connect( mMapCoordsDialog, SIGNAL( pointAdded( const QgsPoint &, const QgsPoint & ) ),
-             this, SLOT( addPoint( const QgsPoint &, const QgsPoint & ) ) );
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded,
+    [this]( const QgsPoint &a, const QgsPoint & b ) { this->addPoint( a, b ); }
+           );
     mMapCoordsDialog->show();
   }
 }
@@ -1258,18 +1259,13 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
 
     QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-    QgsGeorefDataPoint* pnt;
     if ( ls.count() == 5 )
     {
       bool enable = ls.at( 4 ).toInt();
-      pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(), pixelCoords, mapCoords, enable );
+      addPoint( pixelCoords, mapCoords, enable, false );
     }
     else
-      pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(), pixelCoords, mapCoords, true );
-
-    mPoints.append( pnt );
-    connect( mCanvas, SIGNAL( extentsChanged() ), pnt, SLOT( updateCoords() ) );
-    mGCPsDirty = true;
+      addPoint( pixelCoords, mapCoords, true, false );
 
     ++i;
   }

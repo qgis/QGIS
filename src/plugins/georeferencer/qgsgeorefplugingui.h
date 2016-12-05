@@ -83,7 +83,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // gcps
     void addPoint( const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
-                   bool enable = true, bool refreshCanvas = true/*, bool verbose = true*/ );
+                   bool enable = true, bool finalize = true );
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPoint &pixelCoords );
