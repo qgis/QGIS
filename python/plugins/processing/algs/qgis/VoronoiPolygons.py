@@ -108,6 +108,10 @@ class VoronoiPolygons(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
+        if len(c.polygons) == 0:
+            raise GeoAlgorithmExecutionException(
+                self.tr('There were no polygons created.'))
+
         total = 100.0 / len(c.polygons)
 
         for (site, edges) in list(c.polygons.items()):
