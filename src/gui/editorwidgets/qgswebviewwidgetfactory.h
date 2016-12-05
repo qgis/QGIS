@@ -27,13 +27,8 @@ class GUI_EXPORT QgsWebViewWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
     explicit QgsWebViewWidgetFactory( const QString& name );
-
-    // QgsEditorWidgetFactory interface
-  public:
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    QVariantMap readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
-    void writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
 };
 
 #endif // QGSWEBVIEWWIDGETFACTORY_H

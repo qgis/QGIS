@@ -40,23 +40,6 @@ QgsEditorConfigWidget* QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Key/Value field" ) );
 }
 
-QVariantMap QgsKeyValueWidgetFactory::readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx )
-{
-  Q_UNUSED( configElement );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-  return QVariantMap();
-}
-
-void QgsKeyValueWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( config );
-  Q_UNUSED( configElement );
-  Q_UNUSED( doc );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-}
-
 unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );

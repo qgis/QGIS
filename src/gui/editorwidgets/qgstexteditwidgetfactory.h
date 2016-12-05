@@ -27,18 +27,11 @@ class GUI_EXPORT QgsTextEditWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
     QgsTextEditWidgetFactory( const QString& name );
-
-    // QgsEditorWidgetFactory interface
-  public:
     QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
 
-    void writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
     unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
-
-  private:
-    QVariantMap readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
 };
 
 #endif // QGSTEXTEDITWIDGETFACTORY_H

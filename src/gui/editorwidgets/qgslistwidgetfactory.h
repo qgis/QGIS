@@ -37,8 +37,6 @@ class GUI_EXPORT QgsListWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorWidgetWrapper* create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     //QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
     QgsEditorConfigWidget* configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
-    QVariantMap readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx ) override;
-    void writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
     unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
 

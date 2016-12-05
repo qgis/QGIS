@@ -32,8 +32,6 @@ class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
   public:
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
     virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    virtual QVariantMap readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
-    virtual void writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
     virtual QHash<const char *, int> supportedWidgetTypes() override;
 
   private:

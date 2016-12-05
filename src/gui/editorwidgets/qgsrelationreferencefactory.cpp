@@ -47,68 +47,6 @@ QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer
   return new QgsRelationReferenceConfigDlg( vl, fieldIdx, parent );
 }
 
-QVariantMap QgsRelationReferenceFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-  QVariantMap cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "AllowNULL" ) );
-  xml2config( configElement, cfg, QStringLiteral( "OrderByValue" ) );
-  xml2config( configElement, cfg, QStringLiteral( "ShowForm" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Relation" ) );
-  xml2config( configElement, cfg, QStringLiteral( "MapIdentification" ) );
-  xml2config( configElement, cfg, QStringLiteral( "ReadOnly" ) );
-  xml2config( configElement, cfg, QStringLiteral( "AllowAddFeatures" ) );
-
-  QDomNode filterNode = configElement.elementsByTagName( QStringLiteral( "FilterFields" ) ).at( 0 );
-  if ( !filterNode.isNull() )
-  {
-    QStringList filterFields;
-    QDomNodeList fieldNodes = filterNode.toElement().elementsByTagName( QStringLiteral( "field" ) );
-    filterFields.reserve( fieldNodes.size() );
-    for ( int i = 0; i < fieldNodes.size(); i++ )
-    {
-      QDomElement fieldElement = fieldNodes.at( i ).toElement();
-      filterFields << fieldElement.attribute( QStringLiteral( "name" ) );
-    }
-    cfg.insert( QStringLiteral( "FilterFields" ), filterFields );
-
-    xml2config( configElement, cfg , QStringLiteral( "ChainFilters" ) );
-  }
-  return cfg;
-}
-
-void QgsRelationReferenceFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-
-  config2xml( config, configElement, QStringLiteral( "AllowNULL" ) );
-  config2xml( config, configElement, QStringLiteral( "OrderByValue" ) );
-  config2xml( config, configElement, QStringLiteral( "ShowForm" ) );
-  config2xml( config, configElement, QStringLiteral( "Relation" ) );
-  config2xml( config, configElement, QStringLiteral( "MapIdentification" ) );
-  config2xml( config, configElement, QStringLiteral( "ReadOnly" ) );
-  config2xml( config, configElement, QStringLiteral( "AllowAddFeatures" ) );
-
-  if ( config.contains( QStringLiteral( "FilterFields" ) ) )
-  {
-    QDomElement filterFields = doc.createElement( QStringLiteral( "FilterFields" ) );
-
-    Q_FOREACH ( const QString& field, config["FilterFields"].toStringList() )
-    {
-      QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
-      fieldElem.setAttribute( QStringLiteral( "name" ), field );
-      filterFields.appendChild( fieldElem );
-    }
-    configElement.appendChild( filterFields );
-
-    config2xml( config, configElement, QStringLiteral( "ChainFilters" ) );
-  }
-}
-
 QHash<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
 {
   QHash<const char*, int> map = QHash<const char*, int>();

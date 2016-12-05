@@ -43,38 +43,3 @@ QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLay
 {
   return new QgsValueRelationConfigDlg( vl, fieldIdx, parent );
 }
-
-QVariantMap QgsValueRelationWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QVariantMap cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "Layer" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Key" ) );
-  xml2config( configElement, cfg, QStringLiteral( "Value" ) );
-  xml2config( configElement, cfg, QStringLiteral( "FilterExpression" ) );
-  xml2config( configElement, cfg, QStringLiteral( "OrderByValue" ) );
-  xml2config( configElement, cfg, QStringLiteral( "AllowMulti" ) );
-  xml2config( configElement, cfg, QStringLiteral( "AllowNull" ) );
-  xml2config( configElement, cfg, QStringLiteral( "UseCompleter" ) );
-
-  return cfg;
-}
-
-void QgsValueRelationWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  config2xml( config, configElement, QStringLiteral( "Layer" ) );
-  config2xml( config, configElement, QStringLiteral( "Key" ) );
-  config2xml( config, configElement, QStringLiteral( "Value" ) );
-  config2xml( config, configElement, QStringLiteral( "FilterExpression" ) );
-  config2xml( config, configElement, QStringLiteral( "OrderByValue" ) );
-  config2xml( config, configElement, QStringLiteral( "AllowMulti" ) );
-  config2xml( config, configElement, QStringLiteral( "AllowNull" ) );
-  config2xml( config, configElement, QStringLiteral( "UseCompleter" ) );
-}

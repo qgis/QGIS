@@ -39,30 +39,6 @@ QgsEditorConfigWidget* QgsTextEditWidgetFactory::configWidget( QgsVectorLayer* v
   return new QgsTextEditConfigDlg( vl, fieldIdx, parent );
 }
 
-
-void QgsTextEditWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  config2xml( config, configElement, QStringLiteral( "IsMultiline" ) );
-  config2xml( config, configElement, QStringLiteral( "UseHtml" ) );
-}
-
-QVariantMap QgsTextEditWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QVariantMap cfg;
-
-  xml2config( configElement, cfg, QStringLiteral( "IsMultiline" ) );
-  xml2config( configElement, cfg, QStringLiteral( "UseHtml" ) );
-
-  return cfg;
-}
-
 unsigned int QgsTextEditWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   Q_UNUSED( vl )

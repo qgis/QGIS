@@ -46,57 +46,9 @@ QString QgsEditorWidgetFactory::name()
   return mName;
 }
 
-QVariantMap QgsEditorWidgetFactory::readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  return readConfig( configElement, layer, fieldIdx );
-}
-
-void QgsEditorWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( config );
-  Q_UNUSED( configElement );
-  Q_UNUSED( doc );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-}
-
-QVariantMap QgsEditorWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( configElement );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-
-  return QVariantMap();
-}
-
 unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
   Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )
   return 5;
-}
-
-void QgsEditorWidgetFactory::config2xml( const QVariantMap& config, QDomElement& configElement, const QString& fieldName )
-{
-  const QVariant value = config.value( fieldName );
-  if ( value.isValid() )
-  {
-    if ( value.type() == QVariant::Bool )
-    {
-      configElement.setAttribute( fieldName, value.toBool() ? "1" : "0" );
-    }
-    else
-    {
-      configElement.setAttribute( fieldName, value.toString() );
-    }
-  }
-}
-
-void QgsEditorWidgetFactory::xml2config( const QDomElement& configElement, QVariantMap& config, const QString& fieldName )
-{
-  const QString value = configElement.attribute( fieldName );
-  if ( !value.isNull() )
-  {
-    config.insert( fieldName, value );
-  }
 }
