@@ -25,6 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 
+#include "qgstest.h"
+
 /** \ingroup UnitTests
  * This is a unit test for the attribute table dialog
  */
@@ -167,5 +169,5 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 }
 
-QTEST_MAIN( TestQgsAttributeTable )
+QGSTEST_MAIN( TestQgsAttributeTable )
 #include "testqgsattributetable.moc"

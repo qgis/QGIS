@@ -116,12 +116,13 @@ QVariant QgsConfigurationMap::fromXmlHelper( const QDomElement& element ) const
   else if ( type == QLatin1String( "Map" ) )
   {
     QVariantMap map;
-    QDomNodeList options = element.elementsByTagName( QStringLiteral( "Option" ) );
+    QDomNodeList options = element.childNodes();
 
     for ( int i = 0; i < options.count(); ++i )
     {
       QDomElement elem = options.at( i ).toElement();
-      map.insert( elem.attribute( QStringLiteral( "name" ) ), fromXmlHelper( elem ) );
+      if ( elem.tagName() == QLatin1String( "Option" ) )
+        map.insert( elem.attribute( QStringLiteral( "name" ) ), fromXmlHelper( elem ) );
     }
     return map;
   }
