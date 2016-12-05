@@ -224,11 +224,7 @@ class QgsTaskWrapper(QgsTask):
 
         try:
             if self.returned_values:
-                # we want to support singular returned values which are not iterable
-                if hasattr(self.returned_values, '__iter__'):
-                    self.on_finished(result, *self.returned_values)
-                else:
-                    self.on_finished(result, self.returned_values)
+                self.on_finished(result, self.returned_values)
             else:
                 self.on_finished(result)
         except Exception as ex:

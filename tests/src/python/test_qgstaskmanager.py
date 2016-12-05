@@ -80,9 +80,9 @@ def run_multiple_val_result(task):
     return 5, 'whoo'
 
 
-def finished_multiple_value_result(result, value, statement):
-    finished_multiple_value_result.value = value
-    finished_multiple_value_result.statement = statement
+def finished_multiple_value_result(result, results):
+    finished_multiple_value_result.value = results[0]
+    finished_multiple_value_result.statement = results[1]
     return
 
 
