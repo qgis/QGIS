@@ -619,13 +619,13 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
         expr += "'" + str.replace( "'", "''" ) + "'";
         break;
       }
+      case SQLITE_NULL:
+      case SQLITE_BLOB: // comparison to blob ignored
       default:
-        expr = "";
+        expr += " is null";
+        break;
     }
-    if ( !expr.isEmpty() )
-    {
-      request.setFilterExpression( expr );
-    }
+    request.setFilterExpression( expr );
   }
   VTableCursor *c = reinterpret_cast<VTableCursor*>( cursor );
   c->filter( request );
