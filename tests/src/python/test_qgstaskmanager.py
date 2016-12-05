@@ -62,16 +62,27 @@ def run_no_result(task):
     return
 
 
-def finished_no_val(result):
+def finished_no_val(e):
+    assert e is None
     finished_no_val.called = True
     return
+
+
+def run_fail(task):
+    raise Exception('fail')
+
+
+def finished_fail(e):
+    assert e
+    finished_fail.finished_exception = e
 
 
 def run_single_val_result(task):
     return 5
 
 
-def finished_single_value_result(result, value):
+def finished_single_value_result(e, value):
+    assert e is None
     finished_single_value_result.value = value
     return
 
@@ -80,7 +91,8 @@ def run_multiple_val_result(task):
     return 5, 'whoo'
 
 
-def finished_multiple_value_result(result, results):
+def finished_multiple_value_result(e, results):
+    assert e is None
     finished_multiple_value_result.value = results[0]
     finished_multiple_value_result.statement = results[1]
     return
@@ -177,6 +189,36 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertFalse(task.returned_values)
         self.assertFalse(task.exception)
         self.assertTrue(finished_no_val.called)
+
+    def testTaskFromFunctionFinishedFail(self):
+        """ test that task from function which fails calls finished with exception"""
+        task = QgsTask.fromFunction('test task', run_fail, on_finished=finished_fail)
+        QgsApplication.taskManager().addTask(task)
+        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+            pass
+        while QgsApplication.taskManager().countActiveTasks() > 0:
+            QCoreApplication.processEvents()
+
+        # check that the finished function was called
+        self.assertTrue(task.exception)
+        self.assertTrue(finished_fail.finished_exception)
+        self.assertEqual(task.exception, finished_fail.finished_exception)
+
+    def testTaskFromFunctionCancelledWhileQueued(self):
+        """ test that task from finished is called with exception when task is terminated while queued"""
+        task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_fail)
+        task.hold()
+        QgsApplication.taskManager().addTask(task)
+        task.cancel()
+        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+            pass
+        while QgsApplication.taskManager().countActiveTasks() > 0:
+            QCoreApplication.processEvents()
+
+        # check that the finished function was called
+        self.assertTrue(task.exception)
+        self.assertTrue(finished_fail.finished_exception)
+        self.assertEqual(task.exception, finished_fail.finished_exception)
 
     def testTaskFromFunctionFinishedWithVal(self):
         """ test that task from function can have callback finished function and is passed result values"""

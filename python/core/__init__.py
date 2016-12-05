@@ -222,11 +222,14 @@ class QgsTaskWrapper(QgsTask):
         if not self.on_finished:
             return
 
+        if result == QgsTask.ResultFail and self.exception is None:
+            self.exception = Exception('Task cancelled')
+
         try:
             if self.returned_values:
-                self.on_finished(result, self.returned_values)
+                self.on_finished(self.exception, self.returned_values)
             else:
-                self.on_finished(result)
+                self.on_finished(self.exception)
         except Exception as ex:
             self.exception = ex
 
