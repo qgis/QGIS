@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
@@ -58,8 +59,8 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         self.addParameter(ParameterString(self.GEOMETRY,
                                           self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
                                           'geometry', optional=False))
-        self.addParameter(ParameterString(self.DISTANCE,
-                                          self.tr('Buffer distance'), '1000', optional=False))
+        self.addParameter(ParameterNumber(self.DISTANCE,
+                                          self.tr('Buffer distance'), None, None, 100.0, optional=False))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
                                            self.tr('Dissolve all results'), False))
         self.addParameter(ParameterTableField(self.FIELD,
