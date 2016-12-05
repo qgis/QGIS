@@ -539,7 +539,7 @@ QgsSymbolLayer* QgsGradientFillSymbolLayer::create( const QgsStringMap& props )
 
   //attempt to create color ramp from props
   QgsColorRamp* gradientRamp;
-  if ( props.contains( QStringLiteral( "gradientType" ) ) && props[QStringLiteral( "gradientType" )] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
@@ -1027,7 +1027,7 @@ QgsSymbolLayer* QgsShapeburstFillSymbolLayer::create( const QgsStringMap& props 
 
   //attempt to create color ramp from props
   QgsColorRamp* gradientRamp;
-  if ( props.contains( QStringLiteral( "gradientType" ) ) && props["gradientType"] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props["rampType"] == QStringLiteral( "cpt-city" ) )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
