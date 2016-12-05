@@ -37,7 +37,9 @@ QString QgsValueMapFieldKit::representValue( QgsVectorLayer* layer, int fieldInd
   else
     valueInternalText = value.toString();
 
-  return config.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
+  QVariantMap map = config.value( QStringLiteral( "map" ) ).toMap();
+
+  return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
 }
 
 QVariant QgsValueMapFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const

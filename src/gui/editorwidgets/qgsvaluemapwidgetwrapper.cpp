@@ -58,10 +58,10 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    const QVariantMap cfg = config();
-    QVariantMap::ConstIterator it = cfg.constBegin();
+    const QVariantMap map = config().value( QStringLiteral( "map" ) ).toMap();
+    QVariantMap::ConstIterator it = map.constBegin();
 
-    while ( it != cfg.constEnd() )
+    while ( it != map.constEnd() )
     {
       mComboBox->addItem( it.key(), it.value() );
       ++it;
