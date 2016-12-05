@@ -595,10 +595,14 @@ QgsStringMap QgsColorBrewerColorRamp::properties() const
 
 
 QgsCptCityColorRamp::QgsCptCityColorRamp( const QString& schemeName, const QString& variantName,
-    bool doLoadFile )
+    bool inverted, bool doLoadFile )
     : QgsGradientColorRamp()
-    , mSchemeName( schemeName ), mVariantName( variantName )
-    , mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
+    , mSchemeName( schemeName )
+    , mVariantName( variantName )
+    , mVariantList( QStringList() )
+    , mFileLoaded( false )
+    , mMultiStops( false )
+    , mInverted( inverted )
 {
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -607,10 +611,14 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString& schemeName, const QStri
 }
 
 QgsCptCityColorRamp::QgsCptCityColorRamp( const QString& schemeName, const QStringList& variantList,
-    const QString& variantName, bool doLoadFile )
+    const QString& variantName, bool inverted, bool doLoadFile )
     : QgsGradientColorRamp()
-    , mSchemeName( schemeName ), mVariantName( variantName )
-    , mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
+    , mSchemeName( schemeName )
+    , mVariantName( variantName )
+    , mVariantList( variantList )
+    , mFileLoaded( false )
+    , mMultiStops( false )
+    , mInverted( inverted )
 {
   mVariantList = variantList;
 
@@ -624,18 +632,27 @@ QgsColorRamp* QgsCptCityColorRamp::create( const QgsStringMap& props )
 {
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;
+  bool inverted = false;
 
   if ( props.contains( QStringLiteral( "schemeName" ) ) )
     schemeName = props[QStringLiteral( "schemeName" )];
   if ( props.contains( QStringLiteral( "variantName" ) ) )
     variantName = props[QStringLiteral( "variantName" )];
+  if ( props.contains( QStringLiteral( "inverted" ) ) )
+    inverted = props[QStringLiteral( "inverted" )].toInt();
 
-  return new QgsCptCityColorRamp( schemeName, variantName );
+  return new QgsCptCityColorRamp( schemeName, variantName, inverted );
+}
+
+void QgsCptCityColorRamp::invert()
+{
+  mInverted = !mInverted;
+  QgsGradientColorRamp::invert();
 }
 
 QgsCptCityColorRamp* QgsCptCityColorRamp::clone() const
 {
-  QgsCptCityColorRamp* ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ), false );
+  QgsCptCityColorRamp* ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ), mInverted, false );
   ramp->copy( this );
   return ramp;
 }
@@ -652,6 +669,7 @@ void QgsCptCityColorRamp::copy( const QgsCptCityColorRamp* other )
   mVariantName = other->mVariantName;
   mVariantList = other->mVariantList;
   mFileLoaded = other->mFileLoaded;
+  mInverted = other->mInverted;
 }
 
 QgsGradientColorRamp* QgsCptCityColorRamp::cloneGradientRamp() const
@@ -675,6 +693,7 @@ QgsStringMap QgsCptCityColorRamp::properties() const
   QgsStringMap map;
   map[QStringLiteral( "schemeName" )] = mSchemeName;
   map[QStringLiteral( "variantName" )] = mVariantName;
+  map[QStringLiteral( "inverted" )] = QString::number( mInverted );
   map[QStringLiteral( "rampType" )] = type();
   return map;
 }
@@ -787,6 +806,11 @@ bool QgsCptCityColorRamp::loadFile()
     mColor1 = mStops.takeFirst().color;
   if ( ! mStops.isEmpty() && mStops.last().offset == 1.0 )
     mColor2 = mStops.takeLast().color;
+
+  if ( mInverted )
+  {
+    QgsGradientColorRamp::invert();
+  }
 
   mFileLoaded = true;
   return true;

@@ -647,6 +647,10 @@ QgsCoordinateTransformCache        {#qgis_api_break_3_0_QgsCoordinateTransformCa
 - transform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned in place of a null pointer.
 
+QgsCptCityColorRamp        {#qgis_api_break_3_0_QgsCptCityColorRamp}
+-------------------
+
+- The constructor's doLoadFile parameter order has changed due to the addition of an inverted parameter
 
 QgsCptCityColorRampDialog        {#qgis_api_break_3_0_QgsCptCityColorRampDialog}
 -------------------------
