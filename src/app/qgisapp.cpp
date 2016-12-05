@@ -4444,6 +4444,24 @@ void QgisApp::addAmsLayer( const QString& uri, const QString& typeName )
 
 void QgisApp::fileExit()
 {
+  if ( QgsApplication::taskManager()->countActiveTasks() > 0 )
+  {
+    QStringList tasks;
+    Q_FOREACH ( QgsTask* task, QgsApplication::taskManager()->activeTasks() )
+    {
+      tasks << tr( " • %1" ).arg( task->description() );
+    }
+
+    // active tasks
+    if ( QMessageBox::question( this, tr( "Active tasks" ),
+                                tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try cancelling these active tasks?" ).arg( tasks.join( "\n" ) ),
+                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    {
+      QgsApplication::taskManager()->cancelAll();
+    }
+    return;
+  }
+
   if ( saveDirty() )
   {
     closeProject();
