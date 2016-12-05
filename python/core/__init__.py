@@ -234,8 +234,9 @@ class QgsTaskWrapper(QgsTask):
             self.exception = ex
 
 
-def fromFunction(cls, description, function, *args, on_finished=None, flags=QgsTask.AllFlags, **kwargs):
+@staticmethod
+def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.AllFlags, **kwargs):
     assert function
     return QgsTaskWrapper(description, flags, function, on_finished, *args, **kwargs)
 
-QgsTask.fromFunction = classmethod(fromFunction)
+QgsTask.fromFunction = fromFunction
