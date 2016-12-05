@@ -38,12 +38,12 @@ QgsEditorConfigWidget* QgsCheckboxWidgetFactory::configWidget( QgsVectorLayer* v
   return new QgsCheckBoxConfigDlg( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsCheckboxWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsCheckboxWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   xml2config( configElement, cfg, QStringLiteral( "CheckedState" ) );
   xml2config( configElement, cfg, QStringLiteral( "UncheckedState" ) );
@@ -51,7 +51,7 @@ QgsEditorWidgetConfig QgsCheckboxWidgetFactory::readConfig( const QDomElement& c
   return cfg;
 }
 
-void QgsCheckboxWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsCheckboxWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc )
   Q_UNUSED( layer )

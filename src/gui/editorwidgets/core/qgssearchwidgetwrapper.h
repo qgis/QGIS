@@ -23,7 +23,6 @@
 class QgsVectorLayer;
 class QgsField;
 
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgswidgetwrapper.h"
 

@@ -23,9 +23,9 @@ QgsWebViewWidgetConfigDlg::QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fi
   connect( sbWidgetWidth, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
 }
 
-QgsEditorWidgetConfig QgsWebViewWidgetConfigDlg::config()
+QVariantMap QgsWebViewWidgetConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   cfg.insert( QStringLiteral( "Height" ), sbWidgetHeight->value() );
   cfg.insert( QStringLiteral( "Width" ), sbWidgetWidth->value() );
@@ -33,7 +33,7 @@ QgsEditorWidgetConfig QgsWebViewWidgetConfigDlg::config()
   return cfg;
 }
 
-void QgsWebViewWidgetConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsWebViewWidgetConfigDlg::setConfig( const QVariantMap& config )
 {
   sbWidgetHeight->setValue( config.value( QStringLiteral( "Height" ), 0 ).toInt() );
   sbWidgetWidth->setValue( config.value( QStringLiteral( "Width" ), 0 ).toInt() );

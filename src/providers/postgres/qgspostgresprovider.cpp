@@ -1032,7 +1032,7 @@ void QgsPostgresProvider::setEditorWidgets()
       for ( int i = 0; i < result.PQntuples(); ++i )
       {
         const QString type = result.PQgetvalue( i, 0 );
-        QgsEditorWidgetConfig config;
+        QVariantMap config;
         if ( !result.PQgetisnull( i, 1 ) ) // Can be null and it's OK
         {
           const QString configTxt = result.PQgetvalue( i, 1 );

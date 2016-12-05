@@ -122,9 +122,9 @@ void QgsExternalResourceConfigDlg::enableRelative( bool state )
 }
 
 
-QgsEditorWidgetConfig QgsExternalResourceConfigDlg::config()
+QVariantMap QgsExternalResourceConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   cfg.insert( QStringLiteral( "FileWidget" ), mFileWidgetGroupBox->isChecked() );
   cfg.insert( QStringLiteral( "FileWidgetButton" ), mFileWidgetButtonGroupBox->isChecked() );
@@ -170,7 +170,7 @@ QgsEditorWidgetConfig QgsExternalResourceConfigDlg::config()
 }
 
 
-void QgsExternalResourceConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
 {
   if ( config.contains( QStringLiteral( "FileWidget" ) ) )
   {

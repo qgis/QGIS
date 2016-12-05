@@ -126,7 +126,7 @@ const QString QgsAttributeTypeDialog::editorWidgetText()
   }
 }
 
-const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetConfig()
+const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -139,7 +139,7 @@ const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetConfig()
     }
   }
 
-  return QgsEditorWidgetConfig();
+  return QVariantMap();
 }
 
 void QgsAttributeTypeDialog::setWidgetType( const QString& type )
@@ -181,7 +181,7 @@ void QgsAttributeTypeDialog::setWidgetType( const QString& type )
   defaultExpressionChanged();
 }
 
-void QgsAttributeTypeDialog::setWidgetConfig( const QgsEditorWidgetConfig& config )
+void QgsAttributeTypeDialog::setWidgetConfig( const QVariantMap& config )
 {
   mWidgetConfig = config;
 }

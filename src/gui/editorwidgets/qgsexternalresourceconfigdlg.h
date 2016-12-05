@@ -34,8 +34,8 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 
   private slots:
     //! Choose a base directory for rootPath

@@ -20,7 +20,6 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
-#include "qgseditorwidgetconfig.h"
 
 class QgsEditorConfigWidget;
 class QgsEditorWidgetWrapper;
@@ -86,7 +85,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0;
 
     /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
+     * Read the config from an XML file and map it to a proper {@link QVariantMap}.
      *
      * @param configElement The configuration element from the project file
      * @param layer         The layer for which this configuration applies
@@ -94,7 +93,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @return A configuration object. This will be passed to your widget wrapper later on
      */
-    QgsEditorWidgetConfig readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
+    QVariantMap readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
     /**
      * Serialize your configuration and save it in a xml doc.
@@ -105,7 +104,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @param layer         The layer for which this configuration applies
      * @param fieldIdx      The field on the layer for which this configuration applies
      */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
+    virtual void writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
 
     /**
      * Check if this editor widget type supports a certain field.
@@ -129,7 +128,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QHash<const char*, int> supportedWidgetTypes() { return QHash<const char*, int>(); }
 
     /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
+     * Read the config from an XML file and map it to a proper {@link QVariantMap}.
      *
      * @param configElement The configuration element from the project file
      * @param layer         The layer for which this configuration applies
@@ -137,7 +136,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @return A configuration object. This will be passed to your widget wrapper later on
      */
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
+    virtual QVariantMap readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
     /**
      * This method allows disabling this editor widget type for a certain field.
@@ -164,12 +163,12 @@ class GUI_EXPORT QgsEditorWidgetFactory
     /**
      * Copy the given config element to a XML attribute.
      */
-    static void config2xml( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QString& fieldName );
+    static void config2xml( const QVariantMap& config, QDomElement& configElement, const QString& fieldName );
 
     /**
      * Copy the given XML attribute to the configuration element.
      */
-    static void xml2config( const QDomElement& configElement, QgsEditorWidgetConfig& config, const QString& fieldName );
+    static void xml2config( const QDomElement& configElement, QVariantMap& config, const QString& fieldName );
 
   private:
     QString mName;

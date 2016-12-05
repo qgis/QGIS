@@ -33,7 +33,7 @@ class TestQgsEditorWidgetRegistry: public QObject
           if ( fieldName == QLatin1String( "special" ) )
           {
             score = 100;
-            return QgsEditorWidgetSetup( QStringLiteral( "Special" ), QgsEditorWidgetConfig() );
+            return QgsEditorWidgetSetup( QStringLiteral( "Special" ), QVariantMap() );
           }
           score = 0;
           return QgsEditorWidgetSetup();
@@ -92,7 +92,7 @@ class TestQgsEditorWidgetRegistry: public QObject
       QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
       QgsEditFormConfig formConfig = vl.editFormConfig();
       formConfig.setWidgetType( QStringLiteral( "col1" ), QStringLiteral( "FooEdit" ) );
-      QgsEditorWidgetConfig config;
+      QVariantMap config;
       config[QStringLiteral( "a" )] = QVariant( 12 );
       config[QStringLiteral( "b" )] = QVariant( "bar" );
       formConfig.setWidgetConfig( QStringLiteral( "col1" ), config );
@@ -132,7 +132,7 @@ class TestQgsEditorWidgetRegistry: public QObject
       //check the guessed editor widget type for vl1.fk is RelationReference
       const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl1, QStringLiteral( "fk" ) );
       QCOMPARE( setup.type(), QString( "RelationReference" ) );
-      QCOMPARE( setup.config(), QgsEditorWidgetConfig() );
+      QCOMPARE( setup.config(), QVariantMap() );
     }
 
     void typeFromPlugin()

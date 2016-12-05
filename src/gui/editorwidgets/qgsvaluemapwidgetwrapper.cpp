@@ -58,8 +58,8 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    const QgsEditorWidgetConfig cfg = config();
-    QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
+    const QVariantMap cfg = config();
+    QVariantMap::ConstIterator it = cfg.constBegin();
 
     while ( it != cfg.constEnd() )
     {

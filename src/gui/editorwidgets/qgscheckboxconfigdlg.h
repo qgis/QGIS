@@ -33,8 +33,8 @@ class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 };
 
 #endif // QGSCHECKBOXCONFIGDLG_H

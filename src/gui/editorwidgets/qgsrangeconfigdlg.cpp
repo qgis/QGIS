@@ -64,9 +64,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
   connect( suffixLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
 }
 
-QgsEditorWidgetConfig QgsRangeConfigDlg::config()
+QVariantMap QgsRangeConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   switch ( layer()->fields().at( field() ).type() )
   {
@@ -98,7 +98,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
   return cfg;
 }
 
-void QgsRangeConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsRangeConfigDlg::setConfig( const QVariantMap& config )
 {
   minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), -std::numeric_limits<double>::max() ).toDouble() );
   maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble() );

@@ -34,8 +34,8 @@ class GUI_EXPORT QgsTextEditConfigDlg : public QgsEditorConfigWidget, private Ui
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 };
 
 #endif // QGSTEXTEDITCONFIGDLG_H

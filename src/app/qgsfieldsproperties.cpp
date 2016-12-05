@@ -1057,7 +1057,7 @@ void QgsFieldsProperties::apply()
   // relations
   for ( int i = 0; i < mRelationsList->rowCount(); ++i )
   {
-    QgsEditorWidgetConfig cfg;
+    QVariantMap cfg;
 
     QComboBox* cb = qobject_cast<QComboBox*>( mRelationsList->cellWidget( i, RelNmCol ) );
     QVariant otherRelation = cb->currentData();

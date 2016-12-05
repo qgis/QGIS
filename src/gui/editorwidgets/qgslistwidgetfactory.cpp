@@ -41,15 +41,15 @@ QgsEditorConfigWidget* QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "List field" ) );
 }
 
-QgsEditorWidgetConfig QgsListWidgetFactory::readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx )
+QVariantMap QgsListWidgetFactory::readConfig( const QDomElement &configElement, QgsVectorLayer *layer, int fieldIdx )
 {
   Q_UNUSED( configElement );
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  return QgsEditorWidgetConfig();
+  return QVariantMap();
 }
 
-void QgsListWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsListWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( config );
   Q_UNUSED( configElement );

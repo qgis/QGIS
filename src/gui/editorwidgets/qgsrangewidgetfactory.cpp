@@ -34,11 +34,11 @@ QgsEditorConfigWidget* QgsRangeWidgetFactory::configWidget( QgsVectorLayer* vl, 
   return new QgsRangeConfigDlg( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsRangeWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   xml2config( configElement, cfg, QStringLiteral( "Style" ) );
   xml2config( configElement, cfg, QStringLiteral( "Min" ) );
@@ -50,7 +50,7 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   return cfg;
 }
 
-void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsRangeWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer );

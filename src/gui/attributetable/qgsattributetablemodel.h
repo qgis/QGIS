@@ -331,7 +331,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QVector<QgsEditorWidgetFactory*> mWidgetFactories;
     QVector<QgsFieldKit*> mFieldKits;
     QVector<QVariant> mAttributeWidgetCaches;
-    QVector<QgsEditorWidgetConfig> mWidgetConfigs;
+    QVector<QVariantMap> mWidgetConfigs;
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;

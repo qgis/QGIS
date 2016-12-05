@@ -34,8 +34,8 @@ class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, privat
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 };
 
 #endif // QGSUNIQUEVALUESCONFIGDLG_H

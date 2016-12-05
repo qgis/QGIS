@@ -72,7 +72,7 @@ class QgsEditorWidgetRegistry : QObject
     QgsEditorWidgetWrapper* create( const QString& widgetId,
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
+                                    const QVariantMap& config,
                                     QWidget* editor,
                                     QWidget* parent /TransferThis/,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
@@ -80,7 +80,7 @@ class QgsEditorWidgetRegistry : QObject
     QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
-        const QgsEditorWidgetConfig& config,
+        const QVariantMap& config,
         QWidget* parent /TransferThis/,
         const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
 

@@ -31,8 +31,8 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
 
   public:
     explicit QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
-    virtual QgsEditorWidgetConfig config() override;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
+    virtual QVariantMap config() override;
+    virtual void setConfig( const QVariantMap& config ) override;
 
     void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
 

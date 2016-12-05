@@ -44,12 +44,12 @@ QgsEditorConfigWidget* QgsValueMapWidgetFactory::configWidget( QgsVectorLayer* v
   return new QgsValueMapConfigDlg( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsValueMapWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsValueMapWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   QDomNodeList nodes = configElement.elementsByTagName( QStringLiteral( "value" ) );
 
@@ -62,12 +62,12 @@ QgsEditorWidgetConfig QgsValueMapWidgetFactory::readConfig( const QDomElement& c
   return cfg;
 }
 
-void QgsValueMapWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsValueMapWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  QgsEditorWidgetConfig::ConstIterator it = config.constBegin();
+  QVariantMap::ConstIterator it = config.constBegin();
 
   while ( it != config.constEnd() )
   {

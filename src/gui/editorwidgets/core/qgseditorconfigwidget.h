@@ -18,7 +18,6 @@
 
 #include <QWidget>
 
-#include "qgseditorwidgetconfig.h"
 
 class QgsVectorLayer;
 
@@ -49,14 +48,14 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      *
      * @return A widget configuration
      */
-    virtual QgsEditorWidgetConfig config() = 0;
+    virtual QVariantMap config() = 0;
 
     /**
      * @brief Update the configuration widget to represent the given configuration.
      *
      * @param config The configuration which should be represented by this widget
      */
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) = 0;
+    virtual void setConfig( const QVariantMap& config ) = 0;
 
     /**
      * Returns the field for which this configuration widget applies

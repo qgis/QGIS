@@ -44,12 +44,12 @@ QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLay
   return new QgsValueRelationConfigDlg( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsValueRelationWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   xml2config( configElement, cfg, QStringLiteral( "Layer" ) );
   xml2config( configElement, cfg, QStringLiteral( "Key" ) );
@@ -63,7 +63,7 @@ QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomEleme
   return cfg;
 }
 
-void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsValueRelationWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc )
   Q_UNUSED( layer )

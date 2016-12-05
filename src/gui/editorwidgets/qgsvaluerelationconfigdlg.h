@@ -37,8 +37,8 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap& config ) override;
 };
 
 #endif // QGSVALUERELATIONCONFIGDLG_H
