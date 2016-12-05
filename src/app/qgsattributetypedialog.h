@@ -45,9 +45,9 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     void setWidgetType( const QString& type );
 
-    const QgsEditorWidgetConfig editorWidgetConfig();
+    const QVariantMap editorWidgetConfig();
 
-    void setWidgetConfig( const QgsEditorWidgetConfig& config );
+    void setWidgetConfig( const QVariantMap& config );
 
     /**
      * Setter for checkbox to label on top
@@ -176,7 +176,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     QgsVectorLayer *mLayer;
     int mFieldIdx;
 
-    QgsEditorWidgetConfig mWidgetConfig;
+    QVariantMap mWidgetConfig;
 
     //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;

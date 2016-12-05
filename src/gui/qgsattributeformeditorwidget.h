@@ -18,7 +18,6 @@
 
 #include <QWidget>
 #include <QVariant>
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
 
@@ -69,7 +68,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @param context editor context (not available in python bindings)
      */
     void createSearchWidgetWrappers( const QString& widgetId, int fieldIdx,
-                                     const QgsEditorWidgetConfig& config,
+                                     const QVariantMap& config,
                                      const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to

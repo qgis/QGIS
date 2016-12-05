@@ -16,7 +16,7 @@
 class QgsValueRelationFieldKit : QgsFieldKit
 {
 %TypeHeaderCode
-#include "qgsvaluerelationfieldkit"
+#include "qgsvaluerelationfieldkit.h"
 %End
 
   public:
@@ -30,7 +30,7 @@ class QgsValueRelationFieldKit : QgsFieldKit
       QString value;
     };
 
-    typedef QVector < ValueRelationItem > ValueRelationCache;
+    typedef QVector < QgsValueRelationFieldKit::ValueRelationItem > ValueRelationCache;
 
     QgsValueRelationFieldKit();
 
@@ -41,5 +41,5 @@ class QgsValueRelationFieldKit : QgsFieldKit
 
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
-    static ValueRelationCache createCache( const QVariantMap& config );
+    static QgsValueRelationFieldKit::ValueRelationCache createCache( const QVariantMap& config );
 };

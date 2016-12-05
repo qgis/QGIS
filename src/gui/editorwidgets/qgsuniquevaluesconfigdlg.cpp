@@ -23,16 +23,16 @@ QgsUniqueValuesConfigDlg::QgsUniqueValuesConfigDlg( QgsVectorLayer* vl, int fiel
 }
 
 
-QgsEditorWidgetConfig QgsUniqueValuesConfigDlg::config()
+QVariantMap QgsUniqueValuesConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   cfg.insert( QStringLiteral( "Editable" ), editableUniqueValues->isChecked() );
 
   return cfg;
 }
 
-void QgsUniqueValuesConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsUniqueValuesConfigDlg::setConfig( const QVariantMap& config )
 {
   editableUniqueValues->setChecked( config.value( QStringLiteral( "Editable" ), false ).toBool() );
 }

@@ -37,9 +37,9 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
 }
 
-QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
+QVariantMap QgsValueMapConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
   QSettings settings;
 
   //store data to map
@@ -68,7 +68,7 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
   return cfg;
 }
 
-void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsValueMapConfigDlg::setConfig( const QVariantMap& config )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -77,7 +77,7 @@ void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   }
 
   int row = 0;
-  for ( QgsEditorWidgetConfig::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
+  for ( QVariantMap::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
   {
     if ( mit.value().isNull() )
       setRow( row, mit.key(), QString() );

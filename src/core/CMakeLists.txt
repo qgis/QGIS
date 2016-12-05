@@ -659,7 +659,6 @@ SET(QGIS_CORE_HDRS
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditformconfig.h
-  qgseditorwidgetconfig.h
   qgseditorwidgetsetup.h
   qgsfeaturefilterprovider.h
   qgserror.h

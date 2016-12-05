@@ -36,8 +36,8 @@ class QgsEditorConfigWidget : QWidget
      */
     QgsVectorLayer* layer();
 
-    virtual QgsEditorWidgetConfig config() = 0;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) = 0;
+    virtual QVariantMap config() = 0;
+    virtual void setConfig( const QVariantMap& config ) = 0;
 
   signals:
 

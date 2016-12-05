@@ -166,7 +166,7 @@ class QgsEditFormConfig
      *
      * @note not available in python bindings
      */
-    void setWidgetConfig( const QString& fieldName, const QgsEditorWidgetConfig& config );
+    void setWidgetConfig( const QString& fieldName, const QVariantMap& config );
 
     /**
      * Get the configuration for the editor widget used to represent the field with the given name
@@ -175,7 +175,7 @@ class QgsEditFormConfig
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      */
-    QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
+    QVariantMap widgetConfig( const QString& fieldName ) const;
 
     /**
      * Remove the configuration for the editor widget used to represent the field with the given name

@@ -42,7 +42,7 @@ QWidget* QgsWidgetWrapper::widget()
   return mWidget;
 }
 
-void QgsWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
+void QgsWidgetWrapper::setConfig( const QVariantMap& config )
 {
   mConfig = config;
 }
@@ -61,7 +61,7 @@ QVariant QgsWidgetWrapper::config( const QString& key, const QVariant& defaultVa
   return defaultVal;
 }
 
-QgsEditorWidgetConfig QgsWidgetWrapper::config() const
+QVariantMap QgsWidgetWrapper::config() const
 {
   return mConfig;
 }

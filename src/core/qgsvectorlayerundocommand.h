@@ -211,7 +211,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
     bool mProviderField;
     int mOriginIndex;
     QgsField mOldField;
-    QgsEditorWidgetConfig mOldEditorWidgetConfig;
+    QVariantMap mOldEditorWidgetConfig;
 
     QMap<QgsFeatureId, QVariant> mDeletedValues;
     QString mOldName;

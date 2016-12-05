@@ -66,7 +66,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap< QString, bool> mLabelOnTop;
 
     QMap<QString, QString> mEditorWidgetTypes;
-    QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;
+    QMap<QString, QVariantMap > mWidgetConfigs;
 
     //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
     QgsEditFormConfig::EditorLayout mEditorLayout;

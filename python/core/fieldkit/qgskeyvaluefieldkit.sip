@@ -16,7 +16,7 @@
 class QgsKeyValueFieldKit : QgsFieldKit
 {
 %TypeHeaderCode
-#include "qgskeyvaluefieldkit"
+#include "qgskeyvaluefieldkit.h"
 %End
   public:
     QgsKeyValueFieldKit();

@@ -108,9 +108,9 @@ void QgsDateTimeEditConfig::showHelp( bool buttonChecked )
 }
 
 
-QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
+QVariantMap QgsDateTimeEditConfig::config()
 {
-  QgsEditorWidgetConfig myConfig;
+  QVariantMap myConfig;
 
   myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
   myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
@@ -120,7 +120,7 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
   return myConfig;
 }
 
-void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
+void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
 {
   const QgsField fieldDef = layer()->fields().at( field() );
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldKit::defaultFormat( fieldDef.type() ) ).toString();

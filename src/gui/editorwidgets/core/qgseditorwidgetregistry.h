@@ -18,7 +18,6 @@
 
 #include <QObject>
 #include <QMap>
-#include "qgseditorwidgetconfig.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetautoconf.h"
@@ -96,7 +95,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorWidgetWrapper* create( const QString& widgetId,
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
+                                    const QVariantMap& config,
                                     QWidget* editor,
                                     QWidget* parent,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
@@ -122,7 +121,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
         QgsVectorLayer* vl,
         int fieldIdx,
-        const QgsEditorWidgetConfig& config,
+        const QVariantMap& config,
         QWidget* parent,
         const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 

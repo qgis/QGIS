@@ -47,11 +47,11 @@ QgsEditorConfigWidget* QgsRelationReferenceFactory::configWidget( QgsVectorLayer
   return new QgsRelationReferenceConfigDlg( vl, fieldIdx, parent );
 }
 
-QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsRelationReferenceFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   xml2config( configElement, cfg, QStringLiteral( "AllowNULL" ) );
   xml2config( configElement, cfg, QStringLiteral( "OrderByValue" ) );
@@ -79,7 +79,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   return cfg;
 }
 
-void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsRelationReferenceFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc );
   Q_UNUSED( layer );

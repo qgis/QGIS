@@ -493,7 +493,7 @@ void TestQgsField::displayName()
 void TestQgsField::editorWidgetSetup()
 {
   QgsField field;
-  QgsEditorWidgetConfig config;
+  QVariantMap config;
   config.insert( QStringLiteral( "a" ), "value_a" );
   const QgsEditorWidgetSetup setup( QStringLiteral( "test" ), config );
   field.setEditorWidgetSetup( setup );

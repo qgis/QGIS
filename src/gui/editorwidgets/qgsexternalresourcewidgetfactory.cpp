@@ -34,7 +34,7 @@ QgsEditorConfigWidget* QgsExternalResourceWidgetFactory::configWidget( QgsVector
   return new QgsExternalResourceConfigDlg( vl, fieldIdx, parent );
 }
 
-void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsExternalResourceWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc )
   Q_UNUSED( layer )
@@ -53,12 +53,12 @@ void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig&
   config2xml( config, configElement, QStringLiteral( "StorageMode" ) );
 }
 
-QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsExternalResourceWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   xml2config( configElement, cfg, QStringLiteral( "FileWidget" ) );
   xml2config( configElement, cfg, QStringLiteral( "FileWidgetButton" ) );

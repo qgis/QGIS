@@ -46,7 +46,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
       if ( bestScore > 0 )
       {
         score = 10;
-        return QgsEditorWidgetSetup( bestType, QgsEditorWidgetConfig() );
+        return QgsEditorWidgetSetup( bestType, QVariantMap() );
       }
       return QgsEditorWidgetSetup();
     }
@@ -86,7 +86,7 @@ QgsEditorWidgetAutoConf::QgsEditorWidgetAutoConf()
 
 QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName ) const
 {
-  QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QgsEditorWidgetConfig() );
+  QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QVariantMap() );
 
   int fieldIndex = vl->fields().indexFromName( fieldName );
   if ( fieldIndex >= 0 )

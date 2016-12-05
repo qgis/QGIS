@@ -22,7 +22,6 @@
 
 class QgsVectorLayer;
 
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
 
 /** \ingroup gui
@@ -71,7 +70,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @param config The config for this wrapper
      */
-    void setConfig( const QgsEditorWidgetConfig& config );
+    void setConfig( const QVariantMap& config );
 
     /**
      * Set the context in which this widget is shown
@@ -95,7 +94,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @return The configuration
      */
-    QgsEditorWidgetConfig config() const;
+    QVariantMap config() const;
 
     /**
      * Returns information about the context in which this widget is shown
@@ -175,7 +174,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
   private:
     QgsAttributeEditorContext mContext;
-    QgsEditorWidgetConfig mConfig;
+    QVariantMap mConfig;
     QWidget* mWidget;
     QWidget* mParent;
     QgsVectorLayer* mLayer;

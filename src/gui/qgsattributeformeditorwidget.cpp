@@ -19,7 +19,6 @@
 #include "qgssearchwidgettoolbutton.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
 #include <QLayout>
@@ -95,7 +94,7 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
   delete mMultiEditButton;
 }
 
-void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QString& widgetId, int fieldIdx, const QgsEditorWidgetConfig& config,  const QgsAttributeEditorContext& context )
+void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QString& widgetId, int fieldIdx, const QVariantMap& config,  const QgsAttributeEditorContext& context )
 {
   QgsSearchWidgetWrapper* sww = QgsEditorWidgetRegistry::instance()->createSearchWidget( widgetId, layer(), fieldIdx, config,
                                 mSearchFrame, context );

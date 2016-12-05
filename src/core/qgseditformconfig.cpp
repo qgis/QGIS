@@ -34,7 +34,7 @@ QString QgsEditFormConfig::widgetType( const QString& fieldName ) const
   return d->mEditorWidgetTypes.value( fieldName );
 }
 
-QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( const QString& fieldName ) const
+QVariantMap QgsEditFormConfig::widgetConfig( const QString& fieldName ) const
 {
   return d->mWidgetConfigs.value( fieldName );
 }
@@ -74,7 +74,7 @@ void QgsEditFormConfig::setWidgetType( const QString& widgetName, const QString&
   d->mEditorWidgetTypes[widgetName] = widgetType;
 }
 
-void QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QgsEditorWidgetConfig& config )
+void QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QVariantMap& config )
 {
   d.detach();
   d->mWidgetConfigs[widgetName] = config;
@@ -429,7 +429,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
 
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 
-  QMap<QString, QgsEditorWidgetConfig >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
+  QMap<QString, QVariantMap >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
 
   while ( configIt != d->mWidgetConfigs.constEnd() )
   {
@@ -442,7 +442,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
       QDomElement configElem = doc.createElement( QStringLiteral( "config" ) );
       widgetElem.appendChild( configElem );
 
-      QgsEditorWidgetConfig::ConstIterator cfgIt( configIt.value().constBegin() );
+      QVariantMap::ConstIterator cfgIt( configIt.value().constBegin() );
 
       while ( cfgIt != configIt.value().constEnd() )
       {

@@ -40,7 +40,7 @@ QgsEditorConfigWidget* QgsTextEditWidgetFactory::configWidget( QgsVectorLayer* v
 }
 
 
-void QgsTextEditWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsTextEditWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( doc )
   Q_UNUSED( layer )
@@ -50,12 +50,12 @@ void QgsTextEditWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   config2xml( config, configElement, QStringLiteral( "UseHtml" ) );
 }
 
-QgsEditorWidgetConfig QgsTextEditWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsTextEditWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   xml2config( configElement, cfg, QStringLiteral( "IsMultiline" ) );
   xml2config( configElement, cfg, QStringLiteral( "UseHtml" ) );

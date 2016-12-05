@@ -1584,7 +1584,7 @@ void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLaye
     if ( vl->editFormConfig().widgetType( name ) != QLatin1String( "ValueRelation" ) )
       continue;
 
-    QgsEditorWidgetConfig cfg( vl->editFormConfig().widgetConfig( name ) );
+    QVariantMap cfg( vl->editFormConfig().widgetConfig( name ) );
     if ( !cfg.contains( QStringLiteral( "Layer" ) ) )
       continue;
 

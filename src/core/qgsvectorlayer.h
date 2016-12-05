@@ -30,7 +30,6 @@
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
-#include "qgseditorwidgetconfig.h"
 #include "qgsfields.h"
 #include "qgssnapper.h"
 #include "qgsvectorsimplifymethod.h"

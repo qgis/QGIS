@@ -37,9 +37,9 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fi
   connect( mUseCompleter, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 }
 
-QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
+QVariantMap QgsValueRelationConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
   cfg.insert( QStringLiteral( "Layer" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
   cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
@@ -53,7 +53,7 @@ QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
   return cfg;
 }
 
-void QgsValueRelationConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsValueRelationConfigDlg::setConfig( const QVariantMap& config )
 {
   QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
   mLayerName->setLayer( lyr );

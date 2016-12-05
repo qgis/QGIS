@@ -46,12 +46,12 @@ QString QgsEditorWidgetFactory::name()
   return mName;
 }
 
-QgsEditorWidgetConfig QgsEditorWidgetFactory::readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsEditorWidgetFactory::readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   return readConfig( configElement, layer, fieldIdx );
 }
 
-void QgsEditorWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+void QgsEditorWidgetFactory::writeConfig( const QVariantMap& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( config );
   Q_UNUSED( configElement );
@@ -60,13 +60,13 @@ void QgsEditorWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, Q
   Q_UNUSED( fieldIdx );
 }
 
-QgsEditorWidgetConfig QgsEditorWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+QVariantMap QgsEditorWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
 {
   Q_UNUSED( configElement );
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
 
-  return QgsEditorWidgetConfig();
+  return QVariantMap();
 }
 
 unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
@@ -76,7 +76,7 @@ unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int f
   return 5;
 }
 
-void QgsEditorWidgetFactory::config2xml( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QString& fieldName )
+void QgsEditorWidgetFactory::config2xml( const QVariantMap& config, QDomElement& configElement, const QString& fieldName )
 {
   const QVariant value = config.value( fieldName );
   if ( value.isValid() )
@@ -92,7 +92,7 @@ void QgsEditorWidgetFactory::config2xml( const QgsEditorWidgetConfig& config, QD
   }
 }
 
-void QgsEditorWidgetFactory::xml2config( const QDomElement& configElement, QgsEditorWidgetConfig& config, const QString& fieldName )
+void QgsEditorWidgetFactory::xml2config( const QDomElement& configElement, QVariantMap& config, const QString& fieldName )
 {
   const QString value = configElement.attribute( fieldName );
   if ( !value.isNull() )

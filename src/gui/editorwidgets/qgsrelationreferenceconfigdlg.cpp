@@ -54,7 +54,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SIGNAL( changed() ) );
 }
 
-void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap& config )
 {
   mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
   mCbxOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ), false ).toBool() );
@@ -115,9 +115,9 @@ void QgsRelationReferenceConfigDlg::on_mRemoveFilterButton_clicked()
   }
 }
 
-QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
+QVariantMap QgsRelationReferenceConfigDlg::config()
 {
-  QgsEditorWidgetConfig myConfig;
+  QVariantMap myConfig;
   myConfig.insert( QStringLiteral( "AllowNULL" ), mCbxAllowNull->isChecked() );
   myConfig.insert( QStringLiteral( "OrderByValue" ), mCbxOrderByValue->isChecked() );
   myConfig.insert( QStringLiteral( "ShowForm" ), mCbxShowForm->isChecked() );

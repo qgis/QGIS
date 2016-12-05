@@ -29,8 +29,8 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
     Q_OBJECT
   public:
     QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig &config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
   private slots:
     void updateDemoWidget();
