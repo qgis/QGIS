@@ -624,13 +624,13 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
         expr += "'" + str.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) + "'";
         break;
       }
+      case SQLITE_NULL:
+      case SQLITE_BLOB: // comparison to blob ignored
       default:
-        expr = QLatin1String( "" );
+        expr += QLatin1String( " is null" );
+        break;
     }
-    if ( !expr.isEmpty() )
-    {
-      request.setFilterExpression( expr );
-    }
+    request.setFilterExpression( expr );
   }
   VTableCursor *c = reinterpret_cast<VTableCursor*>( cursor );
   c->filter( request );
