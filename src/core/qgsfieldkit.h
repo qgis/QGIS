@@ -32,6 +32,8 @@ class QgsVectorLayer;
  * field kits for use within code should normally be obtained from there.
  *
  * This is an abstract base class and will always need to be subclassed.
+ *
+ * @Note added in QGIS 3.0
  */
 class CORE_EXPORT QgsFieldKit
 {

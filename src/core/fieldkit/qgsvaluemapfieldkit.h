@@ -29,7 +29,7 @@ class CORE_EXPORT QgsValueMapFieldKit : public QgsFieldKit
 
     QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 
-    QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
 
 #endif // QGSVALUEMAPFIELDKIT_H
