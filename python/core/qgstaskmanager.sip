@@ -87,14 +87,6 @@ class QgsTask : QObject
     double progress() const;
 
     /**
-     * Starts the task. Should only be called for tasks which are not being
-     * handled by a QgsTaskManager. If the task is managed by a QgsTaskManager
-     * then this method should not be called directly, instead it is left to the
-     * task manager to start the task when appropriate.
-     */
-    void start();
-
-    /**
      * Notifies the task that it should terminate. Calling this is not guaranteed
      * to immediately end the task, rather it sets the isCancelled() flag which
      * task subclasses can check and terminate their operations at an appropriate
