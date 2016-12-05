@@ -236,6 +236,30 @@ class QgsTaskWrapper(QgsTask):
 
 @staticmethod
 def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.AllFlags, **kwargs):
+    """
+    Creates a new QgsTask task from a python function.
+
+    Example:
+
+    def calculate(task):
+        # pretend this is some complex maths and stuff we want
+        # to run in the background
+        return 5*6
+
+    def calculation_finished(exception, value=None):
+        if not exception:
+            iface.messageBar().pushMessage(
+                'the magic number is {}'.format(value))
+        else:
+            iface.messageBar().pushMessage(
+                str(exception))
+
+    task = QgsTask.fromFunction('my task', calculate,
+            on_finished=calculation_finished)
+    QgsTaskManager.instance().addTask(task)
+
+    """
+
     assert function
     return QgsTaskWrapper(description, flags, function, on_finished, *args, **kwargs)
 
