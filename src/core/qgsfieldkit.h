@@ -33,7 +33,7 @@ class QgsVectorLayer;
  *
  * This is an abstract base class and will always need to be subclassed.
  *
- * @Note added in QGIS 3.0
+ * @note added in QGIS 3.0
  */
 class CORE_EXPORT QgsFieldKit
 {

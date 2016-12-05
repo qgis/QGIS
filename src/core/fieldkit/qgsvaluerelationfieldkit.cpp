@@ -47,47 +47,50 @@ QString QgsValueRelationFieldKit::representValue( QgsVectorLayer* layer, int fie
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
 
-  QHash<QString, QString> vrCache;
+  QgsValueRelationFieldKit::ValueRelationCache vrCache;
 
   if ( cache.isValid() )
   {
-    vrCache = cache.value<QHash<QString, QString>>();
+    vrCache = cache.value<QgsValueRelationFieldKit::ValueRelationCache>();
   }
   else
   {
-    vrCache = createCache( layer, fieldIndex, config ).value<QHash<QString, QString>>();
+    vrCache = QgsValueRelationFieldKit::createCache( config );
   }
 
-  if ( config.value( QStringLiteral( "AllowMulti" ) ).toBool() )
+  if ( config.value( "AllowMulti" ).toBool() )
   {
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
 
-    Q_FOREACH ( const QString& key, keyList )
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& item, vrCache )
     {
-      auto val = vrCache.constFind( key );
-      if ( val != vrCache.constEnd() )
-        valueList << val.value();
-      else
-        valueList << QStringLiteral( "(%1)" ).arg( key );
+      if ( keyList.contains( item.key.toString() ) )
+      {
+        valueList << item.value;
+      }
     }
 
-    return valueList.join( QStringLiteral( ", " ) ).prepend( '{' ).append( '}' );
+    return valueList.join( ", " ).prepend( '{' ).append( '}' );
   }
   else
   {
     if ( value.isNull() )
     {
       QSettings settings;
-      return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+      return settings.value( "qgis/nullValue", "NULL" ).toString();
     }
 
-    auto val = vrCache.constFind( value.toString() );
-    if ( val != vrCache.constEnd() )
-      return val.value();
+    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& item, vrCache )
+    {
+      if ( item.key == value )
+      {
+        return item.value;
+      }
+    }
   }
 
-  return QStringLiteral( "(%1)" ).arg( value.toString() );
+  return QString( "(%1)" ).arg( value.toString() );
 }
 
 QVariant QgsValueRelationFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const

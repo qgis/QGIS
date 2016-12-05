@@ -27,6 +27,8 @@
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
 
+#include "qgstest.h"
+
 class TestQgsDualView : public QObject
 {
     Q_OBJECT
@@ -67,6 +69,7 @@ void TestQgsDualView::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
   QgsEditorWidgetRegistry::initEditors();
 
   // Setup a map canvas with a vector layer loaded...
@@ -267,9 +270,5 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   QVERIFY( mixedValueFields.isEmpty() );
 }
 
-QTEST_MAIN( TestQgsDualView )
+QGSTEST_MAIN( TestQgsDualView )
 #include "testqgsdualview.moc"
-
-
-
-

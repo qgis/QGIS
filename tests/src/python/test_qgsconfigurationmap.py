@@ -52,7 +52,7 @@ class TestQgsConfigurationMap(unittest.TestCase):
         prop2 = QgsConfigurationMap()
 
         prop2.fromXml(element)
-        self.assertEquals(prop2.get(), my_properties)
+        self.assertEquals(my_properties, prop2.get())
 
     def test_string(self):
         """
@@ -69,7 +69,7 @@ class TestQgsConfigurationMap(unittest.TestCase):
         prop2 = QgsConfigurationMap()
 
         prop2.fromXml(element)
-        self.assertEquals(prop2.get(), my_properties)
+        self.assertEquals(my_properties, prop2.get())
 
     def test_double(self):
         """
@@ -86,7 +86,7 @@ class TestQgsConfigurationMap(unittest.TestCase):
         prop2 = QgsConfigurationMap()
 
         prop2.fromXml(element)
-        self.assertEquals(prop2.get(), my_properties)
+        self.assertEquals(my_properties, prop2.get())
 
     def test_boolean(self):
         """
@@ -105,7 +105,7 @@ class TestQgsConfigurationMap(unittest.TestCase):
         prop2 = QgsConfigurationMap()
 
         prop2.fromXml(element)
-        self.assertEquals(prop2.get(), my_properties)
+        self.assertEquals(my_properties, prop2.get())
 
     def test_complex(self):
         """
@@ -124,7 +124,7 @@ class TestQgsConfigurationMap(unittest.TestCase):
         prop2 = QgsConfigurationMap()
 
         prop2.fromXml(element)
-        self.assertEquals(prop2.get(), my_properties)
+        self.assertEquals(my_properties, prop2.get())
 
 
 if __name__ == '__main__':
