@@ -6,4 +6,3 @@ qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
 PyQgsDBManagerGpkg
-PyQgsAuthManagerPKIOWSTest
