@@ -22,6 +22,12 @@
 
 class QgsFieldKit;
 
+/**
+ * \ingroup core
+ * The QgsFieldKitRegistry manages registered classes of QgsFieldKit.
+ * A reference to the QgsFieldKitRegistry can be obtained from
+ * QgsApplication::fieldKitRegistry().
+ */
 class CORE_EXPORT QgsFieldKitRegistry : public QObject
 {
     Q_OBJECT

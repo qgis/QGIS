@@ -261,6 +261,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.
 - QgsLegacyHelpers.
 - QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.
+- QgsEditorWidgetConfig was removed. Use QVariantMap instead.
 
 
 General changes        {#qgis_api_break_3_0_global}
@@ -890,6 +891,7 @@ QgsFieldExpressionWidget        {#qgis_api_break_3_0_QgsFieldExpressionWidget}
 ------------------------
 
 - The setLayer( QgsVectorlayer* ) slot has been removed. Use the setLayer( QgsMapLayer* ) slot instead.
+- registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator
 
 
 QgsFields        {#qgis_api_break_3_0_QgsFields}
@@ -897,12 +899,6 @@ QgsFields        {#qgis_api_break_3_0_QgsFields}
 
 - All const methods which return a field from QgsFields now return a QgsField value, not a reference.
 - fieldNameIndex has been renamed to lookupField. See the API documentation for details.
-
-
-QgsFieldExpressionWidget        {#qgis_api_break_3_0_QgsFieldExpressionWidget}
-------------------------
-
-- registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator
 
 
 QgsFieldProxyModel        {#qgis_api_break_3_0_QgsFieldProxyModel}
@@ -971,8 +967,23 @@ plugins calling this method will need to be updated.
 QgsEditorWidgetRegistry        {#qgis_api_break_3_0_QgsEditorWidgetRegistry}
 -----------------------
 
-- The signature of isFieldSupported() has been changed to return an unsigned (how good it supports the given field)
-and to const-correct it.
+- The signature of isFieldSupported() has been changed to return an unsigned
+  integer (how good it supports the given field) and is now const.
+
+QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
+----------------------
+
+- `readEditorConfig` has been removed. The configuration is read and written
+  from and to a QVariantMap automatically.
+- `readConfig` has been removed. The configuration is read and written
+  from and to a QVariantMap automatically.
+- `writeConfig` has been removed. The configuration is read and written
+  from and to a QVariantMap automatically.
+- `representValue` has been removed. Use QgsFieldKit::representValue() instead
+- `sortValue` has been removed. Use QgsFieldKit::representValue() instead
+- `alignmentFlag` has been removed. Use QgsFieldKit::representValue() instead
+- `createCache` has been removed. Use QgsFieldKit::representValue() instead
+
 
 QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}
 --------------------

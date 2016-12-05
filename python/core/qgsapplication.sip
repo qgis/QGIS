@@ -398,6 +398,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QgsRuntimeProfiler* profiler();
 
+    /**
+     * Provides access to the field kit registry.
+     *
+     * @note Added in QGIS 3.0
+     */
+    static QgsFieldKitRegistry* fieldKitRegistry();
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should

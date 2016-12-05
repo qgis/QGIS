@@ -21,6 +21,18 @@
 
 class QgsVectorLayer;
 
+/**
+ * \ingroup core
+ * A field kit helps to handle and display values for a field.
+ *
+ * It allows for using a shared configuration with the editor widgets
+ * for representation of attribute values.
+ * Field kits normally have one single instance which is managed by the
+ * QgsFieldKitRegistry. Custom field kits should be registered there and
+ * field kits for use within code should normally be obtained from there.
+ *
+ * This is an abstract base class and will always need to be subclassed.
+ */
 class CORE_EXPORT QgsFieldKit
 {
   public:
@@ -48,7 +60,7 @@ class CORE_EXPORT QgsFieldKit
     /**
      * If the default sort order should be overwritten for this widget, you can transform the value in here.
      *
-     * @return By default the value is returned unmodified.
+     * @returns an unmodified value by default.
      *
      * @note Added in 3.0
      */
