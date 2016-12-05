@@ -6,7 +6,7 @@ This is an integration test for QGIS Desktop Auth Manager postgres provider that
 checks if QGIS can use a stored auth manager auth configuration to access
 a PKI protected postgres.
 
-Configuration form the environment:
+Configuration from the environment:
 
     * QGIS_POSTGRES_SERVER_PORT (default: 55432)
     * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.4/bin)
