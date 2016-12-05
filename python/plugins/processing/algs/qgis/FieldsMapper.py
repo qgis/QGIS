@@ -86,7 +86,6 @@ class FieldsMapper(GeoAlgorithm):
                         return False
                 return False
 
-
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
                                                  self.tr('Fields mapping'),
                                                  self.INPUT_LAYER))

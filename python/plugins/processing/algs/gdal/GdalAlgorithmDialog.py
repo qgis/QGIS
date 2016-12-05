@@ -78,7 +78,8 @@ class GdalParametersPanel(ParametersPanel):
         self.parametersHaveChanged()
 
     def connectParameterSignals(self):
-        for w in list(self.widgets.values()):
+        for wrapper in list(self.wrappers.values()):
+            w = wrapper.widget
             if isinstance(w, QLineEdit):
                 w.textChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, QComboBox):

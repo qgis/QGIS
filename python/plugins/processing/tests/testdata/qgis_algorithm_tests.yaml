@@ -1824,3 +1824,33 @@ tests:
           - 'Minimum value: 03:29:40'
           - 'Maximum value: 15:29:22'
           - 'NULL \(missing\) values: 1'
+
+  - algorithm: qgis:rastercalculator
+    name: Raster Calculator with cellsize
+    params:
+      LAYERS:
+        params:
+          - name: dem.tif
+            type: raster
+        type: multi
+      CELLSIZE: 0.001
+      EXPRESSION: dem@1
+    results:
+      OUTPUT:
+        hash: 826f313761324710ed542ec9e9c4fa06c30d25df24f8399d1ca756ca
+        type: rasterhash
+
+  - algorithm: qgis:rastercalculator
+    name: Raster Calculator 
+    params:
+      LAYERS:
+        params:
+          - name: dem.tif
+            type: raster
+        type: multi
+      CELLSIZE: 0.0
+      EXPRESSION: dem@1 * 2
+    results:
+      OUTPUT:
+        hash: c4c6b70c262e2f125f321b45d8403d2428503e33e69f6a48196e1a94
+        type: rasterhash

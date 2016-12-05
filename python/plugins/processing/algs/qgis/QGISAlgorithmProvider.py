@@ -178,6 +178,7 @@ from .ExtractSpecificNodes import ExtractSpecificNodes
 from .GeometryByExpression import GeometryByExpression
 from .SnapGeometries import SnapGeometriesToLayer
 from .PoleOfInaccessibility import PoleOfInaccessibility
+from .RasterCalculator import RasterCalculator
 from .CreateAttributeIndex import CreateAttributeIndex
 from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
@@ -245,7 +246,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
                         PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
-                        BasicStatisticsForField()
+                        BasicStatisticsForField(), RasterCalculator()
                         ]
 
         if hasMatplotlib:

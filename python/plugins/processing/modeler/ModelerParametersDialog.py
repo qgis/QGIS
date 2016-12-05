@@ -146,20 +146,21 @@ class ModelerParametersDialog(QDialog):
             self.wrappers[param.name] = wrapper
 
             widget = wrapper.widget
-            self.valueItems[param.name] = widget
-            if param.name in list(tooltips.keys()):
-                tooltip = tooltips[param.name]
-            else:
-                tooltip = param.description
-            label.setToolTip(tooltip)
-            widget.setToolTip(tooltip)
-            if param.isAdvanced:
-                label.setVisible(self.showAdvanced)
-                widget.setVisible(self.showAdvanced)
-                self.widgets[param.name] = widget
+            if widget:
+                self.valueItems[param.name] = widget
+                if param.name in list(tooltips.keys()):
+                    tooltip = tooltips[param.name]
+                else:
+                    tooltip = param.description
+                label.setToolTip(tooltip)
+                widget.setToolTip(tooltip)
+                if param.isAdvanced:
+                    label.setVisible(self.showAdvanced)
+                    widget.setVisible(self.showAdvanced)
+                    self.widgets[param.name] = widget
 
-            self.verticalLayout.addWidget(label)
-            self.verticalLayout.addWidget(widget)
+                self.verticalLayout.addWidget(label)
+                self.verticalLayout.addWidget(widget)
 
         for output in self._alg.outputs:
             if output.hidden:
@@ -301,34 +302,6 @@ class ModelerParametersDialog(QDialog):
             alg = self.model.algs[value.alg]
             return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
-    def setTableContent(self):
-        params = self._alg.parameters
-        outputs = self._alg.outputs
-        visibleParams = [p for p in params if not p.hidden]
-        visibleOutputs = [p for o in outputs if not o.hidden]
-        self.tableWidget.setRowCount(len(visibleParams) + len(visibleOutputs))
-
-        for i, param in visibleParams:
-            item = QTableWidgetItem(param.description)
-            item.setFlags(Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i, 0, item)
-            item = self.getWidgetFromParameter(param)
-            self.valueItems[param.name] = item
-            self.tableWidget.setCellWidget(i, 1, item)
-            self.tableWidget.setRowHeight(i, 22)
-
-        for i, output in visibleOutputs:
-            item = QTableWidgetItem(output.description + '<'
-                                    + output.__module__.split('.')[-1] + '>')
-            item.setFlags(Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i, 0, item)
-            item = QLineEdit()
-            if hasattr(item, 'setPlaceholderText'):
-                item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
-            self.valueItems[output.name] = item
-            self.tableWidget.setCellWidget(i, 1, item)
-            self.tableWidget.setRowHeight(i, 22)
-
     def setPreviousValues(self):
         if self._algName is not None:
             alg = self.model.algs[self._algName]
@@ -376,12 +349,14 @@ class ModelerParametersDialog(QDialog):
         for selected in selectedOptions:
             alg.dependencies.append(availableDependencies[selected].name)
 
+        self._alg.processBeforeAddingToModeler(alg, self.model)
         return alg
 
     def setParamValue(self, alg, param, wrapper):
         try:
-            value = wrapper.value()
-            alg.params[param.name] = value
+            if wrapper.widget:
+                value = wrapper.value()
+                alg.params[param.name] = value
             return True
         except InvalidParameterValue:
             return False
