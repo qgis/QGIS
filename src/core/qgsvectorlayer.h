@@ -794,7 +794,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag ) override;
 
     /** Read the symbology for the current layer from the Dom node supplied.
-     * @param node node that will contain the symbology definition for this layer.
+     * @param layerNode node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
      */
