@@ -62,22 +62,13 @@ void QgsTask::start()
   // force initial emission of progressChanged, but respect if task has had initial progress manually set
   setProgress( mProgress );
 
-  TaskResult result = run();
-  switch ( result )
+  if ( run() )
   {
-    case ResultSuccess:
-      completed();
-      break;
-
-    case ResultFail:
-      terminated();
-      break;
-
-    case ResultPending:
-      // nothing to do - task will call completed() or stopped()
-      // in it's own time
-      break;
-
+    completed();
+  }
+  else
+  {
+    terminated();
   }
 }
 
@@ -625,8 +616,7 @@ void QgsTaskManager::taskStatusChanged( int status )
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
   {
-    QgsTask::TaskResult result = status == QgsTask::Complete ? QgsTask::ResultSuccess
-                                 : QgsTask::ResultFail;
+    bool result = status == QgsTask::Complete;
     task->finished( result );
   }
 

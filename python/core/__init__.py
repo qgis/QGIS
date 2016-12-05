@@ -214,15 +214,15 @@ class QgsTaskWrapper(QgsTask):
         except Exception as ex:
             # report error
             self.exception = ex
-            return QgsTask.ResultFail
+            return False
 
-        return QgsTask.ResultSuccess
+        return True
 
     def finished(self, result):
         if not self.on_finished:
             return
 
-        if result == QgsTask.ResultFail and self.exception is None:
+        if not result and self.exception is None:
             self.exception = Exception('Task cancelled')
 
         try:

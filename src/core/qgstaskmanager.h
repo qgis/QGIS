@@ -61,14 +61,6 @@ class CORE_EXPORT QgsTask : public QObject
       Terminated, //!< Task was terminated or errored
     };
 
-    //! Result of running the task
-    enum TaskResult
-    {
-      ResultSuccess = 0, //!< Task completed successfully
-      ResultFail, //!< Task was terminated within completion
-      ResultPending, //!< Task is still running
-    };
-
     //! Task flags
     enum Flag
     {
@@ -186,8 +178,8 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Will be emitted by task when its status changes.
      * @param status new task status
-     * @note derived classes should not emit this signal directly, instead they should call
-     * completed() or terminated()
+     * @note derived classes should not emit this signal directly, it will automatically
+     * be emitted
      */
     void statusChanged( int status );
 
@@ -200,8 +192,8 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Will be emitted by task to indicate its successful completion.
-     * @note derived classes should not emit this signal directly, instead they should call
-     * completed()
+     * @note derived classes should not emit this signal directly, it will automatically
+     * be emitted
      */
     void taskCompleted();
 
@@ -209,8 +201,8 @@ class CORE_EXPORT QgsTask : public QObject
      * Will be emitted by task if it has terminated for any reason
      * other then completion (eg when a task has been cancelled or encountered
      * an internal error).
-     * @note derived classes should not emit this signal directly, instead they should call
-     * terminated()
+     * @note derived classes should not emit this signal directly, it will automatically
+     * be emitted
      */
     void taskTerminated();
 
@@ -221,21 +213,10 @@ class CORE_EXPORT QgsTask : public QObject
      * (ie via calling start() ), and subclasses should implement the operation they
      * wish to perform in the background within this method.
      *
-     * A task can return a ResultSuccess and ResultFail value to indicate that the
-     * task has finished and was either completed successfully or terminated before
-     * completion.
-     *
-     * Alternatively, tasks can also return the ResultPending value
-     * to indicate that the task is still operating and will manually report its
-     * completion by calling completed() or terminated(). This may be useful for
-     * tasks which rely on external events for completion, eg downloading a
-     * file. In this case Qt slots could be created which are connected to the
-     * download completion or termination and which call completed() or terminated()
-     * to indicate the task has finished operations.
-     * @see completed()
-     * @see terminated()
+     * A task must return a boolean value to indicate whether the
+     * task was completed successfully or terminated before completion.
      */
-    virtual TaskResult run() = 0;
+    virtual bool run() = 0;
 
     /**
      * If the task is managed by a QgsTaskManager, this will be called after the
@@ -247,7 +228,7 @@ class CORE_EXPORT QgsTask : public QObject
      * for the duration of this method so tasks should avoid performing any
      * lengthy operations here.
      */
-    virtual void finished( TaskResult result ) { Q_UNUSED( result ); }
+    virtual void finished( bool result ) { Q_UNUSED( result ); }
 
     /**
      * Will return true if task should terminate ASAP. If the task reports the CanCancel
@@ -256,29 +237,11 @@ class CORE_EXPORT QgsTask : public QObject
      */
     bool isCancelled() const { return mShouldTerminate; }
 
-    /**
-     * Sets the task as completed. Calling this is only required for tasks which
-     * returned the ResultPending value as a result of run(). This should be called
-     * when the task is complete. Calling will automatically emit the statusChanged
-     * and taskCompleted signals.
-     */
-    void completed();
-
-    /**
-     * Sets the task as terminated.  Calling this is only required for tasks which
-     * returned the ResultPending value as a result of run().
-     * Should be called whenever the task ends for any reason other than successful
-     * completion. Calling will automatically emit the statusChanged and taskTerminated
-     * signals.
-     */
-    void terminated();
-
   protected slots:
 
     /**
-     * Sets the task's current progress. If task reports the CanReportProgress flag then
-     * the derived class should call this method whenever the task wants to update its
-     * progress. Calling will automatically emit the progressChanged signal.
+     * Sets the task's current progress. The derived class should call this method whenever
+     * the task wants to update its progress. Calling will automatically emit the progressChanged signal.
      * @param progress percent of progress, from 0.0 - 100.0
      */
     void setProgress( double progress );
@@ -320,6 +283,16 @@ class CORE_EXPORT QgsTask : public QObject
      * Starts the task. Should not be public as only QgsTaskManagers can initiate tasks.
      */
     void start();
+
+    /**
+     * Called when the task has completed successfully.
+     */
+    void completed();
+
+    /**
+     * Called when the task has failed, as either a result of an internal failure or via cancellation.
+     */
+    void terminated();
 
     void processSubTasksForCompletion();
 
