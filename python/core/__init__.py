@@ -187,24 +187,14 @@ class edit(object):
             return False
 
 
-def copy_func(f):
-    """Based on http://stackoverflow.com/a/6528148/190597 (Glenn Maynard)"""
-    g = types.FunctionType(f.__code__, f.__globals__, name=f.__name__,
-                           argdefs=f.__defaults__,
-                           closure=f.__closure__)
-    g = functools.update_wrapper(g, f)
-    g.__kwdefaults__ = f.__kwdefaults__
-    return g
-
-
 class QgsTaskWrapper(QgsTask):
 
     def __init__(self, description, flags, function, on_finished, *args, **kwargs):
         QgsTask.__init__(self, description, flags)
         self.args = args
         self.kwargs = kwargs
-        self.function = copy_func(function)
-        self.on_finished = copy_func(on_finished) if on_finished else None
+        self.function = function
+        self.on_finished = on_finished
         self.returned_values = None
         self.exception = None
 
