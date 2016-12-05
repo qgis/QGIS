@@ -226,6 +226,7 @@ SET(QGIS_GUI_SRCS
   qgsfiledropedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
+  qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
@@ -308,6 +309,7 @@ SET(QGIS_GUI_SRCS
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
+  qgstaskmanagerwidget.cpp
   qgstextannotationitem.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
@@ -392,6 +394,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfiledropedit.h
   qgsfilewidget.h
   qgsfilterlineedit.h
+  qgsfloatingwidget.h
   qgsfocuswatcher.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
@@ -465,6 +468,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssubstitutionlistwidget.h
   qgstablewidgetbase.h
   qgstabwidget.h
+  qgstaskmanagerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
   qgstreewidgetitem.h

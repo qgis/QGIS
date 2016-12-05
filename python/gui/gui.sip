@@ -79,6 +79,7 @@
 %Include qgsfilewidget.sip
 %Include qgsfiledownloader.sip
 %Include qgsfilterlineedit.sip
+%Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
@@ -161,6 +162,7 @@
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
+%Include qgstaskmanagerwidget.sip
 %Include qgstextannotationitem.sip
 %Include qgstextformatwidget.sip
 %Include qgstextpreview.sip

@@ -221,6 +221,8 @@
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstyle.h"
 #include "qgssvgannotationitem.h"
+#include "qgstaskmanager.h"
+#include "qgstaskmanagerwidget.h"
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
@@ -1140,6 +1142,7 @@ QgisApp::QgisApp()
     , mpGpsDock( nullptr )
     , mLogDock( nullptr )
     , mNonEditMapTool( nullptr )
+    , mTaskManagerWidget( nullptr )
     , mScaleWidget( nullptr )
     , mMagnifierWidget( nullptr )
     , mCoordsEdit( nullptr )
@@ -2406,6 +2409,9 @@ void QgisApp::createStatusBar()
 
   connect( mMapCanvas, SIGNAL( renderStarting() ), this, SLOT( canvasRefreshStarted() ) );
   connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( canvasRefreshFinished() ) );
+
+  mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsApplication::taskManager(), statusBar() );
+  statusBar()->addPermanentWidget( mTaskManagerWidget, 0 );
 
   // Bumped the font up one point size since 8 was too
   // small on some platforms. A point size of 9 still provides

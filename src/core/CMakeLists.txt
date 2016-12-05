@@ -211,6 +211,7 @@ SET(QGIS_CORE_SRCS
   qgsstatisticalsummary.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
+  qgstaskmanager.cpp
   qgstextlabelfeature.cpp
   qgstextrenderer.cpp
   qgstolerance.cpp
@@ -495,6 +496,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrelationmanager.h
   qgsrunprocess.h
   qgssnappingutils.h
+  qgstaskmanager.h
   qgstracer.h
   qgstrackedvectorlayertools.h
   qgstransaction.h

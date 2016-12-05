@@ -591,6 +591,12 @@
         <file>themes/default/mActionMoveFeatureCopy.svg</file>
         <file>themes/default/mActionMoveFeatureCopyLine.svg</file>
         <file>themes/default/mActionMoveFeatureCopyPoint.svg</file>
+        <file>themes/default/mTaskComplete.svg</file>
+        <file>themes/default/mTaskOnHold.svg</file>
+        <file>themes/default/mTaskQueued.svg</file>
+        <file>themes/default/mTaskRunning.svg</file>
+        <file>themes/default/mTaskTerminated.svg</file>
+        <file>themes/default/mTaskCancel.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
