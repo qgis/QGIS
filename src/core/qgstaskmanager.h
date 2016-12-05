@@ -476,12 +476,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
       QgsTaskRunnableWrapper* runnable;
     };
 
-    mutable QReadWriteLock* mTaskMutex;
-    mutable QReadWriteLock* mActiveTaskMutex;
-    mutable QReadWriteLock* mParentTaskMutex;
-    mutable QReadWriteLock* mSubTaskMutex;
-    mutable QReadWriteLock* mDependenciesMutex;
-    mutable QReadWriteLock* mLayerDependenciesMutex;
+    mutable QMutex* mTaskMutex;
 
     QMap< long, TaskInfo > mTasks;
     QMap< long, QgsTaskList > mTaskDependencies;
