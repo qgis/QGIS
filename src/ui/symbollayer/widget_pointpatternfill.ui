@@ -14,21 +14,35 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="3">
     <widget class="QLabel" name="mHorizontalDistanceLabel">
      <property name="text">
-      <string>Horizontal distance</string>
+      <string>Distance</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0" colspan="3">
     <widget class="QLabel" name="mHorizontalDisplacementLabel">
      <property name="text">
-      <string>Horizontal displacement</string>
+      <string>Displacement</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="1" column="0">
+    <widget class="QLabel" name="mHorizontalDistanceLabel">
+     <property name="text">
+      <string>Horizontal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mHorizontalDisplacementLabel">
+     <property name="text">
+      <string>Horizontal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QgsDoubleSpinBox" name="mVerticalDistanceSpinBox">
@@ -57,21 +71,21 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="2">
+   <item row="2" column="2">
     <widget class="QgsDataDefinedButton" name="mVerticalDistanceDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="mVerticalDisplacementLabel">
      <property name="text">
-      <string>Vertical displacement</string>
+      <string>Vertical</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QgsDoubleSpinBox" name="mVerticalDisplacementSpinBox">
@@ -107,21 +121,21 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="2">
+   <item row="1" column="2">
     <widget class="QgsDataDefinedButton" name="mHorizontalDistanceDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="mVerticalDistanceLabel">
      <property name="text">
-      <string>Vertical distance</string>
+      <string>Vertical</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QgsDoubleSpinBox" name="mHorizontalDisplacementSpinBox">
@@ -157,14 +171,14 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="2">
+   <item row="4" column="2">
     <widget class="QgsDataDefinedButton" name="mHorizontalDisplacementDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QgsDoubleSpinBox" name="mHorizontalDistanceSpinBox">
@@ -200,14 +214,14 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="2">
+   <item row="5" column="2">
     <widget class="QgsDataDefinedButton" name="mVerticalDisplacementDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="6" column="0" colspan="3">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
