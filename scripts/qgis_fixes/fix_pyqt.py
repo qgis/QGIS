@@ -309,7 +309,13 @@ MAPPING = {
         ]),
     ],
     "PyQt4.QtNetwork": [
-        ("qgis.PyQt.QtNetwork", ["QNetworkReply", "QNetworkRequest"])
+        ("qgis.PyQt.QtNetwork", [
+            "QNetworkReply",
+            "QNetworkRequest",
+            "QSslCertificate",
+            "QSslKey",
+            "QSsl"
+        ])
     ],
     "PyQt4.QtXml": [
         ("qgis.PyQt.QtXml", [
