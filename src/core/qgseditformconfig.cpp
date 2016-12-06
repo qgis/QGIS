@@ -16,6 +16,7 @@
 #include "qgseditformconfig.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgslogger.h"
 
 //#include "qgseditorwidgetregistry.h"
 
@@ -29,14 +30,13 @@ QgsEditFormConfig::QgsEditFormConfig()
 {
 }
 
-QString QgsEditFormConfig::widgetType( const QString& fieldName ) const
+QVariantMap QgsEditFormConfig::widgetConfig( const QString& widgetName ) const
 {
-  return d->mEditorWidgetTypes.value( fieldName );
-}
-
-QVariantMap QgsEditFormConfig::widgetConfig( const QString& fieldName ) const
-{
-  return d->mWidgetConfigs.value( fieldName );
+  int fieldIndex = d->mFields.indexOf( widgetName );
+  if ( fieldIndex != -1 )
+    return d->mFields.at( fieldIndex ).editorWidgetSetup().config();
+  else
+    return d->mWidgetConfigs.value( widgetName );
 }
 
 void QgsEditFormConfig::setFields( const QgsFields& fields )
@@ -69,15 +69,17 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
-void QgsEditFormConfig::setWidgetType( const QString& widgetName, const QString& widgetType )
+bool QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QVariantMap& config )
 {
-  d->mEditorWidgetTypes[widgetName] = widgetType;
-}
+  if ( d->mFields.indexOf( widgetName ) != -1 )
+  {
+    QgsDebugMsg( "Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead." );
+    return false;
+  }
 
-void QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QVariantMap& config )
-{
   d.detach();
   d->mWidgetConfigs[widgetName] = config;
+  return true;
 }
 
 bool QgsEditFormConfig::removeWidgetConfig( const QString& widgetName )

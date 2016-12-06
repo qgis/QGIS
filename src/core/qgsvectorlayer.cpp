@@ -4567,3 +4567,24 @@ void QgsVectorLayer::setConstraintExpression( int index, const QString& expressi
   }
   updateFields();
 }
+
+void QgsVectorLayer::setEditorWidgetSetup( int index, const QgsEditorWidgetSetup& setup )
+{
+  if ( index < 0 || index >= mFields.count() )
+    return;
+
+  if ( setup.isNull() )
+    mFieldWidgetSetups.remove( mFields.at( index ).name() );
+  else
+    mFieldWidgetSetups.insert( mFields.at( index ).name(), setup );
+  updateFields();
+}
+
+QgsEditorWidgetSetup QgsVectorLayer::editorWidgetSetup( int index ) const
+{
+
+  if ( index < 0 || index >= mFields.count() )
+    return QgsEditorWidgetSetup();
+
+  return mFields.at( index ).editorWidgetSetup();
+}

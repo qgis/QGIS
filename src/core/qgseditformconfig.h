@@ -141,82 +141,40 @@ class CORE_EXPORT QgsEditFormConfig
      */
     void setUiForm( const QString& ui );
 
-
-    // Widget stuff
-
     /**
-     * Set the editor widget type for a field
-     *
-     * QGIS ships the following widget types, additional types may be available depending
-     * on plugins.
-     *
-     * <ul>
-     * <li>CheckBox (QgsCheckboxWidgetWrapper)</li>
-     * <li>Classification (QgsClassificationWidgetWrapper)</li>
-     * <li>Color (QgsColorWidgetWrapper)</li>
-     * <li>DateTime (QgsDateTimeEditWrapper)</li>
-     * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
-     * <li>FileName (QgsFileNameWidgetWrapper)</li>
-     * <li>Hidden (QgsHiddenWidgetWrapper)</li>
-     * <li>Photo (QgsPhotoWidgetWrapper)</li>
-     * <li>Range (QgsRangeWidgetWrapper)</li>
-     * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
-     * <li>TextEdit (QgsTextEditWrapper)</li>
-     * <li>UniqueValues (QgsUniqueValuesWidgetWrapper)</li>
-     * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
-     * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
-     * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
-     * <li>WebView (QgsWebViewWidgetWrapper)</li>
-     * </ul>
-     *
-     * @param fieldName   The name of the field
-     * @param widgetType  Type id of the editor widget to use
-     */
-    void setWidgetType( const QString& fieldName, const QString& widgetType );
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     * Don't use this directly. Prefere the use of QgsEditorWidgetRegistry::instance()->findBestType.
-     *
-     * @param fieldName  The name of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     */
-    QString widgetType( const QString& fieldName ) const;
-
-    /**
-     * Set the editor widget config for a widget.
+     * Set the editor widget config for a widget which is not for a simple field.
      *
      * Example:
      * \code{.py}
-     *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+     *   editFormConfig = layer.editFormConfig()
+     *   editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+     *   layer.setEditFormConfig(editFormConfig)
      * \endcode
      *
-     * @param fieldName  The name of the field to configure
-     * @param config      The config to set for this field
+     * @param widgetName  The name of the widget to configure
+     * @param config      The config to set for this widget
+     * @returns false if a field exists with the provided widgetName. In this case
+     *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
-     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
-     *
-     * @note not available in python bindings
+     * @see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
      */
-    void setWidgetConfig( const QString& fieldName, const QVariantMap& config );
+    bool setWidgetConfig( const QString& widgetName, const QVariantMap& config );
 
     /**
-     * Get the configuration for the editor widget used to represent the field with the given name
-     * Don't use this directly. Prefere the use of QgsEditorWidgetRegistry::instance()->findBestConfig.
+     * Get the configuration for the editor widget with the given name.
      *
-     * @param fieldName The name of the field.
+     * @param widgetName The name of the widget.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      */
     QVariantMap widgetConfig( const QString& fieldName ) const;
 
     /**
-     * Remove the configuration for the editor widget used to represent the field with the given name
+     * Remove the configuration for the editor widget with the given name
      *
-     * @param fieldName The name of the widget.
+     * @param widgetName The name of the widget.
      *
-     * @return true if successful, false if the field does not exist
+     * @return true if a configuration has been removed
      */
     bool removeWidgetConfig( const QString& fieldName );
 
