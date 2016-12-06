@@ -389,7 +389,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/oracleplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/rasterterrainplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/roadgraphplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
