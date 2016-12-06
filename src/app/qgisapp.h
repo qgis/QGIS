@@ -1473,6 +1473,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     // void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
+    //! Checks for running tasks dependent on the open project
+    bool checkTasksDependOnProject();
 
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
       @return empty geometry in case of error or if canceled */

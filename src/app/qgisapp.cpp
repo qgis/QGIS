@@ -4485,6 +4485,9 @@ void QgisApp::fileNewBlank()
 //as file new but accepts flags to indicate whether we should prompt to save
 void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 {
+  if ( checkTasksDependOnProject() )
+    return;
+
   if ( thePromptToSaveFlag )
   {
     if ( !saveDirty() )
@@ -4594,6 +4597,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
 bool QgisApp::fileNewFromTemplate( const QString& fileName )
 {
+  if ( checkTasksDependOnProject() )
+    return false;
+
   if ( !saveDirty() )
   {
     return false; //cancel pressed
@@ -4883,6 +4889,9 @@ void QgisApp::showAlignRasterTool()
 
 void QgisApp::fileOpen()
 {
+  if ( checkTasksDependOnProject() )
+    return;
+
   // possibly save any pending work before opening a new project
   if ( saveDirty() )
   {
@@ -5289,6 +5298,9 @@ void QgisApp::openProject( QAction *action )
   // possibly save any pending work before opening a different project
   Q_ASSERT( action );
 
+  if ( checkTasksDependOnProject() )
+    return;
+
   QString debugme = action->data().toString();
   if ( saveDirty() )
     addProject( debugme );
@@ -5317,6 +5329,9 @@ void QgisApp::runScript( const QString &filePath )
   */
 void QgisApp::openProject( const QString & fileName )
 {
+  if ( checkTasksDependOnProject() )
+    return;
+
   // possibly save any pending work before opening a different project
   if ( saveDirty() )
   {
@@ -8388,6 +8403,26 @@ void QgisApp::removeLayer()
       return;
   }
 
+  QStringList activeTaskDescriptions;
+  Q_FOREACH ( QgsMapLayer * layer, mLayerTreeView->selectedLayers() )
+  {
+    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layer->id() );
+    if ( !tasks.isEmpty() )
+    {
+      Q_FOREACH ( QgsTask* task, tasks )
+      {
+        activeTaskDescriptions << tr( " • %1" ).arg( task->description() );
+      }
+    }
+  }
+
+  if ( !activeTaskDescriptions.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Active tasks" ),
+                          tr( "The following tasks are currently running which depend on this layer:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.join( "\n" ) ) );
+    return;
+  }
+
   QList<QgsLayerTreeNode*> selectedNodes = mLayerTreeView->selectedNodes( true );
 
   //validate selection
@@ -9542,7 +9577,34 @@ bool QgisApp::saveDirty()
   mMapCanvas->freeze( false );
 
   return answer != QMessageBox::Cancel;
-} // QgisApp::saveDirty()
+}
+
+bool QgisApp::checkTasksDependOnProject()
+{
+  QSet< QString > activeTaskDescriptions;
+  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*>::const_iterator layerIt = layers.constBegin();
+
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  {
+    QList< QgsTask* > tasks = QgsApplication::taskManager()->tasksDependentOnLayer( layerIt.key() );
+    if ( !tasks.isEmpty() )
+    {
+      Q_FOREACH ( QgsTask* task, tasks )
+      {
+        activeTaskDescriptions.insert( tr( " • %1" ).arg( task->description() ) );
+      }
+    }
+  }
+
+  if ( !activeTaskDescriptions.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Active tasks" ),
+                          tr( "The following tasks are currently running which depend on layers in this project:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.toList().join( "\n" ) ) );
+    return true;
+  }
+  return false;
+}
 
 void QgisApp::closeProject()
 {
