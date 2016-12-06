@@ -137,7 +137,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.selectByIds(ids)
-        self.assertEqual(vl.selectedFeaturesIds(), ids)
+        self.assertEqual(vl.selectedFeatureIds(), ids)
         self.assertEqual(vl.pendingFeatureCount(), 5)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(3))

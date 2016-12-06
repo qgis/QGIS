@@ -37,7 +37,7 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttribute
 
 const QgsFeatureIds& QgsFeatureSelectionDlg::selectedFeatures()
 {
-  return mFeatureSelection->selectedFeaturesIds();
+  return mFeatureSelection->selectedFeatureIds();
 }
 
 void QgsFeatureSelectionDlg::setSelectedFeatures( const QgsFeatureIds& ids )

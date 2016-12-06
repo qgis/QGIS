@@ -33,7 +33,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
 {
   if ( selectedOnly )
   {
-    mFeatureIds = layer->selectedFeaturesIds();
+    mFeatureIds = layer->selectedFeatureIds();
   }
   else
   {
@@ -92,7 +92,7 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
   feature.setFeatureId( features.front().id() );
   if ( mSelectedOnly )
   {
-    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeaturesIds();
+    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeatureIds();
     selectedFeatureIds.insert( feature.id() );
     mLayer->selectByIds( selectedFeatureIds );
   }

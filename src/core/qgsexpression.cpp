@@ -1493,7 +1493,7 @@ static QVariant fcnIsSelected( const QVariantList& values, const QgsExpressionCo
     return QVariant( QVariant::Bool );
   }
 
-  return layer->selectedFeaturesIds().contains( feature.id() );
+  return layer->selectedFeatureIds().contains( feature.id() );
 }
 
 static QVariant fcnNumSelected( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )

@@ -304,7 +304,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   int numberOfSplittedFeatures = 0;
 
   QgsFeatureIterator features;
-  const QgsFeatureIds selectedIds = L->selectedFeaturesIds();
+  const QgsFeatureIds selectedIds = L->selectedFeatureIds();
 
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {

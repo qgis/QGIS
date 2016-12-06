@@ -58,7 +58,7 @@ bool QgsFeatureSelectionModel::isSelected( QgsFeatureId fid )
   if ( mDeselectedBuffer.contains( fid ) )
     return false;
 
-  if ( !mClearAndSelectBuffer && mFeatureSelectionManager->selectedFeaturesIds().contains( fid ) )
+  if ( !mClearAndSelectBuffer && mFeatureSelectionManager->selectedFeatureIds().contains( fid ) )
     return true;
 
   return false;

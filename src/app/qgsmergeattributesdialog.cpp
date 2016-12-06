@@ -464,7 +464,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   selectedRowChanged();
 
   //remove feature from the vector layer selection
-  QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
+  QgsFeatureIds selectedIds = mVectorLayer->selectedFeatureIds();
   selectedIds.remove( featureId );
   mVectorLayer->selectByIds( selectedIds );
   mMapCanvas->repaint();

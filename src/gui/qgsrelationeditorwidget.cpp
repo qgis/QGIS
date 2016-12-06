@@ -406,8 +406,8 @@ void QgsRelationEditorWidget::deleteFeature()
     layer = mNmRelation.referencedLayer();
   else
     layer = mRelation.referencingLayer();
-  QgsDebugMsg( QString( "Delete %1" ).arg( mFeatureSelectionMgr->selectedFeaturesIds().size() ) );
-  layer->deleteFeatures( mFeatureSelectionMgr->selectedFeaturesIds() );
+  QgsDebugMsg( QString( "Delete %1" ).arg( mFeatureSelectionMgr->selectedFeatureIds().size() ) );
+  layer->deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
 }
 
 void QgsRelationEditorWidget::unlinkFeature()
@@ -416,7 +416,7 @@ void QgsRelationEditorWidget::unlinkFeature()
   {
     QgsFeatureIterator selectedIterator = mNmRelation.referencedLayer()->getFeatures(
                                             QgsFeatureRequest()
-                                            .setFilterFids( mFeatureSelectionMgr->selectedFeaturesIds() )
+                                            .setFilterFids( mFeatureSelectionMgr->selectedFeatureIds() )
                                             .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
 
     QgsFeature f;
@@ -463,7 +463,7 @@ void QgsRelationEditorWidget::unlinkFeature()
       keyFields.insert( idx, fld );
     }
 
-    Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeaturesIds() )
+    Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeatureIds() )
     {
       QMapIterator<int, QgsField> it( keyFields );
       while ( it.hasNext() )

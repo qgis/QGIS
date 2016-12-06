@@ -58,7 +58,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
   if ( onlySelectedFeatures )
   {
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    const QgsFeatureIds selection = layer->selectedFeatureIds();
     if ( p )
     {
       p->setMaximum( selection.size() );
@@ -173,7 +173,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
   if ( onlySelectedFeatures )
   {
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    const QgsFeatureIds selection = layer->selectedFeatureIds();
     if ( p )
     {
       p->setMaximum( selection.size() );
@@ -396,7 +396,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   if ( onlySelectedFeatures )
   {
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    const QgsFeatureIds selection = layer->selectedFeatureIds();
     QgsFeatureIds::const_iterator it = selection.constBegin();
     for ( ; it != selection.constEnd(); ++it )
     {
@@ -447,7 +447,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
     if ( onlySelectedFeatures )
     {
       //use QgsVectorLayer::featureAtId
-      const QgsFeatureIds selection = layer->selectedFeaturesIds();
+      const QgsFeatureIds selection = layer->selectedFeatureIds();
       if ( p )
       {
         p->setMaximum( selection.size() );
@@ -594,7 +594,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   if ( onlySelectedFeatures )
   {
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    const QgsFeatureIds selection = layer->selectedFeatureIds();
     QgsFeatureIds::const_iterator it = selection.constBegin();
     for ( ; it != selection.constEnd(); ++it )
     {
@@ -626,7 +626,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
     if ( onlySelectedFeatures )
     {
       //use QgsVectorLayer::featureAtId
-      const QgsFeatureIds selection = layer->selectedFeaturesIds();
+      const QgsFeatureIds selection = layer->selectedFeatureIds();
       if ( p )
       {
         p->setMaximum( selection.size() );
@@ -744,7 +744,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   if ( onlySelectedFeatures )
   {
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    const QgsFeatureIds selection = layer->selectedFeatureIds();
     if ( p )
     {
       p->setMaximum( selection.size() );

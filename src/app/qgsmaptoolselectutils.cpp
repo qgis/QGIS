@@ -129,7 +129,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const Qgs
   if ( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier )
   {
     QgsFeatureId selectId = *selectedFeatures.constBegin();
-    QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeaturesIds();
+    QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
     if ( layerSelectedFeatures.contains( selectId ) )
       behaviour = QgsVectorLayer::RemoveFromSelection;
     else

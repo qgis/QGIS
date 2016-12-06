@@ -315,7 +315,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   QgsFeatureIterator fit = layer->getFeatures( req );
 
-  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
+  const QgsFeatureIds& ids = layer->selectedFeatureIds();
 
   // Create our transform
   if ( destCRS.isValid() )

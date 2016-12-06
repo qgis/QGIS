@@ -388,7 +388,7 @@ void QgsAttributeForm::resetMultiEdit( bool promptToSave )
     save();
 
   mUnsavedMultiEditChanges = false;
-  setMultiEditFeatureIds( mLayer->selectedFeaturesIds() );
+  setMultiEditFeatureIds( mLayer->selectedFeatureIds() );
 }
 
 void QgsAttributeForm::multiEditMessageClicked( const QString& link )

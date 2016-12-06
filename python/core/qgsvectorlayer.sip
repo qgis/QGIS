@@ -572,7 +572,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      *
      * @return A list of { @link QgsFeature } 's
      *
-     * @see    selectedFeaturesIds()
+     * @see    selectedFeatureIds()
      * @see    selectedFeaturesIterator() which is more memory friendly when handling large selections
      */
     QgsFeatureList selectedFeatures() const;
@@ -585,7 +585,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      *
      * @return Iterator over the selected features
      *
-     * @see    selectedFeaturesIds()
+     * @see    selectedFeatureIds()
      * @see    selectedFeatures()
      */
     QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
@@ -596,7 +596,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @return A list of { @link QgsFeatureId } 's
      * @see selectedFeatures()
      */
-    const QgsFeatureIds &selectedFeaturesIds() const;
+    const QgsFeatureIds &selectedFeatureIds() const;
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected() const;

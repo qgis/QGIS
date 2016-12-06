@@ -325,7 +325,7 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
 
     if ( behaviour == AddToSelection )
     {
-      newSelection = selectedFeaturesIds();
+      newSelection = selectedFeatureIds();
     }
     QgsFeature feat;
     while ( features.nextFeature( feat ) )
@@ -339,7 +339,7 @@ void QgsVectorLayer::selectByExpression( const QString& expression, QgsVectorLay
     QgsExpression exp( expression );
     exp.prepare( &context );
 
-    QgsFeatureIds oldSelection = selectedFeaturesIds();
+    QgsFeatureIds oldSelection = selectedFeatureIds();
     QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( oldSelection );
 
     //refine request
@@ -2466,7 +2466,7 @@ int QgsVectorLayer::selectedFeatureCount() const
   return mSelectedFeatureIds.size();
 }
 
-const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
+const QgsFeatureIds& QgsVectorLayer::selectedFeatureIds() const
 {
   return mSelectedFeatureIds;
 }

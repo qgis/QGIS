@@ -63,7 +63,7 @@ class SelectByAttributeSum(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD)
         value = self.getParameterValue(self.VALUE)
 
-        selected = layer.selectedFeaturesIds()
+        selected = layer.selectedFeatureIds()
         if len(selected) == 0:
             GeoAlgorithmExecutionException(
                 self.tr('There is no selection in the input layer. '

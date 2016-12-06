@@ -87,7 +87,7 @@ class SelectByLocation(GeoAlgorithm):
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 
-        oldSelection = set(inputLayer.selectedFeaturesIds())
+        oldSelection = set(inputLayer.selectedFeatureIds())
         inputLayer.removeSelection()
         index = vector.spatialindex(inputLayer)
 

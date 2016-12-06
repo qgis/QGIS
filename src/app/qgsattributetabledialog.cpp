@@ -436,7 +436,7 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
 
 void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
-  QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
+  QgsFeatureIds filteredIds = mLayer->selectedFeatureIds();
   runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->asExpression(), filteredIds );
 }
 
