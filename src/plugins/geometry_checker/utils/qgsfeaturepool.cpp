@@ -44,7 +44,18 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
   QgsFeature feature;
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( QgsAttributeList() );
-  mIndex = QgsSpatialIndex( layer->getFeatures( req ) );
+  QgsFeatureIterator it = layer->getFeatures( req );
+  while ( it.nextFeature( feature ) )
+  {
+    if ( feature.geometry() )
+    {
+      mIndex.insertFeature( feature );
+    }
+    else
+    {
+      mFeatureIds.remove( feature.id() );
+    }
+  }
 }
 
 bool QgsFeaturePool::get( QgsFeatureId id , QgsFeature& feature )
