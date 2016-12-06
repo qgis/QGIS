@@ -306,9 +306,19 @@ void QgsMultiBandColorRendererWidget::setFromRenderer( const QgsRasterRenderer* 
   }
   else
   {
-    mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findText( tr( "Red" ) ) );
-    mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findText( tr( "Green" ) ) );
-    mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findText( tr( "Blue" ) ) );
+    if ( mRedBandComboBox->findText( tr( "Red" ) ) > -1 && mRedBandComboBox->findText( tr( "Green" ) ) > -1 &&
+         mRedBandComboBox->findText( tr( "Blue" ) ) > -1 )
+    {
+      mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findText( tr( "Red" ) ) );
+      mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findText( tr( "Green" ) ) );
+      mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findText( tr( "Blue" ) ) );
+    }
+    else
+    {
+      mRedBandComboBox->setCurrentIndex( mRedBandComboBox->count() > 1 ? 1 : 0 );
+      mGreenBandComboBox->setCurrentIndex( mRedBandComboBox->count() > 2 ? 2 : 0 );
+      mBlueBandComboBox->setCurrentIndex( mRedBandComboBox->count() > 3 ? 3 : 0 );
+    }
   }
 }
 
