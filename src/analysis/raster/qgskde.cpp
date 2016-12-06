@@ -92,8 +92,8 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   if ( mBounds.isNull() )
     return InvalidParameters;
 
-  int rows = qMax( qRound( mBounds.height() / mPixelSize ), 1 );
-  int cols = qMax( qRound( mBounds.width() / mPixelSize ), 1 );
+  int rows = qMax( ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
+  int cols = qMax( ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
   if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
     return FileCreationError;
@@ -177,43 +177,28 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
       result = RasterIoError;
     }
 
-    for ( int xp = 0; xp <= buffer; xp++ )
+    for ( int xp = 0; xp < blockSize; xp++ )
     {
-      for ( int yp = 0; yp <= buffer; yp++ )
+      for ( int yp = 0; yp < blockSize; yp++ )
       {
-        double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
+        double pixelCentroidX = ( xPosition + xp + 0.5 ) * mPixelSize + mBounds.xMinimum();
+        double pixelCentroidY = ( yPosition + yp + 0.5 ) * mPixelSize + mBounds.yMinimum();
+
+        double distance = sqrt( pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
 
         // is pixel outside search bandwidth of feature?
-        if ( distance > buffer )
+        if ( distance > radius )
         {
           continue;
         }
 
-        double pixelValue = weight * calculateKernelValue( distance, buffer, mShape, mOutputValues );
-
-        // clearing anamolies along the axes
-        if ( xp == 0 && yp == 0 )
+        double pixelValue = weight * calculateKernelValue( distance, radius, mShape, mOutputValues );
+        int pos = xp + blockSize * yp;
+        if ( dataBuffer[ pos ] == NO_DATA )
         {
-          pixelValue /= 4;
+          dataBuffer[ pos ] = 0;
         }
-        else if ( xp == 0 || yp == 0 )
-        {
-          pixelValue /= 2;
-        }
-
-        int pos[4];
-        pos[0] = ( buffer + xp ) * blockSize + ( buffer + yp );
-        pos[1] = ( buffer + xp ) * blockSize + ( buffer - yp );
-        pos[2] = ( buffer - xp ) * blockSize + ( buffer + yp );
-        pos[3] = ( buffer - xp ) * blockSize + ( buffer - yp );
-        for ( int p = 0; p < 4; p++ )
-        {
-          if ( dataBuffer[ pos[p] ] == NO_DATA )
-          {
-            dataBuffer[ pos[p] ] = 0;
-          }
-          dataBuffer[ pos[p] ] += pixelValue;
-        }
+        dataBuffer[ pos ] += pixelValue;
       }
     }
     if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPosition, blockSize, blockSize,
@@ -286,7 +271,7 @@ bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const Qgs
   return true;
 }
 
-double QgsKernelDensityEstimation::calculateKernelValue( const double distance, const int bandwidth, const QgsKernelDensityEstimation::KernelShape shape, const QgsKernelDensityEstimation::OutputValues outputType ) const
+double QgsKernelDensityEstimation::calculateKernelValue( const double distance, const double bandwidth, const QgsKernelDensityEstimation::KernelShape shape, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
   switch ( shape )
   {
@@ -316,7 +301,7 @@ double QgsKernelDensityEstimation::calculateKernelValue( const double distance, 
  * k is calculated by polar double integration of the kernel function
  * between a radius of 0 to the specified bandwidth and equating the area to 1. */
 
-double QgsKernelDensityEstimation::uniformKernel( const double distance, const int bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
+double QgsKernelDensityEstimation::uniformKernel( const double distance, const double bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
   Q_UNUSED( distance );
   switch ( outputType )
@@ -324,10 +309,10 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const i
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 2. / ( M_PI * ( double )bandwidth );
+      double k = 2. / ( M_PI * bandwidth );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 0.5 / ( double )bandwidth );
+      return k * ( 0.5 / bandwidth );
     }
     case OutputRaw:
       return 1.0;
@@ -335,62 +320,62 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const i
   return 0.0; // NO warnings!!!!!
 }
 
-double QgsKernelDensityEstimation::quarticKernel( const double distance, const int bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
+double QgsKernelDensityEstimation::quarticKernel( const double distance, const double bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
   switch ( outputType )
   {
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 116. / ( 5. * M_PI * pow(( double )bandwidth, 2 ) );
+      double k = 116. / ( 5. * M_PI * pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 15. / 16. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
+      return k * ( 15. / 16. ) * pow( 1. - pow( distance / bandwidth, 2 ), 2 );
     }
     case OutputRaw:
-      return pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
+      return pow( 1. - pow( distance / bandwidth, 2 ), 2 );
   }
   return 0.0; //no, seriously, I told you NO WARNINGS!
 }
 
-double QgsKernelDensityEstimation::triweightKernel( const double distance, const int bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
+double QgsKernelDensityEstimation::triweightKernel( const double distance, const double bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
   switch ( outputType )
   {
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 128. / ( 35. * M_PI * pow(( double )bandwidth, 2 ) );
+      double k = 128. / ( 35. * M_PI * pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 35. / 32. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
+      return k * ( 35. / 32. ) * pow( 1. - pow( distance / bandwidth, 2 ), 3 );
     }
     case OutputRaw:
-      return pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
+      return pow( 1. - pow( distance / bandwidth, 2 ), 3 );
   }
   return 0.0; // this is getting ridiculous... don't you ever listen to a word I say?
 }
 
-double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, const int bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
+double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, const double bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
   switch ( outputType )
   {
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 8. / ( 3. * M_PI * pow(( double )bandwidth, 2 ) );
+      double k = 8. / ( 3. * M_PI * pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 3. / 4. ) * ( 1. - pow( distance / ( double )bandwidth, 2 ) );
+      return k * ( 3. / 4. ) * ( 1. - pow( distance / bandwidth, 2 ) );
     }
     case OutputRaw:
-      return ( 1. - pow( distance / ( double )bandwidth, 2 ) );
+      return ( 1. - pow( distance / bandwidth, 2 ) );
   }
 
   return 0.0; // la la la i'm not listening
 }
 
-double QgsKernelDensityEstimation::triangularKernel( const double distance, const int bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
+double QgsKernelDensityEstimation::triangularKernel( const double distance, const double bandwidth, const QgsKernelDensityEstimation::OutputValues outputType ) const
 {
   switch ( outputType )
   {
@@ -401,19 +386,19 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 
       if ( mDecay >= 0 )
       {
-        double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
+        double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow( bandwidth, 2 ) );
 
         // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
-        return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+        return k * ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
       }
       else
       {
         // Non-standard or mathematically valid negative decay ("coolmap")
-        return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+        return ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
       }
     }
     case OutputRaw:
-      return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+      return ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
   }
   return 0.0; // ....
 }
