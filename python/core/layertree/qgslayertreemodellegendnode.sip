@@ -139,19 +139,31 @@ offset from the left side where label should start
  :rtype: QSizeF
 %End
 
+    virtual bool fullWidth() const;
+%Docstring
+ Is a full width symbol, Is used when the text is above the legend graphics.
+.. note::
+
+   added in QGIS 3.0
+ :rtype: bool
+%End
+
   signals:
+
     void dataChanged();
 %Docstring
 Emitted on internal data change so the layer tree model can forward the signal to views
 %End
 
   protected:
+
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Construct the node with pointer to its parent layer node
 %End
 
   protected:
+
 };
 
 
@@ -168,6 +180,12 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
+
+    struct SymbolMetrics
+    {
+      QSizeF size;
+      QSizeF offset;
+    };
 
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -238,6 +256,15 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 .. versionadded:: 2.14
 %End
 
+    virtual bool editable() const;
+%Docstring
+ Is an editable symbol.
+.. note::
+
+   added in QGIS 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void checkAllItems();
@@ -252,6 +279,21 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
  Unchecks all items belonging to the same layer as this node.
 .. versionadded:: 2.14
 .. seealso:: checkAllItems()
+%End
+
+  protected:
+
+    virtual SymbolMetrics symbolMetrics(
+      const QgsLegendSettings &settings, const QgsRenderContext context,
+      QgsSymbol *symbol /Transfer/ ) const;
+%Docstring
+ Get the symbol metrics
+.. versionadded:: 3.0
+ \param settings
+ \param context
+ \param symbol
+ :return: width, height, widthOffset, heightOffset
+ :rtype: SymbolMetrics
 %End
 
 };

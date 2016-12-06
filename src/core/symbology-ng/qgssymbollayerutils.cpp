@@ -586,27 +586,41 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size,
 {
   Q_ASSERT( symbol );
 
+  QScopedPointer<QPainter> localPainter;
+  QPainter *painter = customContext ? customContext->painter() : NULL;
   QPixmap pixmap( size );
-  pixmap.fill( Qt::transparent );
-  QPainter painter;
-  painter.begin( &pixmap );
-  painter.setRenderHint( QPainter::Antialiasing );
-
-  if ( customContext )
+  if ( !painter )
   {
-    customContext->setPainter( &painter );
+    painter = new QPainter();
+    localPainter.reset( painter );
+    pixmap.fill( Qt::transparent );
+    painter->begin( &pixmap );
+    if ( customContext )
+    {
+      customContext->setPainter( painter );
+    }
   }
+
+  painter->setRenderHint( QPainter::Antialiasing );
 
   if ( padding > 0 )
   {
     size.setWidth( size.rwidth() - ( padding * 2 ) );
     size.setHeight( size.rheight() - ( padding * 2 ) );
-    painter.translate( padding, padding );
+    painter->translate( padding, padding );
   }
 
-  symbol->drawPreviewIcon( &painter, size, customContext );
+  symbol->drawPreviewIcon( painter, size, customContext );
 
-  painter.end();
+  if ( !localPainter.isNull() )
+  {
+    painter->end();
+    if ( customContext )
+    {
+      customContext->setPainter( NULL );
+    }
+  }
+
   return pixmap;
 }
 

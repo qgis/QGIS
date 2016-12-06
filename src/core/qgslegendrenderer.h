@@ -88,6 +88,7 @@ class CORE_EXPORT QgsLegendRenderer
         // Offset of symbol label, this offset is the same for all symbol labels
         // of the same layer in the same column
         double labelXOffset;
+        bool fullWidth;
     };
 
     /** Atom is indivisible set (indivisible into more columns). It may consists

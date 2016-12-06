@@ -471,8 +471,9 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       //show properties
       if ( mLayerTreeView )
       {
-        // if it's a legend node, open symbol editor directly
-        if ( QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mLayerTreeView->currentLegendNode() ) )
+        QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mLayerTreeView->currentLegendNode() );
+        // if it's a legend node and editable, open symbol editor directly
+        if ( node && node->editable() )
         {
           const QgsSymbol *originalSymbol = node->symbol();
           if ( !originalSymbol )
