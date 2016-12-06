@@ -61,10 +61,10 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     }
 
     //contrast enhancement algorithms
-    mContrastEnhancementComboBox->addItem( tr( "No enhancement" ), 0 );
-    mContrastEnhancementComboBox->addItem( tr( "Stretch to MinMax" ), 1 );
-    mContrastEnhancementComboBox->addItem( tr( "Stretch and clip to MinMax" ), 2 );
-    mContrastEnhancementComboBox->addItem( tr( "Clip to MinMax" ), 3 );
+    mContrastEnhancementComboBox->addItem( tr( "No enhancement" ), QgsContrastEnhancement::NoEnhancement );
+    mContrastEnhancementComboBox->addItem( tr( "Stretch to MinMax" ), QgsContrastEnhancement::StretchToMinimumMaximum );
+    mContrastEnhancementComboBox->addItem( tr( "Stretch and clip to MinMax" ), QgsContrastEnhancement::StretchAndClipToMinimumMaximum );
+    mContrastEnhancementComboBox->addItem( tr( "Clip to MinMax" ), QgsContrastEnhancement::ClipToMinimumMaximum );
 
     setFromRenderer( layer->renderer() );
 
@@ -96,8 +96,7 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
         provider->dataType( band ) ) );
   e->setMinimumValue( mMinLineEdit->text().toDouble() );
   e->setMaximumValue( mMaxLineEdit->text().toDouble() );
-  e->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->itemData(
-                                       mContrastEnhancementComboBox->currentIndex() ).toInt() ) );
+  e->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) );
 
 
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( provider, band );
@@ -136,6 +135,12 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, 
   else
   {
     mMaxLineEdit->setText( QString::number( theMax ) );
+  }
+
+  //automaticlly activate contrast enhancement algorithm if set to none
+  if ( mContrastEnhancementComboBox->currentData().toInt() == QgsContrastEnhancement::NoEnhancement )
+  {
+    mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( QgsContrastEnhancement::StretchToMinimumMaximum ) );
   }
 }
 
