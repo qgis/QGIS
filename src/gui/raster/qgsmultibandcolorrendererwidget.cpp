@@ -59,10 +59,10 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     mBlueBandComboBox->addItem( tr( "Not set" ), -1 );
 
     //contrast enhancement algorithms
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "No enhancement" ), 0 );
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch to MinMax" ), 1 );
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch and clip to MinMax" ), 2 );
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Clip to MinMax" ), 3 );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "No enhancement" ), QgsContrastEnhancement::NoEnhancement );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch to MinMax" ), QgsContrastEnhancement::StretchToMinimumMaximum );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch and clip to MinMax" ), QgsContrastEnhancement::StretchAndClipToMinimumMaximum );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Clip to MinMax" ), QgsContrastEnhancement::ClipToMinimumMaximum );
 
     int nBands = provider->bandCount();
     for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
@@ -258,6 +258,13 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, 
   else
   {
     myMaxLineEdit->setText( QString::number( theMax ) );
+  }
+
+  //automaticlly activate contrast enhancement algorithm if set to none
+  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() == QgsContrastEnhancement::NoEnhancement )
+  {
+    mContrastEnhancementAlgorithmComboBox->setCurrentIndex(
+      mContrastEnhancementAlgorithmComboBox->findData( QgsContrastEnhancement::StretchToMinimumMaximum ) );
   }
 }
 
