@@ -1024,8 +1024,13 @@ void TestQgsTaskManager::layerDependencies()
   //test that remove layers cancels all tasks which are dependant on them
   TestTask* task = new TestTask();
   task->hold();
+  task->setDependentLayers( QStringList() << layer2->id() << layer3->id() );
+  QCOMPARE( task->dependentLayerIds(), QStringList() << layer2->id() << layer3->id() );
   long taskId = manager.addTask( task );
-  manager.setDependentLayers( taskId, QStringList() << layer2->id() << layer3->id() );
+  QCOMPARE( manager.dependentLayers( taskId ), QStringList() << layer2->id() << layer3->id() );
+  QVERIFY( manager.tasksDependentOnLayer( "xxx" ).isEmpty() );
+  QCOMPARE( manager.tasksDependentOnLayer( layer2->id() ), QList< QgsTask* >() << task );
+  QCOMPARE( manager.tasksDependentOnLayer( layer3->id() ), QList< QgsTask* >() << task );
 
   QCOMPARE( task->status(), QgsTask::OnHold );
   //removing layer1 should have no effect
@@ -1033,6 +1038,11 @@ void TestQgsTaskManager::layerDependencies()
   QCOMPARE( task->status(), QgsTask::OnHold );
   //removing layer3 should cancel task
   QgsMapLayerRegistry::instance()->removeMapLayers( QList< QgsMapLayer* >() << layer3 );
+  while ( task->status() != QgsTask::Terminated )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   QgsMapLayerRegistry::instance()->removeMapLayers( QList< QgsMapLayer* >() << layer2 );

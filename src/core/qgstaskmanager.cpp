@@ -136,6 +136,11 @@ void QgsTask::addSubTask( QgsTask* subTask, const QgsTaskList& dependencies,
   connect( subTask, &QgsTask::statusChanged, this, &QgsTask::subTaskStatusChanged );
 }
 
+void QgsTask::setDependentLayers( const QStringList& dependentLayerIds )
+{
+  mDependentLayerIds = dependentLayerIds;
+}
+
 void QgsTask::subTaskStatusChanged( int status )
 {
   QgsTask* subTask = qobject_cast< QgsTask* >( sender() );
@@ -371,6 +376,8 @@ long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bo
   {
     mParentTasks << task;
   }
+  if ( !task->dependentLayerIds().isEmpty() )
+    mLayerDependencies.insert( taskId, task->dependentLayerIds() );
   mTaskMutex->unlock();
 
   connect( task, &QgsTask::statusChanged, this, &QgsTaskManager::taskStatusChanged );
@@ -539,16 +546,27 @@ bool QgsTaskManager::hasCircularDependencies( long taskId ) const
   return !resolveDependencies( taskId, taskId, d );
 }
 
-void QgsTaskManager::setDependentLayers( long taskId, const QStringList& layerIds )
-{
-  QMutexLocker ml( mTaskMutex );
-  mLayerDependencies.insert( taskId, layerIds );
-}
-
 QStringList QgsTaskManager::dependentLayers( long taskId ) const
 {
   QMutexLocker ml( mTaskMutex );
   return mLayerDependencies.value( taskId, QStringList() );
+}
+
+QList<QgsTask*> QgsTaskManager::tasksDependentOnLayer( const QString& layerId ) const
+{
+  QMutexLocker ml( mTaskMutex );
+  QList< QgsTask* > tasks;
+  QMap< long, QStringList >::const_iterator layerIt = mLayerDependencies.constBegin();
+  for ( ; layerIt != mLayerDependencies.constEnd(); ++layerIt )
+  {
+    if ( layerIt.value().contains( layerId ) )
+    {
+      QgsTask* layerTask = task( layerIt.key() );
+      if ( layerTask )
+        tasks << layerTask;
+    }
+  }
+  return tasks;
 }
 
 QList<QgsTask*> QgsTaskManager::activeTasks() const
