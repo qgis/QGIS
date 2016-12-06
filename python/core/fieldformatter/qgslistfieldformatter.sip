@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvaluemapfieldkit.sip - QgsValueMapFieldKit
+  qgslistfieldformatter.sip - QgsListFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -13,17 +13,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsValueMapFieldKit : QgsFieldKit
+class QgsListFieldFormatter : QgsFieldFormatter
 {
 %TypeHeaderCode
-#include "qgsvaluemapfieldkit.h"
+#include "qgslistfieldformatter.h"
 %End
+
   public:
-    QgsValueMapFieldKit();
+    QgsListFieldFormatter();
 
     QString id() const;
 
     QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
-
-    QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 };

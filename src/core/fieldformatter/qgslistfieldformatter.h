@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvaluemapfieldkit.h - QgsValueMapFieldKit
+  qgslistfieldformatter.h - QgsListFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -13,23 +13,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSVALUEMAPFIELDKIT_H
-#define QGSVALUEMAPFIELDKIT_H
+#ifndef QGSLISTFIELDKIT_H
+#define QGSLISTFIELDKIT_H
 
-#include "qgsfieldkit.h"
+#include "qgsfieldformatter.h"
 
-#define VALUEMAP_NULL_TEXT QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" )
-
-class CORE_EXPORT QgsValueMapFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsListFieldFormatter : public QgsFieldFormatter
 {
   public:
-    QgsValueMapFieldKit();
+    QgsListFieldFormatter();
 
     QString id() const override;
 
     QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
-
-    QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
 
-#endif // QGSVALUEMAPFIELDKIT_H
+#endif // QGSLISTFIELDKIT_H

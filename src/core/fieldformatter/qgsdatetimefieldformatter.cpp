@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdatetimefieldkit.cpp - QgsDateTimeFieldKit
+  qgsdatetimefieldformatter.cpp - QgsDateTimeFieldFormatter
 
  ---------------------
  begin                : 2.12.2016
@@ -13,24 +13,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdatetimefieldkit.h"
+#include "qgsdatetimefieldformatter.h"
 
 #include <QSettings>
 
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
-QgsDateTimeFieldKit::QgsDateTimeFieldKit()
+QgsDateTimeFieldFormatter::QgsDateTimeFieldFormatter()
 {
 
 }
 
-QString QgsDateTimeFieldKit::id() const
+QString QgsDateTimeFieldFormatter::id() const
 {
   return QStringLiteral( "DateTime" );
 }
 
-QString QgsDateTimeFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache )
 
@@ -60,7 +60,7 @@ QString QgsDateTimeFieldKit::representValue( QgsVectorLayer* layer, int fieldInd
   return result;
 }
 
-QString QgsDateTimeFieldKit::defaultFormat( const QVariant::Type type )
+QString QgsDateTimeFieldFormatter::defaultFormat( const QVariant::Type type )
 {
   switch ( type )
   {

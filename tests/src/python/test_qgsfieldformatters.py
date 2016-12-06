@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for field kits.
+"""QGIS Unit tests for field formatters.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsMapLayerRegistry, QgsFeature, QgsGeometry, QgsPoint,
                        QgsProject, QgsRelation, QgsVectorLayer, NULL, QgsField,
-                       QgsValueMapFieldKit, QgsValueRelationFieldKit,
-                       QgsRelationReferenceFieldKit)
+                       QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
+                       QgsRelationReferenceFieldFormatter)
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant
@@ -26,7 +26,7 @@ from qgis.PyQt.QtWidgets import QTextEdit
 start_app()
 
 
-class TestQgsValueMapFieldKit(unittest.TestCase):
+class TestQgsValueMapFieldFormatter(unittest.TestCase):
 
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
@@ -38,7 +38,7 @@ class TestQgsValueMapFieldKit(unittest.TestCase):
         f = QgsFeature()
         f.setAttributes([2, 2.5, 'NULL', None, None, None])
         layer.dataProvider().addFeatures([f])
-        fieldKit = QgsValueMapFieldKit()
+        fieldKit = QgsValueMapFieldFormatter()
 
         # Tests with different value types occurring in the value map
         config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
@@ -63,7 +63,7 @@ class TestQgsValueMapFieldKit(unittest.TestCase):
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 
-class TestQgsValueRelationFieldKit(unittest.TestCase):
+class TestQgsValueRelationFieldFormatter(unittest.TestCase):
 
     def test_representValue(self):
 
@@ -81,7 +81,7 @@ class TestQgsValueRelationFieldKit(unittest.TestCase):
         f.setAttributes([123, 'decoded_val'])
         second_layer.dataProvider().addFeatures([f])
 
-        fieldKit = QgsValueRelationFieldKit()
+        fieldKit = QgsValueRelationFieldFormatter()
 
         # Everything valid
         config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'decoded'}
@@ -110,7 +110,7 @@ class TestQgsValueRelationFieldKit(unittest.TestCase):
         QgsMapLayerRegistry.instance().removeMapLayer(second_layer.id())
 
 
-class TestQgsRelationReferenceFieldKit(unittest.TestCase):
+class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
     def test_representValue(self):
 
@@ -130,7 +130,7 @@ class TestQgsRelationReferenceFieldKit(unittest.TestCase):
 
         relMgr = QgsProject.instance().relationManager()
 
-        fieldKit = QgsRelationReferenceFieldKit()
+        fieldKit = QgsRelationReferenceFieldFormatter()
 
         rel = QgsRelation()
         rel.setRelationId('rel1')

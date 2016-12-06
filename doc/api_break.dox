@@ -980,10 +980,10 @@ QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
   from and to a QVariantMap automatically.
 - `writeConfig` has been removed. The configuration is read and written
   from and to a QVariantMap automatically.
-- `representValue` has been removed. Use QgsFieldKit::representValue() instead
-- `sortValue` has been removed. Use QgsFieldKit::representValue() instead
-- `alignmentFlag` has been removed. Use QgsFieldKit::representValue() instead
-- `createCache` has been removed. Use QgsFieldKit::representValue() instead
+- `representValue` has been removed. Use QgsFieldFormatter::representValue() instead
+- `sortValue` has been removed. Use QgsFieldFormatter::representValue() instead
+- `alignmentFlag` has been removed. Use QgsFieldFormatter::representValue() instead
+- `createCache` has been removed. Use QgsFieldFormatter::representValue() instead
 
 
 QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}

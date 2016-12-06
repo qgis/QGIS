@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgskeyvaluefieldkit.h - QgsKeyValueFieldKit
+  qgsfieldformatterregistry.sip - QgsFieldFormatterRegistry
 
  ---------------------
- begin                : 3.12.2016
+ begin                : 2.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,18 +13,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSKEYVALUEFIELDKIT_H
-#define QGSKEYVALUEFIELDKIT_H
-
-#include "qgsfieldkit.h"
-
-class CORE_EXPORT QgsKeyValueFieldKit : public QgsFieldKit
+class QgsFieldFormatterRegistry : QObject
 {
+%TypeHeaderCode
+#include "qgsfieldformatterregistry.h"
+%End
   public:
-    QgsKeyValueFieldKit();
 
-    QString id() const override;
-    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+    QgsFieldFormatterRegistry();
+    ~QgsFieldFormatterRegistry();
+
+    void addFieldFormatter( QgsFieldFormatter* kit /Transfer/ );
+
+    void removeFieldFormatter( QgsFieldFormatter* kit );
+
+    QgsFieldFormatter* fieldKit( const QString& id ) const;
+
+  signals:
+    void fieldKitAdded( QgsFieldFormatter* kit );
+
+    void fieldKitRemoved( QgsFieldFormatter* kit );
 };
-
-#endif // QGSKEYVALUEFIELDKIT_H

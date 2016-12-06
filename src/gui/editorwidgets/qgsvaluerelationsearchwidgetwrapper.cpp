@@ -76,7 +76,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& i , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i , mCache )
     {
       if ( i.value == mLineEdit->text() )
       {
@@ -235,7 +235,7 @@ QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 {
-  mCache = QgsValueRelationFieldKit::createCache( config() );
+  mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
@@ -249,7 +249,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
       mComboBox->addItem( element.value, element.key );
     }
@@ -258,7 +258,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
       QListWidgetItem *item;
       item = new QListWidgetItem( element.value );
@@ -272,7 +272,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i,  mCache )
     {
       values << i.value;
     }

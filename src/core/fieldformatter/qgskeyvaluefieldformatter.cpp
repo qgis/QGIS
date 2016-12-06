@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgslistfieldkit.cpp - QgsListFieldKit
+  qgskeyvaluefieldformatter.cpp - QgsKeyValueFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -13,21 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslistfieldkit.h"
+#include "qgskeyvaluefieldformatter.h"
 
 #include <QSettings>
 
-QgsListFieldKit::QgsListFieldKit()
+QgsKeyValueFieldFormatter::QgsKeyValueFieldFormatter()
 {
 
 }
 
-QString QgsListFieldKit::id() const
+QString QgsKeyValueFieldFormatter::id() const
 {
-  return QStringLiteral( "List" );
+  return QStringLiteral( "KeyValue" );
 }
 
-QString QgsListFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIndex );
@@ -41,11 +41,11 @@ QString QgsListFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, 
   }
 
   QString result;
-  const QVariantList list = value.toList();
-  for ( QVariantList::const_iterator i = list.constBegin(); i != list.constEnd(); ++i )
+  const QVariantMap map = value.toMap();
+  for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {
     if ( !result.isEmpty() ) result.append( ", " );
-    result.append( i->toString() );
+    result.append( i.key() ).append( ": " ).append( i.value().toString() );
   }
   return result;
 }

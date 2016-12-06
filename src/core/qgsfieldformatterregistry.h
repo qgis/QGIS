@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfieldkitregistry.h - QgsFieldKitRegistry
+  qgsfieldformatterregistry.h - QgsFieldFormatterRegistry
 
  ---------------------
  begin                : 2.12.2016
@@ -20,29 +20,29 @@
 #include <QString>
 #include <QObject>
 
-class QgsFieldKit;
+class QgsFieldFormatter;
 
 /**
  * \ingroup core
- * The QgsFieldKitRegistry manages registered classes of QgsFieldKit.
- * A reference to the QgsFieldKitRegistry can be obtained from
+ * The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
+ * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::fieldKitRegistry().
  *
  * @note Added in QGIS 3.0
  */
-class CORE_EXPORT QgsFieldKitRegistry : public QObject
+class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 {
     Q_OBJECT
 
   public:
 
     /**
-     * You should not normally need to create your own field kit registry.
+     * You should not normally need to create your own field formatter registry.
      *
      * Use the one provided by `QgsApplication::fieldKitRegistry()` instead.
      */
-    QgsFieldKitRegistry( QObject* parent = nullptr );
-    ~QgsFieldKitRegistry();
+    QgsFieldFormatterRegistry( QObject* parent = nullptr );
+    ~QgsFieldFormatterRegistry();
 
     /**
      * They will take precedence in order of adding them.
@@ -50,35 +50,35 @@ class CORE_EXPORT QgsFieldKitRegistry : public QObject
      *
      * Ownership is transferred to the registry.
      */
-    void addFieldKit( QgsFieldKit* kit );
+    void addFieldFormatter( QgsFieldFormatter* kit );
 
     /**
-     * Remove a field kit from the registry.
-     * The field kit will be deleted.
+     * Remove a field formatter from the registry.
+     * The field formatter will be deleted.
      */
-    void removeFieldKit( QgsFieldKit* kit );
+    void removeFieldFormatter( QgsFieldFormatter* kit );
 
     /**
-     * Get a field kit by its id. If there is no such id registered,
-     * a default QgsFallbackFieldKit with a null id will be returned instead.
+     * Get a field formatter by its id. If there is no such id registered,
+     * a default QgsFallbackFieldFormatter with a null id will be returned instead.
      */
-    QgsFieldKit* fieldKit( const QString& id ) const;
+    QgsFieldFormatter* fieldKit( const QString& id ) const;
 
   signals:
 
     /**
-     * Will be emitted after a new field kit has been added.
+     * Will be emitted after a new field formatter has been added.
      */
-    void fieldKitAdded( QgsFieldKit* kit );
+    void fieldKitAdded( QgsFieldFormatter* kit );
 
     /**
-     * Will be emitted just before a field kit is removed and deleted.
+     * Will be emitted just before a field formatter is removed and deleted.
      */
-    void fieldKitRemoved( QgsFieldKit* kit );
+    void fieldKitRemoved( QgsFieldFormatter* kit );
 
   private:
-    QHash<QString, QgsFieldKit*> mFieldKits;
-    QgsFieldKit* mFallbackFieldKit;
+    QHash<QString, QgsFieldFormatter*> mFieldFormatters;
+    QgsFieldFormatter* mFallbackFieldFormatter;
 };
 
 #endif // QGSFIELDKITREGISTRY_H

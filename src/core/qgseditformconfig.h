@@ -167,7 +167,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      */
-    QVariantMap widgetConfig( const QString& fieldName ) const;
+    QVariantMap widgetConfig( const QString& widgetName ) const;
 
     /**
      * Remove the configuration for the editor widget with the given name
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * @return true if a configuration has been removed
      */
-    bool removeWidgetConfig( const QString& fieldName );
+    bool removeWidgetConfig( const QString& widgetName );
 
     /**
      * This returns true if the field is manually set to read only or if the field

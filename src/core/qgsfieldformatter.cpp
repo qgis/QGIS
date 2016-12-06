@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfieldkit.cpp - QgsFieldKit
+  qgsfieldformatter.cpp - QgsFieldFormatter
 
  ---------------------
  begin                : 2.12.2016
@@ -13,21 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsfieldkit.h"
+#include "qgsfieldformatter.h"
 
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsFieldKit::QgsFieldKit()
+QgsFieldFormatter::QgsFieldFormatter()
 {
 }
 
-QgsFieldKit::~QgsFieldKit()
+QgsFieldFormatter::~QgsFieldFormatter()
 {
 }
 
-QString QgsFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
@@ -42,7 +42,7 @@ QString QgsFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, cons
   return value == defVal ? defVal : layer->fields().at( fieldIndex ).displayString( value );
 }
 
-QVariant QgsFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
@@ -52,7 +52,7 @@ QVariant QgsFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QV
   return value;
 }
 
-Qt::AlignmentFlag QgsFieldKit::alignmentFlag( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
+Qt::AlignmentFlag QgsFieldFormatter::alignmentFlag( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
 {
   Q_UNUSED( config );
 
@@ -66,7 +66,7 @@ Qt::AlignmentFlag QgsFieldKit::alignmentFlag( QgsVectorLayer* layer, int fieldIn
     return Qt::AlignLeft;
 }
 
-QVariant QgsFieldKit::createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
+QVariant QgsFieldFormatter::createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )

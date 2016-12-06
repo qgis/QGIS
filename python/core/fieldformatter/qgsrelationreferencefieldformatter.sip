@@ -1,10 +1,10 @@
-class QgsRelationReferenceFieldKit : QgsFieldKit
+class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 {
 %TypeHeaderCode
-#include "qgsrelationreferencefieldkit.h"
+#include "qgsrelationreferencefieldformatter.h"
 %End
   public:
-    QgsRelationReferenceFieldKit();
+    QgsRelationReferenceFieldFormatter();
 
     QString id() const;
     virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;

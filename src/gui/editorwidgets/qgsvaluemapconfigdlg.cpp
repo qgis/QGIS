@@ -16,7 +16,7 @@
 #include "qgsvaluemapconfigdlg.h"
 
 #include "qgsattributetypeloaddialog.h"
-#include "qgsvaluemapfieldkit.h"
+#include "qgsvaluemapfieldformatter.h"
 
 #include <QSettings>
 #include <QFileDialog>

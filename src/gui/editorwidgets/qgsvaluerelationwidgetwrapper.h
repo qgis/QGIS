@@ -17,7 +17,7 @@
 #define QGSVALUERELATIONWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
-#include "qgsvaluerelationfieldkit.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QListWidget* mListWidget;
     QLineEdit* mLineEdit;
 
-    QgsValueRelationFieldKit::ValueRelationCache mCache;
+    QgsValueRelationFieldFormatter::ValueRelationCache mCache;
     QgsVectorLayer* mLayer;
 
     friend class QgsValueRelationWidgetFactory;

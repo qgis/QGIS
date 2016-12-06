@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvaluerelationfieldkit.h - QgsValueRelationFieldKit
+  qgsvaluerelationfieldformatter.h - QgsValueRelationFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -16,12 +16,12 @@
 #ifndef QGSVALUERELATIONFIELDKIT_H
 #define QGSVALUERELATIONFIELDKIT_H
 
-#include "qgsfieldkit.h"
+#include "qgsfieldformatter.h"
 
 #include <QVector>
 #include <QVariant>
 
-class CORE_EXPORT QgsValueRelationFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
 {
   public:
     struct ValueRelationItem
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsValueRelationFieldKit : public QgsFieldKit
 
     typedef QVector < ValueRelationItem > ValueRelationCache;
 
-    QgsValueRelationFieldKit();
+    QgsValueRelationFieldFormatter();
 
     QString id() const override;
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
@@ -52,6 +52,6 @@ class CORE_EXPORT QgsValueRelationFieldKit : public QgsFieldKit
     static ValueRelationCache createCache( const QVariantMap& config );
 };
 
-Q_DECLARE_METATYPE( QgsValueRelationFieldKit::ValueRelationCache )
+Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )
 
 #endif // QGSVALUERELATIONFIELDKIT_H

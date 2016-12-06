@@ -23,8 +23,8 @@
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
-#include "qgsfieldkitregistry.h"
-#include "qgsfieldkit.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 
@@ -350,7 +350,7 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  QgsFieldKit* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( editorWidgetType() );
+  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( editorWidgetType() );
 
   QString previewText = fieldKit->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 

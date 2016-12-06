@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgsfieldkitregistry.sip - QgsFieldKitRegistry
+  qgsrelationreferencefieldformatter.h - QgsRelationReferenceFieldFormatter
 
  ---------------------
- begin                : 2.12.2016
+ begin                : 3.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,24 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsFieldKitRegistry : QObject
+#ifndef QGSRELATIONREFERENCEFIELDKIT_H
+#define QGSRELATIONREFERENCEFIELDKIT_H
+
+#include "qgsfieldformatter.h"
+
+class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 {
-%TypeHeaderCode
-#include "qgsfieldkitregistry.h"
-%End
   public:
+    QgsRelationReferenceFieldFormatter();
 
-    QgsFieldKitRegistry();
-    ~QgsFieldKitRegistry();
+    QString id() const override;
 
-    void addFieldKit( QgsFieldKit* kit /Transfer/ );
+    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 
-    void removeFieldKit( QgsFieldKit* kit );
-
-    QgsFieldKit* fieldKit( const QString& id ) const;
-
-  signals:
-    void fieldKitAdded( QgsFieldKit* kit );
-
-    void fieldKitRemoved( QgsFieldKit* kit );
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap&config, const QVariant& cache, const QVariant& value ) const override;
 };
+
+#endif // QGSRELATIONREFERENCEFIELDKIT_H
