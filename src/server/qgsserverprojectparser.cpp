@@ -28,6 +28,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
 #include "qgslogger.h"
+#include "qgseditorwidgetsetup.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -827,7 +828,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
       }
 
       //edit type to text
-      attributeElem.setAttribute( QStringLiteral( "editType" ), vLayer->editFormConfig().widgetType( field.name() ) );
+      attributeElem.setAttribute( QStringLiteral( "editType" ), vLayer->editorWidgetSetup( idx ).type() );
       attributeElem.setAttribute( QStringLiteral( "comment" ), field.comment() );
       attributeElem.setAttribute( QStringLiteral( "length" ), field.length() );
       attributeElem.setAttribute( QStringLiteral( "precision" ), field.precision() );
@@ -1581,10 +1582,10 @@ void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLaye
   for ( int idx = 0; idx < vl->pendingFields().size(); idx++ )
   {
     const QString name = vl->pendingFields().field( idx ).name();
-    if ( vl->editFormConfig().widgetType( name ) != QLatin1String( "ValueRelation" ) )
+    if ( vl->editorWidgetSetup( idx ).type() != QLatin1String( "ValueRelation" ) )
       continue;
 
-    QVariantMap cfg( vl->editFormConfig().widgetConfig( name ) );
+    QVariantMap cfg( vl->editorWidgetSetup( idx ).config() );
     if ( !cfg.contains( QStringLiteral( "Layer" ) ) )
       continue;
 

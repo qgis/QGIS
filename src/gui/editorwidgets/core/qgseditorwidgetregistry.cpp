@@ -89,10 +89,10 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 
 QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl, const QString& fieldName ) const
 {
-  const QString fromConfig = vl->editFormConfig().widgetType( fieldName );
-  if ( !fromConfig.isNull() )
+  QgsEditorWidgetSetup setup = vl->fields().field( fieldName ).editorWidgetSetup();
+  if ( !setup.isNull() )
   {
-    return QgsEditorWidgetSetup( fromConfig, vl->editFormConfig().widgetConfig( fieldName ) );
+    return setup;
   }
   return mAutoConf.editorWidgetSetup( vl, fieldName );
 }

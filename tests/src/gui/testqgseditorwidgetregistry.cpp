@@ -90,13 +90,13 @@ class TestQgsEditorWidgetRegistry: public QObject
     void configuredType()
     {
       QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-      QgsEditFormConfig formConfig = vl.editFormConfig();
-      formConfig.setWidgetType( QStringLiteral( "col1" ), QStringLiteral( "FooEdit" ) );
+
       QVariantMap config;
       config[QStringLiteral( "a" )] = QVariant( 12 );
       config[QStringLiteral( "b" )] = QVariant( "bar" );
-      formConfig.setWidgetConfig( QStringLiteral( "col1" ), config );
-      vl.setEditFormConfig( formConfig );
+
+      vl.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "FooEdit" ), config ) );
+
       const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, QStringLiteral( "col1" ) );
       QCOMPARE( setup.type(), QString( "FooEdit" ) );
       QCOMPARE( setup.config(), config );

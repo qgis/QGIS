@@ -53,7 +53,7 @@ unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer* vl, int f
 {
   const QgsField field = vl->fields().field( fieldIdx );
   const QVariant::Type type = field.type();
-  const QVariantMap config = vl->editFormConfig().widgetConfig( field.name() );
+  const QVariantMap config = field.editorWidgetSetup().config();
   if ( type == QVariant::DateTime || type == QVariant::Date || type == QVariant::Time || config.contains( QStringLiteral( "field_format" ) ) )
   {
     return 20;

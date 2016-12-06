@@ -108,88 +108,10 @@ class QgsEditFormConfig
      * EditorLayout::GeneratedLayout.
      */
     void setUiForm( const QString& ui );
+    bool setWidgetConfig( const QString& widgetName, const QVariantMap& config );
+    QVariantMap widgetConfig( const QString& widgetName ) const;
+    bool removeWidgetConfig( const QString& widgetName );
 
-
-    // Widget stuff
-
-    /**
-     * Set the editor widget type for a field
-     *
-     * QGIS ships the following widget types, additional types may be available depending
-     * on plugins.
-     *
-     * <ul>
-     * <li>CheckBox (QgsCheckboxWidgetWrapper)</li>
-     * <li>Classification (QgsClassificationWidgetWrapper)</li>
-     * <li>Color (QgsColorWidgetWrapper)</li>
-     * <li>DateTime (QgsDateTimeEditWrapper)</li>
-     * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
-     * <li>FileName (QgsFileNameWidgetWrapper)</li>
-     * <li>Hidden (QgsHiddenWidgetWrapper)</li>
-     * <li>Photo (QgsPhotoWidgetWrapper)</li>
-     * <li>Range (QgsRangeWidgetWrapper)</li>
-     * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
-     * <li>TextEdit (QgsTextEditWrapper)</li>
-     * <li>UniqueValues (QgsUniqueValuesWidgetWrapper)</li>
-     * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
-     * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
-     * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
-     * <li>WebView (QgsWebViewWidgetWrapper)</li>
-     * </ul>
-     *
-     * @param fieldName   The name of the field
-     * @param widgetType  Type id of the editor widget to use
-     */
-    void setWidgetType( const QString& widgetName, const QString& widgetType );
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     *
-     * @param fieldName  The name of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     */
-    QString widgetType( const QString& fieldName ) const;
-
-    /**
-     * Set the editor widget config for a widget.
-     *
-     * Example:
-     * \code{.py}
-     *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
-     * \endcode
-     *
-     * @param fieldName  The name of the field to configure
-     * @param config      The config to set for this field
-     *
-     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
-     *
-     * @note not available in python bindings
-     */
-    void setWidgetConfig( const QString& fieldName, const QVariantMap& config );
-
-    /**
-     * Get the configuration for the editor widget used to represent the field with the given name
-     *
-     * @param fieldName The name of the field.
-     *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
-     */
-    QVariantMap widgetConfig( const QString& fieldName ) const;
-
-    /**
-     * Remove the configuration for the editor widget used to represent the field with the given name
-     *
-     * @param fieldName The name of the field.
-     *
-     * @return true if successful, false if the field does not exist
-     */
-    bool removeWidgetConfig( const QString& fieldName );
-
-    /**
-     * This returns true if the field is manually set to read only or if the field
-     * does not support editing like joins or virtual fields.
-     */
     bool readOnly( int idx ) const;
 
     /**
