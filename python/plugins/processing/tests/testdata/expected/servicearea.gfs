@@ -1,0 +1,22 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>servicearea</Name>
+    <ElementPath>servicearea</ElementPath>
+    <!--POLYGON-->
+    <GeometryType>3</GeometryType>
+    <SRSName>EPSG:32733</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>2</FeatureCount>
+      <ExtentXMin>1001968.37489</ExtentXMin>
+      <ExtentXMax>1003285.47179</ExtentXMax>
+      <ExtentYMin>6221400.90693</ExtentYMin>
+      <ExtentYMax>6222727.93692</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>type</Name>
+      <ElementPath>type</ElementPath>
+      <Type>String</Type>
+      <Width>5</Width>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>
