@@ -791,7 +791,7 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/auth
   ../core/composer
-  ../core/fieldkit
+  ../core/fieldformatter
   ../core/geometry
   ../core/layertree
   ../core/raster

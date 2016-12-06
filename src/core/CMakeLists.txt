@@ -127,8 +127,8 @@ SET(QGIS_CORE_SRCS
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
-  qgsfieldkit.cpp
-  qgsfieldkitregistry.cpp
+  qgsfieldformatter.cpp
+  qgsfieldformatterregistry.cpp
   qgsfields.cpp
   qgsfontutils.cpp
   qgsgeometrycache.cpp
@@ -370,13 +370,13 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbtypes.cpp
 
 
-  fieldkit/qgsdatetimefieldkit.cpp
-  fieldkit/qgsfallbackfieldkit.cpp
-  fieldkit/qgskeyvaluefieldkit.cpp
-  fieldkit/qgslistfieldkit.cpp
-  fieldkit/qgsrelationreferencefieldkit.cpp
-  fieldkit/qgsvaluemapfieldkit.cpp
-  fieldkit/qgsvaluerelationfieldkit.cpp
+  fieldformatter/qgsdatetimefieldformatter.cpp
+  fieldformatter/qgsfallbackfieldformatter.cpp
+  fieldformatter/qgskeyvaluefieldformatter.cpp
+  fieldformatter/qgslistfieldformatter.cpp
+  fieldformatter/qgsrelationreferencefieldformatter.cpp
+  fieldformatter/qgsvaluemapfieldformatter.cpp
+  fieldformatter/qgsvaluerelationfieldformatter.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -478,7 +478,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfeedback.h
   qgsfield.h
   qgsfieldconstraints.h
-  qgsfieldkitregistry.h
+  qgsfieldformatterregistry.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
@@ -670,7 +670,7 @@ SET(QGIS_CORE_HDRS
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
-  qgsfieldkit.h
+  qgsfieldformatter.h
   qgsfields.h
   qgsfontutils.h
   qgsgeometrycache.h
@@ -888,13 +888,13 @@ SET(QGIS_CORE_HDRS
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
 
-  fieldkit/qgsdatetimefieldkit.h
-  fieldkit/qgsfallbackfieldkit.h
-  fieldkit/qgskeyvaluefieldkit.h
-  fieldkit/qgslistfieldkit.h
-  fieldkit/qgsrelationreferencefieldkit.h
-  fieldkit/qgsvaluemapfieldkit.h
-  fieldkit/qgsvaluerelationfieldkit.h
+  fieldformatter/qgsdatetimefieldformatter.h
+  fieldformatter/qgsfallbackfieldformatter.h
+  fieldformatter/qgskeyvaluefieldformatter.h
+  fieldformatter/qgslistfieldformatter.h
+  fieldformatter/qgsrelationreferencefieldformatter.h
+  fieldformatter/qgsvaluemapfieldformatter.h
+  fieldformatter/qgsvaluerelationfieldformatter.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
@@ -910,7 +910,7 @@ INCLUDE_DIRECTORIES(
   composer
   dxf
   effects
-  fieldkit
+  fieldformatter
   geometry
   layertree
   pal

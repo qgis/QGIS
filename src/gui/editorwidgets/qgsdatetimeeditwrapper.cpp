@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 #include "qgsdatetimeedit.h"
 #include "qgsdatetimeeditconfig.h"
-#include "qgsdatetimefieldkit.h"
+#include "qgsdatetimefieldformatter.h"
 
 #include <QDateTimeEdit>
 #include <QDateEdit>
@@ -64,7 +64,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
     return;
   }
 
-  const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeFieldKit::defaultFormat( field().type() ) ).toString();
+  const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
   mQDateTimeEdit->setDisplayFormat( displayFormat );
 
   const bool calendar = config( QStringLiteral( "calendar_popup" ), false ).toBool();
@@ -112,7 +112,7 @@ void QgsDateTimeEditWrapper::showIndeterminateState()
 
 void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
 {
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldKit::defaultFormat( field().type() ) ).toString();
+  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
   emit valueChanged( dateTime.toString( fieldFormat ) );
 }
 
@@ -133,7 +133,7 @@ QVariant QgsDateTimeEditWrapper::value() const
     }
   }
 
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldKit::defaultFormat( field().type() ) ).toString();
+  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
 
   if ( mQgsDateTimeEdit )
   {
@@ -150,7 +150,7 @@ void QgsDateTimeEditWrapper::setValue( const QVariant &value )
   if ( !mQDateTimeEdit )
     return;
 
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldKit::defaultFormat( field().type() ) ).toString();
+  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
   const QDateTime date = field().type() == QVariant::DateTime ? value.toDateTime() : QDateTime::fromString( value.toString(), fieldFormat );
 
   if ( mQgsDateTimeEdit )

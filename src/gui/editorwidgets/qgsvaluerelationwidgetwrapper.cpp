@@ -22,7 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvaluerelationfieldkit.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include <QStringListModel>
 #include <QCompleter>
@@ -65,7 +65,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& item , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item , mCache )
     {
       if ( item.value == mLineEdit->text() )
       {
@@ -95,7 +95,7 @@ QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
 
 void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 {
-  mCache = QgsValueRelationFieldKit::createCache( config() );
+  mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
@@ -108,7 +108,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
       mComboBox->addItem( element.value, element.key );
     }
@@ -117,7 +117,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
     {
       QListWidgetItem *item;
       item = new QListWidgetItem( element.value );
@@ -131,7 +131,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const QgsValueRelationFieldKit::ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i,  mCache )
     {
       values << i.value;
     }
@@ -166,7 +166,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
   }
   else if ( mLineEdit )
   {
-    Q_FOREACH ( QgsValueRelationFieldKit::ValueRelationItem i, mCache )
+    Q_FOREACH ( QgsValueRelationFieldFormatter::ValueRelationItem i, mCache )
     {
       if ( i.key == value )
       {

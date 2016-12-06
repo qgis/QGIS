@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfieldkit.h - QgsFieldKit
+  qgsfieldformatter.h - QgsFieldFormatter
 
  ---------------------
  begin                : 2.12.2016
@@ -23,28 +23,28 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * A field kit helps to handle and display values for a field.
+ * A field formatter helps to handle and display values for a field.
  *
  * It allows for using a shared configuration with the editor widgets
  * for representation of attribute values.
  * Field kits normally have one single instance which is managed by the
- * QgsFieldKitRegistry. Custom field kits should be registered there and
- * field kits for use within code should normally be obtained from there.
+ * QgsFieldFormatterRegistry. Custom field formatters should be registered there and
+ * field formatters for use within code should normally be obtained from there.
  *
  * This is an abstract base class and will always need to be subclassed.
  *
  * @note added in QGIS 3.0
  */
-class CORE_EXPORT QgsFieldKit
+class CORE_EXPORT QgsFieldFormatter
 {
   public:
-    QgsFieldKit();
+    QgsFieldFormatter();
 
-    virtual ~QgsFieldKit();
+    virtual ~QgsFieldFormatter();
 
     /**
-     * Return a unique id for this field kit.
-     * This id will later be used to identify this field kit in the registry with QgsFieldKitRegistry::fieldKit().
+     * Return a unique id for this field formatter.
+     * This id will later be used to identify this field formatter in the registry with QgsFieldFormatterRegistry::fieldFormatter().
      *
      * This id matches the id of a QgsEditorWidgetFactory.
      */

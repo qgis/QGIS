@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdatetimefieldkit.h - QgsDateTimeFieldKit
+  qgsdatetimefieldformatter.h - QgsDateTimeFieldFormatter
 
  ---------------------
  begin                : 2.12.2016
@@ -16,16 +16,16 @@
 #ifndef QGSDATETIMEFIELDKIT_H
 #define QGSDATETIMEFIELDKIT_H
 
-#include "qgsfieldkit.h"
+#include "qgsfieldformatter.h"
 
 #define QGSDATETIMEFIELDKIT_DATEFORMAT QStringLiteral( "yyyy-MM-dd" )
 #define QGSDATETIMEFIELDKIT_TIMEFORMAT QStringLiteral( "HH:mm:ss" )
 #define QGSDATETIMEFIELDKIT_DATETIMEFORMAT QStringLiteral( "yyyy-MM-dd HH:mm:ss" )
 
-class CORE_EXPORT QgsDateTimeFieldKit : public QgsFieldKit
+class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {
   public:
-    QgsDateTimeFieldKit();
+    QgsDateTimeFieldFormatter();
 
     QString id() const override;
 

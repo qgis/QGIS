@@ -149,8 +149,8 @@
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
 #include "qgsfieldcalculator.h"
-#include "qgsfieldkit.h"
-#include "qgsfieldkitregistry.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 #include "qgshtmlannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
@@ -6399,7 +6399,7 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant& value )
     return value;
   }
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields().field( idx ).name() );
-  QgsFieldKit* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
+  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
   return fieldKit->representValue( mLayer, idx, setup.config(), QVariant(), value );
 }
 

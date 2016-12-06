@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvaluemapfieldkit.cpp - QgsValueMapFieldKit
+  qgsvaluemapfieldformatter.cpp - QgsValueMapFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -13,21 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsvaluemapfieldkit.h"
+#include "qgsvaluemapfieldformatter.h"
 
 #include "qgsvectorlayer.h"
 
-QgsValueMapFieldKit::QgsValueMapFieldKit()
+QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()
 {
 
 }
 
-QString QgsValueMapFieldKit::id() const
+QString QgsValueMapFieldFormatter::id() const
 {
   return QStringLiteral( "ValueMap" );
 }
 
-QString QgsValueMapFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache )
 
@@ -42,7 +42,7 @@ QString QgsValueMapFieldKit::representValue( QgsVectorLayer* layer, int fieldInd
   return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
 }
 
-QVariant QgsValueMapFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
 }

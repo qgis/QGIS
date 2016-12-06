@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgsdatetimefieldkit.sip - QgsDateTimeFieldKit
+  qgskeyvaluefieldformatter.sip - QgsKeyValueFieldFormatter
 
  ---------------------
- begin                : 2.12.2016
+ begin                : 3.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,17 +13,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsDateTimeFieldKit : QgsFieldKit
+class QgsKeyValueFieldFormatter : QgsFieldFormatter
 {
 %TypeHeaderCode
-#include "qgsdatetimefieldkit.h"
+#include "qgskeyvaluefieldformatter.h"
 %End
   public:
-    QgsDateTimeFieldKit();
-
+    QgsKeyValueFieldFormatter();
     QString id() const;
-
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
-
-    static QString defaultFormat( const QVariant::Type type );
+    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 };

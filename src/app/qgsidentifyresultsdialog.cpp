@@ -43,8 +43,8 @@
 #include "qgsstringutils.h"
 #include "qgstreewidgetitem.h"
 #include "qgsfiledownloader.h"
-#include "qgsfieldkitregistry.h"
-#include "qgsfieldkit.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -734,7 +734,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
-  QgsFieldKit* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
+  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
 
   int idx = vlayer->fields().lookupField( fieldName );
 

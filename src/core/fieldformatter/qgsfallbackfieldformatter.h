@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgslistfieldkit.sip - QgsListFieldKit
+  qgsfallbackfieldformatter.h - QgsFallbackFieldFormatter
 
  ---------------------
- begin                : 3.12.2016
+ begin                : 4.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,16 +13,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsListFieldKit : QgsFieldKit
+#ifndef QGSFALLBACKFIELDKIT_H
+#define QGSFALLBACKFIELDKIT_H
+
+#include "qgsfieldformatter.h"
+
+class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
 {
-%TypeHeaderCode
-#include "qgslistfieldkit.h"
-%End
-
   public:
-    QgsListFieldKit();
+    QgsFallbackFieldFormatter();
 
-    QString id() const;
-
-    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    QString id() const override;
 };
+
+#endif // QGSFALLBACKFIELDKIT_H

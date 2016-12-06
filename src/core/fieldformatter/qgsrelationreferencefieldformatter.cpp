@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsrelationreferencefieldkit.cpp - QgsRelationReferenceFieldKit
+  qgsrelationreferencefieldformatter.cpp - QgsRelationReferenceFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsrelationreferencefieldkit.h"
+#include "qgsrelationreferencefieldformatter.h"
 
 #include "qgsmessagelog.h"
 #include "qgsrelation.h"
@@ -22,17 +22,17 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationReferenceFieldKit::QgsRelationReferenceFieldKit()
+QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
 {
 
 }
 
-QString QgsRelationReferenceFieldKit::id() const
+QString QgsRelationReferenceFieldFormatter::id() const
 {
   return QStringLiteral( "RelationReference" );
 }
 
-QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   Q_UNUSED( cache );
 
@@ -93,7 +93,7 @@ QString QgsRelationReferenceFieldKit::representValue( QgsVectorLayer* layer, int
   return title;
 }
 
-QVariant QgsRelationReferenceFieldKit::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsRelationReferenceFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
 }

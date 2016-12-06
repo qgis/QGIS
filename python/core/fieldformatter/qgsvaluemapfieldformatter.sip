@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgsfieldkit.sip - QgsFieldKit
+  qgsvaluemapfieldformatter.sip - QgsValueMapFieldFormatter
 
  ---------------------
- begin                : 2.12.2016
+ begin                : 3.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,23 +13,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsFieldKit
+class QgsValueMapFieldFormatter : QgsFieldFormatter
 {
 %TypeHeaderCode
-#include "qgsfieldkit.h"
+#include "qgsvaluemapfieldformatter.h"
 %End
   public:
-    QgsFieldKit();
+    QgsValueMapFieldFormatter();
 
-    virtual ~QgsFieldKit();
+    QString id() const;
 
-    virtual QString id() const = 0;
+    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
-
-    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
-
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
-
-    virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+    QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 };

@@ -15,7 +15,7 @@
 
 #include "qgsvaluemapwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
-#include "qgsvaluemapfieldkit.h"
+#include "qgsvaluemapfieldformatter.h"
 
 #include <QSettings>
 

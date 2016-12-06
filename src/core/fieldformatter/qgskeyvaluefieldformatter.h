@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgskeyvaluefieldkit.sip - QgsKeyValueFieldKit
+  qgskeyvaluefieldformatter.h - QgsKeyValueFieldFormatter
 
  ---------------------
  begin                : 3.12.2016
@@ -13,13 +13,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-class QgsKeyValueFieldKit : QgsFieldKit
+#ifndef QGSKEYVALUEFIELDKIT_H
+#define QGSKEYVALUEFIELDKIT_H
+
+#include "qgsfieldformatter.h"
+
+class CORE_EXPORT QgsKeyValueFieldFormatter : public QgsFieldFormatter
 {
-%TypeHeaderCode
-#include "qgskeyvaluefieldkit.h"
-%End
   public:
-    QgsKeyValueFieldKit();
-    QString id() const;
-    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    QgsKeyValueFieldFormatter();
+
+    QString id() const override;
+    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
+
+#endif // QGSKEYVALUEFIELDKIT_H

@@ -32,7 +32,7 @@
 class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
-class QgsFieldKit;
+class QgsFieldFormatter;
 
 /** \ingroup gui
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
@@ -329,7 +329,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsAttributeList mAttributes;
     QVector<QgsEditorWidgetFactory*> mWidgetFactories;
-    QVector<QgsFieldKit*> mFieldKits;
+    QVector<QgsFieldFormatter*> mFieldFormatters;
     QVector<QVariant> mAttributeWidgetCaches;
     QVector<QVariantMap> mWidgetConfigs;
 

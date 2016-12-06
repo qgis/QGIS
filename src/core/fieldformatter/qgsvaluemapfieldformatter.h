@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgsfallbackfieldkit.h - QgsFallbackFieldKit
+  qgsvaluemapfieldformatter.h - QgsValueMapFieldFormatter
 
  ---------------------
- begin                : 4.12.2016
+ begin                : 3.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,17 +13,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSFALLBACKFIELDKIT_H
-#define QGSFALLBACKFIELDKIT_H
+#ifndef QGSVALUEMAPFIELDKIT_H
+#define QGSVALUEMAPFIELDKIT_H
 
-#include "qgsfieldkit.h"
+#include "qgsfieldformatter.h"
 
-class CORE_EXPORT QgsFallbackFieldKit : public QgsFieldKit
+#define VALUEMAP_NULL_TEXT QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" )
+
+class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
 {
   public:
-    QgsFallbackFieldKit();
+    QgsValueMapFieldFormatter();
 
     QString id() const override;
+
+    QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+
+    QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
 };
 
-#endif // QGSFALLBACKFIELDKIT_H
+#endif // QGSVALUEMAPFIELDKIT_H

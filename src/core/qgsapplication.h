@@ -25,7 +25,7 @@
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
-class QgsFieldKitRegistry;
+class QgsFieldFormatterRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -398,9 +398,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRuntimeProfiler* profiler();
 
     /**
-     * Get the registry of available field kits.
+     * Get the registry of available field formatters.
      */
-    static QgsFieldKitRegistry* fieldKitRegistry();
+    static QgsFieldFormatterRegistry* fieldKitRegistry();
 
   public slots:
 
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsActionScopeRegistry* mActionScopeRegistry;
     QgsRuntimeProfiler* mProfiler;
     QgsTaskManager* mTaskManager;
-    QgsFieldKitRegistry* mFieldKitRegistry;
+    QgsFieldFormatterRegistry* mFieldFormatterRegistry;
 };
 
 #endif

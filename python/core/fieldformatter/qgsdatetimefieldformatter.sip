@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgsrelationreferencefieldkit.h - QgsRelationReferenceFieldKit
+  qgsdatetimefieldformatter.sip - QgsDateTimeFieldFormatter
 
  ---------------------
- begin                : 3.12.2016
+ begin                : 2.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,21 +13,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRELATIONREFERENCEFIELDKIT_H
-#define QGSRELATIONREFERENCEFIELDKIT_H
-
-#include "qgsfieldkit.h"
-
-class CORE_EXPORT QgsRelationReferenceFieldKit : public QgsFieldKit
+class QgsDateTimeFieldFormatter : QgsFieldFormatter
 {
+%TypeHeaderCode
+#include "qgsdatetimefieldformatter.h"
+%End
   public:
-    QgsRelationReferenceFieldKit();
+    QgsDateTimeFieldFormatter();
 
-    QString id() const override;
+    QString id() const;
 
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;
+    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
 
-    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap&config, const QVariant& cache, const QVariant& value ) const override;
+    static QString defaultFormat( const QVariant::Type type );
 };
-
-#endif // QGSRELATIONREFERENCEFIELDKIT_H

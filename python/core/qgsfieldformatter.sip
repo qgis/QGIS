@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgsfallbackfieldkit.cpp - QgsFallbackFieldKit
+  qgsfieldformatter.sip - QgsFieldFormatter
 
  ---------------------
- begin                : 4.12.2016
+ begin                : 2.12.2016
  copyright            : (C) 2016 by Matthias Kuhn
  email                : matthias@opengis.ch
  ***************************************************************************
@@ -13,14 +13,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsfallbackfieldkit.h"
-
-QgsFallbackFieldKit::QgsFallbackFieldKit()
+class QgsFieldFormatter
 {
+%TypeHeaderCode
+#include "qgsfieldformatter.h"
+%End
+  public:
+    QgsFieldFormatter();
 
-}
+    virtual ~QgsFieldFormatter();
 
-QString QgsFallbackFieldKit::id() const
-{
-  return QString();
-}
+    virtual QString id() const = 0;
+
+    virtual QString representValue( QgsVectorLayer* layer, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+
+    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+
+    virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config ) const;
+};
