@@ -403,7 +403,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      *
      * @note Added in QGIS 3.0
      */
-    static QgsFieldFormatterRegistry* fieldKitRegistry();
+    static QgsFieldFormatterRegistry* fieldFormatterRegistry();
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should

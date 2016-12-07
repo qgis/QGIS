@@ -294,8 +294,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeDeleted( int idx );
 
-  protected slots:
-
     /**
      * Launched when attribute value has been changed
      * @param fid feature id
@@ -321,7 +319,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void layerDeleted();
 
-  protected:
+    virtual void fieldFormatterRemoved( QgsFieldFormatter* fieldFormatter );
+
+  private:
     QgsVectorLayerCache *mLayerCache;
     int mFieldCount;
 
@@ -343,8 +343,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
       * Gets mFieldCount, mAttributes and mValueMaps
       */
     virtual void loadAttributes();
-
-  private:
 
     /**
      * Load feature fid into local cache (mFeat)

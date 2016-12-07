@@ -400,7 +400,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Get the registry of available field formatters.
      */
-    static QgsFieldFormatterRegistry* fieldKitRegistry();
+    static QgsFieldFormatterRegistry* fieldFormatterRegistry();
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.

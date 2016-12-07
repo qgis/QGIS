@@ -217,10 +217,10 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
     }
     else
     {
-      QgsFieldFormatter* fieldKit = mFieldFormatters.at( mSortFieldIndex );
+      QgsFieldFormatter* fieldFormatter = mFieldFormatters.at( mSortFieldIndex );
       const QVariant& widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
       const QVariantMap& widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
-      QVariant sortValue = fieldKit->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( mSortFieldIndex ) );
+      QVariant sortValue = fieldFormatter->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( mSortFieldIndex ) );
       mSortCache.insert( mFeat.id(), sortValue );
     }
 
@@ -267,6 +267,15 @@ void QgsAttributeTableModel::layerDeleted()
   mFieldFormatters.clear();
 }
 
+void QgsAttributeTableModel::fieldFormatterRemoved( QgsFieldFormatter* fieldFormatter )
+{
+  for ( QVector<QgsFieldFormatter*>::Iterator it = mFieldFormatters.begin(); it != mFieldFormatters.end(); ++it )
+  {
+    if ( it.value() == fieldFormatter )
+      it.setValue( QgsApplication::fieldFormatterRegistry()->defaultFormatter() );
+  }
+}
+
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
@@ -281,10 +290,10 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
     }
     else
     {
-      QgsFieldFormatter* fieldKit = mFieldFormatters.at( mSortFieldIndex );
+      QgsFieldFormatter* fieldFormatter = mFieldFormatters.at( mSortFieldIndex );
       const QVariant& widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
       const QVariantMap& widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
-      QVariant sortValue = fieldKit->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, value );
+      QVariant sortValue = fieldFormatter->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, value );
       mSortCache.insert( fid, sortValue );
     }
   }
@@ -343,14 +352,14 @@ void QgsAttributeTableModel::loadAttributes()
   {
     const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer(), fields[idx].name() );
     QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
-    QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( setup.type() );
+    QgsFieldFormatter* fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
     if ( widgetFactory )
     {
       mWidgetFactories.append( widgetFactory );
       mWidgetConfigs.append( setup.config() );
-      mAttributeWidgetCaches.append( fieldKit->createCache( layer(), idx, setup.config() ) );
-      mFieldFormatters.append( fieldKit );
+      mAttributeWidgetCaches.append( fieldFormatter->createCache( layer(), idx, setup.config() ) );
+      mFieldFormatters.append( fieldFormatter );
 
       attributes << idx;
     }
@@ -786,7 +795,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
   mSortFieldIndex = -1;
   mSortCacheExpression = QgsExpression( expressionString );
 
-  QgsFieldFormatter* fieldKit = nullptr;
+  QgsFieldFormatter* fieldFormatter = nullptr;
   QVariant widgetCache;
   QVariantMap widgetConfig;
 
@@ -811,7 +820,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
 
     widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
     widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
-    fieldKit = mFieldFormatters.at( mSortFieldIndex );
+    fieldFormatter = mFieldFormatters.at( mSortFieldIndex );
   }
 
   QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
@@ -829,7 +838,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
     }
     else
     {
-      QVariant sortValue = fieldKit->sortValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
+      QVariant sortValue = fieldFormatter->sortValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, f.attribute( mSortFieldIndex ) );
       mSortCache.insert( f.id(), sortValue );
     }
   }

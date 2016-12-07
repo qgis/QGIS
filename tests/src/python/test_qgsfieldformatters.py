@@ -38,27 +38,27 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         f = QgsFeature()
         f.setAttributes([2, 2.5, 'NULL', None, None, None])
         layer.dataProvider().addFeatures([f])
-        fieldKit = QgsValueMapFieldFormatter()
+        fieldFormatter = QgsValueMapFieldFormatter()
 
         # Tests with different value types occurring in the value map
         config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
                           'nothing': self.VALUEMAP_NULL_TEXT}}
-        self.assertEqual(fieldKit.representValue(layer, 0, config, None, 2), 'two')
-        self.assertEqual(fieldKit.representValue(layer, 1, config, None, 2.5), 'twoandhalf')
-        self.assertEqual(fieldKit.representValue(layer, 2, config, None, 'NULL'), 'NULL text')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), 'two')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, config, None, 2.5), 'twoandhalf')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, config, None, 'NULL'), 'NULL text')
         # Tests with null values of different types, if value map contains null
-        self.assertEqual(fieldKit.representValue(layer, 3, config, None, None), 'nothing')
-        self.assertEqual(fieldKit.representValue(layer, 4, config, None, None), 'nothing')
-        self.assertEqual(fieldKit.representValue(layer, 5, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 3, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), 'nothing')
         # Tests with fallback display for different value types
         config = {}
-        self.assertEqual(fieldKit.representValue(layer, 0, config, None, 2), '(2)')
-        self.assertEqual(fieldKit.representValue(layer, 1, config, None, 2.5), '(2.50000)')
-        self.assertEqual(fieldKit.representValue(layer, 2, config, None, 'NULL'), '(NULL)')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), '(2)')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, config, None, 2.5), '(2.50000)')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, config, None, 'NULL'), '(NULL)')
         # Tests with fallback display for null in different types of fields
-        self.assertEqual(fieldKit.representValue(layer, 3, config, None, None), '(NULL)')
-        self.assertEqual(fieldKit.representValue(layer, 4, config, None, None), '(NULL)')
-        self.assertEqual(fieldKit.representValue(layer, 5, config, None, None), '(NULL)')
+        self.assertEqual(fieldFormatter.representValue(layer, 3, config, None, None), '(NULL)')
+        self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), '(NULL)')
+        self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), '(NULL)')
 
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
@@ -81,31 +81,31 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         f.setAttributes([123, 'decoded_val'])
         second_layer.dataProvider().addFeatures([f])
 
-        fieldKit = QgsValueRelationFieldFormatter()
+        fieldFormatter = QgsValueRelationFieldFormatter()
 
         # Everything valid
         config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
 
         # Code not find match in foreign layer
         config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '456'), '(456)')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
         # Missing Layer
         config = {'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '456'), '(456)')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
         # Invalid Layer
         config = {'Layer': 'invalid', 'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '456'), '(456)')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
         # Invalid Key
         config = {'Layer': second_layer.id(), 'Key': 'invalid', 'Value': 'decoded'}
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '456'), '(456)')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
         # Invalid Value
         config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'invalid'}
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '456'), '(456)')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
         QgsMapLayerRegistry.instance().removeMapLayer(second_layer.id())
 
@@ -130,7 +130,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
         relMgr = QgsProject.instance().relationManager()
 
-        fieldKit = QgsRelationReferenceFieldFormatter()
+        fieldFormatter = QgsRelationReferenceFieldFormatter()
 
         rel = QgsRelation()
         rel.setRelationId('rel1')
@@ -145,42 +145,42 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         # Everything valid
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
 
         # Code not find match in foreign layer
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '456'), '456')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '456')
 
         # Invalid relation id
         config = {'Relation': 'invalid'}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
         # No display expression
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression(None)
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
         # Invalid display expression
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('invalid +')
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
         # Missing relation
         config = {}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
         # Inconsistent layer provided to representValue()
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(second_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(second_layer, 0, config, None, '123'), '123')
 
         # Inconsistent idx provided to representValue()
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(first_layer, 1, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 1, config, None, '123'), '123')
 
         # Invalid relation
         rel = QgsRelation()
@@ -194,7 +194,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
-        self.assertEqual(fieldKit.representValue(first_layer, 0, config, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 

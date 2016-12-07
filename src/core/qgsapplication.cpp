@@ -1445,7 +1445,7 @@ void QgsApplication::emitSettingsChanged()
 }
 
 
-QgsFieldFormatterRegistry* QgsApplication::fieldKitRegistry()
+QgsFieldFormatterRegistry* QgsApplication::fieldFormatterRegistry()
 {
   return instance()->mFieldFormatterRegistry;
 }

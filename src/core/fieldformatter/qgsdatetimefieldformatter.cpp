@@ -20,6 +20,11 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
+const QString QgsDateTimeFieldFormatter::DefaultDateFormat = QStringLiteral( "yyyy-MM-dd" );
+const QString QgsDateTimeFieldFormatter::DefaultTimeFormat = QStringLiteral( "HH:mm:ss" );
+const QString QgsDateTimeFieldFormatter::DefaultDateTimeFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
+
+
 QString QgsDateTimeFieldFormatter::id() const
 {
   return QStringLiteral( "DateTime" );
@@ -60,12 +65,12 @@ QString QgsDateTimeFieldFormatter::defaultFormat( const QVariant::Type type )
   switch ( type )
   {
     case QVariant::DateTime:
-      return QGSDATETIMEFIELDKIT_DATETIMEFORMAT;
+      return QgsDateTimeFieldFormatter::DefaultDateTimeFormat;
       break;
     case QVariant::Time:
-      return QGSDATETIMEFIELDKIT_TIMEFORMAT;
+      return QgsDateTimeFieldFormatter::DefaultTimeFormat;
       break;
     default:
-      return QGSDATETIMEFIELDKIT_DATEFORMAT;
+      return QgsDateTimeFieldFormatter::DefaultDateFormat;
   }
 }

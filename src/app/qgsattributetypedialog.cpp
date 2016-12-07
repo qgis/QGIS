@@ -350,9 +350,9 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( editorWidgetType() );
+  QgsFieldFormatter* fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( editorWidgetType() );
 
-  QString previewText = fieldKit->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
+  QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }
