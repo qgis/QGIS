@@ -404,6 +404,8 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note Added in QGIS 3.0
      */
     static QgsFieldFormatterRegistry* fieldFormatterRegistry();
+    static QString nullRepresentation();
+    static void setNullRepresentation( const QString& nullRepresentation );
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should
@@ -423,4 +425,5 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @see emitSettingsChanged()
      */
     void settingsChanged();
+    void nullRepresentationChanged();
 };
