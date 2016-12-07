@@ -68,3 +68,8 @@ QgsFieldFormatter* QgsFieldFormatterRegistry::fieldFormatter( const QString& id 
 {
   return mFieldFormatters.value( id, mFallbackFieldFormatter );
 }
+
+QgsFieldFormatter* QgsFieldFormatterRegistry::fallbackFieldFormatter() const
+{
+  return mFallbackFieldFormatter;
+}

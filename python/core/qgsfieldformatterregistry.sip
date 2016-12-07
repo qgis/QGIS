@@ -28,6 +28,7 @@ class QgsFieldFormatterRegistry : QObject
     void removeFieldFormatter( QgsFieldFormatter* formatter );
     void removeFieldFormatter( const QString& id );
     QgsFieldFormatter* fieldFormatter( const QString& id ) const;
+    QgsFieldFormatter* fallbackFieldFormatter() const;
   signals:
     void fieldFormatterAdded( QgsFieldFormatter* formatter );
     void fieldFormatterRemoved( QgsFieldFormatter* formatter );

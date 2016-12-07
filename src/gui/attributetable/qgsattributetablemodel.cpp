@@ -269,10 +269,10 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::fieldFormatterRemoved( QgsFieldFormatter* fieldFormatter )
 {
-  for ( QVector<QgsFieldFormatter*>::Iterator it = mFieldFormatters.begin(); it != mFieldFormatters.end(); ++it )
+  for ( int i = 0; i < mFieldFormatters.size(); ++i )
   {
-    if ( it.value() == fieldFormatter )
-      it.setValue( QgsApplication::fieldFormatterRegistry()->defaultFormatter() );
+    if ( mFieldFormatters.at( i ) == fieldFormatter )
+      mFieldFormatters[i] = QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter();
   }
 }
 
