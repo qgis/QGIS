@@ -1404,7 +1404,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
   }
 
   QList<int> cats;
-  Q_FOREACH ( QgsFeatureId fid, vectorLayer->selectedFeaturesIds() )
+  Q_FOREACH ( QgsFeatureId fid, vectorLayer->selectedFeatureIds() )
   {
     cats << QgsGrassFeatureIterator::catFromFid( fid );
   }

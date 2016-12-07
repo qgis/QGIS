@@ -1915,7 +1915,7 @@ void QgsIdentifyResultsDialog::toggleFeatureSelection()
   if ( !vl )
     return;
 
-  if ( vl->selectedFeaturesIds().contains( item->feature().id() ) )
+  if ( vl->selectedFeatureIds().contains( item->feature().id() ) )
     vl->deselect( item->feature().id() );
   else
     vl->select( item->feature().id() );

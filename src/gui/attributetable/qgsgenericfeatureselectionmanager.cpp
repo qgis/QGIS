@@ -52,7 +52,7 @@ void QgsGenericFeatureSelectionManager::setSelectedFeatures( const QgsFeatureIds
   emit selectionChanged( selected, deselected, true );
 }
 
-const QgsFeatureIds& QgsGenericFeatureSelectionManager::selectedFeaturesIds() const
+const QgsFeatureIds& QgsGenericFeatureSelectionManager::selectedFeatureIds() const
 {
   return mSelectedFeatures;
 }

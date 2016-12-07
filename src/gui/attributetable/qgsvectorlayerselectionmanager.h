@@ -67,7 +67,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      * @return A list of { @link QgsFeatureIds }
      * @see selectedFeatures()
      */
-    virtual const QgsFeatureIds& selectedFeaturesIds() const override;
+    virtual const QgsFeatureIds& selectedFeatureIds() const override;
 
   private:
     QgsVectorLayer* mLayer;

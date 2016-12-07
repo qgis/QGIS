@@ -138,7 +138,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError* error, int method )
   // If only selected features were checked, confine the recheck areas to the selected features
   if ( mFeaturePool->getSelectedOnly() )
   {
-    recheckAreaFeatures = recheckAreaFeatures.intersect( mFeaturePool->getLayer()->selectedFeaturesIds() );
+    recheckAreaFeatures = recheckAreaFeatures.intersect( mFeaturePool->getLayer()->selectedFeatureIds() );
   }
 
   // Recheck feature / changed area to detect new errors

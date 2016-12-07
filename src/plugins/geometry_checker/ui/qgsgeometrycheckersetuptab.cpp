@@ -240,7 +240,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       QgsFeatureIterator it = layer->getFeatures();
       while ( it.nextFeature( feature ) )
       {
-        if ( !layer->selectedFeaturesIds().contains( feature.id() ) )
+        if ( !layer->selectedFeatureIds().contains( feature.id() ) )
         {
           features.append( feature );
         }

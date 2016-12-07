@@ -38,7 +38,7 @@ class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelection
     virtual void select( const QgsFeatureIds& ids ) override;
     virtual void deselect( const QgsFeatureIds& ids ) override;
     virtual void setSelectedFeatures( const QgsFeatureIds& ids ) override;
-    virtual const QgsFeatureIds& selectedFeaturesIds() const override;
+    virtual const QgsFeatureIds& selectedFeatureIds() const override;
 
   private:
     QgsFeatureIds mSelectedFeatures;

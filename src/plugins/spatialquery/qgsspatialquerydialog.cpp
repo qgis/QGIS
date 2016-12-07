@@ -241,10 +241,10 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
         mLayerTarget->selectByIds( mFeatureResult );
         break;
       case selectedAdd:
-        mLayerTarget->selectByIds( mLayerTarget->selectedFeaturesIds() + mFeatureResult );
+        mLayerTarget->selectByIds( mLayerTarget->selectedFeatureIds() + mFeatureResult );
         break;
       case selectedRemove:
-        mLayerTarget->selectByIds( mLayerTarget->selectedFeaturesIds() - mFeatureResult );
+        mLayerTarget->selectByIds( mLayerTarget->selectedFeatureIds() - mFeatureResult );
         break;
       default:
         return;
@@ -833,7 +833,7 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 
 void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
 {
-  const QgsFeatureIds *fids = & ( mLayerTarget->selectedFeaturesIds() );
+  const QgsFeatureIds *fids = & ( mLayerTarget->selectedFeatureIds() );
   QString title = tr( "Create new layer from selected" );
   QString msg;
   QString fieldFID;

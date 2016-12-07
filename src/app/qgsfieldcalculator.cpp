@@ -276,7 +276,7 @@ void QgsFieldCalculator::accept()
     QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
     if ( mOnlyUpdateSelectedCheckBox->isChecked() )
     {
-      req.setFilterFids( mVectorLayer->selectedFeaturesIds() );
+      req.setFilterFids( mVectorLayer->selectedFeatureIds() );
     }
     QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
     while ( fit.nextFeature( feature ) )

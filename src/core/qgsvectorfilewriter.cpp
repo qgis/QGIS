@@ -2379,7 +2379,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       QgsFeatureRequest req;
       if ( options.onlySelectedFeatures )
       {
-        req.setFilterFids( layer->selectedFeaturesIds() );
+        req.setFilterFids( layer->selectedFeatureIds() );
       }
       QgsFeatureIterator fit = layer->getFeatures( req );
       QgsFeature fet;
@@ -2455,7 +2455,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
   req.setSubsetOfAttributes( attributes );
   if ( options.onlySelectedFeatures )
-    req.setFilterFids( layer->selectedFeaturesIds() );
+    req.setFilterFids( layer->selectedFeatureIds() );
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   //create symbol table if needed

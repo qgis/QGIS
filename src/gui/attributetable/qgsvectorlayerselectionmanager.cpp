@@ -44,7 +44,7 @@ void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds& i
   mLayer->selectByIds( ids );
 }
 
-const QgsFeatureIds& QgsVectorLayerSelectionManager::selectedFeaturesIds() const
+const QgsFeatureIds& QgsVectorLayerSelectionManager::selectedFeatureIds() const
 {
-  return mLayer->selectedFeaturesIds();
+  return mLayer->selectedFeatureIds();
 }

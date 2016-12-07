@@ -58,12 +58,12 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   //take only selection
   if ( onlySelectedFeatures )
   {
-    QgsFeatureIds selectionB = layerB->selectedFeaturesIds();
+    QgsFeatureIds selectionB = layerB->selectedFeatureIds();
     QgsFeatureRequest req = QgsFeatureRequest().setFilterFids( selectionB ).setSubsetOfAttributes( QgsAttributeList() );
     QgsSpatialIndex index = QgsSpatialIndex( layerB->getFeatures( req ) );
 
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selectionA = layerA->selectedFeaturesIds();
+    const QgsFeatureIds selectionA = layerA->selectedFeatureIds();
     if ( p )
     {
       p->setMaximum( selectionA.size() );

@@ -627,7 +627,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
 
       if ( onlySelected )
       {
-        QgsFeatureIds selectedFids = layer->selectedFeaturesIds();
+        QgsFeatureIds selectedFids = layer->selectedFeatureIds();
         if ( !selectedFids.isEmpty() )
           req.setFilterFids( selectedFids );
       }
@@ -636,7 +636,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
 
       if ( req.filterType() == QgsFeatureRequest::FilterFids )
       {
-        emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->selectedFeaturesIds().size() );
+        emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->selectedFeatureIds().size() );
       }
       else
       {

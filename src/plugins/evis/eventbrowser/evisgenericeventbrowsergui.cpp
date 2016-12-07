@@ -264,11 +264,11 @@ bool eVisGenericEventBrowserGui::initBrowser()
   if ( 0 == mVectorLayer->selectedFeatureCount() ) //if nothing is selected select everything
   {
     mVectorLayer->invertSelection();
-    mFeatureIds = mVectorLayer->selectedFeaturesIds().toList();
+    mFeatureIds = mVectorLayer->selectedFeatureIds().toList();
   }
   else //use selected features
   {
-    mFeatureIds = mVectorLayer->selectedFeaturesIds().toList();
+    mFeatureIds = mVectorLayer->selectedFeatureIds().toList();
   }
 
   if ( 0 == mFeatureIds.size() )

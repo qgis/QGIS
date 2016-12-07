@@ -6516,7 +6516,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
   }
 
   //validate selection
-  int numberOfSelectedFeatures = vlayer->selectedFeaturesIds().size();
+  int numberOfSelectedFeatures = vlayer->selectedFeatureIds().size();
   if ( numberOfSelectedFeatures == 0 )
   {
     messageBar()->pushMessage( tr( "No Features Selected" ),
@@ -7023,7 +7023,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   }
 
   //get selected feature ids (as a QSet<int> )
-  const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
+  const QgsFeatureIds& featureIdSet = vl->selectedFeatureIds();
   if ( featureIdSet.size() < 2 )
   {
     messageBar()->pushMessage(
@@ -7051,7 +7051,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QSet<int> toSkip = d.skippedAttributeIndexes();
 
   bool firstFeature = true;
-  Q_FOREACH ( QgsFeatureId fid, vl->selectedFeaturesIds() )
+  Q_FOREACH ( QgsFeatureId fid, vl->selectedFeatureIds() )
   {
     for ( int i = 0; i < merged.count(); ++i )
     {
@@ -7165,7 +7165,7 @@ void QgisApp::mergeSelectedFeatures()
   }
 
   //get selected feature ids (as a QSet<int> )
-  const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
+  const QgsFeatureIds& featureIdSet = vl->selectedFeatureIds();
   if ( featureIdSet.size() < 2 )
   {
     messageBar()->pushMessage(
@@ -7176,7 +7176,7 @@ void QgisApp::mergeSelectedFeatures()
   }
 
   //get initial selection (may be altered by attribute merge dialog later)
-  QgsFeatureIds featureIds = vl->selectedFeaturesIds();
+  QgsFeatureIds featureIds = vl->selectedFeatureIds();
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
   bool canceled;
   QgsGeometry unionGeom = unionGeometries( vl, featureList, canceled );
@@ -7199,7 +7199,7 @@ void QgisApp::mergeSelectedFeatures()
     return;
   }
 
-  QgsFeatureIds featureIdsAfter = vl->selectedFeaturesIds();
+  QgsFeatureIds featureIdsAfter = vl->selectedFeatureIds();
 
   if ( featureIdsAfter.size() < 2 )
   {

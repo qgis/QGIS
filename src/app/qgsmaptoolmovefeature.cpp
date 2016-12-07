@@ -130,7 +130,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
     }
     else
     {
-      mMovedFeatures = vlayer->selectedFeaturesIds();
+      mMovedFeatures = vlayer->selectedFeatureIds();
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       QgsFeature feat;

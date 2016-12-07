@@ -284,7 +284,7 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, con
     }
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
-    const QgsFeatureIds& selection = vl->selectedFeaturesIds();
+    const QgsFeatureIds& selection = vl->selectedFeatureIds();
     if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
     {
       return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );

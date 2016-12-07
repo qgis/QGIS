@@ -1424,7 +1424,7 @@ class TestQgsExpression: public QObject
       if ( layer )
         context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
 
-      QgsFeatureIds backupSelection = mMemoryLayer->selectedFeaturesIds();
+      QgsFeatureIds backupSelection = mMemoryLayer->selectedFeatureIds();
       context.setFeature( feature );
 
       mMemoryLayer->selectByIds( selectedFeatures );
