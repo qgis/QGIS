@@ -113,6 +113,7 @@ class TestLayerDependencies(unittest.TestCase):
         u = QgsSnappingUtils()
         u.setMapSettings(ms)
         cfg = u.config()
+        cfg.setEnabled(True)
         cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
@@ -235,6 +236,7 @@ class TestLayerDependencies(unittest.TestCase):
         u = QgsSnappingUtils()
         u.setMapSettings(ms)
         cfg = u.config()
+        cfg.setEnabled(True)
         cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
