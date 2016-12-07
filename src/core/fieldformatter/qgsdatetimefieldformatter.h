@@ -18,13 +18,13 @@
 
 #include "qgsfieldformatter.h"
 
-#define QGSDATETIMEFIELDKIT_DATEFORMAT QStringLiteral( "yyyy-MM-dd" )
-#define QGSDATETIMEFIELDKIT_TIMEFORMAT QStringLiteral( "HH:mm:ss" )
-#define QGSDATETIMEFIELDKIT_DATETIMEFORMAT QStringLiteral( "yyyy-MM-dd HH:mm:ss" )
-
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {
   public:
+    static const QString DefaultDateFormat;
+    static const QString DefaultTimeFormat;
+    static const QString DefaultDateTimeFormat;
+
     virtual QString id() const override;
 
     virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;

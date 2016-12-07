@@ -57,15 +57,15 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
   if ( idx == 0 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEFIELDKIT_DATEFORMAT );
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DefaultDateFormat );
   }
   else if ( idx == 1 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEFIELDKIT_TIMEFORMAT );
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DefaultTimeFormat );
   }
   else if ( idx == 2 )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEFIELDKIT_DATETIMEFORMAT );
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DefaultDateTimeFormat );
   }
 
   mFieldFormatEdit->setVisible( idx == 3 );
@@ -126,11 +126,11 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
   mFieldFormatEdit->setText( fieldFormat );
 
-  if ( fieldFormat == QGSDATETIMEFIELDKIT_DATEFORMAT )
+  if ( fieldFormat == QgsDateTimeFieldFormatter::DefaultDateFormat )
     mFieldFormatComboBox->setCurrentIndex( 0 );
-  else if ( fieldFormat == QGSDATETIMEFIELDKIT_TIMEFORMAT )
+  else if ( fieldFormat == QgsDateTimeFieldFormatter::DefaultTimeFormat )
     mFieldFormatComboBox->setCurrentIndex( 1 );
-  else if ( fieldFormat == QGSDATETIMEFIELDKIT_DATETIMEFORMAT )
+  else if ( fieldFormat == QgsDateTimeFieldFormatter::DefaultDateTimeFormat )
     mFieldFormatComboBox->setCurrentIndex( 2 );
   else
     mFieldFormatComboBox->setCurrentIndex( 3 );

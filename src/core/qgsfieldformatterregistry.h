@@ -26,7 +26,7 @@ class QgsFieldFormatter;
  * \ingroup core
  * The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
  * A reference to the QgsFieldFormatterRegistry can be obtained from
- * QgsApplication::fieldKitRegistry().
+ * QgsApplication::fieldFormatterRegistry().
  *
  * @note Added in QGIS 3.0
  */
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
     /**
      * You should not normally need to create your own field formatter registry.
      *
-     * Use the one provided by `QgsApplication::fieldKitRegistry()` instead.
+     * Use the one provided by `QgsApplication::fieldFormatterRegistry()` instead.
      */
     explicit QgsFieldFormatterRegistry( QObject* parent = nullptr );
     ~QgsFieldFormatterRegistry();

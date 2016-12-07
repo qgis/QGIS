@@ -734,7 +734,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
-  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( setup.type() );
+  QgsFieldFormatter* fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
   int idx = vlayer->fields().lookupField( fieldName );
 
@@ -747,11 +747,11 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   }
   else
   {
-    cache = fieldKit->createCache( vlayer, idx, setup.config() );
+    cache = fieldFormatter->createCache( vlayer, idx, setup.config() );
     layerCaches.insert( fieldName, cache );
   }
 
-  return fieldKit->representValue( vlayer, idx, setup.config(), cache, value );
+  return fieldFormatter->representValue( vlayer, idx, setup.config(), cache, value );
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
