@@ -31,7 +31,6 @@
 %Include qgscolorschemeregistry.sip
 %Include qgsconditionalstyle.sip
 %Include qgscontexthelp.sip
-%Include qgsconfigurationmap.sip
 %Include qgscoordinatereferencesystem.sip
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip

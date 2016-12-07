@@ -30,7 +30,7 @@
 #include "qgsprojectproperty.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
-#include "qgsconfigurationmap.h"
+#include "qgsxmlutils.h"
 
 typedef QgsProjectVersion PFV;
 
@@ -699,8 +699,7 @@ void QgsProjectFileTransform::transform2180to2990()
           editWidgetConfiguration.insert( QStringLiteral( "map" ), map );
         }
 
-        QgsConfigurationMap editWidgetConfigurationMap( editWidgetConfiguration );
-        editWidgetConfigurationMap.toXml( editWidgetConfigElement );
+        editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( editWidgetConfiguration, mDom ) );
       }
     }
   }

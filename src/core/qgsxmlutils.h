@@ -52,6 +52,24 @@ class CORE_EXPORT QgsXmlUtils
     static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc );
 
     static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
+
+    /**
+     * Write a QVariant to a QDomElement.
+     *
+     * Supported types are
+     *
+     * - QVariant::Map
+     * - QVariant::Int
+     * - QVariant::Double
+     * - QVariant::String
+     *
+     */
+    static QDomElement writeVariant( const QVariant& value, QDomDocument& doc );
+
+    /**
+     * Read a QVariant from a QDomElement.
+     */
+    static QVariant readVariant( const QDomElement& element );
 };
 
 

@@ -23,7 +23,7 @@
 #include <qgsmessagelog.h>
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
-#include <qgsconfigurationmap.h>
+#include <qgsxmlutils.h>
 #include <qgsvectorlayer.h>
 
 #include <QMessageBox>
@@ -1039,9 +1039,7 @@ void QgsPostgresProvider::setEditorWidgets()
           QDomDocument doc;
           if ( doc.setContent( configTxt ) )
           {
-            QgsConfigurationMap configMap;
-            configMap.fromXml( doc.documentElement() );
-            config = configMap.get();
+            config = QgsXmlUtils::readVariant( doc.documentElement() ).toMap();
           }
           else
           {
