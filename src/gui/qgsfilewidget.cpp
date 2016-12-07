@@ -27,6 +27,7 @@
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
     : QWidget( parent )
@@ -82,7 +83,7 @@ QString QgsFileWidget::filePath()
 
 void QgsFileWidget::setFilePath( QString path )
 {
-  if ( path == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ) )
+  if ( path == QgsApplication::nullRepresentation() )
   {
     path = QLatin1String( "" );
   }
@@ -286,7 +287,7 @@ QString QgsFileWidget::toUrl( const QString& path ) const
   QString rep;
   if ( path.isEmpty() )
   {
-    return QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+    return QgsApplication::nullRepresentation();
   }
 
   QString urlStr = relativePath( path, false );

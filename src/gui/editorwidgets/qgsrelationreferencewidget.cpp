@@ -302,7 +302,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
 
 void QgsRelationReferenceWidget::deleteForeignKey()
 {
-  QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
+  QVariant nullValue = QgsApplication::nullRepresentation();
   if ( mReadOnlySelector )
   {
     QString nullText = QLatin1String( "" );
@@ -477,7 +477,7 @@ void QgsRelationReferenceWidget::init()
         mFilterComboBoxes << cb;
         mReferencedLayer->uniqueValues( idx, uniqueValues );
         cb->addItem( mReferencedLayer->attributeDisplayName( idx ) );
-        QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
+        QVariant nullValue = QgsApplication::nullRepresentation();
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         qSort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
@@ -496,7 +496,7 @@ void QgsRelationReferenceWidget::init()
 
       if ( mChainFilters )
       {
-        QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
+        QVariant nullValue = QgsApplication::nullRepresentation();
 
         QgsFeature ft;
         QgsFeatureIterator fit = layerCache->getFeatures();
@@ -552,7 +552,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setCompleter( completer );
 
 
-    QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
+    QVariant nullValue = QgsApplication::nullRepresentation();
 
     if ( mChainFilters && mFeature.isValid() )
     {
@@ -797,7 +797,7 @@ void QgsRelationReferenceWidget::mapToolDeactivated()
 
 void QgsRelationReferenceWidget::filterChanged()
 {
-  QVariant nullValue = QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" );
+  QVariant nullValue = QgsApplication::nullRepresentation();
 
   QStringList filters;
   QgsAttributeList attrs;

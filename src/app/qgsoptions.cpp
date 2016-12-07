@@ -640,7 +640,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   else
     mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyGeometryAsWKT" ), true ).toBool() ?
         QgsClipboard::AttributesWithWKT : QgsClipboard::AttributesOnly ) );
-  leNullValue->setText( mSettings->value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+  leNullValue->setText( QgsApplication::nullRepresentation() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/legendDoubleClickAction" ), 0 ).toInt() );
@@ -1254,7 +1254,7 @@ void QgsOptions::saveOptions()
   }
   mSettings->setValue( QStringLiteral( "/qgis/enableMacros" ), cmbEnableMacros->currentIndex() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/nullValue" ), leNullValue->text() );
+  QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
   mSettings->setValue( QStringLiteral( "/IconSize" ), cmbIconSize->currentText() );
 

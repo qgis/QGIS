@@ -17,6 +17,7 @@
 
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvaluemapfieldformatter.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 #include <QFileDialog>
@@ -52,7 +53,7 @@ QVariantMap QgsValueMapConfigDlg::config()
       continue;
 
     QString ks = ki->text();
-    if (( ks == settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+    if (( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = VALUEMAP_NULL_TEXT;
 
     if ( !vi || vi->text().isNull() )
@@ -159,7 +160,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString&
   {
     QFont cellFont;
     cellFont.setItalic( true );
-    valueCell = new QTableWidgetItem( settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+    valueCell = new QTableWidgetItem( QgsApplication::nullRepresentation() );
     valueCell->setFont( cellFont );
     valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     descriptionCell->setFont( cellFont );
@@ -246,7 +247,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
       val = val.mid( 1, val.length() - 2 );
     }
 
-    if ( key == settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
+    if ( key == QgsApplication::nullRepresentation() )
       key = VALUEMAP_NULL_TEXT;
 
     map[ key ] = val;

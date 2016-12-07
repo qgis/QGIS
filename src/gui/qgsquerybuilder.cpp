@@ -120,7 +120,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mLayer->uniqueValues( idx, values, limit );
 
   QSettings settings;
-  QString nullValue = settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+  QString nullValue = QgsApplication::nullRepresentation();
 
   QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
 

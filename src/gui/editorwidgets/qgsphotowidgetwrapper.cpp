@@ -137,7 +137,7 @@ QVariant QgsPhotoWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text() == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
+    if ( mLineEdit->text() == QgsApplication::nullRepresentation() )
       v = QVariant( QVariant::String );
     else
       v = mLineEdit->text();
@@ -223,7 +223,7 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      fle->setNullValue( QgsApplication::nullRepresentation() );
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
@@ -246,7 +246,7 @@ void QgsPhotoWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      whileBlocking( mLineEdit )->setText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      whileBlocking( mLineEdit )->setText( QgsApplication::nullRepresentation() );
       clearPicture();
     }
     else

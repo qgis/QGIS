@@ -34,7 +34,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fi
   if ( value.isNull() )
   {
     QSettings settings;
-    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+    return QgsApplication::nullRepresentation();
   }
 
   const QgsField field = layer->fields().at( fieldIndex );

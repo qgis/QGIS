@@ -402,6 +402,21 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsFieldFormatterRegistry* fieldKitRegistry();
 
+    /**
+     * This string is used to represent the value `NULL` throughout QGIS.
+     *
+     * In general, when passing values around, prefer to use a null QVariant
+     * `QVariant( field.type() )` or `QVariant( QVariant::Int )`. This value
+     * should only be used in the final presentation step when showing values
+     * in a widget or sending it to a web browser.
+     */
+    static QString nullRepresentation();
+
+    /**
+     * \copydoc nullRepresentation()
+     */
+    static void setNullRepresentation( const QString& nullRepresentation );
+
   public slots:
 
     /** Causes the application instance to emit the settingsChanged() signal. This should
@@ -421,6 +436,11 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @see emitSettingsChanged()
      */
     void settingsChanged();
+
+    /**
+     * \copydoc nullRepresentation()
+     */
+    void nullRepresentationChanged();
 
   private:
     static void copyPath( const QString& src, const QString& dst );
@@ -472,6 +492,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsRuntimeProfiler* mProfiler;
     QgsTaskManager* mTaskManager;
     QgsFieldFormatterRegistry* mFieldFormatterRegistry;
+    QString mNullRepresentation;
 };
 
 #endif

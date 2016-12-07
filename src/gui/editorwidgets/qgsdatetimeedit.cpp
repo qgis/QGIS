@@ -37,7 +37,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   mClearButton->hide();
   connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
 
-  mNullLabel = new QLineEdit( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString(), this );
+  mNullLabel = new QLineEdit( QgsApplication::nullRepresentation(), this );
   mNullLabel->setReadOnly( true );
   mNullLabel->setStyleSheet( QStringLiteral( "position: absolute; border: none; font-style: italic; color: grey;" ) );
   mNullLabel->hide();

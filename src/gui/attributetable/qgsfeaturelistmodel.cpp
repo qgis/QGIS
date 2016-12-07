@@ -73,7 +73,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   {
     if ( role == Qt::DisplayRole )
     {
-      return QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+      return QgsApplication::nullRepresentation();
     }
     else if ( role == QgsAttributeTableModel::FeatureIdRole )
     {

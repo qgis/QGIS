@@ -20,6 +20,8 @@
 #include <QSharedPointer>
 
 #include "qgsfield.h"
+#include "qgsapplication.h"
+#include "qgstest.h"
 
 class TestQgsField: public QObject
 {
@@ -299,8 +301,7 @@ void TestQgsField::displayString()
   QCOMPARE( stringField.displayString( test ), test );
 
   //test NULL
-  QSettings s;
-  s.setValue( QStringLiteral( "qgis/nullValue" ), "TEST NULL" );
+  QgsApplication::setNullRepresentation( "TEST NULL" );
   QVariant nullString = QVariant( QVariant::String );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 
@@ -513,5 +514,5 @@ void TestQgsField::collection()
   QVERIFY( !field.convertCompatible( str ) );
 }
 
-QTEST_MAIN( TestQgsField )
+QGSTEST_MAIN( TestQgsField )
 #include "testqgsfield.moc"

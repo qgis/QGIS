@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslistfieldformatter.h"
-
+#include "qgsapplication.h"
 #include <QSettings>
 
 QString QgsListFieldFormatter::id() const
@@ -32,7 +32,7 @@ QString QgsListFieldFormatter::representValue( QgsVectorLayer* layer, int fieldI
   if ( value.isNull() )
   {
     QSettings settings;
-    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+    return QgsApplication::nullRepresentation();
   }
 
   QString result;
