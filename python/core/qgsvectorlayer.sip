@@ -1311,6 +1311,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
      * @see constraints()
      */
     void setConstraintExpression( int index, const QString& expression, const QString& description = QString() );
+    void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup& setup );
+    QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 
     /** Calculates a list of unique values contained within an attribute in the layer. Note that
      * in some circumstances when unsaved changes are present for the layer then the returned list
