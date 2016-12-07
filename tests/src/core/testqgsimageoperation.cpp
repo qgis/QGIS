@@ -18,7 +18,7 @@
 #include "qgsimageoperation.h"
 #include "qgscolorramp.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgsrenderchecker.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
@@ -473,5 +473,5 @@ bool TestQgsImageOperation::imageCheck( const QString& testName, QImage &image, 
   return resultFlag;
 }
 
-QTEST_MAIN( TestQgsImageOperation )
+QGSTEST_MAIN( TestQgsImageOperation )
 #include "testqgsimageoperation.moc"

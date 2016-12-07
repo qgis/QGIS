@@ -23,7 +23,7 @@
 #include "qgsapplication.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerMultiFrame : public QObject
 {
@@ -368,5 +368,5 @@ void TestQgsComposerMultiFrame::undoRedoRemovedFrame()
   delete htmlItem;
 }
 
-QTEST_MAIN( TestQgsComposerMultiFrame )
+QGSTEST_MAIN( TestQgsComposerMultiFrame )
 #include "testqgscomposermultiframe.moc"

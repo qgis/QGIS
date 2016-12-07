@@ -28,7 +28,7 @@
 #include "qgsfillsymbollayer.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposition : public QObject
 {
@@ -598,5 +598,5 @@ void TestQgsComposition::variablesEdited()
   QVERIFY( spyVariablesChanged.count() == 2 );
 }
 
-QTEST_MAIN( TestQgsComposition )
+QGSTEST_MAIN( TestQgsComposition )
 #include "testqgscomposition.moc"

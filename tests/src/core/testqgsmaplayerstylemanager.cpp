@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 #include "qgsapplication.h"
@@ -203,5 +203,5 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 }
 
 
-QTEST_MAIN( TestQgsMapLayerStyleManager )
+QGSTEST_MAIN( TestQgsMapLayerStyleManager )
 #include "testqgsmaplayerstylemanager.moc"

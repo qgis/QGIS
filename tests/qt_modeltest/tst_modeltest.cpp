@@ -314,5 +314,5 @@ void tst_ModelTest::testResetThroughProxy()
 }
 
 
-QTEST_MAIN( tst_ModelTest )
+QGSTEST_MAIN( tst_ModelTest )
 #include "tst_modeltest.moc"

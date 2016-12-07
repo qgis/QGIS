@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -205,7 +205,7 @@ class TestQgsSpatialIndex : public QObject
 
 };
 
-QTEST_MAIN( TestQgsSpatialIndex )
+QGSTEST_MAIN( TestQgsSpatialIndex )
 
 #include "testqgsspatialindex.moc"
 

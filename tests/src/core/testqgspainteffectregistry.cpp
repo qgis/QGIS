@@ -21,7 +21,7 @@
 #include "qgsrendercontext.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 //dummy paint effect for testing
 class DummyPaintEffect : public QgsPaintEffect
@@ -174,5 +174,5 @@ void TestQgsPaintEffectRegistry::defaultStack()
   delete effect2;
 }
 
-QTEST_MAIN( TestQgsPaintEffectRegistry )
+QGSTEST_MAIN( TestQgsPaintEffectRegistry )
 #include "testqgspainteffectregistry.moc"

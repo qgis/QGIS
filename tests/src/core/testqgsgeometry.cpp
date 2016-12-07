@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -4044,5 +4044,5 @@ void TestQgsGeometry::poleOfInaccessibility()
   QGSCOMPARENEAR( point.y(), -0.2434, 0.0001 );
 }
 
-QTEST_MAIN( TestQgsGeometry )
+QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"

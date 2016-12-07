@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QFile>
 #include <QTextStream>
 #include <QObject>
@@ -85,5 +85,5 @@ bool TestQgsClipper::checkBoundingBox( const QPolygonF& polygon, const QgsRectan
   return clipRect.contains( bBox );
 }
 
-QTEST_MAIN( TestQgsClipper )
+QGSTEST_MAIN( TestQgsClipper )
 #include "testqgsclipper.moc"

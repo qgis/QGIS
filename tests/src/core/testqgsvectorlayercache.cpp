@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QTemporaryFile>
 
@@ -337,5 +337,5 @@ void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, con
   mAddedFeatures.append( features );
 }
 
-QTEST_MAIN( TestVectorLayerCache )
+QGSTEST_MAIN( TestVectorLayerCache )
 #include "testqgsvectorlayercache.moc"

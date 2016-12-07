@@ -22,7 +22,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QtTest/QSignalSpy>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsScaleComboBox : public QObject
 {
@@ -168,5 +168,5 @@ void TestQgsScaleComboBox::cleanup()
   delete s;
 }
 
-QTEST_MAIN( TestQgsScaleComboBox )
+QGSTEST_MAIN( TestQgsScaleComboBox )
 #include "testqgsscalecombobox.moc"

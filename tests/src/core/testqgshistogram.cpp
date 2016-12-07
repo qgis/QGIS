@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -153,5 +153,5 @@ void TestQgsHistogram::fromLayer()
   delete layer;
 }
 
-QTEST_MAIN( TestQgsHistogram )
+QGSTEST_MAIN( TestQgsHistogram )
 #include "testqgshistogram.moc"

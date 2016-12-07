@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsalignraster.h"
 #include "qgsapplication.h"
@@ -268,6 +268,6 @@ class TestAlignRaster : public QObject
 
 };
 
-QTEST_MAIN( TestAlignRaster )
+QGSTEST_MAIN( TestAlignRaster )
 
 #include "testqgsalignraster.moc"

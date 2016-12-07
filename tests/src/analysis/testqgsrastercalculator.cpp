@@ -12,7 +12,7 @@ Email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
@@ -529,5 +529,5 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   delete block;
 }
 
-QTEST_MAIN( TestQgsRasterCalculator )
+QGSTEST_MAIN( TestQgsRasterCalculator )
 #include "testqgsrastercalculator.moc"

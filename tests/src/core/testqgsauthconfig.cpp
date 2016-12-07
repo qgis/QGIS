@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -242,5 +242,5 @@ void TestQgsAuthConfig::testConfigSslServer()
   QCOMPARE( sslconfig2.configString(), confstr );
 }
 
-QTEST_MAIN( TestQgsAuthConfig )
+QGSTEST_MAIN( TestQgsAuthConfig )
 #include "testqgsauthconfig.moc"

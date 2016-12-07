@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QSharedPointer>
@@ -223,7 +223,7 @@ void TestQgsRubberband::testClose()
 }
 
 
-QTEST_MAIN( TestQgsRubberband )
+QGSTEST_MAIN( TestQgsRubberband )
 #include "testqgsrubberband.moc"
 
 

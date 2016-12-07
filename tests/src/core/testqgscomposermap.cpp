@@ -27,7 +27,7 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerMap : public QObject
 {
@@ -399,5 +399,5 @@ void TestQgsComposerMap::dataDefinedStyles()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
-QTEST_MAIN( TestQgsComposerMap )
+QGSTEST_MAIN( TestQgsComposerMap )
 #include "testqgscomposermap.moc"

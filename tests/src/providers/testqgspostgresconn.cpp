@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 #include <qgspostgresconn.h>
@@ -42,5 +42,5 @@ class TestQgsPostgresConn: public QObject
 
 };
 
-QTEST_MAIN( TestQgsPostgresConn )
+QGSTEST_MAIN( TestQgsPostgresConn )
 #include "testqgspostgresconn.moc"

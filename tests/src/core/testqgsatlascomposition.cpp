@@ -30,7 +30,7 @@
 #include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsAtlasComposition : public QObject
 {
@@ -437,5 +437,5 @@ void TestQgsAtlasComposition::test_remove_layer()
   QVERIFY( spyToggled.count() == 1 );
 }
 
-QTEST_MAIN( TestQgsAtlasComposition )
+QGSTEST_MAIN( TestQgsAtlasComposition )
 #include "testqgsatlascomposition.moc"

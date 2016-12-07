@@ -20,7 +20,7 @@
 #include <QPolygonF>
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 class TestQgsGeometryImport: public QObject
@@ -242,5 +242,5 @@ bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline& polyline, QVa
   return true;
 }
 
-QTEST_MAIN( TestQgsGeometryImport )
+QGSTEST_MAIN( TestQgsGeometryImport )
 #include "testqgsgeometryimport.moc"

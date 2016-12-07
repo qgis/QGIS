@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsfocuswatcher.h"
 #include <QApplication>
@@ -93,5 +93,5 @@ void TestQgsFocusWatcher::testSignals()
 }
 
 
-QTEST_MAIN( TestQgsFocusWatcher )
+QGSTEST_MAIN( TestQgsFocusWatcher )
 #include "testqgsfocuswatcher.moc"

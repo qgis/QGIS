@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgslogger.h>
 #include <qgssqlcomposerdialog.h>
@@ -464,5 +464,5 @@ void TestQgsSQLComposerDialog::testJoins()
   QCOMPARE( table->item( 0, 0 ) != nullptr, true );
 }
 
-QTEST_MAIN( TestQgsSQLComposerDialog )
+QGSTEST_MAIN( TestQgsSQLComposerDialog )
 #include "testqgssqlcomposerdialog.moc"

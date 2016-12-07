@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgskeyvaluewidgetfactory.h>
 #include <qgskeyvaluewidget.h>
@@ -72,5 +72,5 @@ class TestQgsKeyValueWidget : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsKeyValueWidget )
+QGSTEST_MAIN( TestQgsKeyValueWidget )
 #include "testqgskeyvaluewidget.moc"

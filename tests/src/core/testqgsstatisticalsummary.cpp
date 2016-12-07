@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -299,5 +299,5 @@ void TestQgsStatisticSummary::countMissing()
   QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ),  3.0 );
 }
 
-QTEST_MAIN( TestQgsStatisticSummary )
+QGSTEST_MAIN( TestQgsStatisticSummary )
 #include "testqgsstatisticalsummary.moc"

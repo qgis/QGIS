@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetautoconf.h"
@@ -153,5 +153,5 @@ class TestQgsEditorWidgetRegistry: public QObject
     }
 };
 
-QTEST_MAIN( TestQgsEditorWidgetRegistry )
+QGSTEST_MAIN( TestQgsEditorWidgetRegistry )
 #include "testqgseditorwidgetregistry.moc"

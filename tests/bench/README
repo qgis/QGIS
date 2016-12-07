@@ -65,7 +65,7 @@ Unfortunately I don't see anything better than user time + sys time, running tes
 
 To be sure that the measured values are correct, it is necessary to run more cycles and check some standard deviation or so.
 
-There is also high level benchmark support available in QTestLib, it is possible to use QBENCHMARK macro + QTEST_MAIN to create easily test executable. Such test may be run with various options, some notes on modes/options:
+There is also high level benchmark support available in QTestLib, it is possible to use QBENCHMARK macro + QGSTEST_MAIN to create easily test executable. Such test may be run with various options, some notes on modes/options:
 
 -tickcounter - reads rdtsc register (on Linux), thus it counts real time, result is not constant
 

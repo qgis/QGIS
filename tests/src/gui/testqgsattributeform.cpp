@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QPushButton>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
@@ -305,5 +305,5 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QVERIFY( !okButton->isEnabled() );
 }
 
-QTEST_MAIN( TestQgsAttributeForm )
+QGSTEST_MAIN( TestQgsAttributeForm )
 #include "testqgsattributeform.moc"

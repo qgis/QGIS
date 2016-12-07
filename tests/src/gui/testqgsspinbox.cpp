@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgsspinbox.h>
 
@@ -144,5 +144,5 @@ void TestQgsSpinBox::expression()
   delete spinBox;
 }
 
-QTEST_MAIN( TestQgsSpinBox )
+QGSTEST_MAIN( TestQgsSpinBox )
 #include "testqgsspinbox.moc"

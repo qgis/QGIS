@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <qgsjsonutils.h>
 
 class TestQgsJSONUtils : public QObject
@@ -72,5 +72,5 @@ class TestQgsJSONUtils : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsJSONUtils )
+QGSTEST_MAIN( TestQgsJSONUtils )
 #include "testqgsjsonutils.moc"

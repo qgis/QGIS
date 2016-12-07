@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>
@@ -293,5 +293,5 @@ void TestQgis::qVariantCompare()
 }
 
 
-QTEST_MAIN( TestQgis )
+QGSTEST_MAIN( TestQgis )
 #include "testqgis.moc"

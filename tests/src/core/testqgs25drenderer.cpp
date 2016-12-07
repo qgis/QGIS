@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -159,5 +159,5 @@ bool TestQgs25DRenderer::imageCheck( const QString& theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgs25DRenderer )
+QGSTEST_MAIN( TestQgs25DRenderer )
 #include "testqgs25drenderer.moc"

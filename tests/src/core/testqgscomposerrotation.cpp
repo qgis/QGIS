@@ -27,7 +27,7 @@
 #include "qgsfontutils.h"
 #include "qgsrasterdataprovider.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -197,5 +197,5 @@ void TestQgsComposerRotation::mapItemRotation()
   QVERIFY( checker.testComposition( mReport ) );
 }
 
-QTEST_MAIN( TestQgsComposerRotation )
+QGSTEST_MAIN( TestQgsComposerRotation )
 #include "testqgscomposerrotation.moc"

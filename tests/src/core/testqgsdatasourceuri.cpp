@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 //header for class being tested
@@ -177,5 +177,5 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.param( "myparam" ), myparam );
 }
 
-QTEST_MAIN( TestQgsDataSourceUri )
+QGSTEST_MAIN( TestQgsDataSourceUri )
 #include "testqgsdatasourceuri.moc"

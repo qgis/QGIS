@@ -22,7 +22,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgstestutils.h"
 
 class TestProjectionIssues : public QObject
@@ -134,5 +134,5 @@ void TestProjectionIssues::issue15183()
   QGSCOMPARENEARPOINT( initialExtent.center(), currentExtent.center(), 0.00001 );
 }
 
-QTEST_MAIN( TestProjectionIssues )
+QGSTEST_MAIN( TestProjectionIssues )
 #include "testprojectionissues.moc"

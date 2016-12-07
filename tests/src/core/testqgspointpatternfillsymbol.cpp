@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -180,5 +180,5 @@ bool TestQgsPointPatternFillSymbol::imageCheck( const QString& theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsPointPatternFillSymbol )
+QGSTEST_MAIN( TestQgsPointPatternFillSymbol )
 #include "testqgspointpatternfillsymbol.moc"

@@ -17,7 +17,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgisapp.h>
 #include <qgsapplication.h>
@@ -94,5 +94,5 @@ void TestQgisAppPython::evalString()
   QVERIFY( !mQgisApp->mPythonUtils->evalString( "1+", result ) );
 }
 
-QTEST_MAIN( TestQgisAppPython )
+QGSTEST_MAIN( TestQgisAppPython )
 #include "testqgisapppython.moc"

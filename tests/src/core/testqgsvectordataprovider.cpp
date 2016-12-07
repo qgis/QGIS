@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -228,6 +228,6 @@ void TestQgsVectorDataProvider::featureAtId()
 }
 
 
-QTEST_MAIN( TestQgsVectorDataProvider )
+QGSTEST_MAIN( TestQgsVectorDataProvider )
 
 #include "testqgsvectordataprovider.moc"

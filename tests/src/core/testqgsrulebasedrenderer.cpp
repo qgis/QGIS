@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QDomDocument>
 #include <QFile>
 //header for class being tested
@@ -181,6 +181,6 @@ class TestQgsRuleBasedRenderer: public QObject
 
 };
 
-QTEST_MAIN( TestQgsRuleBasedRenderer )
+QGSTEST_MAIN( TestQgsRuleBasedRenderer )
 
 #include "testqgsrulebasedrenderer.moc"

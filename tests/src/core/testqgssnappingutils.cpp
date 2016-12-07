@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -238,7 +238,7 @@ class TestQgsSnappingUtils : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsSnappingUtils )
+QGSTEST_MAIN( TestQgsSnappingUtils )
 
 #include "testqgssnappingutils.moc"
 

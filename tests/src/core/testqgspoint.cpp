@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>
@@ -760,5 +760,5 @@ void TestQgsPoint::vector()
   QCOMPARE( v1.y(), 3.0 );
 }
 
-QTEST_MAIN( TestQgsPoint )
+QGSTEST_MAIN( TestQgsPoint )
 #include "testqgspoint.moc"

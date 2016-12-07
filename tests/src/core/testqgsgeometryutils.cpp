@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
@@ -540,5 +540,5 @@ void TestQgsGeometryUtils::testAngleThreePoints()
 
 
 
-QTEST_MAIN( TestQgsGeometryUtils )
+QGSTEST_MAIN( TestQgsGeometryUtils )
 #include "testqgsgeometryutils.moc"

@@ -29,7 +29,7 @@
 #include "qgsdatadefined.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerDD : public QObject
 {
@@ -146,5 +146,5 @@ void TestQgsComposerDD::ddEvaluate()
   mAtlasMap->setDataDefinedProperty( QgsComposerItem::PositionY, false, false, QString(), QString() );
 }
 
-QTEST_MAIN( TestQgsComposerDD )
+QGSTEST_MAIN( TestQgsComposerDD )
 #include "testqgscomposerdd.moc"

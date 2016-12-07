@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QtTest/QSignalSpy>
 #include <QObject>
 #include <QDesktopServices>
@@ -402,5 +402,5 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
   return configs;
 }
 
-QTEST_MAIN( TestQgsAuthManager )
+QGSTEST_MAIN( TestQgsAuthManager )
 #include "testqgsauthmanager.moc"

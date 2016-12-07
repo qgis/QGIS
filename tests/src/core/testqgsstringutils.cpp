@@ -17,7 +17,7 @@
 
 #include "qgsstringutils.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsStringUtils : public QObject
 {
@@ -155,5 +155,5 @@ void TestQgsStringUtils::insertLinks()
 }
 
 
-QTEST_MAIN( TestQgsStringUtils )
+QGSTEST_MAIN( TestQgsStringUtils )
 #include "testqgsstringutils.moc"

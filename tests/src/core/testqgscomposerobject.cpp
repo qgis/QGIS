@@ -23,7 +23,7 @@
 #include "qgsapplication.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerObject : public QObject
 {
@@ -312,5 +312,5 @@ bool TestQgsComposerObject::renderCheck( const QString& testName, QImage &image,
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsComposerObject )
+QGSTEST_MAIN( TestQgsComposerObject )
 #include "testqgscomposerobject.moc"

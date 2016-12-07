@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -189,5 +189,5 @@ void TestQgsRasterFileWriter::logError( const QString& msg )
   qDebug() << msg;
 }
 
-QTEST_MAIN( TestQgsRasterFileWriter )
+QGSTEST_MAIN( TestQgsRasterFileWriter )
 #include "testqgsrasterfilewriter.moc"

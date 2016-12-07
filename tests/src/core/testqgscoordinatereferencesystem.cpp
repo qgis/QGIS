@@ -12,7 +12,7 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QPixmap>
 
 #include <qgsapplication.h>
@@ -739,5 +739,5 @@ void TestQgsCoordinateReferenceSystem::createFromProj4Invalid()
   QVERIFY( !myCrs.createFromProj4( "+proj=longlat +no_defs" ) );
 }
 
-QTEST_MAIN( TestQgsCoordinateReferenceSystem )
+QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

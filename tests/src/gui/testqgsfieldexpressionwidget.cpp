@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 //qgis includes...
@@ -272,7 +272,7 @@ void TestQgsFieldExpressionWidget::testFilters()
   QgsProject::instance()->removeMapLayer( layer );
 }
 
-QTEST_MAIN( TestQgsFieldExpressionWidget )
+QGSTEST_MAIN( TestQgsFieldExpressionWidget )
 #include "testqgsfieldexpressionwidget.moc"
 
 

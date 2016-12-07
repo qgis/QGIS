@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsConnectionPool: public QObject
 {
@@ -140,5 +140,5 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   QFile( testFile.fileName() ).remove();
 }
 
-QTEST_MAIN( TestQgsConnectionPool )
+QGSTEST_MAIN( TestQgsConnectionPool )
 #include "testqgsconnectionpool.moc"

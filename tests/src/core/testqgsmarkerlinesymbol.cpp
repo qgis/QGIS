@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -214,5 +214,5 @@ bool TestQgsMarkerLineSymbol::render( const QString& theTestType )
   return result;
 }
 
-QTEST_MAIN( TestQgsMarkerLineSymbol )
+QGSTEST_MAIN( TestQgsMarkerLineSymbol )
 #include "testqgsmarkerlinesymbol.moc"

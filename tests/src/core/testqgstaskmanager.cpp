@@ -21,7 +21,7 @@
 #include "qgsapplication.h"
 #include <QObject>
 #include <QSharedPointer>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestTask : public QgsTask
 {
@@ -1190,5 +1190,5 @@ void TestQgsTaskManager::managerWithSubTasks3()
   QCOMPARE( manager3.dependencies( subTask2Id ), QSet< long >() );
 }
 
-QTEST_MAIN( TestQgsTaskManager )
+QGSTEST_MAIN( TestQgsTaskManager )
 #include "testqgstaskmanager.moc"

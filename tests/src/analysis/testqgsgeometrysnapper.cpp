@@ -12,7 +12,7 @@ Email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 //header for class being tested
 #include "qgsgeometrysnapper.h"
@@ -410,5 +410,5 @@ void TestQgsGeometrySnapper::snapPointToPolygon()
 }
 
 
-QTEST_MAIN( TestQgsGeometrySnapper )
+QGSTEST_MAIN( TestQgsGeometrySnapper )
 #include "testqgsgeometrysnapper.moc"

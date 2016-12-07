@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -152,5 +152,5 @@ void TestQgsMapToolSelect::selectInvalidPolygons()
 }
 
 
-QTEST_MAIN( TestQgsMapToolSelect )
+QGSTEST_MAIN( TestQgsMapToolSelect )
 #include "testqgsmaptoolselect.moc"

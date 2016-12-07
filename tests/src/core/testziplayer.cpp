@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>
@@ -550,5 +550,5 @@ void TestZipLayer::testZipItemVRT()
   }
 }
 
-QTEST_MAIN( TestZipLayer )
+QGSTEST_MAIN( TestZipLayer )
 #include "testziplayer.moc"

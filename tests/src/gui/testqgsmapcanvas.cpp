@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
@@ -402,5 +402,5 @@ void TestQgsMapCanvas::testShiftZoom()
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
 }
 
-QTEST_MAIN( TestQgsMapCanvas )
+QGSTEST_MAIN( TestQgsMapCanvas )
 #include "testqgsmapcanvas.moc"

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -306,6 +306,6 @@ class TestQgsPointLocator : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsPointLocator )
+QGSTEST_MAIN( TestQgsPointLocator )
 
 #include "testqgspointlocator.moc"

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QtConcurrentMap>
@@ -2680,6 +2680,6 @@ class TestQgsExpression: public QObject
 
 };
 
-QTEST_MAIN( TestQgsExpression )
+QGSTEST_MAIN( TestQgsExpression )
 
 #include "testqgsexpression.moc"

@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QUrl>
 
 //qgis includes...
@@ -1103,5 +1103,5 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   delete features[0].first;
 }
 
-QTEST_MAIN( TestQgsGML )
+QGSTEST_MAIN( TestQgsGML )
 #include "testqgsgml.moc"

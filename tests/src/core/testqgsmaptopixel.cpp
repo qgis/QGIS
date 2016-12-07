@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 //header for class being tested
@@ -106,7 +106,7 @@ void TestQgsMapToPixel::fromScale()
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
 }
 
-QTEST_MAIN( TestQgsMapToPixel )
+QGSTEST_MAIN( TestQgsMapToPixel )
 #include "testqgsmaptopixel.moc"
 
 

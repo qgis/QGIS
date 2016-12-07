@@ -31,7 +31,7 @@
 #include "qgsrelationmanager.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerTableV2 : public QObject
 {
@@ -1074,5 +1074,5 @@ void TestQgsComposerTableV2::cellStylesRender()
   mComposerAttributeTable->setShowEmptyRows( false );
 }
 
-QTEST_MAIN( TestQgsComposerTableV2 )
+QGSTEST_MAIN( TestQgsComposerTableV2 )
 #include "testqgscomposertablev2.moc"

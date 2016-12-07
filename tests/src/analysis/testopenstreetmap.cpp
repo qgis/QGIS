@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QtTest/QSignalSpy>
 
 #include <qgsapplication.h>
@@ -188,6 +188,6 @@ void TestOpenStreetMap::importAndQueries()
 }
 
 
-QTEST_MAIN( TestOpenStreetMap )
+QGSTEST_MAIN( TestOpenStreetMap )
 
 #include "testopenstreetmap.moc"
