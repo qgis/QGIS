@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>644</width>
-    <height>296</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -343,9 +343,6 @@
       <string>Expression</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="margin">
-       <number>0</number>
-      </property>
       <item>
        <widget class="QPlainTextEdit" name="text">
         <property name="sizePolicy">
@@ -360,6 +357,34 @@
           <height>100</height>
          </size>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Predefined expressions</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QComboBox" name="comboPredefined"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonAddPredefined">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Add...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+        <zorder>buttonAddPredefined</zorder>
+        <zorder>buttonAddPredefined</zorder>
+        <zorder>comboPredefined</zorder>
        </widget>
       </item>
      </layout>
