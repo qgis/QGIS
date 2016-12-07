@@ -1,9 +1,9 @@
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.tools import dataobjects
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
-from qgis.PyQt.QtWidgets import (QListWidget, QLineEdit, QPushButton, QLabel, 
-                                 QComboBox, QSpacerItem)
-from qgis.PyQt.QtGui import QTextCursor, QSizePolicy
+from qgis.PyQt.QtWidgets import (QListWidget, QLineEdit, QPushButton, QLabel,
+                                 QComboBox, QSpacerItem, QSizePolicy)
+from qgis.PyQt.QtGui import QTextCursor
 from processing.core.outputs import OutputRaster
 from processing.core.parameters import ParameterRaster
 from processing.gui.wrappers import InvalidParameterValue
@@ -15,13 +15,13 @@ import re
 pluginPath = os.path.dirname(__file__)
 WIDGET_DLG, BASE_DLG = uic.loadUiType(
     os.path.join(pluginPath, 'PredefinedExpressionDialog.ui'))
-   
+
 class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
-    
+
     def __init__(self, expression, options):
         super(PredefinedExpressionDialog, self).__init__()
         self.setupUi(self)
-        
+
         self.filledExpression = None
         self.options = options
         self.expression = expression
@@ -35,20 +35,20 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
             self.comboBoxes[variable] = combo
             self.groupBox.layout().addWidget(label)
             self.groupBox.layout().addWidget(combo)
-            
+
         verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.groupBox.layout().addItem(verticalSpacer)
-            
+
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.buttonBox.accepted.connect(self.okPressed)
 
     def cancelPressed(self):
         self.close()
-        
+
     def okPressed(self):
         self.filledExpression = self.expression
         for name, combo in self.comboBoxes.items():
-            self.filledExpression = self.filledExpression.replace(name, 
+            self.filledExpression = self.filledExpression.replace(name,
                                             self.options[combo.currentText()])
         self.close()
 
@@ -78,17 +78,17 @@ class ExpressionWidget(BASE, WIDGET):
         for button in buttons:
             button.clicked.connect(partial(addButtonText, button.text()))
         self.listWidget.itemDoubleClicked.connect(doubleClicked)
-        
+
         self.fillPredefined()
         self.buttonAddPredefined.clicked.connect(self.addPredefined)
-        
+
     def addPredefined(self):
         expression = self.expressions[self.comboPredefined.currentText()]
         dlg = PredefinedExpressionDialog(expression, self.options)
         dlg.exec_()
         if dlg.filledExpression:
             self.text.setPlainText(dlg.filledExpression)
-            
+
     def fillPredefined(self):
         for expression in self.expressions:
             self.comboPredefined.addItem(expression)
