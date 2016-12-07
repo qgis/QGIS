@@ -81,8 +81,10 @@ class Heatmap(GeoAlgorithm):
                                           self.tr('Radius (layer units)'),
                                           0.0, 9999999999, 100.0))
 
-        self.addParameter(ParameterTableField(self.RADIUS_FIELD,
-                                              self.tr('Radius from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER))
+        radius_field_param = ParameterTableField(self.RADIUS_FIELD,
+                                                 self.tr('Radius from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER)
+        radius_field_param.isAdvanced = True
+        self.addParameter(radius_field_param)
 
         class ParameterHeatmapPixelSize(ParameterNumber):
 
@@ -99,15 +101,23 @@ class Heatmap(GeoAlgorithm):
                                                     minValue=0.0, maxValue=9999999999, default=0.1,
                                                     metadata={'widget_wrapper': HeatmapPixelSizeWidgetWrapper}))
 
-        self.addParameter(ParameterTableField(self.WEIGHT_FIELD,
-                                              self.tr('Weight from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterSelection(self.KERNEL,
-                                             self.tr('Kernel shape'), self.KERNELS))
-        self.addParameter(ParameterNumber(self.DECAY,
-                                          self.tr('Decay ratio (Triangular kernels only)'),
-                                          -100.0, 100.0, 0.0))
-        self.addParameter(ParameterSelection(self.OUTPUT_VALUE,
-                                             self.tr('Output value scaling'), self.OUTPUT_VALUES))
+        weight_field_param = ParameterTableField(self.WEIGHT_FIELD,
+                                                 self.tr('Weight from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER)
+        weight_field_param.isAdvanced = True
+        self.addParameter(weight_field_param)
+        kernel_shape_param = ParameterSelection(self.KERNEL,
+                                                self.tr('Kernel shape'), self.KERNELS)
+        kernel_shape_param.isAdvanced = True
+        self.addParameter(kernel_shape_param)
+        decay_ratio = ParameterNumber(self.DECAY,
+                                      self.tr('Decay ratio (Triangular kernels only)'),
+                                      -100.0, 100.0, 0.0)
+        decay_ratio.isAdvanced = True
+        self.addParameter(decay_ratio)
+        output_scaling = ParameterSelection(self.OUTPUT_VALUE,
+                                            self.tr('Output value scaling'), self.OUTPUT_VALUES)
+        output_scaling.isAdvanced = True
+        self.addParameter(output_scaling)
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Heatmap')))
 

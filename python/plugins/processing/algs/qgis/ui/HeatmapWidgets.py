@@ -168,7 +168,8 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
             w.setMinimum(0)
             w.setMaximum(99999999999)
             w.setDecimals(6)
-            w.setTooltip(self.tr('Resolution of each pixel in output raster, in layer units'))
+            w.setToolTip(self.tr('Resolution of each pixel in output raster, in layer units'))
+            return w
 
     def postInitialize(self, wrappers):
         if self.dialogType != DIALOG_STANDARD:
