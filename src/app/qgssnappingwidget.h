@@ -68,6 +68,11 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      */
     void setConfig( const QgsSnappingConfig& config );
 
+    /**
+     * Returns the enable tracing action widget
+     */
+    QAction* enableTracingAction() { return mEnableTracingAction; }
+
   signals:
     void snappingConfigChanged( );
 
@@ -108,8 +113,6 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     //! modeChanged determines if widget are visible or not based on mode
     void modeChanged();
 
-    QSettings *mSettings;
-
     QgsProject* mProject;
     QgsSnappingConfig mConfig;
     QgsMapCanvas* mCanvas;
@@ -131,6 +134,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction* mUnitAction; // hide widget does not work on toolbar, action needed
     QAction* mTopologicalEditingAction;
     QAction* mIntersectionSnappingAction;
+    QAction* mEnableTracingAction;
     QTreeView* mLayerTreeView;
 
     void cleanGroup( QgsLayerTreeNode* node );

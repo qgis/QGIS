@@ -2081,9 +2081,11 @@ void QgisApp::createToolBars()
 
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
-  //mSnappingWidget->setFont( myFont );
   connect( mSnappingWidget, SIGNAL( snappingConfigChanged() ), QgsProject::instance(), SIGNAL( snappingConfigChanged() ) );
   mSnappingToolBar->addWidget( mSnappingWidget );
+
+  mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
+  mTracer->setActionEnableTracing( mSnappingWidget->enableTracingAction() );
 
   QList<QAction*> toolbarMenuActions;
   // Set action names so that they can be used in customization
@@ -2386,10 +2388,7 @@ void QgisApp::createToolBars()
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // Cad toolbar
-  mAdvancedDigitizeToolBar->insertAction( mActionEnableTracing, mAdvancedDigitizingDockWidget->enableAction() );
-
-  mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
-  mTracer->setActionEnableTracing( mActionEnableTracing );
+  mAdvancedDigitizeToolBar->insertAction( mActionRotateFeature, mAdvancedDigitizingDockWidget->enableAction() );
 }
 
 void QgisApp::createStatusBar()
@@ -10647,7 +10646,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionMultiEditAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
     mActionOffsetPointSymbol->setEnabled( false );
-    mActionEnableTracing->setEnabled( false );
 
     mActionPinLabels->setEnabled( false );
     mActionShowHideLabels->setEnabled( false );
@@ -10779,9 +10777,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
-
-      mActionEnableTracing->setEnabled( isEditable && canAddFeatures &&
-                                        ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
 
       if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
