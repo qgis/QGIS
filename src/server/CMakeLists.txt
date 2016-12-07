@@ -49,6 +49,16 @@ SET ( qgis_mapserv_SRCS
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
+#XXX https://github.com/qgis/QGIS-Enhancement-Proposals/issues/74
+  qgsservice.cpp
+  qgsservicemodule.cpp
+  qgsserviceloader.cpp
+  qgsservicenativeloader.cpp
+  qgsservicepythonloader.cpp
+  qgsserviceregistry.cpp
+  qgsserverrequest.cpp
+  qgsserverresponse.cpp
+#----------------------------
 )
 IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
   SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}

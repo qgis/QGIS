@@ -28,3 +28,10 @@
 %Include qgswfsprojectparser.sip
 %Include qgsconfigcache.sip
 %Include qgsserver.sip
+
+%Include qgsserverrequest.sip
+%Include qgsserverresponse.sip
+%Include qgsservice.sip
+%Include qgsservicemodule.sip
+%Include qgsserviceregistry.sip
+
