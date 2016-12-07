@@ -385,7 +385,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/interpolationplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/oracleplugin.dll" ^
