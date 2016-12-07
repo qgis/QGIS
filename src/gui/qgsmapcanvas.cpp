@@ -1449,13 +1449,17 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   }
 
   double zoomFactor = mWheelZoomFactor;
+
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( e->angleDelta().y() );
+
   if ( e->modifiers() & Qt::ControlModifier )
   {
     //holding ctrl while wheel zooming results in a finer zoom
     zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
   }
 
-  double signedWheelFactor = e->delta() > 0 ? 1 / zoomFactor : zoomFactor;
+  double signedWheelFactor = e->angleDelta().y() > 0 ? 1 / zoomFactor : zoomFactor;
 
   // zoom map to mouse cursor by scaling
   QgsPoint oldCenter = center();
