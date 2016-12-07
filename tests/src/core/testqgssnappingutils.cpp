@@ -141,6 +141,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingUtils u;
       QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
+      snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       u.setConfig( snappingConfig );
 
@@ -168,6 +169,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingUtils u;
       QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
+      snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
       snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::Vertex, 10, QgsTolerance::Pixels ) );
       u.setConfig( snappingConfig );
@@ -214,6 +216,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingUtils u;
       u.setMapSettings( mapSettings );
       QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
       QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.1, QgsTolerance::ProjectUnits );
       snappingConfig.setIndividualLayerSettings( vl, layerSettings );
