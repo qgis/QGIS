@@ -1,8 +1,9 @@
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.tools import dataobjects
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
-from qgis.PyQt.QtWidgets import QListWidget, QLineEdit, QPushButton
-from qgis.PyQt.QtGui import QTextCursor, QLabel, QComboBox, QSizePolicy, QSpacerItem
+from qgis.PyQt.QtWidgets import (QListWidget, QLineEdit, QPushButton, QLabel, 
+                                 QComboBox, QSpacerItem)
+from qgis.PyQt.QtGui import QTextCursor, QSizePolicy
 from processing.core.outputs import OutputRaster
 from processing.core.parameters import ParameterRaster
 from processing.gui.wrappers import InvalidParameterValue
@@ -14,7 +15,7 @@ import re
 pluginPath = os.path.dirname(__file__)
 WIDGET_DLG, BASE_DLG = uic.loadUiType(
     os.path.join(pluginPath, 'PredefinedExpressionDialog.ui'))
-
+   
 class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
     
     def __init__(self, expression, options):
