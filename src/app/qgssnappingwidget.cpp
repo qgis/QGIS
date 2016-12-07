@@ -225,14 +225,18 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   modeChanged();
   updateToleranceDecimals();
 
-  restoreGeometry( QSettings().value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
+  mSettings = new QSettings();
+  bool defaultSnapEnabled = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
+  enableSnapping( defaultSnapEnabled );
+
+  restoreGeometry( mSettings->value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
 }
 
 QgsSnappingWidget::~QgsSnappingWidget()
 {
   if ( mDisplayMode == Widget )
   {
-    QSettings().setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
+    mSettings->setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
   }
 }
 
@@ -291,6 +295,8 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   {
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
   }
+
+  toggleSnappingWidgets( config.enabled() );
 }
 
 void QgsSnappingWidget::projectTopologicalEditingChanged()
@@ -303,19 +309,23 @@ void QgsSnappingWidget::projectTopologicalEditingChanged()
 
 void QgsSnappingWidget::enableSnapping( bool checked )
 {
-  mModeButton->setEnabled( checked );
-  mTypeButton->setEnabled( checked );
-  mToleranceSpinBox->setEnabled( checked );
-  mUnitsComboBox->setEnabled( checked );
-  if ( mLayerTreeView )
-  {
-    mLayerTreeView->setEnabled( checked );
-  }
-  mTopologicalEditingAction->setEnabled( checked );
-  mIntersectionSnappingAction->setEnabled( checked );
-
+  toggleSnappingWidgets( checked );
   mConfig.setEnabled( checked );
   mProject->setSnappingConfig( mConfig );
+}
+
+void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
+{
+  mModeButton->setEnabled( enabled );
+  mTypeButton->setEnabled( enabled );
+  mToleranceSpinBox->setEnabled( enabled );
+  mUnitsComboBox->setEnabled( enabled );
+  if ( mLayerTreeView )
+  {
+    mLayerTreeView->setEnabled( enabled );
+  }
+  mTopologicalEditingAction->setEnabled( enabled );
+  mIntersectionSnappingAction->setEnabled( enabled );
 }
 
 void QgsSnappingWidget::changeTolerance( double tolerance )
