@@ -79,6 +79,14 @@ class CORE_EXPORT QgsFieldFormatter
     /**
      * Create a cache for a given field.
      *
+     * This will be used in situations where a field is being represented various times in a loop. And will be passed
+     * to other methods on QgsFieldKit and QgsEditorWidgetWrapper.
+     *
+     * For example, the attribute table will create a cache once for each field and then use this
+     * cache for representation. The QgsValueRelationFieldFormatter and QgsValueRelationEditorWidget
+     * implement this functionality to create a lookuptable once (a QVariantMap / dict) and are
+     * make use of a cache if present.
+     *
      * @note Added in 3.0
      */
     virtual QVariant createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const;
