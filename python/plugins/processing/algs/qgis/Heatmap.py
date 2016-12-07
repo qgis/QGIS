@@ -36,11 +36,11 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects, vector, raster
+from processing.algs.qgis.ui.HeatmapWidgets import HeatmapPixelSizeWidgetWrapper
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -80,11 +80,25 @@ class Heatmap(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.RADIUS,
                                           self.tr('Radius (layer units)'),
                                           0.0, 9999999999, 100.0))
-        self.addParameter(ParameterNumber(self.PIXEL_SIZE,
-                                          self.tr('Output pixel size (layer units)'),
-                                          0.0, 9999999999, 0.1))
+
         self.addParameter(ParameterTableField(self.RADIUS_FIELD,
                                               self.tr('Radius from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER))
+
+        class ParameterHeatmapPixelSize(ParameterNumber):
+
+            def __init__(self, name='', description='', parent_layer=None, radius_param=None, radius_field_param=None, minValue=None, maxValue=None,
+                         default=None, optional=False, metadata={}):
+                ParameterNumber.__init__(self, name, description, minValue, maxValue, default, optional, metadata)
+                self.parent_layer = parent_layer
+                self.radius_param = radius_param
+                self.radius_field_param = radius_field_param
+
+        self.addParameter(ParameterHeatmapPixelSize(self.PIXEL_SIZE,
+                                                    self.tr('Output raster size'), parent_layer=self.INPUT_LAYER, radius_param=self.RADIUS,
+                                                    radius_field_param=self.RADIUS_FIELD,
+                                                    minValue=0.0, maxValue=9999999999, default=0.1,
+                                                    metadata={'widget_wrapper': HeatmapPixelSizeWidgetWrapper}))
+
         self.addParameter(ParameterTableField(self.WEIGHT_FIELD,
                                               self.tr('Weight from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterSelection(self.KERNEL,

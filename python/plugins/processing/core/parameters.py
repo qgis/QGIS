@@ -781,8 +781,8 @@ class ParameterNumber(Parameter):
     }
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
-                 default=None, optional=False):
-        Parameter.__init__(self, name, description, default, optional)
+                 default=None, optional=False, metadata={}):
+        Parameter.__init__(self, name, description, default, optional, metadata)
 
         if default is not None:
             try:
