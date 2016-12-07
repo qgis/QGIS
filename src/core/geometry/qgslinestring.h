@@ -156,7 +156,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     int numPoints() const override;
-    virtual int nCoordinates() const override { return mX.size(); }
+    virtual int nCoordinates() const override { return mPoints.size(); }
     void points( QgsPointSequence &pt ) const override;
 
     void draw( QPainter& p ) const override;
@@ -190,15 +190,144 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+#if 0
+    //iterators
+    ///@cond PRIVATE
+
+    class const_iterator;
+
+    class iterator
+    {
+      public:
+        int index;
+        QgsLineString* line;
+
+        typedef std::random_access_iterator_tag  iterator_category;
+        typedef qptrdiff difference_type;
+
+        inline iterator()
+            : index( -1 )
+            , line( nullptr )
+        {}
+
+        inline QgsPointV2& operator*() const { return line->field; }
+        inline QgsPointV2* operator->() const { return &d->field; }
+        inline QgsPointV2& operator[]( difference_type j ) const { return d[j].field; }
+        inline bool operator==( const iterator &o ) const noexcept { return d == o.d; } // clazy:exclude=function-args-by-value
+        inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; } // clazy:exclude=function-args-by-value
+        inline bool operator<( const iterator& other ) const noexcept { return d < other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator<=( const iterator& other ) const noexcept { return d <= other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>( const iterator& other ) const noexcept { return d > other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>=( const iterator& other ) const noexcept { return d >= other.d; } // clazy:exclude=function-args-by-value
+
+        inline iterator& operator++() { ++d; return *this; }
+        inline iterator operator++( int ) { QgsFields::Field* n = d; ++d; return n; }
+        inline iterator& operator--() { d--; return *this; }
+        inline iterator operator--( int ) { QgsFields::Field* n = d; d--; return n; }
+        inline iterator& operator+=( difference_type j ) { d += j; return *this; }
+        inline iterator& operator-=( difference_type j ) { d -= j; return *this; }
+        inline iterator operator+( difference_type j ) const { return iterator( d + j ); }
+        inline iterator operator-( difference_type j ) const { return iterator( d -j ); }
+        inline int operator-( iterator j ) const { return int( d - j.d ); }
+    };
+    friend class iterator;
+
+    class const_iterator // clazy:exclude=rule-of-three
+    {
+      public:
+        const QgsFields::Field* d;
+
+        typedef std::random_access_iterator_tag  iterator_category;
+        typedef qptrdiff difference_type;
+
+        inline const_iterator()
+            : d( nullptr ) {}
+        inline const_iterator( const QgsFields::Field* f )
+            : d( f ) {}
+        inline const_iterator( const const_iterator &o )
+            : d( o.d ) {}
+        inline explicit const_iterator( const iterator &o ) // clazy:exclude=function-args-by-value
+            : d( o.d ) {}
+        inline const QgsField& operator*() const { return d->field; }
+        inline const QgsField* operator->() const { return &d->field; }
+        inline const QgsField& operator[]( difference_type j ) const noexcept { return d[j].field; }
+        inline bool operator==( const const_iterator &o ) const noexcept { return d == o.d; }
+        inline bool operator!=( const const_iterator &o ) const noexcept { return d != o.d; }
+        inline bool operator<( const const_iterator& other ) const noexcept { return d < other.d; }
+        inline bool operator<=( const const_iterator& other ) const noexcept { return d <= other.d; }
+        inline bool operator>( const const_iterator& other ) const noexcept { return d > other.d; }
+        inline bool operator>=( const const_iterator& other ) const noexcept { return d >= other.d; }
+        inline const_iterator& operator++() { ++d; return *this; }
+        inline const_iterator operator++( int ) { const QgsFields::Field* n = d; ++d; return n; }
+        inline const_iterator& operator--() { d--; return *this; }
+        inline const_iterator operator--( int ) { const QgsFields::Field* n = d; --d; return n; }
+        inline const_iterator& operator+=( difference_type j ) { d += j; return *this; }
+        inline const_iterator& operator-=( difference_type j ) { d -= j; return *this; }
+        inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
+        inline const_iterator operator-( difference_type j ) const { return const_iterator( d -j ); }
+        inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
+    };
+    friend class const_iterator;
+    ///@endcond
+
+
+    /**
+     * Returns a const STL-style iterator pointing to the first node in the linestring.
+     *
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    const_iterator constBegin() const noexcept;
+
+    /**
+     * Returns a const STL-style iterator pointing to the imaginary node after the last node in the linestring.
+     *
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    const_iterator constEnd() const noexcept;
+
+    /**
+     * Returns a const STL-style iterator pointing to the first node in the linestring.
+     *
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    const_iterator begin() const noexcept;
+
+    /**
+     * Returns a const STL-style iterator pointing to the imaginary node after the last node in the linestring.
+     *
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    const_iterator end() const noexcept;
+
+    /**
+     * Returns an STL-style iterator pointing to the first node in the linestring.
+     *
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    iterator begin();
+
+
+    /**
+     * Returns an STL-style iterator pointing to the imaginary node after the last node in the linestring.
+     *
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    iterator end();
+
+#endif
+
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const override;
 
   private:
-    QVector<double> mX;
-    QVector<double> mY;
-    QVector<double> mZ;
-    QVector<double> mM;
+    QgsPointSequence mPoints;
 
     void importVerticesFromWkb( const QgsConstWkbPtr& wkb );
 

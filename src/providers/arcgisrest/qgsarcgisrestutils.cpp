@@ -120,7 +120,7 @@ static QgsCircularString* parseCircularString( const QVariantMap& curveData, Qgs
   QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
-  QList<QgsPointV2> points;
+  QgsPointSequence points;
   points.append( startPoint );
   foreach ( const QVariant& coordData, coordsList )
   {
