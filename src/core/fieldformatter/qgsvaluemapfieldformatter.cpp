@@ -17,11 +17,6 @@
 
 #include "qgsvectorlayer.h"
 
-QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()
-{
-
-}
-
 QString QgsValueMapFieldFormatter::id() const
 {
   return QStringLiteral( "ValueMap" );

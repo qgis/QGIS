@@ -734,7 +734,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
-  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
+  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( setup.type() );
 
   int idx = vlayer->fields().lookupField( fieldName );
 

@@ -142,7 +142,7 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
   return QVariantMap();
 }
 
-void QgsAttributeTypeDialog::setWidgetType( const QString& type )
+void QgsAttributeTypeDialog::setEditorWidgetType( const QString& type )
 {
   for ( int i = 0; i < selectionListWidget->count(); i++ )
   {
@@ -181,7 +181,7 @@ void QgsAttributeTypeDialog::setWidgetType( const QString& type )
   defaultExpressionChanged();
 }
 
-void QgsAttributeTypeDialog::setWidgetConfig( const QVariantMap& config )
+void QgsAttributeTypeDialog::setEditorWidgetConfig( const QVariantMap& config )
 {
   mWidgetConfig = config;
 }
@@ -311,7 +311,7 @@ void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index
 {
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
-  setWidgetType( editType );
+  setEditorWidgetType( editType );
 }
 
 void QgsAttributeTypeDialog::defaultExpressionChanged()
@@ -350,7 +350,7 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( editorWidgetType() );
+  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( editorWidgetType() );
 
   QString previewText = fieldKit->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 

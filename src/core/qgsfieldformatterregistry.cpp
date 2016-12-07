@@ -44,22 +44,27 @@ QgsFieldFormatterRegistry::~QgsFieldFormatterRegistry()
   delete mFallbackFieldFormatter;
 }
 
-void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter* kit )
+void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter* formatter )
 {
-  mFieldFormatters.insert( kit->id(), kit );
-  emit fieldKitAdded( kit );
+  mFieldFormatters.insert( formatter->id(), formatter );
+  emit fieldFormatterAdded( formatter );
 }
 
-void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter* kit )
+void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter* formatter )
 {
-  if ( mFieldFormatters.remove( kit->id() ) )
+  removeFieldFormatter( formatter->id() );
+}
+
+void QgsFieldFormatterRegistry::removeFieldFormatter( const QString& id )
+{
+  if ( QgsFieldFormatter* formatter = mFieldFormatters.take( id ) )
   {
-    emit fieldKitRemoved( kit );
-    delete kit;
+    emit fieldFormatterRemoved( formatter );
+    delete formatter;
   }
 }
 
-QgsFieldFormatter* QgsFieldFormatterRegistry::fieldKit( const QString& id ) const
+QgsFieldFormatter* QgsFieldFormatterRegistry::fieldFormatter( const QString& id ) const
 {
   return mFieldFormatters.value( id, mFallbackFieldFormatter );
 }

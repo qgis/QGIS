@@ -6399,7 +6399,7 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant& value )
     return value;
   }
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields().field( idx ).name() );
-  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
+  QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( setup.type() );
   return fieldKit->representValue( mLayer, idx, setup.config(), QVariant(), value );
 }
 

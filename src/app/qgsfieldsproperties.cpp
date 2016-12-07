@@ -577,8 +577,8 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
   attributeTypeDialog.setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
 
-  attributeTypeDialog.setWidgetConfig( cfg.mEditorWidgetConfig );
-  attributeTypeDialog.setWidgetType( cfg.mEditorWidgetType );
+  attributeTypeDialog.setEditorWidgetConfig( cfg.mEditorWidgetConfig );
+  attributeTypeDialog.setEditorWidgetType( cfg.mEditorWidgetType );
 
   if ( !attributeTypeDialog.exec() )
     return;
