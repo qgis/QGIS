@@ -69,6 +69,12 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      */
     QgsFieldFormatter* fieldFormatter( const QString& id ) const;
 
+    /**
+     * Returns a basic fallback field formatter which can be used
+     * to represent any field in an unspectacular manner.
+     */
+    QgsFieldFormatter* fallbackFieldFormatter() const;
+
   signals:
 
     /**
