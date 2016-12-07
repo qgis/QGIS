@@ -17,6 +17,8 @@
 
 #include "qgsvectorlayer.h"
 
+const QString QgsValueMapFieldFormatter::NullValue = QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
+
 QString QgsValueMapFieldFormatter::id() const
 {
   return QStringLiteral( "ValueMap" );
@@ -28,7 +30,7 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer* layer, int fi
 
   QString valueInternalText;
   if ( value.isNull() )
-    valueInternalText = VALUEMAP_NULL_TEXT;
+    valueInternalText = NullValue;
   else
     valueInternalText = value.toString();
 

@@ -33,7 +33,7 @@ QVariant QgsValueMapWidgetWrapper::value() const
   if ( mComboBox )
     v = mComboBox->currentData();
 
-  if ( v == VALUEMAP_NULL_TEXT )
+  if ( v == QgsValueMapFieldFormatter::NullValue )
     v = QVariant( field().type() );
 
   return v;
@@ -79,7 +79,7 @@ void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
   QString v;
   if ( value.isNull() )
-    v = VALUEMAP_NULL_TEXT;
+    v = QgsValueMapFieldFormatter::NullValue;
   else
     v = value.toString();
 
