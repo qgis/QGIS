@@ -66,13 +66,13 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mEnabledAction = new QAction( this );
   mEnabledAction->setCheckable( true );
   mEnabledAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) ) );
-  mEnabledAction->setToolTip( tr( "Enable snapping" ) );
+  mEnabledAction->setToolTip( tr( "Enable Snapping" ) );
   mEnabledAction->setObjectName( QStringLiteral( "EnableSnappingAction" ) );
   connect( mEnabledAction, SIGNAL( toggled( bool ) ) , this, SLOT( enableSnapping( bool ) ) );
 
   // mode button
   mModeButton = new QToolButton();
-  mModeButton->setToolTip( tr( "Snapping mode" ) );
+  mModeButton->setToolTip( tr( "Snapping Mode" ) );
   mModeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *modeMenu = new QMenu( tr( "Set snapping mode" ), this );
   mAllLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAllLayers.svg" ) ), QStringLiteral( "All layers" ), modeMenu );
@@ -91,7 +91,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
 
   // type button
   mTypeButton = new QToolButton();
-  mTypeButton->setToolTip( tr( "Snapping type" ) );
+  mTypeButton->setToolTip( tr( "Snapping Type" ) );
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *typeMenu = new QMenu( tr( "Set snapping mode" ), this );
   mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), QStringLiteral( "Vertex" ), typeMenu );
@@ -110,7 +110,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
 
   // tolerance
   mToleranceSpinBox = new QDoubleSpinBox();
-  mToleranceSpinBox->setToolTip( tr( "Snapping tolerance in defined units" ) );
+  mToleranceSpinBox->setToolTip( tr( "Snapping Tolerance in Defined Units" ) );
   mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
   connect( mToleranceSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( changeTolerance( double ) ) );
 
@@ -118,7 +118,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mUnitsComboBox = new QComboBox();
   mUnitsComboBox->addItem( tr( "px" ), QgsTolerance::Pixels );
   mUnitsComboBox->addItem( QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() ), QgsTolerance::ProjectUnits );
-  mUnitsComboBox->setToolTip( tr( "Snapping unit type: pixels (px) or map units (mu)" ) );
+  mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Map Units (mu)" ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
   connect( mUnitsComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( changeUnit( int ) ) );
 
@@ -126,7 +126,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mTopologicalEditingAction = new QAction( tr( "topological editing" ), this );
   mTopologicalEditingAction->setCheckable( true );
   mTopologicalEditingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconTopologicalEditing.svg" ) ) );
-  mTopologicalEditingAction->setToolTip( tr( "Enable topological editing" ) );
+  mTopologicalEditingAction->setToolTip( tr( "Enable Topological Editing" ) );
   mTopologicalEditingAction->setObjectName( QStringLiteral( "TopologicalEditingAction" ) );
   connect( mTopologicalEditingAction, SIGNAL( toggled( bool ) ) , this, SLOT( enableTopologicalEditing( bool ) ) );
 
@@ -134,9 +134,18 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   mIntersectionSnappingAction = new QAction( tr( "snapping on intersection" ), this );
   mIntersectionSnappingAction->setCheckable( true );
   mIntersectionSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingIntersection.svg" ) ) );
-  mIntersectionSnappingAction->setToolTip( tr( "Enable snapping on intersection" ) );
+  mIntersectionSnappingAction->setToolTip( tr( "Enable Snapping on Intersection" ) );
   mIntersectionSnappingAction->setObjectName( QStringLiteral( "IntersectionSnappingAction" ) );
   connect( mIntersectionSnappingAction, SIGNAL( toggled( bool ) ) , this, SLOT( enableIntersectionSnapping( bool ) ) );
+
+
+  // snapping on intersection button
+  mEnableTracingAction = new QAction( tr( "enable tracing" ), this );
+  mEnableTracingAction->setCheckable( true );
+  mEnableTracingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mActionTracing.svg" ) ) );
+  mEnableTracingAction->setToolTip( tr( "Enable Tracing (T)" ) );
+  mEnableTracingAction->setShortcut( tr( "T", "Enable Tracing" ) );
+  mEnableTracingAction->setObjectName( QStringLiteral( "EnableTracingAction" ) );
 
   // layout
   if ( mDisplayMode == ToolBar )
@@ -149,6 +158,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
     mUnitAction = tb->addWidget( mUnitsComboBox );
     tb->addAction( mTopologicalEditingAction );
     tb->addAction( mIntersectionSnappingAction );
+    tb->addAction( mEnableTracingAction );
   }
   else
   {
@@ -225,18 +235,17 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas,
   modeChanged();
   updateToleranceDecimals();
 
-  mSettings = new QSettings();
-  bool defaultSnapEnabled = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
+  bool defaultSnapEnabled = QSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
   enableSnapping( defaultSnapEnabled );
 
-  restoreGeometry( mSettings->value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
+  restoreGeometry( QSettings().value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
 }
 
 QgsSnappingWidget::~QgsSnappingWidget()
 {
   if ( mDisplayMode == Widget )
   {
-    mSettings->setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
+    QSettings().setValue( QStringLiteral( "/Windows/SnappingWidget/geometry" ), saveGeometry() );
   }
 }
 
@@ -326,6 +335,7 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   }
   mTopologicalEditingAction->setEnabled( enabled );
   mIntersectionSnappingAction->setEnabled( enabled );
+  mEnableTracingAction->setEnabled( enabled );
 }
 
 void QgsSnappingWidget::changeTolerance( double tolerance )

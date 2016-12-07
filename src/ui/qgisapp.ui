@@ -2476,21 +2476,6 @@ Acts on currently active editable layer</string>
     <string>Report an issue</string>
    </property>
   </action>
-  <action name="mActionEnableTracing">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionTracing.svg</normaloff>:/images/themes/default/mActionTracing.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Enable Tracing</string>
-   </property>
-   <property name="shortcut">
-    <string>T</string>
-   </property>
-  </action>
   <action name="mActionDiagramProperties">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
