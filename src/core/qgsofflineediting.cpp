@@ -620,9 +620,6 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       newLayer->startEditing();
       QgsFeature f;
 
-      // NOTE: force feature recount for PostGIS layer, else only visible features are counted, before iterating over all features (WORKAROUND)
-      layer->setSubsetString( layer->subsetString() );
-
       QgsFeatureRequest req;
 
       if ( onlySelected )
