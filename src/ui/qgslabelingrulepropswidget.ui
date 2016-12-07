@@ -91,8 +91,9 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text">
-              <string>...</string>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>/images/themes/default/mIconExpression.svg</iconset>
              </property>
             </widget>
            </item>
@@ -120,7 +121,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
+           <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
             <property name="toolTip">
              <string/>
             </property>
