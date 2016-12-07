@@ -18,11 +18,16 @@
 
 #include "qgsfieldformatter.h"
 
-#define VALUEMAP_NULL_TEXT QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" )
-
 class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
 {
   public:
+
+    /**
+     * Will be saved in the configuration when a value is NULL.
+     * It's the magic UUID {2839923C-8B7D-419E-B84B-CA2FE9B80EC7}
+     */
+    static const QString NullValue;
+
     virtual QString id() const override;
 
     virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const override;

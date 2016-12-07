@@ -147,7 +147,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
 
     while ( it != cfg.constEnd() )
     {
-      if ( it.value() != VALUEMAP_NULL_TEXT )
+      if ( it.value() != QgsValueMapFieldFormatter::NullValue )
         mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
