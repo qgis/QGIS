@@ -545,7 +545,9 @@ class NumberWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return NumberInputPanel(self.param)
+            widget = NumberInputPanel(self.param)
+            widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             return ModellerNumberInputPanel(self.param, self.dialog)
 
@@ -1026,6 +1028,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             else:
                 widget = QgsFieldComboBox()
                 widget.setAllowEmptyFieldName(self.param.optional)
+                widget.fieldChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
                 if self.param.datatype == ParameterTableField.DATA_TYPE_NUMBER:
                     widget.setFilters(QgsFieldProxyModel.Numeric)
                 elif self.param.datatype == ParameterTableField.DATA_TYPE_STRING:

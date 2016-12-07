@@ -27,6 +27,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
   raster/qgshillshadefilter.cpp
+  raster/qgskde.cpp
   raster/qgsslopefilter.cpp
   raster/qgsaspectfilter.cpp
   raster/qgstotalcurvaturefilter.cpp
@@ -106,6 +107,7 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
   raster/qgshillshadefilter.h
+  raster/qgskde.h
   raster/qgsninecellfilter.h
   raster/qgsrastercalculator.h
   raster/qgsrelief.h

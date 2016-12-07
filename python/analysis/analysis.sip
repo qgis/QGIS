@@ -44,6 +44,7 @@
 %Include raster/qgsderivativefilter.sip
 %Include raster/qgsaspectfilter.sip
 %Include raster/qgshillshadefilter.sip
+%Include raster/qgskde.sip
 %Include raster/qgsninecellfilter.sip
 %Include raster/qgsrastercalcnode.sip
 %Include raster/qgsrastercalculator.sip

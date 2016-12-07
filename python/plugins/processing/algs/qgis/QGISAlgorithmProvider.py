@@ -182,6 +182,7 @@ from .RasterCalculator import RasterCalculator
 from .CreateAttributeIndex import CreateAttributeIndex
 from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
+from .Heatmap import Heatmap
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -246,7 +247,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
                         PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
-                        BasicStatisticsForField(), RasterCalculator()
+                        BasicStatisticsForField(), RasterCalculator(), Heatmap()
                         ]
 
         if hasMatplotlib:

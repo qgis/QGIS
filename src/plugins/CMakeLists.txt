@@ -17,7 +17,6 @@ ADD_SUBDIRECTORY(georeferencer)
 ADD_SUBDIRECTORY(gps_importer)
 ADD_SUBDIRECTORY(topology)
 ADD_SUBDIRECTORY(offline_editing)
-ADD_SUBDIRECTORY(heatmap)
 ADD_SUBDIRECTORY(geometry_checker)
 
 IF (GRASS_FOUND)
