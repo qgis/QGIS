@@ -82,7 +82,7 @@
 #include "qgssimplifymethod.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
-#include "qgsconfigurationmap.h"
+#include "qgsxmlutils.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -1847,9 +1847,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& layerNode, QString& errorMes
 
     const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
     const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
-    QgsConfigurationMap editWidgetConfiguration;
-    editWidgetConfiguration.fromXml( cfgElem );
-    QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, editWidgetConfiguration.get() );
+    const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
+    QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
+    QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
     mFieldWidgetSetups[fieldName] = setup;
   }
 
@@ -1997,7 +1997,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     editWidgetElement.setAttribute( "type", field.editorWidgetSetup().type() );
     QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
 
-    QgsConfigurationMap( widgetSetup.config() ).toXml( editWidgetConfigElement );
+    editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config() , doc ) );
     editWidgetElement.appendChild( editWidgetConfigElement );
     // END TODO : wrap this part in an if to only save if it was user-modified
 
