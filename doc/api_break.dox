@@ -199,12 +199,14 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsApplication<td>defaultStyleV2Path<td>defaultStylePath
 <tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
 <tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
+<tr><td>QgsIFeatureSelectionManager<td>selectedFeaturesIds<td>selectedFeatureIds
 <tr><td>QgsSymbolLayerUtils<td>createSymbolLayerV2ListFromSld<td>createSymbolLayerListFromSld
 <tr><td>QgsVectorLayer<td>editorWidgetV2Config<td>editorWidgetConfig
 <tr><td>QgsVectorLayer<td>editorWidgetV2Text<td>editorWidgetText
 <tr><td>QgsVectorLayer<td>editorWidgetV2Type<td>editorWidgetType
 <tr><td>QgsVectorLayer<td>deleteVertexV2<td>deleteVertex
 <tr><td>QgsVectorLayer<td>rendererV2<td>renderer
+<tr><td>QgsVectorLayer<td>selectedFeaturesIds<td>selectedFeatureIds
 <tr><td>QgsVectorLayerEditUtils<td>deleteVertexV2<td>deleteVertex
 <tr><td>QgsComposerSymbolItem<td>symbolV2<td>symbol
 <tr><td>QgsServerInterface<td>capabiblitiesCache<td>capabilitiesCache
@@ -988,6 +990,12 @@ QgsHighlight        {#qgis_api_break_3_0_QgsHighlight}
 - The QgsHighlight constructor now takes a geometry reference, not a pointer.
 
 
+QgsIFeatureSelectionManager        {#qgis_api_break_3_0_QgsIFeatureSelectionManager}
+---------------------------
+
+- selectedFeaturesIds() has been renamed to selectedFeatureIds()
+
+
 QgsJSONExporter        {#qgis_api_break_3_0_QgsJSONExporter}
 ---------------
 
@@ -1578,6 +1586,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - Signal layerDeleted() has been removed. Replaced by Qt signal destroyed().
 - Deprecated editor widget methods and enums and structs: struct RangeData, enum FeatureFormSuppress, enum EditType, addAttributeEditorWidget(), editorWidgetV2(), editorWidgetConfig(), attributeEditorElements(), editType(), setEditType(), editorLayout(), setEditorLayout, setEditorWidgetV2Config(), setCheckedState(), editForm(), setEditForm(), featureFormSuppress(), setFeatureFormSuppress(), editFormInit(), setEditFormInit(), valueMap(), range(), dateFormat(), fieldEditable(), labelOnTop(), setFieldEditable() and setLabelOnTop().  Use editFormConfig()
 - select() replaced by selectByRect()
+- selectedFeaturesIds() replaced by selectedFeatureIds()
 - setSelectedFeatures() replaced by selectByIds()
 - applyNamedStyle() replaced by applyNamedStyle()
 - isReadOnly() use readOnly()
