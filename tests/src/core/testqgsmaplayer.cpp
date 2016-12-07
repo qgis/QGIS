@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -152,5 +152,5 @@ void TestQgsMapLayer::isInScaleRange()
 
 }
 
-QTEST_MAIN( TestQgsMapLayer )
+QGSTEST_MAIN( TestQgsMapLayer )
 #include "testqgsmaplayer.moc"

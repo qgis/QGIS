@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -188,5 +188,5 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 }
 
-QTEST_MAIN( TestQgsFieldCalculator )
+QGSTEST_MAIN( TestQgsFieldCalculator )
 #include "testqgsfieldcalculator.moc"

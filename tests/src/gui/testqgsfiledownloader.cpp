@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QTemporaryFile>
 #include <QUrl>
@@ -248,7 +248,7 @@ void TestQgsFileDownloader::testSslError()
 #endif
 
 
-QTEST_MAIN( TestQgsFileDownloader )
+QGSTEST_MAIN( TestQgsFileDownloader )
 #include "testqgsfiledownloader.moc"
 
 

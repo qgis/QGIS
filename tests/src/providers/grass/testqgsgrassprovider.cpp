@@ -20,7 +20,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgsapplication.h>
 #include <qgscoordinatereferencesystem.h>
@@ -1686,5 +1686,5 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   return sharedOk && independentOk;
 }
 
-QTEST_MAIN( TestQgsGrassProvider )
+QGSTEST_MAIN( TestQgsGrassProvider )
 #include "testqgsgrassprovider.moc"

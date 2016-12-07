@@ -12,7 +12,7 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 //header for class being tested
 #include <qgsgeometryanalyzer.h>
@@ -141,5 +141,5 @@ void TestQgsVectorAnalyzer::layerExtent()
   QVERIFY( mAnalyzer.extent( mpPointLayer, myFileName ) );
 }
 
-QTEST_MAIN( TestQgsVectorAnalyzer )
+QGSTEST_MAIN( TestQgsVectorAnalyzer )
 #include "testqgsvectoranalyzer.moc"

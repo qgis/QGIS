@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 #include "qgscolorscheme.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsExpressionContext : public QObject
 {
@@ -687,5 +687,5 @@ void TestQgsExpressionContext::cache()
   QVERIFY( !c.cachedValue( "test" ).isValid() );
 }
 
-QTEST_MAIN( TestQgsExpressionContext )
+QGSTEST_MAIN( TestQgsExpressionContext )
 #include "testqgsexpressioncontext.moc"

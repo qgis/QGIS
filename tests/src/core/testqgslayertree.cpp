@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgsapplication.h>
 #include <qgslayertree.h>
@@ -483,5 +483,5 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer* renderer )
 }
 
 
-QTEST_MAIN( TestQgsLayerTree )
+QGSTEST_MAIN( TestQgsLayerTree )
 #include "testqgslayertree.moc"

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -106,6 +106,6 @@ class TestQgsScaleExpression: public QObject
     }
 };
 
-QTEST_MAIN( TestQgsScaleExpression )
+QGSTEST_MAIN( TestQgsScaleExpression )
 
 #include "testqgsscaleexpression.moc"

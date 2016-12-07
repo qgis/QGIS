@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsfilewidget.h"
 
@@ -83,5 +83,5 @@ void TestQgsFileWidget::toUrl()
 
 
 
-QTEST_MAIN( TestQgsFileWidget )
+QGSTEST_MAIN( TestQgsFileWidget )
 #include "testqgsfilewidget.moc"

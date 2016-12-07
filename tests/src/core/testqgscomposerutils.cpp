@@ -22,7 +22,7 @@
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QMap>
 
 class TestQgsComposerUtils : public QObject
@@ -715,5 +715,5 @@ bool TestQgsComposerUtils::renderCheck( const QString& testName, QImage &image, 
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsComposerUtils )
+QGSTEST_MAIN( TestQgsComposerUtils )
 #include "testqgscomposerutils.moc"

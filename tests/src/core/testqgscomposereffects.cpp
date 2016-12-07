@@ -20,7 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -122,5 +122,5 @@ void TestQgsComposerEffects::transparency()
   QVERIFY( checker.testComposition( mReport ) );
 }
 
-QTEST_MAIN( TestQgsComposerEffects )
+QGSTEST_MAIN( TestQgsComposerEffects )
 #include "testqgscomposereffects.moc"

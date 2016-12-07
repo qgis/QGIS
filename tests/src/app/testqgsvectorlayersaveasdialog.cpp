@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -133,5 +133,5 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   //d.exec();
 }
 
-QTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
+QGSTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
 #include "testqgsvectorlayersaveasdialog.moc"

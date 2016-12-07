@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -211,5 +211,5 @@ bool TestQgsInvertedPolygon::imageCheck( const QString& theTestType, const QgsRe
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsInvertedPolygon )
+QGSTEST_MAIN( TestQgsInvertedPolygon )
 #include "testqgsinvertedpolygonrenderer.moc"

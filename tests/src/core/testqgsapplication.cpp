@@ -12,7 +12,7 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QPixmap>
 
 #define CPL_SUPRESS_CPLUSPLUS
@@ -100,5 +100,5 @@ void TestQgsApplication::checkGdalSkip()
   QVERIFY( !QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
 }
 
-QTEST_MAIN( TestQgsApplication )
+QGSTEST_MAIN( TestQgsApplication )
 #include "testqgsapplication.moc"

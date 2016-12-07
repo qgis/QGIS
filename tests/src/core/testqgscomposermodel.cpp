@@ -22,7 +22,7 @@
 #include "qgsmapsettings.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QList>
 
 class TestQgsComposerModel : public QObject
@@ -611,5 +611,5 @@ void TestQgsComposerModel::reorderToBottomWithRemoved()
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 1 ), mItem2 );
 }
 
-QTEST_MAIN( TestQgsComposerModel )
+QGSTEST_MAIN( TestQgsComposerModel )
 #include "testqgscomposermodel.moc"

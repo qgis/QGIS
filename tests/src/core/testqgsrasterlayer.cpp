@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -723,5 +723,5 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
 }
 
-QTEST_MAIN( TestQgsRasterLayer )
+QGSTEST_MAIN( TestQgsRasterLayer )
 #include "testqgsrasterlayer.moc"

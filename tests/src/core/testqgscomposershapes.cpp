@@ -24,7 +24,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -159,5 +159,5 @@ void TestQgsComposerShapes::symbol()
   QVERIFY( checker.testComposition( mReport ) );
 }
 
-QTEST_MAIN( TestQgsComposerShapes )
+QGSTEST_MAIN( TestQgsComposerShapes )
 #include "testqgscomposershapes.moc"

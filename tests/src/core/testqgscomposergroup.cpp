@@ -25,7 +25,7 @@
 
 #include <QObject>
 #include <QtTest/QSignalSpy>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerGroup : public QObject
 {
@@ -432,5 +432,5 @@ void TestQgsComposerGroup::undoRedo()
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
 }
 
-QTEST_MAIN( TestQgsComposerGroup )
+QGSTEST_MAIN( TestQgsComposerGroup )
 #include "testqgscomposergroup.moc"

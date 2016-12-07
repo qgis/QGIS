@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QStringList>
 #include <QApplication>
@@ -455,5 +455,5 @@ void TestQgsSymbol::symbolProperties()
   delete fillSymbol2;
 }
 
-QTEST_MAIN( TestQgsSymbol )
+QGSTEST_MAIN( TestQgsSymbol )
 #include "testqgssymbol.moc"

@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include <QFile>
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <qgswmscapabilities.h>
 #include <qgsapplication.h>
 
@@ -80,5 +80,5 @@ class TestQgsWmsCapabilities: public QObject
 
 };
 
-QTEST_MAIN( TestQgsWmsCapabilities )
+QGSTEST_MAIN( TestQgsWmsCapabilities )
 #include "testqgswmscapabilities.moc"

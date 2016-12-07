@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -118,5 +118,5 @@ void TestQgsAuthCrypto::testPasswordHashKnown()
   QVERIFY( QgsAuthCrypto::verifyPasswordKeyHash( smPass, smSalt, smHash ) );
 }
 
-QTEST_MAIN( TestQgsAuthCrypto )
+QGSTEST_MAIN( TestQgsAuthCrypto )
 #include "testqgsauthcrypto.moc"

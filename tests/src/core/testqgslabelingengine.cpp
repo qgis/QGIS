@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgsapplication.h>
 #include <qgslabelingengine.h>
@@ -556,5 +556,5 @@ bool TestQgsLabelingEngine::imageCheck( const QString& testName, QImage &image, 
   return resultFlag;
 }
 
-QTEST_MAIN( TestQgsLabelingEngine )
+QGSTEST_MAIN( TestQgsLabelingEngine )
 #include "testqgslabelingengine.moc"

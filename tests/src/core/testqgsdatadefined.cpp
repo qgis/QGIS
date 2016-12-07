@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -323,5 +323,5 @@ void TestQgsDataDefined::expressionOrString()
   QCOMPARE( dd.expressionOrField(), QString( "\"field\"" ) );
 }
 
-QTEST_MAIN( TestQgsDataDefined )
+QGSTEST_MAIN( TestQgsDataDefined )
 #include "testqgsdatadefined.moc"

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -203,5 +203,5 @@ void TestQgsMeasureTool::testAreaCalculation()
   QGSCOMPARENEAR( measured, expected, 0.001 );
 }
 
-QTEST_MAIN( TestQgsMeasureTool )
+QGSTEST_MAIN( TestQgsMeasureTool )
 #include "testqgsmeasuretool.moc"

@@ -16,6 +16,9 @@
 #ifndef QGSTEST_H
 #define QGSTEST_H
 
+#include <QtTest/QtTest>
+#include "qgsapplication.h"
+
 #define QGSTEST_MAIN(TestObject) \
   QT_BEGIN_NAMESPACE \
   QTEST_ADD_GPU_BLACKLIST_SUPPORT_DEFS \

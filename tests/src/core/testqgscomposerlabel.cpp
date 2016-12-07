@@ -25,7 +25,7 @@
 #include "qgsproject.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerLabel : public QObject
 {
@@ -271,5 +271,5 @@ void TestQgsComposerLabel::renderAsHtmlRelative()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
-QTEST_MAIN( TestQgsComposerLabel )
+QGSTEST_MAIN( TestQgsComposerLabel )
 #include "testqgscomposerlabel.moc"

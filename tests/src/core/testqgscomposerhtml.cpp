@@ -26,7 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerHtml : public QObject
 {
@@ -324,5 +324,5 @@ void TestQgsComposerHtml::javascriptSetFeature()
 }
 
 
-QTEST_MAIN( TestQgsComposerHtml )
+QGSTEST_MAIN( TestQgsComposerHtml )
 #include "testqgscomposerhtml.moc"

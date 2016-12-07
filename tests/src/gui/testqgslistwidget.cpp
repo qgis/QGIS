@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgslistwidgetfactory.h>
 #include <qgslistwidget.h>
@@ -122,5 +122,5 @@ class TestQgsListWidget : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsListWidget )
+QGSTEST_MAIN( TestQgsListWidget )
 #include "testqgslistwidget.moc"

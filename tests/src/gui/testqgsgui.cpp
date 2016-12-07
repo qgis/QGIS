@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <qgisgui.h>
 
 class TestQgsGui : public QObject
@@ -41,5 +41,5 @@ void TestQgsGui::createFileFilter()
   QCOMPARE( actual, expected );
 }
 
-QTEST_MAIN( TestQgsGui )
+QGSTEST_MAIN( TestQgsGui )
 #include "testqgsgui.moc"

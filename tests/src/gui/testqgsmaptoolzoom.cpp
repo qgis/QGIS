@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QCoreApplication>
@@ -97,7 +97,7 @@ void TestQgsMapToolZoom::zeroDragArea()
   QVERIFY2( before != after, "Extents didn't change" );
 }
 
-QTEST_MAIN( TestQgsMapToolZoom )
+QGSTEST_MAIN( TestQgsMapToolZoom )
 #include "testqgsmaptoolzoom.moc"
 
 

@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -160,5 +160,5 @@ bool TestQgsWcsProvider::read( const QString& theIdentifier, const QString& theW
   return ok;
 }
 
-QTEST_MAIN( TestQgsWcsProvider )
+QGSTEST_MAIN( TestQgsWcsProvider )
 #include "testqgswcsprovider.moc"

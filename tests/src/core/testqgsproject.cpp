@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 #include <qgsapplication.h>
@@ -140,5 +140,5 @@ void TestQgsProject::variablesChanged()
 }
 
 
-QTEST_MAIN( TestQgsProject )
+QGSTEST_MAIN( TestQgsProject )
 #include "testqgsproject.moc"

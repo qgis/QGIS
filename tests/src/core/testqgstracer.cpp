@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
@@ -354,5 +354,5 @@ void TestQgsTracer::testCurved()
 }
 
 
-QTEST_MAIN( TestQgsTracer )
+QGSTEST_MAIN( TestQgsTracer )
 #include "testqgstracer.moc"

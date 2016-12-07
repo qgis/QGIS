@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 //qgis includes...
@@ -604,7 +604,7 @@ void TestVectorLayerJoinBuffer::testCacheUpdate()
 }
 
 
-QTEST_MAIN( TestVectorLayerJoinBuffer )
+QGSTEST_MAIN( TestVectorLayerJoinBuffer )
 #include "testqgsvectorlayerjoinbuffer.moc"
 
 

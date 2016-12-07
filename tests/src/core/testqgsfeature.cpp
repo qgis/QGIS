@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -519,5 +519,5 @@ void TestQgsFeature::dataStream()
   QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
 }
 
-QTEST_MAIN( TestQgsFeature )
+QGSTEST_MAIN( TestQgsFeature )
 #include "testqgsfeature.moc"

@@ -17,7 +17,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgisapp.h>
 #include <qgsapplication.h>
@@ -316,5 +316,5 @@ void TestQgisAppClipboard::clipboardLogic()
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
 }
 
-QTEST_MAIN( TestQgisAppClipboard )
+QGSTEST_MAIN( TestQgisAppClipboard )
 #include "testqgisappclipboard.moc"

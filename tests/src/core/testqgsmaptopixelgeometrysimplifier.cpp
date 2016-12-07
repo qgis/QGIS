@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -206,5 +206,5 @@ void TestQgsMapToPixelGeometrySimplifier::testVisvalingam()
   QCOMPARE( simplifier.simplify( g ).exportToWkt(), expectedWkt );
 }
 
-QTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )
+QGSTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )
 #include "testqgsmaptopixelgeometrysimplifier.moc"

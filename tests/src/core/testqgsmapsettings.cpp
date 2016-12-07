@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <math.h>
@@ -194,5 +194,5 @@ void TestQgsMapSettings::testMapLayerListUtils()
   delete vlB;
 }
 
-QTEST_MAIN( TestQgsMapSettings )
+QGSTEST_MAIN( TestQgsMapSettings )
 #include "testqgsmapsettings.moc"

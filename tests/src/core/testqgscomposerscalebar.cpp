@@ -28,7 +28,7 @@
 
 #include <QLocale>
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerScaleBar : public QObject
 {
@@ -203,5 +203,5 @@ void TestQgsComposerScaleBar::tick()
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
-QTEST_MAIN( TestQgsComposerScaleBar )
+QGSTEST_MAIN( TestQgsComposerScaleBar )
 #include "testqgscomposerscalebar.moc"

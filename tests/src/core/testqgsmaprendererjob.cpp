@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -332,7 +332,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
 }
 
 
-QTEST_MAIN( TestQgsMapRendererJob )
+QGSTEST_MAIN( TestQgsMapRendererJob )
 #include "testqgsmaprendererjob.moc"
 
 

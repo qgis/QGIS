@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QFile>
 #include <QTextStream>
 #include <QObject>
@@ -332,7 +332,7 @@ void TestQgsDistanceArea::regression14675()
   QGSCOMPARENEAR( calc.measureArea( &geom ), 0.83301, 0.02 );
 }
 
-QTEST_MAIN( TestQgsDistanceArea )
+QGSTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"
 
 

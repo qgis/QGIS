@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QStringList>
 #include <QApplication>
@@ -391,5 +391,5 @@ void TestStyle::testTags()
   QVERIFY( symbols.contains( "red circle" ) );
 }
 
-QTEST_MAIN( TestStyle )
+QGSTEST_MAIN( TestStyle )
 #include "testqgsstyle.moc"

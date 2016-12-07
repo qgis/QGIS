@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -196,5 +196,5 @@ void TestQgsGdalProvider::isRepresentableValue()
   QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float64 ), true );
 }
 
-QTEST_MAIN( TestQgsGdalProvider )
+QGSTEST_MAIN( TestQgsGdalProvider )
 #include "testqgsgdalprovider.moc"

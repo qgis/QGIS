@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -223,5 +223,5 @@ bool TestQgsRasterFill::imageCheck( const QString& theTestType )
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsRasterFill )
+QGSTEST_MAIN( TestQgsRasterFill )
 #include "testqgsrasterfill.moc"

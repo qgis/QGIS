@@ -18,7 +18,7 @@
 #include "qgscolorscheme.h"
 #include <QObject>
 #include <QSharedPointer>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme
@@ -148,5 +148,5 @@ void TestQgsColorScheme::clone()
   QCOMPARE( colors, colors2 );
 }
 
-QTEST_MAIN( TestQgsColorScheme )
+QGSTEST_MAIN( TestQgsColorScheme )
 #include "testqgscolorscheme.moc"

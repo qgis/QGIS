@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -183,5 +183,5 @@ void TestQgsRasterSubLayer::checkStats()
 }
 
 
-QTEST_MAIN( TestQgsRasterSubLayer )
+QGSTEST_MAIN( TestQgsRasterSubLayer )
 #include "testqgsrastersublayer.moc"

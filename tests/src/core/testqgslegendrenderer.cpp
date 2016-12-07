@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 #include "qgsapplication.h"
@@ -725,5 +725,5 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   QgsProject::instance()->removeMapLayer( vl4 );
 }
 
-QTEST_MAIN( TestQgsLegendRenderer )
+QGSTEST_MAIN( TestQgsLegendRenderer )
 #include "testqgslegendrenderer.moc"

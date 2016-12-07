@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
@@ -136,5 +136,5 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2_me" ).toDouble(), 0.833333333333333 );
 }
 
-QTEST_MAIN( TestQgsZonalStatistics )
+QGSTEST_MAIN( TestQgsZonalStatistics )
 #include "testqgszonalstatistics.moc"

@@ -26,7 +26,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerMapOverview : public QObject
 {
@@ -217,5 +217,5 @@ void TestQgsComposerMapOverview::overviewMapCenter()
   QVERIFY( testResult );
 }
 
-QTEST_MAIN( TestQgsComposerMapOverview )
+QGSTEST_MAIN( TestQgsComposerMapOverview )
 #include "testqgscomposermapoverview.moc"

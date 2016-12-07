@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsdockwidget.h"
 #include <QApplication>
@@ -176,5 +176,5 @@ void TestQgsDockWidget::testSetUserVisible()
 
 }
 
-QTEST_MAIN( TestQgsDockWidget )
+QGSTEST_MAIN( TestQgsDockWidget )
 #include "testqgsdockwidget.moc"

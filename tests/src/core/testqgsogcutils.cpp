@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QSharedPointer>
 
 //qgis includes...
@@ -1023,5 +1023,5 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
     "</fes:Filter>" );
 }
 
-QTEST_MAIN( TestQgsOgcUtils )
+QGSTEST_MAIN( TestQgsOgcUtils )
 #include "testqgsogcutils.moc"

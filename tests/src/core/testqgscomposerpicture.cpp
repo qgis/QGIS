@@ -20,7 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposerpicture.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -426,5 +426,5 @@ void TestQgsComposerPicture::pictureInvalidExpression()
       false, false, QString(), QString() );
 }
 
-QTEST_MAIN( TestQgsComposerPicture )
+QGSTEST_MAIN( TestQgsComposerPicture )
 #include "testqgscomposerpicture.moc"

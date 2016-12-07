@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -602,5 +602,5 @@ void TestQgsFields::constIterator()
   QCOMPARE( it3 - it, 1 );
 }
 
-QTEST_MAIN( TestQgsFields )
+QGSTEST_MAIN( TestQgsFields )
 #include "testqgsfields.moc"

@@ -22,7 +22,7 @@
 #include "qgscomposermapgrid.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerMapGrid : public QObject
 {
@@ -705,5 +705,5 @@ void TestQgsComposerMapGrid::descendingAnnotations()
   mComposerMap->grid()->setAnnotationEnabled( false );
 }
 
-QTEST_MAIN( TestQgsComposerMapGrid )
+QGSTEST_MAIN( TestQgsComposerMapGrid )
 #include "testqgscomposermapgrid.moc"

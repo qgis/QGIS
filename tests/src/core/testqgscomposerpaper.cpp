@@ -25,7 +25,7 @@
 #include "qgslinesymbollayer.h"
 
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -166,5 +166,5 @@ void TestQgsComposerPaper::hiddenPages()
   QVERIFY( result );
 }
 
-QTEST_MAIN( TestQgsComposerPaper )
+QGSTEST_MAIN( TestQgsComposerPaper )
 #include "testqgscomposerpaper.moc"
