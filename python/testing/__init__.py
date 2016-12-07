@@ -102,8 +102,6 @@ class TestCase(_TestCase):
             )
 
             for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
-                attr_result = feats[1][field_expected.name()]
-                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
                 try:
                     cmp = compare['fields'][field_expected.name()]
                 except KeyError:
@@ -115,6 +113,9 @@ class TestCase(_TestCase):
                 # Skip field
                 if 'skip' in cmp:
                     continue
+
+                attr_result = feats[1][field_expected.name()]
+                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
 
                 # Cast field to a given type
                 if 'cast' in cmp:
