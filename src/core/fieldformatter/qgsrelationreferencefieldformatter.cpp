@@ -22,11 +22,6 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
-{
-
-}
-
 QString QgsRelationReferenceFieldFormatter::id() const
 {
   return QStringLiteral( "RelationReference" );

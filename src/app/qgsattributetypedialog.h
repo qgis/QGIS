@@ -43,11 +43,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     const QString editorWidgetText();
 
-    void setWidgetType( const QString& type );
+    void setEditorWidgetType( const QString& type );
 
     const QVariantMap editorWidgetConfig();
 
-    void setWidgetConfig( const QVariantMap& config );
+    void setEditorWidgetConfig( const QVariantMap& config );
 
     /**
      * Setter for checkbox to label on top

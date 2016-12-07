@@ -17,11 +17,6 @@
 
 #include <QSettings>
 
-QgsKeyValueFieldFormatter::QgsKeyValueFieldFormatter()
-{
-
-}
-
 QString QgsKeyValueFieldFormatter::id() const
 {
   return QStringLiteral( "KeyValue" );

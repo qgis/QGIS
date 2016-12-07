@@ -20,11 +20,6 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
-QgsDateTimeFieldFormatter::QgsDateTimeFieldFormatter()
-{
-
-}
-
 QString QgsDateTimeFieldFormatter::id() const
 {
   return QStringLiteral( "DateTime" );

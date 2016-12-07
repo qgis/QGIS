@@ -20,17 +20,15 @@ class QgsFieldFormatterRegistry : QObject
 %End
   public:
 
-    QgsFieldFormatterRegistry();
+    QgsFieldFormatterRegistry( QObject* parent /TransferThis/ );
     ~QgsFieldFormatterRegistry();
 
-    void addFieldFormatter( QgsFieldFormatter* kit /Transfer/ );
+    void addFieldFormatter( QgsFieldFormatter* formatter /Transfer/ );
 
-    void removeFieldFormatter( QgsFieldFormatter* kit );
-
-    QgsFieldFormatter* fieldKit( const QString& id ) const;
-
+    void removeFieldFormatter( QgsFieldFormatter* formatter );
+    void removeFieldFormatter( const QString& id );
+    QgsFieldFormatter* fieldFormatter( const QString& id ) const;
   signals:
-    void fieldKitAdded( QgsFieldFormatter* kit );
-
-    void fieldKitRemoved( QgsFieldFormatter* kit );
+    void fieldFormatterAdded( QgsFieldFormatter* formatter );
+    void fieldFormatterRemoved( QgsFieldFormatter* formatter );
 };

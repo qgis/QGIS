@@ -17,11 +17,6 @@
 
 #include <QSettings>
 
-QgsListFieldFormatter::QgsListFieldFormatter()
-{
-
-}
-
 QString QgsListFieldFormatter::id() const
 {
   return QStringLiteral( "List" );

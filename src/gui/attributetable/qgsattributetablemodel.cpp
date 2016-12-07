@@ -343,7 +343,7 @@ void QgsAttributeTableModel::loadAttributes()
   {
     const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer(), fields[idx].name() );
     QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
-    QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldKit( setup.type() );
+    QgsFieldFormatter* fieldKit = QgsApplication::fieldKitRegistry()->fieldFormatter( setup.type() );
 
     if ( widgetFactory )
     {
