@@ -852,11 +852,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), QgsSnappingConfig::Vertex );
-  mDefaultSnapModeComboBox->insertItem( 1, tr( "To segment" ), QgsSnappingConfig::Segment );
-  mDefaultSnapModeComboBox->insertItem( 2, tr( "To vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
-  int defaultSnapString = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt();
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
+  mDefaultSnapModeComboBox->insertItem( 0, tr( "Vertex" ), QgsSnappingConfig::Vertex );
+  mDefaultSnapModeComboBox->insertItem( 1, tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
+  mDefaultSnapModeComboBox->insertItem( 2, tr( "Segment" ), QgsSnappingConfig::Segment );
+  mDefaultSnapModeComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt() - 1 );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
   int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsTolerance::ProjectUnits ).toInt();
