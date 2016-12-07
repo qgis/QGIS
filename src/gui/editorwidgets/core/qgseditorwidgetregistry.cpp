@@ -89,11 +89,16 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 
 QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl, const QString& fieldName ) const
 {
-  QgsEditorWidgetSetup setup = vl->fields().field( fieldName ).editorWidgetSetup();
-  if ( !setup.isNull() )
+  QgsFields fields = vl->fields();
+  int index = fields.indexOf( fieldName );
+
+  if ( index > -1 )
   {
-    return setup;
+    QgsEditorWidgetSetup setup = vl->fields().at( index ).editorWidgetSetup();
+    if ( !setup.isNull() )
+      return setup;
   }
+
   return mAutoConf.editorWidgetSetup( vl, fieldName );
 }
 
