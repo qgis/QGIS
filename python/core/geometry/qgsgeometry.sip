@@ -405,8 +405,20 @@ class QgsGeometry
      */
     QgsGeometry makeDifference( const QgsGeometry& other ) const;
 
-    /** Returns the bounding box of this feature*/
+    /**
+     * Returns the bounding box of the geometry.
+     * @see orientedMinimumBoundingBox()
+     */
     QgsRectangle boundingBox() const;
+
+    /**
+     * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
+     * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
+     * width and height of the rotated bounding box will also be returned.
+     * @note added in QGIS 3.0
+     * @see boundingBox()
+     */
+    QgsGeometry orientedMinimumBoundingBox( double& area /Out/, double &angle /Out/, double& width /Out/, double& height /Out/ ) const;
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r ) const;

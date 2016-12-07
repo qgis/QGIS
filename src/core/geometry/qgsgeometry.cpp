@@ -862,6 +862,65 @@ QgsRectangle QgsGeometry::boundingBox() const
   return QgsRectangle();
 }
 
+QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double& area, double &angle, double& width, double& height ) const
+{
+  QgsRectangle minRect;
+  area = DBL_MAX;
+  angle = 0;
+  width = DBL_MAX;
+  height = DBL_MAX;
+
+  if ( !d->geometry || d->geometry->nCoordinates() < 2 )
+    return QgsGeometry();
+
+  QgsGeometry hull = convexHull();
+  if ( hull.isEmpty() )
+    return QgsGeometry();
+
+  QgsVertexId vertexId;
+  QgsPointV2 pt0;
+  QgsPointV2 pt1;
+  QgsPointV2 pt2;
+  // get first point
+  hull.geometry()->nextVertex( vertexId, pt0 );
+  pt1 = pt0;
+  double prevAngle = 0.0;
+  while ( hull.geometry()->nextVertex( vertexId, pt2 ) )
+  {
+    double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+    double rotateAngle = 180.0 / M_PI * ( currentAngle - prevAngle );
+    prevAngle = currentAngle;
+
+    QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
+    t.rotate( rotateAngle );
+    t.translate( -pt0.x(), -pt0.y() );
+
+    hull.geometry()->transform( t );
+
+    QgsRectangle bounds = hull.geometry()->boundingBox();
+    double currentArea = bounds.width() * bounds.height();
+    if ( currentArea  < area )
+    {
+      minRect = bounds;
+      area = currentArea;
+      angle = 180.0 / M_PI * currentAngle;
+      width = bounds.width();
+      height = bounds.height();
+    }
+
+    pt2 = pt1;
+  }
+
+  QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
+  minBounds.rotate( angle, QgsPoint( pt0.x(), pt0.y() ) );
+
+  // constrain angle to 0 - 180
+  if ( angle > 180.0 )
+    angle = fmod( angle, 180.0 );
+
+  return minBounds;
+}
+
 bool QgsGeometry::intersects( const QgsRectangle& r ) const
 {
   QgsGeometry g = fromRect( r );
