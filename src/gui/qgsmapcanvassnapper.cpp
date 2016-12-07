@@ -169,10 +169,11 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   QSettings settings;
   QString snappingMode = QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ), QStringLiteral( "current_layer" ), &snappingDefinedInProject );
   QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), "0" ).toString();
-  QString defaultSnapType = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), "off" ).toString();
+  QString defaultSnapType = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), "to vertex" ).toString();
   QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ) ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), "0" ).toString();
+  bool defaultSnapEnabled = settings.value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
 
-  if ( !snappingDefinedInProject && defaultSnapType == QLatin1String( "off" ) )
+  if ( !snappingDefinedInProject && defaultSnapEnabled == false )
   {
     return 0;
   }

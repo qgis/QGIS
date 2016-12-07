@@ -4003,7 +4003,14 @@
                   <string>Snapping</string>
                  </property>
                  <layout class="QGridLayout" name="_10">
-                  <item row="1" column="1">
+                  <item row="1" column="1" colspan="6">
+                   <widget class="QCheckBox" name="mSnappingEnabledDefault">
+                    <property name="text">
+                     <string>Enable snapping by default</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
                    <widget class="QLabel" name="label_49">
                     <property name="text">
                      <string>Display main dialog as (restart required)</string>
@@ -4127,7 +4134,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="5" colspan="2">
+                  <item row="5" column="5" colspan="2">
                    <widget class="QComboBox" name="mSnappingMainDialogComboBox"/>
                   </item>
                   <item row="3" column="1" colspan="2">
