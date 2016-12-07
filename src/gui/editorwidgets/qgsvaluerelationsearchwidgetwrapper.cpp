@@ -190,7 +190,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   else
   {
     QSettings settings;
-    setExpression( vl.isNull() ? settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() : vl.toString() );
+    setExpression( vl.isNull() ? QgsApplication::nullRepresentation() : vl.toString() );
     emit valueChanged();
   }
   emit expressionChanged( mExpression );
@@ -199,7 +199,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
 void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
 {
   QSettings settings;
-  QString nullValue = settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+  QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str;

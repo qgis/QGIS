@@ -123,7 +123,7 @@ QString QgsClipboard::generateClipboardText() const
             textFields += it->geometry().exportToWkt();
           else
           {
-            textFields += settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+            textFields += QgsApplication::nullRepresentation();
           }
         }
 

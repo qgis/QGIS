@@ -41,7 +41,7 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
+    if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QgsApplication::nullRepresentation() )
     {
       return QVariant( field().type() );
     }
@@ -93,7 +93,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      fle->setNullValue( QgsApplication::nullRepresentation() );
     }
   }
   else
@@ -151,7 +151,7 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      mLineEdit->setText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      mLineEdit->setText( QgsApplication::nullRepresentation() );
     }
     else
     {
@@ -169,7 +169,7 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
   {
     if ( value.isNull() )
     {
-      mQgsWidget->setDocumentPath( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      mQgsWidget->setDocumentPath( QgsApplication::nullRepresentation() );
     }
     else
     {

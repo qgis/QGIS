@@ -1258,6 +1258,25 @@ void QgsApplication::copyPath( const QString& src, const QString& dst )
   }
 }
 
+QString QgsApplication::nullRepresentation()
+{
+  QgsApplication* app = instance();
+  if ( app->mNullRepresentation.isNull() )
+    app->mNullRepresentation = QSettings().value( QStringLiteral( "qgis/nullValue" ), QStringLiteral( "NULL" ) ).toString();
+  return app->mNullRepresentation;
+}
+
+void QgsApplication::setNullRepresentation( const QString& nullRepresentation )
+{
+  QgsApplication* app = instance();
+  if ( app->mNullRepresentation == nullRepresentation )
+    return;
+
+  app->mNullRepresentation = nullRepresentation;
+  QSettings().setValue( QStringLiteral( "qgis/nullValue" ), nullRepresentation );
+  emit app->nullRepresentationChanged();
+}
+
 QgsActionScopeRegistry* QgsApplication::actionScopeRegistry()
 {
   return instance()->mActionScopeRegistry;

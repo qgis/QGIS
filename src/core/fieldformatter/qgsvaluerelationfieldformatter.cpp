@@ -47,7 +47,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
 
-  QgsValueRelationFieldFormatter::ValueRelationCache vrCache;
+  ValueRelationCache vrCache;
 
   if ( cache.isValid() )
   {
@@ -77,8 +77,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
   {
     if ( value.isNull() )
     {
-      QSettings settings;
-      return settings.value( "qgis/nullValue", "NULL" ).toString();
+      return QgsApplication::nullRepresentation();
     }
 
     Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item, vrCache )

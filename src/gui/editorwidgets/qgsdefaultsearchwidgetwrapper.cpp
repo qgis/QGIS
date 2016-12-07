@@ -58,7 +58,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
   QSettings settings;
-  QString nullValue = settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+  QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
   if ( exp == nullValue )

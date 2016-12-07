@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgskeyvaluefieldformatter.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 
@@ -32,7 +33,7 @@ QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer* layer, int fi
   if ( value.isNull() )
   {
     QSettings settings;
-    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+    return QgsApplication::nullRepresentation();
   }
 
   QString result;

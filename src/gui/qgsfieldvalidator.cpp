@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
 #include "qgsfields.h"
+#include "qgsapplication.h"
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
     : QValidator( parent )
@@ -84,7 +85,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
   }
 
   QSettings settings;
-  mNullValue = settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
+  mNullValue = QgsApplication::nullRepresentation();
 }
 
 QgsFieldValidator::~QgsFieldValidator()

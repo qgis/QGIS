@@ -116,7 +116,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
         minval -= stepval;
       }
       mDoubleSpinBox->setValue( minval );
-      mDoubleSpinBox->setSpecialValueText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      mDoubleSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
     mDoubleSpinBox->setMinimum( min.isValid() ? min.toDouble() : std::numeric_limits<double>::min() );
     mDoubleSpinBox->setMaximum( max.isValid() ? max.toDouble() : std::numeric_limits<double>::max() );
@@ -137,7 +137,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
       int stepval = step.toInt();
       minval -= stepval;
       mIntSpinBox->setValue( minval );
-      mIntSpinBox->setSpecialValueText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      mIntSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
     setupIntEditor( min, max, step, mIntSpinBox, this );
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )

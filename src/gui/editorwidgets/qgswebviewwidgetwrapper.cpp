@@ -48,7 +48,7 @@ QVariant QgsWebViewWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text() == QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
+    if ( mLineEdit->text() == QgsApplication::nullRepresentation() )
       v = QVariant( QVariant::String );
     else
       v = mLineEdit->text();
@@ -101,7 +101,7 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
     QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      fle->setNullValue( QgsApplication::nullRepresentation() );
     }
 
     container = qobject_cast<QWidget*>( mLineEdit->parent() );
@@ -151,7 +151,7 @@ void QgsWebViewWidgetWrapper::setValue( const QVariant& value )
   if ( mLineEdit )
   {
     if ( value.isNull() )
-      mLineEdit->setText( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
+      mLineEdit->setText( QgsApplication::nullRepresentation() );
     else
       mLineEdit->setText( value.toString() );
   }
