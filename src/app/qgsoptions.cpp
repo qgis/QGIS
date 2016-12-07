@@ -851,11 +851,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mLineGhostCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/line_ghost" ), false ).toBool() );
 
   //default snap mode
+  mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
   mDefaultSnapModeComboBox->insertItem( 1, tr( "To segment" ), "to segment" );
   mDefaultSnapModeComboBox->insertItem( 2, tr( "To vertex and segment" ), "to vertex and segment" );
-  mDefaultSnapModeComboBox->insertItem( 3, tr( "Off" ), "off" );
-  QString defaultSnapString = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), "off" ).toString();
+  QString defaultSnapString = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), "to vertex" ).toString();
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
@@ -912,8 +912,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mValidateGeometries->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() );
 
   mSnappingMainDialogComboBox->clear();
-  mSnappingMainDialogComboBox->addItem( tr( "dialog" ), "dialog" );
-  mSnappingMainDialogComboBox->addItem( tr( "dock" ), "dock" );
+  mSnappingMainDialogComboBox->addItem( tr( "Dialog" ), "dialog" );
+  mSnappingMainDialogComboBox->addItem( tr( "Dock" ), "dock" );
   mSnappingMainDialogComboBox->setCurrentIndex( mSnappingMainDialogComboBox->findData( mSettings->value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString() ) );
 
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
@@ -1359,6 +1359,7 @@ void QgsOptions::saveOptions()
   settings.setValue( QStringLiteral( "/qgis/digitizing/line_ghost" ), mLineGhostCheckBox->isChecked() );
 
   //default snap mode
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
   QString defaultSnapModeString = mDefaultSnapModeComboBox->currentData().toString();
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), defaultSnapModeString );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
