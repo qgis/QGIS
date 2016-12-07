@@ -33,6 +33,7 @@ class QgsProject;
 #include "qgssnappingconfig.h"
 
 #include <QWidget>
+#include <QSettings>
 
 /**
   * A widget which lets the user defines settings for snapping on a project
@@ -77,6 +78,9 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void enableSnapping( bool checked );
 
+    //! toggle widgets enabled states
+    void toggleSnappingWidgets( bool enabled );
+
     void changeTolerance( double tolerance );
 
     void changeUnit( int idx );
@@ -103,6 +107,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     //! modeChanged determines if widget are visible or not based on mode
     void modeChanged();
+
+    QSettings *mSettings;
 
     QgsProject* mProject;
     QgsSnappingConfig mConfig;
