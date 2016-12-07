@@ -3645,6 +3645,29 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "Extend line: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testMinimumOrientedBoundingBox(self):
+        empty = QgsGeometry()
+        bbox, area, angle, width, height = empty.orientedMinimumBoundingBox()
+        self.assertFalse(bbox)
+
+        # not a useful geometry
+        point = QgsGeometry.fromWkt('Point(1 2)')
+        bbox, area, angle, width, height = point.orientedMinimumBoundingBox()
+        self.assertFalse(bbox)
+
+        # polygon
+        polygon = QgsGeometry.fromWkt('Polygon((-0.1 -1.3, 2.1 1, 3 2.8, 6.7 0.2, 3 -1.8, 0.3 -2.7, -0.1 -1.3))')
+        bbox, area, angle, width, height = polygon.orientedMinimumBoundingBox()
+        exp = 'Polygon ((-0.94905660 -1.571698, 2.3817055 -4.580453, 6.7000000 0.1999999, 3.36923 3.208754, -0.949056 -1.57169))'
+
+        result = bbox.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Oriented MBBR: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        self.assertAlmostEqual(area, 28.9152, places=3)
+        self.assertAlmostEqual(angle, 42.0922, places=3)
+        self.assertAlmostEqual(width, 4.4884, places=3)
+        self.assertAlmostEqual(height, 6.4420, places=3)
+
 
 if __name__ == '__main__':
     unittest.main()
