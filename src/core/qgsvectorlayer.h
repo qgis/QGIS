@@ -1454,7 +1454,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setConstraintExpression( int index, const QString& expression, const QString& description = QString() );
 
+    /**
+     * \copydoc editorWidgetSetup
+     */
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup& setup );
+
+    /**
+     * The editor widget setup defines which QgsFieldFormatter and editor widget will be used
+     * for the field at `index`.
+     *
+     * @note Added in QGIS 3.0
+     */
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 
     /** Calculates a list of unique values contained within an attribute in the layer. Note that
