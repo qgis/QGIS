@@ -87,6 +87,14 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
   }
 }
 
+void QgsPalettedRendererWidget::on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column )
+{
+  if ( column == 2 && item ) //palette label modified
+  {
+    emit widgetChanged();
+  }
+}
+
 void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
 {
   const QgsPalettedRasterRenderer* pr = dynamic_cast<const QgsPalettedRasterRenderer*>( r );
