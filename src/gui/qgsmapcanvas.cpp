@@ -582,6 +582,7 @@ void QgsMapCanvas::refreshMap()
   << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
+  mSettings.setOutputDpi( logicalDpiX() );
 
   // create the renderer job
   Q_ASSERT( !mJob );
