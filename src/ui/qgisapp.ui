@@ -374,6 +374,8 @@
    <addaction name="mActionCutFeatures"/>
    <addaction name="mActionCopyFeatures"/>
    <addaction name="mActionPasteFeatures"/>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
   </widget>
   <widget class="QToolBar" name="mAdvancedDigitizeToolBar">
    <property name="windowTitle">
@@ -388,9 +390,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionEnableTracing"/>
-   <addaction name="mActionUndo"/>
-   <addaction name="mActionRedo"/>
    <addaction name="mActionRotateFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
