@@ -2339,6 +2339,15 @@ void QgisApp::createToolBars()
     layout->itemAt( i )->setAlignment( Qt::AlignLeft );
   }
 
+  //circular string digitize tool button
+  QToolButton* tbAddCircularString = new QToolButton( mDigitizeToolBar );
+  tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
+  tbAddCircularString->addAction( mActionCircularStringCurvePoint );
+  tbAddCircularString->addAction( mActionCircularStringRadius );
+  tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
+  connect( tbAddCircularString, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+  mDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircularString );
+
   // move feature tool button
   QToolButton* moveFeatureButton = new QToolButton( mDigitizeToolBar );
   moveFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -2357,15 +2366,6 @@ void QgisApp::createToolBars()
   moveFeatureButton->setDefaultAction( defAction );
   connect( moveFeatureButton, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
   mDigitizeToolBar->insertWidget( mActionNodeTool, moveFeatureButton );
-
-  //circular string digitize tool button
-  QToolButton* tbAddCircularString = new QToolButton( mDigitizeToolBar );
-  tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
-  tbAddCircularString->addAction( mActionCircularStringCurvePoint );
-  tbAddCircularString->addAction( mActionCircularStringRadius );
-  tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
-  connect( tbAddCircularString, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
-  mDigitizeToolBar->insertWidget( mActionMoveFeature, tbAddCircularString );
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
