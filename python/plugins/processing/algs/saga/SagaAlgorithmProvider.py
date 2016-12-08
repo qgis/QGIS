@@ -58,7 +58,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         self.activate = True
 
     def initializeSettings(self):
-        if (isWindows() or isMac()) and SagaUtils.findSagaFolder() is None:
+        if (isWindows() or isMac()):
             ProcessingConfig.addSetting(Setting("SAGA",
                                                 SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
                                                 '',
@@ -78,7 +78,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if (isWindows() or isMac()) and SagaUtils.findSagaFolder() is None:
+        if (isWindows() or isMac()):
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
 
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
