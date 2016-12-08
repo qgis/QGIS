@@ -84,6 +84,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
+
+  connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
 }
 
 QgsMapLayer::~QgsMapLayer()
