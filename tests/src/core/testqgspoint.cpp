@@ -681,6 +681,11 @@ void TestQgsPoint::project()
 
 void TestQgsPoint::vector()
 {
+  //equality
+  QVERIFY( QgsVector( 1, 2 ) == QgsVector( 1, 2 ) );
+  QVERIFY( QgsVector( 1, 2 ) != QgsVector( 3, 2 ) );
+  QVERIFY( QgsVector( 1, 2 ) != QgsVector( 1, 3 ) );
+
   //test constructors, x(), y() accessors
   QgsVector v1;
   QCOMPARE( v1.x(), 0.0 );

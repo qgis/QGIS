@@ -123,6 +123,12 @@ class CORE_EXPORT QgsVector
      */
     QgsVector normalized() const;
 
+    //! Equality operator
+    bool operator==( QgsVector other ) const;
+
+    //! Inequality operator
+    bool operator!=( QgsVector other ) const;
+
   private:
 
     double mX, mY;

@@ -134,6 +134,16 @@ QgsVector QgsVector::normalized() const
   return *this / len;
 }
 
+bool QgsVector::operator==( QgsVector other ) const
+{
+  return qgsDoubleNear( mX, other.mX ) && qgsDoubleNear( mY, other.mY );
+}
+
+bool QgsVector::operator!=( QgsVector other ) const
+{
+  return !qgsDoubleNear( mX, other.mX ) || !qgsDoubleNear( mY, other.mY );
+}
+
 
 //
 // QgsPoint

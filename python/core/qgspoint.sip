@@ -98,6 +98,12 @@ class QgsVector
      * if called on a vector with length of 0.
      */
     QgsVector normalized() const;
+
+    //! Equality operator
+    bool operator==( QgsVector other ) const;
+
+    //! Inequality operator
+    bool operator!=( QgsVector other ) const;
 };
 
 
