@@ -413,7 +413,6 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   // initiate color ramp button to random
   btnColorRamp->setShowRandomColorRamp( true );
-  btnColorRamp->setRandomColorRamp();
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
@@ -423,9 +422,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
   else
   {
-    QgsColorRamp* ramp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 255, 0, 0 ) );
-    btnColorRamp->setColorRamp( ramp );
-    delete ramp;
+    btnColorRamp->setRandomColorRamp();
   }
 
   mCategorizedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
