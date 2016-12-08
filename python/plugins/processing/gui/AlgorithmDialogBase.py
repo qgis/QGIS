@@ -139,7 +139,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnClose.setEnabled(True)
 
     def setInfo(self, msg, error=False):
-        msg = msg.replace("<", "&lt;").replace(">", "&gt;")
         if error:
             self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
         else:
