@@ -179,6 +179,37 @@ class QgsPointV2: public QgsAbstractGeometry
      */
     double azimuth( const QgsPointV2& other ) const;
 
+    /**
+     * Calculates the vector obtained by subtracting a point from this point.
+     * @note added in QGIS 3.0
+     */
+    QgsVector operator-( const QgsPointV2& p ) const;
+
+    /**
+     * Adds a vector to this point in place.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 &operator+=( QgsVector v );
+
+    /**
+     * Subtracts a vector from this point in place.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 &operator-=( QgsVector v );
+
+    /**
+     * Adds a vector to this point.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 operator+( QgsVector v ) const;
+
+    /**
+     * Subtracts a vector from this point.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 operator-( QgsVector v ) const;
+
+
     //implementation of inherited methods
     virtual QgsRectangle boundingBox() const;
     virtual QString geometryType() const;

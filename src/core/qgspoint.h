@@ -57,10 +57,35 @@ class CORE_EXPORT QgsVector
      */
     QgsVector operator/( double scalar ) const;
 
-    /** Returns the sum of the x component of this vector multiplied by the x component of another
-     * vector plus the y component of this vector multipled by the y component of another vector.
+    /** Returns the dot product of two vectors, which is the sum of the x component
+     *  of this vector multiplied by the x component of another
+     *  vector plus the y component of this vector multipled by the y component of another vector.
      */
     double operator*( QgsVector v ) const;
+
+    /**
+     * Adds another vector to this vector.
+     * @note added in QGIS 3.0
+     */
+    QgsVector operator+( QgsVector other ) const;
+
+    /**
+     * Adds another vector to this vector in place.
+     * @note added in QGIS 3.0
+     */
+    QgsVector& operator+=( QgsVector other );
+
+    /**
+     * Subtracts another vector to this vector.
+     * @note added in QGIS 3.0
+     */
+    QgsVector operator-( QgsVector other ) const;
+
+    /**
+     * Subtracts another vector to this vector in place.
+     * @note added in QGIS 3.0
+     */
+    QgsVector& operator-=( QgsVector other );
 
     /** Returns the length of the vector.
      */
@@ -97,6 +122,12 @@ class CORE_EXPORT QgsVector
      * if called on a vector with length of 0.
      */
     QgsVector normalized() const;
+
+    //! Equality operator
+    bool operator==( QgsVector other ) const;
+
+    //! Inequality operator
+    bool operator!=( QgsVector other ) const;
 
   private:
 

@@ -681,6 +681,11 @@ void TestQgsPoint::project()
 
 void TestQgsPoint::vector()
 {
+  //equality
+  QVERIFY( QgsVector( 1, 2 ) == QgsVector( 1, 2 ) );
+  QVERIFY( QgsVector( 1, 2 ) != QgsVector( 3, 2 ) );
+  QVERIFY( QgsVector( 1, 2 ) != QgsVector( 1, 3 ) );
+
   //test constructors, x(), y() accessors
   QgsVector v1;
   QCOMPARE( v1.x(), 0.0 );
@@ -736,6 +741,23 @@ void TestQgsPoint::vector()
   QCOMPARE( QgsVector( 0, 2 ).normalized().y(), 1.0 );
   QCOMPARE( QgsVector( 2, 0 ).normalized().x(), 1.0 );
   QCOMPARE( QgsVector( 2, 0 ).normalized().y(), 0.0 );
+
+  // operator +, -
+  v1 = QgsVector( 1, 3 );
+  v2 = QgsVector( 2, 5 );
+  QgsVector v3 = v1 + v2;
+  QCOMPARE( v3.x(), 3.0 );
+  QCOMPARE( v3.y(), 8.0 );
+  v3 = v1 - v2;
+  QCOMPARE( v3.x(), -1.0 );
+  QCOMPARE( v3.y(), -2.0 );
+  // operator +=, -=
+  v1 += v2;
+  QCOMPARE( v1.x(), 3.0 );
+  QCOMPARE( v1.y(), 8.0 );
+  v1 -= v2;
+  QCOMPARE( v1.x(), 1.0 );
+  QCOMPARE( v1.y(), 3.0 );
 }
 
 QTEST_MAIN( TestQgsPoint )

@@ -820,6 +820,21 @@ void TestQgsGeometry::point()
   QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 2, 2 ) ), 90.0 );
   QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 1, 0 ) ), 180.0 );
   QCOMPARE( QgsPointV2( 1, 2 ).azimuth( QgsPointV2( 0, 2 ) ), -90.0 );
+
+  // operators
+  QgsPointV2 p31( 1, 2 );
+  QgsPointV2 p32( 3, 5 );
+  QCOMPARE( p32 - p31, QgsVector( 2, 3 ) );
+  QCOMPARE( p31 - p32, QgsVector( -2, -3 ) );
+
+  p31 = QgsPointV2( 1, 2 );
+  QCOMPARE( p31 + QgsVector( 3, 5 ), QgsPointV2( 4, 7 ) );
+  p31 += QgsVector( 3, 5 );
+  QCOMPARE( p31, QgsPointV2( 4, 7 ) );
+
+  QCOMPARE( p31 - QgsVector( 3, 5 ), QgsPointV2( 1 , 2 ) );
+  p31 -= QgsVector( 3, 5 );
+  QCOMPARE( p31, QgsPointV2( 1, 2 ) );
 }
 
 void TestQgsGeometry::lineString()

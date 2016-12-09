@@ -39,6 +39,30 @@ class QgsVector
      */
     double operator*( QgsVector v ) const;
 
+    /**
+     * Adds another vector to this vector.
+     * @node added in QGIS 3.0
+     */
+    QgsVector operator+( QgsVector other ) const;
+
+    /**
+     * Adds another vector to this vector in place.
+     * @node added in QGIS 3.0
+     */
+    QgsVector& operator+=( QgsVector other );
+
+    /**
+     * Subtracts another vector to this vector.
+     * @node added in QGIS 3.0
+     */
+    QgsVector operator-( QgsVector other ) const;
+
+    /**
+     * Subtracts another vector to this vector in place.
+     * @node added in QGIS 3.0
+     */
+    QgsVector& operator-=( QgsVector other );
+
     /** Returns the length of the vector.
      */
     double length() const;
@@ -74,6 +98,12 @@ class QgsVector
      * if called on a vector with length of 0.
      */
     QgsVector normalized() const;
+
+    //! Equality operator
+    bool operator==( QgsVector other ) const;
+
+    //! Inequality operator
+    bool operator!=( QgsVector other ) const;
 };
 
 

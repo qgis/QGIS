@@ -1638,6 +1638,9 @@ tests:
       OUTPUT:
         name: expected/split_lines_with_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:splitwithlines
     name: Split poly with lines
@@ -1652,6 +1655,9 @@ tests:
       OUTPUT:
         name: expected/split_polys_with_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:splitwithlines
     name: Split lines with same lines
@@ -1666,6 +1672,9 @@ tests:
       OUTPUT:
         name: expected/split_lines_with_lines_same.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
 
   - algorithm: qgis:dropgeometries
     name: Drop geometries
@@ -1866,3 +1875,35 @@ tests:
       OUTPUT:
         name: expected/oriented_bounds.gml
         type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:orthagonalize
+    name: Orthagonalize polys
+    params:
+      INPUT_LAYER:
+        name: custom/polys_to_orth.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/orthagonal_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+
+  - algorithm: qgis:orthagonalize
+    name: Orthagonalize lines
+    params:
+      INPUT_LAYER:
+        name: custom/lines_to_orth.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/orthagonal_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7

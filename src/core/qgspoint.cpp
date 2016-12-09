@@ -60,6 +60,30 @@ double QgsVector::operator*( QgsVector v ) const
   return mX * v.mX + mY * v.mY;
 }
 
+QgsVector QgsVector::operator+( QgsVector other ) const
+{
+  return QgsVector( mX + other.mX, mY + other.mY );
+}
+
+QgsVector& QgsVector::operator+=( QgsVector other )
+{
+  mX += other.mX;
+  mY += other.mY;
+  return *this;
+}
+
+QgsVector QgsVector::operator-( QgsVector other ) const
+{
+  return QgsVector( mX - other.mX, mY - other.mY );
+}
+
+QgsVector& QgsVector::operator-=( QgsVector other )
+{
+  mX -= other.mX;
+  mY -= other.mY;
+  return *this;
+}
+
 double QgsVector::length() const
 {
   return sqrt( mX * mX + mY * mY );
@@ -108,6 +132,16 @@ QgsVector QgsVector::normalized() const
   }
 
   return *this / len;
+}
+
+bool QgsVector::operator==( QgsVector other ) const
+{
+  return qgsDoubleNear( mX, other.mX ) && qgsDoubleNear( mY, other.mY );
+}
+
+bool QgsVector::operator!=( QgsVector other ) const
+{
+  return !qgsDoubleNear( mX, other.mX ) || !qgsDoubleNear( mY, other.mY );
 }
 
 

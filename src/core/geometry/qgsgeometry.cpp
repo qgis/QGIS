@@ -921,6 +921,13 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double& area, double &angle
   return minBounds;
 }
 
+QgsGeometry QgsGeometry::orthagonalize( double tolerance, int maxIterations, double angleThreshold ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.orthagonalize( tolerance, maxIterations, angleThreshold );
+}
+
 bool QgsGeometry::intersects( const QgsRectangle& r ) const
 {
   QgsGeometry g = fromRect( r );
