@@ -9,3 +9,4 @@ ParameterNumber|max_cost|Maximum cumulative cost|0|None|0
 ParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|None|None|0
 ParameterNumber|memory|Maximum memory to be used in MB|0|None|300
 OutputRaster|output|Cumulative cost
+OutputRaster|nearest|Cost allocation map

@@ -7,3 +7,4 @@ ParameterVector|stop_points|Stop points|0|True
 ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
 ParameterBoolean|-n|Keep null values in output raster layer|True
 OutputRaster|output|Cumulative cost
+OutputRaster|nearest|Cost allocation map
