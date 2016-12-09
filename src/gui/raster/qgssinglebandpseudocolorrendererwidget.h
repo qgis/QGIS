@@ -72,6 +72,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void autoLabel();
     void setUnitFromLabels();
 
+    QMenu* contextMenu;
+
   private slots:
 
     void applyColorRamp();
@@ -90,6 +92,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
     void on_mMaxLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
+    void changeColor();
+    void changeTransparency();
 
   private:
 
