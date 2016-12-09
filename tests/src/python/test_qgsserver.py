@@ -36,6 +36,10 @@ class TestQgsServer(unittest.TestCase):
     def setUp(self):
         """Create the server instance"""
         self.testdata_path = unitTestDataPath('qgis_server') + '/'
+
+        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        self.projectPath = os.path.join(d, "project.qgs")
+
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:
@@ -422,6 +426,132 @@ class TestQgsServer(unittest.TestCase):
         qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(10, 10))
+
+    def test_wms_GetLegendGraphic_Basic(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+
+    def test_wms_GetLegendGraphic_BoxSpace(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "BOXSPACE": "100",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace")
+
+    def test_wms_GetLegendGraphic_SymbolSpace(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "SYMBOLSPACE": "100",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSpace")
+
+    def test_wms_GetLegendGraphic_IconLabelSpace(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "ICONLABELSPACE": "100",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_IconLabelSpace")
+
+    def test_wms_GetLegendGraphic_SymbolSize(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "SYMBOLWIDTH": "50",
+            "SYMBOLHEIGHT": "30",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
+
+    def test_wms_GetLegendGraphic_BBox(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello,db_point",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "BBOX": "-151.7,-38.9,51.0,78.0",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox")
+
+    def test_wms_GetLegendGraphic_BBox2(self):
+        qs = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello,db_point",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "BBOX": "-76.08,-6.4,-19.38,38.04",
+            "SRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self.server.handleRequest(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
     def _result(self, data):
         headers = {}

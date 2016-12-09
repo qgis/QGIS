@@ -849,8 +849,6 @@ QImage* QgsWMSServer::getLegendGraphics()
   }
   QgsLayerTreeModel legendModel( &rootGroup );
 
-  QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
-
   if ( scaleDenominator > 0 )
     legendModel.setLegendFilterByScale( scaleDenominator );
 
@@ -890,7 +888,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   }
 
   // find out DPI
-  QImage* tmpImage = createImage( 1, 1 );
+  QImage* tmpImage = createImage( 1, 1, false );
   if ( !tmpImage )
     return nullptr;
   qreal dpmm = tmpImage->dotsPerMeterX() / 1000.0;
@@ -920,7 +918,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   if ( !rule.isEmpty() )
   {
     //create second image with the right dimensions
-    QImage* paintImage = createImage( ruleSymbolWidth, ruleSymbolHeight );
+    QImage* paintImage = createImage( ruleSymbolWidth, ruleSymbolHeight, false );
 
     //go through the items a second time for painting
     QPainter p( paintImage );
@@ -942,6 +940,7 @@ QImage* QgsWMSServer::getLegendGraphics()
     return paintImage;
   }
 
+  QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
   Q_FOREACH ( QgsLayerTreeNode* node, rootChildren )
   {
     if ( QgsLayerTree::isLayer( node ) )
@@ -981,7 +980,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   QSizeF minSize = legendRenderer.minimumSize();
   QSize s( minSize.width() * dpmm, minSize.height() * dpmm );
 
-  QImage* paintImage = createImage( s.width(), s.height() );
+  QImage* paintImage = createImage( s.width(), s.height(), false );
 
   QPainter p( paintImage );
   p.setRenderHint( QPainter::Antialiasing, true );
@@ -1980,7 +1979,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   return theImage;
 }
 
-QImage* QgsWMSServer::createImage( int width, int height ) const
+QImage* QgsWMSServer::createImage( int width, int height, bool useBbox ) const
 {
   bool conversionSuccess;
 
@@ -2002,23 +2001,26 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
 
   //Adapt width / height if the aspect ratio does not correspond with the BBOX.
   //Required by WMS spec. 1.3.
-  bool bboxOk;
-  QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
-  if ( bboxOk )
+  if ( useBbox )
   {
-    double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
-    double imageWidthHeightRatio = ( double )width / ( double )height;
-    if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
+    bool bboxOk;
+    QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
+    if ( bboxOk )
     {
-      if ( mapWidthHeightRatio >= imageWidthHeightRatio )
+      double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
+      double imageWidthHeightRatio = ( double )width / ( double )height;
+      if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
       {
-        //decrease image height
-        height = width / mapWidthHeightRatio;
-      }
-      else
-      {
-        //decrease image width
-        width = height * mapWidthHeightRatio;
+        if ( mapWidthHeightRatio >= imageWidthHeightRatio )
+        {
+          //decrease image height
+          height = width / mapWidthHeightRatio;
+        }
+        else
+        {
+          //decrease image width
+          width = height * mapWidthHeightRatio;
+        }
       }
     }
   }
