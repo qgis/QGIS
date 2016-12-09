@@ -474,7 +474,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   fontTemp.setItalic( true );
   fontTemp.setBold( true );
   mUserProjList->setFont( 0, fontTemp );
-  mUserProjList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/user.png" ) ) );
+  mUserProjList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) );
 
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown

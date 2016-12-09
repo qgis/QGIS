@@ -409,7 +409,7 @@
             <widget class="QWidget" name="tab_6">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/mIconRenderingEnabled.png</normaloff>:/images/themes/default/mIconRenderingEnabled.png</iconset>
+               <normaloff>:/images/themes/default/mIconRenderingEnabled.svg</normaloff>:/images/themes/default/mIconRenderingEnabled.svg</iconset>
              </attribute>
              <attribute name="title">
               <string/>
