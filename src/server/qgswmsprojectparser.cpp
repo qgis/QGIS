@@ -24,7 +24,6 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
-#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 

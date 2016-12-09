@@ -847,8 +847,6 @@ QImage* QgsWmsServer::getLegendGraphics()
   }
   QgsLayerTreeModel legendModel( &rootGroup );
 
-  QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
-
   if ( scaleDenominator > 0 )
     legendModel.setLegendFilterByScale( scaleDenominator );
 
@@ -889,7 +887,7 @@ QImage* QgsWmsServer::getLegendGraphics()
   }
 
   // find out DPI
-  QImage* tmpImage = createImage( 1, 1 );
+  QImage* tmpImage = createImage( 1, 1, false );
   if ( !tmpImage )
     return nullptr;
   qreal dpmm = tmpImage->dotsPerMeterX() / 1000.0;
@@ -917,7 +915,7 @@ QImage* QgsWmsServer::getLegendGraphics()
   if ( !rule.isEmpty() )
   {
     //create second image with the right dimensions
-    QImage* paintImage = createImage( ruleSymbolWidth, ruleSymbolHeight );
+    QImage* paintImage = createImage( ruleSymbolWidth, ruleSymbolHeight, false );
 
     //go through the items a second time for painting
     QPainter p( paintImage );
@@ -939,6 +937,7 @@ QImage* QgsWmsServer::getLegendGraphics()
     return paintImage;
   }
 
+  QList<QgsLayerTreeNode*> rootChildren = rootGroup.children();
   Q_FOREACH ( QgsLayerTreeNode* node, rootChildren )
   {
     if ( QgsLayerTree::isLayer( node ) )
@@ -978,7 +977,7 @@ QImage* QgsWmsServer::getLegendGraphics()
   QSizeF minSize = legendRenderer.minimumSize();
   QSize s( minSize.width() * dpmm, minSize.height() * dpmm );
 
-  QImage* paintImage = createImage( s.width(), s.height() );
+  QImage* paintImage = createImage( s.width(), s.height(), false );
 
   QPainter p( paintImage );
   p.setRenderHint( QPainter::Antialiasing, true );
@@ -1422,7 +1421,7 @@ QImage* QgsWmsServer::getMap( QgsMapSettings& mapSettings, HitTest* hitTest )
   QStringList highlightLayersId = QgsWmsConfigParser::addHighlightLayers( mParameters, layerSetIds );
 
   QList<QgsMapLayer *>  layerSet;
-  Q_FOREACH( QString layerSetId, layerSetIds )
+  Q_FOREACH ( QString layerSetId, layerSetIds )
   {
     layerSet.append( QgsProject::instance()->mapLayer( layerSetId ) );
   }
@@ -1967,7 +1966,7 @@ QImage* QgsWmsServer::initializeRendering( QStringList& layersList, QStringList&
 #endif
 
   QList<QgsMapLayer *>  layers;
-  Q_FOREACH( QString layerId, layerIdList )
+  Q_FOREACH ( QString layerId, layerIdList )
   {
     layers.append( QgsProject::instance()->mapLayer( layerId ) );
   }
@@ -1979,7 +1978,7 @@ QImage* QgsWmsServer::initializeRendering( QStringList& layersList, QStringList&
   return theImage;
 }
 
-QImage* QgsWmsServer::createImage( int width, int height ) const
+QImage* QgsWmsServer::createImage( int width, int height, bool useBbox ) const
 {
   bool conversionSuccess;
 
@@ -2001,23 +2000,26 @@ QImage* QgsWmsServer::createImage( int width, int height ) const
 
   //Adapt width / height if the aspect ratio does not correspond with the BBOX.
   //Required by WMS spec. 1.3.
-  bool bboxOk;
-  QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
-  if ( bboxOk )
+  if ( useBbox )
   {
-    double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
-    double imageWidthHeightRatio = ( double )width / ( double )height;
-    if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
+    bool bboxOk;
+    QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX" ), bboxOk );
+    if ( bboxOk )
     {
-      if ( mapWidthHeightRatio >= imageWidthHeightRatio )
+      double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
+      double imageWidthHeightRatio = ( double )width / ( double )height;
+      if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
       {
-        //decrease image height
-        height = width / mapWidthHeightRatio;
-      }
-      else
-      {
-        //decrease image width
-        width = height * mapWidthHeightRatio;
+        if ( mapWidthHeightRatio >= imageWidthHeightRatio )
+        {
+          //decrease image height
+          height = width / mapWidthHeightRatio;
+        }
+        else
+        {
+          //decrease image width
+          width = height * mapWidthHeightRatio;
+        }
       }
     }
   }

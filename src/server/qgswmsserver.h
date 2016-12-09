@@ -136,8 +136,9 @@ class QgsWmsServer: public QgsOWSServer
     /** Creates a QImage from the HEIGHT and WIDTH parameters
      @param width image width (or -1 if width should be taken from WIDTH wms parameter)
      @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
+     @param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
      @return 0 in case of error*/
-    QImage* createImage( int width = -1, int height = -1 ) const;
+    QImage* createImage( int width = -1, int height = -1, bool useBbox = true ) const;
 
     /** Configures mapSettings to the parameters
      HEIGHT, WIDTH, BBOX, CRS.
