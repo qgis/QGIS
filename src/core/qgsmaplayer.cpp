@@ -87,7 +87,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 
   connect( this, SIGNAL( nameChanged() ), this, SIGNAL( layerNameChanged() ) );
 
-  connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
+  connect( mStyleManager, SIGNAL( currentStyleChanged( QString ) ), this, SIGNAL( styleChanged() ) );
 }
 
 QgsMapLayer::~QgsMapLayer()
