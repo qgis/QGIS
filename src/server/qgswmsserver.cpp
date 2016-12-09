@@ -147,11 +147,28 @@ void QgsWMSServer::executeRequest()
   }
 
   //version
-  QString version = mParameters.value( "VERSION", "1.3.0" );
+  QString version = "1.3.0";
+  if ( mParameters.contains( "VERSION" ) )
+  {
+    version = mParameters.value( "VERSION" );
+  }
+  else if ( mParameters.contains( "WMTVER" ) ) //WMTVER needs to be supported by WMS 1.1.1 for backwards compatibility with WMS 1.0.0
+  {
+    version = mParameters.value( "WMTVER" );
+  }
+
   bool getProjectSettings = ( request.compare( "GetProjectSettings", Qt::CaseInsensitive ) == 0 );
   if ( getProjectSettings )
   {
     version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
+  }
+
+  if ( version == "1.1.1" )
+  {
+    if ( request.compare( "capabilities", Qt::CaseInsensitive ) == 0 )
+    {
+      request = QString( "GetCapabilities" );
+    }
   }
 
   //GetCapabilities
