@@ -315,10 +315,16 @@ void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
 
 void QgsSingleBandPseudoColorRendererWidget::on_mDeleteEntryButton_clicked()
 {
-  QTreeWidgetItem* currentItem = mColormapTreeWidget->currentItem();
-  if ( currentItem )
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mColormapTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
   {
-    delete currentItem;
+    return;
+  }
+
+  Q_FOREACH ( QTreeWidgetItem *item, itemList )
+  {
+    delete item;
   }
   emit widgetChanged();
 }

@@ -127,7 +127,7 @@
      <item>
       <widget class="QPushButton" name="mDeleteEntryButton">
        <property name="toolTip">
-        <string>Remove selected row</string>
+        <string>Remove selected row(s)</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
