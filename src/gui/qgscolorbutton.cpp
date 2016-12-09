@@ -462,9 +462,21 @@ void QgsColorButton::prepareMenu()
   colorWheel->setColor( color() );
   QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, mMenu, mMenu );
   colorAction->setDismissOnColorSelection( false );
-  connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
+  connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsColorButton::setColor );
   mMenu->addAction( colorAction );
-
+  if ( mAllowAlpha )
+  {
+    QgsColorRampWidget* alphaRamp = new QgsColorRampWidget( mMenu, QgsColorWidget::Alpha, QgsColorRampWidget::Horizontal );
+    alphaRamp->setColor( color() );
+    QgsColorWidgetAction* alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
+    alphaAction->setDismissOnColorSelection( false );
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, &QgsColorButton::setColor );
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, colorWheel, [colorWheel]( const QColor& color ) { colorWheel->setColor( color, false ); }
+           );
+    connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor& color ) { alphaRamp->setColor( color, false ); }
+           );
+    mMenu->addAction( alphaAction );
+  }
 
   if ( mColorSchemeRegistry )
   {
