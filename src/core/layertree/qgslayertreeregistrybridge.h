@@ -41,6 +41,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
+    //! Create the instance that synchronizes given project with a layer tree root
     explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QgsProject* project, QObject *parent = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }

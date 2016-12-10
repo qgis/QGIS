@@ -113,6 +113,9 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         friend class QgsMapThemeCollection;
     };
 
+    /**
+     * Create map theme collection that handles themes of the given project.
+     */
     QgsMapThemeCollection( QgsProject* project );
 
     /**

@@ -61,6 +61,9 @@ class QgsMapThemeCollection : QObject
 
     };
 
+    /**
+     * Create map theme collection that handles themes of the given project.
+     */
     QgsMapThemeCollection( QgsProject* project );
 
     /**
