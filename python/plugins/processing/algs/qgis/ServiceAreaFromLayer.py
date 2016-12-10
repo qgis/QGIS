@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ServiceAreaFromPoint.py
+    ServiceAreaFromLayer.py
     ---------------------
     Date                 : December 2016
     Copyright            : (C) 2016 by Alexander Bruy
@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsField, QgsFields
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsField, QgsFields, QgsFeatureRequest
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -42,7 +42,6 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (ParameterVector,
-                                        ParameterPoint,
                                         ParameterNumber,
                                         ParameterString,
                                         ParameterTableField,
@@ -51,15 +50,15 @@ from processing.core.parameters import (ParameterVector,
 from processing.core.outputs import (OutputNumber,
                                      OutputVector
                                     )
-from processing.tools import dataobjects
+from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ServiceAreaFromPoint(GeoAlgorithm):
+class ServiceAreaFromLayer(GeoAlgorithm):
 
     INPUT_VECTOR = 'INPUT_VECTOR'
-    START_POINT = 'START_POINT'
+    START_POINTS = 'START_POINTS'
     STRATEGY = 'STRATEGY'
     TRAVEL_COST = 'TRAVEL_COST'
     DIRECTION_FIELD = 'DIRECTION_FIELD'
@@ -86,14 +85,15 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                            self.tr('Fastest')
                           ]
 
-        self.name, self.i18n_name = self.trAlgorithm('Service area (from point)')
+        self.name, self.i18n_name = self.trAlgorithm('Service area (from layer)')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),
                                           [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterPoint(self.START_POINT,
-                                          self.tr('Start point')))
+        self.addParameter(ParameterVector(self.START_POINTS,
+                                          self.tr('Vector layer with start points'),
+                                          [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterSelection(self.STRATEGY,
                                              self.tr('Path type to calculate'),
                                              self.STRATEGIES,
@@ -148,7 +148,8 @@ class ServiceAreaFromPoint(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT_VECTOR))
-        startPoint = self.getParameterValue(self.START_POINT)
+        startPoints = dataobjects.getObjectFromUri(
+                self.getParameterValue(self.START_POINTS))
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
 
@@ -163,8 +164,24 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         defaultSpeed = self.getParameterValue(self.DEFAULT_SPEED)
         tolerance = self.getParameterValue(self.TOLERANCE)
 
-        tmp = startPoint.split(',')
-        startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+        fields = QgsFields()
+        fields.append(QgsField('type', QVariant.String, '', 254, 0))
+        fields.append(QgsField('start', QVariant.String, '', 254, 0))
+
+        feat = QgsFeature()
+        feat.setFields(fields)
+
+        writerPoints = self.getOutputFromName(
+            self.OUTPUT_POINTS).getVectorWriter(
+                fields,
+                QgsWkbTypes.Point,
+                layer.crs())
+
+        writerPolygons = self.getOutputFromName(
+            self.OUTPUT_POLYGON).getVectorWriter(
+                fields,
+                QgsWkbTypes.Polygon,
+                layer.crs())
 
         directionField = -1
         if directionFieldName is not None:
@@ -193,72 +210,70 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
                                   iface.mapCanvas().hasCrsTransformEnabled(),
                                   tolerance)
+
+        progress.setInfo(self.tr('Loading start points...'))
+        request = QgsFeatureRequest()
+        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
+        features = vector.features(startPoints, request)
+        points = []
+        for f in features:
+            points.append(f.geometry().asPoint())
+
         progress.setInfo(self.tr('Building graph...'))
-        snappedPoints = director.makeGraph(builder, [startPoint])
+        snappedPoints = director.makeGraph(builder, points)
 
-        progress.setInfo(self.tr('Calculating service area...'))
+        progress.setInfo(self.tr('Calculating service areas...'))
         graph = builder.graph()
-        idxStart = graph.findVertex(snappedPoints[0])
 
-        tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         vertices = []
-        for i, v in enumerate(cost):
-            if v > travelCost and tree[i] != -1:
-                vertexId = graph.edge(tree [i]).outVertex()
-                if cost[vertexId] <= travelCost:
-                    vertices.append(i)
-
         upperBoundary = []
         lowerBoundary = []
-        for i in vertices:
-            upperBoundary.append(graph.vertex(graph.edge(tree[i]).inVertex()).point())
-            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
+        total = 100.0 / len(snappedPoints)
+        for i, p in enumerate(snappedPoints):
+            idxStart = graph.findVertex(snappedPoints[i])
+            origPoint = points[i].toString()
 
-        progress.setInfo(self.tr('Writting results...'))
+            tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+            for j, v in enumerate(cost):
+                if v > travelCost and tree[j] != -1:
+                    vertexId = graph.edge(tree [j]).outVertex()
+                    if cost[vertexId] <= travelCost:
+                        vertices.append(j)
 
-        fields = QgsFields()
-        fields.append(QgsField('type', QVariant.String, '', 254, 0))
-        fields.append(QgsField('start', QVariant.String, '', 254, 0))
+            for j in vertices:
+                upperBoundary.append(graph.vertex(graph.edge(tree[j]).inVertex()).point())
+                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).outVertex()).point())
 
-        feat = QgsFeature()
-        feat.setFields(fields)
+            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
-        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+            feat.setGeometry(geomUpper)
+            feat['type'] = 'upper'
+            feat['start'] = origPoint
+            writerPoints.addFeature(feat)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_POINTS).getVectorWriter(
-                fields,
-                QgsWkbTypes.Point,
-                layer.crs())
+            feat.setGeometry(geomLower)
+            feat['type'] = 'lower'
+            feat['start'] = origPoint
+            writerPoints.addFeature(feat)
 
-        feat.setGeometry(geomUpper)
-        feat['type'] = 'upper'
-        feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
+            geom = geomUpper.convexHull()
+            feat.setGeometry(geom)
+            feat['type'] = 'upper'
+            feat['start'] = origPoint
+            writerPolygons.addFeature(feat)
 
-        feat.setGeometry(geomLower)
-        feat['type'] = 'lower'
-        feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
+            geom = geomLower.convexHull()
+            feat.setGeometry(geom)
+            feat['type'] = 'lower'
+            feat['start'] = origPoint
+            writerPolygons.addFeature(feat)
 
-        del writer
+            vertices[:] = []
+            upperBoundary[:] = []
+            lowerBoundary[:] = []
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_POLYGON).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            progress.setPercentage(int(i * total))
 
-        geom = geomUpper.convexHull()
-        feat.setGeometry(geom)
-        feat['type'] = 'upper'
-        feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
-
-        geom = geomLower.convexHull()
-        feat.setGeometry(geom)
-        feat['type'] = 'lower'
-        feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
-        del writer
+        del writerPoints
+        del writerPolygons

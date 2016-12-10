@@ -186,6 +186,7 @@ from .Heatmap import Heatmap
 from .Orthogonalize import Orthogonalize
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -251,7 +252,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
                         PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
                         BasicStatisticsForField(), RasterCalculator(), Heatmap(),
-                        Orthogonalize(), ShortestPathPointToPoint(), ServiceAreaFromPoint()
+                        Orthogonalize(), ShortestPathPointToPoint(), ServiceAreaFromPoint(),
+                        ServiceAreaFromLayer()
                         ]
 
         if hasMatplotlib:
