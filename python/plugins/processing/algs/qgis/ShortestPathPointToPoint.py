@@ -160,9 +160,13 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         defaultSpeed = self.getParameterValue(self.DEFAULT_SPEED)
         tolerance = self.getParameterValue(self.TOLERANCE)
 
+        fields = QgsFields()
+        fields.append(QgsField('start', QVariant.String, '', 254, 0))
+        fields.append(QgsField('end', QVariant.String, '', 254, 0))
+
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
+                fields.toList(),
                 QgsWkbTypes.LineString,
                 layer.crs())
 
@@ -170,6 +174,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
         tmp = endPoint.split(',')
         endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+
         directionField = -1
         if directionFieldName is not None:
             directionField = layer.fields().lookupField(directionFieldName)
@@ -227,6 +232,9 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         progress.setInfo(self.tr('Writting results...'))
         geom = QgsGeometry.fromPolyline(route)
         feat = QgsFeature()
+        feat.setFields(fields)
+        feat['start'] = startPoint.toString()
+        feat['end'] = endPoint.toString()
         feat.setGeometry(geom)
         writer.addFeature(feat)
         del writer
