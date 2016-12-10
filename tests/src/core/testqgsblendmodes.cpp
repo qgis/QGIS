@@ -156,9 +156,9 @@ void TestQgsBlendModes::cleanupTestCase()
 void TestQgsBlendModes::vectorBlending()
 {
   //Add two vector layers
-  QStringList myLayers;
-  myLayers << mpLinesLayer->id();
-  myLayers << mpPolysLayer->id();
+  QList<QgsMapLayer*> myLayers;
+  myLayers << mpLinesLayer;
+  myLayers << mpPolysLayer;
   mMapSettings->setLayers( myLayers );
 
   //Set blending modes for both layers
@@ -177,9 +177,9 @@ void TestQgsBlendModes::vectorBlending()
 void TestQgsBlendModes::featureBlending()
 {
   //Add two vector layers
-  QStringList myLayers;
-  myLayers << mpLinesLayer->id();
-  myLayers << mpPolysLayer->id();
+  QList<QgsMapLayer*> myLayers;
+  myLayers << mpLinesLayer;
+  myLayers << mpPolysLayer;
   mMapSettings->setLayers( myLayers );
 
   //Set feature blending modes for point layer
@@ -196,9 +196,9 @@ void TestQgsBlendModes::featureBlending()
 void TestQgsBlendModes::vectorLayerTransparency()
 {
   //Add two vector layers
-  QStringList myLayers;
-  myLayers << mpLinesLayer->id();
-  myLayers << mpPolysLayer->id();
+  QList<QgsMapLayer*> myLayers;
+  myLayers << mpLinesLayer;
+  myLayers << mpPolysLayer;
   mMapSettings->setLayers( myLayers );
 
   //Set feature blending modes for point layer
@@ -215,9 +215,9 @@ void TestQgsBlendModes::vectorLayerTransparency()
 void TestQgsBlendModes::rasterBlending()
 {
   //Add two raster layers to map renderer
-  QStringList myLayers;
-  myLayers << mRasterLayer1->id();
-  myLayers << mRasterLayer2->id();
+  QList<QgsMapLayer*> myLayers;
+  myLayers << mRasterLayer1;
+  myLayers << mRasterLayer2;
   mMapSettings->setLayers( myLayers );
   mMapSettings->setExtent( mRasterLayer1->extent() );
 

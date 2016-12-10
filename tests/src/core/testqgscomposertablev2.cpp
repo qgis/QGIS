@@ -104,7 +104,7 @@ void TestQgsComposerTableV2::initTestCase()
                                      QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mVectorLayer );
 
-  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mMapSettings->setCrsTransformEnabled( false );
 
   mReport = QStringLiteral( "<h1>Composer TableV2 Tests</h1>\n" );

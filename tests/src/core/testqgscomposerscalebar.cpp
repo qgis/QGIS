@@ -89,7 +89,7 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //reproject to WGS84
   QgsCoordinateReferenceSystem destCRS;

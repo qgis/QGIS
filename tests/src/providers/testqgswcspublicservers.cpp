@@ -460,7 +460,7 @@ void TestQgsWcsPublicServers::test()
             QgsProject::instance()->addMapLayer( myLayer, false );
 
             QgsMapSettings mapSettings;
-            mapSettings.setLayers( QStringList( myLayer->id() ) );
+            mapSettings.setLayers( QList<QgsMapLayer*>() << myLayer );
             mapSettings.setExtent( myLayer->extent() );
             mapSettings.setOutputSize( QSize( myWidth, myHeight ) );
 

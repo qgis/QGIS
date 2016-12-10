@@ -101,6 +101,18 @@ QStringList QgsMapThemeCollection::mapThemeVisibleLayers( const QString& name ) 
 }
 
 
+QList<QgsMapLayer*> QgsMapThemeCollection::mapThemeVisibleLayers2( const QString& name ) const
+{
+  QList<QgsMapLayer*> lst;
+  Q_FOREACH ( const QString& layerId, mMapThemes.value( name ).mVisibleLayerIds )
+  {
+    if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+      lst << layer;
+  }
+  return lst;
+}
+
+
 void QgsMapThemeCollection::applyMapThemeCheckedLegendNodesToLayer( const QString& name, const QString& layerID )
 {
   if ( !mMapThemes.contains( name ) )

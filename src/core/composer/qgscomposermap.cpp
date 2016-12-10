@@ -211,17 +211,24 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 
   //set layers to render
-  QStringList theLayerSet = layersToRender( &expressionContext );
+  QList<QgsMapLayer*> layers = layersToRender( &expressionContext );
   if ( -1 != mCurrentExportLayer )
   {
-    //exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
     const int layerIdx = mCurrentExportLayer - ( hasBackground() ? 1 : 0 );
-    theLayerSet =
-      ( layerIdx >= 0 && layerIdx < theLayerSet.length() )
-      ? QStringList( theLayerSet[ theLayerSet.length() - layerIdx - 1 ] )
-      : QStringList(); //exporting decorations such as map frame/grid/overview, so no map layers required
+    if ( layerIdx >= 0 && layerIdx < layers.length() )
+    {
+      // exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
+      QgsMapLayer* ml = layers[ layers.length() - layerIdx - 1 ];
+      layers.clear();
+      layers << ml;
+    }
+    else
+    {
+      // exporting decorations such as map frame/grid/overview, so no map layers required
+      layers.clear();
+    }
   }
-  jobMapSettings.setLayers( theLayerSet );
+  jobMapSettings.setLayers( layers );
   jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
@@ -518,12 +525,12 @@ void QgsComposerMap::setCacheUpdated( bool u )
   mCacheUpdated = u;
 }
 
-QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context ) const
+QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* context ) const
 {
   QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
-  QStringList renderLayerSet;
+  QList<QgsMapLayer*> renderLayers;
 
   if ( mFollowVisibilityPreset )
   {
@@ -537,23 +544,23 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
     }
 
     if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      renderLayerSet = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
+      renderLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers2( presetName );
     else  // fallback to using map canvas layers
-      renderLayerSet = mComposition->mapSettings().layers();
+      renderLayers = mComposition->mapSettings().layers();
   }
   else if ( mKeepLayerSet )
   {
-    renderLayerSet = mLayerSet;
+    renderLayers = layers();
   }
   else
   {
-    renderLayerSet = mComposition->mapSettings().layers();
+    renderLayers = mComposition->mapSettings().layers();
   }
 
   QVariant exprVal;
   if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal, *evalContext ) )
   {
-    renderLayerSet.clear();
+    renderLayers.clear();
 
     QStringList layerNames = exprVal.toString().split( '|' );
     //need to convert layer names to layer ids
@@ -562,7 +569,7 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
       QList< QgsMapLayer* > matchingLayers = QgsProject::instance()->mapLayersByName( name );
       Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
       {
-        renderLayerSet << layer->id();
+        renderLayers << layer;
       }
     }
   }
@@ -574,15 +581,15 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
     if ( mComposition->atlasComposition().hideCoverage() )
     {
       //hiding coverage layer
-      int removeAt = renderLayerSet.indexOf( mComposition->atlasComposition().coverageLayer()->id() );
+      int removeAt = renderLayers.indexOf( mComposition->atlasComposition().coverageLayer() );
       if ( removeAt != -1 )
       {
-        renderLayerSet.removeAt( removeAt );
+        renderLayers.removeAt( removeAt );
       }
     }
   }
 
-  return renderLayerSet;
+  return renderLayers;
 }
 
 QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExpressionContext& context ) const
@@ -1118,26 +1125,16 @@ void QgsComposerMap::updateItem()
 
 bool QgsComposerMap::containsWmsLayer() const
 {
-  QStringList layers = mComposition->mapSettings().layers();
-
-  QStringList::const_iterator layer_it = layers.constBegin();
-  QgsMapLayer* currentLayer = nullptr;
-
-  for ( ; layer_it != layers.constEnd(); ++layer_it )
+  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
   {
-    currentLayer = QgsProject::instance()->mapLayer( *layer_it );
-    if ( currentLayer )
+    if ( QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
-      QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
-      if ( currentRasterLayer )
+      const QgsRasterDataProvider* rasterProvider = nullptr;
+      if (( rasterProvider = currentRasterLayer->dataProvider() ) )
       {
-        const QgsRasterDataProvider* rasterProvider = nullptr;
-        if (( rasterProvider = currentRasterLayer->dataProvider() ) )
+        if ( rasterProvider->name() == QLatin1String( "wms" ) )
         {
-          if ( rasterProvider->name() == QLatin1String( "wms" ) )
-          {
-            return true;
-          }
+          return true;
         }
       }
     }
@@ -1163,23 +1160,17 @@ bool QgsComposerMap::containsAdvancedEffects() const
 
   // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
-  QStringList layers = mComposition->mapSettings().layers();
-
-  QStringList::const_iterator layer_it = layers.constBegin();
-  QgsMapLayer* currentLayer = nullptr;
   QgsTextFormat layerFormat;
-
-  for ( ; layer_it != layers.constEnd(); ++layer_it )
+  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
   {
-    currentLayer = QgsProject::instance()->mapLayer( *layer_it );
-    if ( currentLayer )
+    if ( layer )
     {
-      if ( currentLayer->blendMode() != QPainter::CompositionMode_SourceOver )
+      if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
       {
         return true;
       }
       // if vector layer, check labels and feature blend mode
-      QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( currentVectorLayer )
       {
         if ( currentVectorLayer->layerTransparency() != 0 )
@@ -1275,11 +1266,13 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
   //layer set
   QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
-  QStringList::const_iterator layerIt = mLayerSet.constBegin();
-  for ( ; layerIt != mLayerSet.constEnd(); ++layerIt )
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
   {
+    QgsMapLayer* layer = layerPtr.data();
+    if ( !layer )
+      continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
-    QDomText layerIdText = doc.createTextNode( *layerIt );
+    QDomText layerIdText = doc.createTextNode( layer->id() );
     layerElem.appendChild( layerIdText );
     layerSetElem.appendChild( layerElem );
   }
@@ -1398,21 +1391,21 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
 
   mLayerStyleOverrides.clear();
 
-  //mLayerSet
+  //mLayers
+  mLayers.clear();
   QDomNodeList layerSetNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerSet" ) );
-  QStringList layerSet;
   if ( !layerSetNodeList.isEmpty() )
   {
     QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
     QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( QStringLiteral( "Layer" ) );
-    layerSet.reserve( layerIdNodeList.size() );
+    mLayers.reserve( layerIdNodeList.size() );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
-      const QDomElement& layerIdElement = layerIdNodeList.at( i ).toElement();
-      layerSet << layerIdElement.text();
+      QString layerId = layerIdNodeList.at( i ).toElement().text();
+      if ( QgsMapLayer* ml = QgsProject::instance()->mapLayer( layerId ) )
+        mLayers << ml;
     }
   }
-  mLayerSet = layerSet;
 
   // override styles
   QDomNodeList layerStylesNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerStyles" ) );
@@ -1566,12 +1559,35 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
 
 void QgsComposerMap::storeCurrentLayerSet()
 {
-  mLayerSet = mComposition->mapSettings().layers();
+  mLayers.clear();
+  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
+    mLayers << layer;
 
   if ( mKeepLayerStyles )
   {
     // also store styles associated with the layers
     storeCurrentLayerStyles();
+  }
+}
+
+QList<QgsMapLayer*> QgsComposerMap::layers() const
+{
+  QList<QgsMapLayer*> layers;
+  layers.reserve( mLayers.count() );
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  {
+    if ( layerPtr )
+      layers.append( layerPtr.data() );
+  }
+  return layers;
+}
+
+void QgsComposerMap::setLayers( const QList<QgsMapLayer*> layers )
+{
+  mLayers.clear();
+  Q_FOREACH ( QgsMapLayer* layer, layers )
+  {
+    mLayers.append( layer );
   }
 }
 
@@ -1589,41 +1605,44 @@ void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overr
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();
-  Q_FOREACH ( const QString& layerID, mLayerSet )
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
   {
-    if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID ) )
+    if ( QgsMapLayer* layer = layerPtr.data() )
     {
       QgsMapLayerStyle style;
       style.readFromLayer( layer );
-      mLayerStyleOverrides.insert( layerID, style.xmlData() );
+      mLayerStyleOverrides.insert( layer->id(), style.xmlData() );
     }
   }
 }
 
 void QgsComposerMap::syncLayerSet()
 {
-  if ( mLayerSet.size() < 1 )
+  if ( mLayers.size() < 1 )
   {
     return;
   }
 
   //if layer set is fixed, do a lookup in the layer registry to also find the non-visible layers
-  QStringList currentLayerSet;
+  QList<QgsMapLayer*> currentLayers;
   if ( mKeepLayerSet )
   {
-    currentLayerSet = QgsProject::instance()->mapLayers().uniqueKeys();
+    currentLayers = QgsProject::instance()->mapLayers().values();
   }
   else //only consider layers visible in the map
   {
-    currentLayerSet = mComposition->mapSettings().layers();
+    currentLayers = mComposition->mapSettings().layers();
   }
 
-  for ( int i = mLayerSet.size() - 1; i >= 0; --i )
+  for ( int i = mLayers.size() - 1; i >= 0; --i )
   {
-    if ( !currentLayerSet.contains( mLayerSet.at( i ) ) )
+    if ( QgsMapLayer* layer = mLayers.at( i ).data() )
     {
-      mLayerStyleOverrides.remove( mLayerSet.at( i ) );
-      mLayerSet.removeAt( i );
+      if ( !currentLayers.contains( layer ) )
+      {
+        mLayerStyleOverrides.remove( layer->id() );
+        mLayers.removeAt( i );
+      }
     }
   }
 }

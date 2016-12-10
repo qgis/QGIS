@@ -127,7 +127,7 @@ void TestQgsRenderers::initTestCase()
   // and is more light weight
   //
   mMapSettings->setLayers(
-    QStringList() << mpPointsLayer->id() << mpPolysLayer->id() << mpLinesLayer->id() );
+    QList<QgsMapLayer*>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
   mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()

@@ -254,14 +254,38 @@ void QgsMapSettings::setOutputDpi( double dpi )
 }
 
 
-QStringList QgsMapSettings::layers() const
+QStringList QgsMapSettings::layerIds() const
 {
-  return mLayers;
+  QStringList layerIds;
+  layerIds.reserve( mLayers.count() );
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  {
+    if ( layerPtr )
+      layerIds.append( layerPtr->id() );
+  }
+  return layerIds;
 }
 
-void QgsMapSettings::setLayers( const QStringList& layers )
+
+QList<QgsMapLayer*> QgsMapSettings::layers() const
 {
-  mLayers = layers;
+  QList<QgsMapLayer*> layers;
+  layers.reserve( mLayers.count() );
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
+  {
+    if ( layerPtr )
+      layers.append( layerPtr.data() );
+  }
+  return layers;
+}
+
+void QgsMapSettings::setLayers( const QList<QgsMapLayer*>& layers )
+{
+  mLayers.clear();
+  Q_FOREACH ( QgsMapLayer* layer, layers )
+  {
+    mLayers.append( layer );
+  }
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
@@ -543,25 +567,16 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QStringList::const_iterator it = mLayers.begin();
   QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
-  while ( it != mLayers.end() )
+  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
   {
-    QgsMapLayer * lyr = QgsProject::instance()->mapLayer( *it );
-    if ( !lyr )
-    {
-      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
-    }
-    else
+    if ( QgsMapLayer* lyr = layerPtr.data() )
     {
       QgsDebugMsg( "Updating extent using " + lyr->name() );
       QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
 
       if ( lyr->extent().isNull() )
-      {
-        ++it;
         continue;
-      }
 
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
@@ -569,9 +584,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
       QgsDebugMsg( "Output extent: " + extent.toString() );
       fullExtent.unionRect( extent );
-
     }
-    ++it;
   }
 
   if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )

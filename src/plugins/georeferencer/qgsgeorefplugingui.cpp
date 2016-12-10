@@ -1544,9 +1544,8 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   //composer map
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
   composerMap->setKeepLayerSet( true );
-  QStringList list;
-  list.append( mCanvas->mapSettings().layers()[0] );
-  composerMap->setLayerSet( list );
+  QgsMapLayer* firstLayer = mCanvas->mapSettings().layers()[0];
+  composerMap->setLayers( QList<QgsMapLayer*>() << firstLayer );
   composerMap->zoomToExtent( rlayer->extent() );
   composition->addItem( composerMap );
   printer.setFullPage( true );
@@ -1644,7 +1643,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   }
 
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM );
-  composerMap->setLayerSet( mCanvas->mapSettings().layers() );
+  composerMap->setLayers( mCanvas->mapSettings().layers() );
   composerMap->zoomToExtent( layerExtent );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );

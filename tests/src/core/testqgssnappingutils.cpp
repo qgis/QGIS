@@ -151,7 +151,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m.isValid() );
 
       // now check with our layer
-      mapSettings.setLayers( QStringList() << mVL->id() );
+      mapSettings.setLayers( QList<QgsMapLayer*>() << mVL );
       u.setMapSettings( mapSettings );
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );

@@ -82,7 +82,7 @@ void TestQgsComposerRotation::initTestCase()
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setCrsTransformEnabled( false );
 
   mComposition = new QgsComposition( *mMapSettings );

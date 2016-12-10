@@ -109,7 +109,7 @@ void TestQgsLabelingEngine::testBasic()
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl );
   mapSettings.setOutputDpi( 96 );
 
   // first render the map and labeling separately
@@ -158,7 +158,7 @@ void TestQgsLabelingEngine::testDiagrams()
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl );
   mapSettings.setOutputDpi( 96 );
 
   // first render the map and diagrams separately
@@ -202,7 +202,7 @@ void TestQgsLabelingEngine::testRuleBased()
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl );
   mapSettings.setOutputDpi( 96 );
 
   // set up most basic rule-based labeling for layer
@@ -286,7 +286,7 @@ void TestQgsLabelingEngine::zOrder()
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl );
   mapSettings.setOutputDpi( 96 );
 
   QgsMapRendererSequentialJob job( mapSettings );
@@ -362,7 +362,7 @@ void TestQgsLabelingEngine::zOrder()
   QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl2, QString(), true, &pls2 );
   engine.addProvider( provider2 );
 
-  mapSettings.setLayers( QStringList() << vl->id() << vl2->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl << vl2 );
   engine.setMapSettings( mapSettings );
 
   p.begin( &img );
@@ -374,7 +374,7 @@ void TestQgsLabelingEngine::zOrder()
   img = job.renderedImage();
 
   //flip layer order and re-test
-  mapSettings.setLayers( QStringList() << vl2->id() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl2 << vl );
   engine.setMapSettings( mapSettings );
   p.begin( &img );
   engine.run( context );
@@ -447,7 +447,7 @@ void TestQgsLabelingEngine::testSubstitutions()
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl );
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   QSet<QString> attributes;
@@ -479,7 +479,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
-  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl );
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   QSet<QString> attributes;

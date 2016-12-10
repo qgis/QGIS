@@ -100,7 +100,7 @@ void QgsMapCanvasTracer::configure()
   setExtent( mCanvas->extent() );
 
   QList<QgsVectorLayer*> layers;
-  QStringList visibleLayerIds = mCanvas->mapSettings().layers();
+  QList<QgsMapLayer*> visibleLayers = mCanvas->mapSettings().layers();
 
   switch ( mCanvas->snappingUtils()->config().mode() )
   {
@@ -108,14 +108,14 @@ void QgsMapCanvasTracer::configure()
     case QgsSnappingConfig::ActiveLayer:
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
-      if ( vl && visibleLayerIds.contains( vl->id() ) )
+      if ( vl && visibleLayers.contains( vl ) )
         layers << vl;
     }
     break;
     case QgsSnappingConfig::AllLayers:
-      Q_FOREACH ( const QString& layerId, visibleLayerIds )
+      Q_FOREACH ( QgsMapLayer* layer, visibleLayers )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
         if ( vl )
           layers << vl;
       }
@@ -123,7 +123,7 @@ void QgsMapCanvasTracer::configure()
     case QgsSnappingConfig::AdvancedConfiguration:
       Q_FOREACH ( const QgsSnappingUtils::LayerConfig& cfg, mCanvas->snappingUtils()->layers() )
       {
-        if ( visibleLayerIds.contains( cfg.layer->id() ) )
+        if ( visibleLayers.contains( cfg.layer ) )
           layers << cfg.layer;
       }
       break;

@@ -142,7 +142,7 @@ void TestQgsMapRotation::cleanupTestCase()
 
 void TestQgsMapRotation::rasterLayer()
 {
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setExtent( mRasterLayer->extent() );
   mMapSettings->setRotation( 45 );
   // This ensures rotated image is all visible by tweaking scale
@@ -155,7 +155,7 @@ void TestQgsMapRotation::rasterLayer()
 
 void TestQgsMapRotation::pointsLayer()
 {
-  mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
   // SVG points, fixed (no) rotation
   QString qml = mTestDataDir + "points.qml";
@@ -200,7 +200,7 @@ void TestQgsMapRotation::pointsLayer()
 
 void TestQgsMapRotation::linesLayer()
 {
-  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mLinesLayer );
 
   // Arrowed line with parallel labels
   QString qml = mTestDataDir + "lines_cardinals_arrowed_parallel_label.qml";

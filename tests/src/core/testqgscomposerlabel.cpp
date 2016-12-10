@@ -79,7 +79,7 @@ void TestQgsComposerLabel::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mMapSettings->setCrsTransformEnabled( false );
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape

@@ -113,7 +113,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPointsLayer->id() );
+  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Ellipse Marker Tests</h1>\n" );
 
 }

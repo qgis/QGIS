@@ -97,7 +97,7 @@ void TestQgsInvertedPolygon::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
+  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
 }
 

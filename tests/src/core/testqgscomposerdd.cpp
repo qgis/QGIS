@@ -81,7 +81,7 @@ void TestQgsComposerDD::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mMapSettings->setCrsTransformEnabled( true );
   mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 

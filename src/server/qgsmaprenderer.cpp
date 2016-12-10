@@ -967,6 +967,17 @@ void QgsMapRenderer::setLayerSet( const QStringList& layers )
   updateFullExtent();
 }
 
+QList<QgsMapLayer *> QgsMapRenderer::layers()
+{
+  QList<QgsMapLayer*> lst;
+  Q_FOREACH ( const QString& layerId, mLayerSet )
+  {
+    if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+      lst << layer;
+  }
+  return lst;
+}
+
 QStringList& QgsMapRenderer::layerSet()
 {
   return mLayerSet;
@@ -1098,7 +1109,7 @@ const QgsMapSettings& QgsMapRenderer::mapSettings()
   mMapSettings.setExtent( extent() );
   mMapSettings.setOutputSize( outputSize() );
   mMapSettings.setOutputDpi( !qgsDoubleNear( outputDpi(), 0 ) ? outputDpi() : qt_defaultDpiX() );
-  mMapSettings.setLayers( layerSet() );
+  mMapSettings.setLayers( layers() );
   mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   mMapSettings.setDestinationCrs( destinationCrs() );
   mMapSettings.setMapUnits( mapUnits() );

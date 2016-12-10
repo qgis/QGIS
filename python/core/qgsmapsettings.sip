@@ -54,10 +54,13 @@ class QgsMapSettings
 
     //! Get list of layer IDs for map rendering
     //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
-    QStringList layers() const;
-    //! Set list of layer IDs for map rendering. The layers must be registered in QgsProject.
+    QStringList layerIds() const;
+    //! Get list of layers for map rendering
     //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
-    void setLayers( const QStringList& layers );
+    QList<QgsMapLayer*> layers();
+    //! Set list of layers for map rendering. The layers must be registered in QgsProject.
+    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
     //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! @note added in 2.8

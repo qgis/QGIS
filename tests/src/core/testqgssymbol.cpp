@@ -178,7 +178,7 @@ void TestQgsSymbol::testCanvasClip()
 
   //line
   mReport += QLatin1String( "<h2>Line canvas clip</h2>\n" );
-  ms.setLayers( QStringList() << mpLinesLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << mpLinesLayer );
 
   QgsMarkerLineSymbolLayer* markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setPlacement( QgsMarkerLineSymbolLayer:: CentralPoint );
@@ -198,7 +198,7 @@ void TestQgsSymbol::testCanvasClip()
 
   //poly
   mReport += QLatin1String( "<h2>Polygon canvas clip</h2>\n" );
-  ms.setLayers( QStringList() << mpPolysLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
 
   QgsCentroidFillSymbolLayer* centroidFill = new QgsCentroidFillSymbolLayer();
   QgsFillSymbol* fillSymbol = new QgsFillSymbol();

@@ -136,9 +136,9 @@ class QgsComposerMap : QgsComposerItem
     void setKeepLayerSet( bool enabled );
 
     /** Getter for stored layer set that is used if mKeepLayerSet is true */
-    QStringList layerSet() const;
+    QList<QgsMapLayer*> layers() const;
     /** Setter for stored layer set that is used if mKeepLayerSet is true */
-    void setLayerSet( const QStringList& layerSet );
+    void setLayers( const QList<QgsMapLayer*> layers );
     /** Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
 

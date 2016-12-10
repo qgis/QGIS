@@ -197,11 +197,11 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QStringList lst = QgsMapThemes::instance()->orderedPresetVisibleLayers( presetName );
+  QList<QgsMapLayer*> lst = QgsMapThemes::instance()->orderedPresetVisibleLayers2( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
-    mComposerMap->setLayerSet( lst );
+    mComposerMap->setLayers( lst );
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
@@ -836,8 +836,7 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
   }
   else
   {
-    QStringList emptyLayerSet;
-    mComposerMap->setLayerSet( emptyLayerSet );
+    mComposerMap->setLayers( QList<QgsMapLayer*>() );
     mComposerMap->setKeepLayerSet( false );
 
     mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );

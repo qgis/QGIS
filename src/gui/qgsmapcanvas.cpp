@@ -257,9 +257,9 @@ void QgsMapCanvas::enableMapTileRendering( bool theFlag )
 
 QgsMapLayer* QgsMapCanvas::layer( int index )
 {
-  const QStringList& layers = mapSettings().layers();
+  QList<QgsMapLayer*> layers = mapSettings().layers();
   if ( index >= 0 && index < ( int ) layers.size() )
-    return QgsProject::instance()->mapLayer( layers[index] );
+    return layers[index];
   else
     return nullptr;
 }
@@ -291,7 +291,7 @@ const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 {
   // create layer set
-  QStringList layerSet, layerSetOverview;
+  QList<QgsMapLayer*> layerSet, layerSetOverview;
 
   int i;
   for ( i = 0; i < layers.size(); i++ )
@@ -304,24 +304,22 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 
     if ( lyr.isVisible() )
     {
-      layerSet.push_back( lyr.layer()->id() );
+      layerSet.push_back( lyr.layer() );
     }
 
     if ( lyr.isInOverview() )
     {
-      layerSetOverview.push_back( lyr.layer()->id() );
+      layerSetOverview.push_back( lyr.layer() );
     }
   }
 
-  const QStringList& layerSetOld = mapSettings().layers();
+  QList<QgsMapLayer*> layerSetOld = mapSettings().layers();
 
   bool layerSetChanged = layerSetOld != layerSet;
 
   // update only if needed
   if ( layerSetChanged )
   {
-    QgsDebugMsg( "Layers changed to: " + layerSet.join( ", " ) );
-
     for ( i = 0; i < layerCount(); i++ )
     {
       // Add check if vector layer when disconnecting from selectionChanged slot
@@ -366,10 +364,9 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 
   if ( mMapOverview )
   {
-    const QStringList& layerSetOvOld = mMapOverview->layerSet();
-    if ( layerSetOvOld != layerSetOverview )
+    if ( mMapOverview->layers() != layerSetOverview )
     {
-      mMapOverview->setLayerSet( layerSetOverview );
+      mMapOverview->setLayers( layerSetOverview );
     }
 
     // refresh overview maplayers even if layer set is the same
@@ -593,12 +590,12 @@ void QgsMapCanvas::refreshMap()
   mJob->setCache( mCache );
 
   QStringList layersForGeometryCache;
-  Q_FOREACH ( const QString& id, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
   {
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( id ) ) )
+    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ) )
     {
       if ( vl->isEditable() )
-        layersForGeometryCache << id;
+        layersForGeometryCache << vl->id();
     }
   }
   mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
@@ -1640,14 +1637,7 @@ int QgsMapCanvas::layerCount() const
 
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
-  QList<QgsMapLayer*> lst;
-  Q_FOREACH ( const QString& layerID, mapSettings().layers() )
-  {
-    QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID );
-    if ( layer )
-      lst.append( layer );
-  }
-  return lst;
+  return mapSettings().layers();
 }
 
 
@@ -1749,12 +1739,8 @@ void QgsMapCanvas::updateDatumTransformEntries()
     return;
 
   QString destAuthId = mSettings.destinationCrs().authid();
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+  Q_FOREACH ( QgsMapLayer* layer, mSettings.layers() )
   {
-    QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerID );
-    if ( !layer )
-      continue;
-
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( vl && vl->geometryType() == QgsWkbTypes::NullGeometry )
       continue;

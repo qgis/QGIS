@@ -125,7 +125,7 @@ void TestQgsMarkerLineSymbol::cleanupTestCase()
 
 void TestQgsMarkerLineSymbol::lineOffset()
 {
-  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mLinesLayer );
 
   // Negative offset on marker line
   // See http://hub.qgis.org/issues/13811
@@ -144,7 +144,7 @@ void TestQgsMarkerLineSymbol::lineOffset()
 
 void TestQgsMarkerLineSymbol::pointNumInterval()
 {
-  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mLinesLayer );
 
   QgsMarkerLineSymbolLayer* ml = new QgsMarkerLineSymbolLayer();
   ml->setPlacement( QgsMarkerLineSymbolLayer::Interval );
@@ -174,7 +174,7 @@ void TestQgsMarkerLineSymbol::pointNumInterval()
 
 void TestQgsMarkerLineSymbol::pointNumVertex()
 {
-  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mLinesLayer );
 
   QgsMarkerLineSymbolLayer* ml = new QgsMarkerLineSymbolLayer();
   ml->setPlacement( QgsMarkerLineSymbolLayer::Vertex );

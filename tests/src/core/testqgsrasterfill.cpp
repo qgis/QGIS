@@ -115,7 +115,7 @@ void TestQgsRasterFill::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
+  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Raster Fill Renderer Tests</h1>\n" );
 
 }

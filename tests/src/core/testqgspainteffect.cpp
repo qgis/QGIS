@@ -715,7 +715,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
 
   polysLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << polysLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << polysLayer );
   ms.setExtent( polysLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (polygon)</h2>\n" );
@@ -747,7 +747,7 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << lineLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setExtent( lineLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (line)</h2>\n" );
@@ -775,7 +775,7 @@ void TestQgsPaintEffect::layerEffectMarker()
   QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( markerSymbol );
 
   pointLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << pointLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << pointLayer );
   ms.setExtent( pointLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (point)</h2>\n" );
@@ -810,7 +810,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
 
   polysLayer->setRenderer( renderer );
 
-  ms.setLayers( QStringList() << polysLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << polysLayer );
   ms.setExtent( polysLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect layer test</h2>\n" );
@@ -845,7 +845,7 @@ void TestQgsPaintEffect::mapUnits()
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << lineLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setExtent( lineLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect map units test</h2>\n" );
@@ -880,7 +880,7 @@ void TestQgsPaintEffect::composer()
   renderer->setPaintEffect( effect );
 
   lineLayer->setRenderer( renderer );
-  ms.setLayers( QStringList() << lineLayer->id() );
+  ms.setLayers( QList<QgsMapLayer*>() << lineLayer );
   ms.setCrsTransformEnabled( false );
 
   QgsComposition* composition = new QgsComposition( ms );

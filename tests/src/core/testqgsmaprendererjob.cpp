@@ -185,7 +185,7 @@ void TestQgsMapRendererJob::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mMapSettings->setLayers( QStringList() << mpPolysLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );
 }
 
@@ -304,7 +304,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsRectangle rect( rectCoords[0].toDouble(), rectCoords[1].toDouble(), rectCoords[2].toDouble(), rectCoords[3].toDouble() );
     mapSettings.setExtent( rect );
     mapSettings.setOutputSize( QSize( 256, 256 ) );
-    mapSettings.setLayers( QStringList() << vectorLayer->id() );
+    mapSettings.setLayers( QList<QgsMapLayer*>() << vectorLayer );
     mapSettings.setFlags( QgsMapSettings::RenderMapTile );
     mapSettings.setOutputDpi( 96 );
 

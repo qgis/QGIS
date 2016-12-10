@@ -279,8 +279,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     QgsRectangle aoi = _areaOfInterest( pointMap, tolerance );
 
     QList<LayerAndAreaOfInterest> layers;
-    Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
-      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) ) )
+    Q_FOREACH ( QgsMapLayer* layer, mMapSettings.layers() )
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ) )
         layers << qMakePair( vl, aoi );
     prepareIndex( layers );
 
@@ -469,9 +469,9 @@ QString QgsSnappingUtils::dump()
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AllLayers )
   {
-    Q_FOREACH ( const QString& layerID, mMapSettings.layers() )
+    Q_FOREACH ( QgsMapLayer* layer, mMapSettings.layers() )
     {
-      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerID ) ) )
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer ) )
         layers << LayerConfig( vl, QgsPointLocator::Types( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
     }
   }

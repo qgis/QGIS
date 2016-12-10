@@ -24,6 +24,7 @@
 class QDomDocument;
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
+class QgsMapLayer;
 class QgsProject;
 
 /**
@@ -167,6 +168,15 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * @note Added in QGIS 3.0
      */
     QStringList mapThemeVisibleLayers( const QString& name ) const;
+
+    /**
+     * Returns the list of layers that are visible for the specified map theme.
+     *
+     * @note The order of the returned list is not guaranteed to reflect the order of layers
+     * in the canvas.
+     * @note Added in QGIS 3.0
+     */
+    QList<QgsMapLayer*> mapThemeVisibleLayers2( const QString& name ) const;
 
     /**
      * Apply check states of legend nodes of a given layer as defined in the map theme.

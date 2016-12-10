@@ -177,9 +177,7 @@ void QgsBench::render()
 
   QMap<QString, QgsMapLayer*> layersMap = QgsProject::instance()->mapLayers();
 
-  QStringList layers( layersMap.keys() );
-
-  mMapSettings.setLayers( layers );
+  mMapSettings.setLayers( layersMap.values() );
 
   if ( mSetExtent )
   {

@@ -151,6 +151,17 @@ QStringList QgsMapThemes::orderedPresetVisibleLayers( const QString& name ) cons
   return order2;
 }
 
+QList<QgsMapLayer*> QgsMapThemes::orderedPresetVisibleLayers2( const QString& name ) const
+{
+  QList<QgsMapLayer*> lst;
+  Q_FOREACH ( const QString& layerId, orderedPresetVisibleLayers( name ) )
+  {
+    if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+      lst << layer;
+  }
+  return lst;
+}
+
 QMenu* QgsMapThemes::menu()
 {
   return mMenu;

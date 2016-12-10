@@ -91,7 +91,7 @@ class TestQgsDiagram : public QObject
       QgsProject::instance()->addMapLayer( mPointsLayer );
 
       // Create map composition to draw on
-      mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
+      mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
       mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }

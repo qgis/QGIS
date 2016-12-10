@@ -402,12 +402,7 @@ void TestQgsLegendRenderer::testFilterByMap()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
-  {
-    ll << l->id();
-  }
-  mapSettings.setLayers( ll );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
   legendModel.setLegendFilterByMap( &mapSettings );
 
@@ -473,7 +468,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  mapSettings.setLayers( QStringList() << vl4->id() );
+  mapSettings.setLayers( QList<QgsMapLayer*>() << vl4 );
 
   legendModel.setLegendFilterByMap( &mapSettings );
 
@@ -572,12 +567,7 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
-  {
-    ll << l->id();
-  }
-  mapSettings.setLayers( ll );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
   // select only within a polygon
   QgsGeometry geom( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((0 0,2 0,2 2,0 2,0 0))" ) ) );
@@ -609,12 +599,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
-  QStringList ll;
-  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
-  {
-    ll << l->id();
-  }
-  mapSettings.setLayers( ll );
+  mapSettings.setLayers( QgsProject::instance()->mapLayers().values() );
 
   // use an expression to only include the red point
   QgsLayerTreeLayer* layer = legendModel.rootGroup()->findLayer( mVL3->id() );

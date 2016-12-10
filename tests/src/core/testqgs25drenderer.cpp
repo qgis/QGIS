@@ -94,7 +94,7 @@ void TestQgs25DRenderer::initTestCase()
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
+  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>25D Renderer Tests</h1>\n" );
 
 }

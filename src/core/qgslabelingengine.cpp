@@ -53,8 +53,9 @@ class QgsLabelSorter
         return lf1->zIndex() < lf2->zIndex();
 
       //equal z-index, so fallback to respecting layer render order
-      int layer1Pos = mMapSettings.layers().indexOf( lf1->provider()->layerId() );
-      int layer2Pos = mMapSettings.layers().indexOf( lf2->provider()->layerId() );
+      QStringList layerIds = mMapSettings.layerIds();
+      int layer1Pos = layerIds.indexOf( lf1->provider()->layerId() );
+      int layer2Pos = layerIds.indexOf( lf2->provider()->layerId() );
       if ( layer1Pos != layer2Pos && layer1Pos >= 0 && layer2Pos >= 0 )
         return layer1Pos > layer2Pos; //higher positions are rendered first
 
