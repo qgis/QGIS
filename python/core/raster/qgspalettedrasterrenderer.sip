@@ -17,11 +17,6 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     /** Returns copy of color array (caller takes ownership)*/
     QColor* colors() const /Factory/;
 
-    /** Returns copy of rgb array (caller takes ownership)
-     @note not available in python bindings
-     */
-    // QRgb* rgbArray() const;
-
     /** Return optional category label
      *  @note added in 2.1 */
     QString label( int idx ) const;

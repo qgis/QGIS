@@ -31,6 +31,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, con
 
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
+  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
 
   mTreeWidget->setColumnWidth( ColorColumn, 50 );
   mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -87,7 +88,7 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
   if ( column == ColorColumn && item ) //change item color
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor c = QgsColorDialog::getColor( item->background( column ).color(), nullptr );
+    QColor c = QgsColorDialog::getColor( item->background( column ).color(), this, QStringLiteral( "Change color" ), true );
     if ( c.isValid() )
     {
       item->setBackground( column, QBrush( c ) );
@@ -162,6 +163,32 @@ void QgsPalettedRendererWidget::changeColor()
     Q_FOREACH ( QTreeWidgetItem *item, itemList )
     {
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+    }
+    emit widgetChanged();
+  }
+}
+
+void QgsPalettedRendererWidget::changeTransparency()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
+  {
+    return;
+  }
+  QTreeWidgetItem* firstItem = itemList.first();
+
+  bool ok;
+  double oldTransparency = ( firstItem->background( ColorColumn ).color().alpha() / 255.0 ) * 100.0;
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change color transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  if ( ok )
+  {
+    int newTransparency = transparency / 100 * 255;
+    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    {
+      QColor newColor = item->background( ColorColumn ).color();
+      newColor.setAlpha( newTransparency );
       item->setBackground( ColorColumn, QBrush( newColor ) );
     }
     emit widgetChanged();
