@@ -78,22 +78,18 @@ void TestQgsComposerMap::initTestCase()
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
   QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
                                     polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolysLayer );
 
   QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
   mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
                                     lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLinesLayer );
 }
 
 void TestQgsComposerMap::cleanupTestCase()
@@ -106,6 +102,11 @@ void TestQgsComposerMap::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mRasterLayer;
+  delete mPointsLayer;
+  delete mPolysLayer;
+  delete mLinesLayer;
 
   QgsApplication::exitQgis();
 }
@@ -349,7 +350,10 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposition->addComposerMap( mComposerMap );
 
   QgsMapThemeCollection::MapThemeRecord rec;
-  rec.setVisibleLayerIds( QStringList() << mPointsLayer->id() << mLinesLayer->id() );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( mPointsLayer )
+                       << QgsMapThemeCollection::MapThemeLayerRecord( mLinesLayer )
+                     );
 
   QgsProject::instance()->mapThemeCollection()->insert( QStringLiteral( "test preset" ), rec );
 

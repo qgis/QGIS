@@ -111,8 +111,6 @@ void TestQgsAtlasComposition::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
-
   mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
 
@@ -125,6 +123,7 @@ TestQgsAtlasComposition::~TestQgsAtlasComposition()
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
+  delete mVectorLayer;
   QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";

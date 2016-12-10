@@ -76,7 +76,6 @@ void TestQgsComposerLabel::initTestCase()
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
@@ -104,6 +103,7 @@ void TestQgsComposerLabel::cleanupTestCase()
 
   delete mComposition;
   delete mMapSettings;
+  delete mVectorLayer;
 
   QgsApplication::exitQgis();
 }

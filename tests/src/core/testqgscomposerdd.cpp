@@ -78,8 +78,6 @@ void TestQgsComposerDD::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
-
   //create composition with composer map
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mVectorLayer );
   mMapSettings->setCrsTransformEnabled( true );
@@ -117,6 +115,7 @@ void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
   delete mMapSettings;
+  delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

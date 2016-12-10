@@ -201,6 +201,11 @@ void QgsLayerTreeGroup::removeAllChildren()
   removeChildren( 0, mChildren.count() );
 }
 
+QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( QgsMapLayer* layer ) const
+{
+  return findLayer( layer->id() );
+}
+
 QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( const QString& layerId ) const
 {
   Q_FOREACH ( QgsLayerTreeNode* child, mChildren )

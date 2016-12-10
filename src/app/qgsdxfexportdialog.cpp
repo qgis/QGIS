@@ -346,7 +346,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   }
   else
   {
-    visibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( name ).toSet();
+    visibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name ).toSet();
   }
 
   if ( visibleLayers.isEmpty() )

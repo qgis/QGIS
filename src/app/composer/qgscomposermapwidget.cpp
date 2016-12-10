@@ -197,7 +197,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QList<QgsMapLayer*> lst = QgsMapThemes::instance()->orderedPresetVisibleLayers2( presetName );
+  QList<QgsMapLayer*> lst = QgsMapThemes::instance()->orderedPresetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );

@@ -18,13 +18,17 @@
 
 #include <QMap>
 #include <QObject>
+#include <QPointer>
 #include <QSet>
 #include <QStringList>
 
+#include "qgsmaplayer.h"
+
 class QDomDocument;
+class QgsLayerTreeModel;
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
-class QgsMapLayer;
+class QgsLayerTreeLayer;
 class QgsProject;
 
 /**
@@ -45,6 +49,44 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * \ingroup core
+     * Individual record of a visible layer in a map theme record.
+     * @note Added in QGIS 3.0
+     */
+    class MapThemeLayerRecord
+    {
+      public:
+        //! Initialize layer record with a map layer - it will be stored as a weak pointer
+        MapThemeLayerRecord( QgsMapLayer* l = nullptr ): usingCurrentStyle( false ), usingLegendItems( false ), mLayer( l ) {}
+
+        bool operator==( const MapThemeLayerRecord& other ) const
+        {
+          return mLayer == other.mLayer &&
+                 usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
+                 usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems;
+        }
+        bool operator!=( const MapThemeLayerRecord& other ) const
+        {
+          return !( *this == other );
+        }
+
+        //! Returns map layer or null if the layer does not exist anymore
+        QgsMapLayer* layer() const { return mLayer; }
+
+        //! Whether current style is valid and should be applied
+        bool usingCurrentStyle;
+        //! Name of the current style of the layer
+        QString currentStyle;
+        //! Whether checkedLegendItems should be applied
+        bool usingLegendItems;
+        //! Rule keys of check legend items in layer tree model
+        QSet<QString> checkedLegendItems;
+      private:
+        //! Weak pointer to the layer
+        QPointer<QgsMapLayer> mLayer;
+    };
+
+    /**
+     * \ingroup core
      * Individual map theme record of visible layers and styles.
      *
      * @note Added in QGIS 3.0, Previously called PresetRecord
@@ -55,61 +97,26 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         bool operator==( const MapThemeRecord& other ) const
         {
-          return mVisibleLayerIds.toSet() == other.mVisibleLayerIds.toSet()
-                 && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols
-                 && mPerLayerCurrentStyle == other.mPerLayerCurrentStyle;
+          return validLayerRecords() == other.validLayerRecords();
         }
         bool operator!=( const MapThemeRecord& other ) const
         {
           return !( *this == other );
         }
 
-        /**
-         * Ordered list of visible layers
-         * @note Added in QGIS 3.0
-         */
-        QStringList visibleLayerIds() const;
+        //! Returns a list of records for all visible layer belonging to the theme.
+        QList<MapThemeLayerRecord> layerRecords() const { return mLayerRecords; }
 
-        /**
-         * Ordered list of visible layers
-         * @note Added in QGIS 3.0
-         */
-        void setVisibleLayerIds( const QStringList& visibleLayerIds );
+        //! Sets layer records for the theme.
+        void setLayerRecords( const QList<MapThemeLayerRecord>& records ) { mLayerRecords = records; }
 
-        /**
-         * Lists which legend symbols are checked for layers which support this and where
-         * not all symbols are checked.
-         * @note not available in Python bindings
-         * @note Added in QGIS 3.0
-         */
-        QMap<QString, QSet<QString> > perLayerCheckedLegendSymbols() const;
-
-        /**
-         * Lists which legend symbols are checked for layers which support this and where
-         * not all symbols are checked.
-         * @note not available in Python bindings
-         * @note Added in QGIS 3.0
-         */
-        void setPerLayerCheckedLegendSymbols( const QMap<QString, QSet<QString> >& perLayerCheckedLegendSymbols );
-
-        /**
-         * The currently used style name for layers with multiple styles.
-         * The map has layer ids as keys and style names as values.
-         * @note Added in QGIS 3.0
-         */
-        QMap<QString, QString> perLayerCurrentStyle() const;
-
-        /**
-         * The currently used style name for layers with multiple styles.
-         * The map has layer ids as keys and style names as values.
-         * @note Added in QGIS 3.0
-         */
-        void setPerLayerCurrentStyle( const QMap<QString, QString>& perLayerCurrentStyle );
+        //! Return set with only records for valid layers
+        //! @note not available in python bindings
+        QHash<QgsMapLayer*, MapThemeLayerRecord> validLayerRecords() const;
 
       private:
-        QStringList mVisibleLayerIds;
-        QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
-        QMap<QString, QString> mPerLayerCurrentStyle;
+        //! Layer-specific records for the theme. Only visible layers are listed.
+        QList<MapThemeLayerRecord> mLayerRecords;
 
         friend class QgsMapThemeCollection;
     };
@@ -167,7 +174,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * in the canvas.
      * @note Added in QGIS 3.0
      */
-    QStringList mapThemeVisibleLayers( const QString& name ) const;
+    QStringList mapThemeVisibleLayerIds( const QString& name ) const;
 
     /**
      * Returns the list of layers that are visible for the specified map theme.
@@ -176,13 +183,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * in the canvas.
      * @note Added in QGIS 3.0
      */
-    QList<QgsMapLayer*> mapThemeVisibleLayers2( const QString& name ) const;
-
-    /**
-     * Apply check states of legend nodes of a given layer as defined in the map theme.
-     * @note Added in QGIS 3.0
-     */
-    void applyMapThemeCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
+    QList<QgsMapLayer*> mapThemeVisibleLayers( const QString& name ) const;
 
     /**
      * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
@@ -204,12 +205,18 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void writeXml( QDomDocument& doc );
 
     /**
-     * Static method for adding visible layers from a layer tree group to a map theme
-     * record.
-     * @param parent layer tree group parent
-     * @param rec map theme record to amend
+     * Static method to create theme from the current state of layer visibilities in layer tree,
+     * current style of layers and check state of legend items (from a layer tree model).
+     * @note added in QGIS 3.0
      */
-    static void addVisibleLayersToMapTheme( QgsLayerTreeGroup* parent, MapThemeRecord& rec );
+    static MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
+
+    /**
+     * Apply theme given by its name and modify layer tree, current style of layers and checked
+     * legend items of passed layer tree model.
+     * @note added in QGIS 3.0
+     */
+    void applyTheme( const QString& name, QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
 
   signals:
 
@@ -232,9 +239,20 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
   private:
 
     /**
+     * Apply check states of legend nodes of a given layer as defined in the map theme.
+     */
+    void applyMapThemeCheckedLegendNodesToLayer( const MapThemeLayerRecord& layerRec, QgsMapLayer* layer );
+
+    /**
      * Reconnects all map theme layers to handle style renames
      */
     void reconnectToLayersStyleManager();
+
+    static bool findRecordForLayer( QgsMapLayer* layer, const MapThemeRecord& rec, MapThemeLayerRecord& layerRec );
+    static MapThemeLayerRecord createThemeLayerRecord( QgsLayerTreeLayer* nodeLayer, QgsLayerTreeModel* model );
+    static void createThemeFromCurrentState( QgsLayerTreeGroup* parent, QgsLayerTreeModel* model, MapThemeRecord& rec );
+    static void applyThemeToLayer( QgsLayerTreeLayer* nodeLayer, QgsLayerTreeModel* model, const MapThemeRecord& rec );
+    static void applyThemeToGroup( QgsLayerTreeGroup* parent, QgsLayerTreeModel* model, const MapThemeRecord& rec );
 
     typedef QMap<QString, MapThemeRecord> MapThemeRecordMap;
     MapThemeRecordMap mMapThemes;

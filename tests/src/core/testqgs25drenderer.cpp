@@ -90,10 +90,6 @@ void TestQgs25DRenderer::initTestCase()
   QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_height" ), 8 );
   QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_angle" ), 45 );
 
-  // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
-
   mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>25D Renderer Tests</h1>\n" );
 
@@ -108,6 +104,8 @@ void TestQgs25DRenderer::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPolysLayer;
 
   QgsApplication::exitQgis();
 }

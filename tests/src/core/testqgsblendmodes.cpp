@@ -97,8 +97,6 @@ void TestQgsBlendModes::initTestCase()
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
 
   //create a poly layer that will be used in tests
   QString myPolysFileName = mTestDataDir + "polys.shp";
@@ -110,8 +108,6 @@ void TestQgsBlendModes::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
 
   //create a line layer that will be used in tests
   QString myLinesFileName = mTestDataDir + "lines.shp";
@@ -119,8 +115,6 @@ void TestQgsBlendModes::initTestCase()
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mpLinesLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer );
 
   //create two raster layers
   QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
@@ -131,10 +125,6 @@ void TestQgsBlendModes::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 1, 2, 3 );
   mRasterLayer1->setRenderer( rasterRenderer );
   mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRasterLayer1 );
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRasterLayer2 );
 
   // points extent was not always reliable
   mExtent = QgsRectangle( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
@@ -149,6 +139,12 @@ void TestQgsBlendModes::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPointsLayer;
+  delete mpPolysLayer;
+  delete mpLinesLayer;
+  delete mRasterLayer1;
+  delete mRasterLayer2;
 
   QgsApplication::exitQgis();
 }

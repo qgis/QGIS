@@ -22,6 +22,7 @@
 #include "qgscomposerutils.h"
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaplayerlistutils.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
 #include "qgspainting.h"
@@ -544,7 +545,7 @@ QList<QgsMapLayer*> QgsComposerMap::layersToRender( const QgsExpressionContext* 
     }
 
     if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
-      renderLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers2( presetName );
+      renderLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayers = mComposition->mapSettings().layers();
   }
@@ -1559,9 +1560,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
 
 void QgsComposerMap::storeCurrentLayerSet()
 {
-  mLayers.clear();
-  Q_FOREACH ( QgsMapLayer* layer, mComposition->mapSettings().layers() )
-    mLayers << layer;
+  mLayers = _qgis_listRawToQPointer( mComposition->mapSettings().layers() );
 
   if ( mKeepLayerStyles )
   {
@@ -1572,23 +1571,12 @@ void QgsComposerMap::storeCurrentLayerSet()
 
 QList<QgsMapLayer*> QgsComposerMap::layers() const
 {
-  QList<QgsMapLayer*> layers;
-  layers.reserve( mLayers.count() );
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
-  {
-    if ( layerPtr )
-      layers.append( layerPtr.data() );
-  }
-  return layers;
+  return _qgis_listQPointerToRaw( mLayers );
 }
 
 void QgsComposerMap::setLayers( const QList<QgsMapLayer*> layers )
 {
-  mLayers.clear();
-  Q_FOREACH ( QgsMapLayer* layer, layers )
-  {
-    mLayers.append( layer );
-  }
+  mLayers = _qgis_listRawToQPointer( layers );
 }
 
 

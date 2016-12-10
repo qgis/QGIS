@@ -1199,9 +1199,9 @@ int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      Q_FOREACH ( const QString& layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer* layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layer ) );
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
         layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );

@@ -97,10 +97,6 @@ void TestQgsCentroidFillSymbol::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
-  // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
-
   //setup gradient fill
   mCentroidFill = new QgsCentroidFillSymbolLayer();
   mFillSymbol = new QgsFillSymbol();
@@ -126,6 +122,8 @@ void TestQgsCentroidFillSymbol::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPolysLayer;
 
   QgsApplication::exitQgis();
 }

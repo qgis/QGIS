@@ -22,6 +22,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerlistutils.h"
 #include "qgsproject.h"
 #include "qgsxmlutils.h"
 #include "qgscsexception.h"
@@ -256,36 +257,18 @@ void QgsMapSettings::setOutputDpi( double dpi )
 
 QStringList QgsMapSettings::layerIds() const
 {
-  QStringList layerIds;
-  layerIds.reserve( mLayers.count() );
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
-  {
-    if ( layerPtr )
-      layerIds.append( layerPtr->id() );
-  }
-  return layerIds;
+  return _qgis_listQPointerToIDs( mLayers );
 }
 
 
 QList<QgsMapLayer*> QgsMapSettings::layers() const
 {
-  QList<QgsMapLayer*> layers;
-  layers.reserve( mLayers.count() );
-  Q_FOREACH ( const QPointer<QgsMapLayer>& layerPtr, mLayers )
-  {
-    if ( layerPtr )
-      layers.append( layerPtr.data() );
-  }
-  return layers;
+  return _qgis_listQPointerToRaw( mLayers );
 }
 
 void QgsMapSettings::setLayers( const QList<QgsMapLayer*>& layers )
 {
-  mLayers.clear();
-  Q_FOREACH ( QgsMapLayer* layer, layers )
-  {
-    mLayers.append( layer );
-  }
+  mLayers = _qgis_listRawToQPointer( layers );
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const

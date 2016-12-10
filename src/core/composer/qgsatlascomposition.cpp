@@ -628,16 +628,8 @@ void QgsAtlasComposition::readXml( const QDomElement& atlasElem, const QDomDocum
   }
 
   // look for stored layer name
-  mCoverageLayer = nullptr;
-  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
-  {
-    if ( it.key() == atlasElem.attribute( QStringLiteral( "coverageLayer" ) ) )
-    {
-      mCoverageLayer = dynamic_cast<QgsVectorLayer*>( it.value() );
-      break;
-    }
-  }
+  QString coverageLayerId = atlasElem.attribute( QStringLiteral( "coverageLayer" ) );
+  mCoverageLayer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( coverageLayerId ) );
 
   mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
   mSingleFile = atlasElem.attribute( QStringLiteral( "singleFile" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) ? true : false;
