@@ -185,6 +185,7 @@ from .BasicStatistics import BasicStatisticsForField
 from .Heatmap import Heatmap
 from .Orthagonalize import Orthagonalize
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 
@@ -252,8 +253,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
                         PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
                         BasicStatisticsForField(), RasterCalculator(), Heatmap(),
-                        Orthagonalize(), ShortestPathPointToPoint(), ServiceAreaFromPoint(),
-                        ServiceAreaFromLayer()
+                        Orthagonalize(), ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                        ServiceAreaFromPoint(), ServiceAreaFromLayer()
                         ]
 
         if hasMatplotlib:
