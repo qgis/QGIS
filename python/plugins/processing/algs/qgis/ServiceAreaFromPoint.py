@@ -70,7 +70,8 @@ class ServiceAreaFromPoint(GeoAlgorithm):
     SPEED_FIELD = 'SPEED_FIELD'
     DEFAULT_SPEED = 'DEFAULT_SPEED'
     TOLERANCE = 'TOLERANCE'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT_POINTS = 'OUTPUT_POINTS'
+    OUTPUT_POLYGON = 'OUTPUT_POLYGON'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
@@ -137,8 +138,11 @@ class ServiceAreaFromPoint(GeoAlgorithm):
             p.isAdvanced = True
             self.addParameter(p)
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Service area'),
+        self.addOutput(OutputVector(self.OUTPUT_POINTS,
+                                    self.tr('Service area (boundary nodes)'),
+                                    datatype=[dataobjects.TYPE_VECTOR_POI]))
+        self.addOutput(OutputVector(self.OUTPUT_POLYGON,
+                                    self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
@@ -158,14 +162,6 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         speedFieldName = self.getParameterValue(self.SPEED_FIELD)
         defaultSpeed = self.getParameterValue(self.DEFAULT_SPEED)
         tolerance = self.getParameterValue(self.TOLERANCE)
-
-        fields = QgsFields()
-        fields.append(QgsField('type', QVariant.String, '', 254, 0))
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
 
         tmp = startPoint.split(',')
         startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
@@ -219,17 +215,44 @@ class ServiceAreaFromPoint(GeoAlgorithm):
             lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
 
         progress.setInfo(self.tr('Writting results...'))
+
+        fields = QgsFields()
+        fields.append(QgsField('type', QVariant.String, '', 254, 0))
+
         feat = QgsFeature()
         feat.setFields(fields)
 
-        geom = QgsGeometry.fromMultiPoint(upperBoundary)
-        geom = geom.convexHull()
+        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+
+        writer = self.getOutputFromName(
+            self.OUTPUT_POINTS).getVectorWriter(
+                fields,
+                QgsWkbTypes.Point,
+                layer.crs())
+
+        feat.setGeometry(geomUpper)
+        feat['type'] = 'upper'
+        writer.addFeature(feat)
+
+        feat.setGeometry(geomLower)
+        feat['type'] = 'lower'
+        writer.addFeature(feat)
+
+        del writer
+
+        writer = self.getOutputFromName(
+            self.OUTPUT_POLYGON).getVectorWriter(
+                fields,
+                QgsWkbTypes.Polygon,
+                layer.crs())
+
+        geom = geomUpper.convexHull()
         feat.setGeometry(geom)
         feat['type'] = 'upper'
         writer.addFeature(feat)
 
-        geom = QgsGeometry.fromMultiPoint(lowerBoundary)
-        geom = geom.convexHull()
+        geom = geomLower.convexHull()
         feat.setGeometry(geom)
         feat['type'] = 'lower'
         writer.addFeature(feat)
