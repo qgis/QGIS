@@ -186,6 +186,7 @@ from .Heatmap import Heatmap
 from .Orthagonalize import Orthagonalize
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 
@@ -249,12 +250,15 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ReliefAuto(), ZonalStatisticsQgis(),
                         IdwInterpolationZValue(), IdwInterpolationAttribute(),
                         TinInterpolationZValue(), TinInterpolationAttribute(),
-                        RemoveNullGeometry(), ExtractByExpression(), ExtendLines(),
-                        ExtractSpecificNodes(), GeometryByExpression(), SnapGeometriesToLayer(),
-                        PoleOfInaccessibility(), CreateAttributeIndex(), DropGeometry(),
-                        BasicStatisticsForField(), RasterCalculator(), Heatmap(),
-                        Orthagonalize(), ShortestPathPointToPoint(), ShortestPathPointToLayer(),
-                        ServiceAreaFromPoint(), ServiceAreaFromLayer()
+                        RemoveNullGeometry(), ExtractByExpression(),
+                        ExtendLines(), ExtractSpecificNodes(),
+                        GeometryByExpression(), SnapGeometriesToLayer(),
+                        PoleOfInaccessibility(), CreateAttributeIndex(),
+                        DropGeometry(), BasicStatisticsForField(),
+                        RasterCalculator(), Heatmap(), Orthagonalize(),
+                        ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                        ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
+                        ServiceAreaFromLayer()
                         ]
 
         if hasMatplotlib:
