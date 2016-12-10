@@ -20,11 +20,23 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgscolordialog.h"
+
 #include <QColorDialog>
+#include <QInputDialog>
+#include <QMenu>
 
 QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
+
+  contextMenu = new QMenu( tr( "Options" ), this );
+  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
+
+  mTreeWidget->setColumnWidth( ColorColumn, 50 );
+  mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
+  mTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  connect( mTreeWidget, &QTreeView::customContextMenuRequested,  [=]( const QPoint& ) { contextMenu->exec( QCursor::pos() ); }
+         );
 
   if ( mRasterLayer )
   {
@@ -72,7 +84,7 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
 
 void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
 {
-  if ( column == 1 && item ) //change item color
+  if ( column == ColorColumn && item ) //change item color
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     QColor c = QgsColorDialog::getColor( item->background( column ).color(), nullptr );
@@ -82,7 +94,7 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
       emit widgetChanged();
     }
   }
-  else if ( column == 2 && item )
+  else if ( column == LabelColumn && item )
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
@@ -90,7 +102,7 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
 
 void QgsPalettedRendererWidget::on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column )
 {
-  if ( column == 2 && item ) //palette label modified
+  if ( column == LabelColumn && item ) //palette label modified
   {
     emit widgetChanged();
   }
@@ -131,5 +143,27 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
         ++index;
       }
     }
+  }
+}
+
+void QgsPalettedRendererWidget::changeColor()
+{
+  QList<QTreeWidgetItem *> itemList;
+  itemList = mTreeWidget->selectedItems();
+  if ( itemList.isEmpty() )
+  {
+    return;
+  }
+  QTreeWidgetItem* firstItem = itemList.first();
+
+  QColor newColor = QgsColorDialog::getColor( firstItem->background( ColorColumn ).color(), this, QStringLiteral( "Change color" ), true );
+  if ( newColor.isValid() )
+  {
+    Q_FOREACH ( QTreeWidgetItem *item, itemList )
+    {
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      item->setBackground( ColorColumn, QBrush( newColor ) );
+    }
+    emit widgetChanged();
   }
 }
