@@ -56,6 +56,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column );
     void changeColor();
+    void changeTransparency();
 };
 
 #endif // QGSPALETTEDRENDERERWIDGET_H

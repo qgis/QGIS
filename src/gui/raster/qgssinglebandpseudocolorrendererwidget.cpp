@@ -982,7 +982,7 @@ void QgsSingleBandPseudoColorRendererWidget::changeTransparency()
 
   bool ok;
   double oldTransparency = firstItem->background( ColorColumn ).color().alpha() / 255 * 100;
-  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change color transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
     int newTransparency = transparency / 100 * 255;
