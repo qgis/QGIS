@@ -80,7 +80,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.mapsettings.setOutputDpi(96)
         self.mapsettings.setExtent(QgsRectangle(-163, 22, -70, 52))
 
-        rendered_layers = [layer.id()]
+        rendered_layers = [layer]
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):

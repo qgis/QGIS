@@ -35,7 +35,7 @@ class TestQgsComposerLabel(unittest.TestCase):
 
         # create composition with composer map
         mapSettings = QgsMapSettings()
-        mapSettings.setLayers([mVectorLayer.id()])
+        mapSettings.setLayers([mVectorLayer])
         mapSettings.setCrsTransformEnabled(False)
 
         mComposition = QgsComposition(mapSettings)

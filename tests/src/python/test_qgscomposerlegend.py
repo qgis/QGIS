@@ -50,7 +50,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -85,7 +85,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -123,7 +123,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)
@@ -165,7 +165,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
+        s.setLayers([point_layer])
         s.setCrsTransformEnabled(False)
         composition = QgsComposition(s)
         composition.setPaperSize(297, 210)

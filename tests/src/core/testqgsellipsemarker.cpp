@@ -98,10 +98,6 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
-
   //setup symbol
   mEllipseMarkerLayer = new QgsEllipseSymbolLayer();
   mMarkerSymbol = new QgsMarkerSymbol();
@@ -127,6 +123,8 @@ void TestQgsEllipseMarkerSymbol::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPointsLayer;
 
   QgsApplication::exitQgis();
 }

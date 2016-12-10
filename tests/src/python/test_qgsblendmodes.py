@@ -93,7 +93,7 @@ class TestQgsBlendModes(unittest.TestCase):
 
         # to match blend modes test comparisons background
         self.mapSettings = QgsMapSettings()
-        self.mapSettings.setLayers([self.mRasterLayer1.id(), self.mRasterLayer2.id()])
+        self.mapSettings.setLayers([self.mRasterLayer1, self.mRasterLayer2])
         self.mapSettings.setBackgroundColor(QColor(152, 219, 249))
         self.mapSettings.setOutputSize(QSize(400, 400))
         self.mapSettings.setOutputDpi(96)
@@ -104,9 +104,7 @@ class TestQgsBlendModes(unittest.TestCase):
         """Test that blend modes work for vector layers."""
 
         # Add vector layers to map
-        myLayers = []
-        myLayers.append(self.mLineLayer.id())
-        myLayers.append(self.mPolygonLayer.id())
+        myLayers = [self.mLineLayer, self.mPolygonLayer]
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.extent)
 
@@ -131,9 +129,7 @@ class TestQgsBlendModes(unittest.TestCase):
         """Test that feature blend modes work for vector layers."""
 
         # Add vector layers to map
-        myLayers = []
-        myLayers.append(self.mLineLayer.id())
-        myLayers.append(self.mPolygonLayer.id())
+        myLayers = [self.mLineLayer, self.mPolygonLayer]
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.extent)
 
@@ -156,9 +152,7 @@ class TestQgsBlendModes(unittest.TestCase):
         """Test that layer transparency works for vector layers."""
 
         # Add vector layers to map
-        myLayers = []
-        myLayers.append(self.mLineLayer.id())
-        myLayers.append(self.mPolygonLayer.id())
+        myLayers = [self.mLineLayer, self.mPolygonLayer]
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.extent)
 
@@ -177,9 +171,7 @@ class TestQgsBlendModes(unittest.TestCase):
     def testRasterBlending(self):
         """Test that blend modes work for raster layers."""
         # Add raster layers to map
-        myLayers = []
-        myLayers.append(self.mRasterLayer1.id())
-        myLayers.append(self.mRasterLayer2.id())
+        myLayers = [self.mRasterLayer1, self.mRasterLayer2]
         self.mapSettings.setLayers(myLayers)
         self.mapSettings.setExtent(self.mRasterLayer1.extent())
 

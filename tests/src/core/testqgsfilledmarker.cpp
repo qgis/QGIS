@@ -96,10 +96,6 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer );
-
   //setup symbol
   QgsGradientFillSymbolLayer* gradientFill = new QgsGradientFillSymbolLayer();
   gradientFill->setColor( QColor( "red" ) );
@@ -138,6 +134,8 @@ void TestQgsFilledMarkerSymbol::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPointsLayer;
 
   QgsApplication::exitQgis();
 }

@@ -80,8 +80,6 @@ void TestQgsComposerRotation::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setCrsTransformEnabled( false );
 
@@ -115,6 +113,7 @@ void TestQgsComposerRotation::cleanupTestCase()
   delete mComposerRect;
   delete mComposition;
   delete mMapSettings;
+  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

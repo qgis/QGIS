@@ -82,32 +82,24 @@ void TestQgsMapRotation::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  QList<QgsMapLayer *> mapLayers;
-
   //create a raster layer that will be used in all tests...
   QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
-  mapLayers << mRasterLayer;
 
   //create a point layer that will be used in all tests...
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  mapLayers << mPointsLayer;
 
   //create a line layer that will be used in all tests...
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
                                     myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  mapLayers << mLinesLayer;
-
-  // Register all layers with the registry
-  QgsProject::instance()->addMapLayers( mapLayers );
 
   // This is needed to correctly set rotation center,
   // the actual size doesn't matter as QgsRenderChecker will
@@ -128,6 +120,9 @@ TestQgsMapRotation::~TestQgsMapRotation()
 void TestQgsMapRotation::cleanupTestCase()
 {
   delete mMapSettings;
+  delete mPointsLayer;
+  delete mLinesLayer;
+  delete mRasterLayer;
   QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";

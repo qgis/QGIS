@@ -58,7 +58,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         self.renderer = QgsSingleSymbolRenderer(sym1)
         layer.setRenderer(self.renderer)
 
-        rendered_layers = [layer.id()]
+        rendered_layers = [layer]
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)

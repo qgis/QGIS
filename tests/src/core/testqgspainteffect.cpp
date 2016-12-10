@@ -702,7 +702,6 @@ void TestQgsPaintEffect::layerEffectPolygon()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -721,6 +720,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (polygon)</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_poly" ), ms );
   QVERIFY( result );
+  delete polysLayer;
 }
 
 void TestQgsPaintEffect::layerEffectLine()
@@ -733,7 +733,6 @@ void TestQgsPaintEffect::layerEffectLine()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -753,6 +752,7 @@ void TestQgsPaintEffect::layerEffectLine()
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (line)</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_line" ), ms );
   QVERIFY( result );
+  delete lineLayer;
 }
 
 void TestQgsPaintEffect::layerEffectMarker()
@@ -762,7 +762,6 @@ void TestQgsPaintEffect::layerEffectMarker()
   QFileInfo pointFileInfo( pointFileName );
   QgsVectorLayer* pointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer );
 
   QgsMapSettings ms;
   QgsSimpleMarkerSymbolLayer* marker = new QgsSimpleMarkerSymbolLayer;
@@ -781,6 +780,7 @@ void TestQgsPaintEffect::layerEffectMarker()
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (point)</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_marker" ), ms );
   QVERIFY( result );
+  delete pointLayer;
 }
 
 void TestQgsPaintEffect::vectorLayerEffect()
@@ -793,7 +793,6 @@ void TestQgsPaintEffect::vectorLayerEffect()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   polysLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << polysLayer );
 
   QgsMapSettings ms;
   QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer;
@@ -816,6 +815,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
   mReport += QLatin1String( "<h2>Paint effect layer test</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_layer" ), ms );
   QVERIFY( result );
+  delete polysLayer;
 }
 
 void TestQgsPaintEffect::mapUnits()
@@ -828,7 +828,6 @@ void TestQgsPaintEffect::mapUnits()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -851,6 +850,7 @@ void TestQgsPaintEffect::mapUnits()
   mReport += QLatin1String( "<h2>Paint effect map units test</h2>\n" );
   bool result = mapRenderCheck( QStringLiteral( "painteffect_mapunits" ), ms );
   QVERIFY( result );
+  delete lineLayer;
 }
 
 void TestQgsPaintEffect::composer()
@@ -864,7 +864,6 @@ void TestQgsPaintEffect::composer()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   lineLayer->setSimplifyMethod( simplifyMethod );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QgsMapSettings ms;
   QgsSimpleLineSymbolLayer* line = new QgsSimpleLineSymbolLayer;
@@ -902,6 +901,7 @@ void TestQgsPaintEffect::composer()
   bool result = imageCheck( QStringLiteral( "painteffect_composer" ), outputImage );
   delete composition;
   QVERIFY( result );
+  delete lineLayer;
 }
 
 

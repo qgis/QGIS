@@ -56,7 +56,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         QgsProject.instance().addMapLayer(self.layer)
 
         self.iface = get_iface()
-        rendered_layers = [self.layer.id()]
+        rendered_layers = [self.layer]
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)

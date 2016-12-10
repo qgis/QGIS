@@ -66,7 +66,7 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         self.renderer.setClusterSymbol(QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'}))
         self.layer.setRenderer(self.renderer)
 
-        rendered_layers = [self.layer.id()]
+        rendered_layers = [self.layer]
         self.mapsettings = QgsMapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)

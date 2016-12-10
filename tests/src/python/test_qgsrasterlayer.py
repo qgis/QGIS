@@ -135,7 +135,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         QgsProject.instance().addMapLayers([myRasterLayer, ])
 
         myMapSettings = QgsMapSettings()
-        myMapSettings.setLayers([myRasterLayer.id()])
+        myMapSettings.setLayers([myRasterLayer])
         myMapSettings.setExtent(myRasterLayer.extent())
 
         myChecker = QgsRenderChecker()

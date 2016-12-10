@@ -420,7 +420,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
         ms.setExtent(QgsRectangle(-133, 22, -70, 52))
-        ms.setLayers([polys_layer.id()])
+        ms.setLayers([polys_layer])
 
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(ms)
@@ -485,7 +485,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
         ms.setExtent(QgsRectangle(-133, 22, -70, 52))
-        ms.setLayers([lines_layer.id()])
+        ms.setLayers([lines_layer])
 
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(ms)
@@ -549,7 +549,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
         ms.setExtent(QgsRectangle(-133, 22, -70, 52))
-        ms.setLayers([points_layer.id()])
+        ms.setLayers([points_layer])
 
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(ms)

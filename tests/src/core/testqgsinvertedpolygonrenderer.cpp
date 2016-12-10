@@ -94,9 +94,6 @@ void TestQgsInvertedPolygon::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
-  // Register the layer with the registry
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-
   mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
 }
@@ -111,6 +108,8 @@ void TestQgsInvertedPolygon::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPolysLayer;
 
   QgsApplication::exitQgis();
 }

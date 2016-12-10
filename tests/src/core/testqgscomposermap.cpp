@@ -90,6 +90,9 @@ void TestQgsComposerMap::initTestCase()
   QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
   mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
                                     lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+
+  // some layers need to be in project for data-defined layers functionality
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer << mPointsLayer << mPolysLayer << mLinesLayer );
 }
 
 void TestQgsComposerMap::cleanupTestCase()
@@ -102,11 +105,6 @@ void TestQgsComposerMap::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
-
-  delete mRasterLayer;
-  delete mPointsLayer;
-  delete mPolysLayer;
-  delete mLinesLayer;
 
   QgsApplication::exitQgis();
 }

@@ -102,7 +102,7 @@ class TestQgsComposition(unittest.TestCase):
         QgsProject.instance().addMapLayers([myRasterLayer])
 
         myMapSettings = QgsMapSettings()
-        myMapSettings.setLayers([myRasterLayer.id()])
+        myMapSettings.setLayers([myRasterLayer])
         myMapSettings.setCrsTransformEnabled(False)
 
         myComposition = QgsComposition(myMapSettings)

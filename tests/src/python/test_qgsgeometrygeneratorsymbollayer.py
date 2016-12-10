@@ -90,7 +90,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         sym_layer.setSymbolType(QgsSymbol.Marker)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.polys_layer.id()]
+        rendered_layers = [self.polys_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -109,7 +109,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         marker_layer.setSymbolType(QgsSymbol.Marker)
         sym.appendSymbolLayer(marker_layer)
 
-        rendered_layers = [self.polys_layer.id()]
+        rendered_layers = [self.polys_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()

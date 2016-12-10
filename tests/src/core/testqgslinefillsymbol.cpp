@@ -99,10 +99,6 @@ void TestQgsLineFillSymbol::initTestCase()
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
-  // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
-
   //setup gradient fill
   mLineFill = new QgsLinePatternFillSymbolLayer();
   mFillSymbol = new QgsFillSymbol();
@@ -128,6 +124,8 @@ void TestQgsLineFillSymbol::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  delete mpPolysLayer;
 
   QgsApplication::exitQgis();
 }

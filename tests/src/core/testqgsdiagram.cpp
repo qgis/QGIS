@@ -87,9 +87,6 @@ class TestQgsDiagram : public QObject
       mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                          myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-      // Register the layer with the registry
-      QgsProject::instance()->addMapLayer( mPointsLayer );
-
       // Create map composition to draw on
       mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
 
@@ -100,6 +97,7 @@ class TestQgsDiagram : public QObject
     void cleanupTestCase()
     {
       delete mMapSettings;
+      delete mPointsLayer;
 
       QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );

@@ -154,8 +154,8 @@ class TestQgsPalLabeling(unittest.TestCase):
         lyr_id = layer.id()
         cls._MapRegistry.removeMapLayer(lyr_id)
         ms_layers = cls._MapSettings.layers()
-        if lyr_id in ms_layers:
-            ms_layers.remove(lyr_id)
+        if layer in ms_layers:
+            ms_layers.remove(layer)
             cls._MapSettings.setLayers(ms_layers)
 
     @classmethod
@@ -176,7 +176,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         # qDebug('render_lyr = {0}'.format(repr(vlayer)))
         cls._MapRegistry.addMapLayer(vlayer)
         # place new layer on top of render stack
-        render_lyrs = [vlayer.id()]
+        render_lyrs = [vlayer]
         render_lyrs.extend(cls._MapSettings.layers())
         # qDebug('render_lyrs = {0}'.format(repr(render_lyrs)))
         cls._MapSettings.setLayers(render_lyrs)

@@ -88,7 +88,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -104,7 +104,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -120,7 +120,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -140,7 +140,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()

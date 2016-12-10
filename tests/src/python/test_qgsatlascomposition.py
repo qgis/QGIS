@@ -44,8 +44,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
         # create composition with composer map
         self.mapSettings = QgsMapSettings()
-        layerStringList = []
-        layerStringList.append(mVectorLayer.id())
+        layerStringList = [mVectorLayer]
         self.mapSettings.setLayers(layerStringList)
         self.mapSettings.setCrsTransformEnabled(True)
         self.mapSettings.setMapUnits(QgsUnitTypes.DistanceMeters)
@@ -286,7 +285,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
         # add the point layer to the map settings
         layers = self.mapSettings.layers()
-        layers = [ptLayer.id()] + layers
+        layers = [ptLayer] + layers
         self.mapSettings.setLayers(layers)
 
         # add a legend

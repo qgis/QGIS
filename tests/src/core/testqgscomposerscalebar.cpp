@@ -86,8 +86,6 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
   //create composition with composer map
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
@@ -127,6 +125,7 @@ void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
   delete mMapSettings;
+  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

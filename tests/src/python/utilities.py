@@ -241,8 +241,7 @@ def mapSettingsString(ms):
 
     s = 'MapSettings...\n'
     s += '  layers(): {0}\n'.format(
-        [QgsProject.instance().mapLayer(i).name()
-         for i in ms.layers()])
+        [layer.name() for layer in ms.layers()])
     s += '  backgroundColor(): rgba {0},{1},{2},{3}\n'.format(
         ms.backgroundColor().red(), ms.backgroundColor().green(),
         ms.backgroundColor().blue(), ms.backgroundColor().alpha())

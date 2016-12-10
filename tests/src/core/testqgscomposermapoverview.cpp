@@ -74,8 +74,6 @@ void TestQgsComposerMapOverview::initTestCase()
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
   //create composition with composer map
   mMapSettings->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
   mMapSettings->setCrsTransformEnabled( false );
@@ -92,6 +90,7 @@ void TestQgsComposerMapOverview::cleanupTestCase()
 {
   delete mComposition;
   delete mMapSettings;
+  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
