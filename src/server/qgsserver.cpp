@@ -394,6 +394,11 @@ bool QgsServer::init( )
 #endif
 
   QgsEditorWidgetRegistry::initEditors();
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
+#endif
+
   sInitialised = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   return true;
@@ -629,9 +634,7 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsServer::initPython()
 {
-  /*
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache );
-    // Init plugins
+  // Init plugins
   if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
   {
     QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
@@ -640,7 +643,6 @@ void QgsServer::initPython()
   {
     QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
-  */
 }
 #endif
 
