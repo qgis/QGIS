@@ -125,7 +125,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -141,7 +141,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
 
-        rendered_layers = [self.points_layer.id()]
+        rendered_layers = [self.points_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
