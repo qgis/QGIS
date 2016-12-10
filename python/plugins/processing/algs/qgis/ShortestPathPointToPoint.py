@@ -27,9 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -163,6 +164,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
+        fields.append(QgsField('cost', QVariant.Double, '', 20, 7))
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
@@ -235,6 +237,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         feat.setFields(fields)
         feat['start'] = startPoint.toString()
         feat['end'] = endPoint.toString()
+        feat['cost'] = cost / multiplier
         feat.setGeometry(geom)
         writer.addFeature(feat)
         del writer
